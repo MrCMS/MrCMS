@@ -1,14 +1,14 @@
+using Microsoft.AspNetCore.Identity;
+using MrCMS.Entities.People;
+using MrCMS.Helpers;
+using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using MrCMS.Entities.People;
-using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -102,7 +102,10 @@ namespace MrCMS.Services
         private async Task<List<UserClaim>> GetUserClaimsAsync(User user, CancellationToken cancellationToken)
         {
             if (user == null)
+            {
                 return new List<UserClaim>();
+            }
+
             var userClaims = await _session.Query<UserClaim>().Where(x => x.User.Id == user.Id)
                 .WithOptions(options => options.SetCacheable(true))
                 .ToListAsync(cancellationToken);
@@ -162,7 +165,9 @@ namespace MrCMS.Services
                 {
                     var existingUserClaim = existingClaims.FirstOrDefault(x => x.Claim == claim.Type);
                     if (existingUserClaim == null)
+                    {
                         continue;
+                    }
 
                     await session.DeleteAsync(existingUserClaim, token);
                     user.UserClaims.Remove(existingUserClaim);
@@ -227,9 +232,14 @@ namespace MrCMS.Services
             if (role != null)
             {
                 if (!user.Roles.Contains(role))
+                {
                     user.Roles.Add(role);
+                }
+
                 if (!role.Users.Contains(user))
+                {
                     role.Users.Add(user);
+                }
 
                 await _session.TransactAsync(async (session, token) =>
                 {
@@ -241,8 +251,10 @@ namespace MrCMS.Services
 
         private async Task<UserRole> GetRoleByName(string roleName, CancellationToken cancellationToken)
         {
+            if (roleName == null)
+                return null;
             var role = await _session.Query<UserRole>().WithOptions(x => x.SetCacheable(true))
-                .FirstOrDefaultAsync(x => x.Name == roleName, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Name.ToUpper() == roleName.ToUpper(), cancellationToken);
             return role;
         }
 
@@ -252,9 +264,14 @@ namespace MrCMS.Services
             if (role != null)
             {
                 if (user.Roles.Contains(role))
+                {
                     user.Roles.Remove(role);
+                }
+
                 if (role.Users.Contains(user))
+                {
                     role.Users.Remove(user);
+                }
 
                 await _session.TransactAsync(async (session, token) =>
                 {
@@ -377,12 +394,14 @@ namespace MrCMS.Services
             UserLogin userLogin =
                 user.UserLogins.FirstOrDefault(l => l.ProviderKey == providerKey && l.LoginProvider == loginProvider);
             if (userLogin != null)
+            {
                 await _session.TransactAsync(async (session, token) =>
                 {
                     user.UserLogins.Remove(userLogin);
                     await session.DeleteAsync(userLogin, cancellationToken);
                     await session.UpdateAsync(user, cancellationToken);
                 }, cancellationToken);
+            }
         }
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)

@@ -10,8 +10,8 @@ namespace MrCMS.Data.Sqlite
     public class CreateSQLiteDatabase : ICreateDatabase<SqliteProvider>
     {
         private const string DatabaseFileName = "MrCMS.Db.db";
-        private const string DatabasePath = @"|DataDirectory|\" + DatabaseFileName;
-        private const string ConnectionString = "Data Source=" + DatabasePath;
+        //private const string DatabasePath = @"|DataDirectory|\" + DatabaseFileName;
+        //private const string ConnectionString = "Data Source=" + DatabasePath;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public CreateSQLiteDatabase(IHostingEnvironment hostingEnvironment)
@@ -22,7 +22,7 @@ namespace MrCMS.Data.Sqlite
         public IDatabaseProvider CreateDatabase(InstallModel model)
         {
             //drop database if exists
-            var databaseFullPath = Path.Combine(_hostingEnvironment.ContentRootPath, "App_Data", DatabaseFileName);
+            var databaseFullPath = GetDatabaseFullPath();
             if (File.Exists(databaseFullPath)) File.Delete(databaseFullPath);
             using (File.Create(databaseFullPath))
             {
@@ -31,13 +31,27 @@ namespace MrCMS.Data.Sqlite
             return new SqliteProvider(new OptionsWrapper<DatabaseSettings>(new DatabaseSettings
             {
                 DatabaseProviderType = typeof(SqliteProvider).FullName,
-                ConnectionString = ConnectionString
+                ConnectionString = GetConnectionString()
             }));
+        }
+
+        private string GetConnectionString()
+        {
+            return $"Data Source={GetDatabasePath()}";
+        }
+
+        private string GetDatabaseFullPath()
+        {
+            return Path.Combine(_hostingEnvironment.ContentRootPath, "App_Data", DatabaseFileName);
+        }
+        private string GetDatabasePath()
+        {
+            return Path.Combine("App_Data", DatabaseFileName);
         }
 
         public string GetConnectionString(InstallModel model)
         {
-            return ConnectionString;
+            return GetConnectionString();
         }
     }
 }

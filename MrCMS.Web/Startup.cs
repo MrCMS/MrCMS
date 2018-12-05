@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +13,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MrCMS.Apps;
+using MrCMS.Data.Sqlite;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -20,23 +21,18 @@ using MrCMS.Installation;
 using MrCMS.Logging;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
+using MrCMS.Themes.Red;
 using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
-using System.Linq;
-using MrCMS.Data.Sqlite;
-using MrCMS.DbConfiguration;
-using MrCMS.Themes.Red;
 
 namespace MrCMS.Web
 {
     public class Startup
     {
         private const string Database = nameof(Database);
-        public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
 
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
@@ -45,6 +41,9 @@ namespace MrCMS.Web
 
             TypeHelper.Initialize(GetType().Assembly);
         }
+
+        public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -58,7 +57,7 @@ namespace MrCMS.Web
             services.SelfRegisterAllConcreteTypes();
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
             //todo: something else with this, just making sure the library is loaded for now
             services.AddTransient<CreateSQLiteDatabase>();
 
@@ -72,9 +71,10 @@ namespace MrCMS.Web
             services.AddDataAccess(isInstalled, Configuration.GetSection(Database));
 
             // TODO: Look to removing Site for constructors and resolving like this
-            services.AddScoped<Site>(provider =>
+            services.AddScoped(provider =>
             {
-                var site = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
+                var site =
+                    provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
                 return site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
             });
 
@@ -119,7 +119,7 @@ namespace MrCMS.Web
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 
-            services.AddScoped<IUrlHelper>(x =>
+            services.AddScoped(x =>
             {
                 var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
@@ -130,13 +130,16 @@ namespace MrCMS.Web
 
 
             services.AddAuthentication();
-            services.TryAddEnumerable(ServiceDescriptor.Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>());
-            services.AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>();
+            services.TryAddEnumerable(ServiceDescriptor
+                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
+                >());
+            services
+                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
+                >();
             services.AddAuthorization(options =>
-                {
-                    options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
-                });
-
+            {
+                options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+            });
         }
 
         private bool IsInstalled()
@@ -148,10 +151,7 @@ namespace MrCMS.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseSession();
 
@@ -164,11 +164,10 @@ namespace MrCMS.Web
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new CompositeFileProvider(
-                    new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                    new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
             });
             app.UseAuthentication();
             app.UseMrCMS();
         }
     }
-
 }
