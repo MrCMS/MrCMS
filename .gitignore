@@ -100,3 +100,4 @@ MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *sitemap.xml
 
 
+appsettings.Development.json

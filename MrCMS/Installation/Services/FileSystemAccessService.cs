@@ -1,67 +1,52 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Principal;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services
 {
     public class FileSystemAccessService : IFileSystemAccessService
     {
-        private readonly IHttpContextAccessor _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FileSystemAccessService(IHttpContextAccessor context)
+        public FileSystemAccessService(IHostingEnvironment hostingEnvironment)
         {
-            _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public InstallationResult EnsureAccessToFileSystem()
         {
             var result = new InstallationResult();
             ////validate permissions
-            //string rootDir = _context.Server.MapPath("~/");
-            //var dirsToCheck = new List<string>();
-            //dirsToCheck.Add(rootDir);
-            //dirsToCheck.Add(rootDir + "App_Data");
-            //dirsToCheck.Add(rootDir + "bin");
-            //dirsToCheck.Add(rootDir + "content");
-            //dirsToCheck.Add(rootDir + "content/upload");
-            //foreach (string dir in dirsToCheck)
-            //    if (!CheckPermissions(new RequiredCheck(false, true, true, true), dir))
-            //        result.AddModelError(
-            //            String.Format(
-            //                "The '{0}' account is not granted with Modify permission on folder '{1}'. Please configure these permissions.",
-            //                WindowsIdentity.GetCurrent().Name, dir));
-            //    else
-            //    {
-            //        var directoryInfo = new DirectoryInfo(dir);
-            //        if (!directoryInfo.Exists)
-            //        {
-            //            directoryInfo.Create();
-            //        }
-            //    }
+            var dirsToCheck = new List<string>();
+            dirsToCheck.Add("App_Data");
+            foreach (string dir in dirsToCheck)
+            {
+                var directoryInfo = new DirectoryInfo(Path.Combine(_hostingEnvironment.ContentRootPath, dir));
+                if (!directoryInfo.Exists)
+                {
+                    directoryInfo.Create();
+                }
+            }
 
-
-            //var filesToCheck = new List<string>();
-            //filesToCheck.Add(rootDir + "web.config");
-            //filesToCheck.Add(rootDir + "ConnectionStrings.config");
-            //foreach (string file in filesToCheck)
-            //    if (!CheckPermissions(new RequiredCheck(false, true, true, true), file))
-            //        result.AddModelError(
-            //            String.Format(
-            //                "The '{0}' account is not granted with Modify permission on file '{1}'. Please configure these permissions.",
-            //                WindowsIdentity.GetCurrent().Name, file));
             return result;
         }
 
         public void EmptyAppData()
         {
-            //string appData = _context.Server.MapPath("~/App_Data");
-            //var directoryInfo = new DirectoryInfo(appData);
-            //foreach (FileInfo file in directoryInfo.GetFiles())
-            //{
-            //    file.Delete();
-            //}
-            //foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
-            //{
-            //    dir.Delete(true);
-            //}
+            string appData = Path.Combine(_hostingEnvironment.ContentRootPath, "App_Data");
+            var directoryInfo = new DirectoryInfo(appData);
+            foreach (FileInfo file in directoryInfo.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
+            {
+                dir.Delete(true);
+            }
             //AppDataSystemConfigurationProvider.ClearCache();
             //AppDataConfigurationProvider.ClearCache();
         }

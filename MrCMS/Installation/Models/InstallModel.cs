@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using MrCMS.Helpers;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MrCMS.Installation.Models;
+using MrCMS.Helpers;
 
-namespace MrCMS.Installation
+namespace MrCMS.Installation.Models
 {
     public class InstallModel
     {

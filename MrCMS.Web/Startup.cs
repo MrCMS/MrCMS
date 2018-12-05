@@ -26,6 +26,8 @@ using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
 using System.Linq;
+using MrCMS.Data.Sqlite;
+using MrCMS.DbConfiguration;
 using MrCMS.Themes.Red;
 
 namespace MrCMS.Web
@@ -56,6 +58,9 @@ namespace MrCMS.Web
             services.SelfRegisterAllConcreteTypes();
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
+            //todo: something else with this, just making sure the library is loaded for now
+            services.AddTransient<CreateSQLiteDatabase>();
 
             var appContext = services.AddMrCMSApps(context =>
             {

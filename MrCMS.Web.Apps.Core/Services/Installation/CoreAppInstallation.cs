@@ -1,4 +1,5 @@
 ﻿using MrCMS.Installation;
+using MrCMS.Installation.Models;
 using MrCMS.Installation.Services;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation

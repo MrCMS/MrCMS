@@ -3,7 +3,7 @@ using System.Reflection;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 
-namespace MrCMS.Installation
+namespace MrCMS.Installation.Models
 {
     public class DatabaseProviderInfo
     {

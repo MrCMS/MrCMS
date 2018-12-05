@@ -1,10 +1,10 @@
 ﻿//using Elmah;
+
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Automapping.Alterations;
-using MrCMS.DbConfiguration.Types;
 using MrCMS.Logging;
 
-namespace MrCMS.DbConfiguration
+namespace MrCMS.DbConfiguration.Overrides
 {
     public class LogOverride : IAutoMappingOverride<Log>
     {

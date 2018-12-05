@@ -9,7 +9,8 @@ namespace MrCMS.DbConfiguration
         {
             return new SqlServer2008Provider(new OptionsWrapper<DatabaseSettings>(new DatabaseSettings
             {
-                ConnectionString = connectionString
+                ConnectionString = connectionString,
+                DatabaseProviderType = typeof(CreateSqlServer2008Database).FullName
             }));
         }
     }

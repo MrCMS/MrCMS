@@ -8,6 +8,7 @@ using System;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services
 {

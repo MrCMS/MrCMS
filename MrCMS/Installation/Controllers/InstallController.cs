@@ -50,10 +50,12 @@ namespace MrCMS.Installation.Controllers
             {
                 TempData.Set(installationResult);
                 TempData.Set(installModel);
-
-                return RedirectToAction("Setup");
             }
-            _applicationLifetime.StopApplication();
+            else
+            {
+                _applicationLifetime.StopApplication();
+            }
+
             return Redirect("~");
         }
     }

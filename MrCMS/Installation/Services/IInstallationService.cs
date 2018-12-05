@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services
 {

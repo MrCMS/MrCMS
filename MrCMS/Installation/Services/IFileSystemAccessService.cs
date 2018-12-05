@@ -1,4 +1,6 @@
-﻿namespace MrCMS.Installation.Services
+﻿using MrCMS.Installation.Models;
+
+namespace MrCMS.Installation.Services
 {
     public interface IFileSystemAccessService
     {

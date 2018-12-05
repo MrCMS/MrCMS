@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
     <ProjectReference Include="..\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
     <ProjectReference Include="..\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
     <ProjectReference Include="..\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />

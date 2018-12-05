@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MrCMS.Entities.People;
+using MrCMS.Installation.Models;
 using MrCMS.Services;
 
 namespace MrCMS.Installation.Services

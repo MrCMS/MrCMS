@@ -8,6 +8,7 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Installation.Models;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Installation.Services

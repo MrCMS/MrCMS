@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace MrCMS.Installation
+namespace MrCMS.Installation.Models
 {
     public class InstallationResult
     {

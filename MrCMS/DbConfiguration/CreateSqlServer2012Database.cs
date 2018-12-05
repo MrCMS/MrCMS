@@ -9,7 +9,8 @@ namespace MrCMS.DbConfiguration
         {
             return new SqlServer2012Provider(new OptionsWrapper<DatabaseSettings>(new DatabaseSettings
             {
-                ConnectionString = connectionString
+                ConnectionString = connectionString,
+                DatabaseProviderType = typeof(CreateSqlServer2012Database).FullName
             }));
         }
     }

@@ -1,4 +1,5 @@
 using MrCMS.Installation;
+using MrCMS.Installation.Models;
 
 namespace MrCMS.DbConfiguration
 {
