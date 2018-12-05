@@ -24,12 +24,12 @@ namespace MrCMS.Entities.Widget
 
         public virtual string WidgetType
         {
-            get { return GetType().Name; }
+            get { return GetType().FullName; }
         }
 
         public virtual string WidgetTypeFormatted
         {
-            get { return WidgetType.BreakUpString(); }
+            get { return GetType().Name.BreakUpString(); }
         }
 
         public virtual Webpage Webpage { get; set; }
