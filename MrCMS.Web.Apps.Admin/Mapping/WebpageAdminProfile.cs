@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
                 .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
                 ;
             CreateMap<Webpage, PermissionsTabViewModel>().ReverseMap()
-                .ForMember(webpage => webpage.FrontEndAllowedRoles, expression => expression.ResolveUsing<FrontEndAllowedRoleMapper>());
+                .ForMember(webpage => webpage.FrontEndAllowedRoles, expression => expression.MapFrom<FrontEndAllowedRoleMapper>());
             CreateMap<Webpage, WebpagePropertiesTabViewModel>().ReverseMap();
             CreateMap<Webpage, SEOTabViewModel>().ReverseMap();
 

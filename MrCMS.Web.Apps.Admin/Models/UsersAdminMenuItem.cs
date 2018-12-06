@@ -1,5 +1,6 @@
 ﻿using MrCMS.ACL.Rules;
 using MrCMS.Models;
+using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Website.Auth;
 
 namespace MrCMS.Web.Apps.Admin.Models

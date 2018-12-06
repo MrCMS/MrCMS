@@ -1,4 +1,6 @@
-﻿namespace MrCMS.Models
+﻿using MrCMS.Models;
+
+namespace MrCMS.Web.Apps.Core.Models
 {
     public class ChildMenuItem
     {

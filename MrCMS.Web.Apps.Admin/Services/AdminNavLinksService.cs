@@ -4,6 +4,7 @@ using System.Linq;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Web.Apps.Core.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

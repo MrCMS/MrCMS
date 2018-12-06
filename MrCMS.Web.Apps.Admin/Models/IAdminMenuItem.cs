@@ -1,4 +1,5 @@
 ﻿using MrCMS.Models;
+using MrCMS.Web.Apps.Core.Models;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +26,7 @@ using MrCMS.Web.Apps.Core;
 using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
+using System.Linq;
 
 namespace MrCMS.Web
 {
@@ -131,11 +131,9 @@ namespace MrCMS.Web
 
             services.AddAuthentication();
             services.TryAddEnumerable(ServiceDescriptor
-                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
-                >());
+                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>());
             services
-                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
-                >();
+                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
@@ -151,7 +149,10 @@ namespace MrCMS.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
         {
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseSession();
 
@@ -164,7 +165,7 @@ namespace MrCMS.Web
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new CompositeFileProvider(
-                    new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
+                    new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
             });
             app.UseAuthentication();
             app.UseMrCMS();
