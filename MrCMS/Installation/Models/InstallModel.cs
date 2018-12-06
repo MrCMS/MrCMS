@@ -12,6 +12,12 @@ namespace MrCMS.Installation.Models
 {
     public class InstallModel
     {
+        public InstallModel()
+        {
+            TimeZone = (TimeZones.Zones.FirstOrDefault(x=>x == TimeZoneInfo.Local)
+                        ?? TimeZones.Zones.FirstOrDefault(x => x.BaseUtcOffset == TimeZoneInfo.Local.BaseUtcOffset))?
+                        .ToSerializedString();
+        }
         [Required]
         [EmailAddress]
         [DisplayName("Admin Email")]
@@ -64,9 +70,9 @@ namespace MrCMS.Installation.Models
         [DisplayName("Site URL (www.yourdomain.com)")]
         public string SiteUrl { get; set; }
 
-        [DisplayName("UI Culture")]
+        [DisplayName("UI Culture"), Required]
         public string UiCulture { get; set; }
-        [DisplayName("Time Zone")]
+        [DisplayName("Time Zone"), Required]
         public string TimeZone { get; set; }
 
         [DisplayName("Culture Options")]
