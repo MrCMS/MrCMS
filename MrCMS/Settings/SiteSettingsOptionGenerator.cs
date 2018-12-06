@@ -84,8 +84,8 @@ namespace MrCMS.Settings
 
         public virtual List<SelectListItem> GetTimeZones(string timeZone)
         {
-            return TimeZoneInfo.GetSystemTimeZones().BuildSelectItemList(info => info.DisplayName,
-                                                                  info => info.Id, info => info.Id == timeZone,
+            return TimeZones.Zones.BuildSelectItemList(info => info.DisplayName,
+                                                                  info => info.ToSerializedString(), info => info.ToSerializedString() == timeZone,
                                                                   emptyItem: null);
         }
 
