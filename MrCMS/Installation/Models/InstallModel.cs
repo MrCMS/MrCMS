@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Helpers;
+using MrCMS.Settings;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using MrCMS.Helpers;
-using MrCMS.Settings;
 
 namespace MrCMS.Installation.Models
 {
@@ -14,10 +14,11 @@ namespace MrCMS.Installation.Models
     {
         public InstallModel()
         {
-            TimeZone = (TimeZones.Zones.FirstOrDefault(x=>x == TimeZoneInfo.Local)
-                        ?? TimeZones.Zones.FirstOrDefault(x => x.BaseUtcOffset == TimeZoneInfo.Local.BaseUtcOffset))?
-                        .ToSerializedString();
+            TimeZone = (TimeZones.Zones.FirstOrDefault(x => Equals(x, TimeZoneInfo.Local))
+                        ?? TimeZones.Zones.FirstOrDefault(x => x.BaseUtcOffset == TimeZoneInfo.Local.BaseUtcOffset))
+                ?.ToSerializedString();
         }
+
         [Required]
         [EmailAddress]
         [DisplayName("Admin Email")]
@@ -76,31 +77,19 @@ namespace MrCMS.Installation.Models
         public string TimeZone { get; set; }
 
         [DisplayName("Culture Options")]
-        public IEnumerable<SelectListItem> CultureOptions
-        {
-            get
-            {
-                return CultureInfo.GetCultures(CultureTypes.AllCultures).OrderBy(info => info.DisplayName)
+        public IEnumerable<SelectListItem> CultureOptions => CultureInfo.GetCultures(CultureTypes.AllCultures).OrderBy(info => info.DisplayName)
                            .BuildSelectItemList(info => info.DisplayName, info => info.Name,
                                                 info =>
                                                 string.IsNullOrWhiteSpace(UiCulture)
                                                     ? Equals(info, CultureInfo.CurrentCulture)
                                                     : info.Name == UiCulture,
                                                 emptyItem: null);
-            }
-        }
 
-        public IEnumerable<SelectListItem> TimeZoneOptions
-        {
-            get
-            {
-                return TimeZones.Zones
+        public IEnumerable<SelectListItem> TimeZoneOptions => TimeZones.Zones
                                    .BuildSelectItemList(info => info.DisplayName, info => info.ToSerializedString(),
                                                         info =>
                                                         string.IsNullOrWhiteSpace(TimeZone)
                                                             ? Equals(info, TimeZoneInfo.Local)
                                                             : info.ToSerializedString() == TimeZone, emptyItem: null);
-            }
-        }
     }
 }
