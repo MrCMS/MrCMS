@@ -6,7 +6,6 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
-using NHibernate;
 
 namespace MrCMS.Settings
 {
@@ -104,7 +103,7 @@ namespace MrCMS.Settings
             get
             {
                 return !String.IsNullOrWhiteSpace(TimeZone)
-                    ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone)
+                    ? TimeZoneInfo.FromSerializedString(TimeZone)
                     : TimeZoneInfo.Local;
             }
         }

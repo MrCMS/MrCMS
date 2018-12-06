@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
+using MrCMS.Settings;
 
 namespace MrCMS.Installation.Models
 {
@@ -87,12 +88,12 @@ namespace MrCMS.Installation.Models
         {
             get
             {
-                return TimeZoneInfo.GetSystemTimeZones()
-                                   .BuildSelectItemList(info => info.DisplayName, info => info.Id,
+                return TimeZones.Zones
+                                   .BuildSelectItemList(info => info.DisplayName, info => info.ToSerializedString(),
                                                         info =>
                                                         string.IsNullOrWhiteSpace(TimeZone)
                                                             ? Equals(info, TimeZoneInfo.Local)
-                                                            : info.Id == TimeZone, emptyItem: null);
+                                                            : info.ToSerializedString() == TimeZone, emptyItem: null);
             }
         }
     }
