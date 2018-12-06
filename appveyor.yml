@@ -14,7 +14,7 @@
      name: MrCMS.Web
      type: WebDeployPackage
   test_script:
-  - ps: dotnet test
+  - ps: Get-ChildItem . -File -recurse -Filter *.Tests.csproj | Foreach { dotnet test $_.fullname }
 -
   branches:
     only:

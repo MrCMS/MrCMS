@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Settings;
-using NHibernate.Util;
 
 namespace MrCMS.HealthChecks
 {
