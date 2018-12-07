@@ -94,6 +94,7 @@ namespace MrCMS.Web
             var fileProvider = services.AddFileProvider(Environment, appContext);
 
             services.RegisterSettings();
+            services.RegisterFormRenderers();
             services.RegisterTokenProviders();
             services.RegisterTasks();
 

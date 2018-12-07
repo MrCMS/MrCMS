@@ -20,12 +20,14 @@ namespace MrCMS.Services
     {
         private readonly MailSettings _mailSettings;
         private readonly ISaveFormFileUpload _saveFormFileUpload;
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ISession _session;
 
-        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload)
+        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor)
         {
             _session = session;
             _saveFormFileUpload = saveFormFileUpload;
+            _contextAccessor = contextAccessor;
             _mailSettings = mailSettings;
         }
 
@@ -104,6 +106,11 @@ namespace MrCMS.Services
                 }
             });
             return errors;
+        }
+
+        public string GetRefererUrl()
+        {
+            return _contextAccessor.HttpContext?.Request?.Referer();
         }
 
         private string SanitizeValue(FormProperty formProperty, string value)

@@ -9,5 +9,6 @@ namespace MrCMS.Services
     {
         Webpage GetWebpage(int id);
         List<string> SaveFormData(Webpage webpage, HttpRequest request);
+        string GetRefererUrl();
     }
 }

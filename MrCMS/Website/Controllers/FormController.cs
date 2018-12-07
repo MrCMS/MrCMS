@@ -30,10 +30,12 @@ namespace MrCMS.Website.Controllers
             // if any errors add form data to be renderered, otherwise form should be empty
             TempData["form-data"] = saveFormData.Any() ? Request.Form : null;
 
-            var redirectUrl = Request.Referer();
-            if (!string.IsNullOrEmpty(webpage.FormRedirectUrl) && !saveFormData.Any())
+            var redirectUrl = _formPostingHandler.GetRefererUrl();
+            if (!saveFormData.Any() && !string.IsNullOrEmpty(webpage.FormRedirectUrl))
                 redirectUrl = webpage.FormRedirectUrl;
-            return Redirect(redirectUrl);
+            if (!string.IsNullOrWhiteSpace(redirectUrl))
+                return Redirect(redirectUrl);
+            return Redirect("~/");
         }
     }
 }

@@ -30,3 +30,5 @@
    - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
      name: MrCMS.Web
      type: WebDeployPackage
+  test_script:
+  - ps: Get-ChildItem . -File -recurse -Filter *.Tests.csproj | Foreach { dotnet test $_.fullname }

@@ -12,7 +12,7 @@ namespace MrCMS.Shortcodes
             new Regex(@"\[([\w-_]+)([^\]]*)?\]?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex AttributeMatcher =
-            new Regex(@"(\w+)\s*=\s*""?(\d+)""?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            new Regex(@"(\w+)\s*=\s*""?(\d+|\w+)""?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly IRenderShortcode _renderShortcode;
 

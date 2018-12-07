@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.DbConfiguration;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
 using System;
 using System.Linq;
@@ -63,6 +65,18 @@ namespace MrCMS.Helpers
                             .GetMethodExt(nameof(IConfigurationProvider.GetSiteSettings));
                         return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
                     });
+            }
+        }
+        public static void RegisterFormRenderers(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>())
+            {
+                var rendererInterfaceType = typeof(IFormElementRenderer<>).MakeGenericType(type);
+                var concreteType = TypeHelper.GetAllConcreteTypesAssignableFrom(rendererInterfaceType).FirstOrDefault();
+                if (concreteType != null)
+                {
+                    container.AddScoped(rendererInterfaceType, concreteType);
+                }
             }
         }
 

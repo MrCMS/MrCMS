@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="4.5.1" />
+    <PackageReference Include="AutoFixture.Xunit2" Version="4.5.1" />
     <PackageReference Include="FakeItEasy" Version="4.9.1" />
     <PackageReference Include="FluentAssertions" Version="5.5.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
