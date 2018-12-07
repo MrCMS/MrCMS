@@ -15,8 +15,8 @@ namespace MrCMS.Services.Sitemaps
 {
     public class SitemapService : ISitemapService
     {
-        public static readonly XNamespace RootNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
-        public static readonly XNamespace ImageNameSpace = "http://www.google.com/schemas/sitemap-image/1.1";
+        public static readonly XNamespace RootNamespace = "https://www.sitemaps.org/schemas/sitemap/0.9";
+        public static readonly XNamespace ImageNameSpace = "https://www.google.com/schemas/sitemap-image/1.1";
         private readonly IEnumerable<ISitemapDataSource> _additionalSources;
         private readonly IGetSitemapPath _getSitemapPath;
         private readonly IGetHomePage _getHomePage;

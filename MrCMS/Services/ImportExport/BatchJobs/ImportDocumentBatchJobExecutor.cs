@@ -6,6 +6,7 @@ using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Events.Documents;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Search;
 using MrCMS.Services.Notifications;
 using NHibernate;
@@ -19,15 +20,19 @@ namespace MrCMS.Services.ImportExport.BatchJobs
         private readonly IUpdateTagsService _updateTagsService;
         private readonly IUpdateUrlHistoryService _updateUrlHistoryService;
         private readonly IEventContext _eventContext;
+        private readonly IWebpageUrlService _webpageUrlService;
+
 
         public ImportDocumentBatchJobExecutor(ISession session,
             IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService,
-            IEventContext eventContext)
+            IEventContext eventContext,
+            IWebpageUrlService webpageUrlService)
         {
             _session = session;
             _updateTagsService = updateTagsService;
             _updateUrlHistoryService = updateUrlHistoryService;
             _eventContext = eventContext;
+            _webpageUrlService = webpageUrlService;
         }
 
         protected override BatchJobExecutionResult OnExecute(ImportDocumentBatchJob batchJob)
@@ -54,8 +59,16 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                     var parent = GetWebpageByUrl(documentImportDto.ParentUrl);
                     webpage.Parent = parent;
                 }
-                if (documentImportDto.UrlSegment != null)
-                    webpage.UrlSegment = documentImportDto.UrlSegment;
+
+                if (!string.IsNullOrWhiteSpace(documentImportDto.UrlSegment) && isNew)
+                {
+                    webpage.UrlSegment = _webpageUrlService.Suggest(new SuggestParams
+                    {
+                        DocumentType = documentImportDto.DocumentType,
+                        ParentId = webpage.Parent?.Id,
+                        PageName = documentImportDto.Name
+                    });
+                }
                 webpage.Name = documentImportDto.Name;
                 webpage.BodyContent = documentImportDto.BodyContent;
                 webpage.MetaTitle = documentImportDto.MetaTitle;

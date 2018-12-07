@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using MrCMS.Entities.Multisite;
@@ -67,7 +66,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexSearcher GetInternal(string folderName)
         {
-            return new IndexSearcher(DirectoryReader.Open(_getLuceneDirectory.Get(_site, folderName, true)));
+            return new IndexSearcher(DirectoryReader.Open(_getLuceneDirectory.Get(_site, folderName)));
         }
     }
 }

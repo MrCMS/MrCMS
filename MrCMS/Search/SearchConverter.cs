@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Documents;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
 using MrCMS.Search.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Search
 {
@@ -41,8 +41,13 @@ namespace MrCMS.Search
 
             var systemType = item.SystemType ?? string.Empty;
             document.Add(new StringField(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES));
-            foreach (var entityType in _entityTypes[systemType])
-                document.Add(new StringField(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO));
+            if (_entityTypes.ContainsKey(systemType))
+            {
+                foreach (var entityType in _entityTypes[systemType])
+                {
+                    document.Add(new StringField(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO));
+                }
+            }
 
             //Start with a copy of the standard field type
             FieldType boostableStringType = new FieldType(StringField.TYPE_STORED) { OmitNorms = false, IsStored = true };
@@ -56,10 +61,16 @@ namespace MrCMS.Search
             FieldType termStringType = new FieldType(StringField.TYPE_STORED) { OmitNorms = false, IsStored = true };
             foreach (var searchTerm in (item.PrimarySearchTerms ?? Enumerable.Empty<string>()).Where(s =>
                 !string.IsNullOrWhiteSpace(s)))
+            {
                 document.Add(new Field(UniversalSearchFieldNames.PrimarySearchTerms, searchTerm, termStringType) { Boost = 2 });
+            }
+
             foreach (var searchTerm in (item.SecondarySearchTerms ?? Enumerable.Empty<string>()).Where(s =>
                 !string.IsNullOrWhiteSpace(s)))
+            {
                 document.Add(new Field(UniversalSearchFieldNames.SecondarySearchTerms, searchTerm, termStringType) { Boost = 0.8f });
+            }
+
             return document;
         }
 

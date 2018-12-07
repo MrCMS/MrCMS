@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -8,6 +5,9 @@ using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Tasks.Entities;
 using MrCMS.Website;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Tasks
 {
@@ -53,9 +53,17 @@ namespace MrCMS.Tasks
         public void ExecuteTask(string type)
         {
             var typeObj = TypeHelper.GetTypeByName(type);
+            if (typeObj == null)
+            {
+                return;
+            }
+
             var schedulableTask = _serviceProvider.GetService(typeObj) as SchedulableTask;
             if (schedulableTask == null)
+            {
                 return;
+            }
+
             try
             {
                 SetStatus(typeObj, TaskExecutionStatus.Executing);

@@ -80,7 +80,7 @@ namespace MrCMS.Indexing.Querying
 
         public IList<TEntity> GetAll(Query query = null, Filter filter = null, Sort sort = null)
         {
-            var topDocs = IndexSearcher.Search(query, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
+            var topDocs = IndexSearcher.Search(query ?? new MatchAllDocsQuery(), filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
             var entities =
                 Definition.Convert(topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
@@ -91,7 +91,7 @@ namespace MrCMS.Indexing.Querying
         public IList<TSubclass> GetAll<TSubclass>(Query query = null, Filter filter = null, Sort sort = null)
             where TSubclass : TEntity
         {
-            var booleanQuery = UpdateQuery<TSubclass>(query);
+            var booleanQuery = UpdateQuery<TSubclass>(query ?? new MatchAllDocsQuery());
 
             var topDocs = IndexSearcher.Search(booleanQuery, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
