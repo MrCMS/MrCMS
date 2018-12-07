@@ -26,10 +26,10 @@ namespace MrCMS.Helpers
             // Convert diacritical marks to normalized url characters
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
             string temp = url.Normalize(NormalizationForm.FormD);
-            url = regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
 
-            byte[] tempBytes = System.Text.Encoding.GetEncoding("ISO-8859-8").GetBytes(url);
-            return System.Text.Encoding.UTF8.GetString(tempBytes);
+            //byte[] tempBytes = System.Text.Encoding.GetEncoding("ISO-8859-8").GetBytes(url);
+            //return System.Text.Encoding.UTF8.GetString(tempBytes);
         }
 
         /// <summary>

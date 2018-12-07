@@ -73,7 +73,7 @@ namespace MrCMS.Services
 
         private bool IsDisabled(Type type)
         {
-            return DisabledEvents.Contains(type);
+            return DisabledEvents.Any(type.IsImplementationOf);
         }
 
         public class EventPublishingDisabler : IDisposable

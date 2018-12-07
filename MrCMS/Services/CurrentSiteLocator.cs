@@ -38,7 +38,7 @@ namespace MrCMS.Services
 
         private Site GetSiteFromRequest()
         {
-            var authority = _contextAccessor.HttpContext.Request.GetUri().Authority;
+            var authority = _contextAccessor.HttpContext.Request.Host.ToString();
 
             var allSites = _siteRepository.Query().ToList();
             var site = allSites.FirstOrDefault(s => s.BaseUrl != null && (s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase) || (s.StagingUrl != null && s.StagingUrl.Equals(authority, StringComparison.OrdinalIgnoreCase))));
