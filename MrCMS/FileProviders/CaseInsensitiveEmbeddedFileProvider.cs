@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders.Embedded;
+using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.FileProviders.Embedded;
-using Microsoft.Extensions.Primitives;
 
 namespace MrCMS.FileProviders
 {
@@ -19,7 +19,10 @@ namespace MrCMS.FileProviders
         private static readonly char[] _invalidFileNameChars = Path.GetInvalidFileNameChars().Where(c =>
         {
             if (c != '/')
+            {
                 return c != '\\';
+            }
+
             return false;
         }).ToArray();
 
@@ -48,21 +51,22 @@ namespace MrCMS.FileProviders
         /// <param name="baseNamespace">The base namespace that contains the embedded resources.</param>
         private CaseInsensitiveEmbeddedFileProvider(Assembly assembly, string baseNamespace)
         {
-            if (assembly == null)
-                throw new ArgumentNullException(nameof(assembly));
+            _assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
             _baseNamespace = string.IsNullOrEmpty(baseNamespace) ? string.Empty : baseNamespace + ".";
-            _assembly = assembly;
             _lastModified = DateTimeOffset.UtcNow;
             if (string.IsNullOrEmpty(_assembly.Location))
+            {
                 return;
+            }
+
             try
             {
                 _lastModified = File.GetLastWriteTimeUtc(_assembly.Location);
             }
-            catch (PathTooLongException ex)
+            catch (PathTooLongException)
             {
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
             }
 
@@ -79,20 +83,35 @@ namespace MrCMS.FileProviders
         public IFileInfo GetFileInfo(string subpath)
         {
             if (string.IsNullOrEmpty(subpath))
+            {
                 return new NotFoundFileInfo(subpath);
+            }
+
             subpath = TidyPath(subpath, false);
             var stringBuilder = new StringBuilder(_baseNamespace.Length + subpath.Length);
             stringBuilder.Append(_baseNamespace);
             if (subpath.StartsWith("/", StringComparison.Ordinal))
+            {
                 stringBuilder.Append(subpath, 1, subpath.Length - 1);
+            }
             else
+            {
                 stringBuilder.Append(subpath);
+            }
+
             for (var length = _baseNamespace.Length; length < stringBuilder.Length; ++length)
+            {
                 if (stringBuilder[length] == '/' || stringBuilder[length] == '\\')
+                {
                     stringBuilder[length] = '.';
+                }
+            }
+
             var str = stringBuilder.ToString();
             if (HasInvalidPathChars(str))
+            {
                 return new NotFoundFileInfo(str);
+            }
 
             var fileName = Path.GetFileName(subpath);
             if (!_resourceNames.TryGetValue(str, out string resourceName))
@@ -117,15 +136,26 @@ namespace MrCMS.FileProviders
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             if (subpath == null)
+            {
                 return NotFoundDirectoryContents.Singleton;
+            }
+
             subpath = TidyPath(subpath, false);
             if (subpath.Length != 0 && !string.Equals(subpath, "/", StringComparison.Ordinal))
+            {
                 return NotFoundDirectoryContents.Singleton;
+            }
+
             var fileInfoList = new List<IFileInfo>();
             foreach (var manifestResourceName in _resourceNames)
+            {
                 if (manifestResourceName.StartsWith(_baseNamespace, StringComparison.OrdinalIgnoreCase))
+                {
                     fileInfoList.Add(new EmbeddedResourceFileInfo(_assembly, manifestResourceName,
                         manifestResourceName.Substring(_baseNamespace.Length), _lastModified));
+                }
+            }
+
             return new EnumerableDirectoryContents(fileInfoList);
         }
 
@@ -159,8 +189,10 @@ namespace MrCMS.FileProviders
                     // A dash in a folder segment will cause each following dot occurrence to be appended with an underscore.
                     int findPosition;
                     if ((findPosition = segments[i].IndexOf('-')) != -1 && dotPosition != -1)
+                    {
                         segments[i] = segments[i].Substring(0, findPosition + 1) +
                                       segments[i].Substring(findPosition + 1).Replace(".", "._");
+                    }
 
                     // A dash is replaced with an underscore when no underscores are in the name or a dot occurrence is before it.
                     segments[i] = segments[i].Replace('-', '_');

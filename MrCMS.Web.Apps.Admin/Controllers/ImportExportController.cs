@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services.ImportExport;
@@ -12,10 +13,12 @@ namespace MrCMS.Web.Apps.Admin.Controllers
     public class ImportExportController : MrCMSAdminController
     {
         private readonly IImportExportManager _importExportManager;
+        private readonly ILogger<ImportExportController> _logger;
 
-        public ImportExportController(IImportExportManager importExportManager)
+        public ImportExportController(IImportExportManager importExportManager, ILogger<ImportExportController> logger)
         {
             _importExportManager = importExportManager;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -40,8 +43,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 return File(file, ImportExportManager.XlsxContentType,
                     "MrCMS-Documents-" + DateTime.UtcNow + ".xlsx");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
+                _logger.LogError(exception, "Error exporting documents");
                 TempData["export-status"] =
                     "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
                 return RedirectToAction("Documents");

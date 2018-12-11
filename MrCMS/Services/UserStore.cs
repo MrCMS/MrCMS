@@ -282,10 +282,12 @@ namespace MrCMS.Services
 
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
             return user.Roles.Select(x => x.Name).ToList();
         }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {

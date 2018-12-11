@@ -52,7 +52,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(UserACL), UserACL.Add)]
         public ActionResult Add(
             [ModelBinder(typeof(AddUserModelBinder))]
-            User user) 
+            User user)
         {
             _userManagementService.AddUser(user);
 
@@ -75,9 +75,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Edit)]
-        public ActionResult Edit(
-            [ModelBinder(typeof(EditUserModelBinder))]
-            User user) 
+        public ActionResult Edit(User user)
         {
             _userManagementService.SaveUser(user);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
@@ -94,9 +92,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Delete)]
-        public RedirectToActionResult Delete(User user)
+        public RedirectToActionResult Delete(int id)
         {
-            _userManagementService.DeleteUser(user);
+            _userManagementService.DeleteUser(id);
 
             return RedirectToAction("Index");
         }
@@ -121,7 +119,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public JsonResult IsUniqueEmail(string email, int? id)
         {
             if (_userManagementService.IsUniqueEmail(email, id))
+            {
                 return Json(true);
+            }
 
             return Json("Email already registered.");
         }

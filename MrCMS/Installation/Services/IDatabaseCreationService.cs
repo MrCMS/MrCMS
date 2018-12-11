@@ -7,5 +7,6 @@ namespace MrCMS.Installation.Services
     {
         InstallationResult ValidateConnectionString(InstallModel model);
         IDatabaseProvider CreateDatabase(InstallModel model);
+        bool IsDatabaseInstalled();
     }
 }

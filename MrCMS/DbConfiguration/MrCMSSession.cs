@@ -711,10 +711,12 @@ namespace MrCMS.DbConfiguration
             _session.DisableFilter(filterName);
         }
 
+#pragma warning disable 618
         public IMultiQuery CreateMultiQuery()
         {
             return _session.CreateMultiQuery();
         }
+#pragma warning restore 618
 
         public ISession SetBatchSize(int batchSize)
         {
@@ -726,17 +728,19 @@ namespace MrCMS.DbConfiguration
             return _session.GetSessionImplementation();
         }
 
+#pragma warning disable 618
         public IMultiCriteria CreateMultiCriteria()
         {
             return _session.CreateMultiCriteria();
         }
+#pragma warning restore 618
 
+#pragma warning disable 618
         public ISession GetSession(EntityMode entityMode)
         {
-#pragma warning disable 618
             return _session.GetSession(entityMode);
-#pragma warning restore 618
         }
+#pragma warning restore 618
 
         public IQueryable<T> Query<T>()
         {

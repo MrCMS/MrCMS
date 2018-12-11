@@ -50,6 +50,7 @@ namespace MrCMS.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var isInstalled = IsInstalled();
+            
 
             // services always required
             services.RegisterAllSimplePairings();

@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
@@ -13,6 +6,13 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
 using NHibernate.Transaction;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.DbConfiguration
@@ -28,10 +28,7 @@ namespace MrCMS.DbConfiguration
             _session = session;
         }
 
-        public HttpContext HttpContext
-        {
-            get { return _session.HttpContext; }
-        }
+        public HttpContext HttpContext => _session.HttpContext;
 
         public void Dispose()
         {
@@ -81,25 +78,18 @@ namespace MrCMS.DbConfiguration
             _transaction.Enlist(command);
         }
 
+#pragma warning disable 618
         public void RegisterSynchronization(ISynchronization synchronization)
         {
             _transaction.RegisterSynchronization(synchronization);
         }
+#pragma warning restore 618
 
-        public bool IsActive
-        {
-            get { return _transaction.IsActive; }
-        }
+        public bool IsActive => _transaction.IsActive;
 
-        public bool WasRolledBack
-        {
-            get { return _transaction.WasRolledBack; }
-        }
+        public bool WasRolledBack => _transaction.WasRolledBack;
 
-        public bool WasCommitted
-        {
-            get { return _transaction.WasCommitted; }
-        }
+        public bool WasCommitted => _transaction.WasCommitted;
 
         private static void HandlePostTransaction(MrCMSSession session)
         {
@@ -107,14 +97,14 @@ namespace MrCMS.DbConfiguration
             {
                 EventInfo obj = GetNextAddedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof (IOnAdded<>), (info, ses, t) => info.GetTypedInfo(t).ToAddedArgs(ses, t));
+                Publish(obj, session, typeof(IOnAdded<>), (info, ses, t) => info.GetTypedInfo(t).ToAddedArgs(ses, t));
             }
 
             while (GetNextUpdatedEventInfoForPostTransaction(session) != null)
             {
                 UpdatedEventInfo obj = GetNextUpdatedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof (IOnUpdated<>),
+                Publish(obj, session, typeof(IOnUpdated<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToUpdatedArgs(ses, t));
             }
 
@@ -122,7 +112,7 @@ namespace MrCMS.DbConfiguration
             {
                 EventInfo obj = GetNextDeletedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof (IOnDeleted<>),
+                Publish(obj, session, typeof(IOnDeleted<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToDeletedArgs(ses, t));
             }
         }
@@ -156,12 +146,12 @@ namespace MrCMS.DbConfiguration
         private static IEnumerable<Type> GetEntityTypes(Type type)
         {
             Type thisType = type;
-            while (thisType != null && thisType != typeof (SystemEntity))
+            while (thisType != null && thisType != typeof(SystemEntity))
             {
                 yield return thisType;
                 thisType = thisType.BaseType;
             }
-            yield return typeof (SystemEntity);
+            yield return typeof(SystemEntity);
         }
 
         private static void HandlePreTransaction(MrCMSSession session)
@@ -170,18 +160,24 @@ namespace MrCMS.DbConfiguration
             foreach (var obj in eventInfos)
             {
                 if (obj.PreTransactionHandled)
+                {
                     continue;
+                }
+
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof (IOnAdding<>), (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
+                Publish(obj, session, typeof(IOnAdding<>), (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
             }
 
             HashSet<UpdatedEventInfo> updatedEventInfos = session.Updated.ToHashSet();
             foreach (var obj in updatedEventInfos)
             {
                 if (obj.PreTransactionHandled)
+                {
                     continue;
+                }
+
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof (IOnUpdating<>),
+                Publish(obj, session, typeof(IOnUpdating<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToUpdatingArgs(ses, t));
             }
 
@@ -189,9 +185,12 @@ namespace MrCMS.DbConfiguration
             foreach (var obj in hashSet)
             {
                 if (obj.PreTransactionHandled)
+                {
                     continue;
+                }
+
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof (IOnDeleting<>),
+                Publish(obj, session, typeof(IOnDeleting<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
             }
         }
@@ -215,17 +214,25 @@ namespace MrCMS.DbConfiguration
             public void Dispose()
             {
                 if (_completeOnDispose)
+                {
                     CompletedPostTransaction(_httpContext);
+                }
             }
 
             private static void BeginPostTransaction(HttpContext context)
             {
-                if (context != null) context.Items[InPostTransactionKey] = true;
+                if (context != null)
+                {
+                    context.Items[InPostTransactionKey] = true;
+                }
             }
 
             private static void CompletedPostTransaction(HttpContext context)
             {
-                if (context != null) context.Items.Remove(InPostTransactionKey);
+                if (context != null)
+                {
+                    context.Items.Remove(InPostTransactionKey);
+                }
             }
 
             public static bool IsInPostTransaction(HttpContext context)

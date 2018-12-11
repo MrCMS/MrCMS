@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
+using MrCMS.Helpers;
 using MrCMS.Models.Auth;
 using MrCMS.Services;
 using MrCMS.Services.Auth;
@@ -33,7 +34,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     ViewData["2fa-model"] = model;
                     return View(page);
                 case TwoFactorStatus.Expired:
-                    TempData["login-model"] = new LoginModel {Message = "Two-factor token expired, please try again."};
+                    TempData.Set(new LoginModel {Message = "Two-factor token expired, please try again."});
                     return _uniquePageService.RedirectTo<LoginPage>();
                 default:
                     return _uniquePageService.RedirectTo<LoginPage>();

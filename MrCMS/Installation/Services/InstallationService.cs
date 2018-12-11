@@ -53,9 +53,6 @@ namespace MrCMS.Installation.Services
 
                 //save settings
                 SetUpInitialData(model, provider);
-
-                //CurrentRequestData.OnEndRequest.Add(new InitializeIndexes());
-                //CurrentRequestData.OnEndRequest.Add(new ApplicationRestart());
             }
             catch (Exception exception)
             {
@@ -70,6 +67,11 @@ namespace MrCMS.Installation.Services
         {
             return TypeHelper.GetAllConcreteTypesAssignableFrom<IDatabaseProvider>()
                 .Select(type => new DatabaseProviderInfo(type)).ToList();
+        }
+
+        public bool DatabaseIsInstalled()
+        {
+            return _databaseCreationService.IsDatabaseInstalled();
         }
 
         private void SetUpInitialData(InstallModel model, IDatabaseProvider provider)

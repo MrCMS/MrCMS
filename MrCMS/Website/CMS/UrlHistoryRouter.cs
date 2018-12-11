@@ -19,7 +19,9 @@ namespace MrCMS.Website.CMS
             //_methodTester = methodTester;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task RouteAsync(RouteContext context)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
@@ -38,7 +40,7 @@ namespace MrCMS.Website.CMS
             if (string.IsNullOrWhiteSpace(url))
                 return;
 
-            var result = await serviceProvider.GetRequiredService<ICmsUrlHistoryMatcher>().TryMatch(url);
+            var result = serviceProvider.GetRequiredService<ICmsUrlHistoryMatcher>().TryMatch(url);
             if (!result.Match)
                 return;
 

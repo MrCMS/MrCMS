@@ -83,7 +83,7 @@ namespace MrCMS.Tests.Services
             var user = new User();
             Session.Transact(session => session.Save(user));
 
-            _userManagementService.DeleteUser(user);
+            _userManagementService.DeleteUser(user.Id);
 
             Session.QueryOver<User>().RowCount().Should().Be(0);
         }

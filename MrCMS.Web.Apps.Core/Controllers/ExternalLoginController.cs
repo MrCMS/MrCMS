@@ -118,18 +118,19 @@ namespace MrCMS.Web.Apps.Core.Controllers
                         new UserLockedOutEventArgs(loginResult.User));
                     break;
             }
-            TempData["login-model"] = new LoginModel { Message = loginResult.Message };
+
+            TempData.Set(new LoginModel {Message = loginResult.Message});
             return _uniquePageService.RedirectTo<LoginPage>();
         }
 
         private ActionResult ThirdPartyError()
         {
-            TempData["login-model"] = new LoginModel
+            TempData.Set(new LoginModel
             {
                 Message =
                     _stringResourceProvider.GetValue("3rd Party Auth Email Error",
                         "There was an error retrieving your email from the 3rd party provider")
-            };
+            });
             return _uniquePageService.RedirectTo<LoginPage>();
         }
     }

@@ -14,6 +14,7 @@
     <None Remove="Installation\Content\images\mrcms-hat.gif" />
     <None Remove="Installation\Content\images\mrcms-logo.png" />
     <None Remove="Installation\Content\style.css" />
+    <None Remove="Installation\Views\Install\Success.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

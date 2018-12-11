@@ -7,5 +7,6 @@ namespace MrCMS.Installation.Services
     {
         InstallationResult Install(InstallModel model);
         List<DatabaseProviderInfo> GetProviderTypes();
+        bool DatabaseIsInstalled();
     }
 }

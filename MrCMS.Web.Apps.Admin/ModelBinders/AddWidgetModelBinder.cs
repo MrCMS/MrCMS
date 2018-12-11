@@ -16,7 +16,9 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             return WidgetHelper.GetTypeByName(bindingContext.ValueProvider.GetValue("WidgetType").FirstValue);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task BindModelAsync(ModelBindingContext bindingContext)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var type = GetTypeByName(bindingContext);
             var serviceProvider = bindingContext.HttpContext.RequestServices;
