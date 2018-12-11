@@ -3,7 +3,7 @@ using MrCMS.DbConfiguration;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 
-namespace MrCMS.Tests
+namespace MrCMS.TestSupport
 {
     public class SqliteInMemoryProvider : IDatabaseProvider
     {

@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Shortcodes;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes

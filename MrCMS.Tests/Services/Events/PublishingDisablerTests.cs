@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Tests.ACL;
 using Xunit;
 
 namespace MrCMS.Tests.Services.Events

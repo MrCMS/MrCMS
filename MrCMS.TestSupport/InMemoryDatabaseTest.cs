@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
@@ -8,10 +10,8 @@ using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
-using System.Collections.Generic;
-using System.Reflection;
 
-namespace MrCMS.Tests
+namespace MrCMS.TestSupport
 {
     public abstract class InMemoryDatabaseTest : MrCMSTest
     {

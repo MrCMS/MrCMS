@@ -5,7 +5,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Settings;
-using MrCMS.Tests.Support;
 using NHibernate;
 using Xunit;
 

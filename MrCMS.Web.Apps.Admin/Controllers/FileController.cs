@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Apps.Admin.Models;
@@ -24,7 +25,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public JsonResult Files_Post(int id) 
         {
             var list = new List<ViewDataUploadFilesResult>();
-            foreach (var file in Request.Form.Files)
+            foreach (var file in Request.Form?.Files ?? new FormFileCollection())
             {
                 if (_fileService.IsValidFileType(file.FileName))
                 {

@@ -4,7 +4,7 @@ using System.Linq;
 using MrCMS.Data;
 using MrCMS.Entities;
 
-namespace MrCMS.Tests.TestSupport
+namespace MrCMS.TestSupport
 {
     public class InMemoryRepository<T> : IRepository<T> where T : SystemEntity
     {

@@ -9,18 +9,16 @@ namespace MrCMS.Tests.Helpers
 {
     public class LayoutExtensionsTests
     {
-        public static IEnumerable<object[]> GetLayoutNameInputOutputValues
+        public static IEnumerable<object[]> GetLayoutNameInputOutputValues => new List<object[]>
         {
-            get
-            {
-                yield return new[] {"test", "_test"};
-                yield return new[] {"test   ", "_test"};
-                yield return new[] {"TEST", "_TEST"};
-                yield return new[] {"Split Word Test", "_SplitWordTest"};
-                yield return new[] {"Allow 2 Numbers", "_Allow2Numbers"};
-                yield return new[] {"Remove-Dashes", "_RemoveDashes"};
-            }
-        }
+
+            new object[] {"test", "_test"},
+            new object[] {"test   ", "_test"},
+            new object[] {"TEST", "_TEST"},
+            new object[] {"Split Word Test", "_SplitWordTest"},
+            new object[] {"Allow 2 Numbers", "_Allow2Numbers"},
+            new object[] {"Remove-Dashes", "_RemoveDashes"}
+        };
 
         [Theory, MemberData(nameof(GetLayoutNameInputOutputValues))]
         public void GetLayoutName_BehavesAsExpectedForConventions(string input, string result)

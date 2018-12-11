@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace MrCMS.Tests.Support
+namespace MrCMS.TestSupport
 {
     public static class ViewDataDictionaryHelper
     {

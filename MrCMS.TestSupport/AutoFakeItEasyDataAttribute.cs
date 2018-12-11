@@ -2,7 +2,7 @@ using AutoFixture;
 using AutoFixture.AutoFakeItEasy;
 using AutoFixture.Xunit2;
 
-namespace MrCMS.Tests
+namespace MrCMS.TestSupport
 {
     public class AutoFakeItEasyDataAttribute : AutoDataAttribute
     {

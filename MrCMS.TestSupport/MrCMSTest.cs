@@ -1,13 +1,13 @@
+using System;
+using System.Collections.Generic;
 using FakeItEasy;
 using FakeItEasy.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using System;
-using System.Collections.Generic;
 
-namespace MrCMS.Tests
+namespace MrCMS.TestSupport
 {
     public abstract class MrCMSTest : IDisposable
     {

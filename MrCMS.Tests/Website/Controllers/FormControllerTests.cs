@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
-using MrCMS.Tests.Support;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using MrCMS.Website.Controllers;
 using Xunit;
 

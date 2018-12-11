@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Services

@@ -5,7 +5,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Messages;
 using MrCMS.Services;
 using MrCMS.Services.ImportExport;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Services.ImportExport
