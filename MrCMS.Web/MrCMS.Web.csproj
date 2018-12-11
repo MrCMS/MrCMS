@@ -14,6 +14,7 @@
   <ItemGroup>
     <Content Remove="Views\_ViewImports.cshtml" />
     <Content Remove="Views\_ViewStart.cshtml" />
+    <Content Remove="wwwroot\placeholder.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <None Include="wwwroot\placeholder.txt" />
   </ItemGroup>
 
   <ItemGroup>
