@@ -23,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\placeholder.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
@@ -36,6 +32,10 @@
     <ProjectReference Include="..\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
     <ProjectReference Include="..\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
