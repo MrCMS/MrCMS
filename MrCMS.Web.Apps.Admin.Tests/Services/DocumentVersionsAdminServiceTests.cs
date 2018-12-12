@@ -1,7 +1,7 @@
 using FluentAssertions;
 using MrCMS.Entities.Documents;
+using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Web.Apps.Admin.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services

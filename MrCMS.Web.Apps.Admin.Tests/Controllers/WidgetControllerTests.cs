@@ -1,17 +1,15 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
-using ImageMagick;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
-using MrCMS.Services;
 using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Controllers;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Web.Apps.Admin.Tests.TestSupport;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
+using System.Threading.Tasks;
+using MrCMS.Services;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
@@ -19,57 +17,63 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
     public class WidgetControllerTests : MrCMSTest
     {
         private readonly WidgetController _widgetController;
-        private readonly IWidgetService _widgetService;
-        private InMemoryRepository<Webpage> _webpageRepository = new InMemoryRepository<Webpage>();
+        private readonly IWidgetAdminService _widgetService;
+        private readonly ISetWidgetAdminViewData _setAdminViewData;
+        private readonly IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
 
         public WidgetControllerTests()
         {
-            Kernel.Bind<ISetWidgetAdminViewData>().ToConstant(A.Fake<ISetWidgetAdminViewData>());
-            _widgetService = A.Fake<IWidgetService>();
-            _widgetController = new WidgetController(_webpageRepository, _widgetService)
-            {
-                ReferrerOverride = "http://www.example.com/"
-            };
+            _widgetService = A.Fake<IWidgetAdminService>();
+            _setAdminViewData = A.Fake<ISetWidgetAdminViewData>();
+            _modelBindingHelperAdaptor = A.Fake<IModelBindingHelperAdaptor>();
+            _widgetController = new WidgetController(_widgetService, _setAdminViewData, _modelBindingHelperAdaptor);
         }
 
         [Fact]
-        public void WidgetController_EditGet_ShouldReturnThePassedWidget()
+        public void WidgetController_EditGet_ShouldReturnTheLoadedModel()
         {
-            var textWidget = new TextWidget {Site = new Site()};
+            UpdateWidgetModel model = new UpdateWidgetModel();
+            A.CallTo(() => _widgetService.GetEditModel(123)).Returns(model);
 
-            ViewResultBase result = _widgetController.Edit_Get(textWidget);
+            var result = _widgetController.Edit_Get(123);
 
-            result.Model.Should().Be(textWidget);
+            result.Model.Should().Be(model);
         }
 
         [Fact]
-        public void WidgetController_EditPost_ShouldCallSaveWidgetOnTheWidgetService()
+        public async Task WidgetController_EditPost_ShouldCallUpdateWidgetOnTheWidgetService()
         {
-            var textWidget = new TextWidget {LayoutArea = new LayoutArea()};
+            var model = new UpdateWidgetModel();
+            object additionalPropertyModel = new object();
+            A.CallTo(() => _widgetService.GetAdditionalPropertyModel(model.Id)).Returns(additionalPropertyModel);
 
-            _widgetController.Edit(textWidget);
+            await _widgetController.Edit(model);
 
-            A.CallTo(() => _widgetService.SaveWidget(textWidget)).MustHaveHappened();
+            A.CallTo(() => _widgetService.UpdateWidget(model, additionalPropertyModel)).MustHaveHappened();
         }
 
         [Fact]
-        public void WidgetController_EditPost_ShouldByDefaultRedirectToLayoutIndex()
+        public async Task WidgetController_EditPost_ShouldByDefaultRedirectToLayoutIndex()
         {
-            var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
+            var model = new UpdateWidgetModel();
+            object additionalPropertyModel = new object();
+            A.CallTo(() => _widgetService.GetAdditionalPropertyModel(model.Id)).Returns(additionalPropertyModel);
+            var textWidget = new TextWidget{LayoutArea = new LayoutArea{Id = 234}};
+            A.CallTo(() => _widgetService.UpdateWidget(model, additionalPropertyModel)).Returns(textWidget);
 
-            ActionResult result = _widgetController.Edit(textWidget);
+            var result = await _widgetController.Edit(model);
 
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
-            result.As<RedirectToRouteResult>().RouteValues["controller"].Should().Be("LayoutArea");
-            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(1);
+            result.As<RedirectToActionResult>().ActionName.Should().Be("Edit");
+            result.As<RedirectToActionResult>().ControllerName.Should().Be("LayoutArea");
+            result.As<RedirectToActionResult>().RouteValues["id"].Should().Be(234);
         }
 
         [Fact]
-        public void WidgetController_EditPost_IfReturnUrlIsSetRedirectToThere()
+        public async Task WidgetController_EditPost_IfReturnUrlIsSetRedirectToThere()
         {
-            var textWidget = new TextWidget();
+            var model = new UpdateWidgetModel();
 
-            ActionResult result = _widgetController.Edit(textWidget, "test-url");
+            var result = await _widgetController.Edit(model, "test-url");
 
             result.As<RedirectResult>().Url.Should().Be("test-url");
         }
@@ -77,33 +81,32 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void WidgetController_DeleteGet_ReturnsPartialViewResult()
         {
-            var textWidget = new TextWidget();
+            var model = new UpdateWidgetModel();
+            A.CallTo(() => _widgetService.GetEditModel(123)).Returns(model);
 
-            _widgetController.Delete_Get(textWidget).Should().BeOfType<PartialViewResult>();
+            _widgetController.Delete_Get(123).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
         public void WidgetController_DeleteGet_ReturnsPassedObjectAsModel()
         {
-            var textWidget = new TextWidget();
+            var model = new UpdateWidgetModel();
+            A.CallTo(() => _widgetService.GetEditModel(123)).Returns(model);
 
-            _widgetController.Delete_Get(textWidget).As<PartialViewResult>().Model.Should().Be(textWidget);
+            _widgetController.Delete_Get(123).As<PartialViewResult>().Model.Should().Be(model);
         }
 
         [Fact]
-        public void WidgetController_DeletePost_NullReturnUrlRedirectToRouteResult()
+        public void WidgetController_DeletePost_NullReturnUrlRedirectToActionResult()
         {
-            var textWidget = new TextWidget();
-
-            _widgetController.Delete(textWidget, null).Should().BeOfType<RedirectToRouteResult>();
+            _widgetController.Delete(123, null).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
         public void WidgetController_DeletePost_IfReturnUrlIsSetReturnsRedirectResult()
         {
-            var textWidget = new TextWidget();
+            ActionResult actionResult = _widgetController.Delete(123, "test");
 
-            ActionResult actionResult = _widgetController.Delete(textWidget, "test");
             actionResult.Should().BeOfType<RedirectResult>();
             actionResult.As<RedirectResult>().Url.Should().Be("test");
         }
@@ -111,37 +114,40 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlWebpageSetRedirectsToEditWebpage()
         {
-            var textWidget = new TextWidget {Webpage = new TextPage {Id = 1}};
+            var textWidget = new TextWidget{Webpage = new TextPage{Id=234}};
+            A.CallTo(() => _widgetService.DeleteWidget(123)).Returns(textWidget);
 
-            var result = _widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
+            var result = _widgetController.Delete(123, null).As<RedirectToActionResult>();
 
-            result.RouteValues["controller"].Should().Be("Webpage");
-            result.RouteValues["action"].Should().Be("Edit");
-            result.RouteValues["id"].Should().Be(1);
+            result.ControllerName.Should().Be("Webpage");
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(234); // from widget id
         }
 
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()
         {
-            var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
+            var textWidget = new TextWidget { LayoutArea = new LayoutArea { Id = 234 } };
+            A.CallTo(() => _widgetService.DeleteWidget(123)).Returns(textWidget);
 
-            var result = _widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
+            var result = _widgetController.Delete(123, null).As<RedirectToActionResult>();
 
-            result.RouteValues["controller"].Should().Be("LayoutArea");
-            result.RouteValues["action"].Should().Be("Edit");
-            result.RouteValues["id"].Should().Be(1);
+            result.ControllerName.Should().Be("LayoutArea");
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(234);
         }
 
         [Fact]
         public void WidgetController_DeletePost_ReturnUrlContainsWidgetEditIgnoreReturnUrl()
         {
-            var textWidget = new TextWidget {Id = 1, LayoutArea = new LayoutArea {Id = 1}};
+            var textWidget = new TextWidget {  LayoutArea = new LayoutArea { Id = 234 } };
+            A.CallTo(() => _widgetService.DeleteWidget(123)).Returns(textWidget);
 
-            var result = _widgetController.Delete(textWidget, "/widget/edit/1").As<RedirectToRouteResult>();
+            var result = _widgetController.Delete(123, "/widget/edit/1").As<RedirectToActionResult>();
 
-            result.RouteValues["controller"].Should().Be("LayoutArea");
-            result.RouteValues["action"].Should().Be("Edit");
-            result.RouteValues["id"].Should().Be(1);
+            result.ControllerName.Should().Be("LayoutArea");
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(234);
         }
     }
 }

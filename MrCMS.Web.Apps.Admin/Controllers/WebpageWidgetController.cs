@@ -15,14 +15,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Hide(int id, int widgetId, int layoutAreaId)
+        public RedirectToActionResult Hide(int id, int widgetId, int layoutAreaId)
         {
             _webpageWidgetAdminService.Hide(id, widgetId);
             return RedirectToAction("Edit", "Webpage", new { id, layoutAreaId });
         }
 
         [HttpPost]
-        public ActionResult Show(int id, int widgetId, int layoutAreaId)
+        public RedirectToActionResult Show(int id, int widgetId, int layoutAreaId)
         {
             _webpageWidgetAdminService.Show(id, widgetId);
             return RedirectToAction("Edit", "Webpage", new { id, layoutAreaId });

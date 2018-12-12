@@ -50,7 +50,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Add)]
-        public ActionResult Add(
+        public RedirectToActionResult Add(
             [ModelBinder(typeof(AddUserModelBinder))]
             User user)
         {
@@ -75,7 +75,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Edit)]
-        public ActionResult Edit(User user)
+        public RedirectToActionResult Edit(User user)
         {
             _userManagementService.SaveUser(user);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
@@ -108,7 +108,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.SetPassword)]
-        public ActionResult SetPassword(int id, string password)
+        public RedirectToActionResult SetPassword(int id, string password)
         {
             var user = _userManagementService.GetUser(id);
             _passwordManagementService.SetPassword(user, password, password);

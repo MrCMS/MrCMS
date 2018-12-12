@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\TagControllerTests.cs" />
-    <Compile Remove="Controllers\UserControllerTests.cs" />
-    <Compile Remove="Controllers\VersionsControllerTests.cs" />
-    <Compile Remove="Controllers\WebpageControllerTests.cs" />
-    <Compile Remove="Controllers\WebpageUrlControllerTests.cs" />
-    <Compile Remove="Controllers\WebpageWidgetControllerTests.cs" />
-    <Compile Remove="Controllers\WidgetControllerTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.1" />
     <PackageReference Include="FluentAssertions" Version="5.5.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />

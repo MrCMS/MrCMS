@@ -23,22 +23,19 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldCallGetDocumentUrl()
         {
-            var textPage = new TextPage();
-
             var suggestParams = new SuggestParams();
-            _webpageUrlController.Suggest(textPage, suggestParams);
+            _webpageUrlController.Suggest(suggestParams);
 
-            A.CallTo(() => _webpageUrlService.Suggest(textPage,suggestParams)).MustHaveHappened();
+            A.CallTo(() => _webpageUrlService.Suggest(suggestParams)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
-            var textPage = new TextPage();
             var suggestParams = new SuggestParams();
-            A.CallTo(() => _webpageUrlService.Suggest(textPage, suggestParams)).Returns("test/result");
+            A.CallTo(() => _webpageUrlService.Suggest(suggestParams)).Returns("test/result");
 
-            string url = _webpageUrlController.Suggest(textPage, suggestParams);
+            string url = _webpageUrlController.Suggest(suggestParams);
 
             url.Should().BeEquivalentTo("test/result");
         }

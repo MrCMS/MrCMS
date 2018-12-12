@@ -20,62 +20,51 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageWidgetController_Hide_CallsDocumentServiceHideWithPassedArguments()
+        public void WebpageWidgetController_Hide_CallsServiceHideWithPassedArguments()
         {
-            var stubWebpage = new StubWebpage();
+            _webpageWidgetController.Hide(123, 2, 3);
 
-            _webpageWidgetController.Hide(stubWebpage, 2, 3);
-
-            A.CallTo(() => _webpageWidgetAdminService.Hide(stubWebpage, 2)).MustHaveHappened();
+            A.CallTo(() => _webpageWidgetAdminService.Hide(123, 2)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageWidgetController_Hide_ReturnsARedirectToRouteResult()
         {
-            var stubWebpage = new StubWebpage();
-
-            _webpageWidgetController.Hide(stubWebpage, 2, 3).Should().BeOfType<RedirectToRouteResult>();
+            _webpageWidgetController.Hide(123, 2, 3).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
         public void WebpageWidgetController_Hide_SetsRouteValuesForIdAndLayoutAreaId()
         {
-            var stubWebpage = new StubWebpage {Id = 1};
 
-            var redirectToRouteResult = _webpageWidgetController.Hide(stubWebpage, 2, 3).As<RedirectToRouteResult>();
+            var result = _webpageWidgetController.Hide(123, 2, 3);
 
-            redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
-            redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
-            redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(123);
+            result.RouteValues["layoutAreaId"].Should().Be(3);
         }
 
         [Fact]
-        public void WebpageWidgetController_Show_CallsDocumentServiceShowWithPassedArguments()
+        public void WebpageWidgetController_Show_CallsServiceShowWithPassedArguments()
         {
-            var stubWebpage = new StubWebpage();
+            _webpageWidgetController.Show(123, 2, 3);
 
-            _webpageWidgetController.Show(stubWebpage, 2, 3);
-
-            A.CallTo(() => _webpageWidgetAdminService.Show(stubWebpage, 2)).MustHaveHappened();
+            A.CallTo(() => _webpageWidgetAdminService.Show(123, 2)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageWidgetController_Show_ReturnsARedirectToRouteResult()
         {
-            var stubWebpage = new StubWebpage();
-
-            _webpageWidgetController.Show(stubWebpage, 2, 3).Should().BeOfType<RedirectToRouteResult>();
+            _webpageWidgetController.Show(123, 2, 3).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
         public void WebpageWidgetController_Show_SetsRouteValuesForIdAndLayoutAreaId()
         {
-            var stubWebpage = new StubWebpage {Id = 1};
+            var redirectToRouteResult = _webpageWidgetController.Show(123, 2, 3).As<RedirectToActionResult>();
 
-            var redirectToRouteResult = _webpageWidgetController.Show(stubWebpage, 2, 3).As<RedirectToRouteResult>();
-
-            redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
-            redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
+            redirectToRouteResult.ActionName.Should().Be("Edit");
+            redirectToRouteResult.RouteValues["id"].Should().Be(123);
             redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
         }
     }

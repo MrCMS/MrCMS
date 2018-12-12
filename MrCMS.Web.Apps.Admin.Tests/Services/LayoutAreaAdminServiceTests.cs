@@ -5,9 +5,9 @@ using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
+using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Web.Apps.Admin.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services

@@ -1,24 +1,28 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
+using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
     public class WidgetController : MrCMSAdminController
     {
         private readonly IWidgetAdminService _widgetService;
+        private readonly ISetWidgetAdminViewData _setAdminViewData;
+        private readonly IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
 
-        public WidgetController(IWidgetAdminService widgetService)
+        public WidgetController(IWidgetAdminService widgetService, ISetWidgetAdminViewData setAdminViewData, IModelBindingHelperAdaptor modelBindingHelperAdaptor)
         {
             _widgetService = widgetService;
+            _setAdminViewData = setAdminViewData;
+            _modelBindingHelperAdaptor = modelBindingHelperAdaptor;
         }
 
         [HttpGet]
@@ -39,7 +43,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var additionalPropertyModel = _widgetService.GetAdditionalPropertyModel(model.WidgetType);
             if (additionalPropertyModel != null)
-                await TryUpdateModelAsync(additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+            {
+                await _modelBindingHelperAdaptor.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+            }
 
             var widget = _widgetService.AddWidget(model, additionalPropertyModel);
 
@@ -54,13 +60,17 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var editModel = _widgetService.GetEditModel(id);
             var widget = _widgetService.GetWidget(id);
-            widget.SetViewData(this);
+            _setAdminViewData.SetViewData(ViewData, widget);
             ViewData["widget"] = widget;
 
             if (!string.IsNullOrEmpty(returnUrl))
+            {
                 ViewData["return-url"] = Request.Referer();
+            }
             else
+            {
                 ViewData["return-url"] = returnUrl;
+            }
 
             return View(editModel);
         }
@@ -71,7 +81,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var additionalPropertyModel = _widgetService.GetAdditionalPropertyModel(model.Id);
             if (additionalPropertyModel != null)
-                await TryUpdateModelAsync(additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+            {
+                await _modelBindingHelperAdaptor.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+            }
 
             var widget = _widgetService.UpdateWidget(model, additionalPropertyModel);
 
@@ -99,9 +111,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             int webpageId = 0;
             int layoutAreaId = 0;
             if (widget.Webpage != null)
+            {
                 webpageId = widget.Webpage.Id;
+            }
+
             if (widget.LayoutArea != null)
+            {
                 layoutAreaId = widget.LayoutArea.Id;
+            }
 
             return !string.IsNullOrWhiteSpace(returnUrl) &&
                    !returnUrl.Contains("widget/edit/", StringComparison.OrdinalIgnoreCase)

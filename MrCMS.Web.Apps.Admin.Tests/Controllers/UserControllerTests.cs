@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Controllers;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
@@ -15,14 +16,6 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 {
     public class UserControllerTests
     {
-        private UserController _userController;
-        private IUserSearchService _userSearchService;
-        private IUserManagementService _userService;
-        private IRoleService _roleService;
-        private IPasswordManagementService _passwordManagementService;
-        private IGetUserCultureOptions _getUserCultureOptions;
-        private IGetUserEditTabsService _getUserEditTabsService;
-
         public UserControllerTests()
         {
             _userSearchService = A.Fake<IUserSearchService>();
@@ -30,65 +23,34 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
             _roleService = A.Fake<IRoleService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
-            _getUserEditTabsService = A.Fake<IGetUserEditTabsService>();
             _userController = new UserController(_userService, _userSearchService, _roleService,
-                _passwordManagementService, _getUserCultureOptions, _getUserEditTabsService);
+                _passwordManagementService, _getUserCultureOptions)
+            {
+                TempData = new MockTempDataDictionary()
+            };
         }
 
-        [Fact]
-        public void UserController_Index_ShouldReturnViewResult()
-        {
-            ActionResult actionResult = _userController.Index(null);
-
-            actionResult.Should().BeOfType<ViewResult>();
-        }
-
-        [Fact]
-        public void UserController_Index_ShouldCallUserServiceGetUsersPaged()
-        {
-            var userSearchQuery = new UserSearchQuery();
-
-            _userController.Index(userSearchQuery);
-
-            A.CallTo(() => _userSearchService.GetUsersPaged(userSearchQuery)).MustHaveHappened();
-        }
+        private readonly UserController _userController;
+        private readonly IUserSearchService _userSearchService;
+        private readonly IUserManagementService _userService;
+        private readonly IRoleService _roleService;
+        private readonly IPasswordManagementService _passwordManagementService;
+        private readonly IGetUserCultureOptions _getUserCultureOptions;
 
         [Fact]
-        public void UserController_Index_ShouldReturnTheResultOfServiceCallAsViewData()
+        public void UserController_AddGet_ShouldReturnAnAddUserModel()
         {
-            var users = new StaticPagedList<User>(new List<User>(), 1, 1, 0);
-            var userSearchQuery = new UserSearchQuery();
-            A.CallTo(() => _userSearchService.GetUsersPaged(userSearchQuery)).Returns(users);
+            var actionResult = _userController.Add();
 
-            ActionResult actionResult = _userController.Index(userSearchQuery);
-
-            _userController.ViewData["users"].Should().Be(users);
-        }
-
-        [Fact]
-        public void UserController_Index_ShouldReturnThePassedQueryAsTheModel()
-        {
-            var userSearchQuery = new UserSearchQuery();
-
-            ActionResult actionResult = _userController.Index(userSearchQuery);
-
-            actionResult.As<ViewResult>().Model.Should().BeSameAs(userSearchQuery);
+            actionResult.As<PartialViewResult>().Model.Should().BeOfType<AddUserModel>();
         }
 
         [Fact]
         public void UserController_AddGet_ShouldReturnAViewResult()
         {
-            PartialViewResult actionResult = _userController.Add();
+            var actionResult = _userController.Add();
 
             actionResult.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void UserController_AddGet_ShouldReturnAnAddUserModel()
-        {
-            PartialViewResult actionResult = _userController.Add();
-
-            actionResult.As<PartialViewResult>().Model.Should().BeOfType<AddUserModel>();
         }
 
         [Fact]
@@ -104,12 +66,12 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_AddPost_ShouldReturnRedirectEditForSavedUser()
         {
-            var user = new User { Id = 123 };
+            var user = new User {Id = 123};
 
-            ActionResult result = _userController.Add(user);
+            var result = _userController.Add(user);
 
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
-            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(123);
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
@@ -117,7 +79,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         {
             var user = new User();
 
-            ActionResult result = _userController.Edit_Get(user);
+            var result = _userController.Edit_Get(user);
 
             result.As<ViewResult>().Model.Should().Be(user);
         }
@@ -127,9 +89,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         {
             A.CallTo(() => _userService.GetUser(1)).Returns(null);
 
-            ActionResult result = _userController.Edit_Get(null);
+            var result = _userController.Edit_Get(null);
 
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+            result.As<RedirectToActionResult>().ActionName.Should().Be("Index");
         }
 
         [Fact]
@@ -157,12 +119,52 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_EditPost_ShouldReturnRedirectToEdit()
         {
-            var user = new User { Id = 123 };
+            var user = new User {Id = 123};
 
-            ActionResult result = _userController.Edit(user);
+            var result = _userController.Edit(user);
 
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
-            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(123);
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(123);
+        }
+
+        [Fact]
+        public void UserController_Index_ShouldCallUserServiceGetUsersPaged()
+        {
+            var userSearchQuery = new UserSearchQuery();
+
+            _userController.Index(userSearchQuery);
+
+            A.CallTo(() => _userSearchService.GetUsersPaged(userSearchQuery)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void UserController_Index_ShouldReturnThePassedQueryAsTheModel()
+        {
+            var userSearchQuery = new UserSearchQuery();
+
+            var actionResult = _userController.Index(userSearchQuery);
+
+            actionResult.As<ViewResult>().Model.Should().BeSameAs(userSearchQuery);
+        }
+
+        [Fact]
+        public void UserController_Index_ShouldReturnTheResultOfServiceCallAsViewData()
+        {
+            var users = new StaticPagedList<User>(new List<User>(), 1, 1, 0);
+            var userSearchQuery = new UserSearchQuery();
+            A.CallTo(() => _userSearchService.GetUsersPaged(userSearchQuery)).Returns(users);
+
+            var actionResult = _userController.Index(userSearchQuery);
+
+            _userController.ViewData["users"].Should().Be(users);
+        }
+
+        [Fact]
+        public void UserController_Index_ShouldReturnViewResult()
+        {
+            var actionResult = _userController.Index(null);
+
+            actionResult.Should().BeOfType<ViewResult>();
         }
 
         [Fact]
@@ -181,20 +183,24 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ReturnsRedirectToEditUser()
         {
-            ActionResult result = _userController.SetPassword(new User { Id = 1 }, "password");
+            var value = new User(){Id=234};
+            A.CallTo(() => _userService.GetUser(123)).Returns(value);
 
-            result.Should().BeOfType<RedirectToRouteResult>();
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
-            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(1);
+            var result = _userController.SetPassword( 123, "password");
+
+
+            result.ActionName.Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(234); // from returned user object
         }
 
         [Fact]
         public void UserController_SetPasswordPost_ShouldCallAuthorisationServiceSetPassword()
         {
-            var user = new User { Id = 1 };
+            var user = new User {Id = 1};
             const string password = "password";
+            A.CallTo(() => _userService.GetUser(1)).Returns(user);
 
-            ActionResult result = _userController.SetPassword(user, password);
+            var result = _userController.SetPassword(1, password);
 
             A.CallTo(() => _passwordManagementService.SetPassword(user, password, password)).MustHaveHappened();
         }
