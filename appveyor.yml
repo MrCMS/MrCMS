@@ -8,7 +8,6 @@
     - nuget restore
   image: Visual Studio 2017
   build:
-    publish_wap: true
     publish_aspnet_core: true
     parallel: true
     verbosity: normal
