@@ -9,9 +9,9 @@
   image: Visual Studio 2017
   build:
     parallel: true
-    verbosity: normal
+    verbosity: minimal
   after_build:
-    - ps: dotnet publish -c Debug
+    - ps: dotnet publish -c Debug --no-build
   artifacts:
    - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
      name: MrCMS.Web
@@ -27,9 +27,9 @@
     - nuget restore    
   build:
     parallel: true
-    verbosity: normal
+    verbosity: minimal
   after_build:
-    - ps: dotnet publish -c Release
+    - ps: dotnet publish -c Release --no-build
   artifacts:
    - path: '\MrCMS.Web\bin\Release\netcoreapp2.1\publish'
      name: MrCMS.Web
