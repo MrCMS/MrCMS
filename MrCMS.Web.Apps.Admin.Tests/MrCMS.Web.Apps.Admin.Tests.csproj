@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\MediaCategoryControllerTests.cs" />
-    <Compile Remove="Controllers\NavigationControllerTests.cs" />
-    <Compile Remove="Controllers\RoleControllerTests.cs" />
-    <Compile Remove="Controllers\SitesControllerTests.cs" />
     <Compile Remove="Controllers\TagControllerTests.cs" />
     <Compile Remove="Controllers\UserControllerTests.cs" />
     <Compile Remove="Controllers\VersionsControllerTests.cs" />

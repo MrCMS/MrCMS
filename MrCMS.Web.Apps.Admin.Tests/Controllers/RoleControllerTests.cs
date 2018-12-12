@@ -1,112 +1,130 @@
-using System.Collections.Generic;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
+using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Controllers;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 {
     public class RoleControllerTests
     {
-        private IRoleAdminService roleService;
-
-        [Fact]
-        public void RoleController_Index_ReturnsViewResult()
+        public RoleControllerTests()
         {
-            RoleController roleController = GetRoleController();
-
-            roleController.Index().Should().BeOfType<ViewResult>();
+            _roleService = A.Fake<IRoleAdminService>();
+            _sut = new RoleController(_roleService) { TempData = new MockTempDataDictionary() };
         }
 
-        [Fact]
-        public void RoleController_Index_CallsRoleServiceGetAllRoles()
-        {
-            RoleController roleController = GetRoleController();
-
-            roleController.Index();
-
-            A.CallTo(() => roleService.GetAllRoles()).MustHaveHappened();
-        }
+        private readonly IRoleAdminService _roleService;
+        private readonly RoleController _sut;
 
         [Fact]
-        public void RoleController_Index_ShouldReturnTheResultOfGetAllRoles()
+        public void RoleController_AddGet_ModelShouldBeAUserRole()
         {
-            RoleController roleController = GetRoleController();
-            var userRoles = new List<UserRole>();
-            A.CallTo(() => roleService.GetAllRoles()).Returns(userRoles);
-
-            var result = roleController.Index().As<ViewResult>();
-
-            result.Model.Should().Be(userRoles);
+            _sut.Add().As<PartialViewResult>().Model.Should().BeOfType<UserRole>();
         }
 
         [Fact]
         public void RoleController_AddGet_ReturnsAPartialViewResult()
         {
-            RoleController roleController = GetRoleController();
-
-            roleController.Add().Should().BeOfType<PartialViewResult>();
+            _sut.Add().Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
-        public void RoleController_AddGet_ModelShouldBeAUserRole()
+        public void RoleController_AddPost_ReturnsRedirectToActionResult()
         {
-            RoleController roleController = GetRoleController();
+            var model = new AddRoleModel();
 
-            roleController.Add().As<PartialViewResult>().Model.Should().BeOfType<UserRole>();
-        }
-
-        [Fact]
-        public void RoleController_AddPost_ReturnsRedirectToRouteResult()
-        {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
-
-            roleController.Add(userRole).Should().BeOfType<RedirectToRouteResult>();
+            _sut.Add(model).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
         public void RoleController_AddPost_ShouldCallAddRoleWithPassedRole()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole {Name = "test"};
-            roleController.Add(userRole);
+            var model = new AddRoleModel { Name = "test" };
 
-            A.CallTo(() => roleService.AddRole(userRole)).MustHaveHappened();
+            _sut.Add(model);
+
+            A.CallTo(() => _roleService.AddRole(model)).MustHaveHappened();
         }
 
 
         [Fact]
         public void RoleController_AddPost_ShouldRedirectToIndex()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            var model = new AddRoleModel();
 
-            var redirectToRouteResult = roleController.Add(userRole).As<RedirectToRouteResult>();
+            var redirectToRouteResult = _sut.Add(model);
 
-            redirectToRouteResult.RouteValues["action"].Should().Be("Index");
+            redirectToRouteResult.ActionName.Should().Be("Index");
+        }
+
+        [Fact]
+        public void RoleController_DeleteGet_ModelShouldBeFromService()
+        {
+            var model = new UpdateRoleModel();
+            A.CallTo(() => _roleService.GetEditModel(123)).Returns(model);
+
+            var result = _sut.Delete_Get(123);
+
+            result.As<ViewResult>().Model.Should().Be(model);
+        }
+
+        [Fact]
+        public void RoleController_DeleteGet_ReturnsViewResult()
+        {
+            var model = new UpdateRoleModel();
+            A.CallTo(() => _roleService.GetEditModel(123)).Returns(model);
+
+            var result = _sut.Delete_Get(123);
+
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void RoleController_DeleteGet_UnknownRoleReturnsRedirectToIndex()
+        {
+            A.CallTo(() => _roleService.GetEditModel(123)).Returns(null);
+
+            var result = _sut.Delete_Get(123);
+
+            result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be("Index");
+        }
+
+        [Fact]
+        public void RoleController_DeletePost_CallsRoleServiceDeleteRoleOnPassedId()
+        {
+            _sut.Delete(123);
+
+            A.CallTo(() => _roleService.DeleteRole(123)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void RoleController_DeletePost_ReturnsRedirectToIndex()
+        {
+            _sut.Delete(123).ActionName.Should().Be("Index");
         }
 
         [Fact]
         public void RoleController_EditGet_IfUserRoleIsNullReturnsRedirectToIndex()
         {
-            RoleController roleController = GetRoleController();
+            A.CallTo(() => _roleService.GetEditModel(123)).Returns(null);
 
-            ActionResult editGet = roleController.Edit_Get(null);
+            var editGet = _sut.Edit_Get(123);
 
-            editGet.Should().BeOfType<RedirectToRouteResult>();
-            editGet.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+            editGet.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be("Index");
         }
 
         [Fact]
         public void RoleController_EditGet_IfUserRoleIsSetShouldReturnViewResult()
         {
-            RoleController roleController = GetRoleController();
+            A.CallTo(() => _roleService.GetEditModel(123)).Returns(new UpdateRoleModel());
 
-            ActionResult editGet = roleController.Edit_Get(new UserRole());
+            var editGet = _sut.Edit_Get(123);
 
             editGet.Should().BeOfType<ViewResult>();
         }
@@ -114,114 +132,67 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void RoleController_EditGet_IfUserRoleIsSetViewResultModelShouldBeRolePassed()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            var model = new UpdateRoleModel();
+            A.CallTo(() => _roleService.GetEditModel(123)).Returns(model);
 
-            ActionResult editGet = roleController.Edit_Get(userRole);
+            var editGet = _sut.Edit_Get(123);
 
-            editGet.As<ViewResult>().Model.Should().Be(userRole);
-        }
-
-        [Fact]
-        public void RoleController_EditPost_ShouldReturnARedirectToRouteResult()
-        {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
-
-            ActionResult edit = roleController.Edit(userRole);
-
-            edit.Should().BeOfType<RedirectToRouteResult>();
+            editGet.As<ViewResult>().Model.Should().Be(model);
         }
 
         [Fact]
         public void RoleController_EditPost_ShouldCallSaveRoleOnTheRoleService()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            var model = new UpdateRoleModel();
 
-            roleController.Edit(userRole);
+            _sut.Edit(model);
 
-            A.CallTo(() => roleService.SaveRole(userRole)).MustHaveHappened();
+            A.CallTo(() => _roleService.SaveRole(model)).MustHaveHappened();
         }
 
         [Fact]
         public void RoleController_EditPost_ShouldRedirectToIndex()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            var model = new UpdateRoleModel();
 
-            var redirectToRouteResult = roleController.Edit(userRole).As<RedirectToRouteResult>();
+            var result = _sut.Edit(model).As<RedirectToActionResult>();
 
-            redirectToRouteResult.RouteValues["action"].Should().Be("Index");
+            result.ActionName.Should().Be("Index");
         }
 
         [Fact]
-        public void RoleController_DeleteGet_NullRoleReturnsRedirectToIndex()
+        public void RoleController_EditPost_ShouldReturnARedirectToActionResult()
         {
-            RoleController roleController = GetRoleController();
+            var model = new UpdateRoleModel();
 
-            ActionResult result = roleController.Delete_Get(null);
+            ActionResult edit = _sut.Edit(model);
 
-            result.Should().BeOfType<RedirectToRouteResult>();
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+            edit.Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
-        public void RoleController_DeleteGet_ReturnsViewResult()
+        public void RoleController_Index_CallsRoleServiceGetAllRoles()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            _sut.Index();
 
-            ActionResult result = roleController.Delete_Get(userRole);
-
-            result.Should().BeOfType<ViewResult>();
+            A.CallTo(() => _roleService.GetAllRoles()).MustHaveHappened();
         }
 
         [Fact]
-        public void RoleController_DeleteGet_ModelShouldBePassedRole()
+        public void RoleController_Index_ReturnsViewResult()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
-
-            ActionResult result = roleController.Delete_Get(userRole);
-
-            result.As<ViewResult>().Model.Should().Be(userRole);
+            _sut.Index().Should().BeOfType<ViewResult>();
         }
 
         [Fact]
-        public void RoleController_DeletePost_ReturnsRedirectToIndex()
+        public void RoleController_Index_ShouldReturnTheResultOfGetAllRoles()
         {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            var userRoles = new List<UserRole>();
+            A.CallTo(() => _roleService.GetAllRoles()).Returns(userRoles);
 
-            roleController.Delete(userRole).Should().BeOfType<RedirectToRouteResult>();
-        }
+            var result = _sut.Index().As<ViewResult>();
 
-        [Fact]
-        public void RoleController_DeletePost_CallsRoleServiceDeleteRoleOnPassedRole()
-        {
-            RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
-
-            roleController.Delete(userRole);
-
-            A.CallTo(() => roleService.DeleteRole(userRole)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void RoleController_DeletePost_DoesNotCallDeleteRoleIfUserRoleIsNull()
-        {
-            RoleController roleController = GetRoleController();
-
-            roleController.Delete(null);
-
-            A.CallTo(() => roleService.DeleteRole(null)).MustNotHaveHappened();
-        }
-
-        private RoleController GetRoleController()
-        {
-            roleService = A.Fake<IRoleAdminService>();
-            return new RoleController(roleService);
+            result.Model.Should().Be(userRoles);
         }
     }
 }

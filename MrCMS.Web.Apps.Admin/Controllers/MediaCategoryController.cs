@@ -34,7 +34,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(AddMediaCategoryModel model)
+        public RedirectToActionResult Add(AddMediaCategoryModel model)
         {
             var doc = _mediaCategoryAdminService.Add(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
@@ -42,13 +42,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet, ActionName("Edit")]
-        public ActionResult Edit_Get(int id)
+        public ViewResult Edit_Get(int id)
         {
             return View(_mediaCategoryAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public ActionResult Edit(UpdateMediaCategoryModel model)
+        public RedirectToActionResult Edit(UpdateMediaCategoryModel model)
         {
             var category = _mediaCategoryAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", category.Name));

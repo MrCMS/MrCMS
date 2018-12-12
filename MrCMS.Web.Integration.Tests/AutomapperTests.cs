@@ -12,7 +12,7 @@ namespace MrCMS.Web.Integration.Tests
 {
     public class AutomapperTests
     {
-        private const string IntegrationTest = "Integration test";
+        private const string IntegrationTest = "Integration test - need to work more on setting up database";
 
         [Fact(Skip = IntegrationTest)]
         public void IfIdIsNull_ShouldNotMapANewObject()

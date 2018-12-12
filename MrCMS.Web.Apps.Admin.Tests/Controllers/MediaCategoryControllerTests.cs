@@ -1,11 +1,13 @@
-using System.Collections.Generic;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
+using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Controllers;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
@@ -20,23 +22,24 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         {
             _fileAdminService = A.Fake<IFileAdminService>();
             _mediaCategoryAdminService = A.Fake<IMediaCategoryAdminService>();
-            _mediaCategoryController = new MediaCategoryController(_mediaCategoryAdminService,_fileAdminService);
+            _mediaCategoryController = new MediaCategoryController(_mediaCategoryAdminService, _fileAdminService) { TempData = new MockTempDataDictionary() };
         }
 
         [Fact]
-        public void MediaCategoryController_AddGet_ShouldReturnAMediaCategory()
+        public void MediaCategoryController_AddGet_ShouldReturnAnAddCategoryModel()
         {
-            var mediaCategory = A.Dummy<MediaCategory>();
-            A.CallTo(() => _mediaCategoryAdminService.GetNewCategoryModel(123)).Returns(mediaCategory);
-            var actionResult = _mediaCategoryController.Add_Get(123);
+            AddMediaCategoryModel model = new AddMediaCategoryModel();
+            A.CallTo(() => _mediaCategoryAdminService.GetNewCategoryModel(123)).Returns(model);
 
-            actionResult.Model.Should().Be(mediaCategory);
+            var result = _mediaCategoryController.Add_Get(123);
+
+            result.Model.Should().Be(model);
         }
 
         [Fact]
-        public void MediaCategoryController_AddPost_ShouldCallSaveDocument()
+        public void MediaCategoryController_AddPost_ShouldCallAdd()
         {
-            var mediaCategory = new MediaCategory();
+            var mediaCategory = new AddMediaCategoryModel();
 
             _mediaCategoryController.Add(mediaCategory);
 
@@ -46,62 +49,65 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void MediaCategoryController_AddPost_ShouldRedirectToShow()
         {
-            var mediaCategory = new MediaCategory {Id = 1};
+            var model = new AddMediaCategoryModel();
+            MediaCategory mediaCategory = new MediaCategory { Id = 123 };
+            A.CallTo(() => _mediaCategoryAdminService.Add(model)).Returns(mediaCategory);
 
-            var result = _mediaCategoryController.Add(mediaCategory) as RedirectToRouteResult;
+            var result = _mediaCategoryController.Add(model);
 
-            result.RouteValues["action"].Should().Be("Show");
-            result.RouteValues["id"].Should().Be(1);
+            result.ActionName.Should().Be("Show");
+            result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
         public void MediaCategoryController_EditGet_ShouldReturnAViewResult()
         {
-            ActionResult result = _mediaCategoryController.Edit_Get(new MediaCategory());
+            var result = _mediaCategoryController.Edit_Get(123);
 
             result.Should().BeOfType<ViewResult>();
         }
 
         [Fact]
-        public void MediaCategoryController_EditGet_ShouldReturnLayoutAsViewModel()
+        public void MediaCategoryController_EditGet_ShouldReturnEditModelAsViewModel()
         {
-            var mediaCategory = new MediaCategory {Id = 1};
+            var model = new UpdateMediaCategoryModel();
+            A.CallTo(() => _mediaCategoryAdminService.GetEditModel(123)).Returns(model);
 
-            var result = _mediaCategoryController.Edit_Get(mediaCategory) as ViewResult;
+            var result = _mediaCategoryController.Edit_Get(123);
 
-            result.Model.Should().Be(mediaCategory);
+            result.Model.Should().Be(model);
         }
 
         [Fact]
-        public void MediaCategoryController_EditPost_ShouldCallSaveDocument()
+        public void MediaCategoryController_EditPost_ShouldCallUpdate()
         {
-            var mediaCategory = new MediaCategory {Id = 1};
+            var model = new UpdateMediaCategoryModel { Id = 1 };
 
-            _mediaCategoryController.Edit(mediaCategory);
+            _mediaCategoryController.Edit(model);
 
-            A.CallTo(() => _mediaCategoryAdminService.Update(mediaCategory)).MustHaveHappened();
+            A.CallTo(() => _mediaCategoryAdminService.Update(model)).MustHaveHappened();
         }
 
         [Fact]
-        public void MediaCategoryController_EditPost_ShouldRedirectToEdit()
+        public void MediaCategoryController_EditPost_ShouldRedirectToShow()
         {
-            var mediaCategory = new MediaCategory {Id = 1};
+            var model = new UpdateMediaCategoryModel { };
+            var category = new MediaCategory {Id = 1};
+            A.CallTo(() => _mediaCategoryAdminService.Update(model)).Returns(category);
 
-            ActionResult actionResult = _mediaCategoryController.Edit(mediaCategory);
+            var result = _mediaCategoryController.Edit(model);
 
-            actionResult.Should().BeOfType<RedirectToRouteResult>();
-            (actionResult as RedirectToRouteResult).RouteValues["action"].Should().Be("Show");
-            (actionResult as RedirectToRouteResult).RouteValues["id"].Should().Be(1);
+            result.ActionName.Should().Be("Show");
+            result.RouteValues["id"].Should().Be(1);
         }
 
         [Fact]
         public void MediaCategoryController_Sort_ShouldBeAListOfSortItems()
         {
-            var mediaCategory = new MediaCategory();
-            var sortItems = new List<SortItem> {};
-            A.CallTo(() => _mediaCategoryAdminService.GetSortItems(mediaCategory)).Returns(sortItems);
+            var sortItems = new List<SortItem> { };
+            A.CallTo(() => _mediaCategoryAdminService.GetSortItems(123)).Returns(sortItems);
 
-            var viewResult = _mediaCategoryController.Sort(mediaCategory).As<ViewResult>();
+            var viewResult = _mediaCategoryController.Sort(123).As<ViewResult>();
 
             viewResult.Model.Should().Be(sortItems);
         }
@@ -109,9 +115,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void MediaCategoryController_Index_ReturnsViewResult()
         {
-            ViewResult actionResult = _mediaCategoryController.Index(null);
+            ViewResult result = _mediaCategoryController.Index(null);
 
-            actionResult.Should().NotBeNull();
+            result.Should().NotBeNull();
         }
 
         [Fact]
@@ -119,32 +125,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         {
             ActionResult actionResult = _mediaCategoryController.Show(null);
 
-            actionResult.Should().BeOfType<RedirectToRouteResult>();
-            actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
-        }
-
-        [Fact]
-        public void MediaCategoryController_Upload_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.Upload(new MediaCategory());
-
-            result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_Upload_ShouldReturnTheResultOfTheMediaCategoryPassedToIt()
-        {
-            var mediaCategory = new MediaCategory {Name = "test"};
-
-            ActionResult result = _mediaCategoryController.Upload(mediaCategory);
-
-            result.As<PartialViewResult>().Model.Should().Be(mediaCategory);
-        }
-
-        [Fact]
-        public void MediaCategoryController_RemoveMedia_ShouldReturnAPartialView()
-        {
-            _mediaCategoryController.RemoveMedia().Should().BeOfType<PartialViewResult>();
+            actionResult.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be("Index");
         }
     }
 }

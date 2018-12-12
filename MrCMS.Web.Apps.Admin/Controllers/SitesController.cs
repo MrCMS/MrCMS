@@ -30,7 +30,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ActionName("Add")]
         public ViewResult Add_Get()
         {
-
             return View();
         }
 

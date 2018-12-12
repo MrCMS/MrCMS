@@ -13,7 +13,7 @@ namespace MrCMS.Tests.Settings
     public class SiteSettingsOptionGeneratorTests : InMemoryDatabaseTest
     {
         private readonly MrCMSAppContext _mrCMSAppContext = new MrCMSAppContext();
-        private SiteSettingsOptionGenerator _sut;
+        private readonly SiteSettingsOptionGenerator _sut;
 
         public SiteSettingsOptionGeneratorTests()
         {

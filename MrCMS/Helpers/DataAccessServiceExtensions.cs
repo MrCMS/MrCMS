@@ -39,17 +39,17 @@ namespace MrCMS.Helpers
     }
     public static class DataAccessServiceExtensions
     {
-        public static IServiceCollection AddDataAccess(this IServiceCollection services, bool isInstalled,
+        public static IServiceCollection AddMrCMSDataAccess(this IServiceCollection services, bool isInstalled,
             IConfigurationSection settings)
         {
             services.AddScoped<ISession>(provider =>
             {
-                var session = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-nh-session"] as ISession;
+                var session = provider.GetRequiredService<IHttpContextAccessor>()?.HttpContext?.Items?["override-nh-session"] as ISession;
                 return session ?? provider.GetRequiredService<ISessionFactory>().OpenFilteredSession(provider);
             });
             services.AddTransient<IStatelessSession>(provider =>
             {
-                var session = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-nh-stateless-session"] as IStatelessSession;
+                var session = provider.GetRequiredService<IHttpContextAccessor>()?.HttpContext?.Items?["override-nh-stateless-session"] as IStatelessSession;
                 return session ?? provider.GetRequiredService<ISessionFactory>().OpenStatelessSession();
             });
 

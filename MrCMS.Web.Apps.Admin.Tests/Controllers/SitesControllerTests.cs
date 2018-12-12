@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Controllers;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using Xunit;
 
@@ -42,96 +43,85 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void SitesController_AddGet_ReturnsPartialViewResultWithModelOfTypeSite()
+        public void SitesController_AddPost_CallsSiteServiceSaveSiteWithPassedModel()
         {
-            var result = _sitesController.Add_Get();
-
-            result.Should().NotBeNull();
-            result.Model.Should().BeOfType<Site>();
-        }
-
-        [Fact]
-        public void SitesController_AddPost_CallsSiteServiceSaveSiteWithPassedSite()
-        {
-            var site = new Site();
+            var model = new AddSiteModel();
             var options = new List<SiteCopyOption>();
 
-            _sitesController.Add(site, options);
+            _sitesController.Add(model, options);
 
-            A.CallTo(() => _siteAdminService.AddSite(site, options)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.AddSite(model, options)).MustHaveHappened();
         }
 
         [Fact]
         public void SitesController_AddPost_RedirectsToIndex()
         {
-            var site = new Site();
+            var model = new AddSiteModel();
             var options = new List<SiteCopyOption>(); 
 
-            RedirectToRouteResult result = _sitesController.Add(site, options);
+            var result = _sitesController.Add(model, options);
 
-            result.RouteValues["action"].Should().Be("Index");
+            result.ActionName.Should().Be("Index");
         }
 
         [Fact]
-        public void SitesController_EditGet_ReturnsViewResultWithPassedSiteAsModel()
+        public void SitesController_EditGet_ReturnsViewResultWithLoadedUpdateModelAsViewModel()
         {
-            var site = new Site();
+            var model = new UpdateSiteModel();
+            A.CallTo(() => _siteAdminService.GetEditModel(123)).Returns(model);
 
-            ViewResult result = _sitesController.Edit_Get(site);
+            var result = _sitesController.Edit_Get(123);
 
             result.Should().NotBeNull();
-            result.Model.Should().Be(site);
+            result.Model.Should().Be(model);
         }
 
         [Fact]
-        public void SitesController_EditPost_CallsSaveSiteWithPassedSite()
+        public void SitesController_EditPost_CallsSaveSiteWithPassedModel()
         {
-            var site = new Site();
+            var model = new UpdateSiteModel();
 
-            _sitesController.Edit(site);
+            _sitesController.Edit(model);
 
-            A.CallTo(() => _siteAdminService.SaveSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.SaveSite(model)).MustHaveHappened();
         }
 
         [Fact]
         public void SitesController_EditPost_RedirectsToIndex()
         {
-            var site = new Site();
+            var model = new UpdateSiteModel();
 
-            RedirectToRouteResult result = _sitesController.Edit(site);
+            var result = _sitesController.Edit(model);
 
-            result.RouteValues["action"].Should().Be("Index");
+            result.ActionName.Should().Be("Index");
         }
 
         [Fact]
-        public void SitesController_DeleteGet_ReturnsAPartialViewResultWithPassedModel()
+        public void SitesController_DeleteGet_ReturnsAPartialViewResultWithUpdateModelAsViewModel()
         {
-            var site = new Site();
+            var model = new UpdateSiteModel();
+            A.CallTo(() => _siteAdminService.GetEditModel(123)).Returns(model);
 
-            PartialViewResult result = _sitesController.Delete_Get(site);
+            PartialViewResult result = _sitesController.Delete_Get(123);
 
             result.Should().NotBeNull();
-            result.Model.Should().Be(site);
+            result.Model.Should().Be(model);
         }
 
         [Fact]
         public void SitesController_DeletePost_CallsDeleteSiteOnSiteService()
         {
-            var site = new Site();
+            _sitesController.Delete(123);
 
-            _sitesController.Delete(site);
-
-            A.CallTo(() => _siteAdminService.DeleteSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.DeleteSite(123)).MustHaveHappened();
         }
 
         [Fact]
         public void SitesController_DeletePost_RedirectsToIndex()
         {
-            var site = new Site();
+            var result = _sitesController.Delete(123);
 
-            RedirectToRouteResult result = _sitesController.Delete(site);
-
-            result.RouteValues["action"].Should().Be("Index");
+            result.ActionName.Should().Be("Index");
         }
     }
 }

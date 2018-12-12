@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
@@ -10,6 +8,8 @@ using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace MrCMS.TestSupport
 {
@@ -27,12 +27,12 @@ namespace MrCMS.TestSupport
                 lock (lockObject)
                 {
                     var assemblies = new List<Assembly> { typeof(InMemoryDatabaseTest).Assembly };
-                    var nHibernateModule = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
+                    var configurator = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
                     {
                         CacheEnabled = true,
                         ManuallyAddedAssemblies = assemblies
                     };
-                    Configuration = nHibernateModule.GetConfiguration();
+                    Configuration = configurator.GetConfiguration();
 
                     SessionFactory = Configuration.BuildSessionFactory();
                 }

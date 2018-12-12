@@ -36,7 +36,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Add)]
-        public ActionResult Add(AddRoleModel model)
+        public RedirectToActionResult Add(AddRoleModel model)
         {
             var addRoleResult = _roleAdminService.AddRole(model);
             if (!addRoleResult.Success)
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Edit)]
-        public ActionResult Edit(UpdateRoleModel model)
+        public RedirectToActionResult Edit(UpdateRoleModel model)
         {
             _roleAdminService.SaveRole(model);
 
@@ -79,7 +79,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Delete)]
-        public ActionResult Delete(int id)
+        public RedirectToActionResult Delete(int id)
         {
             _roleAdminService.DeleteRole(id);
             return RedirectToAction("Index");
