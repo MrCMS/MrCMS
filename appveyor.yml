@@ -11,6 +11,8 @@
     publish_aspnet_core: true
     parallel: true
     verbosity: normal
+  after_build:
+    - ps: dotnet publish -c Debug
   # build_script:
   # - ps: dotnet publish -c Debug
   # artifacts:
