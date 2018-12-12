@@ -8,19 +8,14 @@
     - nuget restore
   image: Visual Studio 2017
   build:
-    publish_aspnet_core: true
     parallel: true
     verbosity: normal
   after_build:
     - ps: dotnet publish -c Debug
-  # build_script:
-  # - ps: dotnet publish -c Debug
-  # artifacts:
-  #  - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
-  #    name: MrCMS.Web
-  #    type: WebDeployPackage
-  # test_script:
-  # - ps: Get-ChildItem . -File -recurse -Filter *.Tests.csproj | Foreach { dotnet test $_.fullname }
+  artifacts:
+   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
+     name: MrCMS.Web
+     type: WebDeployPackage
 -
   branches:
     only:
@@ -29,12 +24,13 @@
   configuration: Release
   image: Visual Studio 2017
   install:
-    - nuget restore
-  build_script:
-  - ps: dotnet publish -c Release
+    - nuget restore    
+  build:
+    parallel: true
+    verbosity: normal
+  after_build:
+    - ps: dotnet publish -c Release
   artifacts:
-   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
+   - path: '\MrCMS.Web\bin\Release\netcoreapp2.1\publish'
      name: MrCMS.Web
      type: WebDeployPackage
-  test_script:
-  - ps: Get-ChildItem . -File -recurse -Filter *.Tests.csproj | Foreach { dotnet test $_.fullname }
