@@ -554,6 +554,7 @@
     <Compile Include="Areas\Admin\Services\Batching\IBatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
+    <Compile Include="Areas\Admin\Services\CreateMergeBatch.cs" />
     <Compile Include="Areas\Admin\Services\CreateUpdateUrlBatch.cs" />
     <Compile Include="Areas\Admin\Services\CustomScriptPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />

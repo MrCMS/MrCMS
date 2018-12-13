@@ -188,26 +188,6 @@ namespace MrCMS.Web.Areas.Admin.Services
                     ? "The page has been moved successfully"
                     : "There was an issue creating the batch to complete the merge")
             };
-            throw new System.NotImplementedException();
-            //var success = SetParent(confirmationModel.Webpage, confirmationModel.Parent);
-            //if (!success)
-            //{
-            //    return new MoveWebpageResult
-            //    {
-            //        Success = false,
-            //        Message = _resourceProvider.GetValue("There was an issue setting the parent to the new value")
-            //    };
-            //}
-
-            //success = _createUpdateUrlBatch.CreateBatch(confirmationModel);
-
-            //return new MoveWebpageResult
-            //{
-            //    Success = success,
-            //    Message = _resourceProvider.GetValue(success
-            //        ? "The page has been moved successfully"
-            //        : "There was an issue creating the batch to update the page URLs")
-            //};
         }
 
         public MergeWebpageModel GetModel(Webpage webpage)
