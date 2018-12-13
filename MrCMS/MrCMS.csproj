@@ -922,6 +922,7 @@
     <Compile Include="Services\WebsiteManagement\MoveWebpageBatchJobExecutor.cs" />
     <Compile Include="Services\WebsiteManagement\CompleteMergeBatchJob.cs" />
     <Compile Include="Services\WebsiteManagement\CompleteMergeBatchJobExecutor.cs" />
+    <Compile Include="Services\WebsiteManagement\OnMergeCompletedBase.cs" />
     <Compile Include="Services\WebsiteManagement\UpdateUrlBatchJob.cs" />
     <Compile Include="Services\WebsiteManagement\UpdateUrlBatchJobExecutor.cs" />
     <Compile Include="Services\WidgetModelService.cs" />
