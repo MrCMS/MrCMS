@@ -25,7 +25,7 @@ namespace MrCMS.Services.WebsiteManagement
                 while (typeof(Webpage).IsAssignableFrom(thisType))
                 {
                     foreach (var assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(OnMergeCompletedBase<>).MakeGenericType(thisType)))
+                        typeof(OnMergingWebpagesBase<>).MakeGenericType(thisType)))
                     {
                         hashSet.Add(assignType);
                     }
@@ -67,6 +67,8 @@ namespace MrCMS.Services.WebsiteManagement
 
                 _session.Transact(session =>
                 {
+                    ApplyCustomMergeLogic(webpage, mergeInto);
+
                     var urlSegment = webpage.UrlSegment;
                     session.Delete(webpage);
                     var urlHistory = new UrlHistory
@@ -78,7 +80,6 @@ namespace MrCMS.Services.WebsiteManagement
                     session.Save(urlHistory);
                 });
 
-                ApplyCustomMergeLogic(webpage, mergeInto);
 
                 return BatchJobExecutionResult.Success();
             }
@@ -95,7 +96,7 @@ namespace MrCMS.Services.WebsiteManagement
 
             foreach (var binderType in CompleteMergeTypes[type].Select(assignViewDataType => _kernel.Get(assignViewDataType)))
             {
-                var completedBase = binderType as OnMergeCompletedBase;
+                var completedBase = binderType as OnMergingWebpagesBase;
                 completedBase?.MergeCompleted(webpage, mergeInto);
             }
         }
