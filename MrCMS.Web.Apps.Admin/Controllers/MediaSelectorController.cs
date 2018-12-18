@@ -20,6 +20,12 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             ViewData["results"] = _mediaSelectorService.Search(searchQuery);
             return PartialView(searchQuery);
         }
+        public ActionResult CKEditor(CKEditorMediaSelectorSearchQuery searchQuery)
+        {
+            ViewData["categories"] = _mediaSelectorService.GetCategories();
+            ViewData["results"] = _mediaSelectorService.Search(searchQuery);
+            return View(searchQuery);
+        }
 
         [HttpGet]
         public JsonResult Alt(string url)

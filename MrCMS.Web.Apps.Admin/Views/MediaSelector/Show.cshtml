@@ -3,6 +3,7 @@
 @using MrCMS.Helpers
 @using MrCMS.Settings
 @using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.MediaSelectorSearchQuery
 @inject MediaSettings MediaSettings
 @{
@@ -50,12 +51,11 @@
         {
             foreach (var file in results)
             {
-                <partial name="FileResult" model="file"/>
+                <partial name="FileResult" model="file" />
             }
             <div class="clearfix"></div>
-            @*
-                // TODO: pager
-                @Html.Pager(results, "Show", page => new { page })*@
+
+            @Html.PagedListPager(results, page => Url.Action("Show", new { page }))
         }
         else
         {

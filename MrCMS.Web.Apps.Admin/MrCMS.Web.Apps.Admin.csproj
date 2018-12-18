@@ -12,6 +12,7 @@
   <ItemGroup>
     <None Remove="Views\Batch\BatchRun.cshtml" />
     <None Remove="Views\FileMigration\Show.cshtml" />
+    <None Remove="Views\MediaSelector\CKEditor.cshtml" />
     <None Remove="Views\Navigation\Children.cshtml" />
     <None Remove="Views\NavLinks\SubMenu.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
@@ -27,6 +28,7 @@
     <None Remove="Views\Webpage\TabContent.cshtml" />
     <None Remove="Views\Webpage\Versions.cshtml" />
     <None Remove="Views\_ViewImports.cshtml" />
+    <None Remove="wwwroot\Content\Scripts\mrcms\ck-editor-image-picker.js" />
   </ItemGroup>
 
   <ItemGroup>

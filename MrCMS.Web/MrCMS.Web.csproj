@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="App_Data\**" />
+    <Compile Remove="wwwroot\content\upload\**" />
     <Content Remove="App_Data\**" />
+    <Content Remove="wwwroot\content\upload\**" />
     <EmbeddedResource Remove="App_Data\**" />
+    <EmbeddedResource Remove="wwwroot\content\upload\**" />
     <None Remove="App_Data\**" />
+    <None Remove="wwwroot\content\upload\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\content\" />
   </ItemGroup>
 
   <ItemGroup>
