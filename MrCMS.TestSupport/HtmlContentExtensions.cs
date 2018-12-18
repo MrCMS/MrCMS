@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 
-namespace MrCMS.Tests.TestSupport
+namespace MrCMS.TestSupport
 {
     public static class HtmlContentExtensions
     {

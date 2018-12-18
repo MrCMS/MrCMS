@@ -7,7 +7,7 @@ namespace MrCMS.Services
         void AddUser(User user);
         void SaveUser(User user);
         User GetUser(int id);
-        void DeleteUser(User user);
+        void DeleteUser(int id);
         bool IsUniqueEmail(string email, int? id = null);
     }
 }

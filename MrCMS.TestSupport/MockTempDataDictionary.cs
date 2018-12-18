@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace MrCMS.Tests.TestSupport
+namespace MrCMS.TestSupport
 {
     public class MockTempDataDictionary : Dictionary<string, object>, ITempDataDictionary
     {

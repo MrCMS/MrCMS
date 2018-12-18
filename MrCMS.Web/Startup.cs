@@ -51,6 +51,7 @@ namespace MrCMS.Web
         {
             var isInstalled = IsInstalled();
 
+
             // services always required
             services.RegisterAllSimplePairings();
             services.RegisterOpenGenerics();
@@ -68,7 +69,8 @@ namespace MrCMS.Web
                 context.RegisterTheme<RedTheme>();
             });
 
-            services.AddDataAccess(isInstalled, Configuration.GetSection(Database));
+            services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
+
 
             // TODO: Look to removing Site for constructors and resolving like this
             services.AddScoped(provider =>
@@ -81,6 +83,13 @@ namespace MrCMS.Web
             services.AddMrCMSFileSystem();
 
             services.AddSignalR();
+
+            services.AddAutoMapper(expression =>
+            {
+                expression.AllowNullDestinationValues = true;
+                appContext.ConfigureAutomapper(expression);
+            });
+
 
             // if the system is not installed we just want MrCMS to show the installation screen
             if (!isInstalled)
@@ -97,13 +106,6 @@ namespace MrCMS.Web
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
             services.RegisterTasks();
-
-
-            services.AddAutoMapper(expression =>
-            {
-                expression.AllowNullDestinationValues = true;
-                appContext.ConfigureAutomapper(expression);
-            });
 
             services.AddMvcForMrCMS(appContext, fileProvider);
 

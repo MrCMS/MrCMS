@@ -5,6 +5,6 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface ISetWebpageAdminViewData
     {
-        void SetViewData<T>(T webpage, ViewDataDictionary viewData) where T : Webpage;
+        void SetViewData<T>(ViewDataDictionary viewData, T webpage) where T : Webpage;
     }
 }

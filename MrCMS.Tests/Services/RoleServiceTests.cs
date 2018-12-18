@@ -8,6 +8,7 @@ using MrCMS.Services;
 using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
+using MrCMS.TestSupport;
 
 namespace MrCMS.Tests.Services
 {

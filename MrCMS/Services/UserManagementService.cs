@@ -34,8 +34,11 @@ namespace MrCMS.Services
             return _session.Get<User>(id);
         }
 
-        public void DeleteUser(User user)
+        public void DeleteUser(int id)
         {
+            var user = GetUser(id);
+            if (user == null)
+                return;
             _session.Transact(session => session.Delete(user));
         }
 
@@ -48,7 +51,10 @@ namespace MrCMS.Services
         public bool IsUniqueEmail(string email, int? id = null)
         {
             if (id.HasValue)
+            {
                 return _session.QueryOver<User>().Where(u => u.Email == email && u.Id != id.Value).RowCount() == 0;
+            }
+
             return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
         }
 

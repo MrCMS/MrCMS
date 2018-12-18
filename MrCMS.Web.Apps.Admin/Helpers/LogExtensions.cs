@@ -17,7 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Helpers
             {
                 return JsonConvert.DeserializeObject<ErrorContextData>(log?.RequestData);
             }
-            catch (Exception exception)
+            catch 
             {
                 return null;
             }

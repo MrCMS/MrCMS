@@ -80,7 +80,7 @@ namespace MrCMS.Services
 
         public string ApplicationPath => _hostingEnvironment.WebRootPath;
 
-        public byte[] ReadAllBytes(string filePath) { return File.ReadAllBytes(GetPath(filePath)); }
+        public byte[] ReadAllBytes(string filePath) => File.ReadAllBytes(GetPath(filePath));
 
         public Stream GetReadStream(string filePath) => File.OpenRead(GetPath(filePath));
 

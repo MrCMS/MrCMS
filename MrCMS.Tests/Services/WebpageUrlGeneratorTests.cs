@@ -5,6 +5,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Services

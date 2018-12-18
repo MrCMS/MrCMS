@@ -4,6 +4,7 @@ using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.TestSupport;
 using NHibernate;
 using Xunit;
 
@@ -83,7 +84,7 @@ namespace MrCMS.Tests.Services
             var user = new User();
             Session.Transact(session => session.Save(user));
 
-            _userManagementService.DeleteUser(user);
+            _userManagementService.DeleteUser(user.Id);
 
             Session.QueryOver<User>().RowCount().Should().Be(0);
         }

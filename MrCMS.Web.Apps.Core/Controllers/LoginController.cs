@@ -1,14 +1,14 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
+using MrCMS.Helpers;
 using MrCMS.Models.Auth;
 using MrCMS.Services;
 using MrCMS.Services.Auth;
 using MrCMS.Services.Resources;
-using MrCMS.Web.Apps.Core.ModelBinders;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
+using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
@@ -43,7 +43,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         public ViewResult Show(LoginPage page, LoginModel model)
         {
             ModelState.Clear();
-            ViewData["login-model"] = TempData["login-model"] as LoginModel ?? model;
+            ViewData["login-model"] = TempData.Get<LoginModel>() ?? model;
             return View(page);
         }
 
@@ -69,7 +69,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                         }
 
                         _setVerifiedUserData.SetUserData(result.User);
-                        return _uniquePageService.RedirectTo<TwoFactorCodePage>(new {result.ReturnUrl});
+                        return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { result.ReturnUrl });
                     case LoginStatus.Failure:
                         _eventContext.Publish<IOnFailedLogin, UserFailedLoginEventArgs>(
                             new UserFailedLoginEventArgs(result.User, loginModel.Email));
@@ -85,7 +85,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 loginModel.Message = result.Message;
             }
 
-            TempData["login-model"] = loginModel;
+            TempData.Set(loginModel);
 
             return _uniquePageService.RedirectTo<LoginPage>();
         }
@@ -130,12 +130,16 @@ namespace MrCMS.Web.Apps.Core.Controllers
         public ActionResult PasswordReset(ResetPasswordPage page, Guid? id)
         {
             if (id == null)
+            {
                 return Redirect("~/");
+            }
 
             var user = _userLookup.GetUserByResetGuid(id.Value);
 
             if (user == null)
+            {
                 return Redirect("~");
+            }
 
             ViewData["ResetPasswordViewModel"] = new ResetPasswordViewModel(id.Value, user);
 
@@ -150,7 +154,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 _resetPasswordService.ResetPassword(model);
                 return _uniquePageService.RedirectTo<LoginPage>();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: should this not say what's wrong and redirect back to the password reset again?
                 return _uniquePageService.RedirectTo<LoginPage>();

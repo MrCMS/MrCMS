@@ -66,13 +66,6 @@ namespace MrCMS.Settings
             return _appContext.Themes.BuildSelectItemList(theme => theme.Name,
                 selected: theme => theme.Name == themeName,
                 emptyItem: SelectListItemHelper.EmptyItem("None", ""));
-            // TODO: themes
-            return new List<SelectListItem>();
-            //var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath + "\\Themes\\";
-            //return Directory.GetDirectories(applicationPhysicalPath, "*")
-            //                .Select(x => new DirectoryInfo(x.ToString()).Name)
-            //                .ToList()
-            //                .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem: null);
         }
 
         public virtual List<SelectListItem> GetUiCultures(string uiCulture)

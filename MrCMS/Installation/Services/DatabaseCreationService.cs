@@ -1,19 +1,22 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
+using MrCMS.Installation.Models;
 using MrCMS.Settings;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services
 {
     public class DatabaseCreationService : IDatabaseCreationService
     {
+        private const string ConfigKey = "Database";
         private readonly IServiceProvider _serviceProvider;
         private readonly IHostingEnvironment _environment;
 
@@ -52,6 +55,19 @@ namespace MrCMS.Installation.Services
             return provider;
         }
 
+        public bool IsDatabaseInstalled()
+        {
+            var environmentName = _environment.EnvironmentName;
+            var info = _environment.ContentRootFileProvider.GetFileInfo($"appsettings.{environmentName}.json");
+            var config = GetConfig(info);
+
+            if (config.ContainsKey(ConfigKey) && config[ConfigKey] is DatabaseSettings settings)
+            {
+                return !string.IsNullOrWhiteSpace(settings.ConnectionString);
+            }
+            return false;
+        }
+
         private ICreateDatabase GetDatabaseCreator(InstallModel model)
         {
             Type creatorType =
@@ -68,39 +84,44 @@ namespace MrCMS.Installation.Services
 
         public void SaveConnectionSettings(ICreateDatabase provider, InstallModel installModel)
         {
-            var environmentName = _environment.EnvironmentName;
-            var info = _environment.ContentRootFileProvider.GetFileInfo($"appsettings.{environmentName}.json");
+            var info = GetEnvironmentAppSettingsInfo();
+            var config = GetConfig(info);
 
-            var path = Path.Combine(_environment.ContentRootPath, $"appsettings.{environmentName}.json");
-            dynamic config;
-            if (info.Exists)
-            {
-                using (var stream = info.CreateReadStream())
-                using (TextReader reader = new StreamReader(stream))
-                    config = JsonConvert.DeserializeObject<ExpandoObject>(reader.ReadToEnd());
-            }
-            else
-            {
-                config = new ExpandoObject();
-            }
-            //File.Exists(path)
-            //? JsonConvert.DeserializeObject<ExpandoObject>(File.ReadAllText(path))
-            //: new ExpandoObject();
-
-            config.Database = new DatabaseSettings
+            config[ConfigKey] = new DatabaseSettings
             {
                 DatabaseProviderType = installModel.DatabaseProvider,
                 ConnectionString = provider.GetConnectionString(installModel)
             };
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(config, Formatting.Indented));
+            File.WriteAllText(info.PhysicalPath, JsonConvert.SerializeObject(config, Formatting.Indented));
+        }
 
-            //var databaseSettings = _systemConfigurationProvider.GetSystemSettings<DatabaseSettings>();
+        private static IDictionary<String, object> GetConfig(IFileInfo info)
+        {
+            IDictionary<String, object> config;
+            if (info.Exists)
+            {
+                using (var stream = info.CreateReadStream())
+                using (TextReader reader = new StreamReader(stream))
+                {
+                    config = JsonConvert.DeserializeObject<ExpandoObject>(reader.ReadToEnd());
+                }
+            }
+            else
+            {
+                config = new ExpandoObject();
+            }
 
-            //databaseSettings.ConnectionString = provider.GetConnectionString(installModel);
-            //databaseSettings.DatabaseProviderType = installModel.DatabaseProvider;
+            return config;
+        }
 
-            //_systemConfigurationProvider.SaveSettings(databaseSettings);
+        private IFileInfo GetEnvironmentAppSettingsInfo()
+        {
+            var environmentName = _environment.EnvironmentName;
+            var info = _environment.ContentRootFileProvider.GetFileInfo($"appsettings.{environmentName}.json");
+
+            //path = Path.Combine(_environment.ContentRootPath, $"appsettings.{environmentName}.json");
+            return info;
         }
     }
 }

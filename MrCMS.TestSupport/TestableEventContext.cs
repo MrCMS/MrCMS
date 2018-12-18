@@ -6,7 +6,7 @@ using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Services;
 
-namespace MrCMS.Tests
+namespace MrCMS.TestSupport
 {
     public class TestableEventContext : IEventContext
     {

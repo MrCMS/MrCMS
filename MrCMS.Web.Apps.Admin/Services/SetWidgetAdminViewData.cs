@@ -42,7 +42,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         private static readonly Dictionary<Type, HashSet<Type>> AssignViewDataTypes;
 
-        public void SetViewData<T>(T widget, ViewDataDictionary viewData) where T : Widget
+        public void SetViewData<T>(ViewDataDictionary viewData, T widget) where T : Widget
         {
             if (widget == null)
             {

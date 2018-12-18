@@ -7,6 +7,7 @@ using MrCMS.Services;
 using MrCMS.Services.Auth;
 using MrCMS.Website;
 using System;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Services.Auth

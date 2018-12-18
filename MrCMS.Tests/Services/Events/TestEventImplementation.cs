@@ -1,4 +1,4 @@
-namespace MrCMS.Tests.ACL
+namespace MrCMS.Tests.Services.Events
 {
     public class TestEventImplementation : ITestEvent
     {

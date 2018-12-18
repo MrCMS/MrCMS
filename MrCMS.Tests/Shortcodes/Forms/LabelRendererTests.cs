@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Shortcodes.Forms;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms

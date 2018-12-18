@@ -20,6 +20,10 @@ namespace MrCMS.Installation.Controllers
 
         public IActionResult Setup()
         {
+            if (_installationService.DatabaseIsInstalled())
+            {
+                return View("Success");
+            }
             var installModel = TempData.Get<InstallModel>();
             // if it is a new setup
             if (installModel == null)
@@ -50,13 +54,11 @@ namespace MrCMS.Installation.Controllers
             {
                 TempData.Set(installationResult);
                 TempData.Set(installModel);
-            }
-            else
-            {
-                _applicationLifetime.StopApplication();
+                return RedirectToAction("Setup");
             }
 
-            return Redirect("~");
+            _applicationLifetime.StopApplication();
+            return View("Success");
         }
     }
 }

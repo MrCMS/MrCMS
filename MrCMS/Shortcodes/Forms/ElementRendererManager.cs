@@ -18,14 +18,7 @@ namespace MrCMS.Shortcodes.Forms
         public IFormElementRenderer GetElementRenderer<T>(T property) where T : FormProperty
         {
             var type = typeof(IFormElementRenderer<>).MakeGenericType(property.GetType());
-            //var concreteType = TypeHelper.GetAllConcreteTypesAssignableFrom(type).FirstOrDefault();
-            //if (concreteType != null)
-            //{
-            //    return _serviceProvider.GetService(concreteType) as IFormElementRenderer;
-            //}
             return _serviceProvider.GetService(type) as IFormElementRenderer;
-
-            return null;
         }
 
         public TagBuilder GetElementContainer(FormRenderingType formRendererType, FormProperty property)

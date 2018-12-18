@@ -3,6 +3,7 @@ using NHibernate.Criterion;
 using Xunit;
 using MrCMS.Helpers;
 using FluentAssertions;
+using MrCMS.TestSupport;
 
 namespace MrCMS.Tests.Helpers
 {

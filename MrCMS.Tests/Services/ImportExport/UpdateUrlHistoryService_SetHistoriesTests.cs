@@ -6,7 +6,7 @@ using MrCMS.Helpers;
 using MrCMS.Services.ImportExport;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Tests.Stubs;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using NHibernate.Linq;
 using Xunit;
 

@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Apps.Admin.Services;
 
 namespace MrCMS.Web.Apps.Admin.ViewComponents
 {
-    public class NavLinksViewComponent  :ViewComponent   
+    public class NavLinksViewComponent : ViewComponent
     {
         private readonly IAdminNavLinksService _service;
 
@@ -12,7 +11,7 @@ namespace MrCMS.Web.Apps.Admin.ViewComponents
         {
             _service = service;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             return View(_service.GetNavLinks());
         }

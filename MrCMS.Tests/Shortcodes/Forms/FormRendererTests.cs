@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Shortcodes.Forms;
 using MrCMS.Tests.Stubs;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using MrCMS.Website;
 using Xunit;
 

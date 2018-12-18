@@ -5,6 +5,7 @@ using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
 using System;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Settings
@@ -12,7 +13,7 @@ namespace MrCMS.Tests.Settings
     public class SiteSettingsOptionGeneratorTests : InMemoryDatabaseTest
     {
         private readonly MrCMSAppContext _mrCMSAppContext = new MrCMSAppContext();
-        private SiteSettingsOptionGenerator _sut;
+        private readonly SiteSettingsOptionGenerator _sut;
 
         public SiteSettingsOptionGeneratorTests()
         {

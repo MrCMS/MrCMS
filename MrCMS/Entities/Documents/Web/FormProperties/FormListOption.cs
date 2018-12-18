@@ -1,7 +1,6 @@
-using System.ComponentModel.DataAnnotations;
-using FluentNHibernate.Utils;
 using NHibernate;
-using NHibernate.Util;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace MrCMS.Entities.Documents.Web.FormProperties
 {
@@ -16,13 +15,13 @@ namespace MrCMS.Entities.Documents.Web.FormProperties
         {
             if (Selected && FormProperty.OnlyOneOptionSelectable)
             {
-                foreach (var option in FormProperty.Options.Except(this))
+                foreach (var option in FormProperty.Options.Except(new[] { this }))
                 {
                     option.Selected = false;
                     session.Update(option);
                 }
             }
-            else if (FormProperty.OnlyOneOptionSelectable && !FormProperty.Options.Except(this).Any())
+            else if (FormProperty.OnlyOneOptionSelectable && !FormProperty.Options.Except(new[] { this }).Any())
             {
                 Selected = true;
             }

@@ -20,14 +20,21 @@ namespace MrCMS.Web.Apps.Admin.Controllers
     {
         private readonly IWebpageAdminService _webpageAdminService;
         private readonly IWebpageBaseViewDataService _webpageBaseViewDataService;
+        private readonly ISetWebpageAdminViewData _setWebpageAdminViewData;
         private readonly IUrlValidationService _urlValidationService;
+        private readonly IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
 
         public WebpageController(IWebpageAdminService webpageAdminService,
-            IWebpageBaseViewDataService webpageBaseViewDataService, IUrlValidationService urlValidationService)
+            IWebpageBaseViewDataService webpageBaseViewDataService,
+            ISetWebpageAdminViewData setWebpageAdminViewData,
+            IUrlValidationService urlValidationService,
+            IModelBindingHelperAdaptor modelBindingHelperAdaptor)
         {
             _webpageAdminService = webpageAdminService;
             _webpageBaseViewDataService = webpageBaseViewDataService;
+            _setWebpageAdminViewData = setWebpageAdminViewData;
             _urlValidationService = urlValidationService;
+            _modelBindingHelperAdaptor = modelBindingHelperAdaptor;
         }
 
         public ViewResult Index()
@@ -63,7 +70,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var additionalPropertyModel = _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType);
             if (additionalPropertyModel != null)
             {
-                await TryUpdateModelAsync(additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+                await _modelBindingHelperAdaptor.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
             var webpage = _webpageAdminService.Add(model, additionalPropertyModel);
@@ -74,18 +81,18 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(Webpage), TypeACLRule.Edit)]
-        public ActionResult Edit_Get(int id)
+        public ViewResult Edit_Get(int id)
         {
             var webpage = _webpageAdminService.GetWebpage(id);
             _webpageBaseViewDataService.SetEditPageViewData(ViewData, webpage);
-            webpage.SetAdminViewData(this);
+            _setWebpageAdminViewData.SetViewData(ViewData, webpage);
             return View(webpage);
         }
 
         [HttpPost]
         [Acl(typeof(Webpage), TypeACLRule.Edit)]
         [ForceImmediateLuceneUpdate]
-        public ActionResult Edit(UpdateWebpageViewModel model)
+        public RedirectToActionResult Edit(UpdateWebpageViewModel model)
         {
             var result = _webpageAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Name));
@@ -103,7 +110,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [Acl(typeof(Webpage), TypeACLRule.Delete)]
         [ForceImmediateLuceneUpdate]
-        public ActionResult Delete(int id)
+        public RedirectToActionResult Delete(int id)
         {
             var webpage = _webpageAdminService.Delete(id);
             TempData.InfoMessages().Add(string.Format("{0} deleted", webpage.Name));
@@ -138,7 +145,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         //}
 
         [HttpPost]
-        public ActionResult PublishNow(int id)
+        public RedirectToActionResult PublishNow(int id)
         {
             _webpageAdminService.PublishNow(id);
 
@@ -146,7 +153,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Unpublish(int id)
+        public RedirectToActionResult Unpublish(int id)
         {
             _webpageAdminService.Unpublish(id);
 

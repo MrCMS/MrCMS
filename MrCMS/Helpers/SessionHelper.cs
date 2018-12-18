@@ -20,6 +20,8 @@ namespace MrCMS.Helpers
     {
         // TODO: get this from DI
         public static int DefaultPageSize = 10;
+
+
         public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, IServiceProvider serviceProvider)
         {
             var sessionBuilder = sessionFactory.WithOptions()

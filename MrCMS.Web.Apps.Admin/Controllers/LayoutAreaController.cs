@@ -23,7 +23,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(AddLayoutAreaModel layoutArea)
+        public RedirectToActionResult Add(AddLayoutAreaModel layoutArea)
         {
             _layoutAreaAdminService.Add(layoutArea);
 
@@ -44,7 +44,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(UpdateLayoutAreaModel model)
+        public RedirectToActionResult Edit(UpdateLayoutAreaModel model)
         {
             var area = _layoutAreaAdminService.Update(model);
 
@@ -54,7 +54,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(int id)
+        public PartialViewResult Delete_Get(int id)
         {
             return PartialView(_layoutAreaAdminService.GetEditModel(id));
         }

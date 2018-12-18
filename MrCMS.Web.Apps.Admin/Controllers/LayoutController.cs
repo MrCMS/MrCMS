@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Layout;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.ACL;
 using MrCMS.Web.Apps.Admin.Helpers;
@@ -8,6 +6,7 @@ using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
+using System.Collections.Generic;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
@@ -38,7 +37,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(AddLayoutModel model)
+        public RedirectToActionResult Add(AddLayoutModel model)
         {
             var layout = _layoutAdminService.Add(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", model.Name));
@@ -48,7 +47,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(LayoutsACL), LayoutsACL.Edit)]
-        public ActionResult Edit_Get(int id)
+        public ViewResult Edit_Get(int id)
         {
             var layout = _layoutAdminService.GetEditModel(id);
             ViewData["layout-areas"] = _layoutAdminService.GetLayoutAreas(id);
@@ -56,7 +55,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(UpdateLayoutModel model)
+        public RedirectToActionResult Edit(UpdateLayoutModel model)
         {
             _layoutAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", model.Name));
@@ -81,10 +80,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [Acl(typeof(LayoutsACL), LayoutsACL.Sort)]
-        public ActionResult Sort(int? id)
+        public ViewResult Sort(int? id)
         {
-            var sortItems =
-                _layoutAdminService.GetSortItems(id);
+            var sortItems = _layoutAdminService.GetSortItems(id);
 
             return View(sortItems);
         }

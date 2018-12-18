@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
-using MrCMS.Tests.TestSupport;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms

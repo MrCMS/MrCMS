@@ -2,10 +2,10 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Settings;
-using MrCMS.Tests.Support;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Settings
