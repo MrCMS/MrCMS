@@ -17,7 +17,7 @@ namespace MrCMS.Services.Resources
         /// </summary>
         /// <param name="builder">The <see cref="IMvcBuilder"/>.</param>
         /// <returns>The <see cref="IMvcBuilder"/>.</returns>
-        public static IMvcBuilder AddDataAnnotations(this IMvcBuilder builder)
+        public static IMvcBuilder AddMrCMSDataAnnotations(this IMvcBuilder builder)
         {
             if (builder == null)
             {

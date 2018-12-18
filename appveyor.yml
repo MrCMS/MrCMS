@@ -13,7 +13,7 @@
   after_build:
     - ps: dotnet publish .\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
   artifacts:
-   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
+   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.2\publish'
      name: MrCMS.Web
      type: WebDeployPackage
 -
@@ -31,6 +31,6 @@
   after_build:
     - ps: dotnet publish .\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
   artifacts:
-   - path: '\MrCMS.Web\bin\Release\netcoreapp2.1\publish'
+   - path: '\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
      name: MrCMS.Web
      type: WebDeployPackage

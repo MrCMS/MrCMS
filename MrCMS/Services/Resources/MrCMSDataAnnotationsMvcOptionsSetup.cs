@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
@@ -42,13 +43,17 @@ namespace MrCMS.Services.Resources
                 throw new ArgumentNullException(nameof(options));
             }
 
+            var metadataDetailsProvider = options.ModelMetadataDetailsProviders
+                .OfType<DataAnnotationsMetadataProvider>().FirstOrDefault();
+            if (metadataDetailsProvider != null)
+                options.ModelMetadataDetailsProviders.Remove(metadataDetailsProvider);
             options.ModelMetadataDetailsProviders.Add(new MrCMSDataAnnotationsMetadataProvider(
                 _dataAnnotationLocalizationOptions,
                 _serviceProvider));
 
-            options.ModelValidatorProviders.Add(new DataAnnotationsModelValidatorProvider(
-                _validationAttributeAdapterProvider,
-                _dataAnnotationLocalizationOptions, _serviceProvider.GetService<IStringLocalizerFactory>()));
+            //options.ModelValidatorProviders.Add(new DataAnnotationsModelValidatorProvider(
+            //    _validationAttributeAdapterProvider,
+            //    _dataAnnotationLocalizationOptions, _serviceProvider.GetService<IStringLocalizerFactory>()));
         }
     }
 }

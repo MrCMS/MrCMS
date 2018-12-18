@@ -51,7 +51,7 @@ namespace MrCMS.Apps
                     options.FileProviders.Add(fileProvider);
                 })
                 .AddViewLocalization()
-                .AddDataAnnotations()
+                .AddMrCMSDataAnnotations()
                 .AddDataAnnotationsLocalization()
                 .AddAppMvcConfig(appContext);
         } 
