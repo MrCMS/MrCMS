@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.HealthChecks;
 using MrCMS.Web.Apps.Admin.Services.Dashboard;
 using MrCMS.Website.Controllers;
 

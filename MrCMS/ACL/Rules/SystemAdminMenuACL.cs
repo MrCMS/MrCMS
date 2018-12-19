@@ -23,6 +23,7 @@ namespace MrCMS.ACL.Rules
         public const string Notifications = "Notifications";
         public const string ClearCaches = "Clear Caches";
         public const string Security = "Security";
+        public const string About = "About";
 
         public override string DisplayName
         {
