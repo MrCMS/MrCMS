@@ -23,7 +23,7 @@ namespace MrCMS.Web.Apps.Admin
 
         public override IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
         {
-            routeBuilder.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
+            routeBuilder.MapRoute("ckeditor Config", "Areas/Admin/lib/ckeditor/config.js",
                 new { controller = "CKEditor", action = "Config" });
 
             routeBuilder.MapAreaRoute("Admin route",

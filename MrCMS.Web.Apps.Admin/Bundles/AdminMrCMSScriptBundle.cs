@@ -14,14 +14,14 @@ namespace MrCMS.Web.Apps.Admin.Bundles
         {
             get
             {
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/menu.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/stickyTabs.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/admin.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/tagging.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/search.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/batch.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js";
-                yield return "~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js";
+                yield return "~/Areas/Admin/scripts/menu.js";
+                yield return "~/Areas/Admin/scripts/stickyTabs.js";
+                yield return "~/Areas/Admin/scripts/admin.js";
+                yield return "~/Areas/Admin/scripts/tagging.js";
+                yield return "~/Areas/Admin/scripts/search.js";
+                yield return "~/Areas/Admin/scripts/batch.js";
+                yield return "~/Areas/Admin/scripts/media-uploader.js";
+                yield return "~/Areas/Admin/scripts/mrcms-media-selector.js";
             }
         }
     }

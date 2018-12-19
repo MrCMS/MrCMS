@@ -3,9 +3,9 @@
 @using MrCMS.Settings
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject SiteSettings SiteSettings
-<link href="@Url.Content("~/Areas/Admin/Content/Styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css"/>
-<link href="@Url.Content("~/Areas/Admin/Content/Styles/featherlight.css")" rel="stylesheet" type="text/css"/>
-<link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css"/>
+<link href="@Url.Content("~/Areas/Admin/styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css"/>
+<link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css"/>
+<link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css"/>
 @{
     var canEditPage = Html.CanAccess<TypeACLRule>(TypeACLRule.Edit, Model.GetType().FullName);
 }
@@ -56,12 +56,11 @@
 @Html.HiddenFor(webpage => webpage.Id)
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 @{
-    Html.IncludeScript("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/store.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/dropzone.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/featherlight.js");
-
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/front-end-editing.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/lib/ckeditor/ckeditor.js");
+    Html.IncludeScript("~/Areas/Admin/lib/store.js");
+    Html.IncludeScript("~/Areas/Admin/lib/dropzone.js");
+    Html.IncludeScript("~/Areas/Admin/lib/featherlight.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/mrcms/front-end-editing.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/mrcms/mrcms-media-selector.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/mrcms/media-uploader.js");
 }

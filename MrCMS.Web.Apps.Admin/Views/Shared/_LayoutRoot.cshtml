@@ -10,9 +10,7 @@
 <head>
     <title>@ViewBag.Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/gif" href="/Areas/Admin/Content/Images/mrcms-icon.gif">
-
-
+    <link rel="icon" type="image/gif" href="/Areas/Admin/img/mrcms-icon.gif">
     @Html.RenderStyleBundle("~/admin/stylesheets/mrcms")
     @Html.RenderStyleBundle("~/admin/stylesheets/apps")
 
@@ -21,13 +19,13 @@
 </head>
 <body>
     <div id="loading" style="display: none;">
-        <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
+        <img src="/Areas/Admin/img/ajax-loader2.gif" />
     </div>
     @RenderBody()
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script>
 
     @Html.RenderScriptBundle("~/admin/scripts/lib")
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/plugins/signalr/signalr.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
     <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
     <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
     @Html.RenderScriptBundle("~/admin/scripts/mrcms")
@@ -35,8 +33,8 @@
 
     @if (GetCurrentUser.Get()?.DisableNotifications == false)
     {
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/transient-notifications.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/persistent-notifications.js");
+        Html.IncludeScript("~/Areas/Admin/scripts/transient-notifications.js");
+        Html.IncludeScript("~/Areas/Admin/scripts/persistent-notifications.js");
     }
 
     @{ Html.RenderLocalisedScripts();}

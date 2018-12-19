@@ -45,15 +45,14 @@ namespace MrCMS.Services.Resources
 
             var metadataDetailsProvider = options.ModelMetadataDetailsProviders
                 .OfType<DataAnnotationsMetadataProvider>().FirstOrDefault();
+            
             if (metadataDetailsProvider != null)
                 options.ModelMetadataDetailsProviders.Remove(metadataDetailsProvider);
+
             options.ModelMetadataDetailsProviders.Add(new MrCMSDataAnnotationsMetadataProvider(
                 _dataAnnotationLocalizationOptions,
                 _serviceProvider));
 
-            //options.ModelValidatorProviders.Add(new DataAnnotationsModelValidatorProvider(
-            //    _validationAttributeAdapterProvider,
-            //    _dataAnnotationLocalizationOptions, _serviceProvider.GetService<IStringLocalizerFactory>()));
         }
     }
 }
