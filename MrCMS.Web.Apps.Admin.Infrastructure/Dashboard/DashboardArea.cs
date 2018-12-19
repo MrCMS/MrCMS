@@ -1,4 +1,4 @@
-namespace MrCMS.Web.Apps.Admin.Models
+﻿namespace MrCMS.Web.Apps.Admin.Infrastructure.Dashboard
 {
     public enum DashboardArea
     {

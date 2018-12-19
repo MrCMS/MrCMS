@@ -125,10 +125,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult SortFiles(MediaCategory parent)
+        public ActionResult SortFiles(MediaCategory category)
         {
-            ViewData["categoryId"] = parent.Id;
-            List<ImageSortItem> sortItems = _fileAdminService.GetFilesToSort(parent);
+            ViewData["categoryId"] = category.Id;
+            List<ImageSortItem> sortItems = _fileAdminService.GetFilesToSort(category);
 
             return View(sortItems);
         }
