@@ -1,0 +1,39 @@
+﻿@model IList<MrCMS.Models.SortItem>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var webpageId = ViewData["web-page"] as int? ?? 0;
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/sort.js");
+}
+@using (Html.BeginForm("Sort", "ContentBlock", new { webpageId }, FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            Sort
+            <span class="btn-group pull-right">
+                <button class="btn btn-primary" id="submit">
+                    Save &amp; Close
+                </button>
+            </span>
+        </legend>
+
+        <ul id="sortable">
+            @if (Model.Any())
+            {
+                for (var i = 0; i < Model.Count; i++)
+                {
+                    <li>
+                        @Html.HiddenFor(model => model[i].Id)
+                        @Html.HiddenFor(model => model[i].Order)
+                        <i class="glyphicon glyphicon-resize-full"></i>&nbsp;&nbsp;
+                        @Model[i].Name
+                    </li>
+                }
+            }
+            else
+            {
+                <li>No options to sort.</li>
+            }
+        </ul>
+    </fieldset>
+}
+

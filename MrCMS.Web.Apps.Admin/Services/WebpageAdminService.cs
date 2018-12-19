@@ -8,8 +8,8 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

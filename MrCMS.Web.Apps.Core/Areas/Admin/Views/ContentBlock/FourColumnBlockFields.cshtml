@@ -1,0 +1,87 @@
+﻿@model MrCMS.Web.Apps.Core.Areas.Admin.Models.ContentBlocks.FourColumnBlockViewModel
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Text)
+            @Html.TextAreaFor(x => x.Text, new { @class = "ckedit-enabled" })
+            @Html.ValidationMessageFor(x => x.Text)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Image)<br />
+            @Html.TextBoxFor(x => x.Image, new { data_type = "media-selector" })
+            @Html.ValidationMessageFor(x => x.Image)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Link)
+            @Html.TextBoxFor(x => x.Link, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Link)
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Text2)
+            @Html.TextAreaFor(x => x.Text2, new { @class = "ckedit-enabled" })
+            @Html.ValidationMessageFor(x => x.Text2)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Image2)<br />
+            @Html.TextBoxFor(x => x.Image2, new { data_type = "media-selector" })
+            @Html.ValidationMessageFor(x => x.Image2)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Link2)
+            @Html.TextBoxFor(x => x.Link2, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Link2)
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Text3)
+            @Html.TextAreaFor(x => x.Text3, new { @class = "ckedit-enabled" })
+            @Html.ValidationMessageFor(x => x.Text3)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Image3)<br />
+            @Html.TextBoxFor(x => x.Image3, new { data_type = "media-selector" })
+            @Html.ValidationMessageFor(x => x.Image3)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Link3)
+            @Html.TextBoxFor(x => x.Link3, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Link3)
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Text4)
+            @Html.TextAreaFor(x => x.Text4, new { @class = "ckedit-enabled" })
+            @Html.ValidationMessageFor(x => x.Text4)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.LabelFor(x => x.Image4)<br />
+            @Html.TextBoxFor(x => x.Image4, new { data_type = "media-selector" })
+            @Html.ValidationMessageFor(x => x.Image4)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Link4)
+            @Html.TextBoxFor(x => x.Link4, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Link4)
+        </div>
+    </div>
+</div>
+

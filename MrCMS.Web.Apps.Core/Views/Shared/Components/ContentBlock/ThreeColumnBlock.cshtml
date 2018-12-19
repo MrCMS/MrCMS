@@ -1,0 +1,59 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Core.ContentBlocks.ThreeColumnBlock
+
+<div class="row content-grids">
+    <div class="col-sm-4">
+        <div class="white-bg mb-5">
+            @if (!string.IsNullOrWhiteSpace(Model.Link))
+            {
+                <a href="@Model.Link">
+                    @Html.RenderImage(Model.Image, attributes: new {@class = "img-fluid"})
+                </a>
+            }
+            else
+            {
+                @Html.RenderImage(Model.Image, attributes: new { @class = "img-fluid" })
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Text))
+            {
+                <div class="p-5">@Html.Raw(Model.Text)</div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="white-bg mb-5">
+            @if (!string.IsNullOrWhiteSpace(Model.Link2))
+            {
+                <a href="@Model.Link2">
+                    @Html.RenderImage(Model.Image2, attributes: new {@class = "img-fluid"})
+                </a>
+            }
+            else
+            {
+                @Html.RenderImage(Model.Image2, attributes: new { @class = "img-fluid" })
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Text2))
+            {
+                <div class="p-5">@Html.Raw(Model.Text2)</div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="white-bg mb-5">
+            @if (!string.IsNullOrWhiteSpace(Model.Link3))
+            {
+                <a href="@Model.Link3">
+                    @Html.RenderImage(Model.Image3, attributes: new {@class = "img-fluid"})
+                </a>
+            }
+            else
+            {
+                @Html.RenderImage(Model.Image3, attributes: new { @class = "img-fluid" })
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Text3))
+            {
+                <div class="p-5">@Html.Raw(Model.Text3)</div>
+            }
+        </div>
+    </div>
+</div>

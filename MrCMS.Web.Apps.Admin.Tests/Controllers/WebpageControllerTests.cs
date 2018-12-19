@@ -27,7 +27,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         private readonly IWebpageBaseViewDataService _baseViewDataService;
         private readonly WebpageController _webpageController;
         private readonly IWebpageAdminService _webpageAdminService;
-        private IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
+        private IModelBindingHelperAdapter _modelBindingHelperAdapter;
         private ISetWebpageAdminViewData _setAdminViewData;
 
         public WebpageControllerTests()
@@ -36,10 +36,10 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
             _baseViewDataService = A.Fake<IWebpageBaseViewDataService>();
             _setAdminViewData = A.Fake<ISetWebpageAdminViewData>();
             _webpageAdminService = A.Fake<IWebpageAdminService>();
-            _modelBindingHelperAdaptor = A.Fake<IModelBindingHelperAdaptor>();
+            _modelBindingHelperAdapter = A.Fake<IModelBindingHelperAdapter>();
             _webpageController = new WebpageController(_webpageAdminService, _baseViewDataService,
                 _setAdminViewData,
-                _urlValidationService, _modelBindingHelperAdaptor)
+                _urlValidationService, _modelBindingHelperAdapter)
             {
                 ViewData = ViewDataDictionaryHelper.GetNewDictionary(),
                 TempData = new MockTempDataDictionary(),

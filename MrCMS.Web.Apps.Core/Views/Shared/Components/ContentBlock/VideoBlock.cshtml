@@ -1,0 +1,12 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Core.ContentBlocks.VideoBlock
+
+<div class="row mb-5">
+    <div class="col">
+        <div class="white-bg">
+            <a href="@Model.Url" target="_blank" data-featherlight="iframe" data-featherlight-iframe-width="960" data-featherlight-iframe-height="540">
+                @Html.RenderImage(Model.Image, attributes: new { @class = "img-fluid" })
+            </a>
+        </div>
+    </div>
+</div>

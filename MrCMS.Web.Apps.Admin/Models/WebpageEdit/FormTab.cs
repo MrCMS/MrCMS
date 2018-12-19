@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
-using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
