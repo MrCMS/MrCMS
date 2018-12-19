@@ -1,6 +1,6 @@
 using MrCMS.Entities;
 
-namespace MrCMS.Web.Apps.Admin.Models.Tabs
+namespace MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding
 {
     /// <summary>
     /// Marker interface for model-binder properties

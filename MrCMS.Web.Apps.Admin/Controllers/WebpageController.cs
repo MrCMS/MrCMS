@@ -22,19 +22,19 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         private readonly IWebpageBaseViewDataService _webpageBaseViewDataService;
         private readonly ISetWebpageAdminViewData _setWebpageAdminViewData;
         private readonly IUrlValidationService _urlValidationService;
-        private readonly IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
+        private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
 
         public WebpageController(IWebpageAdminService webpageAdminService,
             IWebpageBaseViewDataService webpageBaseViewDataService,
             ISetWebpageAdminViewData setWebpageAdminViewData,
             IUrlValidationService urlValidationService,
-            IModelBindingHelperAdaptor modelBindingHelperAdaptor)
+            IModelBindingHelperAdapter modelBindingHelperAdapter)
         {
             _webpageAdminService = webpageAdminService;
             _webpageBaseViewDataService = webpageBaseViewDataService;
             _setWebpageAdminViewData = setWebpageAdminViewData;
             _urlValidationService = urlValidationService;
-            _modelBindingHelperAdaptor = modelBindingHelperAdaptor;
+            _modelBindingHelperAdapter = modelBindingHelperAdapter;
         }
 
         public ViewResult Index()
@@ -70,7 +70,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var additionalPropertyModel = _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType);
             if (additionalPropertyModel != null)
             {
-                await _modelBindingHelperAdaptor.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
             var webpage = _webpageAdminService.Add(model, additionalPropertyModel);

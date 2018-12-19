@@ -16,13 +16,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
     {
         private readonly IWidgetAdminService _widgetService;
         private readonly ISetWidgetAdminViewData _setAdminViewData;
-        private readonly IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
+        private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
 
-        public WidgetController(IWidgetAdminService widgetService, ISetWidgetAdminViewData setAdminViewData, IModelBindingHelperAdaptor modelBindingHelperAdaptor)
+        public WidgetController(IWidgetAdminService widgetService, ISetWidgetAdminViewData setAdminViewData, IModelBindingHelperAdapter modelBindingHelperAdapter)
         {
             _widgetService = widgetService;
             _setAdminViewData = setAdminViewData;
-            _modelBindingHelperAdaptor = modelBindingHelperAdaptor;
+            _modelBindingHelperAdapter = modelBindingHelperAdapter;
         }
 
         [HttpGet]
@@ -44,7 +44,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var additionalPropertyModel = _widgetService.GetAdditionalPropertyModel(model.WidgetType);
             if (additionalPropertyModel != null)
             {
-                await _modelBindingHelperAdaptor.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
             var widget = _widgetService.AddWidget(model, additionalPropertyModel);
@@ -71,7 +71,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             {
                 ViewData["return-url"] = returnUrl;
             }
-
+    
             return View(editModel);
         }
 
@@ -82,7 +82,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var additionalPropertyModel = _widgetService.GetAdditionalPropertyModel(model.Id);
             if (additionalPropertyModel != null)
             {
-                await _modelBindingHelperAdaptor.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
             var widget = _widgetService.UpdateWidget(model, additionalPropertyModel);

@@ -3,8 +3,8 @@ using System.Linq;
 using AutoMapper;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Models.Tabs;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Services

@@ -4,7 +4,7 @@
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 
-@using (Html.BeginForm("Sort", "Form", null, FormMethod.Post, new { @class = "form-update-form", id = "sort-fields-form" }))
+@using (Html.BeginForm("Sort", "Form", FormMethod.Post, new { @class = "form-update-form", id = "sort-fields-form" }))
 {
     
     <fieldset>

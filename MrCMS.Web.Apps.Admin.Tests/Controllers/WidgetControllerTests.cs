@@ -19,14 +19,14 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         private readonly WidgetController _widgetController;
         private readonly IWidgetAdminService _widgetService;
         private readonly ISetWidgetAdminViewData _setAdminViewData;
-        private readonly IModelBindingHelperAdaptor _modelBindingHelperAdaptor;
+        private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
 
         public WidgetControllerTests()
         {
             _widgetService = A.Fake<IWidgetAdminService>();
             _setAdminViewData = A.Fake<ISetWidgetAdminViewData>();
-            _modelBindingHelperAdaptor = A.Fake<IModelBindingHelperAdaptor>();
-            _widgetController = new WidgetController(_widgetService, _setAdminViewData, _modelBindingHelperAdaptor);
+            _modelBindingHelperAdapter = A.Fake<IModelBindingHelperAdapter>();
+            _widgetController = new WidgetController(_widgetService, _setAdminViewData, _modelBindingHelperAdapter);
         }
 
         [Fact]

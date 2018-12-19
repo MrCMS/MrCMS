@@ -75,8 +75,8 @@ namespace MrCMS.Web.Apps.Admin.Models
                     _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.MessageQueue)),
                 new ChildMenuItem("Notifications", "/Admin/Notification",
                     _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Notifications)),
-                new ChildMenuItem("Clear Caches", "/Admin/ClearCaches"),
-                new ChildMenuItem("About", "/Admin/About")
+                new ChildMenuItem("Clear Caches", "/Admin/ClearCaches", _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.ClearCaches)),
+                new ChildMenuItem("About", "/Admin/About", _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.About))
             };
         }
     }

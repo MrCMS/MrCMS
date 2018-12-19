@@ -28,6 +28,7 @@ namespace MrCMS.Entities.Documents.Web
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
             FrontEndAllowedRoles = new HashSet<UserRole>();
+            ContentBlocks = new List<ContentBlock>();   
         }
 
         [Required]
@@ -185,5 +186,6 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Do not cache?")]
         public virtual bool DoNotCache { get; set; }
 
+        public virtual IList<ContentBlock> ContentBlocks { get; set; }
     }
 }

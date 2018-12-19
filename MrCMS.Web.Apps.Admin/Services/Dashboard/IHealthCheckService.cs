@@ -1,26 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MrCMS.HealthChecks;
+﻿using MrCMS.HealthChecks;
+using System.Collections.Generic;
 
 namespace MrCMS.Web.Apps.Admin.Services.Dashboard
 {
     public interface IHealthCheckService
     {
         List<IHealthCheck> GetHealthChecks();
-    }
-
-    public class HealthCheckService : IHealthCheckService
-    {
-        private readonly IEnumerable<IHealthCheck> _healthChecks;
-
-        public HealthCheckService(IEnumerable<IHealthCheck> healthChecks)
-        {
-            _healthChecks = healthChecks;
-      }
-
-        public List<IHealthCheck> GetHealthChecks()
-        {
-            return _healthChecks.ToList();
-        }
+        HealthCheckResult CheckType(string typeName);
     }
 }

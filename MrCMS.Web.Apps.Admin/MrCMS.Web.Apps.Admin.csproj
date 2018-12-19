@@ -11,17 +11,24 @@
 
   <ItemGroup>
     <None Remove="Views\Batch\BatchRun.cshtml" />
+    <None Remove="Views\ContentBlock\Edit.cshtml" />
+    <None Remove="Views\ContentBlock\Sort.cshtml" />
     <None Remove="Views\FileMigration\Show.cshtml" />
     <None Remove="Views\MediaSelector\CKEditor.cshtml" />
     <None Remove="Views\Navigation\Children.cshtml" />
     <None Remove="Views\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\Shared\Components\Greeting\Default.cshtml" />
+    <None Remove="Views\Shared\Components\HealthCheck\Default.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\Shared\Components\PageStats\Default.cshtml" />
+    <None Remove="Views\Shared\Components\UserStats\Default.cshtml" />
     <None Remove="Views\SiteCloneOptions\Get.cshtml" />
     <None Remove="Views\SiteList\Get.cshtml" />
     <None Remove="Views\SystemSettings\TestEmailSettings.cshtml" />
     <None Remove="Views\User\Content.cshtml" />
     <None Remove="Views\User\Tab.cshtml" />
+    <None Remove="Views\Webpage\ContentBlocks.cshtml" />
     <None Remove="Views\Webpage\RedirectAdd.cshtml" />
     <None Remove="Views\Webpage\RedirectSEO.cshtml" />
     <None Remove="Views\Webpage\Tab.cshtml" />

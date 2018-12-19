@@ -1,0 +1,83 @@
+﻿@using MrCMS.Entities.Documents
+@using MrCMS.Web.Apps.Admin.Services
+@model MrCMS.Entities.Documents.Web.Webpage
+@inject IContentBlockAdminService AdminService
+@{
+    var contentBlocks = AdminService.GetBlocks(Model.Id);
+    var types = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<ContentBlock>();
+}
+
+<div data-content-blocks="">
+
+    <div class="btn-group">
+        @if (contentBlocks.Any())
+        {
+            @Html.ActionLink("Sort", "Sort", "ContentBlock", new { id = Model.Id }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
+        }
+        <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> 
+            @Html.Resource("Add Content Block")
+            <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            @*@foreach (var type in contentBlockTypes.OrderBy(x => x.Name))
+                {
+                    <li>@Html.ActionLink(type.Name.BreakUpString(), "Add", type.Name, new { id = Model.Id }, new { data_toggle = "fb-modal" })</li>
+                }*@
+            @foreach (var type in types)
+            {
+                <li>
+                    <a data-toggle="fb-modal" href="@Url.Action("Add", "ContentBlock", new {webpageId = Model.Id, blockType = type.FullName})">
+                        @type.Name.BreakUpString()
+                    </a>
+                </li>
+            }
+            @*<li><a data-toggle="fb-modal" href="@Url.Action("Add", "OneColumnBlock", new{id=Model.Id})">One Column Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "OneColumnTextImageBlock", new{id=Model.Id})">One Column Text Image Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "TwoColumnBlock", new{id=Model.Id})">Two Column Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "TwoColumnTextImageBlock", new{id=Model.Id})">Two Column Text Image Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "ThreeColumnBlock", new{id=Model.Id})">Three Column Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "FourColumnBlock", new{id=Model.Id})">Four Column Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "PlainBlock", new{id=Model.Id})">Plain Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "SliderBlock", new{id=Model.Id})">Slider Block</a></li>
+            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "VideoBlock", new{id=Model.Id})">Video Block</a></li>*@
+        </ul>
+    </div>
+
+    <hr />
+
+    @if (!contentBlocks.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            @Html.Resource("No content blocks added yet for this page.")
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>@Html.Resource("Name")</th>
+                    <th>@Html.Resource("Type")</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var contentBlock in contentBlocks)
+                {
+                    <tr>
+                        <td>@contentBlock.Name</td>
+                        <td>@(contentBlock.GetType().Name.BreakUpString())</td>
+                        <td>
+                            <div class="btn-group">
+                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+</div>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,7 +7,10 @@ using Microsoft.Extensions.Logging;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Web.Apps.Admin.Models.Tabs;
+using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 {
@@ -19,29 +19,38 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
         public static async Task<IHtmlContent> RenderUpdateCustomAdminProperties<T>(this IHtmlHelper htmlHelper, T entity) where T : SystemEntity
         {
             if (entity == null)
+            {
                 return HtmlString.Empty;
-            var type = entity.GetType();
+            }
+
+            var type = entity.Unproxy().GetType();
 
             var modelType = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IUpdatePropertiesViewModel<>).MakeGenericType(type)).FirstOrDefault();
             if (modelType == null)
+            {
                 return HtmlString.Empty;
+            }
+
             var mapper = htmlHelper.GetRequiredService<IMapper>();
             var model = mapper.Map(entity, type, modelType);
 
             return await RenderCustomAdminProperties(htmlHelper, String.Empty, type, model);
         }
-        public static async Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type, object model)
+        public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, string typeName)
         {
-            return await RenderCustomAdminProperties(htmlHelper, "Add", type, model);
+            return RenderCustomAddAdminProperties(htmlHelper, TypeHelper.GetTypeByName(typeName));
+        }
+        public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type)
+        {
+            return RenderCustomAddAdminProperties(htmlHelper, type, Activator.CreateInstance(type));
+        }
+        public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type, object model)
+        {
+            return RenderCustomAdminProperties(htmlHelper, "Add", type, model);
         }
 
         private static async Task<IHtmlContent> RenderCustomAdminProperties(IHtmlHelper htmlHelper, string suffix, Type type, object model)
         {
-            //if (MrCMSApp.AppWebpages.ContainsKey(type))
-            //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[type];
-            //if (MrCMSApp.AppWidgets.ContainsKey(type))
-            //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[type];
-
             // try and find an implementation of IUpdatePropertiesViewModel
 
             var partialViewName = type.Name + (suffix ?? string.Empty);
@@ -71,7 +80,9 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
         {
             var user = htmlHelper.ViewData.Model;
             if (user == null)
+            {
                 return HtmlString.Empty;
+            }
             // TODO: app lookup
             //if (MrCMSApp.AppEntities.ContainsKey(entityType))
             //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppEntities[entityType];
@@ -99,7 +110,9 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
         {
             var user = htmlHelper.ViewData.Model;
             if (user == null)
+            {
                 return HtmlString.Empty;
+            }
             // TODO: app lookup
             //if (MrCMSApp.AppUserProfileDatas.ContainsKey(userProfileType))
             //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppUserProfileDatas[userProfileType];

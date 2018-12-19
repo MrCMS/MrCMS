@@ -1,9 +1,9 @@
 ﻿var HealthCheckProcessor = function (element) {
     var self;
     var showMessages = function (messagesCell, response) {
-        if (response.Messages.length) {
+        if (response.messages.length) {
             var ul = $('<ul>').addClass('list-unstyled margin-bottom-0');
-            $.each(response.Messages, function (i, message) {
+            $.each(response.messages, function (i, message) {
                 $('<li>').text(message).appendTo(ul);
             });
             ul.appendTo(messagesCell);
@@ -35,7 +35,7 @@
         var messagesCell = row.find('[ data-messages]');
         statusCell.html('Processing');
         $.get(url, function (response) {
-            switch (response.Status) {
+            switch (response.status) {
                 case 0:
                     onSuccess(row, statusCell);
                     break;
