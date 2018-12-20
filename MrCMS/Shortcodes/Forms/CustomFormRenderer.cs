@@ -30,22 +30,22 @@ namespace MrCMS.Shortcodes.Forms
             _siteSettings = siteSettings;
         }
 
-        public IHtmlContent GetForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
+        public IHtmlContent GetForm(IHtmlHelper helper, Form form1, FormSubmittedStatus submittedStatus)
         {
-            if (webpage == null)
+            if (form1 == null)
                 return HtmlString.Empty;
 
-            var formProperties = webpage.FormProperties;
+            var formProperties = form1.FormProperties;
             if (!formProperties.Any())
                 return HtmlString.Empty;
 
-            var form = GetForm(webpage);
+            var form = GetForm(form1);
 
-            var formDesign = webpage.FormDesign;
+            var formDesign = form1.FormDesign;
             formDesign = Regex.Replace(formDesign, "{label:([^}]+)}", AddLabel(formProperties));
             formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{validation:([^}]+)}", AddValidation(formProperties));
-            formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(webpage, submittedStatus));
+            formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(form1, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{recaptcha}", helper.RenderRecaptcha().ToString());
             form.InnerHtml.AppendHtml(formDesign);
 
@@ -69,11 +69,11 @@ namespace MrCMS.Shortcodes.Forms
             };
         }
 
-        private string AddSubmittedMessage(Webpage webpage, FormSubmittedStatus submittedStatus)
+        private string AddSubmittedMessage(Form form, FormSubmittedStatus submittedStatus)
         {
             if (!submittedStatus.Submitted) return string.Empty;
 
-            return _submittedMessageRenderer.AppendSubmittedMessage(webpage, submittedStatus).ToString();
+            return _submittedMessageRenderer.AppendSubmittedMessage(form, submittedStatus).ToString();
         }
 
         private MatchEvaluator AddLabel(IList<FormProperty> formProperties)
@@ -110,12 +110,12 @@ namespace MrCMS.Shortcodes.Forms
                        };
         }
 
-        public TagBuilder GetForm(Webpage webpage)
+        public TagBuilder GetForm(Form form)
         {
             var tagBuilder = new TagBuilder("form");
             tagBuilder.Attributes["method"] = "POST";
             tagBuilder.Attributes["enctype"] = "multipart/form-data";
-            tagBuilder.Attributes["action"] = string.Format("/save-form/{0}", webpage.Id);
+            tagBuilder.Attributes["action"] = string.Format("/save-form/{0}", form.Id);
 
             return tagBuilder;
         }

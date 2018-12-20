@@ -7,8 +7,8 @@ namespace MrCMS.Services
 {
     public interface IFormPostingHandler
     {
-        Webpage GetWebpage(int id);
-        List<string> SaveFormData(Webpage webpage, HttpRequest request);
+        Form GetForm(int id);
+        List<string> SaveFormData(Form form, HttpRequest request);
         string GetRefererUrl();
     }
 }

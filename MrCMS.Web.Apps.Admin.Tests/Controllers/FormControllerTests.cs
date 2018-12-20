@@ -26,9 +26,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void FormController_ClearFormData_ShouldReturnPartialViewResult()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            var result = _formController.ClearFormData(stubWebpage);
+            var result = _formController.ClearFormData(form);
 
             result.Should().BeOfType<PartialViewResult>();
         }
@@ -36,19 +36,19 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void FormController_ClearFormDataPOST_ShouldCallClearFormData()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            _formController.ClearFormData_POST(stubWebpage);
+            _formController.ClearFormData_POST(form);
 
-            A.CallTo(() => _formAdminService.ClearFormData(stubWebpage)).MustHaveHappened();
+            A.CallTo(() => _formAdminService.ClearFormData(form)).MustHaveHappened();
         }
 
         [Fact]
         public void FormController_ClearFormDataPOST_ShouldRedirectToEditWebpage()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            var result = _formController.ClearFormData_POST(stubWebpage);
+            var result = _formController.ClearFormData_POST(form);
 
             result.ActionName.Should().Be("Edit");
         }
@@ -56,9 +56,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void FormController_ClearFormDataPOST_ShouldReturnRedirectToActionResult()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            var result = _formController.ClearFormData_POST(stubWebpage);
+            var result = _formController.ClearFormData_POST(form);
 
             result.Should().BeOfType<RedirectToActionResult>();
         }
@@ -66,19 +66,19 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void FormController_ExportFormData_ShouldCallExportFormData()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            _formController.ExportFormData(stubWebpage);
+            _formController.ExportFormData(form);
 
-            A.CallTo(() => _formAdminService.ExportFormData(stubWebpage)).MustHaveHappened();
+            A.CallTo(() => _formAdminService.ExportFormData(form)).MustHaveHappened();
         }
 
         [Fact]
         public void FormController_ExportFormData_ShouldReturnFileResult()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            var result = _formController.ExportFormData(stubWebpage);
+            var result = _formController.ExportFormData(form);
 
             result.Should().BeOfType<FileContentResult>();
         }
@@ -86,25 +86,25 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void FormController_Posting_ReturnsTheResultOfTheCallToGetFormPostings()
         {
-            var textPage = new TextPage();
+            var form = new Form();
             var postingsModel = new PostingsModel(new StaticPagedList<FormPosting>(new FormPosting[0], 1, 1, 0), 1);
-            A.CallTo(() => _formAdminService.GetFormPostings(textPage, 1, null)).Returns(postingsModel);
-            _formController.Postings(textPage, 1, null).As<PartialViewResult>().Model.Should().Be(postingsModel);
+            A.CallTo(() => _formAdminService.GetFormPostings(form, 1, null)).Returns(postingsModel);
+            _formController.Postings(form, 1, null).As<PartialViewResult>().Model.Should().Be(postingsModel);
         }
 
         [Fact]
         public void FormController_Postings_CallsFormServiceGetFormPostingsWithPassedArguments()
         {
-            var textPage = new TextPage();
-            _formController.Postings(textPage, 1, null);
+            var form = new Form();
+            _formController.Postings(form, 1, null);
 
-            A.CallTo(() => _formAdminService.GetFormPostings(textPage, 1, null)).MustHaveHappened();
+            A.CallTo(() => _formAdminService.GetFormPostings(form, 1, null)).MustHaveHappened();
         }
 
         [Fact]
         public void FormController_Postings_ReturnsAPartialViewResult()
         {
-            _formController.Postings(new TextPage(), 1, null).Should().BeOfType<PartialViewResult>();
+            _formController.Postings(new Form(), 1, null).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]

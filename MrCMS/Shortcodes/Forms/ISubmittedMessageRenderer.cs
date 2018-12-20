@@ -5,6 +5,6 @@ namespace MrCMS.Shortcodes.Forms
 {
     public interface ISubmittedMessageRenderer
     {
-        TagBuilder AppendSubmittedMessage(Webpage webpage, FormSubmittedStatus submittedStatus);
+        TagBuilder AppendSubmittedMessage(Form form, FormSubmittedStatus submittedStatus);
     }
 }

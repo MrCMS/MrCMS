@@ -2,6 +2,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
 using MrCMS.TestSupport;
@@ -32,19 +33,19 @@ namespace MrCMS.Tests.Website.Controllers
         [Fact]
         public void FormController_Save_CallsFormServiceSaveFormDataWithPassedObjects()
         {
-            var stubWebpage = new StubWebpage();
-            A.CallTo(() => _formPostingHandler.GetWebpage(123)).Returns(stubWebpage);
+            var form = new Form();
+            A.CallTo(() => _formPostingHandler.GetForm(123)).Returns(form);
 
             ActionResult result = _formController.Save(123);
 
-            A.CallTo(() => _formPostingHandler.SaveFormData(stubWebpage, _formController.Request)).MustHaveHappened();
+            A.CallTo(() => _formPostingHandler.SaveFormData(form, _formController.Request)).MustHaveHappened();
         }
 
         [Fact]
         public void FormController_Save_SetsTempDataFormSubmittedToTrue()
         {
-            var stubWebpage = new StubWebpage();
-            A.CallTo(() => _formPostingHandler.GetWebpage(123)).Returns(stubWebpage);
+            var form = new Form();
+            A.CallTo(() => _formPostingHandler.GetForm(123)).Returns(form);
 
             ActionResult result = _formController.Save(123);
 
@@ -54,8 +55,8 @@ namespace MrCMS.Tests.Website.Controllers
         [Fact]
         public void FormController_Save_ReturnsRedirectToTheReferrer()
         {
-            var stubWebpage = new StubWebpage();
-            A.CallTo(() => _formPostingHandler.GetWebpage(123)).Returns(stubWebpage);
+            var form = new Form();
+            A.CallTo(() => _formPostingHandler.GetForm(123)).Returns(form);
             A.CallTo(() => _formPostingHandler.GetRefererUrl()).Returns("http://www.example.com/test-redirect");
 
             ActionResult result = _formController.Save(123);

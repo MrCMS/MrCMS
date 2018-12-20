@@ -7,7 +7,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class SubmittedMessageRenderer : ISubmittedMessageRenderer
     {
-        public TagBuilder AppendSubmittedMessage(Webpage webpage, FormSubmittedStatus submittedStatus)
+        public TagBuilder AppendSubmittedMessage(Form form, FormSubmittedStatus submittedStatus)
         {
             var message = new TagBuilder("div");
             message.AddCssClass("alert");
@@ -16,8 +16,8 @@ namespace MrCMS.Shortcodes.Forms
                 "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" +
                 (submittedStatus.Errors.Any()
                     ? RenderErrors(submittedStatus.Errors)
-                    : (!string.IsNullOrWhiteSpace(webpage.FormSubmittedMessage)
-                        ? webpage.FormSubmittedMessage
+                    : (!string.IsNullOrWhiteSpace(form.FormSubmittedMessage)
+                        ? form.FormSubmittedMessage
                         : "Form submitted")));
 
             return message;

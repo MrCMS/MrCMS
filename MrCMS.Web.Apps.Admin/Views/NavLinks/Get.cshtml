@@ -1,9 +1,9 @@
-﻿@using Microsoft.ApplicationInsights.AspNetCore.Extensions
+﻿@using Microsoft.AspNetCore.Http.Extensions
 @using MrCMS.ACL.Rules
 @using MrCMS.Web.Apps.Admin.Models
 @model IEnumerable<MrCMS.Web.Apps.Admin.Models.IAdminMenuItem>
 @{
-    var currentUrl = Context.Request.GetUri().AbsolutePath;
+    var currentUrl = Context.Request.GetDisplayUrl();
 }
 <ul class="nav nav-pills nav-stacked">
     @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))

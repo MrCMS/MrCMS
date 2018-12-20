@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -9,13 +9,6 @@
     <EmbeddedResource Include="Installation\Content\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Installation\Content\images\logo.png" />
-    <None Remove="Installation\Content\images\mrcms-hat.gif" />
-    <None Remove="Installation\Content\images\mrcms-logo.png" />
-    <None Remove="Installation\Content\style.css" />
-    <None Remove="Installation\Views\Install\Success.cshtml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
@@ -25,7 +18,7 @@
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.9.2" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NHibernate" Version="5.2.1" />
     <PackageReference Include="NHibernate.Caches.CoreMemoryCache" Version="5.5.1" />

@@ -1,9 +1,10 @@
-﻿@using Microsoft.ApplicationInsights.AspNetCore.Extensions
+﻿@using Microsoft.AspNetCore.Http.Extensions
 @using MrCMS.ACL.Rules
 @using MrCMS.Web.Apps.Admin.Models
 @model IEnumerable<MrCMS.Web.Apps.Admin.Models.IAdminMenuItem>
 @{
-    var currentUrl = Context.Request.GetUri().AbsolutePath;
+    var currentUrl = Context.Request.GetDisplayUrl();
+    List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
 }
 <ul class="nav nav-pills nav-stacked">
     @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
@@ -20,8 +21,10 @@
     {
         <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")"><i class="glyphicon glyphicon-th"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
     }
-    @{
-        List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
+
+    @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
+    {
+        <li class="@(currentUrl == Url.Action("Index", "Form") ? "active" : "")"><a href="@Url.Action("Index", "Form")"><i class="glyphicon glyphicon-list-alt"></i> @Html.Resource("Admin Nav Forms", "Forms")</a></li>
     }
     @foreach (IAdminMenuItem item in adminMenuItems)
     {

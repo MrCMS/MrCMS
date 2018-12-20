@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Shortcodes.Forms;
 using NHibernate;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace MrCMS.Shortcodes
 {
@@ -26,21 +26,24 @@ namespace MrCMS.Shortcodes
 
         public IHtmlContent Render(IHtmlHelper helper, Dictionary<string, string> attributes)
         {
-            Webpage page = null;
-            if (attributes.ContainsKey("id"))
+            if (!attributes.ContainsKey("id"))
             {
-                int id;
-                if (!int.TryParse(attributes["id"], out id))
-                    return HtmlString.Empty;
-                page = _session.Get<Webpage>(id);
+                return HtmlString.Empty;
             }
-            else
+
+            if (!int.TryParse(attributes["id"], out var id))
             {
-                page = _getCurrentPage.GetPage();
+                return HtmlString.Empty;
+            }
+
+            var form = _session.Get<Form>(id);
+            if (form == null)
+            {
+                return HtmlString.Empty;
             }
 
             var status = GetStatus(helper.ViewContext);
-            return _formRenderer.RenderForm(helper, page, status);
+            return _formRenderer.RenderForm(helper, form, status);
         }
 
         private static FormSubmittedStatus GetStatus(ViewContext viewContext)

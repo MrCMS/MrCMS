@@ -26,20 +26,20 @@ namespace MrCMS.Shortcodes.Forms
             _siteSettings = siteSettings;
         }
 
-        public IHtmlContent GetDefault(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
+        public IHtmlContent GetDefault(IHtmlHelper helper, Form form1, FormSubmittedStatus submittedStatus)
         {
-            if (webpage == null)
+            if (form1 == null)
             {
                 return HtmlString.Empty;
             }
 
-            var formProperties = webpage.FormProperties.OrderBy(x => x.DisplayOrder);
+            var formProperties = form1.FormProperties.OrderBy(x => x.DisplayOrder);
             if (!formProperties.Any())
             {
                 return HtmlString.Empty;
             }
 
-            var form = GetForm(webpage);
+            var form = GetForm(form1);
             foreach (var property in formProperties)
             {
                 IHtmlContentBuilder elementHtml = new HtmlContentBuilder();
@@ -67,13 +67,13 @@ namespace MrCMS.Shortcodes.Forms
             form.InnerHtml.AppendHtml(helper.RenderRecaptcha());
 
             var div = new TagBuilder("div");
-            div.InnerHtml.AppendHtml(GetSubmitButton(webpage));
+            div.InnerHtml.AppendHtml(GetSubmitButton(form1));
             form.InnerHtml.AppendHtml(div);
 
             if (submittedStatus.Submitted)
             {
                 form.InnerHtml.AppendHtml(new TagBuilder("br"));
-                form.InnerHtml.AppendHtml(_submittedMessageRenderer.AppendSubmittedMessage(webpage, submittedStatus));
+                form.InnerHtml.AppendHtml(_submittedMessageRenderer.AppendSubmittedMessage(form1, submittedStatus));
             }
 
             if (_siteSettings.HasHoneyPot)
@@ -85,25 +85,25 @@ namespace MrCMS.Shortcodes.Forms
         }
 
 
-        public TagBuilder GetSubmitButton(Webpage webpage)
+        public TagBuilder GetSubmitButton(Form form)
         {
             var tagBuilder = new TagBuilder("input") { TagRenderMode = TagRenderMode.SelfClosing };
             tagBuilder.Attributes["type"] = "submit";
-            tagBuilder.Attributes["value"] = !string.IsNullOrWhiteSpace(webpage.SubmitButtonText)
-                ? webpage.SubmitButtonText
+            tagBuilder.Attributes["value"] = !string.IsNullOrWhiteSpace(form.SubmitButtonText)
+                ? form.SubmitButtonText
                 : "Submit";
-            tagBuilder.AddCssClass(!string.IsNullOrWhiteSpace(webpage.SubmitButtonCssClass)
-                ? webpage.SubmitButtonCssClass
+            tagBuilder.AddCssClass(!string.IsNullOrWhiteSpace(form.SubmitButtonCssClass)
+                ? form.SubmitButtonCssClass
                 : "btn btn-primary");
             return tagBuilder;
         }
 
-        public TagBuilder GetForm(Webpage webpage)
+        public TagBuilder GetForm(Form form)
         {
             var tagBuilder = new TagBuilder("form");
             tagBuilder.Attributes["method"] = "POST";
             tagBuilder.Attributes["enctype"] = "multipart/form-data";
-            tagBuilder.Attributes["action"] = string.Format("/save-form/{0}", webpage.Id);
+            tagBuilder.Attributes["action"] = string.Format("/save-form/{0}", form.Id);
 
             return tagBuilder;
         }

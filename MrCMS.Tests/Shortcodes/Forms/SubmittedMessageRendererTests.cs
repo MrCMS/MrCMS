@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Shortcodes.Forms;
 using MrCMS.Tests.Stubs;
 using Xunit;
@@ -17,7 +18,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void SubmittedMessageRenderer_GetSubmittedMessage_ReturnsADiv()
         {
-            var submittedMessage = _submittedMessageRenderer.AppendSubmittedMessage(new StubWebpage(), new FormSubmittedStatus(true, null, null));
+            var submittedMessage = _submittedMessageRenderer.AppendSubmittedMessage(new Form(), new FormSubmittedStatus(true, null, null));
 
             submittedMessage.TagName.Should().Be("div");
         }
@@ -25,7 +26,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void SubmittedMessageRenderer_GetSubmittedMessage_ShouldHaveAlertAndAlertSuccessClasses()
         {
-            var submittedMessage = _submittedMessageRenderer.AppendSubmittedMessage(new StubWebpage(), new FormSubmittedStatus(true, null, null));
+            var submittedMessage = _submittedMessageRenderer.AppendSubmittedMessage(new Form(), new FormSubmittedStatus(true, null, null));
 
             submittedMessage.Attributes["class"].Should().Be("alert-success alert");
         }

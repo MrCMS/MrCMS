@@ -1,14 +1,10 @@
 using System;
 using System.Configuration;
 using System.Linq;
-using System.Web;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -17,6 +13,7 @@ namespace MrCMS.Services
         private readonly IRepository<Site> _siteRepository;
         private readonly IHttpContextAccessor _contextAccessor;
         private Site _currentSite;
+
         public CurrentSiteLocator(IRepository<Site> siteRepository, IHttpContextAccessor contextAccessor)
         {
             _siteRepository = siteRepository;

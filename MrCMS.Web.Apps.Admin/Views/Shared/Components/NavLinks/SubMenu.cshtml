@@ -1,13 +1,13 @@
-﻿@using Microsoft.ApplicationInsights.AspNetCore.Extensions
+﻿@using Microsoft.AspNetCore.Http.Extensions
 @using MrCMS.Web.Apps.Core.Models
 @model SubMenu
 @{
     var indexOf = ViewData["indexOf"] as IEnumerable<int> ?? Enumerable.Empty<int>();
-    var currentUrl = Context.Request.GetUri().AbsolutePath;
+    var currentUrl = Context.Request.GetDisplayUrl();
+    List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
 }
 
 <ul class="nav nav-pills nav-stacked dropdown-menu" data-menu="true">
-    @{ List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList(); }
     @foreach (ChildMenuItem item in items)
     {
         if (item.Children != null && item.Children.Any())

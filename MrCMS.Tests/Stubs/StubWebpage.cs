@@ -10,7 +10,6 @@ namespace MrCMS.Tests.Stubs
     {
         public StubWebpage()
         {
-            FormProperties = new List<FormProperty>();
         }
     }
 }

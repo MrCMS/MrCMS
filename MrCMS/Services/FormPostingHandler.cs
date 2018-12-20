@@ -11,7 +11,6 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
-using NHibernate.Util;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services
@@ -31,19 +30,19 @@ namespace MrCMS.Services
             _mailSettings = mailSettings;
         }
 
-        public Webpage GetWebpage(int id)
+        public Form GetForm(int id)
         {
-            return _session.Get<Webpage>(id);
+            return _session.Get<Form>(id);
         }
 
-        public List<string> SaveFormData(Webpage webpage, HttpRequest request)
+        public List<string> SaveFormData(Form form, HttpRequest request)
         {
-            var formProperties = webpage.FormProperties;
+            var formProperties = form.FormProperties;
 
-            var formPosting = new FormPosting {Webpage = webpage};
+            var formPosting = new FormPosting {Form = form};
             _session.Transact(session =>
             {
-                webpage.FormPostings.Add(formPosting);
+                form.FormPostings.Add(formPosting);
                 session.SaveOrUpdate(formPosting);
             });
             var errors = new List<string>();
@@ -62,7 +61,7 @@ namespace MrCMS.Services
 
                             if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
                             {
-                                var value = _saveFormFileUpload.SaveFile(webpage, formPosting, file);
+                                var value = _saveFormFileUpload.SaveFile(form, formPosting, file);
 
                                 formPosting.FormValues.Add(new FormValue
                                 {
@@ -102,7 +101,7 @@ namespace MrCMS.Services
                 {
                     foreach (var value in formPosting.FormValues) session.Save(value);
 
-                    SendFormMessages(webpage, formPosting);
+                    SendFormMessages(form, formPosting);
                 }
             });
             return errors;
@@ -130,19 +129,19 @@ namespace MrCMS.Services
             return value;
         }
 
-        private void SendFormMessages(Webpage webpage, FormPosting formPosting)
+        private void SendFormMessages(Form form, FormPosting formPosting)
         {
-            if (webpage.SendFormTo == null) return;
+            if (form.SendFormTo == null) return;
 
-            var sendTo = webpage.SendFormTo.Split(',');
+            var sendTo = form.SendFormTo.Split(',');
             if (sendTo.Any())
                 _session.Transact(session =>
                 {
                     foreach (var email in sendTo)
                     {
-                        var formMessage = ParseFormMessage(webpage.FormMessage, webpage,
+                        var formMessage = ParseFormMessage(form.FormMessage, form,
                             formPosting);
-                        var formTitle = ParseFormMessage(webpage.FormEmailTitle, webpage,
+                        var formTitle = ParseFormMessage(form.FormEmailTitle, form,
                             formPosting);
 
                         session.SaveOrUpdate(new QueuedMessage
@@ -157,7 +156,7 @@ namespace MrCMS.Services
                 });
         }
 
-        private static string ParseFormMessage(string formMessage, Webpage webpage, FormPosting formPosting)
+        private static string ParseFormMessage(string formMessage, Form form, FormPosting formPosting)
         {
             var formRegex = new Regex(@"\[form\]");
             var pageRegex = new Regex(@"{{page.(.*)}}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -192,8 +191,7 @@ namespace MrCMS.Services
 
                 return propertyInfo == null
                     ? string.Empty
-                    : propertyInfo.GetValue(webpage,
-                        null).ToString();
+                    : propertyInfo.GetValue(form, null).ToString();
             });
             return messageRegex.Replace(formMessage, match =>
             {

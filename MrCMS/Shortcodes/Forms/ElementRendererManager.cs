@@ -25,7 +25,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             if (formRendererType == FormRenderingType.Bootstrap3)
             {
-                if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload)
+                if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload || property is Email)
                 {
                     var elementContainer = new TagBuilder("div");
                     elementContainer.AddCssClass("form-group");

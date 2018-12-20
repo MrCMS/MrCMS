@@ -170,12 +170,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return PartialView(documentVersion);
         }
 
-        [HttpGet]
-        public PartialViewResult FormProperties(Webpage webpage)
-        {
-            return PartialView(webpage);
-        }
-
         /// <summary>
         ///     Finds out if the URL entered is valid for a webpage
         /// </summary>

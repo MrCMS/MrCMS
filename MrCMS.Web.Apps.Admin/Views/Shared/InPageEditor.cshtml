@@ -34,14 +34,6 @@
     {
         <a id="enable-editing" class="mrcms-btn mrcms-btn-xs mrcms-btn-default">Inline Editing: On</a>
     }
-
-    @if (Model.FormPostingsCount(Html) > 0)
-    {
-        <a href="/Admin/Webpage/Edit/@Model.Id#postings-tab" class="mrcms-btn mrcms-btn-xs mrcms-btn-info" target="_parent">
-            @Model.FormPostings.Count
-            Form entr@(Model.FormPostings.Count > 1 ? "ies" : "y")
-        </a>
-    }
     <a href="/logout" class="mrcms-btn mrcms-btn-xs mrcms-btn-default" style="float: right;">Logout</a>
     @if (SiteSettings.SiteIsLive)
     {

@@ -1,23 +1,25 @@
 using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Models;
+using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IFormAdminService
     {
-        PostingsModel GetFormPostings(Webpage webpage, int page, string search);
-        void AddFormProperty(FormProperty formProperty);
-        void SaveFormProperty(FormProperty property);
-        void DeleteFormProperty(FormProperty property);
-        void SaveFormListOption(FormListOption formListOption);
-        void UpdateFormListOption(FormListOption formListOption);
-        void DeleteFormListOption(FormListOption formListOption);
+        IPagedList<Form> Search(FormSearchModel model);
+        Form AddForm(AddFormModel model);
+        Form GetForm(int id);
+        UpdateFormModel GetUpdateModel(int id);
+        void Update(UpdateFormModel model);
+        void Delete(int id);
+
+
+        PostingsModel GetFormPostings(Form form, int page, string search);
         void SetOrders(List<SortItem> items);
-        void ClearFormData(Webpage webpage);
-        byte[] ExportFormData(Webpage webpage);
+        void ClearFormData(Form form);
+        byte[] ExportFormData(Form form);
         FormPosting DeletePosting(int id);
     }
 }

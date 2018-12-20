@@ -1,0 +1,43 @@
+﻿@using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
+@inject IGetEditTabsService TabsService
+@model MrCMS.Entities.Documents.Web.Form
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    var tabs = TabsService.GetEditTabs(Html, Model);
+}
+
+@using (Html.BeginForm("Edit", "Form", FormMethod.Post, new { data_are_you_sure = Html.Resource(AdminMessages.AreYouSureDefaultMessage) }))
+{
+    <fieldset>
+        <legend>
+            @Html.Resource("Edit Form")
+            <span class="btn-group display-inline pull-right">
+                <a asp-action="Index" class="btn btn-default">@Html.Resource("Back to list")</a>
+                <button type="submit" class="btn-primary btn">@Html.Resource("Save")</button>
+            </span>
+        </legend>
+        @Html.ValidationSummary()
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+
+        <ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
+            @foreach (var tab in tabs)
+            {
+                ViewData["is-first"] = tab == tabs.First();
+                <partial name="Tab" model="tab" view-data="ViewData" />
+            }
+        </ul>
+        <div class="tab-content">
+            @foreach (var tab in tabs)
+            {
+                ViewData["is-first"] = tab == tabs.First();
+                <partial name="TabContent" model="tab" view-data="ViewData" />
+            }
+        </div>
+    </fieldset>
+}
