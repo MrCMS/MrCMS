@@ -1,6 +1,5 @@
 ﻿body, html { height: 100%;overflow:hidden;}
-* { border-radius: 0!important;}
-
+ 
 .home-link-container { margin: 0 auto;}
 .home-link { font-size: 26px; padding: 12px 12px 12px 0; }
 
@@ -163,4 +162,4 @@ input.input-validation-error, select.input-validation-error { border: 1px solid 
     .navbar-form  { border-top: 0;border-bottom: 0;}
     .site-search { margin-left: 0;}
     .logo { margin-left: 10px;}
-}
+} 

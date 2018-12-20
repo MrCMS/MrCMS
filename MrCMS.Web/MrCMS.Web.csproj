@@ -16,12 +16,52 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Components\Greeting\Default.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Components\HealthCheck\Default.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Components\NavLinks\Default.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Components\NavLinks\SubMenu.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Components\PageStats\Default.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Components\UserStats\Default.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\InPageEditor.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Messages.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Navbar.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\PersistentNotificationNav.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Settings.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\Sidebar.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\SiteListNav.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\SystemSettings.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\UploadAnywhere.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\_LayoutPopup.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\_LayoutRoot.cshtml" />
+    <Content Remove="Themes\Red\Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <Content Remove="Views\_ViewImports.cshtml" />
     <Content Remove="Views\_ViewStart.cshtml" />
     <Content Remove="wwwroot\placeholder.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Components\Greeting\Default.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Components\HealthCheck\Default.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Components\NavLinks\Default.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Components\NavLinks\SubMenu.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Components\PageStats\Default.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Components\UserStats\Default.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\InPageEditor.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Messages.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Navbar.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\PersistentNotificationNav.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Settings.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\Sidebar.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\SiteListNav.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\SystemSettings.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\UploadAnywhere.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\_LayoutPopup.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\_LayoutRoot.cshtml" />
+    <EmbeddedResource Include="Themes\Red\Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <EmbeddedResource Include="Views\_ViewImports.cshtml" />
     <EmbeddedResource Include="Views\_ViewStart.cshtml" />
   </ItemGroup>

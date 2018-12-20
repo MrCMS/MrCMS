@@ -1,0 +1,10 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
+@if (Model != null)
+{
+    <div id="upload-anywhere">
+        @{ await Html.RenderPartialAsync("~/Areas/Admin/Views/MediaCategory/Upload.cshtml", Model); }
+        <hr class="small-margin" />
+        @{ await Html.RenderPartialAsync("~/Areas/Admin/Views/MediaCategory/ShowFilesSimple.cshtml", Model); }
+    </div>
+}
