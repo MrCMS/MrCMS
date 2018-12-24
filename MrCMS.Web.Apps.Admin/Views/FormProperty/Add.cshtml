@@ -1,0 +1,53 @@
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Admin.Models.AddFormPropertyModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Add", "FormProperty", new { id = "" }, FormMethod.Post, null, new { @class = "form-update-form" }))
+{
+    <fieldset>
+        <legend>
+            @Html.Resource("Admin Form Add Field Title", "Add Field")
+            <span class="btn-group  display-inline  pull-right">
+                <input type="button" class="btn-primary btn submit-form-btn" value="@Html.Resource("Admin Form Add Field Button", "Add form property")" />
+            </span>
+        </legend>
+        @Html.HiddenFor(x => x.FormId)
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group">
+                    @Html.DropDownListFor(x=>x.PropertyType, ViewData["property-types"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group">
+                    @Html.InlineCheckboxFor(x => x.Required)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    @Html.LabelFor(property => property.Name)
+                    @Html.TextBoxFor(property => property.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(property => property.Name)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(property => property.LabelText)
+                    @Html.TextBoxFor(property => property.LabelText, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(property => property.LabelText)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(property => property.CssClass)
+                    @Html.TextBoxFor(property => property.CssClass, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(property => property.CssClass)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(property => property.HtmlId)
+                    @Html.TextBoxFor(property => property.HtmlId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(property => property.HtmlId)
+                </div>
+            </div>
+        </div>
+    </fieldset>
+}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

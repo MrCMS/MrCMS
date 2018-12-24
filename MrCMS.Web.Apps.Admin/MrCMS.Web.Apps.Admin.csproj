@@ -14,6 +14,12 @@
     <None Remove="Views\ContentBlock\Edit.cshtml" />
     <None Remove="Views\ContentBlock\Sort.cshtml" />
     <None Remove="Views\FileMigration\Show.cshtml" />
+    <None Remove="Views\Form\Add.cshtml" />
+    <None Remove="Views\Form\Delete.cshtml" />
+    <None Remove="Views\Form\Edit.cshtml" />
+    <None Remove="Views\Form\Index.cshtml" />
+    <None Remove="Views\Form\Tab.cshtml" />
+    <None Remove="Views\Form\TabContent.cshtml" />
     <None Remove="Views\MediaSelector\CKEditor.cshtml" />
     <None Remove="Views\Navigation\Children.cshtml" />
     <None Remove="Views\NavLinks\SubMenu.cshtml" />

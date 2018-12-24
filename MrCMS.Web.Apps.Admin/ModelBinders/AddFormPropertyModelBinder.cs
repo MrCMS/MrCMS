@@ -41,7 +41,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             await modelBinder.BindModelAsync(bindingContext);
 
             var formProperty = bindingContext.Result.Model as FormProperty;
-            formProperty?.Webpage?.FormProperties.Add(formProperty);
+            formProperty?.Form?.FormProperties.Add(formProperty);
             bindingContext.Result = ModelBindingResult.Success(formProperty);
         }
     }

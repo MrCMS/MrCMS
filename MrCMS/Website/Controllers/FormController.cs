@@ -20,10 +20,10 @@ namespace MrCMS.Website.Controllers
         [Route("save-form/{id}")]
         public ActionResult Save(int id)
         {
-            var webpage = _formPostingHandler.GetWebpage(id);
-            if (webpage?.IsDeleted != false)
+            var form = _formPostingHandler.GetForm(id);
+            if (form?.IsDeleted != false)
                 return new EmptyResult();
-            var saveFormData = _formPostingHandler.SaveFormData(webpage, Request);
+            var saveFormData = _formPostingHandler.SaveFormData(form, Request);
 
             TempData["form-submitted"] = true;
             TempData["form-submitted-message"] = saveFormData;
@@ -31,8 +31,8 @@ namespace MrCMS.Website.Controllers
             TempData["form-data"] = saveFormData.Any() ? Request.Form : null;
 
             var redirectUrl = _formPostingHandler.GetRefererUrl();
-            if (!saveFormData.Any() && !string.IsNullOrEmpty(webpage.FormRedirectUrl))
-                redirectUrl = webpage.FormRedirectUrl;
+            if (!saveFormData.Any() && !string.IsNullOrEmpty(form.FormRedirectUrl))
+                redirectUrl = form.FormRedirectUrl;
             if (!string.IsNullOrWhiteSpace(redirectUrl))
                 return Redirect(redirectUrl);
             return Redirect("~/");

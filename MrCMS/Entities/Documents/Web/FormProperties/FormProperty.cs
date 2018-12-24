@@ -21,7 +21,7 @@ namespace MrCMS.Entities.Documents.Web.FormProperties
         [DisplayName("HTML Id")]
         public virtual string HtmlId { get; set; }
 
-        public virtual Webpage Webpage { get; set; }
+        public virtual Form Form { get; set; }
         public virtual int DisplayOrder { get; set; }
 
         public virtual string GetHtmlId()

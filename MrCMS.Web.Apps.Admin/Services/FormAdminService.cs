@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -20,33 +21,36 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly ILogger<FormAdminService> _logger;
+        private readonly IMapper _mapper;
 
-        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger)
+        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger,
+            IMapper mapper)
         {
             _session = session;
             _stringResourceProvider = stringResourceProvider;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        public void ClearFormData(Webpage webpage)
+        public void ClearFormData(Form form)
         {
             _session.Transact(session =>
             {
-                webpage.FormPostings.ForEach(session.Delete);
-                webpage.FormPostings.Clear();
+                form.FormPostings.ForEach(session.Delete);
+                form.FormPostings.Clear();
             });
         }
 
-        public byte[] ExportFormData(Webpage webpage)
+        public byte[] ExportFormData(Form form)
         {
             try
             {
                 var stringBuilder = new StringBuilder();
 
-                var headers = GetHeadersForExport(webpage).ToList();
+                var headers = GetHeadersForExport(form).ToList();
                 stringBuilder.AppendLine(string.Join(",", headers.Select(FormatField)));
 
-                var formDataForExport = GetFormDataForExport(webpage);
+                var formDataForExport = GetFormDataForExport(form);
                 foreach (var data in formDataForExport)
                 {
                     stringBuilder.AppendLine(string.Join(",", data.Value.Select(FormatField)));
@@ -64,62 +68,9 @@ namespace MrCMS.Web.Apps.Admin.Services
         public FormPosting DeletePosting(int id)
         {
             var posting = _session.Get<FormPosting>(id);
-            posting.Webpage.FormPostings.Remove(posting);
+            posting.Form.FormPostings.Remove(posting);
             _session.Transact(session => session.Delete(posting));
             return posting;
-        }
-
-        public void AddFormProperty(FormProperty property)
-        {
-            _session.Transact(session =>
-            {
-                if (property.Webpage.FormProperties != null)
-                {
-                    property.DisplayOrder = property.Webpage.FormProperties.Count;
-                }
-
-                session.Save(property);
-            });
-        }
-
-        public void SaveFormProperty(FormProperty property)
-        {
-            _session.Transact(session => session.Update(property));
-        }
-
-        public void DeleteFormProperty(FormProperty property)
-        {
-            property.Webpage.FormProperties.Remove(property);
-            _session.Transact(session => session.Delete(property));
-        }
-
-        public void SaveFormListOption(FormListOption formListOption)
-        {
-            FormPropertyWithOptions formProperty = formListOption.FormProperty;
-            if (formProperty != null)
-            {
-                formProperty.Options.Add(formListOption);
-            }
-
-            _session.Transact(session =>
-            {
-                formListOption.OnSaving(session);
-                session.Save(formListOption);
-            });
-        }
-
-        public void UpdateFormListOption(FormListOption formListOption)
-        {
-            _session.Transact(session =>
-            {
-                formListOption.OnSaving(session);
-                session.Update(formListOption);
-            });
-        }
-
-        public void DeleteFormListOption(FormListOption formListOption)
-        {
-            _session.Transact(session => session.Delete(formListOption));
         }
 
         public void SetOrders(List<SortItem> items)
@@ -132,11 +83,64 @@ namespace MrCMS.Web.Apps.Admin.Services
             }));
         }
 
-        public PostingsModel GetFormPostings(Webpage webpage, int page, string search)
+        public IPagedList<Form> Search(FormSearchModel model)
+        {
+            var query = _session.Query<Form>();
+
+            if (!string.IsNullOrWhiteSpace(model.Name))
+            {
+                query = query.Where(x => x.Name.Contains(model.Name));
+            }
+
+            return query.ToPagedList(model.Page);
+        }
+
+        public Form AddForm(AddFormModel model)
+        {
+            var form = _mapper.Map<Form>(model);
+
+            _session.Transact(session => session.Save(form));
+
+            return form;
+        }
+
+        public Form GetForm(int id)
+        {
+            return _session.Get<Form>(id);
+        }
+
+        public UpdateFormModel GetUpdateModel(int id)
+        {
+            var form = GetForm(id);
+
+            return _mapper.Map<UpdateFormModel>(form);
+        }
+
+        public void Update(UpdateFormModel model)
+        {
+            var form = GetForm(model.Id);
+            _mapper.Map(model, form);
+
+            foreach (var o in model.Models)
+            {
+                _mapper.Map(o, form);
+            }
+
+            _session.Transact(session => session.Update(form));
+        }
+
+        public void Delete(int id)
+        {
+            var form = GetForm(id);
+
+            _session.Transact(session => session.Delete(form));
+        }
+
+        public PostingsModel GetFormPostings(Form form, int page, string search)
         {
             FormPosting posting = null;
             var query =
-                _session.QueryOver(() => posting).Where(() => posting.Webpage.Id == webpage.Id);
+                _session.QueryOver(() => posting).Where(() => posting.Form.Id == form.Id);
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query =
@@ -150,13 +154,13 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             IPagedList<FormPosting> formPostings = query.OrderBy(() => posting.CreatedOn).Desc.Paged(page);
 
-            return new PostingsModel(formPostings, webpage.Id);
+            return new PostingsModel(formPostings, form.Id);
         }
 
-        private IEnumerable<string> GetHeadersForExport(Webpage webpage)
+        private IEnumerable<string> GetHeadersForExport(Form form)
         {
             var headers = new List<string>();
-            foreach (FormPosting posting in webpage.FormPostings)
+            foreach (FormPosting posting in form.FormPostings)
             {
                 headers.AddRange(posting.FormValues.Select(x => x.Key).Distinct());
             }
@@ -164,16 +168,16 @@ namespace MrCMS.Web.Apps.Admin.Services
             return headers.Distinct().ToList();
         }
 
-        private Dictionary<int, List<string>> GetFormDataForExport(Webpage webpage)
+        private Dictionary<int, List<string>> GetFormDataForExport(Form form)
         {
             var items = new Dictionary<int, List<string>>();
-            for (int i = 0; i < webpage.FormPostings.Count; i++)
+            for (int i = 0; i < form.FormPostings.Count; i++)
             {
-                FormPosting posting = webpage.FormPostings[i];
+                FormPosting posting = form.FormPostings[i];
                 items.Add(i, new List<string>());
                 foreach (
                     FormValue value in
-                        GetHeadersForExport(webpage)
+                        GetHeadersForExport(form)
                             .SelectMany(header => posting.FormValues.Where(x => x.Key == header)))
                 {
                     if (!value.IsFile)
@@ -182,7 +186,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     }
                     else
                     {
-                        items[i].Add("http://" + webpage.Site.BaseUrl + value.Value);
+                        items[i].Add("http://" + form.Site.BaseUrl + value.Value);
                     }
                 }
                 items[i].Add(posting.CreatedOn.ToString()); // TODO: culture info

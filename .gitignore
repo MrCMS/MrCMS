@@ -102,3 +102,5 @@ MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 
 
 appsettings.Development.json
+
+\.vscode/

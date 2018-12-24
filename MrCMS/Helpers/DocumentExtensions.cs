@@ -51,19 +51,6 @@ namespace MrCMS.Helpers
             return helper.AnyChildren(helper.ViewData.Model);
         }
 
-        public static int FormPostingsCount(this Webpage webpage, IHtmlHelper helper)
-        {
-            return FormPostingsCount(webpage, helper.ViewContext.HttpContext.RequestServices);
-        }
-        public static int FormPostingsCount(this Webpage webpage, IServiceProvider provider)
-        {
-            return provider.GetRequiredService<ISession>()
-                .QueryOver<FormPosting>()
-                .Where(posting => posting.Webpage != null && posting.Webpage.Id == webpage.Id)
-                .Cacheable()
-                .RowCount();
-        }
-
         public static string GetAdminController(this Document document)
         {
             return document is Layout ? "Layout" : document is MediaCategory ? "MediaCategory" : "Webpage";

@@ -3,6 +3,7 @@ using FakeItEasy.Core;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
@@ -42,15 +43,15 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfThereAreNoProperties()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
 
-            var @default = _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, new FormSubmittedStatus(false, null, null));
+            var @default = _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, null));
 
             @default.Should().Be(HtmlString.Empty);
         }
 
         [Fact]
-        public void DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfWebpageIsNull()
+        public void DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfFormIsNull()
         {
             var @default = _defaultFormRenderer.GetDefault(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
 
@@ -61,7 +62,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void DefaultFormRenderer_GetDefault_ShouldCallGetElementRendererOnEachProperty()
         {
             var textBox = new TextBox { Name = "test-1" };
-            var stubWebpage = new StubWebpage
+            var form = new Form
             {
                 FormProperties = new List<FormProperty> { textBox }
             };
@@ -71,7 +72,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
             //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Throws<Exception>();
 
-            _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, new FormSubmittedStatus(false, null, _formCollection));
+            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
             A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox)).MustHaveHappened();
         }
@@ -81,7 +82,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void DefaultFormRenderer_GetDefault_ShouldCallAppendLabelOnLabelRendererForEachProperty()
         {
             var textBox = new TextBox { Name = "test-1" };
-            var stubWebpage = new StubWebpage
+            var form = new Form
             {
                 FormProperties = new List<FormProperty> { textBox }
             };
@@ -90,7 +91,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
              .Returns(formElementRenderer);
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
 
-            _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, new FormSubmittedStatus(false, null, _formCollection));
+            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
             A.CallTo(() => _labelRenderer.AppendLabel(textBox)).MustHaveHappened();
         }
@@ -99,7 +100,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void DefaultFormRenderer_GetDefault_ShouldCallAppendControlOnElementRenderer()
         {
             var textBox = new TextBox { Name = "test-1" };
-            var stubWebpage = new StubWebpage
+            var form = new Form
             {
                 FormProperties = new List<FormProperty> { textBox }
             };
@@ -108,7 +109,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
              .Returns(formElementRenderer);
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
 
-            _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, new FormSubmittedStatus(false, null, _formCollection));
+            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).MustHaveHappened();
         }
@@ -119,7 +120,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
             var textBox1 = new TextBox { Name = "test-1" };
             var textBox2 = new TextBox { Name = "test-2" };
 
-            var stubWebpage = new StubWebpage
+            var form = new Form
             {
                 FormProperties = new List<FormProperty> { textBox1, textBox2 }
             };
@@ -131,7 +132,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
             A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox2))
              .Returns(formElementRenderer);
 
-            _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, new FormSubmittedStatus(false, null, _formCollection));
+            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
             List<ICompletedFakeObjectCall> elementRendererCalls = Fake.GetCalls(formElementRenderer).ToList();
             List<ICompletedFakeObjectCall> labelRendererCalls = Fake.GetCalls(_labelRenderer).ToList();
@@ -147,13 +148,13 @@ namespace MrCMS.Tests.Shortcodes.Forms
             var textBox1 = new TextBox { Name = "test-1" };
             var textBox2 = new TextBox { Name = "test-2" };
 
-            var stubWebpage = new StubWebpage
+            var form = new Form
             {
                 FormProperties = new List<FormProperty> { textBox1, textBox2 }
             };
             //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Returns(MvcHtmlString.Create("rendered"));
 
-            var result = _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, new FormSubmittedStatus(false, null, _formCollection));
+            var result = _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
             result.ToString().Should().Be("rendered");
         }
@@ -161,7 +162,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetForm_ShouldHaveTagTypeOfForm()
         {
-            var tagBuilder = _defaultFormRenderer.GetForm(new StubWebpage());
+            var tagBuilder = _defaultFormRenderer.GetForm(new Form());
 
             tagBuilder.TagName.Should().Be("form");
         }
@@ -169,14 +170,14 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetForm_ShouldHaveMethodPost()
         {
-            var tagBuilder = _defaultFormRenderer.GetForm(new StubWebpage());
+            var tagBuilder = _defaultFormRenderer.GetForm(new Form());
             tagBuilder.Attributes["method"].Should().Be("POST");
         }
 
         [Fact]
         public void DefaultFormRenderer_GetForm_ShouldHaveActionSaveFormWithTheIdPassed()
         {
-            var tagBuilder = _defaultFormRenderer.GetForm(new StubWebpage
+            var tagBuilder = _defaultFormRenderer.GetForm(new Form
             {
                 Id = 123
             });
@@ -186,7 +187,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_ShouldReturnAnInput()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new Form
             {
             });
 
@@ -196,7 +197,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_ShouldBeOfTypeSubmit()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new Form
             {
             });
 
@@ -206,7 +207,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_ValueShouldBeSubmitForm()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new Form
             {
             });
 
@@ -216,7 +217,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_CssClassShouldBeCustomIfSet()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new Form
             {
                 SubmitButtonCssClass = "my-css-button-class"
             });

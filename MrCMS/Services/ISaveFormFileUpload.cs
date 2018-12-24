@@ -6,6 +6,6 @@ namespace MrCMS.Services
 {
     public interface ISaveFormFileUpload
     {
-        string SaveFile(Webpage webpage, FormPosting formPosting, IFormFile file);
+        string SaveFile(Form form, FormPosting formPosting, IFormFile file);
     }
 }

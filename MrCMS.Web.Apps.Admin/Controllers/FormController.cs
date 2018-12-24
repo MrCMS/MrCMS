@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
-using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Web.Apps.Admin.ModelBinders;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
@@ -21,9 +20,60 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _formAdminService = formAdminService;
         }
 
-        public PartialViewResult Postings(Webpage webpage, int page = 1, string search = null)
+        public ViewResult Index(FormSearchModel model)
         {
-            var data = _formAdminService.GetFormPostings(webpage, page, search);
+            ViewData["results"] = _formAdminService.Search(model);
+
+            return View(model);
+        }
+
+        public ViewResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public RedirectToActionResult Add(AddFormModel model)
+        {
+            var form = _formAdminService.AddForm(model);
+            if (form != null)
+            {
+                return RedirectToAction("Edit", new { form.Id });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ViewResult Edit(int id)
+        {
+            var form = _formAdminService.GetForm(id);
+            ViewData["form"] = form;
+            return View(form);
+        }
+
+        [HttpPost]
+        public RedirectToActionResult Edit(UpdateFormModel model)
+        {
+            _formAdminService.Update(model);
+
+            return RedirectToAction("Edit", new {model.Id});
+        }
+
+        public ViewResult Delete(int id)
+        {
+            return View(_formAdminService.GetUpdateModel(id));
+        }
+
+        [HttpPost, ActionName(nameof(Delete))]
+        public RedirectToActionResult Delete_POST(int id)
+        {
+            _formAdminService.Delete(id);
+            return RedirectToAction("Index");
+        }
+
+        public PartialViewResult Postings(Form form, int page = 1, string search = null)
+        {
+            var data = _formAdminService.GetFormPostings(form, page, search);
 
             return PartialView(data);
         }
@@ -34,103 +84,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult AddProperty(Webpage webpage)
+        public ActionResult Sort(Form form)
         {
-            ViewData["property-types"] = new List<Type>
-                                             {
-                                                 typeof (TextBox),
-                                                 typeof (DropDownList),
-                                                 typeof (TextArea),
-                                                 typeof (CheckboxList),
-                                                 typeof (RadioButtonList),
-                                                 typeof (FileUpload)
-                                             }
-                .BuildSelectItemList(type => type.Name.BreakUpString(),
-                                     type => type.Name,
-                                     emptyItemText: null);
-            return View(new TextBox { Webpage = webpage });
-        }
-
-        [HttpPost]
-        public JsonResult AddProperty([ModelBinder(typeof(AddFormPropertyModelBinder))] FormProperty formProperty)
-        {
-            _formAdminService.AddFormProperty(formProperty);
-            return Json(new FormActionResult { success = true });
-        }
-
-        [HttpGet]
-        public ViewResult EditProperty(FormProperty property)
-        {
-            return View(property);
-        }
-
-        [HttpPost]
-        [ActionName("EditProperty")]
-        public JsonResult EditProperty_POST(FormProperty property)
-        {
-            _formAdminService.SaveFormProperty(property);
-            return Json(new FormActionResult { success = true });
-        }
-
-        [HttpGet]
-        public ViewResult DeleteProperty(FormProperty property)
-        {
-            return View(property);
-        }
-        [HttpPost]
-        [ActionName("DeleteProperty")]
-        public JsonResult DeleteProperty_POST(FormProperty property)
-        {
-            _formAdminService.DeleteFormProperty(property);
-            return Json(new FormActionResult { success = true });
-        }
-
-        [HttpGet]
-        public ActionResult AddOption(FormPropertyWithOptions formProperty)
-        {
-            return View(new FormListOption { FormProperty = formProperty });
-        }
-
-        [HttpPost]
-        public ActionResult AddOption(FormListOption formListOption)
-        {
-            _formAdminService.SaveFormListOption(formListOption);
-            return Json(new FormActionResult { success = true });
-        }
-
-        [HttpGet]
-        public ActionResult EditOption(FormListOption formListOption)
-        {
-            return View(formListOption);
-        }
-
-        [HttpPost]
-        [ActionName("EditOption")]
-        public ActionResult EditOption_POST(FormListOption formListOption)
-        {
-            _formAdminService.UpdateFormListOption(formListOption);
-            return Json(new FormActionResult { success = true });
-        }
-
-        [HttpGet]
-        public ActionResult DeleteOption(FormListOption formListOption)
-        {
-            return View(formListOption);
-        }
-
-        [HttpPost]
-        [ActionName("DeleteOption")]
-        public ActionResult DeleteOption_POST(FormListOption formListOption)
-        {
-            _formAdminService.DeleteFormListOption(formListOption);
-            return Json(new FormActionResult { success = true });
-        }
-
-
-        [HttpGet]
-        public ActionResult Sort(Webpage webpage)
-        {
-            var sortItems = webpage.FormProperties.OrderBy(x => x.DisplayOrder)
+            var sortItems = form.FormProperties.OrderBy(x => x.DisplayOrder)
                                 .Select(
                                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                                 .ToList();
@@ -145,30 +101,30 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult ClearFormData(Webpage webpage)
+        public PartialViewResult ClearFormData(Form form)
         {
-            return PartialView(webpage);
+            return PartialView(form);
         }
 
         [HttpPost]
         [ActionName("ClearFormData")]
-        public RedirectToActionResult ClearFormData_POST(Webpage webpage)
+        public RedirectToActionResult ClearFormData_POST(Form form)
         {
-            _formAdminService.ClearFormData(webpage);
-            return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
+            _formAdminService.ClearFormData(form);
+            return RedirectToAction("Edit", "Form", new { id = form.Id });
         }
 
         [HttpGet]
-        public ActionResult ExportFormData(Webpage webpage)
+        public ActionResult ExportFormData(Form form)
         {
             try
             {
-                var file = _formAdminService.ExportFormData(webpage);
-                return File(file, "text/csv", "MrCMS-FormData-[" + webpage.UrlSegment + "]-" + DateTime.UtcNow + ".csv");
+                var file = _formAdminService.ExportFormData(form);
+                return File(file, "text/csv", "MrCMS-FormData-[" + form.Name + "]-" + DateTime.UtcNow + ".csv");
             }
             catch
             {
-                return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
+                return RedirectToAction("Edit", "Form", new { id = form.Id });
             }
         }
 
@@ -181,13 +137,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public ActionResult DeleteEntry(int id)
         {
             var posting = _formAdminService.DeletePosting(id);
-            return RedirectToAction("Edit", "Webpage", new { id = posting.Webpage.Id });
+            return RedirectToAction("Edit", "Form", new { id = posting.Form.Id });
         }
-    }
 
-    public class FormActionResult
-    {
-        public bool success { get; set; }
-        public string message { get; set; }
+        [HttpGet]
+        public PartialViewResult FormProperties(int id)
+        {
+            return PartialView(_formAdminService.GetForm(id));
+        }
     }
 }

@@ -8,6 +8,7 @@ using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Web.Apps.Admin.Tests.Stubs;
 using System.Collections.Generic;
+using AutoMapper;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
@@ -18,17 +19,18 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
 
         public FormAdminServiceTests()
         {
-            _formAdminService = new FormAdminService(Session, A.Fake<IStringResourceProvider>(), A.Fake<ILogger<FormAdminService>>());
+            _formAdminService = new FormAdminService(Session, A.Fake<IStringResourceProvider>(),
+                A.Fake<ILogger<FormAdminService>>(), A.Fake<IMapper>());
         }
 
         [Fact]
         public void FormAdminService_ClearFormData_ShouldDeleteFormPosting()
         {
-            var webpage = new StubWebpage();
+            var form = new Form();
             var posting = new FormPosting
             {
                 IsDeleted = false,
-                Webpage = webpage,
+                Form = form,
                 FormValues = new List<FormValue>
                 {
                     new FormValue
@@ -41,11 +43,11 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
                 }
             };
 
-            webpage.FormPostings = new List<FormPosting> { posting };
+            form.FormPostings = new List<FormPosting> { posting };
 
             Session.Transact(session => session.Save(posting));
 
-            _formAdminService.ClearFormData(webpage);
+            _formAdminService.ClearFormData(form);
 
             Session.QueryOver<FormPosting>().RowCount().Should().Be(0);
         }
@@ -53,11 +55,11 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         [Fact]
         public void FormAdminService_ExportFormData_ShouldReturnByteArray()
         {
-            var webpage = new StubWebpage();
+            var form = new Form();
             var posting = new FormPosting
             {
                 IsDeleted = false,
-                Webpage = webpage,
+                Form = form,
                 FormValues = new List<FormValue>
                 {
                     new FormValue
@@ -70,9 +72,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
                 }
             };
 
-            webpage.FormPostings = new List<FormPosting> { posting };
+            form.FormPostings = new List<FormPosting> { posting };
 
-            byte[] result = _formAdminService.ExportFormData(webpage);
+            byte[] result = _formAdminService.ExportFormData(form);
 
             result.Should().BeOfType<byte[]>();
         }

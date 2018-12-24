@@ -53,12 +53,6 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
                 modelMetadata.PropertySetter(model, value);
             }
 
-            //var metadata = metadataProvider.GetMetadataForType(instance.GetType());
-            //var modelBinder = _createBinder(metadata);
-            //await modelBinder.BindModelAsync(bindingContext);
-            //model = bindingContext.Result.Model as IUpdateAdminViewModel;
-
-            //model.Id = id.Value;
             model.Models = new List<object>();
 
             var getEditTabsService = serviceProvider.GetRequiredService<IGetEditTabsService>();
@@ -98,8 +92,11 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             if (tab.ModelType != null)
             {
                 Type type = tab.ModelType;
-                var model = await BindModelType(bindingContext, metadataProvider.GetMetadataForType(type));
-                objects.Add(model);
+                if (type != null)
+                {
+                    var model = await BindModelType(bindingContext, metadataProvider.GetMetadataForType(type));
+                    objects.Add(model);
+                }
             }
 
             foreach (var tabChild in tab.Children)
@@ -118,7 +115,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
                 BinderModelName = metadata.BinderModelName,
                 BindingSource = metadata.BindingSource,
                 IsTopLevelObject = true,
-                Model = Activator.CreateInstance(metadata.ModelType),
+                //Model = Activator.CreateInstance(metadata.ModelType),
                 ModelMetadata = metadata,
                 ModelName = metadata.Name ?? string.Empty,
                 ModelState = new ModelStateDictionary(),

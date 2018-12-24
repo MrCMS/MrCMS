@@ -10,7 +10,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             FormValues = new List<FormValue>();
         }
-        public virtual Webpage Webpage { get; set; }
+        public virtual Form Form { get; set; }
         public virtual IList<FormValue> FormValues { get; set; }
 
         public virtual string this[string heading]

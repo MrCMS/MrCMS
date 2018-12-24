@@ -2,10 +2,9 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Shortcodes.Forms;
-using MrCMS.Tests.Stubs;
 using MrCMS.TestSupport;
-using MrCMS.Website;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms
@@ -28,19 +27,19 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void FormRenderer_RenderForm_IfFormDesignHasValueReturnResultCustomRendererGetForm()
         {
-            var stubWebpage = new StubWebpage {FormDesign = "form-design-data"};
+            var form = new Form { FormDesign = "form-design-data" };
             var formSubmittedStatus = new FormSubmittedStatus(false, null, null);
             var customForm = new HtmlString("custom-form");
-            A.CallTo(() => _customFormRenderer.GetForm(_htmlHelper, stubWebpage, formSubmittedStatus))
+            A.CallTo(() => _customFormRenderer.GetForm(_htmlHelper, form, formSubmittedStatus))
                 .Returns(customForm);
 
-            var renderForm = _formRenderingManager.RenderForm(_htmlHelper, stubWebpage, formSubmittedStatus);
+            var renderForm = _formRenderingManager.RenderForm(_htmlHelper, form, formSubmittedStatus);
 
             renderForm.Should().Be(customForm);
         }
 
         [Fact]
-        public void FormRenderer_RenderForm_IfWebpageIsNullReturnsEmptyString()
+        public void FormRenderer_RenderForm_IfFormIsNullReturnsEmptyString()
         {
             var renderForm =
                 _formRenderingManager.RenderForm(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
@@ -51,13 +50,13 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void FormRenderer_RenderForm_WhenFormDesignIsEmptyReturnsResultOfIDefaultFormRenderer()
         {
-            var stubWebpage = new StubWebpage();
+            var form = new Form();
             var formSubmittedStatus = new FormSubmittedStatus(false, null, null);
             var value = new HtmlString("test-default");
-            A.CallTo(() => _defaultFormRenderer.GetDefault(_htmlHelper, stubWebpage, formSubmittedStatus))
+            A.CallTo(() => _defaultFormRenderer.GetDefault(_htmlHelper, form, formSubmittedStatus))
                 .Returns(value);
 
-            var renderForm = _formRenderingManager.RenderForm(_htmlHelper, stubWebpage, formSubmittedStatus);
+            var renderForm = _formRenderingManager.RenderForm(_htmlHelper, form, formSubmittedStatus);
 
             renderForm.Should().Be(value);
         }

@@ -66,4 +66,4 @@
 $(function () {
     window.HealthCheckProcessor = new HealthCheckProcessor($('[data-health-check-list]'));
     window.HealthCheckProcessor.init();
-})
+});

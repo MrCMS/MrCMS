@@ -15,13 +15,13 @@ namespace MrCMS.Shortcodes.Forms
             _customFormRenderer = customFormRenderer;
         }
 
-        public IHtmlContent RenderForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submitted)
+        public IHtmlContent RenderForm(IHtmlHelper helper, Form form, FormSubmittedStatus submitted)
         {
-            if (webpage == null)
+            if (form == null)
                 return HtmlString.Empty;
-            return string.IsNullOrWhiteSpace(webpage.FormDesign)
-                       ? _defaultFormRenderer.GetDefault(helper, webpage, submitted)
-                       : _customFormRenderer.GetForm(helper, webpage, submitted);
+            return string.IsNullOrWhiteSpace(form.FormDesign)
+                       ? _defaultFormRenderer.GetDefault(helper, form, submitted)
+                       : _customFormRenderer.GetForm(helper, form, submitted);
         }
     }
 }

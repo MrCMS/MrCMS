@@ -119,38 +119,6 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
 
-        //forms
-        [DisplayName("Form Submitted Message")]
-        //[AllowHtml]
-        [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
-        public virtual string FormSubmittedMessage { get; set; }
-
-        [DisplayName("Form Success Redirect")]
-        public virtual string FormRedirectUrl { get; set; }
-
-        [DisplayName("Subject")]
-        [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
-        public virtual string FormEmailTitle { get; set; }
-
-        [DisplayName("Send Form To")]
-        [StringLength(500, ErrorMessage = "Send to cannot be longer than 500 characters.")]
-        public virtual string SendFormTo { get; set; }
-
-        [DisplayName("Form Email Message")]
-        public virtual string FormMessage { get; set; }
-
-        public virtual IList<FormProperty> FormProperties { get; set; }
-        public virtual IList<FormPosting> FormPostings { get; set; }
-        public virtual string FormDesign { get; set; }
-
-        [StringLength(100)]
-        [DisplayName("Submit Button Css Class")]
-        public virtual string SubmitButtonCssClass { get; set; }
-
-        [StringLength(100)]
-        [DisplayName("Submit button custom text")]
-        public virtual string SubmitButtonText { get; set; }
-
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
@@ -162,22 +130,6 @@ namespace MrCMS.Entities.Documents.Web
         {
             get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.Name)); }
         }
-
-        //public virtual string AbsoluteUrl
-        //{
-        //    get
-        //    {
-        //        // TODO: refactor to extension or something else
-        //        string scheme = (RequiresSSL )//|| MrCMSApplication.Get<SiteSettings>().SSLEverywhere)
-        //            ? "https://"
-        //            : "http://";
-        //        string authority = Site.BaseUrl;
-        //        if (authority.EndsWith("/"))
-        //            authority = authority.TrimEnd('/');
-
-        //        return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
-        //    }
-        //}
 
         public virtual IList<UrlHistory> Urls { get; set; }
 

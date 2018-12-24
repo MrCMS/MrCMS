@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Core.Pages;
-using MrCMS.Website;
 using NHibernate;
+using System;
+using System.Collections.Generic;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
 {
@@ -178,26 +176,27 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 RevealInNavigation = true,
             };
             //contact us
+            var form = AddContactUsForm();
             var contactUs = new TextPage
             {
                 Name = "Contact us",
                 UrlSegment = "contact-us",
-                BodyContent = "<h1>Contact</h1>Contact us at www.mrcms.com (coming soon). <p>Test form</a> [form]",
+                BodyContent = $"<h1>Contact</h1>Contact us at www.mrcms.com (coming soon). <p>Test form</a> [form id=\"{form.Id}\"]",
                 RevealInNavigation = true,
             };
-            AddFormToContactUs(contactUs);
             yield return contactUs;
         }
 
 
-        private void AddFormToContactUs(Webpage contactUs)
+        private Form AddContactUsForm()
         {
+            var form = new Form { Name = "Contact Us Form" };
             var fieldName = new TextBox
             {
                 Name = "Name",
                 LabelText = "Your Name",
                 Required = true,
-                Webpage = contactUs,
+                Form = form,
                 DisplayOrder = 0
             };
 
@@ -206,14 +205,16 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Name = "Email",
                 LabelText = "Your Email",
                 Required = true,
-                Webpage = contactUs,
+                Form = form,
                 DisplayOrder = 1
             };
             _session.Transact(s =>
             {
+                s.Save(form);
                 s.Save(fieldName);
                 s.Save(fieldEmail);
             });
+            return form;
         }
     }
 }

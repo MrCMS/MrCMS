@@ -20,12 +20,12 @@ namespace MrCMS.Services
             _fileService = fileService;
         }
 
-        public string SaveFile(Webpage webpage, FormPosting formPosting, IFormFile file)
+        public string SaveFile(Form form, FormPosting formPosting, IFormFile file)
         {
             var mediaCategory = _mediaCategoryLoader.GetByUrl("file-uploads") ??
                                 CreateFileUploadMediaCategory();
 
-            var result = _fileService.AddFile(file.OpenReadStream(), webpage.Id + "-" + formPosting.Id + "-" + file.FileName,
+            var result = _fileService.AddFile(file.OpenReadStream(), form.Id + "-" + formPosting.Id + "-" + file.FileName,
                 file.ContentType, file.Length, mediaCategory);
 
             return result.FileUrl;

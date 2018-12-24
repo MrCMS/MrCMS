@@ -7,6 +7,6 @@ namespace MrCMS.Shortcodes.Forms
 {
     public interface IFormRenderer
     {
-        IHtmlContent RenderForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submitted);
+        IHtmlContent RenderForm(IHtmlHelper helper, Form form, FormSubmittedStatus submitted);
     }
 }
