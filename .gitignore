@@ -1,9 +1,11 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
+.vscode/*
+.vs/*
+.idea/*
 
 #Visual Studio files
-*.vscode
 *.[Oo]bj
 *.user
 *.aps
@@ -31,8 +33,7 @@ obj/
 [Dd]ebug*/
 [Rr]elease*/
 Ankh.NoLoad
-.vs/*
-.idea/*
+
 
 #MonoDevelop
 *.pidb
