@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MrCMS.TestSupport\MrCMS.TestSupport.csproj" />
-    <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
+    <ProjectReference Include="..\..\..\src\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
 </Project>

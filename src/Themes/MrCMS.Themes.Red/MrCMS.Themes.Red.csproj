@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
+    <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
 </Project>

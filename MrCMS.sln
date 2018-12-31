@@ -21,11 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS", "src\Lib\MrCMS\MrCM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Data.Sqlite", "src\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj", "{F4E64063-4678-4580-9ECF-C8C3AE0A607C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Admin", "src\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj", "{ABED57C9-D2EF-4FB0-96C2-A22DB3922811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Admin", "src\Apps\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj", "{ABED57C9-D2EF-4FB0-96C2-A22DB3922811}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Admin.Infrastructure", "src\Lib\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj", "{4A188272-35D7-4D59-AE66-5E8E3341856E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web", "src\Sites\MrCMS.Web\MrCMS.Web.csproj", "{08D11A7D-9C15-4A4E-A1B2-9EA7F9F765C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web", "src\MrCMS.Web\MrCMS.Web.csproj", "{08D11A7D-9C15-4A4E-A1B2-9EA7F9F765C7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Themes.Red", "src\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj", "{78111DAA-0E42-4324-90C0-D658EFC6481E}"
 EndProject
