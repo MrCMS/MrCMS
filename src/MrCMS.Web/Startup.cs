@@ -51,7 +51,6 @@ namespace MrCMS.Web
         {
             var isInstalled = IsInstalled();
 
-
             // services always required
             services.RegisterAllSimplePairings();
             services.RegisterOpenGenerics();
@@ -70,7 +69,6 @@ namespace MrCMS.Web
             });
 
             services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
-
 
             // TODO: Look to removing Site for constructors and resolving like this
             services.AddScoped(provider =>
