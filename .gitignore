@@ -94,9 +94,10 @@ packages/
 *.vspx
 NDependOut/*
 *.ndproj
-MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
+*/MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.stackdump
 *.psess
+
 *.vsp
 *.pubxml
 *sitemap.xml

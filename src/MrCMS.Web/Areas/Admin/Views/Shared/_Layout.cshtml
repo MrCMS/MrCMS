@@ -5,32 +5,33 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
 }
 
-<div class="wrapper">
+<div class="container-fluid h-100">
+    <div class="row h-100">
+        <div class="col-2 collapse d-md-flex bg-faded pt-2 h-100" id="sidebar">
+            <partial name="Sidebar" />
+        </div>
 
-    <div id="sidebar">
-        <partial name="Sidebar" />
-    </div>
+        <div id="col pt-2">
+            
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
 
-    <div id="content">
-        
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fa fa-align-left"></i>
+                        <span>Toggle Sidebar</span>
+                    </button>
 
-                <button type="button" id="sidebarCollapse" class="btn btn-info">
-                    <i class="fa fa-align-left"></i>
-                    <span>Toggle Sidebar</span>
-                </button>
+                </div>
+            </nav>
 
+        <!-- <partial name="Navbar"/> -->
+
+            <div class="main-content">
+                <div class="admin-message">
+                    <partial name="Messages"/>
+                </div>
+                @RenderBody() 
             </div>
-        </nav>
-
-       <!-- <partial name="Navbar"/> -->
-
-        <div class="main-content">
-            <div class="admin-message">
-                <partial name="Messages"/>
-            </div>
-            @RenderBody() 
         </div>
     </div>
 </div>
