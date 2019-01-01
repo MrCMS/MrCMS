@@ -1,0 +1,39 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.ViewComponents
+@using MrCMS.Website
+
+
+<div class="sidebar-header">
+    <h3>Bootstrap Sidebar</h3>
+</div>
+
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#item-1">Item 1</a>
+        <div id="item-1" class="collapse">
+            <ul class="nav flex-column ml-3">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Sub 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sub 2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sub 3</a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Item 2</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Item 3</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#">Item 4</a>
+    </li>
+</ul>
+
+<vc:nav-links/>
+
