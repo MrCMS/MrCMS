@@ -10,6 +10,8 @@
     width:100%;
 }
 
+.subnav {display:inline-block;}
+
 .nav-link[data-toggle].collapsed:after {
     content: "▾";
 }

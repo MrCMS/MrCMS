@@ -6,7 +6,7 @@
     var currentUrl = Context.Request.Path.Value;
     List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
 }
-<ul class="nav nav-pills flex-column list-unstyled" id="sidebar-nav">
+<ul class="nav nav-pills list-unstyled d-block" id="sidebar-nav">
     @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
     {
         var urlAction = Url.Action("Index", "Webpage");
@@ -20,17 +20,17 @@
 
     @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))  
     {
-        <li class="nav-item @(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")"><a href="@Url.Action("Index", "MediaCategory")" class="nav-link"><i class="fa fa-file-image-o"></i> @Html.Resource("Admin Nav Media", "Media")</a></li>
+        <li class="nav-item"><a href="@Url.Action("Index", "MediaCategory")" class="nav-link @(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")"><i class="fa fa-file-image-o"></i> @Html.Resource("Admin Nav Media", "Media")</a></li>
     }
 
     @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
     {
-        <li class="nav-item @(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")" class="nav-link"><i class="glyphicon glyphicon-th"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
+        <li class="nav-item"><a href="@Url.Action("Index", "Layout")" class="nav-link @(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><i class="fa fa-delicious"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
     }
 
     @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
     {
-        <li class="nav-item @(currentUrl == Url.Action("Index", "Form") ? "active" : "")"><a href="@Url.Action("Index", "Form")" class="nav-link"><i class="glyphicon glyphicon-list-alt"></i> @Html.Resource("Admin Nav Forms", "Forms")</a></li>
+        <li class="nav-item"><a href="@Url.Action("Index", "Form")" class="nav-link @(currentUrl == Url.Action("Index", "Form") ? "active" : "")"><i class="fa fa-wpforms"></i> @Html.Resource("Admin Nav Forms", "Forms")</a></li>
     }
     @foreach (IAdminMenuItem item in adminMenuItems)
     {
@@ -40,8 +40,8 @@
             ViewData["indexOf"] = indexOf;
             ViewData["submenu"] = item.Text;
 
-            <li class="nav-item @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@indexOf">
-                <a href="#@item.Text" class="collapsed nav-link" data-toggle="collapse" data-target="#@item.Text">
+            <li class="nav-item @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" >
+                <a href="#@item.Text" class="collapsed nav-link" data-toggle="collapse" data-target="#@item.Text" data-menu="@indexOf">
                     <i class="@item.IconClass"> </i>
                     @Html.Resource("Nav Links - " + item.Text, item.Text)
                 </a>

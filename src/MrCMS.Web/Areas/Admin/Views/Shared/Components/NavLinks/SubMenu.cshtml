@@ -3,12 +3,12 @@
 @model SubMenu
 @{
     var indexOf = ViewData["indexOf"] as IEnumerable<int> ?? Enumerable.Empty<int>();
-    var currentUrl = Context.Request.GetDisplayUrl();
+    var currentUrl = Context.Request.Path.Value;
     var nav = ViewData["submenu"] as string;
     List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
 }
 
-<ul class="nav nav-pills flex-column collapse pl-4 list-unstyled" data-menu="true" id="@nav" aria-expanded="false">
+<ul class="nav nav-pills collapse pl-4 list-unstyled subnav" data-menu="true" id="@nav" aria-expanded="false">
     @foreach (ChildMenuItem item in items)
     {
         if (item.Children != null && item.Children.Any())
@@ -19,8 +19,8 @@
             indexOf = indexOf.Concat(new List<int> { index });
             ViewData["indexOf"] = indexOf;
             ViewData["item"] = item.Text;
-            <li class="nav-item @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@string.Join("-", indexOf)">
-                <a href="@item.Text" class="collapsed nav-link" data-toggle="collapse" data-target="#@item.Text">
+            <li class="nav-item">
+                <a href="@item.Text" class="collapsed nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-toggle="collapse" data-target="#@item.Text" data-menu="@string.Join("-", indexOf)">
                     @Html.Resource("Nav Links - " + item.Text, item.Text)
                 </a>
                 
@@ -29,7 +29,9 @@
         }
         else
         {
-            <li class="@(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")  nav-item"> <a href="@item.Url" class="nav-link">@item.Text</a></li>
+            <li class="nav-item"> 
+                <a href="@item.Url" class="nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")">@item.Text</a>
+            </li>
         }
     }
 </ul>
