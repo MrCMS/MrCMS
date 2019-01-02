@@ -20,13 +20,13 @@
 </head>
 <body>
 
+@RenderBody() 
+
 <div id="loading" style="display: none;">
     <img src="/Areas/Admin/img/ajax-loader2.gif"/>
 </div>
 
-@RenderBody()
-
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script> 
 
 @Html.RenderScriptBundle("~/admin/scripts/lib")
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>

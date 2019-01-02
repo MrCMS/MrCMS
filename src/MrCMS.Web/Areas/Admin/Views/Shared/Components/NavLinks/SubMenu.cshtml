@@ -4,10 +4,11 @@
 @{
     var indexOf = ViewData["indexOf"] as IEnumerable<int> ?? Enumerable.Empty<int>();
     var currentUrl = Context.Request.GetDisplayUrl();
+    var nav = ViewData["submenu"] as string;
     List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
 }
 
-<ul class="nav flex-column dropdown-menu" data-menu="true">
+<ul class="nav flex-column collapse" data-menu="true" id="@nav" aria-expanded="false">
     @foreach (ChildMenuItem item in items)
     {
         if (item.Children != null && item.Children.Any())
@@ -15,8 +16,9 @@
             int index = items.IndexOf(item);
             indexOf = indexOf.Concat(new List<int> { index });
             ViewData["indexOf"] = indexOf;
-            <li class="dropdown-submenu nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@string.Join("-", indexOf)">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
+            ViewData["item"] = item.Text;
+            <li class="nav-item @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@string.Join("-", indexOf)">
+                <a href="@item.Text" collapsed nav-link" data-toggle="collapse" data-target="#@item.Text">
                     @Html.Resource("Nav Links - " + item.Text, item.Text)
                     <b class="caret"></b>
                 </a>
@@ -25,7 +27,7 @@
         }
         else
         {
-            <li class="@(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")  nav-link"> <a href="@item.Url">@item.Text</a></li>
+            <li class="@(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")  nav-item"> <a href="@item.Url" class="nav-link">@item.Text</a></li>
         }
     }
 </ul>

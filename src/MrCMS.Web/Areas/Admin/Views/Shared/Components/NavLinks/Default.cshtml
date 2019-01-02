@@ -6,25 +6,71 @@
     var currentUrl = Context.Request.GetDisplayUrl();
     List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
 }
-<ul class="nav flex-column list-unstyled" id="sidebar-nav">
+<!--
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a class="nav-link active" href="#">Overview</a></li>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#submenu1" data-toggle="collapse" data-target="#submenu1">Reports</a>
+        <div class="collapse" id="submenu1" aria-expanded="false">
+            <ul class="flex-column pl-2 nav">
+                <li class="nav-item"><a class="nav-link py-0" href="">Orders</a></li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed py-0" href="#submenu1sub1" data-toggle="collapse" data-target="#submenu1sub1">Customers</a>
+                    <div class="collapse small" id="submenu1sub1" aria-expanded="false">
+                        <ul class="flex-column nav pl-4">
+                            <li class="nav-item">
+                                <a class="nav-link p-0" href="">
+                                    <i class="fa fa-fw fa-clock-o"></i> Daily
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-0" href="">
+                                    <i class="fa fa-fw fa-dashboard"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-0" href="">
+                                    <i class="fa fa-fw fa-bar-chart"></i> Charts
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-0" href="">
+                                    <i class="fa fa-fw fa-compass"></i> Areas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <li class="nav-item"><a class="nav-link" href="#">Analytics</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Export</a></li>
+</ul>
+-->
+<ul class="nav flex-column nav-pills" id="sidebar-nav">
     @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
     {
-        <li class="@(currentUrl == Url.Action("Index", "Webpage") ? "active" : "") nav-link"><a href="@Url.Action("Index", "Webpage")"><i class="fa fa-file-code-o"></i> @Html.Resource("Admin Nav Pages", "Pages")</a></li>
+        <li class="@(currentUrl == Url.Action("Index", "Webpage") ? "active" : "") nav-item">
+            <a href="@Url.Action("Index", "Webpage")" class="nav-link"><i class="fa fa-file-code-o"></i> 
+            @Html.Resource("Admin Nav Pages", "Pages")
+            </a>
+        </li>
     }
 
-    @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))
+    @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))  
     {
-        <li class="@(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "") nav-link"><a href="@Url.Action("Index", "MediaCategory")"><i class="fa fa-file-image-o"></i> @Html.Resource("Admin Nav Media", "Media")</a></li>
+        <li class="@(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "") nav-item"><a href="@Url.Action("Index", "MediaCategory")" class="nav-link"><i class="fa fa-file-image-o"></i> @Html.Resource("Admin Nav Media", "Media")</a></li>
     }
 
     @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
     {
-        <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "") nav-link"><a href="@Url.Action("Index", "Layout")"><i class="glyphicon glyphicon-th"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
+        <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "") nav-item"><a href="@Url.Action("Index", "Layout")" class="nav-link"><i class="glyphicon glyphicon-th"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
     }
 
     @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
     {
-        <li class="@(currentUrl == Url.Action("Index", "Form") ? "active" : "") nav-link"><a href="@Url.Action("Index", "Form")"><i class="glyphicon glyphicon-list-alt"></i> @Html.Resource("Admin Nav Forms", "Forms")</a></li>
+        <li class="@(currentUrl == Url.Action("Index", "Form") ? "active" : "") nav-item"><a href="@Url.Action("Index", "Form")" class="nav-link"><i class="glyphicon glyphicon-list-alt"></i> @Html.Resource("Admin Nav Forms", "Forms")</a></li>
     }
     @foreach (IAdminMenuItem item in adminMenuItems)
     {
@@ -32,12 +78,12 @@
         {
             var indexOf = adminMenuItems.IndexOf(item);
             ViewData["indexOf"] = indexOf;
-            <li class="dropdown-submenu nav-link list-unstyled @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@indexOf">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
+            ViewData["submenu"] = item.Text;
+
+            <li class="nav-item @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@indexOf">
+                <a href="#@item.Text" class="collapsed nav-link" data-toggle="collapse" data-target="#@item.Text">
                     <i class="@item.IconClass"> </i>
                     @Html.Resource("Nav Links - " + item.Text, item.Text)
-                    <b class="caret"></b>
-
                 </a>
                 <partial name="Components/NavLinks/SubMenu" model="item.Children" view-data="ViewData"></partial>
 
@@ -45,7 +91,7 @@
         }
         else
         {
-            <li class="@(currentUrl == item.Url ? "active" : "")  nav-link"><a href="@item.Url"><i class="@item.IconClass"> </i> @item.Text</a></li>
+            <li class="@(currentUrl == item.Url ? "active" : "") nav-item"><a href="@item.Url" class="nav-link"><i class="@item.IconClass"> </i> @item.Text</a></li>
         }
     }
 </ul>
