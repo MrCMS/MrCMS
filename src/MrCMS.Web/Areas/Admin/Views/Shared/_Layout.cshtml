@@ -11,7 +11,7 @@
             <partial name="Sidebar" />
         </div>
 
-        <div id="col pt-2">
+        <div class="col pt-2">
             
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
@@ -25,18 +25,17 @@
             </nav>
 
         <!-- <partial name="Navbar"/> -->
-
+        
             <div class="main-content">
                 <div class="admin-message">
-                    <partial name="Messages"/>
+                    <partial name="Messages"/> 
                 </div>
                 @RenderBody() 
             </div>
-        </div>
+        </div> 
     </div>
 </div>
 
-<!--[if lt IE 10]><br /><br />@{@Html.InfoBlock("Warning!", "You are using an outdated browser. For maximum functionality and experience please upgrade to Chrome, Firefox or IE 11.", AlertType.warning)}<![endif]-->
 @if (IsSectionDefined("JavaScriptBlock"))
 {
     DefineSection("JavaScriptBlock", () =>
