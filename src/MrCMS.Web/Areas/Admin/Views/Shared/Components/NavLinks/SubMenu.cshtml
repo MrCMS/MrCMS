@@ -8,7 +8,7 @@
     List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
 }
 
-<ul class="nav nav-pills collapse pl-4 list-unstyled subnav" data-menu="true" id="@nav" aria-expanded="false">
+<ul class="nav collapse pl-4 list-unstyled subnav" data-menu="true" id="@nav" aria-expanded="false">
     @foreach (ChildMenuItem item in items)
     {
         if (item.Children != null && item.Children.Any())

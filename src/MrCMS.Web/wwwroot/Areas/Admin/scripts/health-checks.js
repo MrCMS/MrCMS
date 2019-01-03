@@ -10,24 +10,24 @@
         }
     };
     function setResult(row, statusCell, icon, rowClass) {
-        statusCell.html('<i class="glyphicon glyphicon-' + icon + '"></i>');
+        statusCell.html('<i class="fa fa-' + icon + '"></i>');
         row.addClass(rowClass);
     }
     var onSuccess = function (row, statusCell) {
-        setResult(row, statusCell, 'ok', 'success');
+        setResult(row, statusCell, 'check', 'table-success');
         //statusCell.html('<i class="glyphicon glyphicon-ok"></i>');
         //row.addClass('success');
     };
     var onFailure = function (row, statusCell) {
-        setResult(row, statusCell, 'remove', 'danger');
+        setResult(row, statusCell, 'remove', 'table-danger');
         //statusCell.html('<i class="glyphicon glyphicon-remove"></i>');
         //row.addClass('danger');
     };
     var onWarning = function (row, statusCell) {
-        setResult(row, statusCell, 'asterisk', 'warning');
+        setResult(row, statusCell, 'asterisk', 'table-warning');
     };
     var onNA = function (row, statusCell) {
-        setResult(row, statusCell, 'minus', 'info');
+        setResult(row, statusCell, 'minus', 'table-info');
     };
     var processRow = function (row) {
         var url = row.data('process-url');

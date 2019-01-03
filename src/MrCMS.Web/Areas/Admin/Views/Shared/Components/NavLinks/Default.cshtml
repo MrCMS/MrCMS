@@ -6,7 +6,16 @@
     var currentUrl = Context.Request.Path.Value;
     List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
 }
-<ul class="nav nav-pills list-unstyled d-block" id="sidebar-nav">
+
+
+
+<ul class="nav list-unstyled d-block pl-3" id="sidebar-nav">
+        <li class="nav-item">
+            <a href="@Url.Action("Index", "Home")" class="nav-link  @(currentUrl == Url.Action("Index", "Home") ? "active" : "")"><i class="fa fa-columns"></i> 
+            @Html.Resource("Admin Nav Dashboard", "Dashboard")
+            </a>
+        </li>
+
     @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
     {
         var urlAction = Url.Action("Index", "Webpage");

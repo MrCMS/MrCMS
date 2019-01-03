@@ -12,71 +12,59 @@
     var currentUser = GetCurrentUser.Get();
 }
 
-<p>navbar</p>
-https://bootstrapious.com/p/bootstrap-sidebar
-@*<nav class="navbar navbar-default no-border-radius margin-bottom-0 navbar-fixed-top nav" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <span class="display-inline">
-                <a href="/Admin" tabindex="3">
-                    @{
-                        var adminLogo = Settings.AdminLogo;
-                    }
-                    @if (!string.IsNullOrWhiteSpace(adminLogo))
-                    {
-                        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new { @class = "logo" })
-                    }
-                    else
-                    {
-                        <img src="/Areas/Admin/img/logo.png" class="logo" />
-                    }
-                </a>
-            </span>
-            <button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target="#right-hand-navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="btn navbar-toggle" data-toggle="collapse" data-target="#search-collapse" style="padding-top:6px; padding-bottom: 6px;"><i class="glyphicon glyphicon-search"></i></a>
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white mx-0" id="mrcms-navbar">
 
-        </div>
-        <div class="collapse navbar-collapse pull-left" id="search-collapse">
-            <form class="navbar-form navbar-left site-search form-inline" role="search" action="@Url.Action("Index", "Search")" method="GET">
-                <div class="form-group">
-                    @Html.TextBox("term", "", new { @class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
+    <button type="button" id="sidebarCollapse" class="btn btn-info">
+        <i class="fa fa-align-left"></i>
+    </button>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mrcms-top-nav" aria-controls="mrcms-top-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mrcms-top-nav">
+
+        <form class="navbar-form navbar-left form-inline ml-2" role="search" action="@Url.Action("Index", "Search")" method="GET">
+            @Html.TextBox("term", "", new { @class = "search-query form-control mr-sm-2", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
+
+            <button type="submit" class="btn btn-outline-success my-2 my-sm-0" tabindex="2">@Html.Resource("Go")</button>
+        </form>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="/" target="new" class="nav-link"><i class="fa fa-home"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Home</span></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user">&nbsp;</i>&nbsp;Your Account</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/logout">Logout</a>
+                    <a class="dropdown-item" href="@Url.Action("Edit", "User", new { Id = currentUser.Id })">@Html.Resource("Your Account")</a>
                 </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        @Html.DropDownList("type", typeOptions, new { @class = "form-control search-type-dropdown", data_search_item_type = true })
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default" tabindex="2">@Html.Resource("Go")</button>
-                        </span>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="collapse navbar-collapse" id="right-hand-navbar">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="/" target="new"><i class="glyphicon glyphicon-home"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Home</span></a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Your Account</span><span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="/logout">Logout</a></li>
-                        <li><a href="@Url.Action("Edit", "User", new { Id = currentUser.Id })">@Html.Resource("Your Account")</a></li>
-                    </ul>
-                </li>
+            </li>
                 @if (!currentUser.DisableNotifications)
                 {
                     <partial name="PersistentNotificationNav" />
                 }
-                <li class="dropdown right-dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Sites</span><span class="caret"></span></a>
-                    <partial name="SiteListNav" />
-                </li>
-            </ul>
-        </div>
+        </ul>
+
     </div>
-</nav>*@
+
+
+    <div class="" id="search-collapse" style="display: none;">
+
+    </div>
+    <div class="" id="right-hand-navbar" style="display: none;">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+            </li>
+            <li class="dropdown">
+                
+            </li>
+            
+            <li class="dropdown right-dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Sites</span><span class="caret"></span></a>
+                <partial name="SiteListNav" />
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,6 +1,22 @@
 ﻿@using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.ViewComponents
-@using MrCMS.Website
+@using MrCMS.Settings
+@using System.Drawing
+@inject SiteSettings Settings
 
+<span class="d-flex justify-content-center py-3 px-3 ">
+    <a href="@Url.Action("Index", "Home")" tabindex="1">
+        @{
+            var adminLogo = Settings.AdminLogo;
+        }
+        @if (!string.IsNullOrWhiteSpace(adminLogo))
+        {
+            @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new { @class = "logo" })
+        }
+        else
+        {
+            <img src="/Areas/Admin/img/logo.png" class="align-middle" alt="dashboard logo" />
+        }
+    </a>
+</span>
 <vc:nav-links/>
 

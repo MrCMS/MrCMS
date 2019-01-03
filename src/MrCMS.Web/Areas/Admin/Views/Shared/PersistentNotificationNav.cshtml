@@ -1,7 +1,10 @@
 ﻿@model dynamic
-<li class="dropdown">
-    <a href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-bullhorn glyphicon"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Notifications&nbsp;</span><span class="badge badge-important" style="background: #d90000;" data-notification-count="true">-</span></a>
-    <div class="dropdown-menu notifications-dropdown reset-corners">
+<li class="nav-item dropdown">
+    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle"role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-bullhorn"></i>&nbsp;Notifications&nbsp;
+        <span class="badge badge-secondary" data-notification-count="true">-</span>
+    </a>
+    <div class="dropdown-menu">
         @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
         {
             <div class="btn-group">
