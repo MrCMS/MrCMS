@@ -8,7 +8,7 @@ namespace MrCMS.Web.Apps.Core.Metadata
 {
     public class TwoFactorCodePageMetadata : DocumentMetadataMap<TwoFactorCodePage>
     {
-        public override string IconClass => "glyphicon glyphicon-user";
+        public override string IconClass => "fa fa-user";
 
         public override string WebGetController => "TwoFactorCodePage";
 

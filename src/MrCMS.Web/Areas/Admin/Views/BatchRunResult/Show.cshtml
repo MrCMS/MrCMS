@@ -1,0 +1,9 @@
+﻿@model MrCMS.Batching.Entities.BatchRunResult
+<tr data-batch-run-result-id="@Model.Id" data-refresh-url="@Url.Action("Show","BatchRunResult",new{Model.Id})">
+    <td>
+        @Model.BatchJob.Name
+    </td>
+    <td>
+        @Model.Status
+    </td>
+</tr>

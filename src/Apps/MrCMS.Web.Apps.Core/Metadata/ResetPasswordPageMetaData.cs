@@ -10,7 +10,7 @@ namespace MrCMS.Web.Apps.Core.Metadata
     {
         public override string IconClass
         {
-            get { return "glyphicon glyphicon-user"; }
+            get { return "fa fa-user"; }
         }
 
         public override string WebGetController

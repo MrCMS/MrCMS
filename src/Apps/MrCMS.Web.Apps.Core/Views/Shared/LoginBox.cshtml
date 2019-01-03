@@ -27,10 +27,10 @@
 
             <div class="btn-group">
                 <button type="submit" value="@Html.Resource("Login")" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-user"></span> @Html.Resource("Login")</button>
+                    <span class="fa fa-user"></span> @Html.Resource("Login")</button>
 
-                <a href="@(UniquePageService.GetUrl<ForgottenPasswordPage>())" class="btn btn-default">
-                    <span class="glyphicon glyphicon glyphicon-question-sign"></span>
+                <a href="@(UniquePageService.GetUrl<ForgottenPasswordPage>())" class="btn btn-secondary">
+                    <span class="glyphicon fa fa-question-sign"></span>
                     @Html.Resource("Forgotten password")?
                 </a>
 

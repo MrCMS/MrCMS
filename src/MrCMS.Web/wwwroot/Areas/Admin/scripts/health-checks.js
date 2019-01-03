@@ -15,12 +15,12 @@
     }
     var onSuccess = function (row, statusCell) {
         setResult(row, statusCell, 'check', 'table-success');
-        //statusCell.html('<i class="glyphicon glyphicon-ok"></i>');
+        //statusCell.html('<i class="fa fa-ok"></i>');
         //row.addClass('success');
     };
     var onFailure = function (row, statusCell) {
         setResult(row, statusCell, 'remove', 'table-danger');
-        //statusCell.html('<i class="glyphicon glyphicon-remove"></i>');
+        //statusCell.html('<i class="fa fa-remove"></i>');
         //row.addClass('danger');
     };
     var onWarning = function (row, statusCell) {

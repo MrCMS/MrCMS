@@ -36,28 +36,28 @@ div.layout-area, div.widget { position: relative; }
     .mrcms-btn[disabled],
     fieldset[disabled] .mrcms-btn { pointer-events: none; cursor: default; opacity: 0.65; filter: alpha(opacity=65); -webkit-box-shadow: none; box-shadow: none; }
 
-.mrcms-btn-default { color: #ffffff; background-color: #474949; border-color: #474949; }
+.mrcms-btn-secondary { color: #ffffff; background-color: #474949; border-color: #474949; }
 
-    .mrcms-btn-default:hover,
-    .mrcms-btn-default:focus,
-    .mrcms-btn-default:active,
-    .mrcms-btn-default.active { background-color: #3a3c3c; border-color: #2e2f2f; }
+    .mrcms-btn-secondary:hover,
+    .mrcms-btn-secondary:focus,
+    .mrcms-btn-secondary:active,
+    .mrcms-btn-secondary.active { background-color: #3a3c3c; border-color: #2e2f2f; }
 
-    .mrcms-btn-default.disabled,
-    .mrcms-btn-default[disabled],
-    fieldset[disabled] .mrcms-btn-default,
-    .mrcms-btn-default.disabled:hover,
-    .mrcms-btn-default[disabled]:hover,
-    fieldset[disabled] .mrcms-btn-default:hover,
-    .mrcms-btn-default.disabled:focus,
-    .mrcms-btn-default[disabled]:focus,
-    fieldset[disabled] .mrcms-btn-default:focus,
-    .mrcms-btn-default.disabled:active,
-    .mrcms-btn-default[disabled]:active,
-    fieldset[disabled] .mrcms-btn-default:active,
-    .mrcms-btn-default.disabled.active,
-    .mrcms-btn-default[disabled].active,
-    fieldset[disabled] .mrcms-btn-default.active { background-color: #474949; border-color: #474949; }
+    .mrcms-btn-secondary.disabled,
+    .mrcms-btn-secondary[disabled],
+    fieldset[disabled] .mrcms-btn-secondary,
+    .mrcms-btn-secondary.disabled:hover,
+    .mrcms-btn-secondary[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-secondary:hover,
+    .mrcms-btn-secondary.disabled:focus,
+    .mrcms-btn-secondary[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-secondary:focus,
+    .mrcms-btn-secondary.disabled:active,
+    .mrcms-btn-secondary[disabled]:active,
+    fieldset[disabled] .mrcms-btn-secondary:active,
+    .mrcms-btn-secondary.disabled.active,
+    .mrcms-btn-secondary[disabled].active,
+    fieldset[disabled] .mrcms-btn-secondary.active { background-color: #474949; border-color: #474949; }
 
 .mrcms-btn-primary { color: #ffffff; background-color: #428bca; border-color: #428bca; }
 

@@ -146,9 +146,9 @@
 
                 var menu = '<div class="mrcms-edit-menu mrcms-edit-layout-area"><h4>' + areaName +
                     '</h4><ul><li><a tab-index="1" href="/Admin/Widget/Add?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Add widget</a></li>' +
-                    '<li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/' + areaId + '?returnUrl=' + top.location.href + '" class="mrcms-btn mrcms-btn-mini mrcms-btn-default" data-toggle="fb-modal">Sort widgets</a></li>' +
+                    '<li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/' + areaId + '?returnUrl=' + top.location.href + '" class="mrcms-btn mrcms-btn-mini mrcms-btn-secondary" data-toggle="fb-modal">Sort widgets</a></li>' +
                     resetMenu +
-                    '<li><a tab-index="2" href="/Admin/LayoutArea/SortWidgetsForPage/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" class="mrcms-btn mrcms-btn-mini mrcms-btn-default" data-toggle="fb-modal">Sort widgets for page</a></li></ul></div>';
+                    '<li><a tab-index="2" href="/Admin/LayoutArea/SortWidgetsForPage/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" class="mrcms-btn mrcms-btn-mini mrcms-btn-secondary" data-toggle="fb-modal">Sort widgets for page</a></li></ul></div>';
 
                 $(this).parent().prepend(menu);
                 $(".mrcms-edit-layout-area", document).fadeIn(400);

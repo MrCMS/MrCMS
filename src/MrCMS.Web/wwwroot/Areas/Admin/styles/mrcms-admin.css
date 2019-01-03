@@ -48,7 +48,7 @@ a[data-toggle="collapse"] { position: relative; }
 
     #content .main-content { padding: 20px; }
 
-        #content .main-content .content-item { background-color: white; padding: 15px; border-radius: 5px;}
+        #content .main-content .content-item { background-color: white; padding: 15px; border-radius: 5px;-webkit-box-shadow: 0 3px 3px 0px #dddddd; -moz-box-shadow: 0 3px 3px 0px #dddddd; box-shadow: 0 3px 3px 0px #dddddd;}
 
 /* ---------------------------------------------------
     MEDIAQUERIES

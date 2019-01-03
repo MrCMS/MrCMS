@@ -3927,7 +3927,7 @@
 					/*
 					"shortcut"			: 113,
 					"shortcut_label"	: 'F2',
-					"icon"				: "glyphicon glyphicon-leaf",
+					"icon"				: "fa fa-leaf",
 					*/
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),

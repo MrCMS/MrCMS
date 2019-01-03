@@ -166,7 +166,7 @@ function MediaSelectorWrapper(el, options) {
         altFormGroup.append(altLabel);
         var altInput = $('<input>').attr('type', 'text').addClass('form-control input-sm').attr('id', altId).attr('data-url', value);
         altFormGroup.append(altInput);
-        var altFeedback = $('<span class="glyphicon glyphicon-ok form-control-feedback hide" aria-hidden="true"></span>');
+        var altFeedback = $('<span class="fa fa-ok form-control-feedback hide" aria-hidden="true"></span>');
         altFormGroup.append(altFeedback);
         $.get(settings.altUrl, { url: value }, function (response) {
             altInput.val(response.alt);
@@ -212,7 +212,7 @@ function MediaSelectorWrapper(el, options) {
         var descriptionInput = $('<textarea>').attr('rows','4').addClass('form-control input-sm').attr('id', descriptionId).attr('data-url', value);
         descriptionFormGroup.append(descriptionInput);
 
-        var descriptionFeedback = $('<span class="glyphicon glyphicon-ok form-control-feedback hide" aria-hidden="true"></span>');
+        var descriptionFeedback = $('<span class="fa fa-ok form-control-feedback hide" aria-hidden="true"></span>');
         descriptionFormGroup.append(descriptionFeedback);
         $.get(settings.descriptionUrl, { url: value }, function (response) {
             descriptionInput.val(response.description);

@@ -336,7 +336,7 @@
 }
 #jstree-dnd.jstree-default .jstree-ok,
 #jstree-dnd.jstree-default .jstree-er {
-  background-image: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/32px.png");
+  background-image: url("/Areas/Admin/lib/jstree/themes/default/32px.png");
   background-repeat: no-repeat;
   background-color: transparent;
 }
@@ -406,7 +406,7 @@
 }
 .jstree-default .jstree-node,
 .jstree-default .jstree-icon {
-  background-image: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/32px.png");
+  background-image: url("/Areas/Admin/lib/jstree/themes/default/32px.png");
 }
 .jstree-default .jstree-node {
   background-position: -292px -4px;
@@ -425,7 +425,7 @@
   background-position: -68px -4px;
 }
 .jstree-default .jstree-loading > .jstree-ocl {
-  background: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
+  background: url("/Areas/Admin/lib/jstree/themes/default/throbber.gif") center center no-repeat;
 }
 .jstree-default .jstree-anchor > .jstree-themeicon {
   
@@ -532,7 +532,7 @@
 }
 .jstree-default-small .jstree-node,
 .jstree-default-small .jstree-icon {
-  background-image: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/32px.png");
+  background-image: url("/Areas/Admin/lib/jstree/themes/default/32px.png");
 }
 .jstree-default-small .jstree-node {
   background-position: -295px -7px;
@@ -551,7 +551,7 @@
   background-position: -71px -7px;
 }
 .jstree-default-small .jstree-loading > .jstree-ocl {
-  background: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
+  background: url("/Areas/Admin/scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
 }
 .jstree-default-small .jstree-anchor > .jstree-themeicon {
   background-position: -263px -7px;
@@ -658,7 +658,7 @@
 }
 .jstree-default-large .jstree-node,
 .jstree-default-large .jstree-icon {
-  background-image: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/32px.png");
+  background-image: url("/Areas/Admin/scripts/lib/jstree/themes/default/32px.png");
 }
 .jstree-default-large .jstree-node {
   background-position: -288px 0px;
@@ -677,7 +677,7 @@
   background-position: -64px 0px;
 }
 .jstree-default-large .jstree-loading > .jstree-ocl {
-  background: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
+  background: url("/Areas/Admin/scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
 }
 .jstree-default-large .jstree-anchor > .jstree-themeicon {
   background-position: -256px 0px;
@@ -764,7 +764,7 @@
 		
   }
   .jstree-default .jstree-icon {
-    background-image: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/40px.png");
+    background-image: url("/Areas/Admin/scripts/lib/jstree/themes/default/40px.png");
   }
   .jstree-default .jstree-node,
   .jstree-default .jstree-leaf > .jstree-ocl {
@@ -864,7 +864,7 @@
   .jstree-default .jstree-node > .jstree-ocl,
   .jstree-default .jstree-themeicon,
   .jstree-default .jstree-checkbox {
-    background-image: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/40px.png");
+    background-image: url("/Areas/Admin/scripts/lib/jstree/themes/default/40px.png");
     background-size: 120px 200px;
   }
   .jstree-default .jstree-node {

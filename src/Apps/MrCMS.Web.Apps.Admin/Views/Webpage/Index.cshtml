@@ -4,6 +4,7 @@
     ViewBag.Title = "Manage Pages";
     //Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+<div class="content-item">
 <h1 class="page-header">@Html.Resource("Admin Nav Pages", "Pages")</h1>
 <div id="web">
     <div id="webpage-tree">
@@ -14,4 +15,5 @@
 <hr class="small-margin" />
 <span class="grey">@Html.Resource("Admin Webpage Index Not Included In Navigation", "Not included in site navigation")</span><br />
 <span class="orange">@Html.Resource("Admin Webpage Index Not published", "Not published")</span><br />
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/pages.js"); }
+</div>
+@{ Html.IncludeScript("~/Areas/Admin/scripts/pages.js"); }

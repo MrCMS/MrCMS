@@ -37,8 +37,8 @@
             </div>
             
             <div class="btn-group">
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> @Html.Resource("Register")</button>
-            <a href="@(UniquePageService.GetUrl<LoginPage>())" class="btn btn-default">@Html.Resource("Already Registered? Login here")</a>            
+            <button type="submit" class="btn btn-primary"><span class="fa fa-ok-sign"></span> @Html.Resource("Register")</button>
+            <a href="@(UniquePageService.GetUrl<LoginPage>())" class="btn btn-secondary">@Html.Resource("Already Registered? Login here")</a>            
             </div>
             <br />
             @if (!String.IsNullOrEmpty(ViewBag.Message))

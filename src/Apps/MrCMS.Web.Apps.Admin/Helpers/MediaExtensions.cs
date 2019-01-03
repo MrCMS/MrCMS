@@ -42,7 +42,7 @@
                     return "fa fa-html5";
             }
 
-            return "glyphicon glyphicon-file";
+            return "fa fa-file";
         }
     }
 }

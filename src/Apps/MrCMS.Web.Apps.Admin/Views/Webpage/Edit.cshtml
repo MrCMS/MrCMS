@@ -17,14 +17,14 @@
 {
     <div class="row">
         <div class="col-lg-12">
-            <div class="btn-group display-inline" id="edit-webpage-options">
+            <div class="btn-group d-inline" id="edit-webpage-options">
                 <button class="btn btn-primary">@Html.Resource("Save")</button>
-                <a href="@GetLiveUrl.GetUrlSegment(Model,true)" class="btn btn-default">View</a>
+                <a href="@GetLiveUrl.GetUrlSegment(Model,true)" class="btn btn-secondary">View</a>
 
-                @Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
+                @Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-secondary" })
                 @if (Model.CanAddChildren())
                 {
-                    @Html.ActionLink(Html.Resource("Add a child page"), "Add", new { Model.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink(Html.Resource("Add a child page"), "Add", new { Model.Id }, new { @class = "btn btn-secondary" })
                 }
                 @if (Html.CanDelete())
                 {

@@ -1,0 +1,24 @@
+﻿@using AutoMapper
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs
+@model MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs.AdminTabBase<Webpage>
+@{
+    var isFirst = ViewData["is-first"] is bool b && b;
+    var webpage = ViewData["webpage"] as Webpage;
+}
+
+@if (Model is AdminTab<Webpage> adminTab)
+{
+    <div class="tab-pane@(isFirst ? " active" : "")" id="@adminTab.TabHtmlId">
+        @{
+            await adminTab.RenderTabPane(Html, Html.GetRequiredService<IMapper>(), webpage);
+        }
+    </div>
+}
+else if (Model is AdminTabGroup<Webpage> @group)
+{
+    foreach (var tab in @group.Children)
+    {
+        <partial name="TabContent" model="tab" view-data="ViewData" />
+    }
+}

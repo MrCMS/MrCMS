@@ -18,7 +18,7 @@
 
     @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
     {
-        <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")"><i class="glyphicon glyphicon-th"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
+        <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")"><i class="fa fa-th"></i> @Html.Resource("Admin Nav Layout", "Layouts")</a></li>
     }
     @{
         List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
