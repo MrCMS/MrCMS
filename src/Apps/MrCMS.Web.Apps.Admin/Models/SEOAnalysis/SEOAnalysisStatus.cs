@@ -4,7 +4,6 @@ namespace MrCMS.Web.Apps.Admin.Models.SEOAnalysis
     {
         Success,
         CanBeImproved,
-        Problem,
         Error
     }
 }

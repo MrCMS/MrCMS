@@ -10,13 +10,11 @@ namespace MrCMS.Web.Apps.Admin.Helpers
             switch (status)
             {
                 case SEOAnalysisStatus.Success:
-                    return "success";
+                    return "table-success";
                 case SEOAnalysisStatus.CanBeImproved:
-                    return "can-be-improved";
-                case SEOAnalysisStatus.Problem:
-                    return "problem";
+                    return "table-warning";
                 case SEOAnalysisStatus.Error:
-                    return "danger";
+                    return "table-danger";
                 default:
                     throw new ArgumentOutOfRangeException("status");
             }
@@ -28,13 +26,11 @@ namespace MrCMS.Web.Apps.Admin.Helpers
             switch (status)
             {
                 case SEOAnalysisStatus.CanBeImproved:
-                    return "glyphicon-arrow-right";
+                    return "fa-arrow-right";
                 case SEOAnalysisStatus.Error:
-                    return "glyphicon-remove";
+                    return "fa-remove";
                 case SEOAnalysisStatus.Success:
-                    return "glyphicon-ok";
-                case SEOAnalysisStatus.Problem:
-                    return "glyphicon-remove";
+                    return "fa-check";
                 default:
                     throw new ArgumentOutOfRangeException("status");
             }

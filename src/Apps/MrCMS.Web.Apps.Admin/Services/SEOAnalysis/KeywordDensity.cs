@@ -19,7 +19,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             if (text.Count() < 10)
             {
                 yield return
-                    GetFacet("Keyword density", SEOAnalysisStatus.Problem, "There is not enough content to calculate keyword density.");
+                    GetFacet("Keyword density", SEOAnalysisStatus.Error, "There is not enough content to calculate keyword density.");
             }
 
             var instances = Regex.Matches(text, analysisTerm, RegexOptions.IgnoreCase).Count;
@@ -37,25 +37,19 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             {
                 yield return
                     GetFacet("Keyword density", SEOAnalysisStatus.Error,
-                        string.Format(
-                            "The current keyword density in your body content is {0:0.00}% , which is below the recommended 1-4.5% target.",
-                            density));
+                        $"The current keyword density in your body content is {density:0.00}% , which is below the recommended 1-4.5% target.");
             }
             else if (density > 4.5m)
             {
                 yield return
                     GetFacet("Keyword density", SEOAnalysisStatus.Error,
-                        string.Format(
-                            "The current keyword density in your body content is {0:0.00}% , which is above the recommended 1-4.5% target.",
-                            density));
+                        $"The current keyword density in your body content is {density:0.00}% , which is above the recommended 1-4.5% target.");
             }
             else
             {
                 yield return
                     GetFacet("Keyword density", SEOAnalysisStatus.Success,
-                        string.Format(
-                            "The current keyword density in your body content is {0:0.00}% , which is within the recommended 1-4.5% target.",
-                            density));
+                        $"The current keyword density in your body content is {density:0.00}% , which is within the recommended 1-4.5% target.");
 
             }
         }

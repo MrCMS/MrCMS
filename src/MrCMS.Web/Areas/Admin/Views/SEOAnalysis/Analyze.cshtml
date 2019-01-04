@@ -3,34 +3,34 @@
 @model MrCMS.Web.Apps.Admin.Models.SEOAnalysis.SEOAnalysisResult
 <table class="table table-condensed analysis-table">
     <thead>
-        <tr>
-            <th></th>
-            <th>@Html.Resource("Admin Seo Analysis Check", "Check")
-            </th>
-            <th>@Html.Resource("Messages")
-            </th>
-        </tr>
+    <tr>
+        <th></th>
+        <th>@Html.Resource("Admin Seo Analysis Check", "Check")
+        </th>
+        <th>@Html.Resource("Messages")
+        </th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var facet in Model.OrderByDescending(facet => facet.Status).ThenBy(facet => facet.Importance).ThenBy(x=>x.Name))
-        {
-            <tr class="@facet.Status.GetTableClass()">
-                <td data-status="true" class="text-center"><i class="glyphicon @facet.Status.GetIconClass()"></i></td>
-                <td>
-                    @facet.Name
-                </td>
-                <td>
-                    @if (facet.Messages.Any())
-                    {
-                        <ul>
-                            @foreach (var message in facet.Messages)
-                            {
-                                <li>@Html.Raw(message)</li>
-                            }
-                        </ul>
-                    }
-                </td>
-            </tr>
-        }
+    @foreach (var facet in Model.OrderByDescending(facet => facet.Status).ThenBy(facet => facet.Importance).ThenBy(x=>x.Name))
+    {
+        <tr class="@facet.Status.GetTableClass()">
+            <td data-status="true" class="text-center"><i class="fa @facet.Status.GetIconClass()"></i></td>
+            <td>
+                @facet.Name
+            </td>
+            <td>
+                @if (facet.Messages.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var message in facet.Messages)
+                        {
+                            <div class="list-group-item">@Html.Raw(message)</div>
+                        }
+                    </div>
+                }
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

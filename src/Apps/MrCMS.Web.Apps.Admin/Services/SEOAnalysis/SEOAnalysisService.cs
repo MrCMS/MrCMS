@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using HtmlAgilityPack;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -13,15 +14,15 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class SEOAnalysisService : ISEOAnalysisService
     {
-        private readonly IEnumerable<ISEOAnalysisFacetProvider> _analysisFacetProviders;
         private readonly ISession _session;
         private readonly IGetLiveUrl _getLiveUrl;
+        private readonly IServiceProvider _serviceProvider;
 
-        public SEOAnalysisService(IEnumerable<ISEOAnalysisFacetProvider> analysisFacetProviders, ISession session, IGetLiveUrl getLiveUrl)
+        public SEOAnalysisService(ISession session, IGetLiveUrl getLiveUrl, IServiceProvider serviceProvider)
         {
-            _analysisFacetProviders = analysisFacetProviders;
             _session = session;
             _getLiveUrl = getLiveUrl;
+            _serviceProvider = serviceProvider;
         }
 
         public SEOAnalysisResult Analyze(Webpage webpage, string analysisTerm)
@@ -31,14 +32,28 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             {
                 htmlNode = GetDocument(webpage);
             }
+
+            var providers = GetProviders();
             return
                 new SEOAnalysisResult(
-                    _analysisFacetProviders.SelectMany(provider => provider.GetFacets(webpage, htmlNode, analysisTerm)));
+                    providers.SelectMany(provider => provider.GetFacets(webpage, htmlNode, analysisTerm)));
         }
 
-        public void UpdateAnalysisTerm(Webpage webpage)
+        public Webpage UpdateAnalysisTerm(int webpageId, string targetSeoPhrase)
         {
+            var webpage = _session.Get<Webpage>(webpageId);
+            if (webpage == null)
+                throw new NullReferenceException("Webpage does not exist");
+            webpage.SEOTargetPhrase = targetSeoPhrase;
             _session.Transact(session => session.Update(webpage));
+            return webpage;
+        }
+
+        public IEnumerable<ISEOAnalysisFacetProvider> GetProviders()
+        {
+            var allConcreteTypesAssignableFrom = TypeHelper.GetAllConcreteTypesAssignableFrom<ISEOAnalysisFacetProvider>();
+            return allConcreteTypesAssignableFrom
+                .Select(type => _serviceProvider.GetService(type)).Cast<ISEOAnalysisFacetProvider>();
         }
 
         private HtmlNode GetDocument(Webpage webpage)

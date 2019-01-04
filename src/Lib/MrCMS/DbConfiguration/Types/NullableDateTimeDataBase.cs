@@ -40,7 +40,10 @@ namespace MrCMS.DbConfiguration.Types
                 var dateTime = (DateTime)value;
                 if (dateTime.Kind != DateTimeKind.Utc)
                 {
-                    var zoneInfo = GetTimeZone(session);
+                    //todo check if removing this effects date time loading
+                    //var zoneInfo = GetTimeZone(session);
+                    //dateTime = TimeZoneInfo.ConvertTime(dateTime, zoneInfo, TimeZoneInfo.Utc);
+                    
                     dateTime = TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc);
                 }
 
@@ -50,9 +53,6 @@ namespace MrCMS.DbConfiguration.Types
                 NHibernateUtil.DateTime.NullSafeSet(dbCommand, null, index, session);
         }
 
-        public override SqlType[] SqlTypes
-        {
-            get { return new[] { NHibernateUtil.DateTime.SqlType }; }
-        }
+        public override SqlType[] SqlTypes => new[] { NHibernateUtil.DateTime.SqlType };
     }
 }

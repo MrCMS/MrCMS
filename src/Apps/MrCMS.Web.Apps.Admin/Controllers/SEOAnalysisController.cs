@@ -15,10 +15,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _seoAnalysisService = seoAnalysisService;
         }
 
-        public PartialViewResult Analyze(Webpage webpage)
+        public PartialViewResult Analyze(int id, string SEOTargetPhrase)
         {
-            webpage.SEOTargetPhrase = "test";
-            _seoAnalysisService.UpdateAnalysisTerm(webpage);
+            var webpage = _seoAnalysisService.UpdateAnalysisTerm(id, SEOTargetPhrase);
             SEOAnalysisResult result = _seoAnalysisService.Analyze(webpage, webpage.SEOTargetPhrase);
             return PartialView(result);
         }
