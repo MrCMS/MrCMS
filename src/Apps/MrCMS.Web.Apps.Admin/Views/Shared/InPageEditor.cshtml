@@ -10,38 +10,38 @@
     var canEditPage = Html.CanAccess<TypeACLRule>(TypeACLRule.Edit, Model.GetType().FullName);
 }
 <div class="mrcms-admin-nav-bar">
-    <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-xs">Admin</a>
+    <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
     @if (canEditPage)
     {
-        <a href="@Url.Action("Edit", "Webpage", new {Model.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-xs mrcms-btn-primary">Edit</a>
+        <a href="@Url.Action("Edit", "Webpage", new {Model.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
         if (Model.Published)
         {
-            <a id="unpublish-now" class="mrcms-btn mrcms-btn-xs mrcms-btn-success">Unpublish</a>
+            <a id="unpublish-now" class="mrcms-btn mrcms-btn-sm mrcms-btn-success">Unpublish</a>
         }
         else
         {
-            <a id="publish-now" class="mrcms-btn mrcms-btn-xs mrcms-btn-warning">Publish</a>
+            <a id="publish-now" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning">Publish</a>
         }
     }
     @if (Model.CanAddChildren())
     {
-        @Html.ActionLink("Add a child page", "Add", "Webpage", new {id = Model.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-xs mrcms-btn-secondary"})
+        @Html.ActionLink("Add a child page", "Add", "Webpage", new {id = Model.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary"})
     }
 
-    @Html.ActionLink("Add page", "Add", "Webpage", new {id = Model.Parent?.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-xs mrcms-btn-secondary"})
+    @Html.ActionLink("Add page", "Add", "Webpage", new {id = Model.Parent?.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary"})
 
     @if (Html.CanAccess<InlineEditingACL>("Allowed"))
     {
-        <a id="enable-editing" class="mrcms-btn mrcms-btn-xs mrcms-btn-secondary">Inline Editing: On</a>
+        <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline Editing: On</a>
     }
-    <a href="/logout" class="mrcms-btn mrcms-btn-xs mrcms-btn-secondary" style="float: right;">Logout</a>
+    <a href="/logout" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary" style="float: right;">Logout</a>
     @if (SiteSettings.SiteIsLive)
     {
-        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-xs mrcms-btn-success" style="float: right;">Site is set live</a>
+        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-success" style="float: right;">Site is set live</a>
     }
     else
     {
-        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-xs mrcms-btn-warning" style="float: right;">Site is not set live</a>
+        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning" style="float: right;">Site is not set live</a>
     }
 </div>
 

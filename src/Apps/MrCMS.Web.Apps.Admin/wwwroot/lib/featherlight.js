@@ -537,4 +537,4 @@ $.featherlight.prototype.onResize = function () {
     }
 };
 
-$.featherlight.prototype.loading = '<img src="/Areas/Admin/Content/Images/ajax-loader.gif" class="spinner">';
+$.featherlight.prototype.loading = '<img src="/Areas/Admin/img/ajax-loader.gif" class="spinner">';

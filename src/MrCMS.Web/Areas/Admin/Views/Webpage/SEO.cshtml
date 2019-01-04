@@ -6,118 +6,122 @@
 @{
     var webpage = ViewData["webpage"] as Webpage;
 }
-<div class="d-inline">
-    <i class="fa fa-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
+<div class="tab-pane content-item" id="#edit-seo">
+    <div class="d-inline">
+        <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
             For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
 
-    @Html.Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
-    @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-    <button id="change-url" class="btn btn-secondary btn-xs">Change</button>
+        @Html.Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
+        @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+        <button id="change-url" class="btn btn-secondary btn-sm">Change</button>
 
+        <hr />
 
-    <hr />
+        <div class="d-inline pb-3">
+            <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
 
-    <div class="d-inline">
-        <i class="fa fa-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
+            @Html.ActionLink(Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-sm btn-success", data_toggle = "fb-modal" })
+        </div>
+        @if (webpage.Urls.Any())
+        {
+            <table class="table table-striped table-condensed mt-3">
+                <tbody>
+                    @foreach (var url in webpage.Urls.OrderByDescending(history => history.CreatedOn))
+                    {
+                        <tr>
+                            <td>
+                                <a href="//@webpage.Site.BaseUrl/@url.UrlSegment" target="_blank">@webpage.Site.BaseUrl/@url.UrlSegment</a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @Html.Resource("Admin Webpage Seo No URL History", "No URL History")
+        }
 
-        @Html.ActionLink(Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-xs btn-success", data_toggle = "fb-modal" })
     </div>
-    @if (webpage.Urls.Any())
-    {
-        <table class="table table-striped table-condensed margin-top-10">
-            <tbody>
-                @foreach (var url in webpage.Urls.OrderByDescending(history => history.CreatedOn))
-                {
-                    <tr>
-                        <td>
-                            <a href="//@webpage.Site.BaseUrl/@url.UrlSegment" target="_blank">@webpage.Site.BaseUrl/@url.UrlSegment</a>
-                        </td>
-                        <td>
-                            @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        @Html.Resource("Admin Webpage Seo No URL History", "No URL History")
-    }
 
-</div>
-
-<hr />
-<div class="form-group">
-    @Html.LabelFor(x => x.MetaTitle)
-    @Html.TextBoxFor(x => x.MetaTitle, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.MetaTitle, "", new { @class = "error" })
-</div>
-<div class="form-group">
-    @Html.LabelFor(x => x.MetaDescription)
-    @Html.TextBoxFor(x => x.MetaDescription, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.MetaDescription, "", new { @class = "error" })
-</div>
-<div class="form-group">
-    @Html.LabelFor(x => x.MetaKeywords)
-    @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
-</div>
-<div class="form-group">
-    @Html.LabelFor(x => x.ExplicitCanonicalLink)
-    @Html.TextBoxFor(x => x.ExplicitCanonicalLink, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.ExplicitCanonicalLink, "", new { @class = "error" })
-</div>
-<hr />
-<h4>@Html.Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
-@Html.LabelFor(model => model.SEOTargetPhrase)
-<div class="input-group">
-    @Html.TextBoxFor(model => model.SEOTargetPhrase, new { @class = "form-control" })
-    <span class="input-group-btn">
-        <button data-seo-analyze="true" class="btn btn-secondary">@Html.Resource("Admin Webpage Seo Analyze", "Analyze")</button>
-    </span>
-</div>
-
-<div data-seo-analysis-summary="true">
-</div>
-
-<hr />
-
-<div class="form-group">
-    @Html.InlineCheckboxFor(model => model.RevealInNavigation)
-</div>
-<div class="form-group">
-    @Html.InlineCheckboxFor(model => model.IncludeInSitemap)
-</div>
-<div class="form-group">
-    @Html.InlineCheckboxFor(model => model.RequiresSSL)
-</div>
-<hr />
-
-<div class="form-group">
-    @Html.LabelFor(x => x.CustomHeaderScripts)
-    @Html.TextAreaFor(x => x.CustomHeaderScripts, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })
-</div>
-<div class="form-group">
-    @Html.LabelFor(x => x.CustomFooterScripts)
-    @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
-</div>
-@if (Html.IsWebpageCacheable(Model.Id))
-{
     <hr />
-    <h4>@Html.Resource("Advanced")</h4>
-    <hr class="small-margin" />
     <div class="form-group">
-        @Html.InlineCheckboxFor(model => model.DoNotCache)
+        @Html.LabelFor(x => x.MetaTitle)
+        @Html.TextBoxFor(x => x.MetaTitle, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.MetaTitle, "", new { @class = "error" })
     </div>
-}
-<hr />
-<strong>@Html.Resource("Page type"):</strong> @Html.GetDocumentMetadata(Model.Id).Name
-<br />
-<strong>@Html.Resource("Created On"): </strong>@webpage.CreatedOn
-<br />
-<strong>@Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
-<br />
-<strong>Page Id: </strong>@Model.Id
+    <div class="form-group">
+        @Html.LabelFor(x => x.MetaDescription)
+        @Html.TextBoxFor(x => x.MetaDescription, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.MetaDescription, "", new { @class = "error" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.MetaKeywords)
+        @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.ExplicitCanonicalLink)
+        @Html.TextBoxFor(x => x.ExplicitCanonicalLink, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.ExplicitCanonicalLink, "", new { @class = "error" })
+    </div>
+    <hr />
+    <h4>@Html.Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
+    @Html.LabelFor(model => model.SEOTargetPhrase)
+    <div class="input-group">
+        @Html.TextBoxFor(model => model.SEOTargetPhrase, new {@class = "form-control"})
+        <span class="input-group-append">
+            <button data-seo-analyze="true" class="btn btn-secondary">@Html.Resource("Admin Webpage Seo Analyze", "Analyze")</button>
+        </span>
+    </div>
+
+    <div data-seo-analysis-summary="true">
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        @Html.InlineCheckboxFor(model => model.RevealInNavigation)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(model => model.IncludeInSitemap)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(model => model.RequiresSSL)
+    </div>
+    <hr />
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.CustomHeaderScripts)
+        @Html.TextAreaFor(x => x.CustomHeaderScripts, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.CustomFooterScripts)
+        @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
+    </div>
+    @if (Html.IsWebpageCacheable(Model.Id))
+    {
+        <hr />
+        <h4>@Html.Resource("Advanced")</h4>
+        <hr class="small-margin" />
+        <div class="form-group">
+            @Html.InlineCheckboxFor(model => model.DoNotCache)
+        </div>
+    }
+    <hr />
+
+    <strong>@Html.Resource("Page type"):</strong> @Html.GetDocumentMetadata(Model.Id).Name
+    <br />
+    <strong>@Html.Resource("Created On"): </strong>@webpage.CreatedOn
+    <br />
+    <strong>@Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
+    <br />
+    <strong>Page Id: </strong>@Model.Id
+    <br />
+    <strong>Published: </strong> @Html.Raw((webpage.Published ? "<span class=\"text-success\">Published</span>" : "<span class=\"text-warning\">Unpublished</span>"))
+</div>

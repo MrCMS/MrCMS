@@ -98,14 +98,14 @@
             });
             //foreach widget add edit indicator
             $("div[data-widget-id]", document).each(function () {
-                $(this).prepend("<div class='edit-indicator-widget' style='diaply:none;'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
+                $(this).prepend("<div class='edit-indicator-widget' style='diaply:none;'><img src='/Areas/Admin/img/pencil.png' /></div>");
             });
             //foreach layout area add edit indicator
             $("div[data-layout-area-id]", document).each(function (element) {
                 if ($(this).height() == 0) {
-                    $(this).prepend("<div class='edit-indicator-layout corner'><img src='/Areas/Admin/Content/Images/layout-2.png' /></div>");
+                    $(this).prepend("<div class='edit-indicator-layout corner'><img src='/Areas/Admin/img/layout-2.png' /></div>");
                 } else {
-                    $(this).prepend("<div class='edit-indicator-layout'><img src='/Areas/Admin/Content/Images/layout-1.png' /></div>");
+                    $(this).prepend("<div class='edit-indicator-layout'><img src='/Areas/Admin/img/layout-1.png' /></div>");
                 }
 
             });

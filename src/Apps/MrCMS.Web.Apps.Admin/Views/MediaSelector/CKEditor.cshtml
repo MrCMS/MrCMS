@@ -10,7 +10,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var categories = ViewData["categories"] as List<SelectListItem> ?? new List<SelectListItem>();
     var results = ViewData["results"] as IPagedList<MediaFile>;
-    Html.IncludeScript(Url.Content("~/Content/Scripts/mrcms/ck-editor-image-picker.js"));
+    Html.IncludeScript(Url.Content("~/scripts/ck-editor-image-picker.js"));
 }
 <div data-type="media-selector-popup" style="min-height: 450px;">
     @using (Html.BeginForm("CKEditor", "MediaSelector", FormMethod.Get, new { id = "search-form", @class = "form-inline" }))
@@ -36,7 +36,7 @@
     }
 
     <div id="results">
-        <div id="fileupload" data-message="@Html.Resource("Click here or drag files to upload")" class="dropzone margin-bottom-10 margin-top-10"></div>
+        <div id="fileupload" data-message="@Html.Resource("Click here or drag files to upload")" class="dropzone margin-bottom-10 pt-3"></div>
 
         <input type="hidden" value="@Url.Action("Files", "File", new { Id = Model.CategoryId })" id="action-url" />
 

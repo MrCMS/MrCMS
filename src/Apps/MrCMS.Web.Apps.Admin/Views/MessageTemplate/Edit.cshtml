@@ -2,7 +2,7 @@
 @model MrCMS.Messages.MessageTemplate
 @{
     ViewBag.Title = "Edit Message Template";
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/message-template.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/message-template.js");
 }
 
 @using (Html.BeginForm("Edit", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, null, new { id = "edit-message-template" }))

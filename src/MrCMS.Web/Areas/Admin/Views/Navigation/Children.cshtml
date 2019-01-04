@@ -10,11 +10,11 @@
         if (node.IsMoreLink) { }
         else if (!node.IsPublished)
         {
-            cssClass = "orange";
+            cssClass = "text-warning";
         }
         else if (!node.RevealInNavigation)
         {
-            cssClass = "grey";
+            cssClass = "text-secondary";
         }
         <li id="@node.Id" data-id="@node.Id" data-parent-id="@node.ParentId"
             data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild"

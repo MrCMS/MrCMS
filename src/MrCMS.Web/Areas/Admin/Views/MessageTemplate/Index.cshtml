@@ -38,23 +38,23 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-xs" })*@
+                        @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm" })*@
                         @if (item.LegacyTemplateExists)
                         {
-                            @Html.ActionLink(Html.Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-xs", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm", data_toggle = "fb-modal" })
                         }
                         @if (!item.IsOverride)
                         {
-                            @Html.ActionLink(Html.Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-xs" })
+                            @Html.ActionLink(Html.Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm" })
                         }
                         else
                         {
-                            @Html.ActionLink(Html.Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-xs", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm", data_toggle = "fb-modal" })
                         }
-                        @Html.ActionLink(Html.Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-xs" })
+                        @Html.ActionLink(Html.Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm" })
                         @if (item.CanPreview)
                         {
-                            @Html.ActionLink(Html.Resource("Preview"), "Get", "MessageTemplatePreview", new { type = item.TypeName }, new { @class = "btn btn-xs btn-secondary" })
+                            @Html.ActionLink(Html.Resource("Preview"), "Get", "MessageTemplatePreview", new { type = item.TypeName }, new { @class = "btn btn-sm btn-secondary" })
                         }
                     </div>
                 </td>

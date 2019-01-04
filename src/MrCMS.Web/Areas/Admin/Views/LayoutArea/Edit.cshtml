@@ -57,8 +57,8 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        @Html.ActionLink(Html.Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-secondary btn-xs", @data_toggle = "fb-modal" })
-                        <a href="@Url.Action(Html.Resource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+                        @Html.ActionLink(Html.Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
+                        <a href="@Url.Action(Html.Resource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
                     </div>
                 </td>
             </tr>
@@ -73,11 +73,11 @@ else
     }
 
     <div class="btn-group">
-        <a href="@Url.Action(Html.Resource("Add"), "Widget", new {id = Model.Id, returnUrl = Context.Request.GetEncodedUrl()})" class="btn btn-xs btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin Layout Area Add Widget", "Add widget")</a>
+        <a href="@Url.Action(Html.Resource("Add"), "Widget", new {id = Model.Id, returnUrl = Context.Request.GetEncodedUrl()})" class="btn btn-sm btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin Layout Area Add Widget", "Add widget")</a>
         @{
             if (widgets.Any())
             {
-                @Html.ActionLink(Html.Resource("Sort"), "SortWidgets", "LayoutArea", new { id = Model.Id, returnUrl = Context.Request.GetEncodedUrl() }, new { @class = "btn btn-xs btn-secondary", @data_toggle = "fb-modal" })
+                @Html.ActionLink(Html.Resource("Sort"), "SortWidgets", "LayoutArea", new { id = Model.Id, returnUrl = Context.Request.GetEncodedUrl() }, new { @class = "btn btn-sm btn-secondary", @data_toggle = "fb-modal" })
             }
         }
 

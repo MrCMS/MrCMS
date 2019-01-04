@@ -44,15 +44,15 @@
                 <div class="btn-group">
                     @if (index.DoesIndexExist)
                     {
-                        @Html.FormLink(Html.Resource("Admin Indexes Reindex", "Reindex"), "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-secondary" })
+                        @Html.FormLink(Html.Resource("Admin Indexes Reindex", "Reindex"), "Reindex", new { type = index.TypeName }, new { @class = "btn btn-sm btn-secondary" })
                     }
                     else
                     {
-                        @Html.FormLink(Html.Resource("Admin Indexes Create", "Create"), "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-secondary" })
+                        @Html.FormLink(Html.Resource("Admin Indexes Create", "Create"), "Create", new { type = index.TypeName }, new { @class = "btn btn-sm btn-secondary" })
                     }
 
 
-                    @Html.ActionLink(Html.Resource("Admin Indexes Set Boosts", "Set Boosts"), "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-secondary", data_toggle = "fb-modal" })
+                    @Html.ActionLink(Html.Resource("Admin Indexes Set Boosts", "Set Boosts"), "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
                 </div>
             </td>
         </tr>

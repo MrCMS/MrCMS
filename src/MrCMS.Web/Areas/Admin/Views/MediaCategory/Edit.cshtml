@@ -3,8 +3,8 @@
 @{
     ViewBag.Title = "Edit | " + Model.Name;
 
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media-category.js");
 }
 
 @using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, null, new { id = "edit-media", target = "_top" }))

@@ -16,8 +16,8 @@
 @using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document", data_are_you_sure = Html.Resource(AdminMessages.AreYouSureDefaultMessage) }))
 {
     <div class="row">
-        <div class="col-lg-12">
-            <div class="btn-group display-inline" id="edit-webpage-options">
+        <div class="col">
+            <div class="btn-group" id="edit-webpage-options">
                 <button class="btn btn-primary">@Html.Resource("Save")</button>
                 <a href="@GetLiveUrl.GetUrlSegment(Model,true)" class="btn btn-secondary">View</a>
 
@@ -36,13 +36,13 @@
                 @Html.EditorFor(x => x.PublishOn)
                 @Html.ValidationMessageFor(x => x.PublishOn)
 
-                <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "green" : "orange")">@Html.Resource(Model.PublishStatus.ToString())</span>
+                <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")">@Html.Resource(Model.PublishStatus.ToString())</span>
             </div>
         </div>
     </div>
     @Html.ValidationSummary()
 
-    <ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
+    <ul class="nav nav-tabs" data-stickytabs="webpage-@Model.Id" role="tablist">
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
@@ -57,6 +57,6 @@
         }
     </div>
 
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/edit-webpage.js");
 }
 

@@ -138,7 +138,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             {
                 Name = "Mr CMS Logo",
                 Text =
-                    @"<a class=""navbar-brand"" href=""/""><img src=""/Apps/Core/Content/Images/mrcms-hat.gif"" style=""width: 40px; height: auto;"" />Mr CMS</a>",
+                    @"<a class=""navbar-brand"" href=""/""><img src=""/Apps/Core/img/mrcms-hat.gif"" style=""width: 40px; height: auto;"" />Mr CMS</a>",
                 LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Left")
             };
         }

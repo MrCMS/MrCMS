@@ -52,19 +52,19 @@
                                                             {
                                                                 if (!webpage.IsHidden(widget))
                                                                 {
-                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Hide Widget", "Hide Widget"), "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-xs" })
+                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Hide Widget", "Hide Widget"), "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-sm" })
                                                                 }
                                                                 else
                                                                 {
-                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Show Widget", "Show Widget"), "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-xs" })
+                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Show Widget", "Show Widget"), "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-sm" })
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+                                                                <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-sm btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
                                                             }
 
-                                                            @Html.ActionLink(Html.Resource("Admin Webpage Layout Edit Widget", "Edit Widget"), "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-xs", @data_toggle = "fb-modal" })
+                                                            @Html.ActionLink(Html.Resource("Admin Webpage Layout Edit Widget", "Edit Widget"), "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -73,15 +73,15 @@
                                     </table>
                                 }
                                 <div class="btn-group">
-                                    <a href="@Url.Action("Add", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-xs btn-primary" data-toggle="fb-modal">
+                                    <a href="@Url.Action("Add", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-sm btn-primary" data-toggle="fb-modal">
                                         @Html.Resource("Admin Webpage Layout Add widget to area", "Add widget to area")
                                     </a>
                                     @if (widgets.Any())
                                     {
-                                        @Html.ActionLink(Html.Resource("Sort"), "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-xs", @data_toggle = "fb-modal" })
+                                        @Html.ActionLink(Html.Resource("Sort"), "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
                                         if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == webpage))
                                         {
-                                            @Html.FormLink(Html.Resource("Reset Sort"), "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-xs" })
+                                            @Html.FormLink(Html.Resource("Reset Sort"), "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-sm" })
                                         }
                                     }
                                 </div>

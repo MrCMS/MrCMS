@@ -42,7 +42,7 @@
                         using (Html.BeginForm("DisableCache", "PageDefaults", new { info.TypeName }, FormMethod.Post))
                         {
                             @info.CacheEnabled
-                            <button class="btn btn-warning btn-xs pull-right" type="submit">Disable cache</button>
+                            <button class="btn btn-warning btn-sm pull-right" type="submit">Disable cache</button>
                         }
                     }
                     else if (info.CacheEnabled == CacheEnabledStatus.Disabled)
@@ -50,7 +50,7 @@
                         using (Html.BeginForm("EnableCache", "PageDefaults", new { info.TypeName }, FormMethod.Post))
                         {
                             @info.CacheEnabled
-                            <button class="btn btn-success btn-xs pull-right" type="submit">Enable cache</button>
+                            <button class="btn btn-success btn-sm pull-right" type="submit">Enable cache</button>
                         }
                     }
                     else
@@ -59,7 +59,7 @@
                     }
                 </td>
                 <td>
-                    @Html.ActionLink(Html.Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new { type = info.TypeName }, new { @class = "btn btn-xs btn-secondary", data_toggle = "fb-modal" })
+                    @Html.ActionLink(Html.Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new { type = info.TypeName }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
                 </td>
             </tr>
         }

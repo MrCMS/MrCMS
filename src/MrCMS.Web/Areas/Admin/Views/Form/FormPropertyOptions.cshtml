@@ -20,8 +20,8 @@
                     <td>@option.Selected</td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink(Html.Resource("Edit"), "Edit", "FormListOption", new { id = option.Id }, new { @class = "btn btn-xs btn-secondary", data_toggle = "fb-modal" })
-                            @Html.ActionLink(Html.Resource("Delete"), "Delete", "FormListOption", new { id = option.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Edit"), "Edit", "FormListOption", new { id = option.Id }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Delete"), "Delete", "FormListOption", new { id = option.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
                         </div>
                     </td>
                 </tr>
@@ -36,7 +36,7 @@ else
 }
 <br />
 <div class="btn-group">
-    @Html.ActionLink("Add Option", "Add", "FormListOption", new { id = Model.Id }, new { @class = "btn btn-xs btn-primary", data_toggle = "fb-modal" })
+    @Html.ActionLink("Add Option", "Add", "FormListOption", new { id = Model.Id }, new { @class = "btn btn-sm btn-primary", data_toggle = "fb-modal" })
 </div>
 
 

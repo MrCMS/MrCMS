@@ -96,15 +96,15 @@ else
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-xs btn-secondary", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
                             @if (resource.IsDefault)
                             {
-                                @*<button type="button" class="btn btn-success btn-xs">Add override</button>
-                                    <button type="button" class="btn btn-success dropdown-toggle btn-xs" data-toggle="dropdown" aria-expanded="false">
+                                @*<button type="button" class="btn btn-success btn-sm">Add override</button>
+                                    <button type="button" class="btn btn-success dropdown-toggle btn-sm" data-toggle="dropdown" aria-expanded="false">
                                         <span class="caret"></span>
                                         <span class="sr-only">Toggle Dropdown</span>
                                     </button>*@
-                                <button class="btn btn-success btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                     Add override <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
@@ -117,7 +117,7 @@ else
                             }
                             else
                             {
-                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-sm", data_toggle = "fb-modal" })
                             }
 
                         </div>

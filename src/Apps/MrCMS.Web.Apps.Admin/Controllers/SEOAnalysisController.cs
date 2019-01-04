@@ -17,6 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         public PartialViewResult Analyze(Webpage webpage)
         {
+            webpage.SEOTargetPhrase = "test";
             _seoAnalysisService.UpdateAnalysisTerm(webpage);
             SEOAnalysisResult result = _seoAnalysisService.Analyze(webpage, webpage.SEOTargetPhrase);
             return PartialView(result);

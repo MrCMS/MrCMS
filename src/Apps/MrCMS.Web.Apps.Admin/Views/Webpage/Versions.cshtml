@@ -33,8 +33,8 @@
                         <div class="btn-group">
                             @if (version.AnyDifferencesFromCurrent())
                             {
-                                @Html.ActionLink(Html.Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-xs"})
-                                @Html.ActionLink(Html.Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-xs"})
+                                @Html.ActionLink(Html.Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-sm"})
+                                @Html.ActionLink(Html.Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-sm"})
                             }
                             else
                             {

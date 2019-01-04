@@ -8,7 +8,7 @@
 <div id="restricted-domains">
     <hr />
     <div class="pull-right">
-        @Html.ActionLink("Add", "Add", "RedirectedDomain", new { id = Model.Id }, new { @class = "btn btn-secondary btn-xs", data_toggle = "fb-modal" })
+        @Html.ActionLink("Add", "Add", "RedirectedDomain", new { id = Model.Id }, new { @class = "btn btn-secondary btn-sm", data_toggle = "fb-modal" })
     </div>
     <h4>@Html.Resource("Admin Redirected Domains", "Redirected Domains")</h4>
     @if (redirectedDomains.Any())
@@ -26,7 +26,7 @@
                 {
                     <tr>
                         <td>@domain.Url</td>
-                        <td>@Html.ActionLink("Remove", "Delete", "RedirectedDomain", new {id = domain.Id}, new {@class = "btn btn-danger btn-xs", data_toggle = "fb-modal"})</td>
+                        <td>@Html.ActionLink("Remove", "Delete", "RedirectedDomain", new {id = domain.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})</td>
                     </tr>
                 }
             </tbody>

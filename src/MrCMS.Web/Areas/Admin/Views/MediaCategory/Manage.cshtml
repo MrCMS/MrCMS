@@ -6,9 +6,9 @@
 @model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media-category.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media.js");
     var category = FileAdminService.GetCategory(Model);
     var sortByOptions = FileAdminService.GetSortByOptions(Model);
     bool canAccessMediaToolsCut = Html.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);

@@ -98,7 +98,7 @@
 @if (tabs.Any())
 {
     ViewData["user"] = Model;
-    <ul class="nav nav-tabs margin-top-10" data-stickytabs="user-@Model.Id">
+    <ul class="nav nav-tabs pt-3" data-stickytabs="user-@Model.Id">
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();

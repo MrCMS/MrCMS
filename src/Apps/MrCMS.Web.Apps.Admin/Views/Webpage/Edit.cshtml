@@ -42,7 +42,7 @@
     </div>
     @Html.ValidationSummary()
 
-    <ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
+    <ul class="nav nav-tabs pt-3" data-stickytabs="webpage-@Model.Id">
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
@@ -57,6 +57,6 @@
         }
     </div>
 
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/edit-webpage.js");
 }
 

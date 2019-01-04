@@ -6,7 +6,7 @@
     var pageTypeOptions = ViewData["page-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-page-template.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/add-page-template.js");
 }
 
 @using (Html.BeginForm("Add", "PageTemplate", FormMethod.Post))

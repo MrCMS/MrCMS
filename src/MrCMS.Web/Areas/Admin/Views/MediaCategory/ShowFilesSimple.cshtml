@@ -10,7 +10,7 @@
             <tr>
                 <th class="col-lg-6">File Name</th>
                 <th class="col-lg-4">Alt / Description</th>
-                <th class="col-lg-2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-xs btn-secondary" target="_new">Manage folder</a></th>
+                <th class="col-lg-2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-sm btn-secondary" target="_new">Manage folder</a></th>
             </tr>
 
             @foreach (var file in Model.Files.OrderBy(x => x.DisplayOrder).ThenByDescending(x => x.CreatedOn))
@@ -27,7 +27,7 @@
 
                     </td>
                     <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? new HtmlString("<br />" + file.Description) : null)</td>
-                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-xs delete-file-simple">Delete</a></th>
+                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-sm delete-file-simple">Delete</a></th>
                 </tr>
             }
 

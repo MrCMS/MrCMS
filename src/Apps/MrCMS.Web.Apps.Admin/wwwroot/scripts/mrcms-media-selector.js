@@ -327,7 +327,7 @@ function MediaSelectorWrapper(el, options) {
 };
 MediaSelectorWrapper.defaults =
 {
-    noImageSelectedImage: '/Areas/Admin/Content/Images/no-media-selected.jpg',
+    noImageSelectedImage: '/Areas/Admin/img/no-media-selected.jpg',
     previewStyle: 'max-height: 120px; max-width:120px;',
     selectClasses: 'btn btn-success ',
     selectMessage: 'Select media...',

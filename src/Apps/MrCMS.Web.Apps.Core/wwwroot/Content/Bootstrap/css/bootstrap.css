@@ -2323,7 +2323,7 @@ fieldset[disabled] .btn-link:focus {
   line-height: 1.5;
   border-radius: 3px;
 }
-.btn-xs {
+.btn-sm {
   padding: 1px 5px;
   font-size: 12px;
   line-height: 1.5;
@@ -3923,7 +3923,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.navbar-btn.btn-xs {
+.navbar-btn.btn-sm {
   margin-top: 14px;
   margin-bottom: 14px;
 }
@@ -4350,7 +4350,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   position: relative;
   top: -1px;
 }
-.btn-xs .badge {
+.btn-sm .badge {
   top: 0;
   padding: 1px 5px;
 }

@@ -52,9 +52,9 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new { id = posting.Id }, new { @class = "btn btn-secondary btn-xs", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new { id = posting.Id }, new { @class = "btn btn-secondary btn-sm", data_toggle = "fb-modal" })
 
-                                @Html.ActionLink(Html.Resource("Delete"), "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Delete"), "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
                             </div>
                         </td>
                     </tr>

@@ -13,8 +13,8 @@
             <div class="pull-right btn-group">
                 @if (postingsModel.Items.TotalItemCount > 0)
                 {
-                    @Html.ActionLink(Html.Resource("Admin Webpage Form Delete All","Delete all entries"), "ClearFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
-                    @Html.ActionLink(Html.Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-primary" })
+                    @Html.ActionLink(Html.Resource("Admin Webpage Form Delete All","Delete all entries"), "ClearFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
+                    @Html.ActionLink(Html.Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-sm btn-primary" })
                 }
             </div>
         </div>

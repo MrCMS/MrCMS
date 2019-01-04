@@ -4,55 +4,59 @@
 @{
     var versionsModel = AdminService.GetVersions(Model, ViewData["page"] as int? ?? 1);
 }
-
-@if (versionsModel.Items.Any())
-{
-    <div data-paging-type="async">
-        <table class="table table-striped table-condensed">
-            <thead>
+<div class="content-item">
+    @if (versionsModel.Items.Any())
+    {
+        <div data-paging-type="async">
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.Resource("Created On")
+                    </th>
+                    <th>
+                        @Html.Resource("User")
+                </th>
+                <th>
+                    @Html.Resource("Actions")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var version in versionsModel.Items)
+        {
             <tr>
-                <th>@Html.Resource("Created On")
-                </th>
-                <th>@Html.Resource("User")
-                </th>
-                <th>@Html.Resource("Actions")
-                </th>
+                <td>
+                    @version.CreatedOn
+                </td>
+                <td>
+                    @(version.User != null ? version.User.Email : "")
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @if (version.AnyDifferencesFromCurrent())
+                        {
+                            @Html.ActionLink(Html.Resource("View"), "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal", @class = "btn btn-primary btn-sm" })
+                            @Html.ActionLink(Html.Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new { id = version.Id }, new { data_toggle = "fb-modal", @class = "btn btn-warning btn-sm" })
+                        }
+                        else
+                        {
+                            <span>Same as current</span>
+                        }
+                    </div>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            @foreach (var version in versionsModel.Items)
-            {
-                <tr>
-                    <td>
-                        @version.CreatedOn
-                    </td>
-                    <td>
-                        @(version.User != null ? version.User.Email : "")
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            @if (version.AnyDifferencesFromCurrent())
-                            {
-                                @Html.ActionLink(Html.Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-xs"})
-                                @Html.ActionLink(Html.Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-xs"})
-                            }
-                            else
-                            {
-                                <span>Same as current</span>
-                            }
-                        </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        @*
-            // TODO: Pager
-            @Html.Pager(Model.Items, "Show", i => new { Model.Id, page = i })*@
-    </div>
+        }
+    </tbody>
+</table>
+@*
+    // TODO: Pager
+    @Html.Pager(Model.Items, "Show", i => new { Model.Id, page = i })*@
+</div>
 }
 else
 {
-    <p>@Html.Resource("Admin Webpage Versions None", "No document versions available").</p>
+<p>@Html.Resource("Admin Webpage Versions None", "No document versions available").</p>
 }
 
+</div>

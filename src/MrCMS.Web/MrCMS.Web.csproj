@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
     <Content Remove="Areas\Admin\Views\Shared\Components\Greeting\Default.cshtml" />
     <Content Remove="Areas\Admin\Views\Shared\Components\HealthCheck\Default.cshtml" />
     <Content Remove="Areas\Admin\Views\Shared\Components\NavLinks\Default.cshtml" />
@@ -1161,7 +1162,6 @@
     <Content Remove="wwwroot\Areas\Admin\scripts\mrcms-media-selector.js" />
     <Content Remove="wwwroot\Areas\Admin\scripts\pages.js" />
     <Content Remove="wwwroot\Areas\Admin\scripts\persistent-notifications.js" />
-    <Content Remove="wwwroot\Areas\Admin\scripts\popup.js" />
     <Content Remove="wwwroot\Areas\Admin\scripts\preview-message-template.js" />
     <Content Remove="wwwroot\Areas\Admin\scripts\search.js" />
     <Content Remove="wwwroot\Areas\Admin\scripts\sort.js" />
@@ -2316,6 +2316,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\Greeting\Default.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\HealthCheck\Default.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\NavLinks\Default.cshtml" />
@@ -3465,7 +3466,6 @@
     <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\mrcms-media-selector.js" />
     <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\pages.js" />
     <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\persistent-notifications.js" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\popup.js" />
     <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\preview-message-template.js" />
     <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\search.js" />
     <EmbeddedResource Include="wwwroot\Areas\Admin\scripts\sort.js" />
@@ -3510,6 +3510,120 @@
 
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\Areas\Admin\styles\mrcms-admin.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Admin\Views\About\Index.cshtml" />
+    <None Include="Areas\Admin\Views\ACL\Group.cshtml" />
+    <None Include="Areas\Admin\Views\ACL\Index.cshtml" />
+    <None Include="Areas\Admin\Views\BatchJob\Row.cshtml" />
+    <None Include="Areas\Admin\Views\BatchRunResult\Show.cshtml" />
+    <None Include="Areas\Admin\Views\BatchRun\ROw.cshtml" />
+    <None Include="Areas\Admin\Views\BatchRun\Show.cshtml" />
+    <None Include="Areas\Admin\Views\BatchRun\ShowButton.cshtml" />
+    <None Include="Areas\Admin\Views\BatchRun\Status.cshtml" />
+    <None Include="Areas\Admin\Views\Batch\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Batch\Show.cshtml" />
+    <None Include="Areas\Admin\Views\ClearCaches\Index.cshtml" />
+    <None Include="Areas\Admin\Views\ContentBlock\Add.cshtml" />
+    <None Include="Areas\Admin\Views\ContentBlock\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\ContentBlock\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\ContentBlock\Sort.cshtml" />
+    <None Include="Areas\Admin\Views\CustomScriptPages\Index.cshtml" />
+    <None Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
+    <None Include="Areas\Admin\Views\FormListOption\Add.cshtml" />
+    <None Include="Areas\Admin\Views\FormListOption\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\FormListOption\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\FormProperty\Add.cshtml" />
+    <None Include="Areas\Admin\Views\FormProperty\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\FormProperty\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Add.cshtml" />
+    <None Include="Areas\Admin\Views\Form\ClearFormData.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Form\DeleteEntry.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Form\FormDesign.cshtml" />
+    <None Include="Areas\Admin\Views\Form\FormMessage.cshtml" />
+    <None Include="Areas\Admin\Views\Form\FormPostings.cshtml" />
+    <None Include="Areas\Admin\Views\Form\FormProperties.cshtml" />
+    <None Include="Areas\Admin\Views\Form\FormProperty.cshtml" />
+    <None Include="Areas\Admin\Views\Form\FormPropertyOptions.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Postings.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Sort.cshtml" />
+    <None Include="Areas\Admin\Views\Form\Tab.cshtml" />
+    <None Include="Areas\Admin\Views\Form\TabContent.cshtml" />
+    <None Include="Areas\Admin\Views\Form\ViewPosting.cshtml" />
+    <None Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <None Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
+    <None Include="Areas\Admin\Views\Indexes\Boosts.cshtml" />
+    <None Include="Areas\Admin\Views\Indexes\Index.cshtml" />
+    <None Include="Areas\Admin\Views\LayoutArea\Add.cshtml" />
+    <None Include="Areas\Admin\Views\LayoutArea\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\LayoutArea\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\LayoutArea\SortWidgets.cshtml" />
+    <None Include="Areas\Admin\Views\LayoutArea\SortWidgetsForPage.cshtml" />
+    <None Include="Areas\Admin\Views\Layout\Add.cshtml" />
+    <None Include="Areas\Admin\Views\Layout\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Layout\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Layout\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Layout\Set.cshtml" />
+    <None Include="Areas\Admin\Views\Log\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Log\Show.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Directory.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\FileList.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\FileResult.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\FileSelector.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Manage.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Show.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\ShowFilesSimple.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
+    <None Include="Areas\Admin\Views\MediaCategory\Upload.cshtml" />
+    <None Include="Areas\Admin\Views\MediaSelector\CKEditor.cshtml" />
+    <None Include="Areas\Admin\Views\MediaSelector\FileResult.cshtml" />
+    <None Include="Areas\Admin\Views\MediaSelector\Show.cshtml" />
+    <None Include="Areas\Admin\Views\MessageQueue\Index.cshtml" />
+    <None Include="Areas\Admin\Views\MessageQueue\Show.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplatePreview\Get.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplatePreview\Preview.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplate\AddSiteOverride.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplate\DeleteSiteOverride.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplate\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplate\ImportLegacyTemplate.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplate\Index.cshtml" />
+    <None Include="Areas\Admin\Views\MessageTemplate\Tokens.cshtml" />
+    <None Include="Areas\Admin\Views\Navigation\Children.cshtml" />
+    <None Include="Areas\Admin\Views\Navigation\TreeList.cshtml" />
+    <None Include="Areas\Admin\Views\Notification\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Notification\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Notification\Push.cshtml" />
+    <None Include="Areas\Admin\Views\PageDefaults\Index.cshtml" />
+    <None Include="Areas\Admin\Views\PageDefaults\Set.cshtml" />
+    <None Include="Areas\Admin\Views\PageTemplate\Add.cshtml" />
+    <None Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\PageTemplate\Index.cshtml" />
+    <None Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
+    <None Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
+    <None Include="Areas\Admin\Views\RedirectedDomain\Add.cshtml" />
+    <None Include="Areas\Admin\Views\Resource\Add.cshtml" />
+    <None Include="Areas\Admin\Views\Resource\ChooseSite.cshtml" />
+    <None Include="Areas\Admin\Views\Resource\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Resource\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Resource\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Role\Add.cshtml" />
+    <None Include="Areas\Admin\Views\Role\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Role\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Role\Index.cshtml" />
+    <None Include="Areas\Admin\Views\SecurityOptions\Index.cshtml" />
+    <None Include="Areas\Admin\Views\SecurityOptions\Settings.cshtml" />
+    <None Include="Areas\Admin\Views\Settings\FileMigration.cshtml" />
+    <None Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
+    <None Include="Areas\Admin\Views\Settings\Index.cshtml" />
   </ItemGroup>
 
 </Project>

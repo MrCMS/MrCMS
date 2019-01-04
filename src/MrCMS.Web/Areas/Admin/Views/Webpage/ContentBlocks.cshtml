@@ -7,39 +7,25 @@
     var types = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<ContentBlock>();
 }
 
-<div data-content-blocks="">
+<div data-content-blocks="" class="content-item">
 
     <div class="btn-group">
         @if (contentBlocks.Any())
         {
             @Html.ActionLink("Sort", "Sort", "ContentBlock", new { id = Model.Id }, new { @class = "btn btn-secondary", data_toggle = "fb-modal" })
         }
-        <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> 
+        <a class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-plus"></i>
             @Html.Resource("Add Content Block")
-            <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            @*@foreach (var type in contentBlockTypes.OrderBy(x => x.Name))
-                {
-                    <li>@Html.ActionLink(type.Name.BreakUpString(), "Add", type.Name, new { id = Model.Id }, new { data_toggle = "fb-modal" })</li>
-                }*@
+        </a>
+        <div class="dropdown-menu">
             @foreach (var type in types)
             {
-                <li>
-                    <a data-toggle="fb-modal" href="@Url.Action("Add", "ContentBlock", new {webpageId = Model.Id, blockType = type.FullName})">
-                        @type.Name.BreakUpString()
-                    </a>
-                </li>
+                <a class="dropdown-item" href="@Url.Action("Add", "ContentBlock", new {webpageId = Model.Id, blockType = type.FullName})">
+                    @type.Name.BreakUpString()
+                </a>
             }
-            @*<li><a data-toggle="fb-modal" href="@Url.Action("Add", "OneColumnBlock", new{id=Model.Id})">One Column Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "OneColumnTextImageBlock", new{id=Model.Id})">One Column Text Image Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "TwoColumnBlock", new{id=Model.Id})">Two Column Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "TwoColumnTextImageBlock", new{id=Model.Id})">Two Column Text Image Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "ThreeColumnBlock", new{id=Model.Id})">Three Column Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "FourColumnBlock", new{id=Model.Id})">Four Column Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "PlainBlock", new{id=Model.Id})">Plain Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "SliderBlock", new{id=Model.Id})">Slider Block</a></li>
-            <li><a data-toggle="fb-modal" href="@Url.Action("Add", "VideoBlock", new{id=Model.Id})">Video Block</a></li>*@
-        </ul>
+        </div>
     </div>
 
     <hr />
@@ -68,8 +54,8 @@
                         <td>@(contentBlock.GetType().Name.BreakUpString())</td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-xs btn-secondary", data_toggle = "fb-modal" })
-                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-danger btn-sm", data_toggle = "fb-modal" })
                             </div>
                         </td>
                     </tr>

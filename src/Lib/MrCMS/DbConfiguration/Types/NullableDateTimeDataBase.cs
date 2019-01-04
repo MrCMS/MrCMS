@@ -41,7 +41,7 @@ namespace MrCMS.DbConfiguration.Types
                 if (dateTime.Kind != DateTimeKind.Utc)
                 {
                     var zoneInfo = GetTimeZone(session);
-                    dateTime = TimeZoneInfo.ConvertTime(dateTime, zoneInfo, TimeZoneInfo.Utc);
+                    dateTime = TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc);
                 }
 
                 NHibernateUtil.UtcDateTime.NullSafeSet(dbCommand, dateTime.ToUniversalTime(), index, session);

@@ -9,7 +9,7 @@
 
 @if (Model is AdminTab<Webpage> adminTab)
 {
-    <div class="tab-pane@(isFirst ? " active" : "")" id="@adminTab.TabHtmlId">
+    <div class="tab-pane@(isFirst ? " active" : "")" id="@adminTab.TabHtmlId" role="tabpanel" aria-labelledby="@adminTab.TabHtmlId">
         @{
             await adminTab.RenderTabPane(Html, Html.GetRequiredService<IMapper>(), webpage);
         }
