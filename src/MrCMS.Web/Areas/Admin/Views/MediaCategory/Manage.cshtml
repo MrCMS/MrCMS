@@ -16,33 +16,37 @@
 }
 
 <div class="mb-3">
-    <partial name="Upload" model="category" />
+    <partial name="Upload" model="category"/>
 </div>
 
 @if (category != null)
 {
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="@Url.Action("Index", "MediaCategory")">@Html.Resource("Admin Media", "Media")</a></li>
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "MediaCategory")">@Html.Resource("Admin Media", "Media")</a>
+        </li>
         @foreach (var folder in category.BreadCrumbs.Reverse())
         {
-            <li class="breadcrumb-item"><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Show", "MediaCategory", new {Id = folder.Id})">@folder.Name</a>
+            </li>
         }
     </ol>
 }
 
-@using (Html.BeginForm(FormMethod.Get, new { }))
+@using (Html.BeginForm(FormMethod.Get, new {}))
 {
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 @Html.LabelFor(model => model.SearchText)
-                @Html.TextBoxFor(model => model.SearchText, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.SearchText, new {@class = "form-control"})
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 @Html.LabelFor(model => model.SortBy)
-                @Html.DropDownListFor(model => model.SortBy, sortByOptions, new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.SortBy, sortByOptions, new {@class = "form-control"})
             </div>
         </div>
         <div class="col-sm-2">
@@ -72,4 +76,4 @@
     </span>
 }
 
-<partial name="Directory" model="Model" />
+<partial name="Directory" model="Model"/>

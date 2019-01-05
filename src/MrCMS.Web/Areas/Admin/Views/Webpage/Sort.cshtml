@@ -4,13 +4,14 @@
     ViewBag.Title = "Sort Pages";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+
 @section JavaScriptBlock
 {
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $("#sortable").sortable({
-                update: function (event, ui) {
-                    $('#sortable li').each(function (index, domElement) {
+                update: function(event, ui) {
+                    $('#sortable li').each(function(index, domElement) {
                         $(domElement).find('[name*="Order"]').val(index);
                     });
                 }
@@ -18,13 +19,14 @@
         });
     </script>
 }
-    <div class="content-item">
-        <form method="POST" id="sort-webpage">
-            <fieldset>
-                <legend>
-                    @Html.Resource("Sort")
+
+<div class="content-item">
+    <form method="POST" id="sort-webpage">
+        <fieldset>
+            <legend>
+                @Html.Resource("Sort")
                 <span class="btn-group  d-inline  pull-right">
-                    <input type="submit" class="btn btn-primary" value="@Html.Resource("Save")" />
+                    <input type="submit" class="btn btn-primary" value="@Html.Resource("Save")"/>
                 </span>
             </legend>
             <ul id="sortable" class="list-group">
@@ -40,4 +42,4 @@
             </ul>
         </fieldset>
     </form>
-    </div>
+</div>

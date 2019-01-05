@@ -7,25 +7,27 @@
     Html.IncludeScript("~/Areas/Admin/scripts/media-category.js");
 }
 
-@using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, null, new { id = "edit-media", target = "_top" }))
-{
-    <fieldset>
-        <legend>
-            @Model.Name
-        <span class="btn-group  d-inline  pull-right">
-            <input type="submit" class="btn btn-primary" value="@Html.Resource("Save")">
-        </span>
-    </legend>
+<div class="content-item">
+    @using (Html.BeginForm("Edit", "MediaCategory", new {id = Model.Id}, FormMethod.Post, null, new {id = "edit-media", target = "_top"}))
+    {
+        <fieldset>
+            <legend>
+                Edit @Model.Name
+                <span class="btn-group  d-inline  pull-right">
+                    <input type="submit" class="btn btn-primary" value="@Html.Resource("Save")">
+                </span>
+            </legend>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="form-group">
-                @Html.LabelFor(x => x.Name, "Folder Name")
-                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Name, "Folder Name")
+                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
+                    </div>
+                    @Html.LabelFor(x => x.IsGallery)
+                    @Html.CheckBoxFor(x => x.IsGallery)
+                </div>
             </div>
-            @Html.LabelFor(x => x.IsGallery)
-            @Html.CheckBoxFor(x => x.IsGallery)
-        </div>
-    </div>
-</fieldset>
-}
+        </fieldset>
+    }
+</div>

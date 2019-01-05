@@ -8,12 +8,12 @@
     @Html.Label("Category")
     @Html.DropDownList("Category", Model)
     @Html.Label("File")
-    @Html.DropDownList("File", new List<SelectListItem> { new SelectListItem { Text = "Select an file...", Value = "" } }, new { disabled = "disabled" })
+    @Html.DropDownList("File", new List<SelectListItem> {new SelectListItem {Text = "Select an file...", Value = ""}}, new {disabled = "disabled"})
     <div id="file-selector-uploader">
     </div>
     <div id="file-selector-uploader-result">
     </div>
 </div>
 <div class="modal-footer">
-    <input type="button" class="btn-primary btn" id="set-file" value="Select File" />
+    <input type="button" class="btn-primary btn" id="set-file" value="Select File"/>
 </div>

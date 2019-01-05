@@ -280,11 +280,11 @@ namespace MrCMS.Helpers
             // add checkbox style to label, for Bootstrap
             if (labelHtmlAttributes.ContainsKey("class"))
             {
-                labelHtmlAttributes["class"] += " checkbox-inline";
+                labelHtmlAttributes["class"] += " form-check-label";
             }
             else
             {
-                labelHtmlAttributes["class"] = "checkbox-inline";
+                labelHtmlAttributes["class"] = "form-check-label";
             }
 
             text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
