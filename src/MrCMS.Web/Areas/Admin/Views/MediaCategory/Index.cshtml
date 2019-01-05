@@ -3,14 +3,14 @@
     ViewBag.Title = "Manage Media";
 }
 
-<div class="inline-buttons-container">
-    <h1 class="page-header">@Html.Resource("Admin Nav Media", "Media")</h1>
-    <div class="btn-group">
-        <a href="@Url.Action("Add", "MediaCategory")" class="btn btn-primary">@Html.Resource("Admin Media New Folder Button", "New Folder")</a>
+<div class="content-item">
+    <div class="inline-buttons-container mb-3">
+        <h1 class="page-header">@Html.Resource("Admin Nav Media", "Media")</h1>
+        <div class="btn-group">
+            <a href="@Url.Action("Add", "MediaCategory")" class="btn btn-primary">@Html.Resource("Admin Media New Folder Button", "New Folder")</a>
+        </div>
     </div>
-</div>
 
-<partial name="Manage" model="Model" />
-@*
-    // TODO: implement the media categories
-    @{ Html.RenderAction("Manage", new { searchModel = Model });}*@ 
+    <partial name="Manage" model="Model"/>
+
+</div>

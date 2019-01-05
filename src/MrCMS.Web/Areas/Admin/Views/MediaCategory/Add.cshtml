@@ -9,6 +9,8 @@
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/scripts/add-category.js")"></script>
 }
 
+<div class="content-item">
+
 @using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, null, new { id = "add-media-category" }))
 {
     <fieldset>
@@ -38,3 +40,5 @@
         </div>
     </fieldset>
 }
+
+</div>

@@ -25,7 +25,7 @@
     <div class="collapse navbar-collapse" id="mrcms-top-nav">
 
         <form class="navbar-form navbar-left form-inline ml-2" role="search" action="@Url.Action("Index", "Search")" method="GET">
-            @Html.TextBox("term", "", new { @class = "search-query form-control mr-sm-2", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
+            @Html.TextBox("term", "", new {@class = "search-query form-control mr-sm-2", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1"})
 
             <button type="submit" class="btn btn-outline-success my-2 my-sm-0" tabindex="2">@Html.Resource("Go")</button>
         </form>
@@ -38,33 +38,23 @@
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user">&nbsp;</i>&nbsp;Your Account</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/logout">Logout</a>
-                    <a class="dropdown-item" href="@Url.Action("Edit", "User", new { Id = currentUser.Id })">@Html.Resource("Your Account")</a>
+                    <a class="dropdown-item" href="@Url.Action("Edit", "User", new {Id = currentUser.Id})">@Html.Resource("Your Account")</a>
                 </div>
             </li>
-                @if (!currentUser.DisableNotifications)
-                {
-                    <partial name="PersistentNotificationNav" />
-                }
-        </ul>
+            @if (!currentUser.DisableNotifications)
+            {
+                <partial name="PersistentNotificationNav"/>
+            }
 
-    </div>
-
-
-    <div class="" id="search-collapse" style="display: none;">
-
-    </div>
-    <div class="" id="right-hand-navbar" style="display: none;">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-            </li>
-            <li class="dropdown">
-                
-            </li>
-            
-            <li class="dropdown right-dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Sites</span><span class="caret"></span></a>
-                <partial name="SiteListNav" />
+            <li class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                    <i class="fa fa-sitemap"></i>&nbsp;Sites
+                </a>
+                <div class="dropdown-menu  dropdown-menu-right">
+                    <partial name="SiteListNav"/>
+                </div>
             </li>
         </ul>
+
     </div>
 </nav>

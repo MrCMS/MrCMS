@@ -4,16 +4,16 @@
         <i class="fa fa-bullhorn"></i>&nbsp;Notifications&nbsp;
         <span class="badge badge-secondary" data-notification-count="true">-</span>
     </a>
-    <div class="dropdown-menu">
+    <div class="dropdown-menu notifications-dropdown dropdown-menu-right">
         @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
         {
             <div class="btn-group">
-                <button type="submit" class="btn btn-secondary">@Html.Resource("Admin Dismiss All", "Dismiss all")</button>
-                <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary ">@Html.Resource("Admin View All", "View All")</a>
+                <button type="submit" class="btn btn-secondary btn-sm">@Html.Resource("Admin Dismiss All", "Dismiss all")</button>
+                <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary btn-sm">@Html.Resource("Admin View All", "View All")</a>
             </div>
         }
-        <ul data-notification-list="true" class="persistent-notification">
-            <li>@Html.Resource("Admin No Notifications", "No Notifications")</li>
+        <ul data-notification-list="true" class="persistent-notification list-group">
+            <li class="list-group-item">@Html.Resource("Admin No Notifications", "No Notifications")</li>
         </ul>
     </div>
 </li>

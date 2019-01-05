@@ -23,7 +23,7 @@ namespace MrCMS.Website.Filters
                 return HtmlString.Empty;
             var recaptchaDiv = new TagBuilder("div");
             recaptchaDiv.AddCssClass("g-recaptcha");
-            recaptchaDiv.AddCssClass("margin-bottom-10");
+            recaptchaDiv.AddCssClass("mb-3");
             recaptchaDiv.Attributes["data-recaptcha-holder"] = "true";
             recaptchaDiv.Attributes["data-sitekey"] = settings.SiteKey;
             id = id ?? Guid.NewGuid().ToString();

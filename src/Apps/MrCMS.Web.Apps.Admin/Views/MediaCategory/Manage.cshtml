@@ -15,7 +15,7 @@
     bool canAccessMediaToolsDelete = Html.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
 }
 
-<div class="margin-bottom-20">
+<div class="mb-3">
     <partial name="Upload" model="category" />
     <div class="clearfix"></div>
 </div>
@@ -57,7 +57,7 @@
 
 @if (canAccessMediaToolsCut || canAccessMediaToolsDelete)
 {
-    <span class="btn-group margin-bottom-20" id="file-tools">
+    <span class="btn-group mb-3" id="file-tools">
         @{
             if (canAccessMediaToolsCut)
             {
