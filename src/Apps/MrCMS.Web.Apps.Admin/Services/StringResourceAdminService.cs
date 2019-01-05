@@ -93,7 +93,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public List<SelectListItem> GetLanguageOptions(string key, int? siteId)
         {
-            List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.AllCultures).ToList();
+            List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
             IEnumerable<string> languages = _provider.GetOverriddenLanguages(key, siteId);
             cultureInfos.RemoveAll(info => languages.Contains(info.Name));
             return cultureInfos.OrderBy(info => info.DisplayName)
@@ -104,7 +104,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public List<SelectListItem> SearchLanguageOptions()
         {
-            List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.AllCultures).ToList();
+            List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
             IEnumerable<string> languages = _provider.GetOverriddenLanguages();
             cultureInfos = cultureInfos.FindAll(info => languages.Contains(info.Name));
 

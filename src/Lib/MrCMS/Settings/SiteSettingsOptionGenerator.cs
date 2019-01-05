@@ -70,7 +70,7 @@ namespace MrCMS.Settings
 
         public virtual List<SelectListItem> GetUiCultures(string uiCulture)
         {
-            return CultureInfo.GetCultures(CultureTypes.AllCultures).OrderBy(info => info.DisplayName)
+            return CultureInfo.GetCultures(CultureTypes.SpecificCultures).OrderBy(info => info.DisplayName)
                               .BuildSelectItemList(info => info.DisplayName, info => info.Name,
                                                    info => info.Name == uiCulture, emptyItem: null);
         }

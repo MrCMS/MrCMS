@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +29,9 @@ using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
 using System.Linq;
+using Lucene.Net.Support;
+using Microsoft.AspNetCore.Localization;
+using MrCMS.Globalization;
 
 namespace MrCMS.Web
 {
@@ -60,6 +65,16 @@ namespace MrCMS.Web
 
             //todo: something else with this, just making sure the library is loaded for now
             services.AddTransient<CreateSQLiteDatabase>();
+
+            var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(culture: "en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders.Insert(0, new UserProfileRequestCultureProvider());
+            });
 
             var appContext = services.AddMrCMSApps(context =>
             {
@@ -119,6 +134,7 @@ namespace MrCMS.Web
             services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+            
 
             services.AddScoped(x =>
             {
@@ -162,6 +178,8 @@ namespace MrCMS.Web
                 app.ShowInstallation();
                 return;
             }
+
+            app.UseRequestLocalization();
 
             app.UseStaticFiles(new StaticFileOptions
             {
