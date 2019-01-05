@@ -9,8 +9,8 @@
     var layoutAreas = ViewData["layout-areas"] as List<LayoutArea>;
 }
 <div class="content-item">
-    @using (Html.BeginForm("Edit", "Layout", FormMethod.Post, new {id = "edit-document"}))
-    {
+    <form asp-controller="Layout" asp-action="Edit" method="post" id="edit-document" novalidate="">
+
         <fieldset>
             <legend>
                 @Model.Name
@@ -41,16 +41,9 @@
                         @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
                         @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
                     </div>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.UrlSegment)
-                        @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
-                    </div>
+                    @Html.EditorFor(x => x.UrlSegment)
 
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" asp-for="Hidden" class="form-check-input" />
-                        <label class="form-check-label" asp-for="Hidden"></label>
-                    </div>
+                    @Html.EditorFor(x => x.Hidden)
                 </div>
             </div>
             <h4 class="light">@Html.Resource("Admin Layout Areas Title", "Areas")</h4>
@@ -86,5 +79,5 @@
             <a href="@Url.Action("Add", "LayoutArea", new {id = Model.Id})" class="btn btn-sm btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin Layout Add Area", "Add layout area")</a>
 
         </fieldset>
-    }
+    </form>
 </div>

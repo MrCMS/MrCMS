@@ -2323,7 +2323,9 @@
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\NavLinks\SubMenu.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\PageStats\Default.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\UserStats\Default.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Shared\EditorTemplates\Boolean.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Shared\EditorTemplates\String.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Messages.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Navbar.cshtml" />
