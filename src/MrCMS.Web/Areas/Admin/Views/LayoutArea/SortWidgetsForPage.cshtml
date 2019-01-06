@@ -13,7 +13,7 @@
         <legend>
             @Html.Resource("Admin Widgets Sort For Page Title", "Sort Widgets for page")
 
-        <span class="btn-group  d-inline  pull-right">
+        <span class="btn-group pull-right">
             <button class="btn btn-primary">@Html.Resource("Save")</button>
         </span>
     </legend>
@@ -28,7 +28,7 @@
             <li>
                 @Html.HiddenFor(model => model.Widgets[i].Id)
                 @Html.HiddenFor(model => model.Widgets[i].Order)
-                <i class="fa fa-resize-full"></i>&nbsp;&nbsp;
+                <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
                 @widget.Name
             </li>
         }

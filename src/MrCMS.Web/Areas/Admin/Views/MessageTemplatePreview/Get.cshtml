@@ -8,7 +8,7 @@
     <div style="min-height: 400px">
         <h1 class="page-header">
             @Html.Resource("Admin Message Template Preview Title", "Preview message template")
-            <span class="btn-group  d-inline  pull-right">
+            <span class="btn-group pull-right">
                 @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-secondary" })
                 @Html.ActionLink("Edit", "Edit", "MessageTemplate", typeInfo, new { @class = "btn btn-secondary" })
                 <input type="submit" class="btn btn-primary" value="@Html.Resource("Preview")" />

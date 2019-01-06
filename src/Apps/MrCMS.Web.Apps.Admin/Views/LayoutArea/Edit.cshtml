@@ -17,7 +17,7 @@
     <fieldset>
         <legend>
             @Model.AreaName
-        <span class="btn-group  d-inline  pull-right">
+        <span class="btn-group pull-right">
             @Html.ActionLink(Html.Resource("Admin Layout Area Edit Back", "Back to Layout"), "Edit", "Layout", new { id = layout.Id }, new { @class = "btn btn-secondary" })
             <a href="@Url.Action("Delete", "LayoutArea", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
             <button class="btn btn-primary">@Html.Resource("Save")</button>

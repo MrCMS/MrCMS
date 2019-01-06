@@ -3,30 +3,33 @@
 @{
     ViewBag.Title = "Add Layout";
 }
-@using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, null, new { id = "add-layout" }))
-{
-    <fieldset>
-        <legend>
-            @Html.Resource("Admin Add Layout Title", "Add Layout")
-            <button class="btn pull-right btn-primary">
-                @Html.Resource("Add")
-            </button>
-        </legend>
 
-        <div class="row">
-            <div class="col-lg-12">
-                @Html.HiddenFor(x => x.ParentId)
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.UrlSegment)
-                    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+<div class="content-item">
+    @using (Html.BeginForm("Add", "Layout", new {id = ""}, FormMethod.Post, null, new {id = "add-layout"}))
+    {
+        <fieldset>
+            <legend>
+                @Html.Resource("Admin Add Layout Title", "Add Layout")
+                <button class="btn pull-right btn-primary">
+                    @Html.Resource("Add")
+                </button>
+            </legend>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    @Html.HiddenFor(x => x.ParentId)
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Name)
+                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
+                        @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.UrlSegment)
+                        @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
+                        @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
+                    </div>
                 </div>
             </div>
-        </div>
-    </fieldset>
-}
+        </fieldset>
+    }
+</div>

@@ -14,7 +14,7 @@
     <fieldset>
         <legend>
             @Model.Name
-            <span class="btn-group  d-inline  pull-right">
+            <span class="btn-group pull-right">
                 @if (Html.CanDeleteDocument(Model.Id))
                 {
                     <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>

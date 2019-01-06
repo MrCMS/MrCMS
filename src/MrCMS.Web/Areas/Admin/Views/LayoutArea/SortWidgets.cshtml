@@ -18,19 +18,19 @@
     <fieldset>
         <legend>
             @Html.Resource("Admin Sort Widgets Title", "Sort Widgets")
-        <span class="btn-group  d-inline  pull-right">
+        <span class="btn-group pull-right">
             <button class="btn btn-primary">@Html.Resource("Save")</button>
             </span>
         </legend>
 
-        <ul id="sortable">
+        <ul id="sortable" class="list-group mb-3">
             @for (int i = 0; i < Model.Widgets.Count; i++)
             {
                 var widget = Model.Widgets[i];
-                <li>
+                <li class="list-group-item">
                     @Html.HiddenFor(model => model.Widgets[i].Id)
                     @Html.HiddenFor(model => model.Widgets[i].Order)
-                    <i class="fa fa-resize-full"></i>&nbsp;&nbsp;
+                    <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
                     @widget.Name
                 </li>
             }

@@ -9,7 +9,7 @@
 
 <h1 class="page-header">
     @Html.Resource("Admin Logs Log Title", "Log") #@Model.Id
-    <span class="btn-group  d-inline  pull-right">
+    <span class="btn-group pull-right">
         @Html.ActionLink("Back to list", "Index", "Log", null, new { @class = "btn btn-secondary" })
         <a href="@Url.Action("DeleteLog", "Log", new { Model.Id })" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
     </span>

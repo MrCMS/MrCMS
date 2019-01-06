@@ -23,6 +23,8 @@ a:focus { color: #212529;  }
 #sidebar ul li a { font-size: 1.1em; display: block;  }
 
     #sidebar ul li a.active { color: #1EB6F0; }
+    
+.ui-autocomplete { z-index: 100000;}
 
 a[data-toggle="collapse"] { position: relative; }
 
@@ -78,14 +80,12 @@ ul.persistent-notification li:last-child { border-bottom: 0; }
 .notifications-dropdown { padding-bottom: 0; width: 350px; margin-left: 0px;max-height: 600px; overflow-x:auto; }
 .notifications-dropdown form { width: 100%;padding-top: 10px;text-align: center;}
 
-/* Generic context menu styles */
-.contextMenu { background: #EEE; border: solid 1px #CCC; display: none; margin: 0px; padding: 5px; position: absolute; width: 120px; z-index: 99999; }
-.contextMenu a { font-style: normal; padding-left: 15px; }
 
-/*Right click context menu*/
-.context-menu { background: #fff; border: solid 1px #CCC; border-radius: 4px; display: none; margin: 0px; padding: 5px; position: absolute; width: 120px; z-index: 99999; }
-.context-menu li { list-style: none; }
-.context-menu a { font-style: normal; padding-left: 3px; }
+/*validation*/
+.field-validation-error span { color: red; }
+input.input-validation-error, select.input-validation-error { border: 1px solid red !important; }
+.validation-summary-errors { color: red; }
+.error, .error span { color: red; }
 
 /* ---------------------------------------------------
     MAIN CONTENT STYLE
@@ -96,7 +96,7 @@ ul.persistent-notification li:last-child { border-bottom: 0; }
 
     #content .main-content { padding: 20px; }
 
-        #content .main-content .content-item { background-color: white; padding: 15px; border-radius: 5px;-webkit-box-shadow: 0 3px 3px 0px #dddddd; -moz-box-shadow: 0 3px 3px 0px #dddddd; box-shadow: 0 3px 3px 0px #dddddd;}
+.content-item { background-color: white; padding: 15px; border-radius: 5px;-webkit-box-shadow: 0 3px 3px 0px #dddddd; -moz-box-shadow: 0 3px 3px 0px #dddddd; box-shadow: 0 3px 3px 0px #dddddd;}
 
 .featherlight-content iframe body, .featherlight-content iframe html { overflow: hidden }
 

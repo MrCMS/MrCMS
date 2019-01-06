@@ -1,0 +1,23 @@
+weekend to do
+- Notifications
+- Media
+- Layouts
+
+todo
+- search not working /Admin/Search?term=thoughtadminlogin%40thought.co.uk
+- save user doesn't work
+- expand ckeditor when typing
+- inline editing of content blocks?
+- ensure post models have validation
+
+- check about date conversion
+
+- break ACL? services.AddAuthorization(options =>
+            {
+                options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+            });
+
+future/nice to have
+- breadcrumbs
+- content blocks should just be body content.
+- upgrade jquery UI
