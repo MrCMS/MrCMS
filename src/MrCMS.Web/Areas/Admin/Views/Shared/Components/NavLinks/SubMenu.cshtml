@@ -2,25 +2,24 @@
 @using MrCMS.Web.Apps.Core.Models
 @model SubMenu
 @{
-    var indexOf = ViewData["indexOf"] as IEnumerable<int> ?? Enumerable.Empty<int>();
+    var indexOf = ViewData["indexOf"] as string;
     var currentUrl = Context.Request.Path.Value;
     var nav = ViewData["submenu"] as string;
     List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
 }
-
-<ul class="nav collapse pl-4 list-unstyled subnav" data-menu="true" id="@nav" aria-expanded="false">
+<ul class="nav collapse pl-4 list-unstyled subnav" id="@nav" aria-expanded="false">
     @foreach (ChildMenuItem item in items)
     {
         if (item.Children != null && item.Children.Any())
         {
             int index = items.IndexOf(item);
             ViewData["submenu"] = item.Text;
-
-            indexOf = indexOf.Concat(new List<int> { index });
+            indexOf = indexOf + index.ToString();
             ViewData["indexOf"] = indexOf;
-            ViewData["item"] = item.Text;
+            ViewData["item"] = item.Text;    
+            
             <li class="nav-item">
-                <a href="@item.Text" class="collapsed nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-toggle="collapse" data-target="#@item.Text" data-menu="@string.Join("-", indexOf)">
+                <a href="#@item.Text" class="collapsed nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-toggle="collapse" data-target="#@item.Text" data-menu="@indexOf.ToString()">
                     @Html.Resource("Nav Links - " + item.Text, item.Text)
                 </a>
                 

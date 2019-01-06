@@ -46,9 +46,9 @@
         if (item.Children.Any())
         {
             var indexOf = adminMenuItems.IndexOf(item);
-            ViewData["indexOf"] = indexOf;
+            ViewData["indexOf"] = indexOf.ToString();
             ViewData["submenu"] = item.Text;
-
+            
             <li class="nav-item @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" >
                 <a href="#@item.Text" class="collapsed nav-link" data-toggle="collapse" data-target="#@item.Text" data-menu="@indexOf">
                     <i class="@item.IconClass"> </i>

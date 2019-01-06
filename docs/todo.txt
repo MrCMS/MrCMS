@@ -25,3 +25,27 @@ future/nice to have
 - acl accordian 
 
 https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md
+
+//$("#System").collapse('show');
+    $(".collapse").on('show.bs.collapse', function(e) {
+        if ($(this).is(e.target)) {
+            mrcmsOpenMenuItems = mrcmsOpenMenuItems + this.id + ",";
+            store.set("admin-open-items", mrcmsOpenMenuItems);
+        }
+    });
+
+    $(".collapse").on('hidden.bs.collapse', function(e) {
+        if ($(this).is(e.target)) {
+            mrcmsOpenMenuItems = mrcmsOpenMenuItems.replace(this.id + ",","");
+            store.set("admin-open-items", mrcmsOpenMenuItems);
+        }
+    });
+
+    function openMenuItems(){
+        var items = store.get("admin-open-items") || '';
+        var keys = items.split(",");
+        for (var i = 0; i < keys.length; i++) {
+            $("#" + keys[i]).addClass("show");
+        }
+    }
+    openMenuItems();

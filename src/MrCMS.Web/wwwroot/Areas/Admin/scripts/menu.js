@@ -1,13 +1,14 @@
 ﻿var WebMenu = function (options) {
-    var settings = $.extend({
-    }, options);
+    var settings = $.extend({}, options);
     var self;
+
     function getId(node) {
         var id = node.data.id;
         if (id == null)
             id = "";
         return id;
     }
+
     return {
         init: function (tree, url) {
             self = this;
@@ -31,7 +32,7 @@
                     'data': {
                         'url': url,
                         'data': function (node) {
-                            return { 'id': node.id };
+                            return {'id': node.id};
                         },
                         cache: false
                     }
@@ -57,7 +58,9 @@
                 if (node.data.canAddChild === "True") {
                     items.addMenuItem = {
                         label: "Add",
-                        action: function () { return location.href = "/Admin/" + node.data.controller + "/Add/" + getId(node); }
+                        action: function () {
+                            return location.href = "/Admin/" + node.data.controller + "/Add/" + getId(node);
+                        }
                     };
                 }
             },
@@ -65,7 +68,9 @@
                 if (node.data.sortable === "True") {
                     items.sortMenuItem = {
                         label: "Sort",
-                        action: function () { return location.href = "/Admin/" + node.data.controller + "/Sort/" + node.parent; }
+                        action: function () {
+                            return location.href = "/Admin/" + node.data.controller + "/Sort/" + node.parent;
+                        }
                     };
                 }
             },
@@ -73,7 +78,9 @@
                 if (!isNaN(node.id)) {
                     items.editMenuItem = {
                         label: "Edit",
-                        action: function () { return location.href = "/Admin/" + node.data.controller + "/Edit/" + getId(node); }
+                        action: function () {
+                            return location.href = "/Admin/" + node.data.controller + "/Edit/" + getId(node);
+                        }
                     };
                 }
             },
@@ -81,7 +88,9 @@
                 if (node.data.candelete === "True") {
                     items.deleteMenuItem = {
                         label: "Delete",
-                        action: function () { return getRemoteModel("/Admin/" + node.data.controller + "/Delete/" + getId(node)); }
+                        action: function () {
+                            return getRemoteModel("/Admin/" + node.data.controller + "/Delete/" + getId(node));
+                        }
                     };
                 }
             }
@@ -90,27 +99,35 @@
 };
 //left hand nav open/close and persistence.
 (function ($) {
-    var mrcmsOpenMenuItems = "mrcms-open-menu-items";
-    function storeOpenTabs() {
-        var data = $("a[data-menu]").map(function () {
+    var mrcmsOpenMenuItems = "mrcms-admin-menu-items";
+    var target = "#sidebar-nav .collapse";
+
+    $(target).on('shown.bs.collapse', function (e) {
+        logOpenMenus();
+    });
+
+    $(target).on('hidden.bs.collapse', function (e) {
+        logOpenMenus();
+    });
+
+    function logOpenMenus(t, item) {
+        var data = $("[aria-expanded=true]").map(function () {
             return $(this).data('menu');
         }).get().join(",");
         store.set(mrcmsOpenMenuItems, data);
     }
+
     function openNavItems() {
         var items = store.get(mrcmsOpenMenuItems) || '';
         var keys = items.split(",");
         for (var i = 0; i < keys.length; i++) {
-            $("li[data-menu='" + keys[i] + "'] > ul").addClass("show");
+            $("a[data-menu='" + keys[i] + "']").click();
         }
     }
+
     $(document).ready(function () {
-        $('a[data-menu]').on('click', function (event) {
-            storeOpenTabs();
-        });
         openNavItems();
     });
-
 
     $(document).ready(function () {
         $("#sidebar").mCustomScrollbar({
