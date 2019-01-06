@@ -39,7 +39,7 @@
                 <p class="font-small">Last updated @result.CreatedOn.ToShortDateString()</p>
             </div>
         </div>
-        <hr class="mt-0 margin-bottom-0" />
+        <hr class="mt-0 mb-0" />
     }
 
     @Html.PagedListPager(results, page => UniquePageService.GetUrl<SearchPage>(new { page, searchModel.ParentId, searchModel.Term, searchModel.CreatedOnFrom, searchModel.CreatedOnTo, searchModel.Type }))

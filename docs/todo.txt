@@ -1,6 +1,7 @@
 
 
 todo
+- store state of left nav
 - search not working /Admin/Search?term=thoughtadminlogin%40thought.co.uk
 - save user doesn't work
 - expand ckeditor when typing

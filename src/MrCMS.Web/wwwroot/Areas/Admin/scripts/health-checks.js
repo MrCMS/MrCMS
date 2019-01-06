@@ -2,7 +2,7 @@
     var self;
     var showMessages = function (messagesCell, response) {
         if (response.messages.length) {
-            var ul = $('<ul>').addClass('list-unstyled margin-bottom-0');
+            var ul = $('<ul>').addClass('list-unstyled mb-0');
             $.each(response.messages, function (i, message) {
                 $('<li>').text(message).appendTo(ul);
             });
