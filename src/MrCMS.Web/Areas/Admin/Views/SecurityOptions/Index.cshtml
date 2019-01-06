@@ -8,73 +8,75 @@
     var roles = ViewData["roles"] as List<UserRole>;
 }
 
-<h1>@Html.Resource("Security Options")</h1>
+<div class="content-item">
+    <h1>@Html.Resource("Security Options")</h1>
 
-<partial name="Settings" model="securitySettings"/>
+    <partial name="Settings" model="securitySettings"/>
 
-<hr/>
+    <hr/>
 
-@using (Html.BeginForm("Index", "SecurityOptions", FormMethod.Post))
-{
-    <fieldset>
-        <h3>
-            @Html.Resource("Send Login Notification Emails?")
-        </h3>
-        <p>@Html.Resource("When enabled for a user role, an email will be sent to the user to alert them of a login using their account. This is useful so users can protect their account should they have not authorised the login.")</p>
-        <table class="table table-striped table-condensed">
-            <tbody>
-            @foreach (var role in roles)
-            {
-                <tr>
-                    <td>
-                        @role.Name
-                    </td>
-                    <td>
-                        @if (authRoleSettings.SendNotificationEmailRoles.Contains(role.Id))
-                        {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" checked="checked"/>
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id"/>
-                        }
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        <hr/>
-        <h3>
-            @Html.Resource("Which user roles is 2 factor auth enabled for?")
-        </h3>
-        <div class="alert alert-warning">
-            <strong>@Html.Resource("Note"): </strong> @Html.Resource("2FA is currently enforced if selected for a role. It is not opt in by the user.")
-        </div>
-        <table class="table table-striped table-condensed">
-            <tbody>
-            @foreach (var role in roles)
-            {
-                <tr>
-                    <td>
-                        @role.Name
-                    </td>
-                    <td>
-                        @if (authRoleSettings.TwoFactorAuthRoles.Contains(role.Id))
-                        {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" checked="checked"/>
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id"/>
-                        }
-                    </td>
-                </tr>
-            }
-            </tbody>
+    @using (Html.BeginForm("Index", "SecurityOptions", FormMethod.Post))
+    {
+        <fieldset>
+            <h3>
+                @Html.Resource("Send Login Notification Emails?")
+            </h3>
+            <p>@Html.Resource("When enabled for a user role, an email will be sent to the user to alert them of a login using their account. This is useful so users can protect their account should they have not authorised the login.")</p>
+            <table class="table table-striped table-condensed">
+                <tbody>
+                @foreach (var role in roles)
+                {
+                    <tr>
+                        <td>
+                            @role.Name
+                        </td>
+                        <td>
+                            @if (authRoleSettings.SendNotificationEmailRoles.Contains(role.Id))
+                            {
+                                <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" checked="checked"/>
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id"/>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <hr/>
+            <h3>
+                @Html.Resource("Which user roles is 2 factor auth enabled for?")
+            </h3>
+            <div class="alert alert-warning">
+                <strong>@Html.Resource("Note"): </strong> @Html.Resource("2FA is currently enforced if selected for a role. It is not opt in by the user.")
+            </div>
+            <table class="table table-striped table-condensed">
+                <tbody>
+                @foreach (var role in roles)
+                {
+                    <tr>
+                        <td>
+                            @role.Name
+                        </td>
+                        <td>
+                            @if (authRoleSettings.TwoFactorAuthRoles.Contains(role.Id))
+                            {
+                                <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" checked="checked"/>
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id"/>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
 
-        </table>
-        <button class="btn btn-primary" type="submit">
-            @Html.Resource("Save")
-        </button>
-    </fieldset>
-}
+            </table>
+            <button class="btn btn-primary" type="submit">
+                @Html.Resource("Save")
+            </button>
+        </fieldset>
+    }
+</div>

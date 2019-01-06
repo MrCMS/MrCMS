@@ -8,6 +8,8 @@
     var users = ViewData["users"] as IPagedList<User>;
     var roleOptions = ViewData["roles"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
+
+<div class="content-item">
 @using (Html.BeginForm("Index", "User", FormMethod.Get, new { @class = "form-horizontal" }))
 {
     <fieldset>
@@ -93,3 +95,4 @@ else
 }
 @*@Html.Pager(users, "Index", page => new { page })*@
 
+</div>

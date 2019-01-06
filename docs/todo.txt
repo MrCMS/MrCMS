@@ -9,6 +9,7 @@ todo
 - expand ckeditor when typing
 - inline editing of content blocks?
 - ensure post models have validation
+- users pager
 
 - check about date conversion
 
@@ -21,3 +22,6 @@ future/nice to have
 - breadcrumbs
 - content blocks should just be body content.
 - upgrade jquery UI
+- acl accordian 
+
+https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md

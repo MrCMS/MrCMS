@@ -25,11 +25,11 @@
         </legend>
 
         <div id="tabs">
-            <ul class="nav nav-tabs" data-stickytabs="system-settings">
+            <ul class="nav nav-tabs mb-2" data-stickytabs="system-settings">
                 @foreach (SystemSettingsBase settingType in Model)
                 {
                     string typeName = settingType.GetType().Name;
-                    <li><a href="#@typeName" data-toggle="tab"> @typeName.BreakUpString()</a></li>
+                    <li class="nav-item"><a href="#@typeName" data-toggle="tab" class="nav-link"> @typeName.BreakUpString()</a></li>
                 }
             </ul>
             <div class="tab-content">

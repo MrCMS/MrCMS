@@ -7,18 +7,19 @@
     var form = ViewData["form"] as Form;
 }
 
-@if (Model is AdminTab<Form> adminTab)
-{
-    <div class="tab-pane@(isFirst ? " active" : "")" id="@adminTab.TabHtmlId">
-        @{
-            await adminTab.RenderTabPane(Html, Html.GetRequiredService<IMapper>(), form);
-        }
-    </div>
-}
-else if (Model is AdminTabGroup<Form> @group)
-{
-    foreach (var tab in @group.Children)
+
+    @if (Model is AdminTab<Form> adminTab)
     {
-        <partial name="TabContent" model="tab" view-data="ViewData" />
+        <div class="tab-pane@(isFirst ? " active" : "")" id="@adminTab.TabHtmlId">
+            @{
+                await adminTab.RenderTabPane(Html, Html.GetRequiredService<IMapper>(), form);
+            }
+        </div>
     }
-}
+    else if (Model is AdminTabGroup<Form> @group)
+    {
+        foreach (var tab in @group.Children)
+        {
+            <partial name="TabContent" model="tab" view-data="ViewData"/>
+        }
+    }

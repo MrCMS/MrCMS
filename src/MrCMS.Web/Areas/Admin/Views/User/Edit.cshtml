@@ -14,14 +14,15 @@
     var tabs = EditTabsService.GetEditTabs(Html, Model);
 }
 
+<div class="content-item">
 @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "edit-user" }))
 {
     <fieldset>
         <legend>
             @Model.Name
-            <span class="btn-group d-inline pull-right">
+            <span class="btn-group pull-right">
                 @Html.ActionLink(Html.Resource("Back"), "Index", "User", null, new { @class = "btn btn-secondary" })
-                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin User Reset Password", "Reset Password")</a>
+                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" class="btn btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin User Reset Password", "Reset Password")</a>
 
                 @if (!onlyAdmin)
                 {
@@ -113,3 +114,4 @@
         }
     </div>
 }
+</div>

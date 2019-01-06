@@ -4,29 +4,29 @@
 @model dynamic
 @{
     var rules = ViewData["acl-rules"] as List<AclInfo>;
-    var roles = rules.SelectMany(x => x.Roles).Select(x => new { x.Id, x.Name }).Distinct().OrderBy(x => x.Name).ToList();
+    var roles = rules.SelectMany(x => x.Roles).Select(x => new {x.Id, x.Name}).Distinct().OrderBy(x => x.Name).ToList();
 }
-
-<form method="post" asp-action="Index">
-    <div class="card">
-        <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col-6">
-                    <h1>ACL</h1>
-                </div>
-                <div class="col">
-                    <div class="btn-group pull-right">
-                        <button class="btn btn-outline-primary">Save</button>
+<div class="content-item">
+    <form method="post" asp-action="Index">
+        <div class="card">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h1>ACL</h1>
+                    </div>
+                    <div class="col">
+                        <div class="btn-group pull-right">
+                            <button class="btn btn-primary">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-block">
-            @foreach (var group in rules.GroupBy(x => x.Rule).OrderBy(x => x.Key))
-            {
-                <h3>@group.Key.BreakUpString()</h3>
-                <table class="table table-condensed">
-                    <thead>
+            <div class="card-block">
+                @foreach (var group in rules.GroupBy(x => x.Rule).OrderBy(x => x.Key))
+                {
+                    <h3 class="pl-2 mt-2">@group.Key.BreakUpString()</h3>
+                    <table class="table table-condensed">
+                        <thead>
                         <tr>
                             <th>
                                 Operation
@@ -38,8 +38,8 @@
                                 </th>
                             }
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         @foreach (var rule in group.OrderBy(x => x.Type).ThenBy(x => x.Operation))
                         {
                             <tr>
@@ -53,22 +53,23 @@
                                     {
                                         <td>
 
-                                            <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "") />
+                                            <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "")/>
 
                                         </td>
                                     }
                                     else
                                     {
                                         <td>
-                                            <input type="checkbox" checked="checked" disabled="disabled" />
+                                            <input type="checkbox" checked="checked" disabled="disabled"/>
                                         </td>
                                     }
                                 }
                             </tr>
                         }
-                    </tbody>
-                </table>
-            }
+                        </tbody>
+                    </table>
+                }
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>

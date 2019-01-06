@@ -9,71 +9,72 @@
     var logs = ViewData["logs"] as IPagedList<Log>;
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
-@using (Html.BeginForm("Index", "Log", FormMethod.Get))
-{
-    <fieldset>
-        <legend>
-            @Html.Resource("Admin Logs Title", "Logs")
-            <span class="btn-group d-inline pull-right">
-                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
-                <input type="submit" class="btn btn-primary" value="@Html.Resource("Search")" />
-            </span>
-        </legend>
+<div class="content-iten">
+    @using (Html.BeginForm("Index", "Log", FormMethod.Get))
+    {
+        <fieldset>
+            <legend>
+                @Html.Resource("Admin Logs Title", "Logs")
+                <span class="btn-group d-inline pull-right">
+                    <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
+                    <input type="submit" class="btn btn-primary" value="@Html.Resource("Search")"/>
+                </span>
+            </legend>
 
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.Type)
-                    @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new { @class = "form-control" })
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.Type)
+                        @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.SiteId)
+                        @Html.DropDownListFor(query => query.SiteId, siteOptions, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.From)
+                        @Html.TextBoxFor(query => query.From, new {@class = "date-time-picker form-control"})
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.To)
+                        @Html.TextBoxFor(query => query.To, new {@class = "date-time-picker form-control"})
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.SiteId)
-                    @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "form-control" })
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.Message)
+                        @Html.TextBoxFor(query => query.Message, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.Detail)
+                        @Html.TextBoxFor(query => query.Detail, new {@class = "form-control"})
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.From)
-                    @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker form-control" })
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.To)
-                    @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker form-control" })
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.Message)
-                    @Html.TextBoxFor(query => query.Message, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.Detail)
-                    @Html.TextBoxFor(query => query.Detail, new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-        <div class="row">
+            <div class="row">
 
-        </div>
-    </fieldset>
-}
+            </div>
+        </fieldset>
+    }
 
-@if (logs.Count == 0)
-{
-    @Html.Resource("Admin Logs No Logs", "No logs")
-}
-else
-{
-    <table class="table table-striped table-condensed" style="overflow: scroll">
-        <thead>
+    @if (logs.Count == 0)
+    {
+        @Html.Resource("Admin Logs No Logs", "No logs")
+    }
+    else
+    {
+        <table class="table table-striped table-condensed" style="overflow: scroll">
+            <thead>
             <tr>
                 <th>
                     @Html.Resource("Date")
@@ -94,8 +95,8 @@ else
                     @Html.Resource("Actions")
                 </th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach (var entry in logs)
             {
                 <tr>
@@ -115,11 +116,12 @@ else
                         @entry.Type
                     </td>
                     <td>
-                        @Html.ActionLink(Html.Resource("Show"), "Show", new { id = entry.Id }, new { @class = "btn btn-sm btn-secondary" })
+                        @Html.ActionLink(Html.Resource("Show"), "Show", new {id = entry.Id}, new {@class = "btn btn-sm btn-secondary"})
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
-}
-@Html.PagedListPager(logs, page => Url.Action("Index", new { page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId }))
+            </tbody>
+        </table>
+    }
+    @Html.PagedListPager(logs, page => Url.Action("Index", new {page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId}))
+</div>
