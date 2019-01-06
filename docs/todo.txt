@@ -1,7 +1,4 @@
-weekend to do
-- Notifications
-- Media
-- Layouts
+
 
 todo
 - search not working /Admin/Search?term=thoughtadminlogin%40thought.co.uk
@@ -13,11 +10,6 @@ todo
 
 - check about date conversion
 
-- break ACL? services.AddAuthorization(options =>
-            {
-                options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
-            });
-
 future/nice to have
 - breadcrumbs
 - content blocks should just be body content.
@@ -25,27 +17,3 @@ future/nice to have
 - acl accordian 
 
 https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md
-
-//$("#System").collapse('show');
-    $(".collapse").on('show.bs.collapse', function(e) {
-        if ($(this).is(e.target)) {
-            mrcmsOpenMenuItems = mrcmsOpenMenuItems + this.id + ",";
-            store.set("admin-open-items", mrcmsOpenMenuItems);
-        }
-    });
-
-    $(".collapse").on('hidden.bs.collapse', function(e) {
-        if ($(this).is(e.target)) {
-            mrcmsOpenMenuItems = mrcmsOpenMenuItems.replace(this.id + ",","");
-            store.set("admin-open-items", mrcmsOpenMenuItems);
-        }
-    });
-
-    function openMenuItems(){
-        var items = store.get("admin-open-items") || '';
-        var keys = items.split(",");
-        for (var i = 0; i < keys.length; i++) {
-            $("#" + keys[i]).addClass("show");
-        }
-    }
-    openMenuItems();
