@@ -3628,4 +3628,8 @@
     <None Include="Areas\Admin\Views\Settings\Index.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Areas\Admin\lib\adminlte" />
+  </ItemGroup>
+
 </Project>

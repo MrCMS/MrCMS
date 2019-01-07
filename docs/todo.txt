@@ -18,3 +18,9 @@ future/nice to have
 - acl accordian 
 
 https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md
+https://bootstrapious.com/p/bootstrap-sidebar
+https://bootstrapious.com/p/bootstrap-sidebar
+https://www.codeply.com/go/XCqdGkjWDN/bootstrap-4-vertical-menu-with-submenu
+ee510e0aa91f8a2f0c716ed2a7064f943e491c66 
+
+https://blog.tech-fellow.net/2018/01/27/dblocalizationprovider-in-asp-net-core/

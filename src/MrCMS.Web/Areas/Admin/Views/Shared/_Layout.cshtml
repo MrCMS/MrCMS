@@ -5,24 +5,34 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
 }
 
-<div class="wrapper">   
-    <div id="sidebar" class="border-right">
-        <partial name="Sidebar" />
-    </div>
+<div class="wrapper">
 
-    <div id="content">            
+    <partial name="Navbar"/>
 
-        <partial name="Navbar"/>
-                
-        <div class="main-content px-3">
-            <div class="admin-message">
-                <partial name="Messages"/> 
-            </div>    
+    <aside class="main-sidebar sidebar-light-primary elevation-4" id="sidebar">
+        <partial name="Sidebar"/>
+    </aside>
 
-            @RenderBody()             
+    <div id="content" class="content-wrapper">
+
+        <partial name="Messages"/>
+
+        <div class="content">
+            @RenderBody()
         </div>
-        
-    </div> 
+
+    </div>
+    
+    <footer class="main-footer">
+        <!-- To the right -->
+        <div class="float-right d-none d-sm-block-down">
+            Anything you want
+        </div>
+        <!-- Default to the left -->
+        <strong>Copyright &copy; 2018 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    </footer>
+
+    
 </div>
 
 @if (IsSectionDefined("JavaScriptBlock"))
