@@ -13,26 +13,17 @@
         <partial name="Sidebar"/>
     </aside>
 
-    <div id="content" class="content-wrapper">
-
-        <partial name="Messages"/>
-
-        <div class="content">
-            @RenderBody()
+    <section class="content-wrapper">
+        <div class="content pt-3">
+            <partial name="Messages"/>
+            <div class="container-fluid">
+                        @RenderBody()
+                </div>
+            </div>
         </div>
+    </section>
 
-    </div>
-    
-    <footer class="main-footer">
-        <!-- To the right -->
-        <div class="float-right d-none d-sm-block-down">
-            Anything you want
-        </div>
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2018 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
-    </footer>
 
-    
 </div>
 
 @if (IsSectionDefined("JavaScriptBlock"))

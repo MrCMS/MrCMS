@@ -3,20 +3,33 @@
 @using System.Drawing
 @inject SiteSettings Settings
 
-<span class="d-flex py-3 px-3 ">
-    <a href="@Url.Action("Index", "Home")" tabindex="1">
-        @{
-            var adminLogo = Settings.AdminLogo;
-        }
-        @if (!string.IsNullOrWhiteSpace(adminLogo))
-        {
-            @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new { @class = "logo" })
-        }
-        else
-        {
-            <img src="/Areas/Admin/img/logo.png" class="align-middle" alt="dashboard logo" />
-        }
-    </a>
-</span>
-<vc:nav-links/>
+<a href="@Url.Action("Index", "Home")" tabindex="1" class="brand-link">
+    @{
+        var adminLogo = Settings.AdminLogo;
+    }
+    @if (!string.IsNullOrWhiteSpace(adminLogo))
+    {
+        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new {@class = "brand-image"})
+    }
+    else
+    {
+        <img src="/Areas/Admin/img/logo.png" class="brand-image elevation-2 img-circle" alt="dashboard logo"/>
+    }
+    <span class="brand-text font-weight-light">Mr CMS</span>
+</a>
 
+<div class="sidebar">
+
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src="https://via.placeholder.com/160" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+            <a href="#" class="d-block">William Anderson</a>
+        </div>
+    </div>
+
+
+    <vc:nav-links/>
+
+</div>

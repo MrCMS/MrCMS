@@ -18,12 +18,6 @@
         <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="index3.html" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Contact</a>
-        </li>
     </ul>
 
     @* *@
@@ -50,14 +44,7 @@
 
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a href="/" target="new" class="nav-link"><i class="fa fa-home"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Home</span></a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user">&nbsp;</i>&nbsp;Your Account</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/logout">Logout</a>
-                    <a class="dropdown-item" href="@Url.Action("Edit", "User", new {Id = currentUser.Id})">@Html.Resource("Your Account")</a>
-                </div>
+                <a href="/" target="new" class="nav-link"><i class="fa fa-home"></i>&nbsp;<span class="">Home</span></a>
             </li>
             @if (!currentUser.DisableNotifications)
             {
