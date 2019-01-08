@@ -2317,6 +2317,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Areas\Admin\Views\Layout\Sort.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Log\Delete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Log\DeleteLog.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\Greeting\Default.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\HealthCheck\Default.cshtml" />

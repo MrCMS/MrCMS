@@ -8,16 +8,22 @@
     var roles = ViewData["roles"] as List<UserRole>;
 }
 
-<div class="content-item">
-    <h1>@Html.Resource("Security Options")</h1>
+<form asp-controller="SecurityOptions" asp-action="Index" method="post">
 
-    <partial name="Settings" model="securitySettings"/>
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-security-settings-configuration", "Security Option By Role Configuration") "/>
 
-    <hr/>
+            <admin-header-actions>
+                <button class="btn btn-primary" type="submit">
+                    @Html.Resource("admin-save", "Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
 
-    @using (Html.BeginForm("Index", "SecurityOptions", FormMethod.Post))
-    {
-        <fieldset>
+    <card>
+        <card-body>
             <h3>
                 @Html.Resource("Send Login Notification Emails?")
             </h3>
@@ -74,9 +80,10 @@
                 </tbody>
 
             </table>
-            <button class="btn btn-primary" type="submit">
-                @Html.Resource("Save")
-            </button>
-        </fieldset>
-    }
-</div>
+
+        </card-body>
+    </card>
+
+</form>
+
+<partial name="Settings" model="securitySettings"/>

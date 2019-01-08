@@ -9,18 +9,23 @@
     var logs = ViewData["logs"] as IPagedList<Log>;
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
-<div class="content-iten">
-    @using (Html.BeginForm("Index", "Log", FormMethod.Get))
-    {
-        <fieldset>
-            <legend>
-                @Html.Resource("Admin Logs Title", "Logs")
-                <span class="btn-group d-inline pull-right">
+<form asp-controller="Log" asp-action="Index" method="get">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-logs", "Logs") "/>
+
+            <admin-header-actions>
+                <span class="btn-group">
                     <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
                     <input type="submit" class="btn btn-primary" value="@Html.Resource("Search")"/>
                 </span>
-            </legend>
+            </admin-header-actions>
+        </row>
+    </admin-header>
 
+    <card>
+        <card-body>
             <div class="row">
                 <div class="col-lg-3">
                     <div class="form-group">
@@ -61,67 +66,66 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
 
-            </div>
-        </fieldset>
-    }
-
-    @if (logs.Count == 0)
-    {
-        @Html.Resource("Admin Logs No Logs", "No logs")
-    }
-    else
-    {
-        <table class="table table-striped table-condensed" style="overflow: scroll">
-            <thead>
-            <tr>
-                <th>
-                    @Html.Resource("Date")
-                </th>
-                <th>
-                    @Html.Resource("Site")
-                </th>
-                <th>
-                    @Html.Resource("Level")
-                </th>
-                <th>
-                    @Html.Resource("Message")
-                </th>
-                <th>
-                    @Html.Resource("Type")
-                </th>
-                <th>
-                    @Html.Resource("Actions")
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var entry in logs)
+            @if (logs.Count == 0)
             {
-                <tr>
-                    <td>
-                        @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
-                    </td>
-                    <td>
-                        @entry.SiteName
-                    </td>
-                    <td>
-                        @entry.LogLevel
-                    </td>
-                    <td>
-                        @entry.Message
-                    </td>
-                    <td>
-                        @entry.Type
-                    </td>
-                    <td>
-                        @Html.ActionLink(Html.Resource("Show"), "Show", new {id = entry.Id}, new {@class = "btn btn-sm btn-secondary"})
-                    </td>
-                </tr>
+                @Html.Resource("Admin Logs No Logs", "No logs")
             }
-            </tbody>
-        </table>
-    }
-    @Html.PagedListPager(logs, page => Url.Action("Index", new {page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId}))
-</div>
+            else
+            {
+                <table class="table table-striped table-condensed" style="overflow: scroll">
+                    <thead>
+                    <tr>
+                        <th>
+                            @Html.Resource("Date")
+                        </th>
+                        <th>
+                            @Html.Resource("Site")
+                        </th>
+                        <th>
+                            @Html.Resource("Level")
+                        </th>
+                        <th>
+                            @Html.Resource("Message")
+                        </th>
+                        <th>
+                            @Html.Resource("Type")
+                        </th>
+                        <th>
+                            @Html.Resource("Actions")
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var entry in logs)
+                    {
+                        <tr>
+                            <td>
+                                @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @entry.SiteName
+                            </td>
+                            <td>
+                                @entry.LogLevel
+                            </td>
+                            <td>
+                                @entry.Message
+                            </td>
+                            <td>
+                                @entry.Type
+                            </td>
+                            <td>
+                                @Html.ActionLink(Html.Resource("Show"), "Show", new {id = entry.Id}, new {@class = "btn btn-sm btn-secondary"})
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            @Html.PagedListPager(logs, page => Url.Action("Index", new {page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId}))
+
+        </card-body>
+    </card>
+
+</form>

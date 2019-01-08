@@ -6,14 +6,19 @@
     ViewBag.Title = "Custom Script Pages";
     var webpages = ViewData["results"] as IPagedList<Webpage>;
 }
-<div class="content-item">
-    <fieldset>
-        <legend>
-            @Html.Resource("Admin User Custom Script Pages", "Custom Script Pages")
-        </legend>
-        <div class="alert alert-info">
-            @Html.Resource("This page shows all CMS pages with header or footer scripts set.")
-        </div>
+
+
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("admin-user-custom-scripts-pages", "Pages with custom scripts") "/>
+
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
         @if (webpages.Any())
         {
             <table class="table table-striped table-condensed">
@@ -58,8 +63,9 @@
         else
         {
             <div class="alert alert-info">
-                There are currently no pages with custom scripts
+                @Html.Resource("admin-custom-script-pages", "No entries found.")
             </div>
         }
-    </fieldset>
-</div>
+
+    </card-body>
+</card>

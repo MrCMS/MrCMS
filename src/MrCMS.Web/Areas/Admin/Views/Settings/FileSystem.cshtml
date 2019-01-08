@@ -1,19 +1,23 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Settings.FileSystemSettings
 @{ ViewBag.Title = "File System Settings"; }
+<form asp-controller="Settings" asp-action="FileSystem" method="post" id="edit-settings">
 
-<div class="content-item">
-    @using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new {id = "edit-settings"}))
-    {
-        <fieldset>
-            <legend>
-                @Html.Resource("Admin Global Settings", "Global Settings")
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-file-system-settings", "File System Settings") "/>
 
+            <admin-header-actions>
                 <span class="btn-group pull-right">
                     <button class="btn btn-primary">
-                        @Html.Resource("Save")</button>
+                        @Html.Resource("admin-save", "Save")</button>
                 </span>
-            </legend>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
             <div class="form-group">
                 @Html.LabelFor(settings => settings.StorageType)
                 @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions, new {@class = "form-control"})
@@ -41,8 +45,10 @@
             <div class="form-group">
                 @Html.EditorFor(settings => settings.AzureUsingEmulator)
             </div>
-        </fieldset>
-    }
-    <partial name="FileMigration"/>
+            
+            <partial name="FileMigration"/>
 
-</div>
+        </card-body>
+    </card>
+
+</form>
