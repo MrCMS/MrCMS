@@ -8,13 +8,15 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var layoutAreas = ViewData["layout-areas"] as List<LayoutArea>;
 }
-<div class="content-item">
-    <form asp-controller="Layout" asp-action="Edit" method="post" id="edit-document" novalidate="">
 
-        <fieldset>
-            <legend>
-                @Model.Name
-                <span class="btn-group pull-right">
+<form asp-controller="Layout" asp-action="Edit" id="edit-document" method="post">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Model.Name" />
+
+            <admin-header-actions>
+                <span class="btn-group">
                     @if (Html.CanDeleteDocument(Model.Id))
                     {
                         <a href="@Url.Action("Delete", "Layout", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
@@ -23,7 +25,12 @@
                     @Html.ActionLink(Html.Resource("Move"), "Set", "Layout", new {id = Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})
                     <button class="btn btn-primary" id="save-edit">@Html.Resource("Save")</button>
                 </span>
-            </legend>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
 
             @if (TempData["saved"] != null)
             {
@@ -46,7 +53,25 @@
                     @Html.EditorFor(x => x.Hidden)
                 </div>
             </div>
-            <h4 class="light">@Html.Resource("Admin Layout Areas Title", "Areas")</h4>
+            
+        </card-body>
+    </card>
+    
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-layout-areas", "Layout Areas")"/>
+
+            <admin-header-actions>
+                <span class="btn-group">
+                    <a href="@Url.Action("Add", "LayoutArea", new {id = Model.Id})" class="btn btn-primary btn-sm" data-toggle="fb-modal">@Html.Resource("admin-layout-area-add", "Add layout area")</a>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+    
+    <card>
+        <card-body>
+            <h4 class="light mt-3"></h4>
             @{
                 if (layoutAreas.Any())
                 {
@@ -72,12 +97,12 @@
                 }
                 else
                 {
-                    @Html.Resource("Admin Layout Add Info", "Click Add layout area to add the first area to this layout")
+                    @Html.Resource("admin-layout-add-info", "Click Add layout area to add the first area to this layout")
                 }
             }
+            
 
-            <a href="@Url.Action("Add", "LayoutArea", new {id = Model.Id})" class="btn btn-sm btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin Layout Add Area", "Add layout area")</a>
+        </card-body>
+    </card>
 
-        </fieldset>
-    </form>
-</div>
+</form>

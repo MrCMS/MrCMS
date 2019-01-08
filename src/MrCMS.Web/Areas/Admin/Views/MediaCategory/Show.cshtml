@@ -5,15 +5,24 @@
     var category = ViewData["category"] as MediaCategory;
     ViewBag.Title = category.Name;
 }
-<div class="content-item">
-    <div class="inline-buttons-container mb-3">
-        <h1 class="page-header">@category.Name</h1>
-        <div class="btn-group pull-right">
-            <a href="@Url.Action("SortFiles", "MediaCategory", new {id = Model.Id})" class="btn btn-secondary">@Html.Resource("Admin Media Sort Button", "Sort Files")</a>
-            <a href="@Url.Action("Edit", "MediaCategory", new {id = Model.Id})" class="btn  btn-secondary">@Html.Resource("Admin Media Edit Folder Button", "Edit Folder")</a>
-            <a href="@Url.Action("Add", "MediaCategory", new {id = Model.Id})" class="btn  btn-primary">@Html.Resource("Admin Media New Folder Button", "New folder")</a>
-        </div>
-    </div>
-    @Html.Hidden("FolderId", Model.Id)
-    <partial name="Manage" model="Model"/>
-</div>
+
+<admin-header>
+    <row>
+        <admin-header-title title="@category.Name"/>
+
+        <admin-header-actions>
+            <div class="btn-group">
+                <a href="@Url.Action("SortFiles", "MediaCategory", new {id = Model.Id})" class="btn btn-secondary">@Html.Resource("Admin Media Sort Button", "Sort Files")</a>
+                <a href="@Url.Action("Edit", "MediaCategory", new {id = Model.Id})" class="btn  btn-secondary">@Html.Resource("Admin Media Edit Folder Button", "Edit Folder")</a>
+                <a href="@Url.Action("Add", "MediaCategory", new {id = Model.Id})" class="btn  btn-primary">@Html.Resource("Admin Media New Folder Button", "New folder")</a>
+            </div>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+        @Html.Hidden("FolderId", Model.Id)
+        <partial name="Manage" model="Model"/>
+    </card-body>
+</card>

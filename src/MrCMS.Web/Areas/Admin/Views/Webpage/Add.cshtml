@@ -19,18 +19,16 @@
 
 
 <form asp-controller="Webpage" asp-action="Add" method="post">
-    <section class="content-header">
-        <div class="container-fluid mb-0">
-            <div class="row">
-                <div class="col-lg-6 col-xl-7">
-                    <h1 class="text-truncate">@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))</h1>
-                </div>
-                <div class="col-lg-6 col-xl-5 text-right">
-                    <input type="submit" class="btn-primary btn hide-until-document-selected " value="@Html.Resource("Save")" style="display: none;"/>
-                </div>
-            </div>
-        </div>
-    </section>
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))" />
+            
+            <admin-header-actions>
+                <input type="submit" class="btn-primary btn hide-until-document-selected " value="@Html.Resource("Save")" style="display: none;"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
 
     <div class="card">
         <div class="card-body">

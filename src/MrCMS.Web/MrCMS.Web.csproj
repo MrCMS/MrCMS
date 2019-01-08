@@ -2316,6 +2316,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Areas\Admin\Views\Layout\Sort.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\Greeting\Default.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\Shared\Components\HealthCheck\Default.cshtml" />

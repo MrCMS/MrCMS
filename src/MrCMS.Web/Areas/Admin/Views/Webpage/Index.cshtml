@@ -2,21 +2,19 @@
 @using MrCMS.Services.Resources
 @{
     ViewBag.Title = "Manage Pages";
-    //Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col">
-                <h1>@Html.Resource("Admin Nav Pages", "Pages")</h1>
-            </div>
-        </div>
-    </div>
-</section>
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("Admin Nav Pages", "Pages")" />
+            
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
 
-<div class="card">
-    <div class="card-body">
+<card>
+    <card-body>
         <div id="web">
             <div id="webpage-tree">
             </div>
@@ -28,8 +26,8 @@
         <span class="text-success">@Html.Resource("Admin Webpage Index Not Included In Navigation", "Not included in site navigation")</span><br/>
         <span class="text-warning">@Html.Resource("Admin Webpage Index Not published", "Not published")</span><br/>
 
-    </div>
-</div>
+    </card-body>
+</card>
 
 
 @{ Html.IncludeScript("~/Areas/Admin/scripts/pages.js"); }

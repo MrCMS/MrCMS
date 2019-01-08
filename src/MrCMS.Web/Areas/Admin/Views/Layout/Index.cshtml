@@ -5,13 +5,22 @@
 }
 
 
-<h1 class="page-header">@Html.Resource("Admin Nav Layout", "Layouts")</h1>
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("admin-layouts", "Layouts") "/>
 
-<div class="content-item">
-    <div id="layout" class="tab-pane">
-        <div class="sidebar-nav" id="layout-tree">
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+        <div id="layout" class="tab-pane">
+            <div class="sidebar-nav" id="layout-tree">
+            </div>
         </div>
-        <br />
-    </div>
-</div>
+    </card-body>
+</card>
+
 @{ Html.IncludeScript("~/Areas/Admin/scripts/layout.js"); }

@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Helpers
 @model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
-    ViewBag.Title = "Sort Catgeories";
+    ViewBag.Title = "Sort Layouts";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -20,21 +20,23 @@
     </script>
 }
 
-<form method="post" id="sort-media-category">
-
+<form method="POST" id="sort-layouts">
     <admin-header>
         <row>
             <admin-header-title title="@Html.Resource("admin-sort", "Sort") "/>
 
             <admin-header-actions>
-                <button class="btn btn-primary">
-                    @Html.Resource("admin-save", "Save")</button>
+                <span class="btn-group">
+                    <a asp-controller="Layout" asp-action="Index" class="btn btn-secondary">@Html.Resource("admin-back","back")</a>
+                    <button class="btn btn-primary">@Html.Resource("admin-save", "Save")</button>
+                </span>
             </admin-header-actions>
         </row>
     </admin-header>
 
     <card>
         <card-body>
+
             <ul id="sortable" class="list-group">
                 @for (int i = 0; i < Model.Count; i++)
                 {
@@ -46,7 +48,7 @@
                     </li>
                 }
             </ul>
+
         </card-body>
     </card>
-
 </form>

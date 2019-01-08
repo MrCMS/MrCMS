@@ -1,4 +1,160 @@
 ﻿
+/*Media*/
+
+#file-list, #folder-container {
+    height: auto;
+    min-height: 400px;
+    width: 100%;
+    display: block;
+}
+
+.file, .folder {
+    cursor: default;
+}
+
+.folder {
+    width: 160px;
+    float: left;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    color: #808080;
+    padding: 8px 8px;
+    border: 1px solid #e7e7e7;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.folder:hover {
+    background: #e7e7e7;
+}
+
+.file {
+    float: left;
+    height: 150px;
+    position: relative;
+    width: 160px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    color: #808080;
+    border: 1px solid #e7e7e7;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+}
+
+.file a {
+    display: block;
+    width: 100%;
+}
+
+.file a img {
+    margin: 0 auto;
+    display: block;
+}
+
+.file a i {
+    font-size: 90px;
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+}
+
+.file a:hover {
+    text-decoration: none;
+}
+
+.file .checkbox label {
+    width: 100%;
+    display: block;
+    border: 1px solid #e7e7e7;
+}
+
+.file .checkbox label input {
+    margin-left: 40px;
+}
+
+.file .file-preview {
+    height: 115px;
+    padding: 10px 10px;
+    vertical-align: central;
+}
+
+.file .file-link {
+    height: 25px;
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+}
+
+.file .file-link a {
+    display: block;
+    padding: 0 5px;
+}
+
+.file.ui-selected, .folder.ui-selected, .file.ui-selecting, .folder.ui-selecting, .file.ui-selected a, .folder.ui-selected a, .file.ui-selecting a, .folder.ui-selecting a {
+    background: #428bca;
+    color: white;
+}
+
+.file, #file-list, .folder, #folder-container {
+    -webkit-user-select: none; !* Chrome all / Safari all *!
+    -moz-user-select: none; !* Firefox all *!
+    -ms-user-select: none; !* IE 10+ *!!* No support for these yet, use at own risk *!
+    -o-user-select: none;
+    user-select: none;
+}
+
+.file.files-cut, .folder.files-cut {
+    border: 1px dotted black;
+    opacity: 0.5;
+}
+
+!*Media upload drop area*!
+ #dropzone {
+     text-align: center;
+     font-weight: bold;
+     height: 0;
+ }
+
+#dropzone.in {
+    width: 100%;
+    height: 100px;
+    border: 3px dashed grey;
+}
+
+#dropzone span {
+    display: none;
+}
+
+#dropzone.in span {
+    display: block;
+    text-align: center;
+    padding-top: 38px;
+}
+
+#dropzone.hover {
+    background: #e7e7e7;
+}
+
+#search-form .form-container {
+    width: 100%;
+    display: inline-block;
+}
+
+#search-form .folder-dropdown, #search-form .search-text {
+    width: 40%;
+}
+
+#search-form .folder-dropdown #CategoryId, #search-form .search-text #Query {
+    width: 100%;
+}
+
+#search-form .search-btn {
+    width: 19%;
+}
+
 /*#sidebar .nav-link[data-toggle].collapsed:after {*/
     /*display: inline-block;*/
     /*width: 0;*/
