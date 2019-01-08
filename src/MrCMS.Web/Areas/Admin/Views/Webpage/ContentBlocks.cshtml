@@ -54,7 +54,7 @@
                         <td>@(contentBlock.GetType().Name.BreakUpString())</td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-sm btn-secondary" })
                                 @Html.ActionLink(Html.Resource("Delete"), "Delete", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-danger btn-sm", data_toggle = "fb-modal" })
                             </div>
                         </td>

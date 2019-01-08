@@ -5,10 +5,20 @@
 @{
     ViewBag.Title = "Dashboard";
 }
-<h1 class="page-header">@Html.Resource("Dashboard")</h1>
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col">
+                <h1>@Html.Resource("Dashboard")</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
 @await Component.RenderDashboardArea(DashboardArea.Top)
 
-<hr />
 <div class="row">
     <div class="col-md-6">
         @await Component.RenderDashboardArea(DashboardArea.LeftColumn)
@@ -17,4 +27,3 @@
         @await Component.RenderDashboardArea(DashboardArea.RightColumn)
     </div>
 </div>
-<hr />

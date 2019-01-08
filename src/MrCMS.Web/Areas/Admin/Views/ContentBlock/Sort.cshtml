@@ -16,12 +16,12 @@
             </span>
         </legend>
 
-        <ul id="sortable">
+        <ul id="sortable" class="list-group">
             @if (Model.Any())
             {
                 for (var i = 0; i < Model.Count; i++)
                 {
-                    <li>
+                    <li class="list-group-item">
                         @Html.HiddenFor(model => model[i].Id)
                         @Html.HiddenFor(model => model[i].Order)
                         <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;

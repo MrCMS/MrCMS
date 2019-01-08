@@ -7,7 +7,7 @@
     var nav = ViewData["submenu"] as string;
     List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
 }
-<ul class="nav nav-treeview @(indexOf.Length > 1 ? "ml-4" : "")" id="@nav" aria-expanded="false">
+<ul class="nav nav-treeview" id="@nav" aria-expanded="false">
     @foreach (ChildMenuItem item in items)
     {
         if (item.Children != null && item.Children.Any())
@@ -20,7 +20,7 @@
 
             <li class="nav-item has-treeview" data-menu="@indexOf.ToString()">
                 <a href="#" class="nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                    <i class="fa fa-circle-o nav-icon"></i>    
+                    <i class="fa  @(indexOf.Length > 1 ? "fa-circle" : "fa-circle-o") nav-icon"></i>    
                     <p>@Html.Resource("Nav Links - " + item.Text, item.Text)
                         <i class="fa fa-angle-left right"></i>
                     </p>
