@@ -9,16 +9,21 @@
     string yAxisLabel = @Html.Resource("User Subscription Tooltip Title Y", "Number of Users");
     string graphLabel = @Html.Resource("User Subscription Graph Label", "User Subscriptions Per Month");
 }
-<div class="content-item">
-    @using (Html.BeginForm("Index", "UserSubscriptionReports", FormMethod.Get))
-    {
-        <fieldset>
-            <legend>
-                @Html.Resource("Admin User Subscription Reports (Monthly) Title", "User Subscription Reports (Monthly)")
-                <span class="btn-group d-inline pull-right">
-                    <input type="submit" class="btn btn-primary" value="@Html.Resource("Range Filter")"/>
-                </span>
-            </legend>
+
+<form asp-controller="UserSubscriptionReports" asp-action="Index" method="post">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-user-report-by-month", "User Registration by Month") "/>
+
+            <admin-header-actions>
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("admin-search", "Search")"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
 
             <div class="row">
                 <div class="col-lg-2">
@@ -30,20 +35,21 @@
                     @Html.TextBoxFor(query => query.EndDate, new {@class = "date-time-picker form-control"})
                 </div>
             </div>
-        </fieldset>
-
-
-        <div class="row">
-            <div class="col-lg-10 col-lg-push-1">
-                <div data-d3-graph="@Url.Action("GraphData", "UserSubscriptionReports", new {StartDate = Model.StartDate.ToString(), EndDate = Model.EndDate.ToString()})" data-d3-graph-label="@graphLabel" data-d3-x-axis-label="@xAxisLabel" data-d3-y-axis-label="@yAxisLabel">
-                    <div class="alert alert-info hidden pt-3">
-                        <strong>@Html.Resource("Admin User Subscription -  No Data Notification", "There is no data for the selected time period.")</strong>
+            
+            <div class="row">
+                <div class="col-lg-12 mt-2">
+                    <div data-d3-graph="@Url.Action("GraphData", "UserSubscriptionReports", new {StartDate = Model.StartDate.ToString(), EndDate = Model.EndDate.ToString()})" data-d3-graph-label="@graphLabel" data-d3-x-axis-label="@xAxisLabel" data-d3-y-axis-label="@yAxisLabel">
+                        <div class="alert alert-info hidden pt-3">
+                            <strong>@Html.Resource("Admin User Subscription -  No Data Notification", "There is no data for the selected time period.")</strong>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        </card-body>
+    </card>
+
+</form>
+
 @{
     Html.IncludeCss("/Areas/Admin/Content/Styles/d3/d3-admin-graph.css");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/d3/d3.min.js");

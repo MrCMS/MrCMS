@@ -7,14 +7,20 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var results = ViewData["results"] as IPagedList<Form>;
 }
-<div class="content-item">
-    <fieldset>
-        <legend>
-            @Html.Resource("Forms")
-            <span class="btn-group d-inline pull-right">
-                <a asp-action="Add" asp-controller="Form" class="btn btn-success" data-toggle="fb-modal">@Html.Resource("Add")</a>
-            </span>
-        </legend>
+
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("admin-forms", "Forms") "/>
+
+        <admin-header-actions>
+            <a asp-action="Add" asp-controller="Form" class="btn btn-success" data-toggle="fb-modal">@Html.Resource("Add")</a>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+
         <form method="get" asp-action="Index" asp-controller="Form" class="mb-3">
             <div class="row">
                 <div class="col-sm-6">
@@ -28,6 +34,8 @@
                 </div>
             </div>
         </form>
+
+        
 
         @if (!results.Any())
         {
@@ -76,6 +84,6 @@
         {
             @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}))
         }
-    </fieldset>
-
-</div>
+        
+    </card-body>
+</card>

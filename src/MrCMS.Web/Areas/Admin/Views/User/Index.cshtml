@@ -9,90 +9,103 @@
     var roleOptions = ViewData["roles"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 
-<div class="content-item">
-@using (Html.BeginForm("Index", "User", FormMethod.Get, new { @class = "form-horizontal" }))
-{
-    <fieldset>
-        <legend>
-            @Html.Resource("Admin Users", "Users")
-            <span class="btn-group pull-right">
-                @Html.ActionLink("Add", "Add", "User", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
-            </span>
-        </legend>
-        <div class="form-group">
-            @Html.LabelFor(query => query.Email, new { @class = "col-sm-2 control-label" })
-            <div class="col-sm-10">
-                @Html.TextBoxFor(query => query.Email, new { @class = "form-control", placeholder = "Email" })
-                @Html.ValidationMessageFor(query => query.Email)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(query => query.FirstName, new { @class = "col-sm-2 control-label" })
-            <div class="col-sm-10">
-                @Html.TextBoxFor(query => query.FirstName, new { @class = "form-control", placeholder = "First Name" })
-                @Html.ValidationMessageFor(query => query.FirstName)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(query => query.LastName, new { @class = "col-sm-2 control-label" })
-            <div class="col-sm-10">
-                @Html.TextBoxFor(query => query.LastName, new { @class = "form-control", placeholder = "Last Name" })
-                @Html.ValidationMessageFor(query => query.LastName)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(query => query.UserRoleId, "Role", new { @class = "col-sm-2 control-label" })
-            <div class="col-sm-10">
-                @Html.DropDownListFor(query => query.UserRoleId, roleOptions, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <input type="submit" class="btn btn-secondary" value="@Html.Resource("Search")" />
-            </div>
-        </div>
-    </fieldset>
-}
-@if (users.Any())
-{
-    <table class="table table-condensed table-striped">
-        <tr>
-            <th>
-                @Html.Resource("Email")
-            </th>
-            <th>
-                @Html.Resource("Name")
-            </th>
-            <th>
-                @Html.Resource("Roles")
-            </th>
-            <th>
-                @Html.Resource("Created On")
-            </th>
-        </tr>
-        @foreach (User user in users)
-        {
-            <tr>
-                <td>
-                    @Html.ActionLink(user.Email, "Edit", new { id = user.Id })
-                </td>
-                <td>
-                    @user.Name
-                </td>
-                <td>
-                    @(user.Roles.Any() ? string.Join(", ", user.Roles.Select(role => role.Name)) : "-")
-                </td>
-                <td>
-                    @user.CreatedOn
-                </td>
-            </tr>
-        }
-    </table>
-}
-else
-{
-    <p>@Html.Resource("Admin Users None", "No users matched your criteria").</p>
-}
-@*@Html.Pager(users, "Index", page => new { page })*@
 
-</div>
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("admin-users", "Users") "/>
+
+        <admin-header-actions>
+            @Html.ActionLink("Add", "Add", "User", null, new {@class = "btn btn-primary", data_toggle = "fb-modal"})
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+
+        @using (Html.BeginForm("Index", "User", FormMethod.Get, new {@class = "form-horizontal"}))
+        {
+            <fieldset>
+                <legend>
+                    @Html.Resource("Admin Users", "Users")
+                    <span class="btn-group pull-right">
+                    </span>
+                </legend>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Email, new {@class = "col-sm-2 control-label"})
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(query => query.Email, new {@class = "form-control", placeholder = "Email"})
+                        @Html.ValidationMessageFor(query => query.Email)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.FirstName, new {@class = "col-sm-2 control-label"})
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(query => query.FirstName, new {@class = "form-control", placeholder = "First Name"})
+                        @Html.ValidationMessageFor(query => query.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.LastName, new {@class = "col-sm-2 control-label"})
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(query => query.LastName, new {@class = "form-control", placeholder = "Last Name"})
+                        @Html.ValidationMessageFor(query => query.LastName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.UserRoleId, "Role", new {@class = "col-sm-2 control-label"})
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(query => query.UserRoleId, roleOptions, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="submit" class="btn btn-secondary" value="@Html.Resource("Search")"/>
+                    </div>
+                </div>
+            </fieldset>
+        }
+        @if (users.Any())
+        {
+            <table class="table table-condensed table-striped">
+                <tr>
+                    <th>
+                        @Html.Resource("Email")
+                    </th>
+                    <th>
+                        @Html.Resource("Name")
+                    </th>
+                    <th>
+                        @Html.Resource("Roles")
+                    </th>
+                    <th>
+                        @Html.Resource("Created On")
+                    </th>
+                </tr>
+                @foreach (User user in users)
+                {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(user.Email, "Edit", new {id = user.Id})
+                        </td>
+                        <td>
+                            @user.Name
+                        </td>
+                        <td>
+                            @(user.Roles.Any() ? string.Join(", ", user.Roles.Select(role => role.Name)) : "-")
+                        </td>
+                        <td>
+                            @user.CreatedOn
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>@Html.Resource("Admin Users None", "No users matched your criteria").</p>
+        }
+        @*@Html.Pager(users, "Index", page => new { page })*@
+
+    </card-body>
+</card>

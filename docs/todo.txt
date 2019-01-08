@@ -1,5 +1,6 @@
 
-
+pager
+user pager missing
 todo
 - store state of left nav
 - search not working /Admin/Search?term=thoughtadminlogin%40thought.co.uk

@@ -9,22 +9,22 @@
         @Html.Resource("Admin Settings Saved", "Settings saved")
     </div>
 }
+<form asp-controller="Settings" asp-action="Index" method="post">
 
-<div class="content-item">
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-site-settings", "Site Settings") "/>
 
-    @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new {id = "edit-settings"}))
-    {
-        <fieldset>
-            <legend>
-                @Html.Resource("Admin Site Settings", "Site Settings")
+            <admin-header-actions>
+                <button class="btn btn-primary">
+                    @Html.Resource("admin-save", "Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
 
-                <span class="btn-group pull-right">
-                    <button class="btn btn-primary">
-                        @Html.Resource("Save")
-                    </button>
-                </span>
-            </legend>
-
+    <card>
+        <card-body>
             <div id="tabs">
                 <ul class="nav nav-tabs mb-2" data-stickytabs="site-settings">
                     @foreach (var settingType in Model)
@@ -41,7 +41,8 @@
                     }
                 </div>
             </div>
-        </fieldset>
-    }
 
-</div>
+        </card-body>
+    </card>
+
+</form>
