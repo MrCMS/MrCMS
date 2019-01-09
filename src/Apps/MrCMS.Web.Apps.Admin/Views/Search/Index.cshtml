@@ -5,6 +5,7 @@
 @using MrCMS.Web.Apps.Admin.Helpers
 @using MrCMS.Web.Apps.Admin.Models.Search
 @using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.Search.AdminSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<AdminSearchResult>;
@@ -23,14 +24,14 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.Term)
-                    @Html.TextBoxFor(x => x.Term, new {@class = "form-control"})
+                    @Html.TextBoxFor(x => x.Term, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Term)
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.CreatedOnFrom)
-                    @Html.TextBoxFor(x => x.CreatedOnFrom, new {@class = "date-time-picker form-control"})
+                    @Html.TextBoxFor(x => x.CreatedOnFrom, new { @class = "date-time-picker form-control" })
                     @Html.ValidationMessageFor(x => x.CreatedOnFrom)
                 </div>
             </div>
@@ -39,7 +40,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.Type)
-                    @Html.DropDownListFor(x => x.Type, typeOptions, new {@class = "form-control"})
+                    @Html.DropDownListFor(x => x.Type, typeOptions, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Type)
                 </div>
 
@@ -47,7 +48,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.CreatedOnTo)
-                    @Html.TextBoxFor(x => x.CreatedOnTo, new {@class = "date-time-picker form-control"})
+                    @Html.TextBoxFor(x => x.CreatedOnTo, new { @class = "date-time-picker form-control" })
                     @Html.ValidationMessageFor(x => x.CreatedOnTo)
                 </div>
             </div>
@@ -89,7 +90,7 @@
                             }
                             <strong>@result.DisplayName</strong>
                         </a>
-                        
+
                         <br />
                         <p>Last updated on @result.Entity.UpdatedOn</p>
                     </td>
@@ -97,6 +98,6 @@
                 </tr>
             }
         </table>
-        @Html.Pager(results, "Index", page => new {page})
+        @Html.PagedListPager(results, page => Url.Action("Index", new { page, Model.CreatedOnFrom, Model.CreatedOnTo, Model.Term, Model.Type }))
     }
 </div>
