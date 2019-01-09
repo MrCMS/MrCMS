@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
@@ -9,6 +8,7 @@ using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Controllers;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
+using System.Collections.Generic;
 using X.PagedList;
 using Xunit;
 
@@ -19,7 +19,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         public UserControllerTests()
         {
             _userSearchService = A.Fake<IUserSearchService>();
-            _userService = A.Fake<IUserManagementService>();
+            _userService = A.Fake<IUserAdminService>();
             _roleService = A.Fake<IRoleService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
@@ -32,7 +32,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 
         private readonly UserController _userController;
         private readonly IUserSearchService _userSearchService;
-        private readonly IUserManagementService _userService;
+        private readonly IUserAdminService _userService;
         private readonly IRoleService _roleService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
@@ -66,7 +66,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_AddPost_ShouldReturnRedirectEditForSavedUser()
         {
-            var user = new User {Id = 123};
+            var user = new User { Id = 123 };
 
             var result = _userController.Add(user);
 
@@ -109,19 +109,21 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_EditPost_ShouldCallSaveUser()
         {
-            var user = new User();
+            var user = new UpdateUserModel();
+            List<int> roles = new List<int>();
 
-            _userController.Edit(user);
+            _userController.Edit(user, roles);
 
-            A.CallTo(() => _userService.SaveUser(user)).MustHaveHappened();
+            A.CallTo(() => _userService.SaveUser(user, roles)).MustHaveHappened();
         }
 
         [Fact]
         public void UserController_EditPost_ShouldReturnRedirectToEdit()
         {
-            var user = new User {Id = 123};
+            var user = new UpdateUserModel { Id = 123 };
+            List<int> roles = new List<int>();
 
-            var result = _userController.Edit(user);
+            var result = _userController.Edit(user, roles);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(123);
@@ -183,10 +185,10 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ReturnsRedirectToEditUser()
         {
-            var value = new User(){Id=234};
+            var value = new User() { Id = 234 };
             A.CallTo(() => _userService.GetUser(123)).Returns(value);
 
-            var result = _userController.SetPassword( 123, "password");
+            var result = _userController.SetPassword(123, "password");
 
 
             result.ActionName.Should().Be("Edit");
@@ -196,7 +198,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ShouldCallAuthorisationServiceSetPassword()
         {
-            var user = new User {Id = 1};
+            var user = new User { Id = 1 };
             const string password = "password";
             A.CallTo(() => _userService.GetUser(1)).Returns(user);
 
