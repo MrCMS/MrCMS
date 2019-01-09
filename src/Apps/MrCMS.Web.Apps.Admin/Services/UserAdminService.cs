@@ -5,6 +5,7 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

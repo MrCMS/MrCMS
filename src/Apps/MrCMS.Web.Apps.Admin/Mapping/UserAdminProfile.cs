@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MrCMS.Entities.People;
 using MrCMS.Models;
+using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Mapping
 {

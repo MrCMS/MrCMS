@@ -1,6 +1,8 @@
-namespace MrCMS.Models
+using System.Collections.Generic;
+
+namespace MrCMS.Web.Apps.Admin.Models
 {
-    public class UpdateUserModel
+    public class UpdateUserModel 
     {
         public int Id { get; set; }
         public string Email { get; set; }
