@@ -11,9 +11,9 @@
     parallel: true
     verbosity: minimal
   after_build:
-    - ps: dotnet publish .\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
+    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
   artifacts:
-   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.2\publish'
+   - path: '\src\MrCMS.Web\bin\Debug\netcoreapp2.2\publish'
      name: MrCMS.Web
      type: WebDeployPackage
 -
@@ -29,9 +29,9 @@
     parallel: true
     verbosity: minimal
   after_build:
-    - ps: dotnet publish .\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
+    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
   artifacts:
-   - path: '\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
+   - path: '\src\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
      name: MrCMS.Web
      type: WebDeployPackage
 -
@@ -47,9 +47,9 @@
     parallel: true
     verbosity: minimal
   after_build:
-    - ps: dotnet publish .\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
+    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
   artifacts:
-   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.2\publish'
+   - path: '\src\MrCMS.Web\bin\Debug\netcoreapp2.2\publish'
      name: MrCMS.Web
      type: WebDeployPackage
 -
@@ -65,8 +65,8 @@
     parallel: true
     verbosity: minimal
   after_build:
-    - ps: dotnet publish .\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
+    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
   artifacts:
-   - path: '\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
+   - path: '\src\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
      name: MrCMS.Web
      type: WebDeployPackage
