@@ -110,7 +110,7 @@
 
 });
 //Show the accordion which was last shown for layout areas.
-$(window).load(function () {
+$(window).on('load', function () {
     if (store.get('selected-layout-area-' + location.pathname)) {
         $('#accordion-layout-areas a[href="#' + store.get('selected-layout-area-' + location.pathname) + '"]').click();
     }
