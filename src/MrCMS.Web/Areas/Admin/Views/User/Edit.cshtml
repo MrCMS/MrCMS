@@ -3,26 +3,27 @@
 @using MrCMS.Entities.People
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Services
-@model User
+@model MrCMS.Web.Apps.Admin.Models.UpdateUserModel
 @inject IGetEditTabsService EditTabsService
 @{
-    ViewBag.Title = "Edit | " + Model.Name;
+    var user = ViewData["user"] as User;
+    ViewBag.Title = "Edit | " + user.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
-    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+    var userRoles = (ViewData["AvailableRoles"] as IEnumerable<UserRole> ?? Enumerable.Empty<UserRole>()).ToList();
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    var tabs = EditTabsService.GetEditTabs(Html, Model);
+    var tabs = EditTabsService.GetEditTabs(Html, user);
 }
 
 <form asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" method="post" id="edit-user">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Model.Name"/>
+            <admin-header-title title="@user.Name" />
 
             <admin-header-actions>
                 <span class="btn-group pull-right">
-                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Index", "User", null, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Index", "User", null, new { @class = "btn btn-secondary" })
                     <a href="@Url.Action("SetPassword", "User", new {id = Model.Id})" class="btn btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin User Reset Password", "Reset Password")</a>
 
                     @if (!onlyAdmin)
@@ -46,44 +47,41 @@
                     <h4>@Html.Resource("Properties")</h4>
                     <div class="form-group">
                         @Html.LabelFor(x => x.Email)
-                        @Html.TextBoxFor(x => x.Email, new {@class = "form-control"})
+                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
                         @Html.ValidationMessageFor(x => x.Email)
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(x => x.FirstName)
-                        @Html.TextBoxFor(x => x.FirstName, new {@class = "form-control"})
+                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
                         @Html.ValidationMessageFor(x => x.FirstName)
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(x => x.LastName)
-                        @Html.TextBoxFor(x => x.LastName, new {@class = "form-control"})
+                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
                         @Html.ValidationMessageFor(x => x.LastName)
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(x => x.UICulture)
-                        @Html.DropDownListFor(x => x.UICulture, cultureOptions, new {@class = "form-control"})
+                        @Html.DropDownListFor(x => x.UICulture, cultureOptions, new { @class = "form-control" })
                         @Html.ValidationMessageFor(x => x.UICulture)
                     </div>
-                    @if (!onlyAdmin)
-                    {
-                            @Html.InlineCheckboxFor(x => x.IsActive, new {}, new {}, "Is Active")
-                    }
+                    @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { } , "Is Active")
 
                 </div>
                 <div class="col-md-6">
                     <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
-                    <div class="form-inline">
-                        @if (userRoles != null && Html.CanAccess<UserACL>(UserACL.Roles))
+                    <div>
+                        @if (userRoles.Any() && Html.CanAccess<UserACL>(UserACL.Roles))
                         {
-                            foreach (var role in userRoles)
+                            for (var index = 0; index < userRoles.Count; index++)
                             {
-                                bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
-                                bool isEnabled = !role.IsAdmin || !onlyAdmin;
+                                var role = userRoles[index];
+                                bool isChecked = user.Roles.Any(x => x.Id == role.Id);
 
-                                @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new {disabled = "disabled"})
-                                @:&nbsp;
-                                @Html.Label("Role-" + role.Id, role.Name)
-                                <br/>
+                                @Html.CheckBox("Role-" + role.Id, isChecked, new { })
+                                <text>&nbsp;
+                                    @Html.Label("Role-" + role.Id, role.Name)</text>
+                                <br />
                             }
                         }
                         else
@@ -101,7 +99,7 @@
 
 </form>
 
-<hr/>
+<hr />
 
 @if (tabs.Any())
 {
@@ -110,14 +108,14 @@
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
-            <partial name="Tab" model="tab" view-data="ViewData"/>
+            <partial name="Tab" model="tab" view-data="ViewData" />
         }
     </ul>
     <div class="tab-content">
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
-            <partial name="Content" model="tab" view-data="ViewData"/>
+            <partial name="Content" model="tab" view-data="ViewData" />
         }
     </div>
 }

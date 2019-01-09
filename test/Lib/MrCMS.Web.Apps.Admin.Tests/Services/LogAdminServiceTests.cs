@@ -43,7 +43,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         {
             List<Log> list = CreateLogList();
 
-            _logService.DeleteLog(list[0]);
+            _logService.DeleteLog(list[0].Id);
 
             Session.QueryOver<Log>().List().Should().NotContain(list[0]);
         }

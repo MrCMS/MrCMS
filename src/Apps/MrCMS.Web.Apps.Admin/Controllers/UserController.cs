@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
 using MrCMS.Models;
@@ -14,20 +15,18 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 {
     public class UserController : MrCMSAdminController
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserAdminService _userAdminService;
         private readonly IUserSearchService _userSearchService;
         private readonly IRoleService _roleService;
-        private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
 
-        public UserController(IUserManagementService userManagementService, IUserSearchService userSearchService,
-            IRoleService roleService, IPasswordManagementService passwordManagementService,
+        public UserController(IUserAdminService userAdminService, IUserSearchService userSearchService,
+            IRoleService roleService,
             IGetUserCultureOptions getUserCultureOptions)
         {
-            _userManagementService = userManagementService;
+            _userAdminService = userAdminService;
             _userSearchService = userSearchService;
             _roleService = roleService;
-            _passwordManagementService = passwordManagementService;
             _getUserCultureOptions = getUserCultureOptions;
         }
 
@@ -54,7 +53,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             [ModelBinder(typeof(AddUserModelBinder))]
             User user)
         {
-            _userManagementService.AddUser(user);
+            _userAdminService.AddUser(user);
 
             return RedirectToAction("Edit", new { id = user.Id });
         }
@@ -67,17 +66,18 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             ViewData["AvailableRoles"] = _roleService.GetAllRoles();
             ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
             ViewData["culture-options"] = _getUserCultureOptions.Get();
+            ViewData["user"] = user;
 
             return user == null
-                       ? (ActionResult)RedirectToAction("Index")
-                       : View(user);
+                ? (ActionResult) RedirectToAction("Index")
+                : View(_userAdminService.GetUpdateModel(user));
         }
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Edit)]
-        public RedirectToActionResult Edit(User user)
+        public RedirectToActionResult Edit(UpdateUserModel model, [ModelBinder(typeof(UpdateUserRoleModelBinder))]List<int> roles)
         {
-            _userManagementService.SaveUser(user);
+            var user = _userAdminService.SaveUser(model, roles);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
             return RedirectToAction("Edit", "User", new { Id = user.Id });
         }
@@ -94,7 +94,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(UserACL), UserACL.Delete)]
         public RedirectToActionResult Delete(int id)
         {
-            _userManagementService.DeleteUser(id);
+            _userAdminService.DeleteUser(id);
 
             return RedirectToAction("Index");
         }
@@ -110,15 +110,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(UserACL), UserACL.SetPassword)]
         public RedirectToActionResult SetPassword(int id, string password)
         {
-            var user = _userManagementService.GetUser(id);
-            _passwordManagementService.SetPassword(user, password, password);
-            _userManagementService.SaveUser(user);
-            return RedirectToAction("Edit", new { user.Id });
+            _userAdminService.SetPassword(id, password);
+            return RedirectToAction("Edit", new { id });
         }
 
         public JsonResult IsUniqueEmail(string email, int? id)
         {
-            if (_userManagementService.IsUniqueEmail(email, id))
+            if (_userAdminService.IsUniqueEmail(email, id))
             {
                 return Json(true);
             }
