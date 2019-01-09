@@ -9,7 +9,7 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery);
         void DeleteAllLogs();
-        void DeleteLog(Log log);
+        void DeleteLog(int id);
         List<SelectListItem> GetSiteOptions();
     }
 }

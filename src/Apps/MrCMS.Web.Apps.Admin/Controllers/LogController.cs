@@ -50,9 +50,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteLog(Log log)
+        public ActionResult DeleteLog(int id)
         {
-            _adminService.DeleteLog(log);
+            _adminService.DeleteLog(id);
 
             return RedirectToAction("Index");
         }
