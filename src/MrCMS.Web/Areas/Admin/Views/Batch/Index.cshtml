@@ -9,21 +9,26 @@
     ViewBag.Title = "Batches: Page " + Model.Page;
     var batches = ViewData["results"] as IPagedList<Batch>;
 }
-<fieldset>
-    <legend>
-        Batches
-    </legend>
 
-    @if (!batches.Any())
-    {
-        <p>
-            No batches.
-        </p>
-    }
-    else
-    {
-        <table class="table table-condensed table-striped">
-            <thead>
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("admin-batches", "Batches")  "/>
+
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+        @if (!batches.Any())
+        {
+            @Html.Resource("admin-batches-empty", "No batches have been created.")
+        }
+        else
+        {
+            <table class="table table-condensed table-striped">
+                <thead>
                 <tr>
                     <th>
                         Id
@@ -41,8 +46,8 @@
                         Actions
                     </th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 @foreach (var item in batches)
                 {
                     <tr>
@@ -60,13 +65,15 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink("View Batch", "Show", "Batch", new { id = item.Id }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("View Batch", "Show", "Batch", new {id = item.Id}, new {@class = "btn btn-sm btn-secondary"})
                             </div>
                         </td>
                     </tr>
                 }
-            </tbody>
-        </table>
-    }
-    @Html.PagedListPager(batches, page => Url.Action("Index", new { page }))
-</fieldset>
+                </tbody>
+            </table>
+            @Html.PagedListPager(batches, page => Url.Action("Index", new {page}))
+        }
+
+    </card-body>
+</card>

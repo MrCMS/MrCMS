@@ -5,9 +5,10 @@
 }
 
 
+
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-sites", "Multi-site Setup") "/>
+        <admin-header-title title="@Html.Resource("admin-multi-site-setup", "Multi-site Setup") "/>
 
         <admin-header-actions>
             @Html.ActionLink("Add", "Add", "Sites", null, new {@class = "btn btn-primary"})
@@ -20,16 +21,16 @@
         <table class="table table-striped table-condensed">
             <tr>
                 <th>
-                    @Html.Resource("Name")
-                </th>
+                    <resource Key="admin-name" DefaultValue="Name" />
+                </th>dot
                 <th>
                     Url
                 </th>
                 <th>
-                    @Html.Resource("Created On")
+                    @Html.Resource("admin-createdon","Created On")
                 </th>
                 <th>
-                    @Html.Resource("Actions")
+                    @Html.Resource("admin-actions", "Actions")
                 </th>
             </tr>
             @foreach (var site in Model)
@@ -45,7 +46,7 @@
                         @site.CreatedOn
                     </td>
                     <td>
-                        @Html.ActionLink(Html.Resource("Delete"), "Delete", new {id = site.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})
+                        @Html.ActionLink(Html.Resource("admin-delete", "Delete"), "Delete", new {id = site.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})
                     </td>
                 </tr>
             }
