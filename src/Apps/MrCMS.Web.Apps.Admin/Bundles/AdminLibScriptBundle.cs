@@ -14,14 +14,14 @@ namespace MrCMS.Web.Apps.Admin.Bundles
         {
             get
             {
-                yield return "~/Areas/Admin/lib/jquery/jquery-1.11.2.min.js";
-                yield return "~/Areas/Admin/lib/jquery/ui/jquery-ui.js";
-                yield return "~/Areas/Admin/lib/jquery/ui/jquery-ui-timepicker-addon.js";
-                yield return "~/Areas/Admin/lib/jquery.signalR-2.2.0.js";
+                yield return "~/Areas/Admin/lib/jquery/jquery-3.3.1.min.js";
+                yield return "~/Areas/Admin/lib/jquery/jquery-ui-1.12.1/jquery-ui.js";
+                yield return "~/Areas/Admin/lib/jquery/jQuery-Timepicker-Addon-1.6.3/jquery-ui-timepicker-addon.js";
+                //yield return "~/Areas/Admin/lib/jquery.signalR-2.2.0.js";
                 yield return "~/Areas/Admin/lib/store.js";
-                yield return "~/Areas/Admin/lib/sweetalert-master/lib/sweet-alert.min.js";
+                //yield return "~/Areas/Admin/lib/sweetalert-master/lib/sweet-alert.min.js";
                 yield return "~/Areas/Admin/lib/jquery/validate/jquery.validate.js";
-                yield return "~/Areas/Admin/lib/jquery/validate/jquery.validate.unobtrusive.min.js";
+                yield return "~/Areas/Admin/lib/jquery/validate/jquery.validate.unobtrusive.js";
                 yield return "~/Areas/Admin/lib/bootstrap/dist/js/bootstrap.bundle.js";
                 yield return "~/Areas/Admin/lib/adminlte/js/adminlte.js";
                 yield return "~/Areas/Admin/lib/tag-it.min.js";

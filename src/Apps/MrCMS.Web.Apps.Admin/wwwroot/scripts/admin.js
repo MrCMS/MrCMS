@@ -1,15 +1,16 @@
 ﻿$.ajaxSetup({ cache: false });
 $(function () {
     $(document).ajaxStart(function () {
-        $("#loading").show();
+        //$("#loading").show();
     });
     $(document).ajaxStop(function () {
-        $("#loading").hide();
+        //$("#loading").hide();
     });
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
     Globalize.culture($("#CurrentUICulture").val());
+    
     $.validator.methods.number = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseFloat(value));

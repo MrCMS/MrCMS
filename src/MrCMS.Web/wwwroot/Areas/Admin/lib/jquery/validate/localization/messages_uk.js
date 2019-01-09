@@ -1,6 +1,8 @@
 (function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
 		define( ["jquery", "../jquery.validate"], factory );
+	} else if (typeof module === "object" && module.exports) {
+		module.exports = factory( require( "jquery" ) );
 	} else {
 		factory( jQuery );
 	}
@@ -10,7 +12,7 @@
  * Translated default messages for the jQuery validation plugin.
  * Locale: UK (Ukrainian; українська мова)
  */
-$.extend($.validator.messages, {
+$.extend( $.validator.messages, {
 	required: "Це поле необхідно заповнити.",
 	remote: "Будь ласка, введіть правильне значення.",
 	email: "Будь ласка, введіть коректну адресу електронної пошти.",
@@ -22,12 +24,12 @@ $.extend($.validator.messages, {
 	creditcard: "Будь ласка, введіть правильний номер кредитної карти.",
 	equalTo: "Будь ласка, введіть таке ж значення ще раз.",
 	extension: "Будь ласка, виберіть файл з правильним розширенням.",
-	maxlength: $.validator.format("Будь ласка, введіть не більше {0} символів."),
-	minlength: $.validator.format("Будь ласка, введіть не менше {0} символів."),
-	rangelength: $.validator.format("Будь ласка, введіть значення довжиною від {0} до {1} символів."),
-	range: $.validator.format("Будь ласка, введіть число від {0} до {1}."),
-	max: $.validator.format("Будь ласка, введіть число, менше або рівно {0}."),
-	min: $.validator.format("Будь ласка, введіть число, більше або рівно {0}.")
-});
-
+	maxlength: $.validator.format( "Будь ласка, введіть не більше {0} символів." ),
+	minlength: $.validator.format( "Будь ласка, введіть не менше {0} символів." ),
+	rangelength: $.validator.format( "Будь ласка, введіть значення довжиною від {0} до {1} символів." ),
+	range: $.validator.format( "Будь ласка, введіть число від {0} до {1}." ),
+	max: $.validator.format( "Будь ласка, введіть число, менше або рівно {0}." ),
+	min: $.validator.format( "Будь ласка, введіть число, більше або рівно {0}." )
+} );
+return $;
 }));
