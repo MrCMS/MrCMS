@@ -18,17 +18,15 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         private readonly IUserAdminService _userAdminService;
         private readonly IUserSearchService _userSearchService;
         private readonly IRoleService _roleService;
-        private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
 
         public UserController(IUserAdminService userAdminService, IUserSearchService userSearchService,
-            IRoleService roleService, IPasswordManagementService passwordManagementService,
+            IRoleService roleService,
             IGetUserCultureOptions getUserCultureOptions)
         {
             _userAdminService = userAdminService;
             _userSearchService = userSearchService;
             _roleService = roleService;
-            _passwordManagementService = passwordManagementService;
             _getUserCultureOptions = getUserCultureOptions;
         }
 

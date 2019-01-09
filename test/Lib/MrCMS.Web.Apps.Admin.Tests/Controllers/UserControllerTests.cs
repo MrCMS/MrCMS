@@ -21,10 +21,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
             _userSearchService = A.Fake<IUserSearchService>();
             _userService = A.Fake<IUserAdminService>();
             _roleService = A.Fake<IRoleService>();
-            _passwordManagementService = A.Fake<IPasswordManagementService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
             _userController = new UserController(_userService, _userSearchService, _roleService,
-                _passwordManagementService, _getUserCultureOptions)
+                 _getUserCultureOptions)
             {
                 TempData = new MockTempDataDictionary()
             };
@@ -34,7 +33,6 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         private readonly IUserSearchService _userSearchService;
         private readonly IUserAdminService _userService;
         private readonly IRoleService _roleService;
-        private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
 
         [Fact]
@@ -75,13 +73,15 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void UserController_EditGet_ShouldReturnAViewResultWithThePassedUserAsAModel()
+        public void UserController_EditGet_ShouldReturnAViewResultWithTheLoadedModelAsTheViewModel()
         {
             var user = new User();
+            var model = new UpdateUserModel();
+            A.CallTo(() => _userService.GetUpdateModel(user)).Returns(model);
 
             var result = _userController.Edit_Get(user);
 
-            result.As<ViewResult>().Model.Should().Be(user);
+            result.As<ViewResult>().Model.Should().Be(model);
         }
 
         [Fact]
@@ -120,10 +120,11 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_EditPost_ShouldReturnRedirectToEdit()
         {
-            var user = new UpdateUserModel { Id = 123 };
+            var model = new UpdateUserModel();
             List<int> roles = new List<int>();
+            A.CallTo(() => _userService.SaveUser(model,roles)).Returns(new User {Id = 123});
 
-            var result = _userController.Edit(user, roles);
+            var result = _userController.Edit(model, roles);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(123);
@@ -185,26 +186,21 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ReturnsRedirectToEditUser()
         {
-            var value = new User() { Id = 234 };
-            A.CallTo(() => _userService.GetUser(123)).Returns(value);
-
             var result = _userController.SetPassword(123, "password");
 
 
             result.ActionName.Should().Be("Edit");
-            result.RouteValues["id"].Should().Be(234); // from returned user object
+            result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
         public void UserController_SetPasswordPost_ShouldCallAuthorisationServiceSetPassword()
         {
-            var user = new User { Id = 1 };
             const string password = "password";
-            A.CallTo(() => _userService.GetUser(1)).Returns(user);
 
-            var result = _userController.SetPassword(1, password);
+            var result = _userController.SetPassword(123, password);
 
-            A.CallTo(() => _passwordManagementService.SetPassword(user, password, password)).MustHaveHappened();
+            A.CallTo(() => _userService.SetPassword(123, password)).MustHaveHappened();
         }
     }
 }
