@@ -15,16 +15,16 @@ todo
 
 - check about date conversion
 
+Admin UI
+- update jquery
+- update validate / validate unobtrusive
+- update globalise if required 
+- Use https://github.com/snapappointments/bootstrap-select/ for dropdowns
+- Use https://tempusdominus.github.io/bootstrap-4/ for Date/Time picker
+- Use http://bootstrap-confirmation.js.org/ for are you sure delete confirms
+
 future/nice to have
 - breadcrumbs
 - content blocks should just be body content.
 - upgrade jquery UI
 - acl accordian 
-
-https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md
-https://bootstrapious.com/p/bootstrap-sidebar
-https://bootstrapious.com/p/bootstrap-sidebar
-https://www.codeply.com/go/XCqdGkjWDN/bootstrap-4-vertical-menu-with-submenu
-ee510e0aa91f8a2f0c716ed2a7064f943e491c66 
-
-https://blog.tech-fellow.net/2018/01/27/dblocalizationprovider-in-asp-net-core/ 
