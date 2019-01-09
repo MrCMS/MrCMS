@@ -33,7 +33,6 @@ namespace MrCMS.Services
             {
                 Name = indexManagerBase.IndexName,
                 DoesIndexExist = indexManagerBase.IndexExists,
-                LastModified = indexManagerBase.LastModified,
                 NumberOfDocs = indexManagerBase.NumberOfDocs,
                 TypeName = indexManagerBase.GetIndexDefinitionType().FullName
             }).ToList();

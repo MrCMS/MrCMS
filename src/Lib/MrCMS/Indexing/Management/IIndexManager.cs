@@ -21,7 +21,6 @@ namespace MrCMS.Indexing.Management
     public interface IIndexManagerBase
     {
         bool IndexExists { get; }
-        DateTime? LastModified { get; }
         int? NumberOfDocs { get; }
         string IndexName { get; }
         IndexCreationResult CreateIndex();

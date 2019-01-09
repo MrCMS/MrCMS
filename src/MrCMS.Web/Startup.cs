@@ -32,6 +32,7 @@ using System.Linq;
 using Lucene.Net.Support;
 using Microsoft.AspNetCore.Localization;
 using MrCMS.Globalization;
+using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web
 {
@@ -88,9 +89,15 @@ namespace MrCMS.Web
             // TODO: Look to removing Site for constructors and resolving like this
             services.AddScoped(provider =>
             {
-                var site =
-                    provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
-                return site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
+                var site = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
+
+                site =  site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
+                var session = provider.GetRequiredService<ISession>();
+                if (site != null)
+                {
+                    session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
+                }
+                return site;
             });
 
             services.AddMrCMSFileSystem();

@@ -54,34 +54,6 @@ namespace MrCMS.Indexing.Management
             get { return DirectoryReader.IndexExists(GetDirectory(_site)); }
         }
 
-        public DateTime? LastModified
-        {
-            get
-            {
-                if (!IndexExists)
-                    return null;
-
-                // TODO: calculate last modified
-                return null;
-
-                //long lastModified = IndexReader.LastModified(GetDirectory(_site));
-                //DateTime time;
-                //var sourceTimeZone = TimeZoneInfo.Utc;
-                //try
-                //{
-                //    time = new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
-                //}
-                //catch
-                //{
-                //    time = DateTime.FromFileTime(lastModified);
-                //    sourceTimeZone = TimeZoneInfo.Local;
-                //}
-
-                //// TODO: fix this to use set time zone
-                //return TimeZoneInfo.ConvertTime(time, sourceTimeZone, TimeZoneInfo.Utc);
-            }
-        }
-
         public int? NumberOfDocs
         {
             get

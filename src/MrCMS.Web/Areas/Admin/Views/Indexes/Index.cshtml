@@ -29,9 +29,6 @@
                 <th>
                     @Html.Resource("Admin Indexes Number Of Documents", "Number of docs")
                 </th>
-                <th>
-                    @Html.Resource("Admin Indexes Last Modified", "Last Modified")
-                </th>
                 <th></th>
             </tr>
             @foreach (var index in Model)
@@ -45,9 +42,6 @@
                     </td>
                     <td>
                         @(index.NumberOfDocs.HasValue ? index.NumberOfDocs.ToString() : "-")
-                    </td>
-                    <td>
-                        @GetLastModified(index)
                     </td>
                     <td>
                         <div class="btn-group">
@@ -96,20 +90,8 @@
                     <strong>Number of records:</strong>
                     @universalSearchIndexInfo.NumberOfDocs
                     <br/>
-                    <strong>Last modified:</strong>
-                    @GetLastModified(universalSearchIndexInfo)
-                    <br/>
                 }
             }
         </card-body>
     </card>
 </form>
-
-@functions{
-
-    public string GetLastModified(MrCMSIndex index)
-    {
-        return index.LastModified.HasValue ? index.LastModified.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-";
-    }
-
-}
