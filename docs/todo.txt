@@ -2,6 +2,7 @@
 
 
 todo
+- user left hand side
 - user pager missing
 - inline editing of content blocks?
 - check about date conversion
