@@ -19,9 +19,10 @@ namespace MrCMS.Web.Apps.Admin.Bundles
                 yield return "~/Areas/Admin/lib/jquery/jQuery-Timepicker-Addon-1.6.3/jquery-ui-timepicker-addon.js";
                 yield return "~/Areas/Admin/lib/jquery.signalR-2.4.0.js";
                 yield return "~/Areas/Admin/lib/store.js";
-                //yield return "~/Areas/Admin/lib/sweetalert-master/lib/sweet-alert.min.js";
+                yield return "~/Areas/Admin/lib/sweetalert-master/lib/sweet-alert.min.js";
                 yield return "~/Areas/Admin/lib/jquery/validate/jquery.validate.js";
                 yield return "~/Areas/Admin/lib/jquery/validate/jquery.validate.unobtrusive.js";
+                yield return "~/Areas/Admin/lib/jquery/validate/unobtrusive-bootstrap.js";
                 yield return "~/Areas/Admin/lib/bootstrap/dist/js/bootstrap.bundle.js";
                 yield return "~/Areas/Admin/lib/adminlte/js/adminlte.js";
                 yield return "~/Areas/Admin/lib/tag-it.min.js";

@@ -38,8 +38,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Url Segment")]
         public override string UrlSegment { get; set; }
 
-        [StringLength(250, ErrorMessage = "SEO Target Phrase cannot be longer than 250 characters.")]
-        [DisplayName("SEO Target Phrase")]
+        [StringLength(250)]
         public virtual string SEOTargetPhrase { get; set; }
 
         [DisplayName("Meta Title")]
@@ -64,7 +63,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Custom header scripts")]
         [StringLength(8000)]
         public virtual string CustomHeaderScripts { get; set; }
-
+ 
         [DisplayName("Custom footer scripts")]
         [StringLength(8000)]
         public virtual string CustomFooterScripts { get; set; }
