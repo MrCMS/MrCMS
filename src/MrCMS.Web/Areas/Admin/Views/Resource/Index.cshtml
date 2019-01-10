@@ -127,10 +127,10 @@
                     </tbody>
                 </table>
             }
-            @Html.PagedListPager(resources, page => Url.Action("Index", new {page, Model.Key, Model.Language, Model.Value, Model.SiteId}))
 
-            
 
+            @Html.PagedListPager(resources, page => Url.Action("Index", new {page, Model.Key, Model.Language, Model.Value, Model.SiteId}), 
+                MrCmsPagedListRenderOptions.Bootstrap4)
 
         </card-body>
     </card>
@@ -141,16 +141,20 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-resources-import", "Import Resources")"/>
+            <admin-header-title title="@Html.Resource("admin-resources-import",
+        "Import Resources")"/>
 
             <admin-header-actions>
-                <button class="btn btn-secondary">@Html.Resource("Admin Resources Import Button", "Import")</button>
+                <button class="btn btn-secondary">
+                    @Html.Resource("Admin Resources Import Button",
+        "Import")
+                </button>
             </admin-header-actions>
         </row>
     </admin-header>
 
     <card>
-        <card-body>           
+        <card-body>
             <input type="file" name="file" class="form-control"/>
         </card-body>
     </card>

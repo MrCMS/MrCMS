@@ -2,12 +2,8 @@
 
 
 todo
-- pager
 - user pager missing
-- expand ckeditor when typing
 - inline editing of content blocks?
-- users pager
-
 - check about date conversion
 
 Admin UI

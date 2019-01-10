@@ -98,6 +98,6 @@
                 </tr>
             }
         </table>
-        @Html.PagedListPager(results, page => Url.Action("Index", new { page, Model.CreatedOnFrom, Model.CreatedOnTo, Model.Term, Model.Type }))
+        @Html.PagedListPager(results, page => Url.Action("Index", new { page, Model.CreatedOnFrom, Model.CreatedOnTo, Model.Term, Model.Type }), MrCmsPagedListRenderOptions.Bootstrap4)
     }
 </div>
