@@ -1,18 +1,19 @@
 ﻿@model dynamic
 <li class="nav-item dropdown">
     <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle"role="button" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-bullhorn"></i>&nbsp;Notifications&nbsp;
-        <span class="badge badge-secondary" data-notification-count="true">-</span>
+        <i class="fa fa-bullhorn"></i>&nbsp;<span class="badge badge-danger navbar-badge" data-notification-count="true">-</span>
     </a>
-    <div class="dropdown-menu notifications-dropdown dropdown-menu-right">
-        @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
+    <div class="dropdown-menu notifications-dropdown dropdown-menu-right" style="width: 350px;">
+        @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new {@style = "margin:0", data_mark_all_as_read = true}))
         {
-            <div class="btn-group">
-                <button type="submit" class="btn btn-secondary btn-sm">@Html.Resource("Admin Dismiss All", "Dismiss all")</button>
-                <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary btn-sm">@Html.Resource("Admin View All", "View All")</a>
+            <div class="w-100 text-center mb-2">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-secondary btn-sm">@Html.Resource("Admin Dismiss All", "Dismiss all")</button>
+                    <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary btn-sm">@Html.Resource("Admin View All", "View All")</a>
+                </div>
             </div>
         }
-        <ul data-notification-list="true" class="persistent-notification list-group">
+        <ul data-notification-list="true" class="persistent-notification list-group small">
             <li class="list-group-item">@Html.Resource("Admin No Notifications", "No Notifications")</li>
         </ul>
     </div>

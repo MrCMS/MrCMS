@@ -1,16 +1,11 @@
 
-pager
-user pager missing
-delete log not working
-duplicate site duplicated into self
+
 
 todo
-- store state of left nav
-- search not working /Admin/Search?term=thoughtadminlogin%40thought.co.uk
-- save user doesn't work
+- pager
+- user pager missing
 - expand ckeditor when typing
 - inline editing of content blocks?
-- ensure post models have validation
 - users pager
 
 - check about date conversion
