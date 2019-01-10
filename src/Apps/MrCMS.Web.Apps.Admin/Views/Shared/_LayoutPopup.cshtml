@@ -1,0 +1,16 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Website
+@{
+    Layout = "_LayoutRoot.cshtml";
+}
+
+<div style="min-height: 500px; width: 100%;">
+    <div class="p-2">@RenderBody()</div>
+</div>
+
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    @RenderSection("JavaScriptBlock")
+}
+

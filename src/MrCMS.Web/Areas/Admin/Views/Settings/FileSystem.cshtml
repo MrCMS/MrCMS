@@ -1,0 +1,54 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Settings.FileSystemSettings
+@{ ViewBag.Title = "File System Settings"; }
+<form asp-controller="Settings" asp-action="FileSystem" method="post" id="edit-settings">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-file-system-settings", "File System Settings") "/>
+
+            <admin-header-actions>
+                <span class="btn-group pull-right">
+                    <button class="btn btn-primary">
+                        @Html.Resource("admin-save", "Save")</button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+            <div class="form-group">
+                @Html.LabelFor(settings => settings.StorageType)
+                @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions, new {@class = "form-control"})
+            </div>
+            <h4>Azure Settings</h4>
+            <div class="form-group">
+                @Html.LabelFor(settings => settings.AzureAccountName)
+                @Html.TextBoxFor(settings => settings.AzureAccountName, new {@class = "form-control"})
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(settings => settings.AzureAccountKey)
+                @Html.TextBoxFor(settings => settings.AzureAccountKey, new {@class = "form-control"})
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(settings => settings.AzureContainerName)
+                @Html.TextBoxFor(settings => settings.AzureContainerName, new {@class = "form-control"})
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(settings => settings.AzureCdnDomain)
+                @Html.TextBoxFor(settings => settings.AzureCdnDomain, new {@class = "form-control"})
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(settings => settings.UseAzureForLucene)
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(settings => settings.AzureUsingEmulator)
+            </div>
+            
+            <partial name="FileMigration"/>
+
+        </card-body>
+    </card>
+
+</form>

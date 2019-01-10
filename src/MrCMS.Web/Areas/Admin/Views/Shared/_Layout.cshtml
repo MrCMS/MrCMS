@@ -1,0 +1,34 @@
+﻿@using MrCMS.Apps
+@using MrCMS.Helpers
+@using MrCMS.Website
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
+}
+
+<div class="wrapper">
+
+    <partial name="Navbar"/>
+
+    <aside class="main-sidebar sidebar-light-primary elevation-4" id="sidebar">
+        <partial name="Sidebar"/>
+    </aside>
+
+    <section class="content-wrapper">
+        <div class="content">
+            <partial name="Messages"/>
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+    </section>
+
+</div>
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    DefineSection("JavaScriptBlock", () =>
+    {
+        Write(RenderSection("JavaScriptBlock"));
+        return Task.CompletedTask;
+    });
+}

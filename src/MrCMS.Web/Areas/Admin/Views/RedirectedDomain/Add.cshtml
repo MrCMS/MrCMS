@@ -1,0 +1,18 @@
+﻿@model MrCMS.Entities.Multisite.RedirectedDomain
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Add", "RedirectedDomain", new { id = "" }, FormMethod.Post))
+{
+    <fieldset>
+        <legend>@Html.Resource("Admin Redirected Domain Add Title", "Add redirected domain")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-primary btn" value="@Html.Resource("Add")" />
+            </span>
+        </legend>
+        <div class="form-group">
+            @Html.HiddenFor(x => x.Site.Id)
+            @Html.LabelFor(x => x.Url)
+            @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Url)
+        </div>
+    </fieldset>
+}

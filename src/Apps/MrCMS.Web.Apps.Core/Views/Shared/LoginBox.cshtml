@@ -1,0 +1,49 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Services.Resources
+@using MrCMS.Web.Apps.Core.Pages
+@model MrCMS.Models.Auth.LoginModel
+@inject IUniquePageService UniquePageService
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                @Html.TextBoxFor(model => model.Email, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, new {@class = "control-label"})
+                @Html.PasswordFor(model => model.Password, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.Password)
+            </div>
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(model => model.RememberMe)
+                    @Html.Resource("Remember me")
+                </label>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" value="@Html.Resource("Login")" class="btn btn-primary">
+                    <span class="fa fa-user"></span> @Html.Resource("Login")</button>
+
+                <a href="@(UniquePageService.GetUrl<ForgottenPasswordPage>())" class="btn btn-secondary">
+                    <span class="glyphicon fa fa-question-circle"></span>
+                    @Html.Resource("Forgotten password")?
+                </a>
+
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model?.Message))
+            {
+                <br/>
+                <br/>
+                <div class="alert alert-danger">@Model.Message</div>
+            }
+
+        </div>
+    </div>
+    @Html.Honeypot()
+}

@@ -1,0 +1,39 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Services
+@model Form
+
+<div id="form-properties-data" data-reload-url="@Url.Action("FormProperties","Form",new{Model.Id})">
+    @Html.InfoBlock("Heads up!", "Start by adding fields to your form using the Add Field button. Once all fields are added, use [form id=\"" + Model.Id + "\"] in the page body content to embded the form where you would like it.")
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-7">
+                    <h4>@Html.Resource("Admin Webpage Form Fields", "Form Fields")</h4>
+                </div>
+                <div class="col-lg-5">
+                    <div class="pull-right btn-group">
+                        @Html.ActionLink(Html.Resource("Sort"), "Sort", "Form", new { id = Model.Id }, new { @class = "btn btn-secondary btn-sm", data_toggle = "fb-modal" })
+                        @Html.ActionLink(Html.Resource("Admin Webpage Form Add Field", "Add Field"), "Add", "FormProperty", new { id = Model.Id }, new { @class = "btn btn-primary btn-sm", data_toggle = "fb-modal" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    @if (Model.FormProperties.Any())
+                    {
+                        foreach (var property in Model.FormProperties.OrderBy(x => x.DisplayOrder))
+                        {
+                            <partial name="FormProperty" model="property" />
+                        }
+                    }
+                    else
+                    {
+                        @Html.Resource("Admin Webpage Form No Fields", "No form fields added")
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

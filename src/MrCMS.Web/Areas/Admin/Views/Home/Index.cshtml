@@ -1,0 +1,29 @@
+﻿@using MrCMS.Services.Resources
+@using MrCMS.Web.Apps.Admin.Helpers
+@using MrCMS.Web.Apps.Admin.Infrastructure.Dashboard
+@model MrCMS.Web.Apps.Admin.Models.Dashboard
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col">
+                <h1>@Html.Resource("Dashboard")</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
+@await Component.RenderDashboardArea(DashboardArea.Top)
+
+<div class="row">
+    <div class="col-md-6">
+        @await Component.RenderDashboardArea(DashboardArea.LeftColumn)
+    </div>
+    <div class="col-md-6">
+        @await Component.RenderDashboardArea(DashboardArea.RightColumn)
+    </div>
+</div>

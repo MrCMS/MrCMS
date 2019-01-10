@@ -1,0 +1,65 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Services.Resources
+@using MrCMS.Settings
+@using MrCMS.Web.Apps.Admin.Helpers
+@using MrCMS.Website
+@inject SiteSettings Settings
+@inject IGetCurrentUser GetCurrentUser
+@{
+    var typeOptions = UniversalSearchHelper.GetOptions();
+    var currentUser = GetCurrentUser.Get();
+}
+
+<nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom" id="mrcms-navbar">
+
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
+        </li>
+    </ul>
+
+    @* *@
+    @* <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary"> *@
+    @*     <i class="fa fa-align-left"></i> *@
+    @* </button> *@
+    @* *@
+    @* <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mrcms-top-nav" aria-controls="mrcms-top-nav" aria-expanded="false" aria-label="Toggle navigation"> *@
+    @*     <span class="navbar-toggler-icon"></span> *@
+    @* </button> *@
+
+    <div class="collapse navbar-collapse" id="mrcms-top-nav">
+
+        <form class="form-inline ml-2 d-flex" role="search" action="@Url.Action("Index", "Search")" method="GET" style="width: 600px;">
+
+            <div class="input-group w-75">
+                @Html.TextBox("term", "", new {@class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1"})
+
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-success" tabindex="2"><span class="fa fa-search"></span></button>
+                </div>
+            </div>
+        </form>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="/" target="new" class="nav-link"><i class="fa fa-home"></i>&nbsp;<span class="">Home</span></a>
+            </li>
+            @if (!currentUser.DisableNotifications)
+            {
+                <partial name="PersistentNotificationNav"/>
+            }
+
+            <li class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <i class="fa fa-sitemap"></i>&nbsp;Sites
+                </a>
+                <div class="dropdown-menu  dropdown-menu-right">
+                    <partial name="SiteListNav"/>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</nav>

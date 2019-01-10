@@ -1,0 +1,50 @@
+﻿@using MrCMS.Indexing.Management
+@using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
+@model System.Collections.Generic.List<MrCMS.Web.Apps.Admin.Models.UpdateLuceneFieldBoostModel>
+
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+
+@using (Html.BeginForm("Boosts", "Indexes", new { id = "" }, FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @Html.Resource("Admin Index Boosts Title", "Update field boosts")
+        <span class="btn-group d-inline pull-right">
+            <input type="submit" class="btn-success btn" value="@Html.Resource("Update")" />
+        </span>
+    </legend>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th class="col-lg-10">
+                            @Html.Resource("Name")
+                        </th>
+                        <th class="col-lg-2">
+                            @Html.Resource("Admin Index Boosts Boost", "Boost")
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.HiddenFor(list => list[i].Id)
+                                @Html.HiddenFor(list => list[i].SiteId)
+                                @Html.HiddenFor(list => list[i].Definition)
+                                @FieldDefinition.GetDefinitionDisplayName(Html, Model[i].Definition)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(list => list[i].Boost)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</fieldset>
+}

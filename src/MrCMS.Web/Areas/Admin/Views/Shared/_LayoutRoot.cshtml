@@ -1,0 +1,54 @@
+﻿@using System.Globalization
+@using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Web.Apps.Admin.Helpers
+@using MrCMS.Website
+@using MrCMS.Website.Optimization
+@inject IGetCurrentUser GetCurrentUser
+<!DOCTYPE html>
+<html lang="@(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/gif" href="/Areas/Admin/img/mrcms-icon.gif">
+    @Html.RenderStyleBundle("~/admin/stylesheets/mrcms")
+    @Html.RenderStyleBundle("~/admin/stylesheets/apps")
+
+    @{ Html.RenderCss(); }
+    
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+</head>
+<body class="hold-transition sidebar-mini">
+
+@RenderBody() 
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script> 
+
+@Html.RenderScriptBundle("~/admin/scripts/lib")
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
+<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
+<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
+
+@Html.RenderScriptBundle("~/admin/scripts/mrcms")
+@Html.RenderScriptBundle("~/admin/scripts/apps")
+
+@if (GetCurrentUser.Get()?.DisableNotifications == false)
+{
+    Html.IncludeScript("~/Areas/Admin/scripts/transient-notifications.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/persistent-notifications.js");
+}
+
+@{ Html.RenderLocalisedScripts(); }
+@{ Html.RenderScripts(); }
+
+@Html.Hidden("CurrentUICulture", CultureInfo.CurrentCulture.Name)
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    @RenderSection("JavaScriptBlock")
+}
+</body>
+</html>

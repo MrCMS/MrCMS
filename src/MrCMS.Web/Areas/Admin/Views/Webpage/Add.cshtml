@@ -1,0 +1,86 @@
+﻿@using System.Collections.Generic
+@using MrCMS.Entities.Documents
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Models
+@model AddWebpageModel
+@{
+    ViewBag.Title = "Add Webpage";
+    var parent = ViewData["parent"] as Webpage;
+    //pre select radio if there is only one option
+    var types = ViewData["DocumentTypes"] as List<DocumentTypeToAdd>;
+    if (types.Count == 1)
+    {
+        Model.DocumentType = types.First().DocumentType;
+    }
+
+    Html.IncludeScript("~/Areas/Admin/scripts/add-webpage.js");
+}
+
+<form asp-controller="Webpage" asp-action="Add" method="post">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))" />
+            
+            <admin-header-actions>
+                <input type="submit" class="btn-primary btn hide-until-document-selected " value="@Html.Resource("Save")" style="display: none;"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    @foreach (var documentType in types)
+                    {
+                        <div class="radio">
+                            <label class="radio">
+                                @Html.RadioButtonFor(x => x.DocumentType, documentType.DocumentType, new {data_val = "true", data_val_required = "Please select a page type", data_page_template_id = documentType.TemplateId})
+                                <i class="@documentType.Type.IconClass"></i>
+                                @documentType.DisplayName
+                            </label>
+                        </div>
+                    }
+                    @Html.ValidationMessage("DocumentType")
+                    @Html.HiddenFor(x => x.PageTemplateId)
+                </div>
+
+                <div class="col-lg-10 hide-until-document-selected" style="display: none;">
+                    <div class="form-group">
+                        @Html.HiddenFor(x => x.ParentId)
+                        @Html.LabelFor(x => x.Name, "Page Name")
+                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control", autocomplete = "off"})
+                        @Html.ValidationMessageFor(x => x.Name)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.UrlSegment, "Url")
+                        @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
+                        @Html.ValidationMessageFor(x => x.UrlSegment)
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            @if (parent?.GetMetadata().ChildrenMaintainHierarchy == true)
+                            {
+                                <input type="checkbox" name="mode" id="mode" value="1" checked/>
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="mode" id="mode" value="1"/>
+                            }
+                            Maintain Hierarchy
+                        </label>
+                    </div>
+                    <div data-additional-properties="true">
+                    </div>
+                </div>
+                <div class="col-lg-10" id="message-choose-document">
+                    <p>@Html.Resource("Admin Webpage Please select a document type", "Please select a document type")</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</form>

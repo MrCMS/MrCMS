@@ -1,0 +1,36 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Models.Auth
+@using MrCMS.Services
+@using MrCMS.Services.Resources
+@using MrCMS.Web.Apps.Core.Models
+@using MrCMS.Web.Apps.Core.Pages
+@using MrCMS.Website
+@model MrCMS.Web.Apps.Core.Pages.LoginPage
+@inject IUniquePageService UniquePageService
+@{
+    var loginModel = ViewData["login-model"] as LoginModel;
+}
+
+@Html.Editable(page => page.BodyContent, true)
+
+<div class="row">
+    <div class="col-md-4 col-sm-6">
+        <h1>@Html.Resource("Login")</h1>
+        <hr />
+        <partial name="LoginBox" model="loginModel"></partial>
+        <hr />
+        @*
+            // TODO: External providers to view component
+            @{Html.RenderAction("Providers", "ExternalLogin", new { returnUrl = loginModel.ReturnUrl });}*@
+
+    </div>
+    <div class="col-md-8 col-sm-6">
+        <h2 class="not-registered">@Html.Resource("Not registered")?</h2>
+        <hr />
+        <a href="@(UniquePageService.GetUrl<RegisterPage>())" class="btn btn-secondary">
+            <span class="fa fa-ok-sign"></span> @Html.Resource("Click here to register")
+        </a>
+    </div>
+</div>
+
+@{ Html.IncludeCss("~/Apps/Core/Content/SocialButtons/zocial.css"); }

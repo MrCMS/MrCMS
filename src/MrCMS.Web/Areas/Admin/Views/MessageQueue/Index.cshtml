@@ -1,0 +1,124 @@
+﻿@using System.Drawing
+@using System.Linq
+@using MrCMS.Entities.Messaging
+@using MrCMS.Helpers
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Models.MessageQueueQuery
+@{
+    var queuedMessages = ViewData["data"] as IPagedList<QueuedMessage>;
+}
+
+<form asp-controller="MessageQueue" asp-action="Index" method="get">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-queued-messages", "Queued Messages") "/>
+
+            <admin-header-actions>
+                <input type="submit" value="@Html.Resource("Search")" class="btn btn-primary"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.FromQuery)
+                        @Html.TextBoxFor(query => query.FromQuery, new {@class = "form-control"})
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.ToQuery)
+                        @Html.TextBoxFor(query => query.ToQuery, new {@class = "form-control"})
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.Subject)
+                        @Html.TextBoxFor(query => query.Subject, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.From)
+                        @Html.EditorFor(query => query.From)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(query => query.To)
+                        @Html.EditorFor(query => query.To)
+                    </div>
+                </div>
+            </div>
+
+        </card-body>
+    </card>
+
+</form>
+
+<card>
+    <card-body>
+
+        @if (queuedMessages.Any())
+        {
+            <table class="table table-condensed table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.Resource("From")
+                    </th>
+                    <th>
+                        @Html.Resource("To")
+                    </th>
+                    <th>
+                        @Html.Resource("Subject")
+                    </th>
+                    <th>
+                        @Html.Resource("Created On")
+                    </th>
+                    <th>
+                        @Html.Resource("Sent On")
+                    </th>
+                    <th>
+                        @Html.Resource("Actions")
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var message in queuedMessages)
+                {
+                    <tr>
+                        <td>
+                            @message.FromDescription
+                        </td>
+                        <td>
+                            @message.ToDescription
+                        </td>
+                        <td>
+                            @message.Subject
+                        </td>
+                        <td>
+                            @message.CreatedOn.ToString()
+                        </td>
+                        <td>
+                            @(message.SentOnDescription)
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                @Html.ActionLink(Html.Resource("View"), "Show", "MessageQueue", new {id = message.Id}, new {@class = "btn btn-sm btn-secondary"})
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            
+            @Html.PagedListPager(queuedMessages, page => Url.Action("Index", new {page}))
+            
+        }
+        else
+        {
+            @Html.Resource("admin-queued-messages-empry", "No results matching your search.")
+        }
+    </card-body>
+</card>

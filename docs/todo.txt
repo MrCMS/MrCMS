@@ -1,0 +1,30 @@
+
+pager
+user pager missing
+delete log not working
+duplicate site duplicated into self
+
+todo
+- store state of left nav
+- search not working /Admin/Search?term=thoughtadminlogin%40thought.co.uk
+- save user doesn't work
+- expand ckeditor when typing
+- inline editing of content blocks?
+- ensure post models have validation
+- users pager
+
+- check about date conversion
+
+Admin UI
+- update jquery
+- update validate / validate unobtrusive
+- update globalise if required 
+- Use https://github.com/snapappointments/bootstrap-select/ for dropdowns
+- Use https://tempusdominus.github.io/bootstrap-4/ for Date/Time picker
+- Use http://bootstrap-confirmation.js.org/ for are you sure delete confirms
+
+future/nice to have
+- breadcrumbs
+- content blocks should just be body content.
+- upgrade jquery UI
+- acl accordian 

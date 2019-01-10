@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Views\**" />
+    <EmbeddedResource Include="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Batch\BatchRun.cshtml" />
+    <None Remove="Views\ContentBlock\Edit.cshtml" />
+    <None Remove="Views\ContentBlock\Sort.cshtml" />
+    <None Remove="Views\FileMigration\Show.cshtml" />
+    <None Remove="Views\Form\Add.cshtml" />
+    <None Remove="Views\Form\Delete.cshtml" />
+    <None Remove="Views\Form\Edit.cshtml" />
+    <None Remove="Views\Form\Index.cshtml" />
+    <None Remove="Views\Form\Tab.cshtml" />
+    <None Remove="Views\Form\TabContent.cshtml" />
+    <None Remove="Views\MediaSelector\CKEditor.cshtml" />
+    <None Remove="Views\Navigation\Children.cshtml" />
+    <None Remove="Views\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\Shared\Components\Greeting\Default.cshtml" />
+    <None Remove="Views\Shared\Components\HealthCheck\Default.cshtml" />
+    <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
+    <None Remove="Views\Shared\Components\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\Shared\Components\PageStats\Default.cshtml" />
+    <None Remove="Views\Shared\Components\UserStats\Default.cshtml" />
+    <None Remove="Views\SiteCloneOptions\Get.cshtml" />
+    <None Remove="Views\SiteList\Get.cshtml" />
+    <None Remove="Views\SystemSettings\TestEmailSettings.cshtml" />
+    <None Remove="Views\User\Content.cshtml" />
+    <None Remove="Views\User\Tab.cshtml" />
+    <None Remove="Views\Webpage\ContentBlocks.cshtml" />
+    <None Remove="Views\Webpage\RedirectAdd.cshtml" />
+    <None Remove="Views\Webpage\RedirectSEO.cshtml" />
+    <None Remove="Views\Webpage\Tab.cshtml" />
+    <None Remove="Views\Webpage\TabContent.cshtml" />
+    <None Remove="Views\Webpage\Versions.cshtml" />
+    <None Remove="Views\_ViewImports.cshtml" />
+    <None Remove="wwwroot\Content\Scripts\mrcms\ck-editor-image-picker.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.11" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lib\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
+    <ProjectReference Include="..\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
+    <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Private.Xml">
+      <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.0.9\System.Private.Xml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

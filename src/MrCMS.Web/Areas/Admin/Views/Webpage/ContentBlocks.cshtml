@@ -1,0 +1,69 @@
+﻿@using MrCMS.Entities.Documents
+@using MrCMS.Web.Apps.Admin.Services
+@model MrCMS.Entities.Documents.Web.Webpage
+@inject IContentBlockAdminService AdminService
+@{
+    var contentBlocks = AdminService.GetBlocks(Model.Id);
+    var types = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<ContentBlock>();
+}
+
+<div data-content-blocks="" class="content-item">
+
+    <div class="btn-group">
+        @if (contentBlocks.Any())
+        {
+            @Html.ActionLink("Sort", "Sort", "ContentBlock", new { id = Model.Id }, new { @class = "btn btn-secondary", data_toggle = "fb-modal" })
+        }
+        <a class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-plus"></i>
+            @Html.Resource("Add Content Block")
+        </a>
+        <div class="dropdown-menu">
+            @foreach (var type in types)
+            {
+                <a class="dropdown-item" href="@Url.Action("Add", "ContentBlock", new {webpageId = Model.Id, blockType = type.FullName})">
+                    @type.Name.BreakUpString()
+                </a>
+            }
+        </div>
+    </div>
+
+    <hr />
+
+    @if (!contentBlocks.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            @Html.Resource("No content blocks added yet for this page.")
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>@Html.Resource("Name")</th>
+                    <th>@Html.Resource("Type")</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var contentBlock in contentBlocks)
+                {
+                    <tr>
+                        <td>@contentBlock.Name</td>
+                        <td>@(contentBlock.GetType().Name.BreakUpString())</td>
+                        <td>
+                            <div class="btn-group">
+                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-danger btn-sm", data_toggle = "fb-modal" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+</div>

@@ -1,0 +1,36 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Settings.SecuritySettings
+
+<form asp-controller="SecurityOptions" asp-action="Settings" method="post">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-security-config", "Security Configuration") "/>
+
+            <admin-header-actions>
+                <button class="btn btn-primary">
+                    @Html.Resource("Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+
+            <div class="form-group">
+                @Html.EditorFor(x => x.TwoFactorAuthEnabled)
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(x => x.LogLoginAttempts)
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(x => x.SendLoginNotificationEmails)
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(x => x.SendScriptChangeNotificationEmails)
+            </div>
+        </card-body>
+    </card>
+
+</form>
