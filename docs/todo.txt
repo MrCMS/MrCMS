@@ -6,6 +6,7 @@ todo
 - user pager missing
 - inline editing of content blocks?
 - check about date conversion
+- https://codepen.io/blackjacques/pen/bqgNoa
 
 Admin UI
 - update jquery
