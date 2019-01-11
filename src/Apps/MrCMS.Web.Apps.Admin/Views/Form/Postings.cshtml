@@ -61,7 +61,7 @@
                 }
             </tbody>
         </table>
-        @Html.PagedListPager(Model.Items, page => Url.Action("Postings", "Form", new { Model.Id, page, Model.Search }))
+        @Html.PagedListPager(Model.Items, page => Url.Action("Postings", "Form", new { Model.Id, page, Model.Search }), MrCmsPagedListRenderOptions.Bootstrap4)
     }
     else
     {

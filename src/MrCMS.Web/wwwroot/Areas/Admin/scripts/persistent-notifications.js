@@ -22,7 +22,7 @@
         });
     };
     var displayNotification = function (notification) {
-        return $('<li>').attr('data-notification', true).html('<div class="notification-date">' + notification.date + '</div><div class="notification-msg">' + notification.message + '</div>');
+        return $('<li>').addClass('list-group-item').attr('data-notification', true).html('<div class="notification-date">' + notification.date + '</div><div class="notification-msg">' + notification.message + '</div>');
     };
     var displayNoNotifications = function () {
         return $('<li>').html('No notifications');

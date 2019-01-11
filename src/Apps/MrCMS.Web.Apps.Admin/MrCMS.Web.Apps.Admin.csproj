@@ -61,4 +61,9 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="wwwroot\lib\ckeditor\plugins\autogrow\plugin.js" />
+    <Content Include="wwwroot\lib\ckeditor\plugins\youtube\plugin.js" />
+  </ItemGroup>
+
 </Project>

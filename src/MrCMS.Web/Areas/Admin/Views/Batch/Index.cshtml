@@ -72,7 +72,7 @@
                 }
                 </tbody>
             </table>
-            @Html.PagedListPager(batches, page => Url.Action("Index", new {page}))
+            @Html.PagedListPager(batches, page => Url.Action("Index", new {page}), MrCmsPagedListRenderOptions.Bootstrap4)
         }
 
     </card-body>
