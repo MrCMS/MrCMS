@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using MrCMS.Entities.Documents.Web;
-using NHibernate;
 
 namespace MrCMS.Entities.Documents.Layout
 {
@@ -12,7 +10,6 @@ namespace MrCMS.Entities.Documents.Layout
             LayoutAreas = new List<LayoutArea>();
         }
 
-        [DisplayName("Layout File Name")]
         public override string UrlSegment { get; set; }
 
         public virtual IList<LayoutArea> LayoutAreas { get; set; }
