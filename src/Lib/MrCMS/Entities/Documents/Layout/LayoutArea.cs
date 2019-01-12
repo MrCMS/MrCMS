@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using MrCMS.Entities.Documents.Web;
@@ -14,9 +13,9 @@ namespace MrCMS.Entities.Documents.Layout
             Widgets = new List<Widget.Widget>();
         }
         public virtual Layout Layout { get; set; } //which layout does the area belong to?
+
         [Required]
-        [StringLength(250, ErrorMessage = "Area name max length 250")]
-        [DisplayName("Area Name")]
+        [StringLength(250)]
         public virtual string AreaName { get; set; } // IE. Area.Top, Area.Sidebar.First
 
         public virtual IList<Widget.Widget> Widgets { get; set; }

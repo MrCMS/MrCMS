@@ -6,6 +6,7 @@ namespace MrCMS.Web.Apps.Admin.Models
     public class UpdateSiteModel
     {
         public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 

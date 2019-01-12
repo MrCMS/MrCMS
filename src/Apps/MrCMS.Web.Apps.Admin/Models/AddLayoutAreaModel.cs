@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using OfficeOpenXml.Utils;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
@@ -8,6 +7,7 @@ namespace MrCMS.Web.Apps.Admin.Models
         public int LayoutId { get; set; }
         
         [Required]
+        [StringLength(250, ErrorMessage = "Area name max length 250")]
         public string AreaName { get; set; }
     }
 }

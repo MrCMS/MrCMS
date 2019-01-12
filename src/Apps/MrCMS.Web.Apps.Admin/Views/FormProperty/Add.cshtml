@@ -1,7 +1,9 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Helpers
+﻿@using MrCMS.Helpers
 @model MrCMS.Web.Apps.Admin.Models.AddFormPropertyModel
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
 @using (Html.BeginForm("Add", "FormProperty", new { id = "" }, FormMethod.Post, null, new { @class = "form-update-form" }))
 {
     <fieldset>

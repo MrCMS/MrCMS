@@ -1,13 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
-using System;
-using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
-    public class SEOAndPropertiesTab : AdminTab<Webpage>
+    public class RedirectSEOTab : AdminTab<Webpage>
     {
         public override int Order => 100;
 
@@ -18,18 +18,18 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 
         public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return !(entity is Redirect);
+            return (entity is Redirect);
         }
 
         public override Type ParentType => null;
 
-        public override Type ModelType => typeof(SEOTabViewModel);
+        public override Type ModelType => typeof(RedirectSEOTabViewModel);
 
         public override string TabHtmlId => "edit-seo";
 
         public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {
-            return html.RenderPartialAsync("SEO", mapper.Map<SEOTabViewModel>(webpage));
+            return html.RenderPartialAsync("RedirectSEO", mapper.Map<RedirectSEOTabViewModel>(webpage));
         }
     }
 }
