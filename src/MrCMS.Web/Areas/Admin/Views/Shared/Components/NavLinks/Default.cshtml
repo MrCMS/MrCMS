@@ -1,10 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Http.Extensions
 @using MrCMS.ACL.Rules
+@using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 @using MrCMS.Web.Apps.Admin.Models
-@model IEnumerable<MrCMS.Web.Apps.Admin.Models.IAdminMenuItem>
+@model MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs.Sitemap
 @{
     var currentUrl = Context.Request.Path.Value;
-    List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
+    //List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
+    var breadcrumbs = ViewData.Breadcrumbs();
 }
 
 <nav class="mt-2">
@@ -16,77 +18,135 @@
                 <p>@Html.Resource("Admin Nav Dashboard", "Dashboard")</p>
             </a>
         </li>
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
+        @foreach (var item in Model.Nodes)
         {
-            var urlAction = Url.Action("Index", "Webpage");
-
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Webpage")" class="nav-link  @(currentUrl == urlAction ? "active" : "")">
-                    <i class="nav-icon fa fa-file-code-o"></i>
-                    <p>@Html.Resource("Admin Nav Pages", "Pages")</p>
-                </a>
-            </li>
-        }
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "MediaCategory")" class="nav-link @(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")">
-                    <i class="nav-icon fa fa-file-image-o"></i>
-                    <p>@Html.Resource("Admin Nav Media", "Media")</p>
-                </a>
-            </li>
-        }
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Layout")" class="nav-link @(currentUrl == Url.Action("Index", "Layout") ? "active" : "")">
-                    <i class="nav-icon fa fa-delicious"></i>
-                    <p>@Html.Resource("Admin Nav Layout", "Layouts")</p>
-                </a>
-            </li>
-        }
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Form")" class="nav-link @(currentUrl == Url.Action("Index", "Form") ? "active" : "")">
-                    <i class="nav-icon fa fa-wpforms"></i>
-                    <p>@Html.Resource("Admin Nav Forms", "Forms")</p>
-                </a>
-            </li>
-        }
-        @foreach (IAdminMenuItem item in adminMenuItems)
-        {
-            if (item.Children.Any())
+            if (item.Nodes.Any())
             {
-                var indexOf = adminMenuItems.IndexOf(item);
+                var indexOf = item.Nodes.IndexOf(item);
                 ViewData["indexOf"] = indexOf.ToString();
-                ViewData["submenu"] = item.Text;
+                ViewData["submenu"] = item.Name;
 
-                <li class="nav-item has-treeview"  data-menu="@indexOf">
-                    <a href="#" class="nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                        <i class="nav-icon @item.IconClass"> </i>
+
+                <li class="nav-item has-treeview" data-menu="@indexOf">
+                    <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
+                        <i class="nav-icon @item.CssClass"> </i>
                         <p>
-                            @Html.Resource("Nav Links - " + item.Text, item.Text)
+                            @Html.Resource("Nav Links - " + item.Name, item.Name)
                             <i class="fa fa-angle-left right"></i>
                         </p>
                     </a>
-                    <partial name="Components/NavLinks/SubMenu" model="item.Children" view-data="ViewData"></partial>
+                    <partial name="Components/NavLinks/SubMenu" model="item.Nodes" view-data="ViewData"></partial>
 
                 </li>
+                @*<li class="nav-item nav-dropdown @item.SelectedClass(breadcrumbs, "open")">
+                        <a href="#" class="nav-link nav-dropdown-toggle @item.SelectedClass(breadcrumbs, "active")">
+                            <i class="nav-icon @(item.CssClass ?? "fa fa-file-code-o")"></i>
+                            <p>@item.Name</p>
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            @foreach (var node in item.Nodes)
+                            {
+                                <li class="nav-node">
+                                    <a asp-action="@node.Action" asp-controller="@node.Controller" asp-area="Admin" class="nav-link @node.SelectedClass(breadcrumbs)">
+                                        @node.Name
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>*@
             }
             else
             {
                 <li class="nav-item">
-                    <a href="@item.Url" class="nav-link @(currentUrl == item.Url ? "active" : "")">
-                        <i class="@item.IconClass"> </i>
-                        <p>@item.Text</p>
+                    <a asp-action="@item.Action" asp-controller="@item.Controller" asp-area="Admin" class="nav-link @item.SelectedClass(breadcrumbs)">
+                        <i class="nav-icon @(item.CssClass ?? "fa fa-file-code-o")"></i>
+                        <p>
+                            @Html.Resource("Nav Links - " + item.Name, item.Name)
+                        </p>
                     </a>
                 </li>
             }
         }
+
+
+        @*
+                <li class="nav-item">
+                <a href="@Url.Action("Index", "Home")" class="nav-link  @(currentUrl == Url.Action("Index", "Home") ? "active" : "")">
+                    <i class="nav-icon fa fa-columns"></i>
+                    <p>@Html.Resource("Admin Nav Dashboard", "Dashboard")</p>
+                </a>
+            </li>
+
+            @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
+            {
+                var urlAction = Url.Action("Index", "Webpage");
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "Webpage")" class="nav-link  @(currentUrl == urlAction ? "active" : "")">
+                        <i class="nav-icon fa fa-file-code-o"></i>
+                        <p>@Html.Resource("Admin Nav Pages", "Pages")</p>
+                    </a>
+                </li>
+            }
+
+            @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))
+            {
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "MediaCategory")" class="nav-link @(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")">
+                        <i class="nav-icon fa fa-file-image-o"></i>
+                        <p>@Html.Resource("Admin Nav Media", "Media")</p>
+                    </a>
+                </li>
+            }
+
+            @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
+            {
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "Layout")" class="nav-link @(currentUrl == Url.Action("Index", "Layout") ? "active" : "")">
+                        <i class="nav-icon fa fa-delicious"></i>
+                        <p>@Html.Resource("Admin Nav Layout", "Layouts")</p>
+                    </a>
+                </li>
+            }
+
+            @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
+            {
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "Form")" class="nav-link @(currentUrl == Url.Action("Index", "Form") ? "active" : "")">
+                        <i class="nav-icon fa fa-wpforms"></i>
+                        <p>@Html.Resource("Admin Nav Forms", "Forms")</p>
+                    </a>
+                </li>
+            }
+            @foreach (IAdminMenuItem item in adminMenuItems)
+            {
+                if (item.Children.Any())
+                {
+                    var indexOf = adminMenuItems.IndexOf(item);
+                    ViewData["indexOf"] = indexOf.ToString();
+                    ViewData["submenu"] = item.Text;
+
+                    <li class="nav-item has-treeview"  data-menu="@indexOf">
+                        <a href="#" class="nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <i class="nav-icon @item.IconClass"> </i>
+                            <p>
+                                @Html.Resource("Nav Links - " + item.Text, item.Text)
+                                <i class="fa fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <partial name="Components/NavLinks/SubMenu" model="item.Children" view-data="ViewData"></partial>
+
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a href="@item.Url" class="nav-link @(currentUrl == item.Url ? "active" : "")">
+                            <i class="@item.IconClass"> </i>
+                            <p>@item.Text</p>
+                        </a>
+                    </li>
+                }
+            }*@
     </ul>
 </nav>

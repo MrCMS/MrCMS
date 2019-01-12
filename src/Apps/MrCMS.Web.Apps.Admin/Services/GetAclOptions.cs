@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using MrCMS.ACL;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.Infrastructure.Routing;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Website;
 using MrCMS.Website.Auth;

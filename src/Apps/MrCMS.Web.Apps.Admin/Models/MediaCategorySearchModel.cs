@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
-    public class MediaCategorySearchModel
+    public class MediaCategorySearchModel:IHaveId
     {
         public MediaCategorySearchModel()
         {

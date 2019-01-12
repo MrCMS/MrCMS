@@ -1,9 +1,9 @@
 ﻿@using System.Drawing
 @using MrCMS.Helpers
-@using MrCMS.Media
 @using MrCMS.Services.FileMigration
+@using MrCMS.Web.Apps.Admin.Helpers
 @model MrCMS.Entities.Documents.Media.MediaFile
-@using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+@using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post))
 {
     <fieldset>
         <legend>

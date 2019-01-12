@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace MrCMS.Web.Apps.Admin.Services
+namespace MrCMS.Web.Apps.Admin.Infrastructure.Routing
 {
     public class GetAllAdminDescriptors : IGetAllAdminDescriptors
     {

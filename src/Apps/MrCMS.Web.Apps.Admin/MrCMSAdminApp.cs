@@ -7,6 +7,8 @@ using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Admin.ModelBinders;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Web.Apps.Admin.Helpers;
 
 namespace MrCMS.Web.Apps.Admin
 {
@@ -35,10 +37,17 @@ namespace MrCMS.Web.Apps.Admin
             return routeBuilder;
         }
 
+        public override IServiceCollection RegisterServices(IServiceCollection serviceCollection)
+        {
+            serviceCollection.RegisterBreadcrumbs();
+            return base.RegisterServices(serviceCollection);
+        }
+
         public override void SetupMvcOptions(MvcOptions options)
         {
             options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
             options.Filters.AddService(typeof(AdminAuthFilter));
+            options.Filters.AddService(typeof(BreadcrumbActionFilter));
         }
 
         public override IDictionary<Type, string> SignalRHubs { get; } = new Dictionary<Type, string>
