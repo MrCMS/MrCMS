@@ -23,31 +23,29 @@ namespace MrCMS.Helpers
 
         public static void Initialize(Assembly assembly)
         {
-            var referencedAssemblies = assembly.GetReferencedAssemblies().Where(name => !IsSystemAssembly(name)).ToList();
+            var assemblyName = assembly.GetName();
 
-            LoadAssemblies(referencedAssemblies);
+            LoadAssemblies(new List<AssemblyName>{assemblyName});
 
-            _mrCMSAssemblies = GetMrCMSAssemblies(referencedAssemblies);
+            _mrCMSAssemblies = GetMrCMSAssemblies(assemblyName);
 
             _initialized = true;
         }
 
-        private static HashSet<Assembly> GetMrCMSAssemblies(List<AssemblyName> referencedAssemblies)
+        private static HashSet<Assembly> GetMrCMSAssemblies(AssemblyName assemblyName)
         {
             var thisAssembly = typeof(TypeHelper).Assembly;
             var assemblies = new HashSet<Assembly>();
-            foreach (var assemblyName in referencedAssemblies)
-            {
-                var tree = BuildTree(assemblyName);
 
-                foreach (var node in tree.FindTreeNodes(x => x.Data == thisAssembly))
+            var tree = BuildTree(assemblyName);
+
+            foreach (var node in tree.FindTreeNodes(x => x.Data == thisAssembly))
+            {
+                var thisNode = node;
+                while (thisNode != null)
                 {
-                    var thisNode = node;
-                    while (thisNode != null)
-                    {
-                        assemblies.Add(thisNode.Data);
-                        thisNode = thisNode.Parent;
-                    }
+                    assemblies.Add(thisNode.Data);
+                    thisNode = thisNode.Parent;
                 }
             }
 

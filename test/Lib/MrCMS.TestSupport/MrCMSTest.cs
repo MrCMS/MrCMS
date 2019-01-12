@@ -21,7 +21,8 @@ namespace MrCMS.TestSupport
             //ServiceCollection.Load(new TestContextModule());
             ServiceCollection.AddScoped<IHttpContextAccessor, DummyContextAccessor>();
             ServiceCollection.AddTransient<IEventContext>(provider => _eventContext);
-            TypeHelper.Initialize(GetType().Assembly);
+            var type = GetType();
+            TypeHelper.Initialize(type.Assembly);
             //MrCMSKernel.OverrideKernel(ServiceCollection);
             //CurrentRequestData.SiteSettings = new SiteSettings();
         }
