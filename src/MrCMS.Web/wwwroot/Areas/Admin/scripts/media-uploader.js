@@ -5,7 +5,6 @@
     return {
         init: function () {
             self = this;
-            Dropzone.autoDiscover = false;
             var upload = element.find(settings.fileUploadSelector);
             if (upload.length) {
                 var acceptFileTypes = settings.acceptFileTypes(element);

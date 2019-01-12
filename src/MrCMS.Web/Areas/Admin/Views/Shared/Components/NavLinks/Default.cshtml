@@ -12,12 +12,6 @@
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" id="sidebar-nav">
 
-        <li class="nav-item">
-            <a href="@Url.Action("Index", "Home")" class="nav-link  @(currentUrl == Url.Action("Index", "Home") ? "active" : "")">
-                <i class="nav-icon fa fa-columns"></i>
-                <p>@Html.Resource("Admin Nav Dashboard", "Dashboard")</p>
-            </a>
-        </li>
         @foreach (var item in Model.Nodes)
         {
             if (item.Nodes.Any())
@@ -76,7 +70,6 @@
                     <p>@Html.Resource("Admin Nav Dashboard", "Dashboard")</p>
                 </a>
             </li>
-
             @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
             {
                 var urlAction = Url.Action("Index", "Webpage");

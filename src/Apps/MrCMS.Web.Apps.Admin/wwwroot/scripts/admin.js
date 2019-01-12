@@ -23,10 +23,6 @@ $(function () {
 
     $(".datepicker").datepicker();
 
-    if (Dropzone) {
-        Dropzone.autoDiscover = false;
-    }
-
     $('form[data-are-you-sure]').each(function (index, element) {
         var form = $(element);
         form.areYouSure({ message: form.data('are-you-sure') });
