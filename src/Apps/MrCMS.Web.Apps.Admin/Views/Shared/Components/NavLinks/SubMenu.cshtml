@@ -1,32 +1,43 @@
-﻿@using Microsoft.AspNetCore.Http.Extensions
-@using MrCMS.Web.Apps.Core.Models
-@model SubMenu
+﻿@using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
+@model List<SitemapNode>
 @{
-    var indexOf = ViewData["indexOf"] as IEnumerable<int> ?? Enumerable.Empty<int>();
-    var currentUrl = Context.Request.GetDisplayUrl();
-    List<ChildMenuItem> items = Model.Where(menuItem => menuItem.CanShow).ToList();
+    var nav = ViewData["submenu"] as string;
+    var indexOf = ViewData["indexOf"] as string;
+    var breadcrumbs = ViewData.Breadcrumbs();
 }
-
-<ul class="nav nav-pills nav-stacked dropdown-menu" data-menu="true">
-    @foreach (ChildMenuItem item in items)
+<ul class="nav nav-treeview" id="@nav" aria-expanded="false">
+    @foreach (var item in Model)
     {
-        if (item.Children != null && item.Children.Any())
+        if (item.Nodes != null && item.Nodes.Any())
         {
-            int index = items.IndexOf(item);
-            indexOf = indexOf.Concat(new List<int> { index });
+            int index = item.Nodes.IndexOf(item);
+            ViewData["submenu"] = item.Name;
+            indexOf = indexOf + index;
             ViewData["indexOf"] = indexOf;
-            <li class="dropdown-submenu @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@string.Join("-", indexOf)">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
-                    @Html.Resource("Nav Links - " + item.Text, item.Text)
-                    <b class="caret"></b>
+            ViewData["item"] = item.Name;
+
+            <li class="nav-item has-treeview" data-menu="@indexOf">
+                <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
+                    <i class="fa  @(indexOf.Length > 1 ? "fa-circle" : "fa-circle-o") nav-icon"></i>
+                    <p>
+                        @Html.Resource("Nav Links - " + item.Name, item.Name)
+                        <i class="fa fa-angle-left right"></i>
+                    </p>
                 </a>
-                <partial name="Components/NavLinks/SubMenu" model="item.Children" view-data="ViewData"></partial>
+
+                <partial name="Components/NavLinks/SubMenu" model="item.Nodes" view-data="ViewData" />
             </li>
         }
         else
         {
-            <li class="@(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")"> <a href="@item.Url">@item.Text</a></li>
+            <li class="nav-item">
+                <a asp-action="@item.Action" asp-controller="@item.Controller" class="nav-link @(item.IsActive(breadcrumbs)? "active" : "")">
+                    <i class="fa fa-circle-o nav-icon"></i>
+                    <p>
+                        @Html.Resource("Nav Links - " + item.Name, item.Name)
+                    </p>
+                </a>
+            </li>
         }
     }
 </ul>
-<div class="clearfix"></div>

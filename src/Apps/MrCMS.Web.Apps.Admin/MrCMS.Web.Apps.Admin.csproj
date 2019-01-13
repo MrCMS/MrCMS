@@ -22,7 +22,6 @@
     <None Remove="Views\Form\TabContent.cshtml" />
     <None Remove="Views\MediaSelector\CKEditor.cshtml" />
     <None Remove="Views\Navigation\Children.cshtml" />
-    <None Remove="Views\NavLinks\SubMenu.cshtml" />
     <None Remove="Views\Shared\Components\Greeting\Default.cshtml" />
     <None Remove="Views\Shared\Components\HealthCheck\Default.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
