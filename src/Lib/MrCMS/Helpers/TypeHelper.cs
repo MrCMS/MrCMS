@@ -25,7 +25,7 @@ namespace MrCMS.Helpers
         {
             var assemblyName = assembly.GetName();
 
-            LoadAssemblies(new List<AssemblyName>{assemblyName});
+            LoadAssemblies(new List<AssemblyName> { assemblyName });
 
             _mrCMSAssemblies = GetMrCMSAssemblies(assemblyName);
 
@@ -78,6 +78,11 @@ namespace MrCMS.Helpers
             foreach (var assemblyName in referencedAssemblies)
             {
                 if (IsSystemAssembly(assemblyName))
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(assemblyName.Name))
                 {
                     continue;
                 }
