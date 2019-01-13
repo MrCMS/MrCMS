@@ -2,7 +2,7 @@
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 using NHibernate;
 
-namespace MrCMS.Web.Apps.Admin.Breadcrumbs
+namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Media
 {
     public class MediaFileBreadcrumb : ItemBreadcrumb<MediaFolderBreadcrumb, MediaFile>
     {
@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs
 
             var mediaFile = Session.Get<MediaFile>(Id.Value);
             Name = mediaFile.FileName;
-            ParentId = mediaFile.MediaCategory?.Id;
+            ParentActionArguments = CreateIdArguments(mediaFile.MediaCategory?.Id);
         }
     }
 }

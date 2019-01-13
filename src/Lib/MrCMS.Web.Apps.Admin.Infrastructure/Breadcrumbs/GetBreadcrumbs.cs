@@ -18,7 +18,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             _serviceProvider = serviceProvider;
         }
 
-        public List<PageHeaderBreadcrumb> Get(Type type, int? id)
+        public List<PageHeaderBreadcrumb> Get(Type type, IDictionary<string, object> actionArguments)
         {
             var siteMapNodes = new List<PageHeaderBreadcrumb>();
             if (type == null)
@@ -28,16 +28,17 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 
             var types = _getBreadcrumbTypes.GetHierarchy(type);
 
-            var currentId = id;
+            var currentArguments = actionArguments;
 
             for (var index = 0; index < types.Count;)
             {
                 var nodeType = types[index];
                 var breadcrumb = (Breadcrumb)_serviceProvider.GetService(nodeType);
-                if (currentId.HasValue)
+                if (currentArguments != null)
                 {
-                    breadcrumb.Id = currentId;
+                    breadcrumb.ActionArguments = currentArguments;
                 }
+
 
                 breadcrumb.Populate();
                 if (!breadcrumb.ShouldSkip)
@@ -51,18 +52,18 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
                     index--;
                 }
 
-                currentId = breadcrumb.ParentId;
+                currentArguments = breadcrumb.ParentActionArguments;
                 index++;
             }
 
             return siteMapNodes.ToList();
         }
 
-        public List<PageHeaderBreadcrumb> Get(string controllerName, string actionName, int? id)
+        public List<PageHeaderBreadcrumb> Get(string controllerName, string actionName, IDictionary<string, object> actionArguments)
         {
             var type = _getBreadcrumbTypes.FindBreadcrumbType(controllerName, actionName);
 
-            return Get(type, id);
+            return Get(type, actionArguments);
         }
     }
 }

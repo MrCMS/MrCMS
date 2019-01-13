@@ -1,7 +1,7 @@
 ﻿using MrCMS.Entities.People;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 
-namespace MrCMS.Web.Apps.Admin.Breadcrumbs
+namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Users
 {
     public class RolesListBreadcrumb : ChildListBreadcrumb<UsersBreadcrumb, UserRole>
     {

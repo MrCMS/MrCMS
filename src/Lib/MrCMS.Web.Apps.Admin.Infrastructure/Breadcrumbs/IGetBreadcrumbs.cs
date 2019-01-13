@@ -5,7 +5,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 {
     public interface IGetBreadcrumbs
     {
-        List<PageHeaderBreadcrumb> Get(Type type, int? id);
-        List<PageHeaderBreadcrumb> Get(string controllerName, string actionName, int? id);
+        List<PageHeaderBreadcrumb> Get(Type type, IDictionary<string, object> actionArguments);
+        List<PageHeaderBreadcrumb> Get(string controllerName, string actionName, IDictionary<string, object> actionArguments);
     }
 }

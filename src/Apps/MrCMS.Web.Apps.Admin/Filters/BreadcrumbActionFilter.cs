@@ -38,32 +38,10 @@ namespace MrCMS.Web.Apps.Admin.Filters
                 return;
             }
 
-            var id = GetId(context);
-
             var controller = _getControllerFromFilterContext.GetController(executedContext);
             controller.ViewData[BreadcrumbAttribute.Breadcrumbs] =
                 _getBreadcrumbs.Get(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName,
-                    id);
-        }
-
-        private static int? GetId(ActionExecutingContext context)
-        {
-            int? id = null;
-            if (context.ActionArguments.ContainsKey("id") &&
-                int.TryParse(context.ActionArguments["id"]?.ToString(), out int idVal))
-            {
-                id = idVal;
-            }
-            else if (context.ActionArguments.Values.OfType<SystemEntity>().Any())
-            {
-                id = context.ActionArguments.Values.OfType<SystemEntity>().First().Id;
-            }
-            else if (context.ActionArguments.Values.OfType<IHaveId>().Any())
-            {
-                id = context.ActionArguments.Values.OfType<IHaveId>().First().Id;
-            }
-
-            return id;
+                    context.ActionArguments);
         }
     }
 }

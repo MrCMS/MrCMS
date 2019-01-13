@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using MrCMS.Entities;
 using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.Infrastructure.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 {
@@ -23,13 +27,17 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 
         public virtual int Order => 0;
 
-        public virtual bool IsNav => false; 
+        public virtual bool IsNav => false;
 
         public abstract string Controller { get; }
         public abstract string Action { get; }
-        public virtual int? Id { get; set; }
+        public virtual int? Id => GetIdFromArguments(ActionArguments);
+        public virtual IDictionary<string, object> ActionArguments { get; set; }
 
-        public virtual string Url(IUrlHelper url) => IsPlaceHolder ? null : url.Action(Action, Controller, new {Id});
+        public virtual string Url(IUrlHelper url)
+        {
+            return IsPlaceHolder ? null : url.Action(Action, Controller, new { Id });
+        }
 
         /// <summary>
         /// If this is true, it will use the parent id to get another of the same type rather than go to the parent type 
@@ -43,7 +51,8 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
         public virtual bool IsPlaceHolder { get; }
 
 
-        public virtual int? ParentId { get; protected set; }
+        public int? ParentId => GetIdFromArguments(ParentActionArguments);
+        public virtual IDictionary<string, object> ParentActionArguments { get; set; }
         public virtual bool ShouldSkip { get; }
 
         /// <summary>
@@ -52,6 +61,45 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
         /// </summary>
         public virtual void Populate()
         {
+        }
+
+        private int? GetIdFromArguments(IDictionary<string, object> arguments)
+        {
+            if (arguments == null)
+            {
+                return null;
+            }
+
+            int? id = null;
+            if (arguments.ContainsKey("id") &&
+                int.TryParse(arguments["id"]?.ToString(), out int idVal))
+            {
+                id = idVal;
+            }
+            else if (arguments.Values.OfType<SystemEntity>().Any())
+            {
+                id = arguments.Values.OfType<SystemEntity>().First().Id;
+            }
+            else if (arguments.Values.OfType<IHaveId>().Any())
+            {
+                id = arguments.Values.OfType<IHaveId>().First().Id;
+            }
+
+            return id;
+        }
+
+        protected static IDictionary<string, object> CreateIdArguments(int? id, object additionalData = null)
+        {
+            var arguments = new RouteValueDictionary { ["id"] = id };
+            if (additionalData != null)
+            {
+                var properties = additionalData.GetType().GetProperties();
+                foreach (var property in properties)
+                {
+                    arguments[property.Name] = property.GetValue(additionalData);
+                }
+            }
+            return arguments;
         }
     }
 }

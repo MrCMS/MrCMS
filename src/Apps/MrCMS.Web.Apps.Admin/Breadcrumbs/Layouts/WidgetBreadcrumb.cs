@@ -2,7 +2,7 @@
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 using NHibernate;
 
-namespace MrCMS.Web.Apps.Admin.Breadcrumbs
+namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Layouts
 {
     public class WidgetBreadcrumb : ItemBreadcrumb<WidgetsBreadcrumb, Widget>
     {
@@ -17,8 +17,8 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs
             }
 
             var item = Session.Get<Widget>(Id.Value);
-            Name = string.IsNullOrWhiteSpace(item.Name) ? string.Format("{0} ({1})", item.Name, item.WidgetTypeFormatted) : item.WidgetTypeFormatted;
-            ParentId = item.LayoutArea?.Id;
+            Name = string.IsNullOrWhiteSpace(item.Name) ? $"{item.Name} ({item.WidgetTypeFormatted})" : item.WidgetTypeFormatted;
+            ParentActionArguments = CreateIdArguments(item.LayoutArea?.Id);
         }
     }
 }

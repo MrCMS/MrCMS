@@ -1,6 +1,6 @@
 ﻿using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 
-namespace MrCMS.Web.Apps.Admin.Breadcrumbs
+namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Users
 {
     public class ThirdPartyAuthBreadcrumb : Breadcrumb<UsersBreadcrumb>
     {

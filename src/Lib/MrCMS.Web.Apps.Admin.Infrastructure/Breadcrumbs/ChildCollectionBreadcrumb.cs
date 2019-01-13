@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 {
@@ -7,7 +8,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
         public override string Controller { get; }
         public override string Action { get; }
 
-        public override int? ParentId => Id;
+        public override IDictionary<string, object> ParentActionArguments => ActionArguments;
 
         public override string Url(IUrlHelper url) => null;
     }

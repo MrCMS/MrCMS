@@ -2,7 +2,7 @@
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 using NHibernate;
 
-namespace MrCMS.Web.Apps.Admin.Breadcrumbs
+namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Layouts
 {
     public class LayoutAreaBreadcrumb : ItemBreadcrumb<LayoutAreasBreadcrumb, LayoutArea>
     {
@@ -18,7 +18,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs
 
             var item = Session.Get<LayoutArea>(Id.Value);
             Name = item.AreaName;
-            ParentId = item.Layout?.Id;
+            ParentActionArguments = CreateIdArguments(item.Layout?.Id);
         }
     }
 }
