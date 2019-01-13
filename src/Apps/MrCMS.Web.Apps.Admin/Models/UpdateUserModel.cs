@@ -13,5 +13,10 @@ namespace MrCMS.Web.Apps.Admin.Models
         public string UICulture { get; set; }
         public bool IsActive { get; set; }
         public bool DisableNotifications { get; set; }
+
+        public string Name =>
+            (string.IsNullOrEmpty(FirstName) || string.IsNullOrWhiteSpace(LastName)
+                ? this.Email
+                : this.FirstName + " " + this.LastName);
     }
 }

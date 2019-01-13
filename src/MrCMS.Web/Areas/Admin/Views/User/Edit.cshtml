@@ -19,11 +19,11 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@user.Name" />
+            <admin-header-title title="@user.Name"/>
 
             <admin-header-actions>
                 <span class="btn-group pull-right">
-                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Index", "User", null, new { @class = "btn btn-secondary" })
+                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Index", "User", null, new {@class = "btn btn-secondary"})
                     <a href="@Url.Action("SetPassword", "User", new {id = Model.Id})" class="btn btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin User Reset Password", "Reset Password")</a>
 
                     @if (!onlyAdmin)
@@ -38,73 +38,91 @@
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
-            @Html.ValidationSummary()
-            @Html.HiddenFor(x => x.Id)
-            <div class="row">
-                <div class="col-md-6">
-                    <h4>@Html.Resource("Properties")</h4>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.Email)
-                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Email)
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.FirstName)
-                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.FirstName)
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.LastName)
-                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.LastName)
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.UICulture)
-                        @Html.DropDownListFor(x => x.UICulture, cultureOptions, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.UICulture)
-                    </div>
-                    @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { } , "Is Active")    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
 
-                    
-                    <div class="d-flex">
-                        <img id="image" src="/Areas/Admin/img/no-media-selected.jpg" alt="Picture" style="max-width:100%;">
-                    </div>
-                    
-                </div>
-                <div class="col-md-6">
-                    <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
-                    <div>
-                        @if (userRoles.Any() && Html.CanAccess<UserACL>(UserACL.Roles))
-                        {
-                            for (var index = 0; index < userRoles.Count; index++)
-                            {
-                                var role = userRoles[index];
-                                bool isChecked = user.Roles.Any(x => x.Id == role.Id);
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        @Html.HiddenFor(x => x.Id)
+                        
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-circle" src="https://via.placeholder.com/150" alt="User profile picture">
+                        </div>
 
-                                @Html.CheckBox("Role-" + role.Id, isChecked, new { })
-                                <text>&nbsp;
-                                    @Html.Label("Role-" + role.Id, role.Name)</text>
-                                <br />
-                            }
-                        }
-                        else
-                        {
-                            <p>@Html.Resource("Admin User Roles None", "You do not have access to administer roles").</p>
-                        }
+                        <div class="w-100 text-center border-bottom">
+                        
+                            <h3 class="profile-username">@Model.Name</h3>
+                        
+                            <div class="btn-group my-3">
+                                <a class="text-center btn btn-sm btn-outline-secondary" href="/Logout">Logout</a>
+                                <a class="text-center btn btn-sm btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="form-group mt-3">
+                            @Html.LabelFor(x => x.Email)
+                            @Html.TextBoxFor(x => x.Email, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.Email)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.FirstName)
+                            @Html.TextBoxFor(x => x.FirstName, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.FirstName)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.LastName)
+                            @Html.TextBoxFor(x => x.LastName, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.LastName)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.UICulture)
+                            @Html.DropDownListFor(x => x.UICulture, cultureOptions, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.UICulture)
+                        </div>
+                        @Html.EditorFor(x=>x.IsActive)
+                        
                     </div>
-                    <h4>Notifications</h4>
-                    @Html.InlineCheckboxFor(x => x.DisableNotifications, null, null, "Disable system notifications")
                 </div>
             </div>
+            <div class="col-md-9">
+                <card>
+                    <card-body>
+            
+                        <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
+                        <div>
+                            @if (userRoles.Any() && Html.CanAccess<UserACL>(UserACL.Roles))
+                            {
+                                for (var index = 0; index < userRoles.Count; index++)
+                                {
+                                    var role = userRoles[index];
+                                    bool isChecked = user.Roles.Any(x => x.Id == role.Id);
 
-        </card-body>
-    </card>
+                                    @Html.CheckBox("Role-" + role.Id, isChecked, new {})
+                                    <text>&nbsp;
+                                        @Html.Label("Role-" + role.Id, role.Name)</text>
+                                    <br/>
+                                }
+                            }
+                            else
+                            {
+                                <p>@Html.Resource("Admin User Roles None", "You do not have access to administer roles").</p>
+                            }
+                        </div>
+                        <h4>Notifications</h4>
+                        @Html.InlineCheckboxFor(x => x.DisableNotifications, null, null, "Disable system notifications")
+
+                    </card-body>
+                </card>
+            </div>
+        </div>
+    </div>
+
 
 </form>
 
-<hr />
+<hr/>
 
 @if (tabs.Any())
 {
@@ -113,21 +131,14 @@
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
-            <partial name="Tab" model="tab" view-data="ViewData" />
+            <partial name="Tab" model="tab" view-data="ViewData"/>
         }
     </ul>
     <div class="tab-content">
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
-            <partial name="Content" model="tab" view-data="ViewData" />
+            <partial name="Content" model="tab" view-data="ViewData"/>
         }
     </div>
-}
-
-@{
-    Html.IncludeCss("/Areas/Admin/lib/cropper/cropper.css");
-    Html.IncludeScript("/Areas/Admin/lib/cropper/cropper.js");
-    Html.IncludeScript("/Areas/Admin/lib/cropper/jquery-cropper.js");
-    Html.IncludeScript("/Areas/Admin/scripts/avatar-cropper.js");
 }

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.DbConfiguration.Configuration;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Helpers.Validation;
 
@@ -85,5 +86,6 @@ namespace MrCMS.Entities.People
         [DisplayName("Site UI Culture")]
         public virtual string UICulture { get; set; }
 
+        public virtual MediaFile Avatar { get; set; }
     }
 }
