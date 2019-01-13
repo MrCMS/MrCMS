@@ -19,19 +19,10 @@
             <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
         </li>
     </ul>
-
-    @* *@
-    @* <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary"> *@
-    @*     <i class="fa fa-align-left"></i> *@
-    @* </button> *@
-    @* *@
-    @* <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mrcms-top-nav" aria-controls="mrcms-top-nav" aria-expanded="false" aria-label="Toggle navigation"> *@
-    @*     <span class="navbar-toggler-icon"></span> *@
-    @* </button> *@
-
+    
     <div class="collapse navbar-collapse" id="mrcms-top-nav">
 
-        <form class="form-inline ml-2 d-flex" role="search" action="@Url.Action("Index", "Search")" method="GET" style="width: 600px;">
+        <form class="form-inline ml-2 d-flex w-50" role="search" action="@Url.Action("Index", "Search")" method="GET" >
 
             <div class="input-group w-75">
                 @Html.TextBox("term", "", new {@class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1"})
@@ -42,9 +33,9 @@
             </div>
         </form>
 
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto" id="mrcms-admin-links-right">
             <li class="nav-item">
-                <a href="/" target="new" class="nav-link"><i class="fa fa-home"></i>&nbsp;<span class="">Home</span></a>
+                <a href="/" target="new" class="nav-link"><i class="fa fa-home"></i></a>
             </li>
             @if (!currentUser.DisableNotifications)
             {
@@ -52,9 +43,7 @@
             }
 
             <li class="nav-item dropdown">
-                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <i class="fa fa-sitemap"></i>&nbsp;Sites
-                </a>
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown"><i class="fa fa-sitemap"></i></a>
                 <div class="dropdown-menu  dropdown-menu-right">
                     <partial name="SiteListNav"/>
                 </div>

@@ -55,7 +55,7 @@
             }
             <div class="clearfix"></div>
 
-            @Html.PagedListPager(results, page => Url.Action("Show", new { page }))
+            @Html.PagedListPager(results, page => Url.Action("Show", new { page }), MrCmsPagedListRenderOptions.Bootstrap4)
         }
         else
         {

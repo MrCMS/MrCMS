@@ -1,8 +1,12 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Settings
 @using System.Drawing
+@using MrCMS.Services
 @inject SiteSettings Settings
-
+@inject IGetCurrentUser GetCurrentUser
+@{
+    var user = GetCurrentUser.Get();
+}
 <a href="@Url.Action("Index", "Home")" tabindex="1" class="brand-link">
     @{
         var adminLogo = Settings.AdminLogo;
@@ -25,11 +29,10 @@
             <img src="https://via.placeholder.com/160" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-            <a href="#" class="d-block">William Anderson</a>
+            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="d-block">@user.Name</a>
         </div>
     </div>
 
-
-    <vc:nav-links />
+    <vc:nav-links/>
 
 </div>

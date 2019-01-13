@@ -65,8 +65,13 @@
                         @Html.DropDownListFor(x => x.UICulture, cultureOptions, new { @class = "form-control" })
                         @Html.ValidationMessageFor(x => x.UICulture)
                     </div>
-                    @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { } , "Is Active")
+                    @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { } , "Is Active")    
 
+                    
+                    <div class="d-flex">
+                        <img id="image" src="/Areas/Admin/img/no-media-selected.jpg" alt="Picture" style="max-width:100%;">
+                    </div>
+                    
                 </div>
                 <div class="col-md-6">
                     <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
@@ -118,4 +123,11 @@
             <partial name="Content" model="tab" view-data="ViewData" />
         }
     </div>
+}
+
+@{
+    Html.IncludeCss("/Areas/Admin/lib/cropper/cropper.css");
+    Html.IncludeScript("/Areas/Admin/lib/cropper/cropper.js");
+    Html.IncludeScript("/Areas/Admin/lib/cropper/jquery-cropper.js");
+    Html.IncludeScript("/Areas/Admin/scripts/avatar-cropper.js");
 }

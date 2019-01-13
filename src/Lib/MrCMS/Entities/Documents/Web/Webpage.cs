@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Settings;
-using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Web
 {
@@ -32,44 +28,32 @@ namespace MrCMS.Entities.Documents.Web
         }
 
         [Required]
-        [Remote("ValidateUrlIsAllowed", "Webpage", AdditionalFields = "Id")]
-        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$",
-            ErrorMessage = "Url must alphanumeric characters only with dashes or underscore for spaces.")]
-        [DisplayName("Url Segment")]
         public override string UrlSegment { get; set; }
 
         [StringLength(250)]
         public virtual string SEOTargetPhrase { get; set; }
 
-        [DisplayName("Meta Title")]
-        [StringLength(250, ErrorMessage = "Meta title cannot be longer than 250 characters.")]
+        [StringLength(250)]
         public virtual string MetaTitle { get; set; }
 
-        [DisplayName("Meta Description")]
-        [StringLength(250, ErrorMessage = "Meta description cannot be longer than 250 characters.")]
+        [StringLength(250)]
         public virtual string MetaDescription { get; set; }
 
-        [DisplayName("Meta Keywords")]
-        [StringLength(250, ErrorMessage = "Meta keywords cannot be longer than 250 characters.")]
+        [StringLength(250)]
         public virtual string MetaKeywords { get; set; }
 
         public virtual string ExplicitCanonicalLink { get; set; }
 
-        [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
 
         public virtual bool IncludeInSitemap { get; set; }
 
-        [DisplayName("Custom header scripts")]
         [StringLength(8000)]
         public virtual string CustomHeaderScripts { get; set; }
  
-        [DisplayName("Custom footer scripts")]
         [StringLength(8000)]
         public virtual string CustomFooterScripts { get; set; }
 
-
-        [DisplayName("Requires SSL")]
         public virtual bool RequiresSSL { get; set; }
 
         public virtual bool Published { get; set; }
@@ -87,18 +71,13 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
 
-        [UIHint("DateTime")]
-        [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
 
         public virtual ISet<Widget.Widget> ShownWidgets { get; set; }
         public virtual ISet<Widget.Widget> HiddenWidgets { get; set; }
-
         public virtual IList<Widget.Widget> Widgets { get; set; }
-
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
-        [DisplayName("Body Content")]
         public virtual string BodyContent { get; set; }
 
         public virtual IEnumerable<Webpage> ActivePages
@@ -114,10 +93,8 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
 
-
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
-
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }

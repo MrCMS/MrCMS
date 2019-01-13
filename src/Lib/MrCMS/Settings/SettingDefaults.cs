@@ -8,7 +8,7 @@ namespace MrCMS.Settings
  */
 
 CKEDITOR.editorConfig = function (config) {
-    config.extraPlugins = 'justify,autogrow,youtube,mediaembed';
+    config.extraPlugins = 'justify,autogrow,youtube';
     config.removePlugins = 'elementspath';
     config.forcePasteAsPlainText = true;
     config.allowedContent = true;

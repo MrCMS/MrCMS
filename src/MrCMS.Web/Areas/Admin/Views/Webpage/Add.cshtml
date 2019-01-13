@@ -35,15 +35,14 @@
                 <div class="col-lg-2">
                     @foreach (var documentType in types)
                     {
-                        <div class="radio">
-                            <label class="radio">
-                                @Html.RadioButtonFor(x => x.DocumentType, documentType.DocumentType, new {data_val = "true", data_val_required = "Please select a page type", data_page_template_id = documentType.TemplateId})
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="DocumentType" id="dt-@documentType.DocumentType" value="@documentType.DocumentType" data-page-template-id="@documentType.TemplateId" >
+                            <label class="form-check-label" for="dt-@documentType.DocumentType">
                                 <i class="@documentType.Type.IconClass"></i>
                                 @documentType.DisplayName
                             </label>
                         </div>
                     }
-                    @Html.ValidationMessage("DocumentType")
                     @Html.HiddenFor(x => x.PageTemplateId)
                 </div>
 

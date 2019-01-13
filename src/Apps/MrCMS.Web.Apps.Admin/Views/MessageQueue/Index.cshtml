@@ -104,5 +104,5 @@ else
 {
     <p>No results match your search.</p>
 }
-@Html.PagedListPager(queuedMessages, page => Url.Action("Index",  new { page }))
+@Html.PagedListPager(queuedMessages, page => Url.Action("Index",  new { page }), MrCmsPagedListRenderOptions.Bootstrap4)
 

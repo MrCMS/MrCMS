@@ -80,7 +80,7 @@
                 }
                 </tbody>
             </table>
-            @Html.PagedListPager(results, page => Url.Action("Index", new {page}))
+            @Html.PagedListPager(results, page => Url.Action("Index", new {page}), MrCmsPagedListRenderOptions.Bootstrap4)
         }
         else
         {

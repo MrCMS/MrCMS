@@ -122,4 +122,4 @@ else
         </tbody>
     </table>
 }
-@Html.PagedListPager(logs, page => Url.Action("Index", new { page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId }))
+@Html.PagedListPager(logs, page => Url.Action("Index", new { page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId }), MrCmsPagedListRenderOptions.Bootstrap4)

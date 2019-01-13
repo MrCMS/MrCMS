@@ -16,9 +16,7 @@ namespace MrCMS.Entities.Documents.Web
         [Required]
         public virtual string Name { get; set; }
 
-        //forms
         [DisplayName("Form Submitted Message")]
-        //[AllowHtml]
         [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters."), IsDBLength]
         public virtual string FormSubmittedMessage { get; set; }
 
@@ -44,10 +42,9 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Submit button custom text")]
         public virtual string SubmitButtonText { get; set; }
 
-
         public virtual IList<FormProperty> FormProperties { get; set; }
-        public virtual IList<FormPosting> FormPostings { get; set; }
 
+        public virtual IList<FormPosting> FormPostings { get; set; }
 
         public virtual string FormDesign { get; set; }
     }
