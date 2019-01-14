@@ -1,8 +1,9 @@
 using System.ComponentModel;
+using MrCMS.Web.Apps.Admin.Infrastructure.Models;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
-    public class MediaCategorySearchModel
+    public class MediaCategorySearchModel:IHaveId
     {
         public MediaCategorySearchModel()
         {

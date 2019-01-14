@@ -104,26 +104,13 @@ var pushMenuState = "mrcms-push-menu-state";
 (function ($) {
     var mrcmsOpenMenuItems = "mrcms-admin-menu-items";
     var target = "ul#sidebar-nav";
-
-    /*$(target).on('shown.bs.collapse', function (e) {
-        logOpenMenus();
-    });
-
-    $(target).on('hidden.bs.collapse', function (e) {
-        logOpenMenus();
-    });*/
-
+    
     $(target).on('expanded.lte.treeview', function() {
         logOpenMenus();
     });
 
     $(target).on('collapsed.lte.treeview', function() {
         logOpenMenus();
-    });
-
-    
-    $(pushMenuTarget).on('shown.lte.pushmenu', function() {
-        store.set(pushMenuState, 'shown')
     });
 
     $(pushMenuTarget).on('collapsed.lte.pushmenu', function() {
@@ -145,20 +132,17 @@ var pushMenuState = "mrcms-push-menu-state";
             $("li[data-menu='" + keys[i] + "']").addClass('menu-open');
         }
     }
-    
-    
 
     $(document).ready(function () {
         openNavItems();
+        setSideBarState();
     });
 })(jQuery);
 
 function setSideBarState(){
     var state = store.get(pushMenuState);
-    if (state === 'shown'){
-        $("body").addClass('sidebar-open');
-    } else if (state === 'collapsed'){
-        $("body").addClass('sidebar-collapse');
+    if (state === 'collapsed' && !$("body").hasClass('sidebar-collapse') && $(window).width() > 992){
+        $(window).PushMenu('toggle')
     }
 }
-setSideBarState();
+

@@ -19,21 +19,6 @@
     <partial name="Upload" model="category"/>
 </div>
 
-@if (category != null)
-{
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="@Url.Action("Index", "MediaCategory")">@Html.Resource("Admin Media", "Media")</a>
-        </li>
-        @foreach (var folder in category.BreadCrumbs.Reverse())
-        {
-            <li class="breadcrumb-item">
-                <a href="@Url.Action("Show", "MediaCategory", new {Id = folder.Id})">@folder.Name</a>
-            </li>
-        }
-    </ol>
-}
-
 @using (Html.BeginForm(FormMethod.Get, new {}))
 {
     <div class="row">

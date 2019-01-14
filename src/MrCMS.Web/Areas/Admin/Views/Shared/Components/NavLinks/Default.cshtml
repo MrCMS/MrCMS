@@ -1,82 +1,41 @@
-﻿@using Microsoft.AspNetCore.Http.Extensions
-@using MrCMS.ACL.Rules
-@using MrCMS.Web.Apps.Admin.Models
-@model IEnumerable<MrCMS.Web.Apps.Admin.Models.IAdminMenuItem>
+﻿@using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
+@model MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs.Sitemap
 @{
-    var currentUrl = Context.Request.Path.Value;
-    List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
+    var breadcrumbs = ViewData.Breadcrumbs();
 }
 
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" id="sidebar-nav">
 
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
+        @foreach (var item in Model.Nodes)
         {
-            var urlAction = Url.Action("Index", "Webpage");
-
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Webpage")" class="nav-link  @(currentUrl == urlAction ? "active" : "")">
-                    <i class="nav-icon fa fa-file-code-o"></i>
-                    <p>@Html.Resource("Admin Nav Pages", "Pages")</p>
-                </a>
-            </li>
-        }
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "MediaCategory")" class="nav-link @(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")">
-                    <i class="nav-icon fa fa-file-image-o"></i>
-                    <p>@Html.Resource("Admin Nav Media", "Media")</p>
-                </a>
-            </li>
-        }
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Layout")" class="nav-link @(currentUrl == Url.Action("Index", "Layout") ? "active" : "")">
-                    <i class="nav-icon fa fa-delicious"></i>
-                    <p>@Html.Resource("Admin Nav Layout", "Layouts")</p>
-                </a>
-            </li>
-        }
-
-        @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Form")" class="nav-link @(currentUrl == Url.Action("Index", "Form") ? "active" : "")">
-                    <i class="nav-icon fa fa-wpforms"></i>
-                    <p>@Html.Resource("Admin Nav Forms", "Forms")</p>
-                </a>
-            </li>
-        }
-        @foreach (IAdminMenuItem item in adminMenuItems)
-        {
-            if (item.Children.Any())
+            if (item.Nodes.Any())
             {
-                var indexOf = adminMenuItems.IndexOf(item);
+                var indexOf = Model.Nodes.IndexOf(item);
                 ViewData["indexOf"] = indexOf.ToString();
-                ViewData["submenu"] = item.Text;
+                ViewData["submenu"] = item.Name;
 
-                <li class="nav-item has-treeview"  data-menu="@indexOf">
-                    <a href="#" class="nav-link @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                        <i class="nav-icon @item.IconClass"> </i>
+
+                <li class="nav-item has-treeview" data-menu="@indexOf">
+                    <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
+                        <i class="nav-icon @item.CssClass"> </i>
                         <p>
-                            @Html.Resource("Nav Links - " + item.Text, item.Text)
+                            @Html.Resource("Nav Links - " + item.Name, item.Name)
                             <i class="fa fa-angle-left right"></i>
                         </p>
                     </a>
-                    <partial name="Components/NavLinks/SubMenu" model="item.Children" view-data="ViewData"></partial>
+                    <partial name="Components/NavLinks/SubMenu" model="item.Nodes" view-data="ViewData"></partial>
 
                 </li>
             }
             else
             {
                 <li class="nav-item">
-                    <a href="@item.Url" class="nav-link @(currentUrl == item.Url ? "active" : "")">
-                        <i class="@item.IconClass"> </i>
-                        <p>@item.Text</p>
+                    <a asp-action="@item.Action" asp-controller="@item.Controller" asp-area="Admin" class="nav-link @item.SelectedClass(breadcrumbs)">
+                        <i class="nav-icon @(item.CssClass ?? "fa fa-file-code-o")"></i>
+                        <p>
+                            @Html.Resource("Nav Links - " + item.Name, item.Name)
+                        </p>
                     </a>
                 </li>
             }

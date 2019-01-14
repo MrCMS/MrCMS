@@ -1,0 +1,31 @@
+﻿@using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
+@model dynamic
+@{
+    var breadcrumbs = ViewData.Breadcrumbs();
+}
+@if (breadcrumbs.Any())
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">@Html.Resource("Home")</a>
+            </li>
+            @foreach (var breadcrumb in breadcrumbs)
+            {
+                if (breadcrumb == breadcrumbs.Last())
+                {
+                    <li class="breadcrumb-item active">
+                        <a>@breadcrumb.Name</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item">
+                        <a href="@breadcrumb.Link(Url)">@breadcrumb.Name</a>
+                    </li>
+                }
+            }
+        </ol>
+    </nav>
+}

@@ -22,9 +22,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(searchQuery);
         }
 
-        public ViewResult Show(Log entry)
+        public ViewResult Show(Log log)
         {
-            return View(entry);
+            return View(log);
         }
 
         [HttpGet]
