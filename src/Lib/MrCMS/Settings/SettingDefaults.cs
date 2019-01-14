@@ -2,18 +2,17 @@ namespace MrCMS.Settings
 {
     public static class SettingDefaults
     {
-        public const string CkEditorConfig = @"/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.html or http://ckeditor.com/license
- */
-
+        public const string CkEditorConfig = @"
 CKEDITOR.editorConfig = function (config) {
     config.extraPlugins = 'justify,autogrow,youtube';
     config.removePlugins = 'elementspath';
     config.forcePasteAsPlainText = true;
     config.allowedContent = true;
     config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.css', '/Apps/Core/Content/Styles/style.css'];
+	config.removeDialogTabs = 'image:advanced;link:advanced';
 
+    config.filebrowserImageBrowseUrl = '/admin/mediaselector/ckeditor';
+    config.image_prefillDimensions = false; 
     config.toolbar = 'Full';
 
     config.toolbar_Full =

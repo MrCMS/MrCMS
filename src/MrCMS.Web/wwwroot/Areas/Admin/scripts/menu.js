@@ -117,6 +117,10 @@ var pushMenuState = "mrcms-push-menu-state";
         store.set(pushMenuState, 'collapsed')
     });
 
+    $(pushMenuTarget).on('shown.lte.pushmenu', function() {
+        store.set(pushMenuState, 'shown')
+    });
+
     function logOpenMenus() {
         var data = $(".menu-open").map(function () {
             return $(this).data('menu');
