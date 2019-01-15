@@ -42,10 +42,11 @@ namespace MrCMS.Services.Resources
             var currentSiteLocator = requestServices.GetRequiredService<ICurrentSiteLocator>();
             var records = localizationManager.GetLocalizations();
 
-            return new StringLocalizer(records, 
+            return new StringLocalizer(records,
                 currentCulture.Get(),
                 currentSiteLocator.GetCurrentSite(),
-                localizationManager.HandleMissingLocalization);
+                info => _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext.RequestServices
+                    .GetRequiredService<ILocalizationManager>().HandleMissingLocalization(info));
         }
     }
 }
