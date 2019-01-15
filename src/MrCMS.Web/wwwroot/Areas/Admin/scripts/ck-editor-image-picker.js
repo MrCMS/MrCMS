@@ -22,7 +22,7 @@
         if (shown) {
             result.find('[data-media-result]').slideUp();
             result.find('[data-media-toggle]').html('Show');
-            deselectAll(result);
+            //deselectAll(result);
             result.data('content-shown', false);
         }
     }
@@ -35,7 +35,7 @@
     function selected(event) {
         event.preventDefault();
         var fileValue = $(doc).find('input[data-file]').filter(':checked').val();
-        if (fileValue != '') {
+        if (fileValue !== '') {
             $.get('/Admin/MediaSelector/GetFileInfo/', { value: fileValue }, function (info) {
                 var funcNum = $('#CKEditorFuncNum').val();
                 window.opener.CKEDITOR.tools.callFunction(funcNum, info.url);
@@ -44,7 +44,28 @@
         }
     }
 
+    function initializeMediaUploader() {
+        var mediaUploader = new MediaUploader($(document), {
+            onFileUploadStopped: function (event, dropzone) {
+                var form = $(document).find("#search-form");
+                var url = form.attr('action') + '?' + form.serialize();
+                updateResults(url);
+                dropzone.removeAllFiles();
+            }
+        });
+        mediaUploader.init();
+    };
+
+    function updateResults(url) {
+        $.get(url, function (response) {
+            var newResults = $(response).find("#results");
+            $(document).find($("#results")).replaceWith(newResults);
+            initializeMediaUploader();
+        });
+    };
+
     $(function () {
+        initializeMediaUploader();
         $(doc).on('click', 'div.header',
             function (event) {
                 event.preventDefault();

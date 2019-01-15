@@ -61,7 +61,7 @@
     function selected(event) {
         event.preventDefault();
         var fileValue = element.find('input[data-file]').filter(':checked').val();
-        if (fileValue != '') {
+        if (fileValue !== '') {
             if (settings.onSelected) {
                 $.get('/Admin/MediaSelector/GetFileInfo/', { value: fileValue }, function (info) {
                     settings.onSelected(info);
@@ -209,7 +209,7 @@ function MediaSelectorWrapper(el, options) {
         var descriptionId = el.attr('id') + '-description';
         var descriptionLabel = $('<label>').html('Description').attr('for', descriptionId);
         descriptionFormGroup.append(descriptionLabel);
-        var descriptionInput = $('<textarea>').attr('rows','4').addClass('form-control input-sm').attr('id', descriptionId).attr('data-url', value);
+        var descriptionInput = $('<input>').addClass('form-control input-sm').attr('id', descriptionId).attr('data-url', value);
         descriptionFormGroup.append(descriptionInput);
 
         var descriptionFeedback = $('<span class="fa fa-ok form-control-feedback hide" aria-hidden="true"></span>');
@@ -226,12 +226,12 @@ function MediaSelectorWrapper(el, options) {
         if (valueIsSet()) {
             var value = getValue();
             if (isImage(value)) {
-                var holder = $('<div>').addClass('row').css('max-width', '500px');
-                var imageCol = $('<div>').addClass('col-sm-4');
-                imageCol.append($('<img src="' + value + '" style="' + settings.previewStyle + '" />'));
+                var holder = $('<div>').addClass('row');
+                var imageCol = $('<div>').addClass('col-sm-5 col-md-3');
+                imageCol.append($('<img src="' + value + '"  class=\"img-fluid img-thumbnail\" />'));
                 imageCol.append(buttonHolder);
                 holder.append(imageCol);
-                var dataCol = $('<div>').addClass('col-sm-8');
+                var dataCol = $('<div>').addClass('col-sm-7 col-md-9');
 
                 var altFormGroup = getAltInput(value);
                 dataCol.append(altFormGroup);
@@ -266,7 +266,7 @@ function MediaSelectorWrapper(el, options) {
             self = this;
             if (element.is("input")) {
                 var para = $('<p>').attr('data-media-selector-holder-'+ el.attr('id') ,'true');
-                buttonHolder = $('<div>').appendTo(para);
+                buttonHolder = $('<div>').addClass("d-block mt-1").appendTo(para);
                 preview = $('<div>');
                 element.before(preview);
                 selectButton = $('<button>').addClass(settings.selectClasses).html(settings.selectMessage).attr('data-media', 'select')
@@ -296,10 +296,10 @@ function MediaSelectorWrapper(el, options) {
             var value = this.getValue();
             if (value !== null && value !== '') {
                 removeButton.show();
-                buttonHolder.addClass('btn-group btn-group-vertical');
+                buttonHolder.addClass('btn-group');
             } else {
                 removeButton.hide();
-                buttonHolder.removeClass('btn-group btn-group-vertical');
+                buttonHolder.removeClass('btn-group');
             }
             var newPreview = getPreview();
             preview.replaceWith(newPreview);
@@ -328,10 +328,10 @@ function MediaSelectorWrapper(el, options) {
 MediaSelectorWrapper.defaults =
 {
     noImageSelectedImage: '/Areas/Admin/img/no-media-selected.jpg',
-    previewStyle: 'max-height: 120px; max-width:120px;',
-    selectClasses: 'btn btn-success ',
+    previewStyle: 'max-height: 200px; max-width:200px;',
+    selectClasses: 'btn btn-sm btn-success ',
     selectMessage: 'Select media...',
-    removeClasses: 'btn btn-danger ',
+    removeClasses: 'btn btn-sm btn-danger ',
     removeMessage: 'Remove media...',
     altUrl: '/admin/mediaselector/alt',
     updateAltUrl: '/admin/mediaselector/updatealt',
