@@ -4,6 +4,7 @@
 todo
 - user left hand side
 - user pager missing
+- bs4 form output
 - inline editing of content blocks?
 - check about date conversion
 - https://codepen.io/blackjacques/pen/bqgNoa
