@@ -4,7 +4,6 @@
 @using MrCMS.Website
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
-    var breadcrumbs = ViewData.Breadcrumbs();
 }
 
 <div class="wrapper">
@@ -16,9 +15,10 @@
     </aside>
 
     <section class="content-wrapper">
+        <partial name="Breadcrumbs" />
+
         <div class="content">
-            <partial name="Breadcrumbs" />
-            <partial name="Messages" />
+            <partial name="Messages"/>
             <div class="container-fluid">
                 @RenderBody()
             </div>
