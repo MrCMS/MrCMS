@@ -12,13 +12,15 @@ namespace MrCMS.Installation.Services
         private readonly ISession _session;
         private Site _site;
         private readonly IConfigurationProvider _configurationProvider;
+        private readonly ISystemConfigurationProvider _systemConfigurationProvider;
         private readonly ITaskSettingManager _taskSettingManager;
 
-        public InitializeDatabase(ISession session, Site site, IConfigurationProvider configurationProvider, ITaskSettingManager taskSettingManager)
+        public InitializeDatabase(ISession session, Site site, IConfigurationProvider configurationProvider, ISystemConfigurationProvider systemConfigurationProvider, ITaskSettingManager taskSettingManager)
         {
             _session = session;
             _site = site;
             _configurationProvider = configurationProvider;
+            _systemConfigurationProvider = systemConfigurationProvider;
             _taskSettingManager = taskSettingManager;
         }
 
@@ -51,10 +53,12 @@ namespace MrCMS.Installation.Services
             {
                 StorageType = typeof(FileSystem).FullName
             };
+            var mailSettings = new MailSettings {SystemEmailAddress = model.AdminEmail};
 
             _configurationProvider.SaveSettings(siteSettings);
             _configurationProvider.SaveSettings(mediaSettings);
             _configurationProvider.SaveSettings(fileSystemSettings);
+            _systemConfigurationProvider.SaveSettings(mailSettings);
 
         }
         private void SetupTasks()
@@ -63,7 +67,6 @@ namespace MrCMS.Installation.Services
             //_taskSettingManager.Update(typeof(DeleteOldQueuedTasks), true, 600);
             _taskSettingManager.Update(typeof(SendQueuedMessagesTask), false, 30);
             _taskSettingManager.Update(typeof(PublishScheduledWebpagesTask), true, 10);
-            //_taskSettingManager.Update(typeof(OptimiseIndexes), true, 600);
             _taskSettingManager.Update(typeof(UpdateSitemap), true, 600);
         }
     }
