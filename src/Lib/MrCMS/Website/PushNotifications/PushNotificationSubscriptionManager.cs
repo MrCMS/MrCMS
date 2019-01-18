@@ -1,39 +1,28 @@
-using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Settings;
-using Newtonsoft.Json;
 using NHibernate;
-using System;
 using System.Linq;
-using WebPush;
 
 namespace MrCMS.Website.PushNotifications
 {
     public class PushNotificationSubscriptionManager : IPushNotificationSubscriptionManager
     {
-        private readonly IConfigurationProvider _configurationProvider;
-        private readonly ISystemConfigurationProvider _systemConfigurationProvider;
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly ISession _session;
-        private readonly Site _site;
-        private readonly IUrlHelper _urlHelper;
+        private readonly ISendPushNotification _sendPushNotification;
+        private readonly WebPushSettings _settings;
 
-        public PushNotificationSubscriptionManager(IConfigurationProvider configurationProvider, ISystemConfigurationProvider systemConfigurationProvider,
-            IGetCurrentUser getCurrentUser, ISession session, Site site, IUrlHelper urlHelper)
+        public PushNotificationSubscriptionManager(IGetCurrentUser getCurrentUser, ISession session, IGetWebPushSettings getSettings, ISendPushNotification sendPushNotification)
         {
-            _configurationProvider = configurationProvider;
-            _systemConfigurationProvider = systemConfigurationProvider;
             _getCurrentUser = getCurrentUser;
             _session = session;
-            _site = site;
-            _urlHelper = urlHelper;
+            _settings = getSettings.GetSettings();
+            _sendPushNotification = sendPushNotification;
         }
 
-        public PushSubscriptionResult CreateSubscription(PushNotificationSubscription subscription)
+        public WebPushResult CreateSubscription(PushNotificationSubscription subscription)
         {
-            var pushSubscription = new Entities.People.PushSubscription()
+            var pushSubscription = new Entities.People.PushSubscription
             {
                 AuthSecret = subscription.AuthSecret,
                 Endpoint = subscription.Endpoint,
@@ -43,53 +32,16 @@ namespace MrCMS.Website.PushNotifications
 
             _session.Transact(session => session.Save(pushSubscription));
 
-            WebPushSettings webPushSettings = GetWebpushSettings();
-            var vapidDetails = new VapidDetails(webPushSettings.VapidSubject, webPushSettings.VapidPublicKey, webPushSettings.VapidPrivateKey);
-
-            var webPushClient = new WebPushClient();
-            webPushClient.SetVapidDetails(vapidDetails);
-            var payload = new PushNotificationPayload
-            {
-                Title = _site.Name,
-                Body = "Thank you for subscribing",
-                Icon = EnsureAbsolute(webPushSettings.NotificationIcon),
-                Badge = EnsureAbsolute(webPushSettings.NotificationBadge),
-            };
-
-            try
-            {
-                webPushClient.SendNotificationAsync(ToWebPushNotification(pushSubscription), JsonConvert.SerializeObject(payload), vapidDetails).GetAwaiter().GetResult();
-            }
-            catch (WebPushException exception)
-            {
-                var statusCode = exception.StatusCode;
-                return new PushSubscriptionResult { StatusCode = statusCode };
-            }
-
-            return new PushSubscriptionResult();
+            return _sendPushNotification.SendNotification(pushSubscription, _settings.SubscriptionConfirmationMessage);
         }
 
-        private string EnsureAbsolute(string url)
-        {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
-            {
-                return _urlHelper.Content("~" + url);
-            }
 
-            return url;
-        }
-
-        public PushSubscriptionResult RemoveSubscription(string endpoint)
+        public WebPushResult RemoveSubscription(string endpoint)
         {
             var pushSubscriptions = _session.Query<Entities.People.PushSubscription>().Where(x => x.Endpoint == endpoint).ToList();
             _session.Transact(session => pushSubscriptions.ForEach(session.Delete));
 
-            return new PushSubscriptionResult();
-        }
-
-        private PushSubscription ToWebPushNotification(Entities.People.PushSubscription pushSubscription)
-        {
-            return new PushSubscription(pushSubscription.Endpoint, pushSubscription.Key, pushSubscription.AuthSecret);
+            return new WebPushResult();
         }
 
         public string GetServiceWorkerJavaScript()
@@ -162,23 +114,7 @@ self.addEventListener('pushsubscriptionchange', function(event)
     console.log('[Service Worker] New subscription: ', newSubscription);
     })
   );
-});".Replace("PUBLIC_KEY", GetWebpushSettings().VapidPublicKey);
-        }
-
-        private WebPushSettings GetWebpushSettings()
-        {
-            var settings = _configurationProvider.GetSiteSettings<WebPushSettings>();
-
-            if (string.IsNullOrWhiteSpace(settings.VapidPrivateKey))
-            {
-                var mailSettings = _systemConfigurationProvider.GetSystemSettings<MailSettings>();
-                var keys = VapidHelper.GenerateVapidKeys();
-                settings.VapidPrivateKey = keys.PrivateKey;
-                settings.VapidPublicKey = keys.PublicKey;
-                settings.VapidSubject = $"mailto:{mailSettings.SystemEmailAddress}";
-                _configurationProvider.SaveSettings(settings);
-            }
-            return settings;
+});".Replace("PUBLIC_KEY", _settings.VapidPublicKey);
         }
     }
 }

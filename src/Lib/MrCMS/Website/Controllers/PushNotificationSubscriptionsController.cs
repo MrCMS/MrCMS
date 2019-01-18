@@ -35,7 +35,7 @@ namespace MrCMS.Website.Controllers
             return GetResult(result);
         }
 
-        private static IActionResult GetResult(PushSubscriptionResult result)
+        private static IActionResult GetResult(WebPushResult result)
         {
             return new StatusCodeResult((int) result.StatusCode.GetValueOrDefault(HttpStatusCode.OK));
         }

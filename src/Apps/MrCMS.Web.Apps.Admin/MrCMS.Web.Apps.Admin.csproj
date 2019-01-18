@@ -22,6 +22,7 @@
     <None Remove="Views\Form\TabContent.cshtml" />
     <None Remove="Views\MediaSelector\CKEditor.cshtml" />
     <None Remove="Views\Navigation\Children.cshtml" />
+    <None Remove="Views\PushNotification\Index.cshtml" />
     <None Remove="Views\Shared\Components\Greeting\Default.cshtml" />
     <None Remove="Views\Shared\Components\HealthCheck\Default.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
@@ -41,6 +42,7 @@
     <None Remove="Views\Webpage\Versions.cshtml" />
     <None Remove="Views\_ViewImports.cshtml" />
     <None Remove="wwwroot\Content\Scripts\mrcms\ck-editor-image-picker.js" />
+    <None Remove="wwwroot\scripts\push-notification.js" />
   </ItemGroup>
 
   <ItemGroup>
