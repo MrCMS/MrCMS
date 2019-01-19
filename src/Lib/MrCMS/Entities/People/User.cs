@@ -31,15 +31,10 @@ namespace MrCMS.Entities.People
         [DisplayName("Last Name")]
         public virtual string LastName { get; set; }
 
-        public virtual string Name
-        {
-            get
-            {
-                return string.IsNullOrWhiteSpace(string.Format("{0} {1}", FirstName, LastName))
-                    ? Email
-                    : string.Format("{0} {1}", FirstName, LastName);
-            }
-        }
+        public virtual string Name =>
+            string.IsNullOrWhiteSpace($"{FirstName} {LastName}")
+                ? Email
+                : $"{FirstName} {LastName}";
 
         public virtual byte[] PasswordHash { get; set; }
         public virtual byte[] PasswordSalt { get; set; }

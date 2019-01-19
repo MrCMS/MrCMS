@@ -6,7 +6,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IUserAdminService
     {
-        void AddUser(User user);
+        int AddUser(AddUserModel addUserModel);
         UpdateUserModel GetUpdateModel(User user);
         User SaveUser(UpdateUserModel model, List<int> roles);
         void DeleteUser(int id);

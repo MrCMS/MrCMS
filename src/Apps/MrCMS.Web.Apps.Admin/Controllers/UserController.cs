@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
@@ -49,13 +50,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Add)]
-        public RedirectToActionResult Add(
-            [ModelBinder(typeof(AddUserModelBinder))]
-            User user)
+        public RedirectToActionResult Add(AddUserModel addUserModel)
         {
-            _userAdminService.AddUser(user);
+            var addUser = _userAdminService.AddUser(addUserModel);
 
-            return RedirectToAction("Edit", new { id = user.Id });
+            return RedirectToAction("Edit", new { id = addUser});
         }
 
         [HttpGet]
@@ -63,14 +62,15 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(UserACL), UserACL.Edit)]
         public ActionResult Edit_Get(User user)
         {
+            if (user == null)
+                return RedirectToAction("Index");
             ViewData["AvailableRoles"] = _roleService.GetAllRoles();
             ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
             ViewData["culture-options"] = _getUserCultureOptions.Get();
             ViewData["user"] = user;
 
-            return user == null
-                ? (ActionResult) RedirectToAction("Index")
-                : View(_userAdminService.GetUpdateModel(user));
+            var updateUserModel = _userAdminService.GetUpdateModel(user);
+            return View(updateUserModel); 
         }
 
         [HttpPost]
@@ -78,7 +78,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public RedirectToActionResult Edit(UpdateUserModel model, [ModelBinder(typeof(UpdateUserRoleModelBinder))]List<int> roles)
         {
             var user = _userAdminService.SaveUser(model, roles);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
+            TempData.SuccessMessages().Add($"{user.Name} successfully saved");
             return RedirectToAction("Edit", "User", new { Id = user.Id });
         }
 

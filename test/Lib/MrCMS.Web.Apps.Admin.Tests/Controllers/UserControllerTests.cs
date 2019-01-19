@@ -54,22 +54,13 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void UserController_AddPost_ShouldCallUserServiceSaveUser()
         {
-            var user = new User();
-
-            _userController.Add(user);
-
-            A.CallTo(() => _userService.AddUser(user)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void UserController_AddPost_ShouldReturnRedirectEditForSavedUser()
-        {
-            var user = new User { Id = 123 };
+            var user = new AddUserModel();
 
             var result = _userController.Add(user);
 
+            A.CallTo(() => _userService.AddUser(user)).MustHaveHappened();
+            
             result.ActionName.Should().Be("Edit");
-            result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]

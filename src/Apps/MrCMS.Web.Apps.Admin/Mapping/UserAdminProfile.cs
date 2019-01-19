@@ -10,6 +10,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         public UserAdminProfile()
         {
             CreateMap<User, UpdateUserModel>().ReverseMap();
+            CreateMap<User, AddUserModel>().ReverseMap();
         }
     }
 }

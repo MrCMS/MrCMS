@@ -23,9 +23,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             _passwordManagementService = passwordManagementService;
             _roleService = roleService;
         }
-        public void AddUser(User user)
+        public int AddUser(AddUserModel addUserModel)
         {
-            _service.AddUser(user);
+            var user = new User();
+            var mappedUser = _mapper.Map(addUserModel, user);
+            _service.AddUser(mappedUser);
+            _passwordManagementService.SetPassword(mappedUser, addUserModel.Password, addUserModel.ConfirmPassword);
+            return mappedUser.Id;
         }
 
         public UpdateUserModel GetUpdateModel(User user)
