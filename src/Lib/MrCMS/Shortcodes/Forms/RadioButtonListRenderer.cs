@@ -45,16 +45,15 @@ namespace MrCMS.Shortcodes.Forms
                 {
                     radioButtonBuilder.Attributes["data-val"] = "true";
                     radioButtonBuilder.Attributes["data-val-required"] =
-                        string.Format("The field {0} is required",
-                            string.IsNullOrWhiteSpace(formProperty.LabelText)
-                                ? formProperty.Name
-                                : formProperty.LabelText);
+                        $"The field {(string.IsNullOrWhiteSpace(formProperty.LabelText) ? formProperty.Name : formProperty.LabelText)} is required";
                 }
 
                 radioButtonBuilder.Attributes["name"] = formProperty.Name;
                 radioButtonBuilder.Attributes["id"] =
                     TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value, "-");
-                cbLabelBuilder.InnerHtml.AppendHtml(radioButtonBuilder + checkbox.Value);
+                
+                cbLabelBuilder.InnerHtml.AppendHtml(radioButtonBuilder);
+                cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
                 if (formRenderingType == FormRenderingType.Bootstrap3)
                 {
                     var radioContainer = new TagBuilder("div");
