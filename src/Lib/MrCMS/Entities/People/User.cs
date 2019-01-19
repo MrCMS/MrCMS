@@ -86,6 +86,6 @@ namespace MrCMS.Entities.People
         [DisplayName("Site UI Culture")]
         public virtual string UICulture { get; set; }
 
-        public virtual MediaFile Avatar { get; set; }
+        public virtual string AvatarImage { get; set; }
     }
 }

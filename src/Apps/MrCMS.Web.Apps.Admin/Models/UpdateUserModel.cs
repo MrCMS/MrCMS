@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using MrCMS.Entities.Documents.Media;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {

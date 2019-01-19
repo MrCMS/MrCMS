@@ -13,6 +13,14 @@
     var userRoles = (ViewData["AvailableRoles"] as IEnumerable<UserRole> ?? Enumerable.Empty<UserRole>()).ToList();
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var tabs = EditTabsService.GetEditTabs(Html, user);
+
+    var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/10";
+
+
+    Html.IncludeCss("/Areas/Admin/lib/cropper/cropper.css");
+    Html.IncludeScript("/Areas/Admin/lib/cropper/cropper.js");
+    Html.IncludeScript("/Areas/Admin/lib/cropper/jquery-cropper.js");
+    Html.IncludeScript("/Areas/Admin/scripts/user-avatar.js");
 }
 
 <form asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" method="post" id="edit-user">
@@ -45,22 +53,22 @@
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
                         @Html.HiddenFor(x => x.Id)
-                        
+
                         <div class="text-center">
-                            <img class="profile-user-img img-fluid img-circle" src="https://via.placeholder.com/150" alt="User profile picture">
+                            <img class="profile-user-img img-fluid img-circle" src="@avatarImg" alt="User profile picture">
                         </div>
 
                         <div class="w-100 text-center border-bottom">
-                        
+
                             <h3 class="profile-username">@Model.Name</h3>
-                        
+
                             <div class="btn-group my-3">
-                                <a class="text-center btn btn-sm btn-outline-secondary" href="/Logout">Logout</a>
+                                <a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@Html.Resource("admin-logout", "Logout")</a>
                                 <a class="text-center btn btn-sm btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
                             </div>
-                            
+
                         </div>
-                        
+
                         <div class="form-group mt-3">
                             @Html.LabelFor(x => x.Email)
                             @Html.TextBoxFor(x => x.Email, new {@class = "form-control"})
@@ -81,15 +89,15 @@
                             @Html.DropDownListFor(x => x.UICulture, cultureOptions, new {@class = "form-control"})
                             @Html.ValidationMessageFor(x => x.UICulture)
                         </div>
-                        @Html.EditorFor(x=>x.IsActive)
-                        
+                        @Html.EditorFor(x => x.IsActive)
+
                     </div>
                 </div>
             </div>
             <div class="col-md-9">
                 <card>
                     <card-body>
-            
+
                         <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
                         <div>
                             @if (userRoles.Any() && Html.CanAccess<UserACL>(UserACL.Roles))

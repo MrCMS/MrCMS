@@ -32,7 +32,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 formFile.Length,
                 folder);
 
-            user.Avatar = _session.Get<MediaFile>(result.Id);
+            user.AvatarImage = _session.Get<MediaFile>(result.Id)?.FileUrl;
             _session.Transact(x => x.Update(user));
         }
 
