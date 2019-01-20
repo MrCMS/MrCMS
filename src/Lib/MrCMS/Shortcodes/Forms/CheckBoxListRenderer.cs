@@ -25,20 +25,33 @@ namespace MrCMS.Shortcodes.Forms
             {
                 var cbLabelBuilder = new TagBuilder("label");
                 cbLabelBuilder.Attributes["for"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value,"-");
+                
                 var checkboxBuilder = GetCheckbox(formProperty, existingValue, checkbox, values);
-
-                cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+                checkboxBuilder.AddCssClass("form-check-input");
+                
                 cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
 
                 if (formRenderingType == FormRenderingType.Bootstrap3)
                 {
+                    cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+
                     var checkboxContainer = new TagBuilder("div");
                     checkboxContainer.AddCssClass("checkbox");
+                    checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
+                    tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
+                } 
+                else if (formRenderingType == FormRenderingType.Bootstrap4)
+                {
+                    var checkboxContainer = new TagBuilder("div");
+                    cbLabelBuilder.AddCssClass("form-check-label");
+                    checkboxContainer.AddCssClass("form-check");
+                    checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
                     checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
                     tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
                 }
                 else
                 {
+                    cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
                     tagBuilder.InnerHtml.AppendHtml(cbLabelBuilder);
                 }
             }
