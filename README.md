@@ -118,12 +118,13 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 
 ## Release History
 
-## 0.6 - October 2018 
+## 0.6 - January 2019
 *	Feature: Restore Cloudflare IP
 *	Feature: Tracking Scripts (top of body). Ability to add scripts below <body> (e.g Google AdTag manager iFrame) 
 *	Feature: Add test email functionality
 *	Feature: Raygun implementation for centralised logging 
 *	Feature/SEO: Self referencing canonical or over-ride on SEO and properties tab
+*   Feature: Move and Merge Webpages
 *	Performance: Full page caching. Ability to output cache a full webpage. 
 *	Fix: Lucene write lock when cache cleared and index is being written to.
 *	Security: Record logins 
