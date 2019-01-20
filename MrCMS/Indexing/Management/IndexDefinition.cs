@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
-using Lucene.Net.Search;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -15,16 +11,17 @@ using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 using Ninject.Infrastructure.Language;
+using StackExchange.Profiling;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Indexing.Management
 {
     public abstract class IndexDefinition
     {
-        public string SystemName
-        {
-            get { return GetType().FullName; }
-        }
+        public string SystemName => GetType().FullName;
 
         public abstract string IndexFolderName { get; }
 
@@ -53,7 +50,10 @@ namespace MrCMS.Indexing.Management
         public List<LuceneAction> GetAllActions(object entity, LuceneOperation operation)
         {
             if (!(entity is SystemEntity))
+            {
                 return new List<LuceneAction>();
+            }
+
             var systemEntity = entity as SystemEntity;
             var actionsDictionary = GetActionsDictionary(operation);
             var luceneActions = new List<LuceneAction>();
@@ -64,17 +64,16 @@ namespace MrCMS.Indexing.Management
             return luceneActions;
         }
 
-        public virtual string[] SearchableFieldNames
-        {
-            get
-            {
-                return DefinitionInfos.Where(
+        public virtual string[] SearchableFieldNames => DefinitionInfos.Where(
                     info => info.Index == Field.Index.ANALYZED || info.Index == Field.Index.ANALYZED_NO_NORMS)
                                .Select(info => info.Name)
                                .Distinct()
                                .ToArray();
-            }
-        }
+        public virtual string[] NonAnalysedSearchableFieldNames => DefinitionInfos.Where(
+                    info => info.Index == Field.Index.NOT_ANALYZED || info.Index == Field.Index.NOT_ANALYZED_NO_NORMS)
+                               .Select(info => info.Name)
+                               .Distinct()
+                               .ToArray();
     }
 
     public abstract class IndexDefinition<T> : IndexDefinition where T : SystemEntity
@@ -93,7 +92,10 @@ namespace MrCMS.Indexing.Management
         private static IEnumerable<string> GetEntityTypes(T entity)
         {
             if (entity == null)
+            {
                 yield break;
+            }
+
             Type entityType = entity.GetType();
             while (typeof(T).IsAssignableFrom(entityType))
             {
@@ -111,14 +113,8 @@ namespace MrCMS.Indexing.Management
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
         }
 
-        public static FieldDefinition<T> Id
-        {
-            get { return _id; }
-        }
-        public static FieldDefinition<T> EntityType
-        {
-            get { return _entityType; }
-        }
+        public static FieldDefinition<T> Id => _id;
+        public static FieldDefinition<T> EntityType => _entityType;
 
         public Document Convert(T entity)
         {
@@ -126,7 +122,9 @@ namespace MrCMS.Indexing.Management
             document = document.SetFields(GetNewDefinitionList().Concat(Definitions), entity);
 
             foreach (var additionalField in GetAdditionalFields(entity))
+            {
                 document.Add(additionalField);
+            }
 
             return document;
         }
@@ -150,7 +148,13 @@ namespace MrCMS.Indexing.Management
         {
             var fieldDefinitions = GetNewDefinitionList();
             fieldDefinitions.AddRange(Definitions);
-            var list = fieldDefinitions.Select(fieldDefinition => fieldDefinition.GetFields(entities)).ToList();
+            var list = fieldDefinitions.Select(fieldDefinition =>
+            {
+                using (MiniProfiler.Current.Step($"Loading {fieldDefinition.FieldName}"))
+                {
+                    return fieldDefinition.GetFields(entities);
+                }
+            }).ToList();
             var additionalFields = GetAdditionalFields(entities);
             var documents = new List<Document>();
             foreach (var entity in entities)
@@ -185,14 +189,20 @@ namespace MrCMS.Indexing.Management
         public sealed override Document Convert(object entity)
         {
             if (entity is T)
+            {
                 return Convert(entity as T);
+            }
+
             return null;
         }
 
         public sealed override Term GetIndex(object entity)
         {
             if (entity is T)
+            {
                 return GetIndex(entity as T);
+            }
+
             return null;
         }
 
@@ -274,12 +284,14 @@ namespace MrCMS.Indexing.Management
         private IEnumerable<LuceneAction> GetRootEntityAction(SystemEntity arg, LuceneOperation operation)
         {
             if (arg is T)
+            {
                 yield return new LuceneAction
                 {
                     Entity = arg,
                     IndexDefinition = this,
                     Operation = operation,
                 };
+            }
         }
     }
 }

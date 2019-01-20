@@ -1,0 +1,40 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.MoveWebpageModel
+@{
+    var webpage = ViewData["webpage"] as Webpage;
+}
+@using (Html.BeginForm("Index", "MoveWebpage", new { id = "" }, FormMethod.Post, new { }))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin Webpage Move", "Move")
+        </legend>
+        <p>
+            @string.Format(Resource("Admin Webpage Move - Info", "This will move {0} so that it (and any child sections/pages) will sit below the section selected below"), webpage.Name)
+        </p>
+        @Html.HiddenFor(x => x.Id)
+        <div class="form-group">
+            @Html.LabelFor(x => x.ParentId, "Page")
+            @Html.DropDownListFor(x => x.ParentId, ViewData["valid-parents"] as IEnumerable<SelectListItem>, new { data_parent_chooser = "", @class = "select2", @style = "width:100%;" })
+        </div>
+
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.UpdateUrls, checkboxAttributes: new { data_update_urls = "" })
+        </div>
+
+        <div class="alert alert-info" data-update-urls-warning style="display: none">
+            @Resource("Admin Webpage Move - Url update info", "Be aware that this will re-write URLs of this page and all child pages. 301 redirects will be added however changing URLs of pages indexed by search engines is not recommended")
+        </div>
+        <hr />
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">@Resource("Proceed")</button>
+            @Html.ActionLink(Resource("Cancel"), "Edit", "Webpage", new { Model.Id }, new { @class = "btn btn-default" })
+        </div>
+    </fieldset>
+}
+@{
+    Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.css");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.min.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/move-webpage.js");
+}
