@@ -1,0 +1,75 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Models
+@model MrCMS.Settings.MailSettings
+
+@using (Html.BeginForm("Mail", "SystemSettings", FormMethod.Post, new { id = "edit-settings" }))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin System Settings - Mail", "Mail Settings")
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary" type="submit">
+                    @Resource("Save")
+                </button>
+            </span>
+        </legend>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.SystemEmailAddress)
+                    @Html.TextBoxFor(x => x.SystemEmailAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.SystemEmailAddress)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Host)
+                    @Html.TextBoxFor(x => x.Host, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Host)
+                </div>
+                @Html.InlineCheckboxFor(x => x.UseSSL)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.UserName)
+                    @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UserName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Password)
+                    @Html.TextBoxFor(x => x.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Password)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Port)
+                    @Html.TextBoxFor(x => x.Port, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Port)
+                </div>
+
+            </div>
+        </div>
+    </fieldset>
+}
+<hr />
+@{
+    var mailInfo = Html.For<TestEmailInfo>();
+}
+@using (Html.BeginForm("TestMailSettings", "SystemSettings", FormMethod.Post, new {id = "edit-settings"}))
+{
+    <fieldset>
+        <legend>
+            @Resource("Send Test Email")
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary" type="submit">
+                    @Resource("Send email")
+                </button>
+            </span>
+        </legend>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    @mailInfo.LabelFor(x => x.Email)
+                    @mailInfo.TextBoxFor(x => x.Email, new {@class = "form-control"})
+                    @mailInfo.ValidationMessageFor(x => x.Email)
+                </div>
+            </div>
+        </div>
+    </fieldset>
+}

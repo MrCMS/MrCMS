@@ -17,7 +17,7 @@ namespace MrCMS.Services
                 {
                     return CachingInfo.DoNotCache;
                 }
-                var attribute = widget.GetType().GetCustomAttribute<OutputCacheableAttribute>();
+                var attribute = widget.GetType().GetCustomAttribute<WidgetOutputCacheableAttribute>();
                 if (attribute == null)
                 {
                     return CachingInfo.DoNotCache;
@@ -29,7 +29,7 @@ namespace MrCMS.Services
             }
         }
 
-        private static string GetCacheKey(Widget widget, OutputCacheableAttribute attribute)
+        private static string GetCacheKey(Widget widget, WidgetOutputCacheableAttribute attribute)
         {
             var cacheKey = "Widget." + widget.Id;
             if (attribute.PerPage)

@@ -13,36 +13,25 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class MediaCategoryControllerTests
     {
-        private readonly IDocumentService _documentService;
-        private readonly IFileAdminService _fileService;
+        private readonly IFileAdminService _fileAdminService;
         private readonly MediaCategoryController _mediaCategoryController;
-        private IUrlValidationService _urlValidationService;
+        private readonly IMediaCategoryAdminService _mediaCategoryAdminService;
 
         public MediaCategoryControllerTests()
         {
-            _documentService = A.Fake<IDocumentService>();
-            _fileService = A.Fake<IFileAdminService>();
-            _urlValidationService = A.Fake<IUrlValidationService>();
-            _mediaCategoryController = new MediaCategoryController(_fileService, _urlValidationService, _documentService);
+            _fileAdminService = A.Fake<IFileAdminService>();
+            _mediaCategoryAdminService = A.Fake<IMediaCategoryAdminService>();
+            _mediaCategoryController = new MediaCategoryController(_mediaCategoryAdminService,_fileAdminService);
         }
 
         [Fact]
         public void MediaCategoryController_AddGet_ShouldReturnAMediaCategory()
         {
-            var actionResult = _mediaCategoryController.Add_Get(null) as ViewResult;
+            var mediaCategory = A.Dummy<MediaCategory>();
+            A.CallTo(() => _mediaCategoryAdminService.GetNewCategoryModel(123)).Returns(mediaCategory);
+            var actionResult = _mediaCategoryController.Add_Get(123);
 
-            actionResult.Model.Should().BeOfType<MediaCategory>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_AddGet_ShouldSetParentOfModelToModelInMethod()
-        {
-            var mediaCategory = new MediaCategory {Id = 1};
-            A.CallTo(() => _documentService.GetDocument<MediaCategory>(1)).Returns(mediaCategory);
-
-            var actionResult = _mediaCategoryController.Add_Get(1) as ViewResult;
-
-            actionResult.Model.As<MediaCategory>().Parent.Should().Be(mediaCategory);
+            actionResult.Model.Should().Be(mediaCategory);
         }
 
         [Fact]
@@ -52,7 +41,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _mediaCategoryController.Add(mediaCategory);
 
-            A.CallTo(() => _documentService.AddDocument(mediaCategory)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _mediaCategoryAdminService.Add(mediaCategory)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Fact]
@@ -91,7 +80,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _mediaCategoryController.Edit(mediaCategory);
 
-            A.CallTo(() => _documentService.SaveDocument(mediaCategory)).MustHaveHappened();
+            A.CallTo(() => _mediaCategoryAdminService.Update(mediaCategory)).MustHaveHappened();
         }
 
         [Fact]
@@ -107,24 +96,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Sort_ShouldCallGetDocumentsByParent()
-        {
-            var mediaCategory = new MediaCategory();
-            _mediaCategoryController.Sort(mediaCategory);
-
-            A.CallTo(() => _documentService.GetDocumentsByParent(mediaCategory)).MustHaveHappened();
-        }
-
-        [Fact]
         public void MediaCategoryController_Sort_ShouldBeAListOfSortItems()
         {
             var mediaCategory = new MediaCategory();
-            var mediaCategories = new List<MediaCategory> {new MediaCategory()};
-            A.CallTo(() => _documentService.GetDocumentsByParent(mediaCategory)).Returns(mediaCategories);
+            var sortItems = new List<SortItem> {};
+            A.CallTo(() => _mediaCategoryAdminService.GetSortItems(mediaCategory)).Returns(sortItems);
 
             var viewResult = _mediaCategoryController.Sort(mediaCategory).As<ViewResult>();
 
-            viewResult.Model.Should().BeOfType<List<SortItem>>();
+            viewResult.Model.Should().Be(sortItems);
         }
 
         [Fact]

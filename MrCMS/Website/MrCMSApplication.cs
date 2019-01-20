@@ -4,19 +4,13 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Apps;
-using MrCMS.DbConfiguration;
-using MrCMS.DbConfiguration.Caches;
 using MrCMS.DbConfiguration.Caches.Redis;
-using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
 using MrCMS.Settings;
-using MrCMS.Tasks;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Caching;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
-using NHibernate;
-using NHibernate.Caches.Redis;
 using Ninject;
 using StackExchange.Profiling;
 
@@ -24,18 +18,18 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.5.1.0";
-        public const string AssemblyFileVersion = "0.5.1.0";
+        public const string AssemblyVersion = "0.6.0.0";
+        public const string AssemblyFileVersion = "0.6.0.0";
         private const string CachedMissingItemKey = "cached-missing-item";
 
 
-        private static IOnEndRequestExecutor OnEndRequestExecutor
-        {
-            get { return MrCMSKernel.Kernel.Get<IOnEndRequestExecutor>(); }
-        }
+        private static IOnEndRequestExecutor OnEndRequestExecutor => MrCMSKernel.Kernel.Get<IOnEndRequestExecutor>();
 
         protected void Application_Start()
         {
+            SetModelBinders();
+            SetViewEngines();
+
             MrCMSApp.RegisterAllApps();
             AreaRegistration.RegisterAllAreas(MrCMSKernel.Kernel);
             MrCMSRouteRegistration.Register(RouteTable.Routes);
@@ -46,15 +40,16 @@ namespace MrCMS.Website
             LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
             LegacyTemplateMigrator.MigrateTemplates(MrCMSKernel.Kernel);
 
-            SetModelBinders();
-
-            SetViewEngines();
-
             BundleRegistration.Register(MrCMSKernel.Kernel);
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
-            GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
+            FilterProviders.Providers.Insert(0, new GlobalFilterProvider(MrCMSKernel.Kernel,
+                typeof(HoneypotFilter),
+                typeof(GoogleRecaptchaFilter),
+                typeof(DoNotCacheFilter)
+            ));
+
 
             ModelMetadataProviders.Current = new MrCMSMetadataProvider(MrCMSKernel.Kernel);
 
@@ -72,7 +67,6 @@ namespace MrCMS.Website
             if (RedisCacheInitializer.Initialized)
                 RedisCacheInitializer.Dispose();
         }
-
 
 
         protected virtual void SetViewEngines()
@@ -108,9 +102,7 @@ namespace MrCMS.Website
                 AuthenticateRequest += (sender, args) =>
                 {
                     if (!Context.Items.Contains(CachedMissingItemKey) && !RequestInitializer.IsFileRequest(Request.Url))
-                    {
                         RequestAuthenticator.Authenticate(Request);
-                    }
                     OnAuthenticateRequest(sender, args);
                 };
                 EndRequest += (sender, args) =>
@@ -145,7 +137,7 @@ namespace MrCMS.Website
 
         private bool IsCachedMissingFileRequest()
         {
-            string missingFile =
+            var missingFile =
                 Convert.ToString(
                     Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpRequestWrapper(Request))]);
             if (!string.IsNullOrWhiteSpace(missingFile))

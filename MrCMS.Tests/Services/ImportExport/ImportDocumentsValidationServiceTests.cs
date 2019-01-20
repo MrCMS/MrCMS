@@ -18,7 +18,7 @@ using Xunit;
 
 namespace MrCMS.Tests.Services.ImportExport
 {
-    public class ImportDocumentsValidationServiceTests : InMemoryDatabaseTest
+    public class ImportDocumentsValidationServiceTests 
     {
         private readonly ImportDocumentsValidationService _importDocumentsValidationService;
         private IWebpageUrlService _webpageUrlService;

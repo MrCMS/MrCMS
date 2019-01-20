@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using Ninject;
 
@@ -11,8 +12,8 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
         private readonly IDocumentRolesAdminService _documentRolesAdminService;
 
         public EditWebpageModelBinder(IDocumentRolesAdminService documentRolesAdminService, IKernel kernel,
-            IDocumentTagsAdminService documentTagsAdminService)
-            : base(kernel, documentTagsAdminService)
+            IDocumentTagsUpdateService documentTagsUpdateService)
+            : base(kernel, documentTagsUpdateService)
         {
             _documentRolesAdminService = documentRolesAdminService;
         }

@@ -10,11 +10,11 @@ namespace MrCMS.Website.Routing
 {
     public class GetWebpageForRequest : IGetWebpageForRequest
     {
-        private readonly IDocumentService _documentService;
+        private readonly IGetDocumentByUrl<Webpage> _getWebpageByUrl;
 
-        public GetWebpageForRequest(IDocumentService documentService)
+        public GetWebpageForRequest(IGetDocumentByUrl<Webpage> getWebpageByUrl)
         {
-            _documentService = documentService;
+            _getWebpageByUrl = getWebpageByUrl;
         }
 
         private readonly Dictionary<string, Webpage> _cache = new Dictionary<string, Webpage>();
@@ -33,7 +33,7 @@ namespace MrCMS.Website.Routing
 
             Webpage webpage = string.IsNullOrWhiteSpace(data)
                 ? CurrentRequestData.HomePage
-                : _documentService.GetDocumentByUrl<Webpage>(data);
+                : _getWebpageByUrl.GetByUrl(data);
 
             if (webpage != null && !webpage.Published && !CurrentRequestData.CurrentUserIsAdmin)
             {

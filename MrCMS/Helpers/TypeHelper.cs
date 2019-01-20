@@ -203,7 +203,7 @@ namespace MrCMS.Helpers
             return false;
         }
 
-        public static T Unproxy<T>(this T document) where T : SiteEntity
+        public static T Unproxy<T>(this T document) where T : SystemEntity
         {
             var proxy = document as INHibernateProxy;
             if (proxy != null)

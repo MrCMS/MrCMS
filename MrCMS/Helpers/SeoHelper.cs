@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,7 +11,7 @@ namespace MrCMS.Helpers
         //returns a neat url, lower case, allows: -_/0-9a-z
         public static string TidyUrl(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
+            if (String.IsNullOrWhiteSpace(url))
                 return "";
             url = RemoveDiacritics(url);
             url = url.ToLower().Replace("&", "and").Replace(".", "").Trim();
@@ -28,8 +29,8 @@ namespace MrCMS.Helpers
             string temp = url.Normalize(NormalizationForm.FormD);
             url = regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
 
-            byte[] tempBytes = System.Text.Encoding.GetEncoding("ISO-8859-8").GetBytes(url);
-            return System.Text.Encoding.UTF8.GetString(tempBytes);
+            byte[] tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(url);
+            return Encoding.UTF8.GetString(tempBytes);
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace MrCMS.Helpers
 
             string extension = Path.GetExtension(name);
 
-            if (!string.IsNullOrWhiteSpace(extension))
+            if (!String.IsNullOrWhiteSpace(extension))
                 name = name.Replace(extension, "");
 
             name = name.Replace("&", " and ");

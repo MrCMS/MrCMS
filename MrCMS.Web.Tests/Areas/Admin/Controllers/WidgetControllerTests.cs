@@ -2,28 +2,29 @@
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class WidgetControllerTests : MrCMSTest
     {
-        private readonly IDocumentService _documentService;
         private readonly WidgetController _widgetController;
         private readonly IWidgetService _widgetService;
+        private InMemoryRepository<Webpage> _webpageRepository = new InMemoryRepository<Webpage>();
 
         public WidgetControllerTests()
         {
             Kernel.Bind<ISetWidgetAdminViewData>().ToConstant(A.Fake<ISetWidgetAdminViewData>());
-            _documentService = A.Fake<IDocumentService>();
             _widgetService = A.Fake<IWidgetService>();
-            _widgetController = new WidgetController(_documentService, _widgetService)
+            _widgetController = new WidgetController(_webpageRepository, _widgetService)
             {
                 ReferrerOverride = "http://www.example.com/"
             };

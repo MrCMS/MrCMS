@@ -19,7 +19,7 @@ namespace MrCMS.DbConfiguration
         {
 
             return
-                MsSqlConfiguration.MsSql2008.ConnectionString(x => x.Is(_databaseSettings.ConnectionString))
+                MsSqlConfiguration.MsSql2012.ConnectionString(x => x.Is(_databaseSettings.ConnectionString))
                     .Driver<SqlAzureClientDriver>();
         }
 

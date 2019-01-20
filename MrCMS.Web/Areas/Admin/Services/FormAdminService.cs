@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using MrCMS.Entities.Documents.Web;
@@ -7,6 +6,8 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Services.Resources;
+using MrCMS.Settings;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 using NHibernate;
@@ -17,10 +18,12 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class FormAdminService : IFormAdminService
     {
         private readonly ISession _session;
+        private readonly IStringResourceProvider _stringResourceProvider;
 
-        public FormAdminService(ISession session)
+        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider)
         {
             _session = session;
+            _stringResourceProvider = stringResourceProvider;
         }
 
         public void ClearFormData(Webpage webpage)
@@ -133,17 +136,18 @@ namespace MrCMS.Web.Areas.Admin.Services
             return new PostingsModel(formPostings, webpage.Id);
         }
 
-        private static IEnumerable<string> GetHeadersForExport(Webpage webpage)
+        private IEnumerable<string> GetHeadersForExport(Webpage webpage)
         {
             var headers = new List<string>();
             foreach (FormPosting posting in webpage.FormPostings)
             {
                 headers.AddRange(posting.FormValues.Select(x => x.Key).Distinct());
             }
+            headers.Add(_stringResourceProvider.GetValue("Admin Form Postings Posted On", "Posted On"));
             return headers.Distinct().ToList();
         }
 
-        private static Dictionary<int, List<string>> GetFormDataForExport(Webpage webpage)
+        private Dictionary<int, List<string>> GetFormDataForExport(Webpage webpage)
         {
             var items = new Dictionary<int, List<string>>();
             for (int i = 0; i < webpage.FormPostings.Count; i++)
@@ -160,6 +164,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     else
                         items[i].Add("http://" + CurrentRequestData.CurrentSite.BaseUrl + value.Value);
                 }
+                items[i].Add(posting.CreatedOn.ToString(CurrentRequestData.CultureInfo));
             }
             return items.OrderByDescending(x => x.Value.Count).ToDictionary(pair => pair.Key, pair => pair.Value);
         }

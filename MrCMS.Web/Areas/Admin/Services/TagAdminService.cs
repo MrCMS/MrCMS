@@ -31,6 +31,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                         return builder;
                     })
                     .TransformUsing(Transformers.AliasToBean<AutoCompleteResult>())
+                    .Cacheable()
                     .List<AutoCompleteResult>();
         }
 

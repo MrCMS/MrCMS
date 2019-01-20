@@ -132,15 +132,25 @@ namespace MrCMS.Services
             return imageUrl;
         }
 
-        private bool IsResized(string imageUrl)
+        private static bool IsResized(string imageUrl)
+        {
+            return GetRequestedSize(imageUrl) != null;
+        }
+
+        public static Size? GetRequestedSize(string imageUrl)
         {
             string resizePart = GetResizePart(imageUrl);
-            if (resizePart == null) return false;
+            if (resizePart == null) return null;
 
-            int val;
+            int width = 0;
+            int height = 0;
             string[] parts = resizePart.Split('_');
-            return parts.Count() == 2 && parts[0].StartsWith("w") && parts[1].StartsWith("h") &&
-                   int.TryParse(parts[0].Substring(1), out val) && int.TryParse(parts[1].Substring(1), out val);
+            var valid = parts.Count() == 2 && parts[0].StartsWith("w") && parts[1].StartsWith("h") &&
+                   int.TryParse(parts[0].Substring(1), out width) && int.TryParse(parts[1].Substring(1), out height);
+            if (!valid)
+                return null;
+
+            return new Size(width, height);
         }
 
         private static string GetResizePart(string imageUrl)
@@ -198,10 +208,10 @@ namespace MrCMS.Services
         /// </summary>
         public static string RequestedImageFileUrl(MediaFile file, Size size)
         {
-            if (file.Size == size)
-                return file.FileUrl;
-
             string fileLocation = file.FileUrl;
+
+            if (file.Size == size || !RequiresResize(file.Size, size))
+                return fileLocation;
 
             string temp = fileLocation.Replace(file.FileExtension, "");
             if (size.Width != 0)
@@ -217,10 +227,10 @@ namespace MrCMS.Services
         /// </summary>
         public static string RequestedResizedCropFileUrl(Crop crop, Size size)
         {
-            if (crop.Size == size)
-                return crop.Url;
-
             string fileLocation = crop.Url;
+
+            if (crop.Size == size || !RequiresResize(crop.Size, size))
+                return fileLocation;
 
             string temp = fileLocation.Replace(crop.FileExtension, "");
             if (size.Width != 0)

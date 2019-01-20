@@ -64,6 +64,9 @@ namespace MrCMS.Entities.People
         public virtual Guid? ResetPasswordGuid { get; set; }
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 
+        public virtual string TwoFactorCode { get; set; }
+        public virtual DateTime? TwoFactorCodeExpiry { get; set; }
+
         public virtual ISet<UserRole> Roles { get; set; }
         public virtual IList<UserProfileData> UserProfileData { get; set; }
 

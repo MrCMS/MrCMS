@@ -9,5 +9,6 @@ namespace MrCMS.Models
         public int? Template { get; set; }
 
         public bool UseHierarchy { get; set; }
+        public int? WebpageId { get; set; }
     }
 }

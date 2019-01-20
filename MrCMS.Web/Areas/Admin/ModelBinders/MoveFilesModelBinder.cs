@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
-using NHibernate;
-using NHibernate.Criterion;
 using Ninject;
 
 namespace MrCMS.Web.Areas.Admin.ModelBinders
@@ -17,14 +16,14 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
     public class MoveFilesModelBinder : MrCMSDefaultModelBinder
     {
-        private readonly IDocumentService _documentService;
-        private readonly ISession _session;
+        private readonly IRepository<MediaCategory> _mediaCategoryRepository;
+        private readonly IRepository<MediaFile> _mediaFileRepository;
 
-        public MoveFilesModelBinder(IKernel kernel, IDocumentService documentService, ISession session)
+        public MoveFilesModelBinder(IKernel kernel, IRepository<MediaCategory> mediaCategoryRepository, IRepository<MediaFile> mediaFileRepository)
             : base(kernel)
         {
-            _documentService = documentService;
-            _session = session;
+            _mediaCategoryRepository = mediaCategoryRepository;
+            _mediaFileRepository = mediaFileRepository;
         }
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
@@ -40,46 +39,17 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
             if (folderId != "")
             {
-                model.Folder = _documentService.GetDocument<MediaCategory>(Convert.ToInt32(folderId));
+                model.Folder = _mediaCategoryRepository.Get(Convert.ToInt32(folderId));
             }
             if (files != "")
             {
-                model.Files = _session.QueryOver<MediaFile>().Where(arg => arg.Id.IsIn(files.Split(',').Select(int.Parse).ToList())).List();
+                var filesList = files.Split(',').Select(int.Parse).ToList();
+                model.Files = _mediaFileRepository.Query().Where(arg => filesList.Contains(arg.Id)).ToList();
             }
             if (folders != "")
             {
-                model.Folders = _session.QueryOver<MediaCategory>().Where(arg => arg.Id.IsIn(folders.Split(',').Select(int.Parse).ToList())).List();
-            }
-            return model;
-        }
-    }
-
-
-    public class DeleteFilesModelBinder : MrCMSDefaultModelBinder
-    {
-        private readonly ISession _session;
-
-        public DeleteFilesModelBinder(IKernel kernel, ISession session)
-            : base(kernel)
-        {
-            _session = session;
-        }
-
-        public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            var files =
-                GetValueFromContext(controllerContext, "files");
-            var folders =
-                GetValueFromContext(controllerContext, "folders");
-
-            var model = new DeleteFilesAndFoldersModel();
-            if (files != "")
-            {
-                model.Files = _session.QueryOver<MediaFile>().Where(arg => arg.Id.IsIn(files.Split(',').Select(int.Parse).ToList())).List();
-            }
-            if (folders != "")
-            {
-                model.Folders = _session.QueryOver<MediaCategory>().Where(arg => arg.Id.IsIn(folders.Split(',').Select(int.Parse).ToList())).List();
+                var foldersList = folders.Split(',').Select(int.Parse).ToList();
+                model.Folders = _mediaCategoryRepository.Query().Where(arg => foldersList.Contains(arg.Id)).ToList();
             }
             return model;
         }

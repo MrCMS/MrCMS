@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
+using System.Web;
 using Elmah;
+using Mindscape.Raygun4Net;
 using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -17,8 +20,11 @@ namespace MrCMS.Logging
         public MrCMSErrorLog(IDictionary config)
         {
             if (CurrentRequestData.DatabaseIsInstalled)
+            {
                 _session = MrCMSApplication.Get<ISessionFactory>()
                     .OpenFilteredSession(CurrentRequestData.CurrentContext);
+
+            }
         }
 
         public override string Name
@@ -47,6 +53,17 @@ namespace MrCMS.Logging
                 Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
             };
             _session.Transact(session => session.Save(log));
+
+            var siteSettings = CurrentRequestData.SiteSettings;
+            if (!string.IsNullOrWhiteSpace(siteSettings?.RaygunAPIKey))
+            {
+                var raygunClient = new RaygunClient(siteSettings.RaygunAPIKey);
+
+                var exception = error.Exception;
+                if (!(exception is HttpException httpException) || !siteSettings.RaygunExcludedStatusCodeCollection.Contains(httpException.GetHttpCode()))
+                    raygunClient.SendInBackground(exception);
+            }
+
             return log.Guid.ToString();
         }
 

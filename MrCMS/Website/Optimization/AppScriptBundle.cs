@@ -6,7 +6,7 @@ namespace MrCMS.Website.Optimization
 {
     public class AppScriptBundle : IScriptBundle
     {
-        public const string VirtualUrl = "~/scripts/apps";
+        public const string VirtualUrl = "~/scripts/apps.js";
         private readonly IEnumerable<IAppScriptList> _scriptLists;
 
         public AppScriptBundle(IEnumerable<IAppScriptList> scriptLists)

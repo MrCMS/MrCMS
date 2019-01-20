@@ -8,7 +8,7 @@ namespace MrCMS.Helpers
     {
         public static bool IsTypeCachable(this Widget widget)
         {
-            return widget.GetType().GetCustomAttribute<OutputCacheableAttribute>() != null;
+            return widget.GetType().GetCustomAttribute<WidgetOutputCacheableAttribute>() != null;
         }
     }
 }

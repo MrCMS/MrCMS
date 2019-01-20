@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
 using MrCMS.Tests.Website.Controllers.Builders;
+using MrCMS.Website;
 using Xunit;
 
 namespace MrCMS.Tests.Website.Controllers
@@ -18,7 +19,7 @@ namespace MrCMS.Tests.Website.Controllers
             var widgetController = new WidgetControllerBuilder().WithService(widgetUIService).Build();
             var widget = new BasicMappedWidget();
             var expectedResult = new ContentResult();
-            A.CallTo(() => widgetUIService.GetContent(widgetController, widget, A<Func<HtmlHelper,MvcHtmlString>>._)).Returns(expectedResult);
+            A.CallTo(() => widgetUIService.GetContent(widgetController, widget, A<Func<IHtmlHelper,MvcHtmlString>>._)).Returns(expectedResult);
 
             var result = widgetController.Show(widget);
 

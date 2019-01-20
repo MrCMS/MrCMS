@@ -14,5 +14,14 @@ namespace MrCMS.Website
         {
             return helper.ViewContext.HttpContext.GetAll<T>();
         }
+        public static T Get<T>(this IHtmlHelper helper)
+        {
+            return helper.ViewContext.HttpContext.Get<T>();
+        }
+
+        public static IEnumerable<T> GetAll<T>(this IHtmlHelper helper)
+        {
+            return helper.ViewContext.HttpContext.GetAll<T>();
+        }
     }
 }

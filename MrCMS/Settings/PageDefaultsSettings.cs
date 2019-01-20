@@ -11,10 +11,12 @@ namespace MrCMS.Settings
         {
             UrlGenerators = new Dictionary<string, string>();
             Layouts = new Dictionary<string, int?>();
+            DisableCaches = new HashSet<string>();
         }
 
         public Dictionary<string, string> UrlGenerators { get; set; }
         public Dictionary<string, int?> Layouts { get; set; }
+        public HashSet<string> DisableCaches { get; set; }
 
         public Type GetGeneratorType(string pageType)
         {
@@ -44,6 +46,16 @@ namespace MrCMS.Settings
         public int? GetLayoutId(Type type)
         {
             return GetLayoutId(type.FullName);
+        }
+
+        public bool CacheDisabled(string pageType)
+        {
+            return DisableCaches.Contains(pageType);
+        }
+
+        public bool CacheDisabled(Type type)
+        {
+            return CacheDisabled(type.FullName);
         }
     }
 }

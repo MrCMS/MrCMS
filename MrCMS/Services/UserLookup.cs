@@ -45,6 +45,13 @@ namespace MrCMS.Services
                     .Cacheable().SingleOrDefault();
         }
 
+        public User GetUserByGuid(Guid guid)
+        {
+            return _session.QueryOver<User>()
+                    .Where(user => user.Guid == guid)
+                    .Cacheable().SingleOrDefault();
+        }
+
         public User GetCurrentUser(HttpContextBase context)
         {
             return context.User != null && !string.IsNullOrWhiteSpace(context.User.Identity.Name)

@@ -24,7 +24,7 @@ namespace MrCMS.Helpers
                                                                         string val = match.Value.Trim('@');
                                                                         return
                                                                             String.Format(
-                                                                                "@<a href='http://twitter.com/{0}'>{1}</a>",
+                                                                                "@<a href='https://twitter.com/{0}'>{1}</a>",
                                                                                 val, val);
                                                                     });
 
@@ -33,7 +33,7 @@ namespace MrCMS.Helpers
                                                                      string val = match.Value;
                                                                      return
                                                                          String.Format(
-                                                                             "<a href='http://twitter.com/search/?q=%23{0}'>{1}</a>",
+                                                                             "<a href='https://twitter.com/search/?q=%23{0}'>{1}</a>",
                                                                              val.Substring(1), val);
                                                                  });
 

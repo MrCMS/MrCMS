@@ -6,7 +6,7 @@ namespace MrCMS.Website.Optimization
 {
     public class AppStylesheetBundle : IStylesheetBundle
     {
-        public const string VirtualUrl = "~/stylesheets/apps";
+        public const string VirtualUrl = "~/stylesheets/apps.css";
         private readonly IEnumerable<IAppStylesheetList> _stylesheetLists;
 
         public AppStylesheetBundle(IEnumerable<IAppStylesheetList> stylesheetLists)

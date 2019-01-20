@@ -4,7 +4,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Articles.Widgets
 {
-    [OutputCacheable]
+    [WidgetOutputCacheable]
     public class LatestXArticles : Widget
     {
         public virtual int NumberOfArticles { get; set; }

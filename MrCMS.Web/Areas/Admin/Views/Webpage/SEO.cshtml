@@ -62,7 +62,11 @@
         @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "form-control" })
         @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
     </div>
-
+    <div class="form-group">
+        @Html.LabelFor(x => x.ExplicitCanonicalLink)
+        @Html.TextBoxFor(x => x.ExplicitCanonicalLink, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.ExplicitCanonicalLink, "", new { @class = "error" })
+    </div>
     <hr />
     <h4>@Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
     @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
@@ -100,6 +104,15 @@
     @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "form-control" })
     @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
 </div>
+@if (Model.IsTypeCachable())
+{
+    <hr />
+    <h4>@Resource("Advanced")</h4>
+    <hr class="small-margin" />
+    <div class="form-group">
+        @Html.InlineCheckboxFor(widget => widget.DoNotCache)
+    </div>
+}
 <hr />
 <strong>@Resource("Page type"):</strong> @Model.GetMetadata().Name
 <br />

@@ -13,7 +13,6 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(file => file.Description).CustomType<VarcharMax>().Length(4001);
             mapping.Map(file => file.Title).Length(4000);
             mapping.Map(file => file.FileUrl).Length(1000);
-            mapping.Map(file => file.FileUrl).Index("IX_MediaFile_FileUrl");
         }
     }
 }

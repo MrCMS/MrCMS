@@ -12,7 +12,7 @@ namespace MrCMS.Settings
         {
             AzureUsingEmulator = true;
             AzureContainerName = "MrCMS";
-            StorageType = typeof (FileSystem).FullName;
+            StorageType = typeof(FileSystem).FullName;
         }
         [DisplayName("Storage Type")]
         public string StorageType { get; set; }
@@ -25,6 +25,8 @@ namespace MrCMS.Settings
         public string AzureContainerName { get; set; }
         [DisplayName("Azure is using Emulator")]
         public bool AzureUsingEmulator { get; set; }
+        [DisplayName("Azure CDN Domain")]
+        public string AzureCdnDomain { get; set; }
 
         [DisplayName("Use Azure for Lucene")]
         public bool UseAzureForLucene { get; set; }
@@ -36,11 +38,10 @@ namespace MrCMS.Settings
                 var types = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>();
 
                 return types.BuildSelectItemList(type => type.Name, type => type.FullName, type => type.FullName == StorageType,
-                                                 emptyItem: null);
+                    emptyItem: null);
             }
         }
 
         public override bool RenderInSettings { get { return false; } }
-
     }
 }

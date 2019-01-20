@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MrCMS.Web</RootNamespace>
     <AssemblyName>MrCMS.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -29,7 +31,8 @@
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <TargetFrameworkProfile />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
-    <NuGetPackageImportStamp>eff8cd49</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -53,144 +56,123 @@
     <MvcBuildViews>false</MvcBuildViews>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime">
-      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Accessibility" />
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Elmah">
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=4.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
-      <HintPath>..\packages\Facebook.7.0.6\lib\net45\Facebook.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="EPPlus, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.1.0\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlAgilityPack, Version=1.5.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.5.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.Core">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.0\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.Facebook, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.Google, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security.Facebook, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.1.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.1.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.1.0\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MiniProfiler, Version=3.2.0.157, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.3.2.0.157\lib\net40\MiniProfiler.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="MVC Foolproof Validation">
+    <Reference Include="MVC Foolproof Validation, Version=0.9.4517.16477, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\foolproof.0.9.4517\lib\MVC Foolproof Validation.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.4.1.2.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate.Caches.SysCache2">
+    <Reference Include="NHibernate.Caches.SysCache2, Version=4.0.0.4000, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.Caches.SysCache2.4.0.0.4000\lib\net40\NHibernate.Caches.SysCache2.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject">
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Ninject.Extensions.Conventions, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Web.Common.3.2.3.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Web.Mvc, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.MVC3.3.2.1.0\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="Owin">
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Owin.Security.Providers, Version=1.25.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Owin.Security.Providers.1.26\lib\net45\Owin.Security.Providers.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Owin.Security.Providers.LinkedIn, Version=2.0.0.0, Culture=neutral, PublicKeyToken=1328b8c16b108c43, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.Security.Providers.LinkedIn.2.15.1\lib\net45\Owin.Security.Providers.LinkedIn.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.1.2\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.EagerFetching.2.1.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Data.SQLite, Version=1.0.94.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.94.0\lib\net451\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -199,6 +181,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -207,45 +190,36 @@
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WebActivatorEx">
-      <HintPath>..\packages\WebActivatorEx.2.0.6\lib\net40\WebActivatorEx.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -285,6 +259,8 @@
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\TextPageController.cs" />
+    <Compile Include="Apps\Core\Controllers\TwoFactorCodePageController.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
@@ -302,12 +278,21 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\FailedLoginAttemptMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultFailedLoginAttemptMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\GetDefaultResetPasswordMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultSend2FACodeMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultSuccessfulLoginAttemptMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\Send2FACodeMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\SuccessfulLoginAttemptMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
+    <Compile Include="Apps\Core\Metadata\TextPageMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\TwoFactorCodePageMetadata.cs" />
+    <Compile Include="Apps\Core\Pages\TwoFactorCodePage.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
-    <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMetadata.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetadata.cs" />
@@ -318,15 +303,10 @@
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
     <Compile Include="Apps\Core\Models\CurrentPageSubNavigationModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\ChangePasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\ForgotPasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\RegisterModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Services\Installation\SetupCoreMedia.cs" />
-    <Compile Include="Apps\Core\Services\LoginService.cs" />
-    <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
+    <Compile Include="Apps\Core\Services\SendLoginAttemptNotificationEmails.cs" />
+    <Compile Include="Apps\Core\Services\SendResetPasswordEmail.cs" />
+    <Compile Include="Apps\Core\Services\Send2FACodeEmail.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetModelForCurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetNavigationRecords.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetUserLinks.cs" />
@@ -350,9 +330,12 @@
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CustomScriptPagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MergeWebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplatePreviewController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateTokensController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegisteredHandlersController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SecurityOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserSubscriptionReportsController.cs" />
@@ -365,10 +348,12 @@
     <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
+    <Compile Include="Areas\Admin\Helpers\FileAdminServiceExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\LocalisedScriptHtmlHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\UniversalSearchHelper.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\DeleteFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\DeleteMessageTemplateOverrideModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\GetSiteCopyOptionsModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\GetTaskInfoFromTypeModelBinder.cs" />
@@ -377,10 +362,15 @@
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
+    <Compile Include="Areas\Admin\Models\CustomScriptPagesSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\DashboardArea.cs" />
     <Compile Include="Areas\Admin\Models\DashboardAreaAction.cs" />
     <Compile Include="Areas\Admin\Models\LineGraphData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySortMethod.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageChangedPageModel.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageConfirmationModel.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageModel.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageResult.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
@@ -399,7 +389,7 @@
     <Compile Include="Areas\Admin\Controllers\UniversalSearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
-    <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MoveWebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageUrlController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageWidgetController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
@@ -441,6 +431,10 @@
     <Compile Include="Areas\Admin\Models\MediaCategorySearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MediaSelectorSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\MessageTemplateInfo.cs" />
+    <Compile Include="Areas\Admin\Models\MoveWebpageChangedPageModel.cs" />
+    <Compile Include="Areas\Admin\Models\MoveWebpageConfirmationModel.cs" />
+    <Compile Include="Areas\Admin\Models\MoveWebpageModel.cs" />
+    <Compile Include="Areas\Admin\Models\MoveWebpageResult.cs" />
     <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
     <Compile Include="Areas\Admin\Models\PageTemplateSearchQuery.cs" />
@@ -453,22 +447,13 @@
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResult.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\UserAccountModel.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
-    <Compile Include="Apps\Core\Services\ILoginService.cs" />
-    <Compile Include="Apps\Core\Services\IOnUserRegistered.cs" />
-    <Compile Include="Apps\Core\Services\IRegistrationService.cs" />
-    <Compile Include="Apps\Core\Services\IResetPasswordService.cs" />
-    <Compile Include="Apps\Core\Services\IUserEventService.cs" />
-    <Compile Include="Apps\Core\Services\RegistrationService.cs" />
-    <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
     <Compile Include="Apps\Core\Services\Search\WebpageSearchService.cs" />
     <Compile Include="Apps\Core\Services\Search\IWebpageSearchService.cs" />
-    <Compile Include="Apps\Core\Services\UserEventService.cs" />
     <Compile Include="Apps\Core\Widgets\LinkedImage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Widgets\UserLinks.cs" />
@@ -569,10 +554,12 @@
     <Compile Include="Areas\Admin\Services\Batching\IBatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
+    <Compile Include="Areas\Admin\Services\CreateMergeBatch.cs" />
+    <Compile Include="Areas\Admin\Services\CreateUpdateUrlBatch.cs" />
+    <Compile Include="Areas\Admin\Services\CustomScriptPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\DocumentRolesAdminService.cs" />
-    <Compile Include="Areas\Admin\Services\DocumentTagsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
@@ -592,8 +579,10 @@
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IBatchAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ICreateMergeBatch.cs" />
+    <Compile Include="Areas\Admin\Services\ICreateUpdateUrlBatch.cs" />
+    <Compile Include="Areas\Admin\Services\ICustomScriptPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentRolesAdminService.cs" />
-    <Compile Include="Areas\Admin\Services\IDocumentTagsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
@@ -605,10 +594,13 @@
     <Compile Include="Areas\Admin\Services\IGetWebpageEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ILayoutAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILocalisedScripts.cs" />
     <Compile Include="Areas\Admin\Services\ILogAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IMediaCategoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMediaSelectorService.cs" />
+    <Compile Include="Areas\Admin\Services\IMergeWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageTemplatePreviewService.cs" />
@@ -636,14 +628,18 @@
     <Compile Include="Areas\Admin\Services\IUniversalSearchIndexSearcher.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageAdminSearchService.cs" />
+    <Compile Include="Areas\Admin\Services\IWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageBaseViewDataService.cs" />
-    <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IMoveWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageWidgetAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\LayoutAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LocalisedScripts.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\MediaCategoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
+    <Compile Include="Areas\Admin\Services\MergeWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplatePreviewService.cs" />
@@ -692,8 +688,9 @@
     <Compile Include="Areas\Admin\Services\UserSubscriptionReports\IUserSubscriptionReportsService.cs" />
     <Compile Include="Areas\Admin\Services\UserSubscriptionReports\UserSubscriptionReportsService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageAdminSearchService.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
-    <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\MoveWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminService.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
@@ -1956,7 +1953,7 @@
     <Content Include="Areas\Admin\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Admin\Views\WebpageParent\Set.cshtml" />
+    <Content Include="Areas\Admin\Views\MoveWebpage\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Content.cshtml" />
@@ -2182,11 +2179,6 @@
     <Folder Include="Themes\Default\Views\Widgets\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidget.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -2203,6 +2195,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\MediaCategory\Directory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Apps\Core\Views\Pages\TwoFactorCodePage.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemSettings\Mail.cshtml" />
+    <Content Include="Areas\Admin\Views\CustomScriptPages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SecurityOptions\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SecurityOptions\Settings.cshtml" />
+    <Content Include="Areas\Admin\Views\MoveWebpage\Confirm.cshtml" />
+    <Content Include="Areas\Admin\Views\MergeWebpage\Confirm.cshtml" />
+    <Content Include="Areas\Admin\Views\MergeWebpage\Index.cshtml" />
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -2229,14 +2232,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets'))" />
-  </Target>
   <Target Name="CustomCollectFiles">
     <ItemGroup>
       <!-- Create an identity called _CustomFiles, and associate it to the files I created -->
@@ -2257,4 +2252,13 @@
       $(CopyAllFilesToSingleFolderForPackageDependsOn);
     </CopyAllFilesToSingleFolderForMsdeployDependsOn>
   </PropertyGroup>
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
 </Project>

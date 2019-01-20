@@ -1,27 +1,32 @@
 using FluentAssertions;
 using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class DocumentVersionsAdminServiceTests : InMemoryDatabaseTest
+    public class DocumentVersionsAdminServiceTests
     {
-        private readonly DocumentVersionsAdminService _documentVersionsAdminService;
-
         public DocumentVersionsAdminServiceTests()
         {
-            _documentVersionsAdminService = new DocumentVersionsAdminService(Session);
+            _documentVersionRepository = new InMemoryRepository<DocumentVersion>();
+            _inMemoryRepository = new InMemoryRepository<Document>();
+            _documentVersionsAdminService = new DocumentVersionsAdminService(_documentVersionRepository,
+                _inMemoryRepository);
         }
+
+        private readonly DocumentVersionsAdminService _documentVersionsAdminService;
+        private readonly InMemoryRepository<DocumentVersion> _documentVersionRepository;
+        private readonly InMemoryRepository<Document> _inMemoryRepository;
 
         [Fact]
         public void DocumentVersionService_GetDocumentVersion_GetsTheVersionWithTheRequestedId()
         {
             var documentVersion = new DocumentVersion();
-            Session.Transact(session => session.Save(documentVersion));
+            _documentVersionRepository.Add(documentVersion);
 
-            DocumentVersion version = _documentVersionsAdminService.GetDocumentVersion(documentVersion.Id);
+            var version = _documentVersionsAdminService.GetDocumentVersion(documentVersion.Id);
 
             version.Should().Be(documentVersion);
         }

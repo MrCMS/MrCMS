@@ -15,11 +15,10 @@ namespace MrCMS.Tests
         protected TestableEventContext _eventContext = new TestableEventContext();
         protected TestableEventContext EventContext { get { return _eventContext; } }
 
-        private readonly MockingKernel _kernel;
+        private readonly MockingKernel _kernel = new MockingKernel();
 
         protected MrCMSTest()
         {
-            _kernel = new MockingKernel();
             Kernel.Load(new TestContextModule());
             Kernel.Bind<IEventContext>().ToMethod(context => _eventContext);
             MrCMSKernel.OverrideKernel(Kernel);

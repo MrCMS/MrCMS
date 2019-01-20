@@ -36,5 +36,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _service.SetDefaults(info);
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public RedirectToRouteResult EnableCache(string typeName)
+        {
+            _service.EnableCache(typeName);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult DisableCache(string typeName)
+        {
+            _service.DisableCache(typeName);
+            return RedirectToAction("Index");
+        }
     }
 }

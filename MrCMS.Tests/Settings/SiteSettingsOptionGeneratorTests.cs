@@ -28,7 +28,13 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1), Name = "Test 1", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage
+            {
+                PublishOn = CurrentRequestData.Now.AddDays(-1),
+                Name = "Test 1",
+                Site = CurrentSite,
+                Published = true
+            };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, -1);
@@ -55,7 +61,13 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1), Name = "Test 1", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage
+            {
+                PublishOn = CurrentRequestData.Now.AddDays(-1),
+                Name = "Test 1",
+                Site = CurrentSite,
+                Published = true
+            };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session,  textPage.Id);

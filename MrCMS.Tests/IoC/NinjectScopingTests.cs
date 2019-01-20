@@ -1,6 +1,5 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Services;
 using MrCMS.Website;
 using Ninject;
 using Xunit;
@@ -15,16 +14,22 @@ namespace MrCMS.Tests.IoC
         {
             _kernel = new StandardKernel();
             MrCMSKernel.OverrideKernel(_kernel);
-            _kernel.Bind<IDocumentService>().ToMethod(context => A.Fake<IDocumentService>()).InThreadScope();
+            _kernel.Bind<ITestInterface>().ToMethod(context => A.Fake<ITestInterface>()).InThreadScope();
         }
 
         [Fact]
         public void Kernel_Get_RequestingTheSameItemTwiceShouldGetTheSameInstanceTwice()
         {
-            var documentService1 = _kernel.Get<IDocumentService>();
-            var documentService2 = _kernel.Get<IDocumentService>();
+            var documentService1 = _kernel.Get<ITestInterface>();
+            var documentService2 = _kernel.Get<ITestInterface>();
 
             documentService1.Should().BeSameAs(documentService2);
         }
+
+        public interface ITestInterface
+        {
+            
+        }
     }
+    
 }

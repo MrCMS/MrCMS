@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -20,21 +20,23 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class FileAdminService : IFileAdminService
     {
-        private readonly IDocumentService _documentService;
         private readonly IFileService _fileService;
         private readonly MediaSettings _mediaSettings;
+        private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
+        private readonly IRepository<MediaCategory> _mediaCategoryRepository;
 
         public FileAdminService(IFileService fileService, ISession session,
-            IStringResourceProvider stringResourceProvider, IDocumentService documentService,
-            MediaSettings mediaSettings)
+            IStringResourceProvider stringResourceProvider, IRepository<MediaCategory> mediaCategoryRepository,
+            MediaSettings mediaSettings, IGetDocumentsByParent<MediaCategory> getDocumentsByParent)
         {
             _fileService = fileService;
             _session = session;
             _stringResourceProvider = stringResourceProvider;
-            _documentService = documentService;
+            _mediaCategoryRepository = mediaCategoryRepository;
             _mediaSettings = mediaSettings;
+            _getDocumentsByParent = getDocumentsByParent;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
@@ -90,21 +92,19 @@ namespace MrCMS.Web.Areas.Admin.Services
 
             ImageSortItem item = null;
             return query.SelectList(builder =>
-            {
-                builder.Select(file => file.FileName).WithAlias(() => item.Name);
-                builder.Select(file => file.Id).WithAlias(() => item.Id);
-                builder.Select(file => file.DisplayOrder).WithAlias(() => item.Order);
-                builder.Select(file => file.FileExtension).WithAlias(() => item.FileExtension);
-                builder.Select(file => file.FileUrl).WithAlias(() => item.ImageUrl);
-                return builder;
-            }).TransformUsing(Transformers.AliasToBean<ImageSortItem>())
+                {
+                    builder.Select(file => file.FileName).WithAlias(() => item.Name);
+                    builder.Select(file => file.Id).WithAlias(() => item.Id);
+                    builder.Select(file => file.DisplayOrder).WithAlias(() => item.Order);
+                    builder.Select(file => file.FileExtension).WithAlias(() => item.FileExtension);
+                    builder.Select(file => file.FileUrl).WithAlias(() => item.ImageUrl);
+                    return builder;
+                }).TransformUsing(Transformers.AliasToBean<ImageSortItem>())
+                .Cacheable()
                 .List<ImageSortItem>().ToList();
         }
 
-        public void CreateFolder(MediaCategory category)
-        {
-            _fileService.CreateFolder(category);
-        }
+
 
         public void SetOrders(List<SortItem> items)
         {
@@ -180,15 +180,18 @@ namespace MrCMS.Web.Areas.Admin.Services
             if (folders != null)
             {
                 IEnumerable<MediaCategory> foldersRecursive = GetFoldersRecursive(folders);
-                foreach (MediaCategory f in foldersRecursive)
+                _mediaCategoryRepository.Transact(repository =>
                 {
-                    var folder = _documentService.GetDocument<MediaCategory>(f.Id);
-                    List<MediaFile> files = folder.Files.ToList();
-                    foreach (MediaFile file in files)
-                        _fileService.DeleteFileSoft(file);
+                    foreach (MediaCategory f in foldersRecursive)
+                    {
+                        var folder = repository.Get(f.Id);
+                        List<MediaFile> files = folder.Files.ToList();
+                        foreach (MediaFile file in files)
+                            _fileService.DeleteFileSoft(file);
 
-                    _documentService.DeleteDocument(folder);
-                }
+                        repository.Delete(folder);
+                    }
+                });
             }
         }
 
@@ -226,59 +229,11 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             foreach (MediaCategory category in categories)
             {
-                foreach (MediaCategory child in GetFoldersRecursive(_documentService.GetDocumentsByParent(category)))
+                foreach (MediaCategory child in GetFoldersRecursive(_getDocumentsByParent.GetDocuments(category)))
                 {
                     yield return child;
                 }
                 yield return category;
-            }
-        }
-    }
-
-    public static class FileAdminServiceExtensions
-    {
-        public static IQueryOver<MediaFile, MediaFile> OrderBy(this IQueryOver<MediaFile, MediaFile> query,
-            MediaCategorySortMethod sortBy)
-        {
-            switch (sortBy)
-            {
-                case MediaCategorySortMethod.CreatedOnDesc:
-                    return query.OrderBy(file => file.CreatedOn).Desc;
-                case MediaCategorySortMethod.CreatedOn:
-                    return query.OrderBy(file => file.CreatedOn).Asc;
-                case MediaCategorySortMethod.Name:
-                    return query.OrderBy(file => file.FileName).Asc;
-                case MediaCategorySortMethod.NameDesc:
-                    return query.OrderBy(file => file.FileName).Desc;
-                case MediaCategorySortMethod.DisplayOrderDesc:
-                    return query.OrderBy(file => file.DisplayOrder).Desc;
-                case MediaCategorySortMethod.DisplayOrder:
-                    return query.OrderBy(file => file.DisplayOrder).Asc;
-                default:
-                    throw new ArgumentOutOfRangeException("sortBy");
-            }
-        }
-
-        public static IQueryOver<MediaCategory, MediaCategory> OrderBy(
-            this IQueryOver<MediaCategory, MediaCategory> query,
-            MediaCategorySortMethod sortBy)
-        {
-            switch (sortBy)
-            {
-                case MediaCategorySortMethod.CreatedOnDesc:
-                    return query.OrderBy(category => category.CreatedOn).Desc;
-                case MediaCategorySortMethod.CreatedOn:
-                    return query.OrderBy(category => category.CreatedOn).Asc;
-                case MediaCategorySortMethod.Name:
-                    return query.OrderBy(category => category.Name).Asc;
-                case MediaCategorySortMethod.NameDesc:
-                    return query.OrderBy(category => category.Name).Desc;
-                case MediaCategorySortMethod.DisplayOrderDesc:
-                    return query.OrderBy(category => category.DisplayOrder).Desc;
-                case MediaCategorySortMethod.DisplayOrder:
-                    return query.OrderBy(category => category.DisplayOrder).Asc;
-                default:
-                    throw new ArgumentOutOfRangeException("sortBy");
             }
         }
     }
