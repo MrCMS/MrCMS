@@ -34,7 +34,6 @@ namespace MrCMS.Tasks
                 if (!due.Any())
                     return;
                 using (new NotificationDisabler(_session.GetContext()))
-                // TODO: notifications  
                 {
                     _session.Transact(session =>
                     {
