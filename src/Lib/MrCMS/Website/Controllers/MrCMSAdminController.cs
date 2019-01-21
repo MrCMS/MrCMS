@@ -1,9 +1,11 @@
-using System;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
+using MrCMS.Settings;
+using System;
 
 namespace MrCMS.Website.Controllers
 {
@@ -19,8 +21,10 @@ namespace MrCMS.Website.Controllers
             if (filterContext.HttpContext.Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
             {
                 // merge in any invalid modelstate found
-                var modelStateDictionary = TempData["MrCMS-invalid-modelstate"] as ModelStateDictionary;
-                if (modelStateDictionary != null) ModelState.Merge(modelStateDictionary);
+                if (TempData["MrCMS-invalid-modelstate"] is ModelStateDictionary modelStateDictionary)
+                {
+                    ModelState.Merge(modelStateDictionary);
+                }
             }
 
             // HTTP POST
@@ -35,10 +39,14 @@ namespace MrCMS.Website.Controllers
             }
 
             var url = Request.GetDisplayUrl();
-            if ( /*MrCMSApplication.Get<SiteSettings>().SSLAdmin && */
-                url.ToLower().Contains("/admin")) // TODO: add settings
+            if (filterContext.HttpContext.RequestServices.GetRequiredService<SiteSettings>().SSLAdmin &&
+                url.ToLower().Contains("/admin"))
+            {
                 if (Request.Scheme != "https" && !Request.IsLocal())
+                {
                     filterContext.Result = new RedirectResult(url.Replace("http://", "https://"));
+                }
+            }
 
             SetDefaultPageTitle(filterContext);
             base.OnActionExecuting(filterContext);
@@ -46,11 +54,7 @@ namespace MrCMS.Website.Controllers
 
         protected virtual void SetDefaultPageTitle(ActionExecutingContext filterContext)
         {
-            ViewBag.Title = string.Format("{0} - {1}",
-                filterContext.RouteData.Values["controller"].ToString()
-                    .BreakUpString(),
-                filterContext.RouteData.Values["action"].ToString()
-                    .BreakUpString());
+            ViewBag.Title = $"{filterContext.RouteData.Values["controller"].ToString().BreakUpString()} - {filterContext.RouteData.Values["action"].ToString().BreakUpString()}";
         }
 
         protected override RedirectResult AuthenticationFailureRedirect()

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using StackExchange.Profiling.Storage;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web
@@ -147,7 +149,33 @@ namespace MrCMS.Web
             });
             services.AddSingleton<IMemoryCache>(provider => provider.GetRequiredService<IClearableInMemoryCache>());
 
+            services.AddMiniProfiler(options =>
+            {
+                // All of this is optional. You can simply call .AddMiniProfiler() for all defaults
 
+                // (Optional) Path to use for profiler URLs, default is /mini-profiler-resources
+                options.RouteBasePath = "/profiler";
+
+                // (Optional) Control storage
+                // (default is 30 minutes in MemoryCacheStorage)
+                (options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+
+                // (Optional) Control which SQL formatter to use, InlineFormatter is the default
+                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+
+                // (Optional) To control authorization, you can use the Func<HttpRequest, bool> options:
+                // (default is everyone can access profilers)
+                options.ResultsAuthorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
+                options.ResultsListAuthorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
+
+                // (Optional)  To control which requests are profiled, use the Func<HttpRequest, bool> option:
+                // (default is everything should be profiled)
+                options.ShouldProfile = MiniProfilerAuth.ShouldStartFor;
+
+                // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
+                // (defaults to true, and connection opening/closing is tracked)
+                options.TrackConnectionOpenClose = true;
+            });
 
             services.AddScoped(x =>
             {
@@ -192,6 +220,7 @@ namespace MrCMS.Web
                 return;
             }
 
+
             app.UseRequestLocalization();
 
             app.UseStaticFiles(new StaticFileOptions
@@ -200,6 +229,7 @@ namespace MrCMS.Web
                     new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
             });
             app.UseAuthentication();
+            app.UseMiniProfiler();
             app.UseMrCMS();
         }
     }
