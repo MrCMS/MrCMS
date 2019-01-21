@@ -1,11 +1,11 @@
-using System;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Entities.Widget;
 using MrCMS.Services.Caching;
 using NHibernate;
+using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Services
 {
@@ -24,28 +24,15 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public ActionResult GetContent(Controller controller, Widget widget, Func<IHtmlHelper, IHtmlContent> func)
+        public IHtmlContent GetContent(IViewComponentHelper helper, int id, Func<IViewComponentHelper, Task<IHtmlContent>> func)
         {
-            return _htmlCacheService.GetContent(controller, _getWidgetCachingInfo.Get(widget), func);
-            //throw new NotImplementedException("Not yet implemented");
+            return _htmlCacheService.GetContent(helper, _getWidgetCachingInfo.Get(id), func);
         }
 
         public (Widget Widget, object Model) GetModel(int id)
         {
             var widget = _session.Get<Widget>(id);
-            return (widget, GetModel(widget));
-        }
-
-        public object GetModel(Widget widget)
-        {
-            return _widgetModelService.GetModel(widget);
-        }
-
-        public void SetAppDataToken(RouteData routeData, Widget widget)
-        {
-            //throw new NotImplementedException("Not yet implemented");
-            //if (MrCMSApp.AppWidgets.ContainsKey(widget.Unproxy().GetType()))
-            //    routeData.DataTokens["app"] = MrCMSApp.AppWidgets[widget.Unproxy().GetType()];
+            return (widget, _widgetModelService.GetModel(widget));
         }
     }
 }

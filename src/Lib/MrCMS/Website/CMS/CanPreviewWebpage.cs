@@ -8,7 +8,7 @@ namespace MrCMS.Website.CMS
     {
         private readonly IGetCurrentUser _getCurrentUser;
 
-        public CanPreviewWebpage(IGetCurrentUser getCurrentUser)//, IUserRoleManager userRoleManager)
+        public CanPreviewWebpage(IGetCurrentUser getCurrentUser)
         {
             _getCurrentUser = getCurrentUser;
         }
@@ -20,8 +20,6 @@ namespace MrCMS.Website.CMS
                 return false;
 
             return user.IsAdmin;
-            // TODO: role check
-            //return await _userRoleManager.IsInRoleAsync(user, UserRole.Administrator);
         }
     }
 }

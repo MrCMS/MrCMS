@@ -55,7 +55,7 @@ namespace MrCMS.Services
         public string GetImageUrl(string imageUrl, Size targetSize)
         {
             var info = _mediaSettings.GetImageUrlCachingInfo(imageUrl, targetSize);
-            return _cacheManager.Get(info.CacheKey, () => string.IsNullOrWhiteSpace(imageUrl)
+            return _cacheManager.GetOrCreate(info.CacheKey, () => string.IsNullOrWhiteSpace(imageUrl)
                 ? null
                 : GetImageInfo(imageUrl, targetSize)?.ImageUrl, info.TimeToCache, info.ExpiryType);
         }

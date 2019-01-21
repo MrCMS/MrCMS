@@ -5,7 +5,7 @@ using MrCMS.Website.Caching;
 
 namespace MrCMS.Web.Apps.Core.Pages
 {
-    //[WebpageOutputCacheable(CacheExpiryType.Sliding, 3600)]
+    [WebpageOutputCacheable(CacheExpiryType.Sliding, 3600)]
     public class TextPage : Webpage
     {
         [DisplayName("Featured Image")]

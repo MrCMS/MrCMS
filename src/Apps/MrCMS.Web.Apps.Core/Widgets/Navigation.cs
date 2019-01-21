@@ -3,8 +3,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
-    //[WidgetOutputCacheable(PerPage = true)]
-    // TODO: widget caching
+    [WidgetOutputCacheable(PerPage = true)]
     public class Navigation : Widget
     {
         public virtual bool IncludeChildren { get; set; }

@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
-using Microsoft.AspNetCore.Http;
-using MrCMS.Entities.Documents.Web;
+using MrCMS.Data;
 using MrCMS.Entities.Widget;
 using MrCMS.Models;
 using MrCMS.Website;
@@ -12,12 +11,20 @@ namespace MrCMS.Services
     {
         private readonly IGetCurrentPage _getCurrentPage;
         private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IRepository<Widget> _repository;
 
-        public GetWidgetCachingInfo(IGetCurrentPage getCurrentPage, IGetCurrentUser getCurrentUser)
+        public GetWidgetCachingInfo(IGetCurrentPage getCurrentPage, IGetCurrentUser getCurrentUser, IRepository<Widget> repository)
         {
             _getCurrentPage = getCurrentPage;
             _getCurrentUser = getCurrentUser;
+            _repository = repository;
         }
+
+        public CachingInfo Get(int id)
+        {
+            return Get(_repository.Get(id));
+        }
+
         public CachingInfo Get(Widget widget)
         {
             //using (MiniProfiler.Current.Step("Get caching info"))

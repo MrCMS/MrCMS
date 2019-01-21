@@ -1,10 +1,12 @@
-using System;
-using System.Reflection;
+using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace MrCMS.Services
 {
@@ -21,14 +23,16 @@ namespace MrCMS.Services
             _settings = settings;
         }
 
-        public CachingInfo Get(Webpage webpage, object queryData = null)
+        public CachingInfo Get(Webpage webpage, IQueryCollection queryData)
         {
             //using (MiniProfiler.Current.Step("Get caching info"))
             {
                 var type = webpage?.GetType();
                 var attribute = type?.GetCustomAttribute<WebpageOutputCacheableAttribute>();
                 if (attribute == null)
+                {
                     return CachingInfo.DoNotCache;
+                }
 
                 var shouldCache = !webpage.DoNotCache && _getCurrentUser.Get() == null &&
                                   !_settings.CacheDisabled(type);
@@ -38,11 +42,11 @@ namespace MrCMS.Services
             }
         }
 
-        private string GetCacheKey(Webpage webpage, object queryData = null)
+        private string GetCacheKey(Webpage webpage, IQueryCollection queryData)
         {
             var cacheKey = $"Webpage.{webpage.Id}";
-            var routingData = _querySerializer.GetRoutingData(queryData);
-            cacheKey = _querySerializer.AppendToUrl(cacheKey, routingData);
+            cacheKey = _querySerializer.AppendToUrl(cacheKey,
+                queryData.ToDictionary(x => x.Key, x => (object)x.Value));
             return cacheKey;
         }
     }

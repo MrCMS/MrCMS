@@ -1,69 +1,67 @@
-﻿using System;
-using System.Collections;
-using Microsoft.Extensions.Caching.Distributed;
-using MrCMS.Helpers;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 
 namespace MrCMS.Website.Caching
 {
     public class CacheManager : ICacheManager
     {
-        public const string InternalCachePrefix = "MrCMS.Cache.";
-        private readonly IDistributedCache _cache;
+        private readonly IClearableInMemoryCache _cache;
 
-        public CacheManager(IDistributedCache cache)
+        public CacheManager(IClearableInMemoryCache cache)
         {
             _cache = cache;
         }
 
-        public T Get<T>(string key, Func<T> func, TimeSpan time, CacheExpiryType cacheExpiryType)
+        public T Get<T>(string key)
         {
-            //key = InternalCachePrefix + key;
-            //object o = null;
-            //if (time > TimeSpan.Zero)
-            //    o = _cache[key];
+            return _cache.Get<T>(key);
+        }
 
-            //if (o != null)
-            //    return o.To<T>();
+        public T Set<T>(string key, T obj, TimeSpan time, CacheExpiryType cacheExpiryType)
+        {
+            var options = new MemoryCacheEntryOptions();
+            if (time > TimeSpan.Zero)
+            {
+                if (cacheExpiryType == CacheExpiryType.Sliding)
+                {
+                    options.SlidingExpiration = time;
+                }
+                else if (cacheExpiryType == CacheExpiryType.Absolute)
+                {
+                    options.AbsoluteExpirationRelativeToNow = time;
+                }
+            }
 
-            //o = func.Invoke();
+            return _cache.Set(key, obj, options);
+        }
 
-            //if (o != null)
-            //{
-            //    if (time > TimeSpan.Zero)
-            //    {
-            //        var absoluteExpiration = cacheExpiryType == CacheExpiryType.Absolute
-            //            ? DateTime.UtcNow.Add(time)
-            //            : Cache.NoAbsoluteExpiration;
-            //        var slidingExpiration = cacheExpiryType == CacheExpiryType.Sliding
-            //            ? (time)
-            //            : Cache.NoSlidingExpiration;
-            //        _cache.Add(key, o, absoluteExpiration, slidingExpiration, CacheItemPriority.AboveNormal);
-            //    }
-            //    return o.To<T>();
-            //}
-            //return (T)(object)null;
-            // TODO: caching
-            return func();
+        public T GetOrCreate<T>(string key, Func<T> func, TimeSpan time, CacheExpiryType cacheExpiryType)
+        {
+            if (time <= TimeSpan.Zero)
+            {
+                return func();
+            }
+
+            return _cache.GetOrCreate(key, entry =>
+            {
+                if (cacheExpiryType == CacheExpiryType.Sliding)
+                {
+                    entry.SlidingExpiration = time;
+                }
+                else if (cacheExpiryType == CacheExpiryType.Absolute)
+                {
+                    entry.AbsoluteExpirationRelativeToNow = time;
+                }
+
+                var value = func();
+                entry.Value = value;
+                return value;
+            });
         }
 
         public void Clear(string prefix = null)
         {
-            //if (string.IsNullOrWhiteSpace(prefix))
-            //    _cache.Clear();
-            //else
-            //{
-            //    IDictionaryEnumerator enumerator = _cache.GetEnumerator();
-            //    var fullPrefix = InternalCachePrefix + prefix;
-            //    while (enumerator.MoveNext())
-            //    {
-            //        var key = enumerator.Key.ToString();
-            //        if (key.StartsWith(fullPrefix, StringComparison.OrdinalIgnoreCase))
-            //        {
-            //            _cache.Remove(key);
-            //        }
-            //    }
-            //}
-            // TODO: clear cache
+            _cache.Clear(prefix);
         }
     }
 }
