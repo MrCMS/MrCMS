@@ -24,6 +24,7 @@ namespace MrCMS.Web.Apps.Admin.Bundles
                 yield return "~/Areas/Admin/lib/jquery/validate/jquery.validate.unobtrusive.js";
                 yield return "~/Areas/Admin/lib/jquery/validate/unobtrusive-bootstrap.js";
                 yield return "~/Areas/Admin/lib/bootstrap/dist/js/bootstrap.bundle.js";
+                yield return "~/Areas/Admin/lib/bootstrap-confirmation.js";
                 yield return "~/Areas/Admin/lib/adminlte/js/adminlte.js";
                 yield return "~/Areas/Admin/lib/tag-it.min.js";
                 yield return "~/Areas/Admin/lib/jquery.noty.packaged.js";
