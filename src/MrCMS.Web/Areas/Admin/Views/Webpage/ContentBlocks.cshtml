@@ -55,7 +55,7 @@
                         <td>
                             <div class="btn-group">
                                 @Html.ActionLink(Html.Resource("Edit"), "Edit", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-sm btn-secondary" })
-                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "ContentBlock", new { id = contentBlock.Id }, new { @class = "btn btn-danger btn-sm", data_toggle = "fb-modal" })
+                                <button class="btn btn-danger btn-sm" data-toggle="confirmation" data-value="@Url.Action("Delete","ContentBlock", new {id = contentBlock.Id})" data-id="@contentBlock.Id" data-placement="bottom">@Html.Resource("admin-delete","Delete")</button>
                             </div>
                         </td>
                     </tr>

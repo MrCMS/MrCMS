@@ -1,4 +1,4 @@
-﻿$.ajaxSetup({ cache: false });
+﻿$.ajaxSetup({cache: false});
 $(function () {
     $(document).ajaxStart(function () {
         $("#loading").show();
@@ -6,6 +6,19 @@ $(function () {
     $(document).ajaxStop(function () {
         $("#loading").hide();
     });
+
+    $('[data-toggle=confirmation]').confirmation().on('click', function (e) {
+        e.preventDefault();
+        deleteFromConfirmation(e.target);
+    });
+
+    function deleteFromConfirmation(el){
+        var deleteUrl = $(el).data('value');
+        var id = $(el).data('id');
+
+        post_to_url(deleteUrl, {id: id});
+    }
+        
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
@@ -28,7 +41,7 @@ $(function () {
 
     $('form[data-are-you-sure]').each(function (index, element) {
         var form = $(element);
-        form.areYouSure({ message: form.data('are-you-sure') });
+        form.areYouSure({message: form.data('are-you-sure')});
     });
 
     $(document).on('click', '.date-time-picker', function () {
@@ -106,13 +119,13 @@ function setStickyCkedtior(el) {
     setTimeout(function () {
         if ($('.body-content #cke_1_contents').height() > 500) {
             if ($(el).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
-                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
+                $(".body-content #cke_1_top").css({'position': 'fixed', 'top': '51px'});
             }
             if ($(el).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
-                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+                $(".body-content #cke_1_top").css({'position': 'inherit', 'top': 'auto;'});
             }
         } else {
-            $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+            $(".body-content #cke_1_top").css({'position': 'inherit', 'top': 'auto;'});
         }
     }, 250);
 }
@@ -128,6 +141,7 @@ function resizeModal(jqElement) {
 
     modal.css('top', top).css('left', left);
 }
+
 var MrCMSFeatherlightSettings = {
     type: 'iframe',
     iframeWidth: 800,
@@ -146,6 +160,7 @@ var MrCMSFeatherlightSettings = {
         setCloseButtonPosition(this.$instance);
     }
 }
+
 function setCloseButtonPosition(contents) {
     var offset = contents.find(".featherlight-content").offset();
     var scrollTop = $(document).scrollTop();
@@ -157,8 +172,7 @@ function getRemoteModel(href) {
     var link = $("<a>");
     link.attr('href', href);
     link.attr('data-toggle', 'fb-modal');
-    var settings = {
-    };
+    var settings = {};
     link.featherlight(MrCMSFeatherlightSettings).click();
 }
 
@@ -194,6 +208,7 @@ function post_to_url(path, params, method) {
     var form = document.createElement("form");
     form.setAttribute("method", method);
     form.setAttribute("action", path);
+    form.setAttribute("id", "temp-form");
 
     for (var key in params) {
         var hiddenField = document.createElement("input");
@@ -207,6 +222,7 @@ function post_to_url(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
+
 $.fn.delayKeyup = function (e, callback, ms) {
     var timer = 0;
     $(this).keyup(function (event) {
