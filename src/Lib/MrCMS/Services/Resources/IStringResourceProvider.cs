@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Globalization;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
-//using MrCMS.Services.Caching;
+using MrCMS.Services.Caching;
+
 
 namespace MrCMS.Services.Resources
 {
-    // TODO: clear cache
-    public interface IStringResourceProvider //: IClearCache
+    public interface IStringResourceProvider : IClearCache
     {
         IEnumerable<StringResource> AllResources { get; }
         string GetValue(string key, string defaultValue = null);
