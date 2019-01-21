@@ -1,6 +1,11 @@
 using System;
+using System.IO;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -17,34 +22,30 @@ namespace MrCMS.Services.Caching
             _cacheManager = cacheManager;
         }
 
-        public ActionResult GetContent(Controller controller, CachingInfo cachingInfo,
-            Func<IHtmlHelper, IHtmlContent> func)
-        {
-            return _cacheManager.Get(cachingInfo.CacheKey, () => new ContentResult
-            {
-                Content = func(controller.GetHtmlHelper()).ToString()
-            }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
-        }
 
-        public IHtmlContent GetString(Controller controller, CachingInfo cachingInfo,
+        public IHtmlContent GetContent(Controller controller, CachingInfo cachingInfo,
             Func<IHtmlHelper, IHtmlContent> func)
         {
-            return _cacheManager.Get(cachingInfo.CacheKey, () => func(controller.GetHtmlHelper()),
+            return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () => func(controller.GetHtmlHelper()),
+                cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
+        }
+        public IHtmlContent GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func)
+        {
+            return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () => func(helper),
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
-        public ActionResult GetContent(IHtmlHelper helper, CachingInfo cachingInfo,
-            Func<IHtmlHelper, IHtmlContent> func)
+        public IHtmlContent GetContent(IViewComponentHelper helper, CachingInfo cachingInfo, Func<IViewComponentHelper, Task<IHtmlContent>> func)
         {
-            return _cacheManager.Get(cachingInfo.CacheKey, () => new ContentResult
-            {
-                Content = func(helper).ToString()
-            }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
-        }
-
-        public IHtmlContent GetString(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func)
-        {
-            return _cacheManager.Get(cachingInfo.CacheKey, () => func(helper),
+            return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () =>
+                {
+                    var htmlContent = func(helper).GetAwaiter().GetResult();
+                    var stringBuilder = new StringBuilder();
+                    TextWriter writer = new StringWriter(stringBuilder);
+                    htmlContent.WriteTo(writer, HtmlEncoder.Default);
+                    IHtmlContent content = new HtmlString(stringBuilder.ToString());
+                    return content;
+                },
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
     }

@@ -4,8 +4,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
-    //[WidgetOutputCacheable(PerPage = true)]
-    // TODO: widget caching
+    [WidgetOutputCacheable(PerPage = true)]
     public class CurrentPageSubNavigation : Widget
     {
         [DisplayName("Show Name As Title")]

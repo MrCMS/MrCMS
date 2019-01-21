@@ -14,9 +14,6 @@ namespace MrCMS.Website.Filters
         }
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // TODO: check db is installed
-            //if (!CurrentRequestData.DatabaseIsInstalled)
-            //    return;
             if (filterContext.HttpContext.Request.HasFormContentType &&
                 !string.IsNullOrWhiteSpace( filterContext.HttpContext.Request.Form[_siteSettings.HoneypotFieldName]))
             {

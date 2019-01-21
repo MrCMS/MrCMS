@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,9 +9,8 @@ namespace MrCMS.Services.Caching
 {
     public interface IHtmlCacheService
     {
-        ActionResult GetContent(Controller controller, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
-        IHtmlContent GetString(Controller controller, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
-        ActionResult GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
-        IHtmlContent GetString(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
+        IHtmlContent GetContent(Controller controller, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
+        IHtmlContent GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
+        IHtmlContent GetContent(IViewComponentHelper helper, CachingInfo cachingInfo, Func<IViewComponentHelper, Task<IHtmlContent>> func);
     }
 }

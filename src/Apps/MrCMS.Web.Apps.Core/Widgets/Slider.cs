@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using MrCMS.Entities.Widget;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
-    //[WidgetOutputCacheable]
-    // TODO: widget caching
+    [WidgetOutputCacheable]
     public class Slider : Widget
     {
         [DisplayName("Slider 1")]

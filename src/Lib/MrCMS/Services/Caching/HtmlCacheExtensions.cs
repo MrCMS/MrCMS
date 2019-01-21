@@ -13,7 +13,7 @@ namespace MrCMS.Services.Caching
         public static IHtmlContent GetCached(this IHtmlHelper helper, CachingInfo cachingInfo,
             Func<IHtmlHelper, IHtmlContent> func)
         {
-            return helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IHtmlCacheService>().GetString(helper, cachingInfo, htmlHelper => func(helper));
+            return helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IHtmlCacheService>().GetContent(helper, cachingInfo, htmlHelper => func(helper));
         }
     }
 }
