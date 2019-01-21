@@ -31,15 +31,14 @@ namespace MrCMS.DbConfiguration
     {
         private readonly IDatabaseProvider _databaseProvider;
         private readonly MrCMSAppContext _appContext;
+        private readonly Action<CacheSettingsBuilder> _configureCache;
 
-        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext)
+        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext, Action<CacheSettingsBuilder> configureCache = null)
         {
             _databaseProvider = databaseProvider;
             _appContext = appContext;
-            CacheEnabled = true;
+            _configureCache = configureCache;
         }
-
-        public bool CacheEnabled { get; set; }
 
         public List<Assembly> ManuallyAddedAssemblies { get; set; }
 
@@ -128,25 +127,19 @@ namespace MrCMS.DbConfiguration
 
         private void SetupCache(CacheSettingsBuilder builder)
         {
-            if (!CacheEnabled)
-                return;
-
-            builder.UseSecondLevelCache()
-                .UseQueryCache()
-                .QueryCacheFactory<StandardQueryCacheFactory>();
-            //var providerType = TypeHelper.GetTypeByName(WebConfigurationManager.AppSettings["mrcms-cache-provider"]);
-            //var cacheInitializers = NHibernateCacheInitializers.Initializers;
-            //if (providerType != null && cacheInitializers.ContainsKey(providerType))
-            //{
-            //    var initializer = MrCMSKernel.Kernel.Get(cacheInitializers[providerType]) as CacheProviderInitializer;
-            //    if (initializer != null)
-            //    {
-            //        initializer.Initialize(builder);
-            //        return;
-            //    }
-            //}
-            // TODO: customise cache
-            builder.ProviderClass<CoreMemoryCacheProvider>();
+            //if (!CacheEnabled)
+            //    return;
+            if (_configureCache != null)
+            {
+                _configureCache(builder);
+            }
+            else
+            {
+                builder.UseSecondLevelCache()
+                    .UseQueryCache()
+                    .QueryCacheFactory<StandardQueryCacheFactory>();
+                builder.ProviderClass<CoreMemoryCacheProvider>();
+            }
         }
 
         private AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)

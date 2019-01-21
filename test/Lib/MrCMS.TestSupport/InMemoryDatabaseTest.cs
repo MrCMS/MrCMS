@@ -29,7 +29,6 @@ namespace MrCMS.TestSupport
                     var assemblies = new List<Assembly> { typeof(InMemoryDatabaseTest).Assembly };
                     var configurator = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
                     {
-                        CacheEnabled = true,
                         ManuallyAddedAssemblies = assemblies
                     };
                     Configuration = configurator.GetConfiguration();
