@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -17,6 +17,7 @@ using MrCMS.Apps;
 using MrCMS.Data.Sqlite;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Globalization;
 using MrCMS.Helpers;
 using MrCMS.Installation;
 using MrCMS.Logging;
@@ -27,11 +28,10 @@ using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
+using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
+using System.Globalization;
 using System.Linq;
-using Lucene.Net.Support;
-using Microsoft.AspNetCore.Localization;
-using MrCMS.Globalization;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web
@@ -71,7 +71,7 @@ namespace MrCMS.Web
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture(culture: "en-US");
+                options.DefaultRequestCulture = new RequestCulture("en-US");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
                 options.RequestCultureProviders.Insert(0, new UserProfileRequestCultureProvider());
@@ -91,7 +91,7 @@ namespace MrCMS.Web
             {
                 var site = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
 
-                site =  site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
+                site = site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
                 var session = provider.GetRequiredService<ISession>();
                 if (site != null)
                 {
@@ -140,8 +140,14 @@ namespace MrCMS.Web
 
             services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IClearableInMemoryCache>(provider =>
+            {
+                var cacheOptions = new MemoryCacheOptions();
+                return new ClearableInMemoryCache(new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(cacheOptions)));
+            });
+            services.AddSingleton<IMemoryCache>(provider => provider.GetRequiredService<IClearableInMemoryCache>());
 
-            
+
 
             services.AddScoped(x =>
             {

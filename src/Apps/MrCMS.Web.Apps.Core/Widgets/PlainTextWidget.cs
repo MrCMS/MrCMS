@@ -4,8 +4,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
-    //[WidgetOutputCacheable]
-    // TODO: widget caching
+    [WidgetOutputCacheable]
     public class PlainTextWidget : Widget
     {
         public virtual string Text { get; set; }

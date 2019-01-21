@@ -53,7 +53,7 @@ namespace MrCMS.Website.CMS
         {
             var properties = query.GetType().GetProperties().Where(x => x.CanRead).ToList();
 
-            return properties.SelectMany<PropertyInfo, KeyValuePair<string, object>>(info => GetKeyValuePairs(info, query));
+            return properties.SelectMany(info => GetKeyValuePairs(info, query));
         }
 
         private static IEnumerable<KeyValuePair<string, object>> GetKeyValuePairs(PropertyInfo arg, object query)
