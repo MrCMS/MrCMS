@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Documents.Layout
 {
@@ -24,43 +24,51 @@ namespace MrCMS.Entities.Documents.Layout
 
         public virtual IList<Widget.Widget> GetWidgets(Webpage webpage = null, bool showHidden = false)
         {
-            var widgets = Widgets.Where(widget => widget.Webpage == null).ToList();
+            return GetVisibleWidgets(Id, webpage, Widgets.ToList(), showHidden);
+        }
+
+        public static List<Widget.Widget> GetVisibleWidgets(int areaId, Webpage webpage, IReadOnlyList<Widget.Widget> allWidgets, bool showHidden = false)
+        {
+            var widgets = allWidgets.Where(widget => widget.Webpage == null).ToList();
 
             if (webpage != null)
             {
                 var page = webpage;
 
-                widgets.AddRange(Widgets.Where(widget => widget.Webpage != null && widget.Webpage.Id == page.Id));
+                widgets.AddRange(allWidgets.Where(widget => widget.Webpage != null && widget.Webpage.Id == page.Id));
 
                 while ((page.Parent.Unproxy() as Webpage) != null)
                 {
                     page = page.Parent.Unproxy() as Webpage;
 
                     widgets.AddRange(
-                        Widgets.Where(widget => widget.Webpage != null && widget.Webpage.Id == page.Id && widget.IsRecursive));
+                        allWidgets.Where(widget => widget.Webpage != null && widget.Webpage.Id == page.Id && widget.IsRecursive));
                 }
 
                 var widgetsToRemove = new List<Widget.Widget>();
 
                 if (!showHidden)
+                {
                     widgetsToRemove.AddRange(widgets.Where(webpage.IsHidden));
+                }
 
                 foreach (var widget in widgetsToRemove)
+                {
                     widgets.Remove(widget);
+                }
 
                 if (webpage.PageWidgetSorts != null)
                 {
                     var pageWidgetSorts =
-                        webpage.PageWidgetSorts.Where(sort => sort.LayoutArea?.Id == Id).OrderBy(sort => sort.Order).ToList();
+                        webpage.PageWidgetSorts.Where(sort => sort.LayoutArea?.Id == areaId).OrderBy(sort => sort.Order).ToList();
 
                     if (pageWidgetSorts.Any())
                     {
-                        var list =
+                        widgets =
                             widgets.OrderByDescending(
-                                widget => pageWidgetSorts.Select(sort => sort.Widget.Id).Contains(widget.Id)).ThenBy(
+                                    widget => pageWidgetSorts.Select(sort => sort.Widget.Id).Contains(widget.Id)).ThenBy(
                                     widget => pageWidgetSorts.Select(sort => sort.Widget.Id).ToList().IndexOf(widget.Id))
-                                   .ToList();
-                        return list;
+                                .ToList();
                     }
                 }
             }

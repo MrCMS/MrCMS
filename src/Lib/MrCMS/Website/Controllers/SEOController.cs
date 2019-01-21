@@ -1,6 +1,7 @@
-using System.Security.Policy;
+using System;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Controllers
@@ -8,17 +9,20 @@ namespace MrCMS.Website.Controllers
     public class SEOController : MrCMSUIController
     {
         private readonly SEOSettings _seoSettings;
+        private readonly Site _site;
 
-        public SEOController(SEOSettings seoSettings)
+        public SEOController(SEOSettings seoSettings, Site site)
         {
             _seoSettings = seoSettings;
+            _site = site;
         }
 
         public ActionResult Robots()
         {
-            if (Request.Host.Host == /*CurrentRequestData.CurrentSite.StagingUrl*/ "staging") // TODO: fix staging check
-                return Content(_seoSettings.RobotsTextStaging, "text/plain", Encoding.UTF8);
-            return Content(_seoSettings.RobotsText, "text/plain", Encoding.UTF8);
+            return Content(
+                Request.Host.Host.Equals(_site.StagingUrl, StringComparison.InvariantCultureIgnoreCase)
+                    ? _seoSettings.RobotsTextStaging
+                    : _seoSettings.RobotsText, "text/plain", Encoding.UTF8);
         }
     }
 }
