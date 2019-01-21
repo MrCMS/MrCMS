@@ -6,7 +6,6 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Core.Widgets;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
@@ -118,9 +117,10 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
         {
             yield return new Navigation
             {
+                Name = "Navigation",
+                IncludeChildren = true,
                 LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation")
             };
-
 
             yield return new UserLinks
             {
@@ -133,13 +133,6 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Name = "Footer text",
                 Text = string.Format("<p>&copy; Mr CMS {0}</p>", DateTime.UtcNow.Year),
                 LayoutArea = layoutAreas.Single(x => x.AreaName == "Footer")
-            };
-            yield return new TextWidget
-            {
-                Name = "Mr CMS Logo",
-                Text =
-                    @"<a class=""navbar-brand"" href=""/""><img src=""/Apps/Core/img/mrcms-hat.gif"" style=""width: 40px; height: auto;"" />Mr CMS</a>",
-                LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Left")
             };
         }
     }
