@@ -82,21 +82,29 @@ namespace MrCMS.Helpers
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(assemblyName.Name))
+                var name = assemblyName.Name;
+                if (string.IsNullOrWhiteSpace(name))
                 {
                     continue;
                 }
 
-                if (_loadedAssemblies.ContainsKey(assemblyName.Name))
+                if (_loadedAssemblies.ContainsKey(name))
                 {
                     continue;
                 }
 
                 var assembly = Assembly.Load(assemblyName);
-                _loadedAssemblies[assemblyName.Name] = assembly;
-                var childReferences = assembly.GetReferencedAssemblies();
-                _referencedAssemblies[assemblyName.Name] = childReferences;
-                LoadAssemblies(childReferences);
+                _loadedAssemblies[name] = assembly;
+                if (assembly != null)
+                {
+                    var childReferences = assembly.GetReferencedAssemblies();
+                    _referencedAssemblies[name] = childReferences;
+                    LoadAssemblies(childReferences);
+                }
+                else
+                {
+                    _referencedAssemblies[name] = new AssemblyName[0];
+                }
             }
         }
 
