@@ -10,13 +10,13 @@ namespace MrCMS.Services
     public class GetWidgetCachingInfo : IGetWidgetCachingInfo
     {
         private readonly IGetCurrentPage _getCurrentPage;
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentUserGuid _getCurrentUserGuid;
         private readonly IRepository<Widget> _repository;
 
-        public GetWidgetCachingInfo(IGetCurrentPage getCurrentPage, IGetCurrentUser getCurrentUser, IRepository<Widget> repository)
+        public GetWidgetCachingInfo(IGetCurrentPage getCurrentPage, IGetCurrentUserGuid getCurrentUserGuid, IRepository<Widget> repository)
         {
             _getCurrentPage = getCurrentPage;
-            _getCurrentUser = getCurrentUser;
+            _getCurrentUserGuid = getCurrentUserGuid;
             _repository = repository;
         }
 
@@ -58,7 +58,7 @@ namespace MrCMS.Services
             }
             if (attribute.PerUser)
             {
-                cacheKey += ".User:" + (_getCurrentUser.Get()?.Guid ?? Guid.Empty); // TODO: user guid for anon
+                cacheKey += ".User:" + (_getCurrentUserGuid.Get());
             }
             return cacheKey;
         }
