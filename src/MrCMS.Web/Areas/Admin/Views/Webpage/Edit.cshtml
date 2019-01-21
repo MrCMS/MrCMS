@@ -13,7 +13,7 @@
     var tabs = TabsService.GetEditTabs(Html, Model);
 }
 
-<form asp-controller="Webpage" asp-action="edit" id="edit-webpage" data-are-you-sure="@Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post">
+<form asp-controller="Webpage" asp-action="edit" id="edit-document" data-are-you-sure="@Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post">
     <admin-header>
         <row>
             <admin-header-title title="@Model.Name" />
