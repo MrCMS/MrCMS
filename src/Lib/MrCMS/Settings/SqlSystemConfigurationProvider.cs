@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml.Linq;
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.Settings;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings.Events;
 using Newtonsoft.Json;
 using NHibernate;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Settings
 {
@@ -21,14 +16,10 @@ namespace MrCMS.Settings
 
         private readonly IEventContext _eventContext;
 
-        public SqlSystemConfigurationProvider(IStatelessSession session,IEventContext eventContext)
+        public SqlSystemConfigurationProvider(IStatelessSession session, IEventContext eventContext)
         {
             _session = session;
             _eventContext = eventContext;
-        }
-
-        public void ClearCache()
-        {
         }
 
         public TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new()
@@ -43,11 +34,15 @@ namespace MrCMS.Settings
                 {
                     // get properties we can read and write to
                     if (!prop.CanRead || !prop.CanWrite)
+                    {
                         continue;
+                    }
 
                     var value = GetSettingByKey(dbSettings, prop.Name, prop.PropertyType);
                     if (value == null)
+                    {
                         continue;
+                    }
 
 
                     //set property
@@ -64,7 +59,7 @@ namespace MrCMS.Settings
                 var typeName = typeof(TSettings).FullName.ToLower();
                 var settings =
                         _session.QueryOver<SystemSetting>()
-                            .Where(x => x.SettingType == typeName )
+                            .Where(x => x.SettingType == typeName)
                             .Cacheable()
                             .List();
                 return settings.GroupBy(setting => setting.PropertyName)
@@ -85,14 +80,18 @@ namespace MrCMS.Settings
             Type type, object defaultValue = null)
         {
             if (string.IsNullOrEmpty(propertyName))
+            {
                 return defaultValue;
+            }
 
             propertyName = Standardise(propertyName);
             if (existingSettings.ContainsKey(propertyName))
             {
                 var setting = existingSettings[propertyName];
                 if (setting != null)
+                {
                     return JsonConvert.DeserializeObject(setting.Value, type);
+                }
             }
 
             return defaultValue;
@@ -123,7 +122,9 @@ namespace MrCMS.Settings
                 {
                     // get properties we can read and write to
                     if (!prop.CanRead || !prop.CanWrite)
+                    {
                         continue;
+                    }
 
                     var typeName = typeof(TSettings).FullName;
                     dynamic value = prop.GetValue(settings, null);
@@ -183,7 +184,9 @@ namespace MrCMS.Settings
         protected virtual void InsertSetting(SystemSetting setting)
         {
             if (setting == null)
+            {
                 throw new ArgumentNullException(nameof(setting));
+            }
 
             _session.Transact(session => session.Insert(setting));
         }
@@ -196,7 +199,9 @@ namespace MrCMS.Settings
         protected virtual void UpdateSetting(SystemSetting setting)
         {
             if (setting == null)
+            {
                 throw new ArgumentNullException(nameof(setting));
+            }
 
             _session.Transact(session => session.Update(setting));
         }
@@ -209,7 +214,9 @@ namespace MrCMS.Settings
         protected virtual void DeleteSetting(SystemSetting setting)
         {
             if (setting == null)
+            {
                 throw new ArgumentNullException(nameof(setting));
+            }
 
             _session.Delete(setting);
         }
