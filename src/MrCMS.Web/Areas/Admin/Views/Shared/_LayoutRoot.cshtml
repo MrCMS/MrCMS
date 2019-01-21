@@ -27,13 +27,14 @@
 
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script> 
 
-@Html.RenderScriptBundle("~/admin/scripts/lib")
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
 <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
 <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
-
+@Html.RenderScriptBundle("~/admin/scripts/lib")
 @Html.RenderScriptBundle("~/admin/scripts/mrcms")
 @Html.RenderScriptBundle("~/admin/scripts/apps")
+<script type="text/javascript" src="/Areas/Admin/lib/jquery/ui/i18n/jquery.ui.datepicker-@(CultureInfo.CurrentCulture.Name).js"></script>
+
 
 @if (GetCurrentUser.Get()?.DisableNotifications == false)
 {
