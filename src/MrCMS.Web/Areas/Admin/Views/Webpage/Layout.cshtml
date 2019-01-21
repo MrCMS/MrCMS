@@ -13,6 +13,11 @@
 @inject IGetCurrentLayout GetCurrentLayout
 
 
+<div class="form-group">
+    @Html.LabelFor(model => model.PageTemplateId, Html.Resource("Page Template"))
+    @Html.DropDownListFor(model => model.PageTemplateId, ViewData["template-options"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
+</div>
+
 <div id="custom-layout">
     <label>@Html.Resource("Admin Webpage Layout Layout Areas", "Layout Areas")</label>
     <div class="panel-group" id="accordion-layout-areas">

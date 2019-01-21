@@ -3,7 +3,7 @@
     var timer = 0;
     var suggestUrl = function () {
         var pageName = $("#Name").val(),
-            documentType = $("#DocumentType:checked").val(),
+            documentType = $("[name=DocumentType]").val(),
             parentId = $("#ParentId").val(),
             template = $("#PageTemplate_Id").val(),
             useHierarchy = $("#mode").is(':checked');
@@ -27,7 +27,7 @@
         return {
             name: $('#Name').val(),
             mode: $('#mode').is(':checked'),
-            documentType: $("#DocumentType:checked").val(),
+            documentType: $("[name=DocumentType]").val(),
             template: $("#PageTemplate_Id").val()
         };
     };
@@ -79,7 +79,7 @@
             $(document).on('blur', '#Name', triggerKeyUp);
             $(document).on('keyup', '#Name', delayedUpdateUrl);
             $(document).on('change', '#mode', delayedUpdateUrl);
-            $(document).on('change', '#DocumentType', delayedUpdateUrl);
+            $(document).on('change', '[name=DocumentType]', delayedUpdateUrl);
             $(document).on('change', '#PageTemplate_Id', delayedUpdateUrl);
             $(document).on('change', ':radio[name=DocumentType]', updateAdditionalProperties);
             if ($(':radio[name=DocumentType]:checked').length) {
