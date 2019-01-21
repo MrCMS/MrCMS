@@ -31,8 +31,6 @@ namespace MrCMS.Website.Filters
                 controller.TempData[DoNotCacheAttribute.TempDataKey] = true;
                 controller.TempData.Keep();
             }
-            // TODO: do not cache
         }
-
     }
 }

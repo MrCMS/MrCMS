@@ -21,17 +21,10 @@ namespace MrCMS.Website.Filters
         }
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // TODO: recaptcha
             if ((filterContext.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo.GetCustomAttributes(typeof(GoogleRecaptchaAttribute), true).Any() != true)
             {
                 return;
             }
-
-            // TODO: database installation check
-            //if (!CurrentRequestData.DatabaseIsInstalled)
-            //{
-            //    return;
-            //}
 
             if (!_settings.Enabled)
             {
