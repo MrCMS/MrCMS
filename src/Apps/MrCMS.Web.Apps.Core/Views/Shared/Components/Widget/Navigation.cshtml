@@ -1,8 +1,5 @@
-﻿@using System
-@using System.Linq
-@using MrCMS.Entities.Documents.Web
+﻿@using System.Linq
 @using MrCMS.Services
-@using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Models.Navigation.NavigationList
 @inject IGetCurrentPage GetCurrentPage
 @inject IGetLiveUrl GetLiveUrl
@@ -10,31 +7,35 @@
     var currentPage = GetCurrentPage.GetPage();
     var activePages = currentPage?.ActivePages.Select(webpage => GetLiveUrl.GetUrlSegment(webpage, true)).ToList() ?? new List<string>();
 }
-    <ul class="nav navbar-nav">
-        @foreach (var item in Model)
+<ul class="navbar-nav mr-auto">
+    @foreach (var item in Model)
+    {
+        if (@item.Children != null && @item.Children.Any())
         {
-            if (@item.Children != null && @item.Children.Any())
-            {
-            <li class="dropdown @(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
-                <a href="@item.Url" class="dropdown-toggle" data-toggle="dropdown">@item.Text</a>
+            <li class="nav-item dropdown @(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
+                <a class="nav-link dropdown-toggle" href="#" id="dd-@(item.Text)" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @item.Text
+                </a>
                 @if (item.Children.Any())
                 {
-                    <ul class="dropdown-menu">
+                    <div class="dropdown-menu" aria-labelledby="dd-@(item.Text)">
                         @foreach (var record in item.Children)
                         {
-                            <li class="@(activePages.Contains(record.Url.ToString(), StringComparer.OrdinalIgnoreCase) ? "active" : "")">
-                               <a href="@record.Url">@record.Text</a>
-                            </li>
+                            <a class="dropdown-item @(activePages.Contains(record.Url.ToString(), StringComparer.OrdinalIgnoreCase) ? "active" : "")" href="@record.Url">
+                                @record.Text
+                            </a>
                         }
-                    </ul>
+                    </div>
                 }
-            </li> 
-            }
-            else
-            {
-            <li class="@(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
-               <a href="@item.Url">@item.Text</a>
-            </li>      
-            }
+            </li>
         }
-    </ul>
+        else
+        {
+            <li class="nav-item @(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
+                <a class="nav-link" href="@item.Url">
+                    @item.Text
+                </a>
+            </li>
+        }
+    }
+</ul>

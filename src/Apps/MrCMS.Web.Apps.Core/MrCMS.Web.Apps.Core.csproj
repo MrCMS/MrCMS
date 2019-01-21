@@ -47,6 +47,12 @@
     <None Remove="Views\Shared\Components\ContentBlock\TwoColumnBlock.cshtml" />
     <None Remove="Views\Shared\Components\ContentBlock\TwoColumnTextImageBlock.cshtml" />
     <None Remove="Views\Shared\Components\ContentBlock\VideoBlock.cshtml" />
+    <None Remove="wwwroot\lib\bootstrap\LICENSE" />
+    <None Remove="wwwroot\lib\bootstrap\package-lock.json" />
+    <None Remove="wwwroot\lib\bootstrap\package.json" />
+    <None Remove="wwwroot\lib\bootstrap\README.md" />
+    <None Remove="wwwroot\lib\jquery-3.3.1.min.js" />
+    <None Remove="wwwroot\lib\popper.min.js" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -61,6 +67,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\scripts\" />
   </ItemGroup>
 
 </Project>

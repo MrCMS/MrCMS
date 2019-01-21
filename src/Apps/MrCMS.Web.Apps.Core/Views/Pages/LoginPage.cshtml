@@ -2,7 +2,6 @@
 @using MrCMS.Models.Auth
 @using MrCMS.Services
 @using MrCMS.Services.Resources
-@using MrCMS.Web.Apps.Core.Models
 @using MrCMS.Web.Apps.Core.Pages
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Pages.LoginPage
@@ -10,7 +9,6 @@
 @{
     var loginModel = ViewData["login-model"] as LoginModel;
 }
-
 @Html.Editable(page => page.BodyContent, true)
 
 <div class="row">
@@ -33,4 +31,4 @@
     </div>
 </div>
 
-@{ Html.IncludeCss("~/Apps/Core/Content/SocialButtons/zocial.css"); }
+@{ Html.IncludeCss("~/Apps/Core/lib/SocialButtons/zocial.css"); }
