@@ -7,6 +7,7 @@ using Microsoft.Extensions.FileProviders;
 using MrCMS.Services.Resources;
 using MrCMS.Website;
 using MrCMS.Website.Filters;
+using MrCMS.Website.Profiling;
 
 namespace MrCMS.Apps
 {
@@ -42,7 +43,9 @@ namespace MrCMS.Apps
                 {
                     // add custom binder to beginning of collection
                     options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
-                    options.Filters.Add<WebpageCachingFilter>();
+                    options.Filters.Add<ProfilingAsyncActionFilter<WebpageCachingFilter>>();
+                    options.Filters.Add<ActionProfilingFilter>();
+                    options.Filters.Add<ResultProfilingFilter>();
                     appContext.SetupMvcOptions(options);
 
                 }).AddRazorOptions(options =>

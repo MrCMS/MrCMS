@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Website.Profiling;
 
 namespace MrCMS.Web.Apps.Admin
 {
@@ -46,8 +47,8 @@ namespace MrCMS.Web.Apps.Admin
         public override void SetupMvcOptions(MvcOptions options)
         {
             options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
-            options.Filters.AddService<AdminAuthFilter>();
-            options.Filters.AddService<BreadcrumbActionFilter>();
+            options.Filters.AddService<ProfilingAuthorizationFilter<AdminAuthFilter>>();
+            options.Filters.AddService<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
         }
 
         public override IDictionary<Type, string> SignalRHubs { get; } = new Dictionary<Type, string>

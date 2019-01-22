@@ -29,9 +29,4 @@
   </ItemGroup>
 
 
-  <ItemGroup>
-    <Folder Include="Website\Profiling\" />
-  </ItemGroup>
-
-
 </Project>
