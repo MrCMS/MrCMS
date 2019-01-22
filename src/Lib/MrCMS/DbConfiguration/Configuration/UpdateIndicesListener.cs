@@ -1,20 +1,24 @@
-﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.EntityFrameworkCore.Internal;
 using MrCMS.Entities;
 using MrCMS.Events;
+using MrCMS.Indexing.Management;
 using MrCMS.Services;
 using MrCMS.Tasks;
+using MrCMS.Website;
+using System;
+using System.Linq;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
     public class UpdateIndicesListener : IOnAdded<SiteEntity>, IOnUpdated<SiteEntity>, IOnDeleted<SiteEntity>
     {
         private readonly IIndexService _indexService;
+        private readonly IEndRequestTaskManager _endRequestTaskManager;
 
-        public UpdateIndicesListener(IIndexService indexService)
+        public UpdateIndicesListener(IIndexService indexService, IEndRequestTaskManager endRequestTaskManager)
         {
             _indexService = indexService;
+            _endRequestTaskManager = endRequestTaskManager;
         }
         public void QueueTask(Type type, SiteEntity siteEntity, LuceneOperation operation)
         {
@@ -28,9 +32,10 @@ namespace MrCMS.DbConfiguration.Configuration
                     SiteId = siteEntity.Site.Id
                 };
 
-                // TODO: end request
-                //if (!CurrentRequestData.OnEndRequest.OfType<AddLuceneTaskInfo>().Any(task => info.Equals(task.Data)))
-                //    CurrentRequestData.OnEndRequest.Add(new AddLuceneTaskInfo(info));
+                if (!_endRequestTaskManager.GetTasks().OfType<AddLuceneTaskInfo>().Any(task => info.Equals(task.Data)))
+                {
+                    _endRequestTaskManager.AddTask(new AddLuceneTaskInfo(info));
+                }
             }
         }
 
@@ -42,25 +47,43 @@ namespace MrCMS.DbConfiguration.Configuration
         public void Execute(OnAddedArgs<SiteEntity> args)
         {
             var siteEntity = args.Item;
-            if (siteEntity == null) return;
+            if (siteEntity == null)
+            {
+                return;
+            }
+
             if (ShouldBeUpdated(siteEntity))
+            {
                 QueueTask(typeof(InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
+            }
         }
 
         public void Execute(OnUpdatedArgs<SiteEntity> args)
         {
             var siteEntity = args.Item;
-            if (siteEntity == null) return;
+            if (siteEntity == null)
+            {
+                return;
+            }
+
             if (ShouldBeUpdated(siteEntity))
+            {
                 QueueTask(typeof(UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
+            }
         }
 
         public void Execute(OnDeletedArgs<SiteEntity> args)
         {
             var siteEntity = args.Item;
-            if (siteEntity == null) return;
+            if (siteEntity == null)
+            {
+                return;
+            }
+
             if (ShouldBeUpdated(siteEntity))
+            {
                 QueueTask(typeof(DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
+            }
         }
     }
 }

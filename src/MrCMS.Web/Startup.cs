@@ -220,7 +220,6 @@ namespace MrCMS.Web
                 return;
             }
 
-
             app.UseRequestLocalization();
 
             app.UseStaticFiles(new StaticFileOptions

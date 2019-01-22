@@ -1,4 +1,3 @@
-using System;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
@@ -9,6 +8,10 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Models;
+using MrCMS.Website;
+using StackExchange.Profiling;
+using System;
+using System.Linq;
 
 namespace MrCMS.Search
 {
@@ -16,6 +19,7 @@ namespace MrCMS.Search
     {
         private const string FolderName = "UniversalSearch";
         private readonly IGetLuceneDirectory _getLuceneDirectory;
+        private readonly IEndRequestTaskManager _endRequestTaskManager;
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
         private readonly IGetLuceneIndexWriter _getLuceneIndexWriter;
         private readonly Site _site;
@@ -24,20 +28,24 @@ namespace MrCMS.Search
 
         public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
             IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            IGetLuceneDirectory getLuceneDirectory)
+            IGetLuceneDirectory getLuceneDirectory, IEndRequestTaskManager endRequestTaskManager)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
             _site = site;
             _getLuceneIndexWriter = getLuceneIndexWriter;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
             _getLuceneDirectory = getLuceneDirectory;
+            _endRequestTaskManager = endRequestTaskManager;
         }
 
         private bool IndexExists => DirectoryReader.IndexExists(GetDirectory(_site));
 
         public void Insert(SystemEntity entity)
         {
-            if (!_universalSearchItemGenerator.CanGenerate(entity)) return;
+            if (!_universalSearchItemGenerator.CanGenerate(entity))
+            {
+                return;
+            }
 
             var data = new UniversalSearchIndexData
             {
@@ -45,38 +53,48 @@ namespace MrCMS.Search
                 UniversalSearchItem = _universalSearchItemGenerator.GenerateItem(entity)
             };
 
-            //if (!AnyExistInEndRequest(data))
-            //    CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
-            // TODO: end request
+            if (!AnyExistInEndRequest(data))
+            {
+                _endRequestTaskManager.AddTask(new AddUniversalSearchTaskInfo(data));
+            }
         }
 
         public void Update(SystemEntity entity)
         {
-            if (!_universalSearchItemGenerator.CanGenerate(entity)) return;
+            if (!_universalSearchItemGenerator.CanGenerate(entity))
+            {
+                return;
+            }
+
             var data = new UniversalSearchIndexData
             {
                 Action = UniversalSearchIndexAction.Update,
                 UniversalSearchItem = _universalSearchItemGenerator.GenerateItem(entity)
             };
 
-            //if (!AnyExistInEndRequest(data))
-            //    CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
-            // TODO: end request
+            if (!AnyExistInEndRequest(data))
+            {
+                _endRequestTaskManager.AddTask(new AddUniversalSearchTaskInfo(data));
+            }
         }
 
         public void Delete(SystemEntity entity)
         {
-            if (!_universalSearchItemGenerator.CanGenerate(entity)) return;
-
+            if (!_universalSearchItemGenerator.CanGenerate(entity))
+            {
+                return;
+            }
+            
             var data = new UniversalSearchIndexData
             {
                 Action = UniversalSearchIndexAction.Delete,
                 UniversalSearchItem = _universalSearchItemGenerator.GenerateItem(entity)
             };
 
-            //if (!AnyExistInEndRequest(data))
-            //    CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
-            // TODO: end request
+            if (!AnyExistInEndRequest(data))
+            {
+                _endRequestTaskManager.AddTask(new AddUniversalSearchTaskInfo(data));
+            }
         }
 
         public void ReindexAll()
@@ -84,9 +102,12 @@ namespace MrCMS.Search
             InitializeIndex();
             Write(writer =>
             {
-                //using (MiniProfiler.Current.Step("Reindexing"))
+                using (MiniProfiler.Current.Step("Reindexing"))
                 {
-                    foreach (var document in _universalSearchItemGenerator.GetAllItems()) writer.AddDocument(document);
+                    foreach (var document in _universalSearchItemGenerator.GetAllItems())
+                    {
+                        writer.AddDocument(document);
+                    }
                 }
             });
         }
@@ -94,7 +115,6 @@ namespace MrCMS.Search
         public void Optimise()
         {
             // optimise no longer exists - left for compatability
-            //Write(writer => writer.Optimize());
         }
 
         public IndexSearcher GetSearcher()
@@ -107,7 +127,9 @@ namespace MrCMS.Search
         public void EnsureIndexExists()
         {
             if (!IndexExists)
+            {
                 ReindexAll();
+            }
         }
 
         public MrCMSIndex GetUniversalIndexInfo()
@@ -124,7 +146,10 @@ namespace MrCMS.Search
         public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {
             if (recreateIndex)
+            {
                 RecreateIndex();
+            }
+
             using (var indexWriter = _getLuceneIndexWriter.Get(FolderName, GetAnalyser()))
             {
                 writeFunc(indexWriter);
@@ -139,19 +164,19 @@ namespace MrCMS.Search
             _getLuceneIndexWriter.RecreateIndex(FolderName, GetAnalyser());
         }
 
-        private static bool AnyExistInEndRequest(UniversalSearchIndexData data)
+        private bool AnyExistInEndRequest(UniversalSearchIndexData data)
         {
-            // TODO: end request
-            return false;
-            //return
-            //    CurrentRequestData.OnEndRequest.OfType<AddUniversalSearchTaskInfo>()
-            //        .Any(task => UniversalSearchIndexData.Comparer.Equals(data, task.Data));
+            return
+                _endRequestTaskManager.GetTasks().OfType<AddUniversalSearchTaskInfo>()
+                    .Any(task => UniversalSearchIndexData.Comparer.Equals(data, task.Data));
         }
 
         private int? GetNumberOfDocs()
         {
             if (!IndexExists)
+            {
                 return null;
+            }
 
             using (IndexReader indexReader = DirectoryReader.Open(GetDirectory(_site)))
             {

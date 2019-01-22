@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Services;
 
 namespace MrCMS.Website.Filters
 {
@@ -7,9 +9,11 @@ namespace MrCMS.Website.Filters
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             // only do this with local file system due to unpredictability of remote file storage
-            //if (filterContext.HttpContext.Get<IFileSystem>() is FileSystem)
-            //    CurrentRequestData.OnEndRequest.Add(new ExecuteLuceneTasks());
-            // TODO: end request
+            var serviceProvider = filterContext.HttpContext.RequestServices;
+            if (serviceProvider.GetRequiredService<IFileSystem>() is FileSystem)
+            {
+                serviceProvider.GetRequiredService<IEndRequestTaskManager>().AddTask(new ExecuteLuceneTasks());
+            }
         }
     }
 }
