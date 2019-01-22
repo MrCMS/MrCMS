@@ -3,6 +3,7 @@ using MrCMS.Entities;
 using MrCMS.Settings;
 using NHibernate.Proxy;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -17,8 +18,8 @@ namespace MrCMS.Helpers
         private static HashSet<Type> _allTypes;
         static HashSet<Assembly> _mrCMSAssemblies;
         private static bool _initialized = false;
-        private static readonly Dictionary<string, Assembly> _loadedAssemblies = new Dictionary<string, Assembly>();
-        private static readonly Dictionary<string, AssemblyName[]> _referencedAssemblies = new Dictionary<string, AssemblyName[]>();
+        private static readonly ConcurrentDictionary<string, Assembly> _loadedAssemblies = new ConcurrentDictionary<string, Assembly>();
+        private static readonly ConcurrentDictionary<string, AssemblyName[]> _referencedAssemblies = new ConcurrentDictionary<string, AssemblyName[]>();
 
 
         public static void Initialize(Assembly assembly)
@@ -94,11 +95,11 @@ namespace MrCMS.Helpers
                 }
 
                 var assembly = Assembly.Load(assemblyName);
-                _loadedAssemblies[name] = assembly;
+                _loadedAssemblies.AddOrUpdate(name, assembly, (s, ass) => assembly);
                 if (assembly != null)
                 {
                     var childReferences = assembly.GetReferencedAssemblies();
-                    _referencedAssemblies[name] = childReferences;
+                    _referencedAssemblies.AddOrUpdate(name, childReferences, (s, r) => childReferences);
                     LoadAssemblies(childReferences);
                 }
                 else
