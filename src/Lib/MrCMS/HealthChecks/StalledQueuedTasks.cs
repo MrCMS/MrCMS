@@ -8,20 +8,20 @@ namespace MrCMS.HealthChecks
 {
     public class StalledQueuedTasks : HealthCheck
     {
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
         private readonly ISession _session;
 
-        public StalledQueuedTasks(ISession session, IGetNowForSite getNowForSite)
+        public StalledQueuedTasks(ISession session, IGetDateTimeNow getDateTimeNow)
         {
             _session = session;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public override string DisplayName => "Stalled Queued Tasks";
 
         public override HealthCheckResult PerformCheck()
         {
-            var checkDate = _getNowForSite.Now.AddMinutes(-30);
+            var checkDate = _getDateTimeNow.LocalNow.AddMinutes(-30);
             var any = _session.QueryOver<QueuedTask>()
                 .Where(
                     task => task.Status == TaskExecutionStatus.Pending &&

@@ -18,12 +18,12 @@ namespace MrCMS.Tests.Services
     public class UserLookupTests : InMemoryDatabaseTest
     {
         private readonly UserLookup _userService;
-        private IGetNowForSite _getNowForSite;
+        private IGetDateTimeNow _getDateTimeNow;
 
         public UserLookupTests()
         {
-            _getNowForSite = A.Fake<IGetNowForSite>();
-            _userService = new UserLookup(Session, new List<IExternalUserSource>(), _getNowForSite);
+            _getDateTimeNow = A.Fake<IGetDateTimeNow>();
+            _userService = new UserLookup(Session, new List<IExternalUserSource>(), _getDateTimeNow);
         }
         [Fact]
         public void UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
@@ -52,8 +52,8 @@ namespace MrCMS.Tests.Services
         public void UserService_GetUserByResetGuid_ValidGuidButExpiryPassedReturnsNull()
         {
             var resetPasswordGuid = Guid.NewGuid();
-            var dateTime = DateTime.Now;
-            A.CallTo(() => _getNowForSite.Now).Returns(dateTime);
+            var dateTime = DateTime.UtcNow;
+            A.CallTo(() => _getDateTimeNow.UtcNow).Returns(dateTime);
             var user = new User
             {
                 FirstName = "Test",
@@ -71,8 +71,8 @@ namespace MrCMS.Tests.Services
         public void UserService_GetUserByResetGuid_ValidGuidAndExpiryInTheFutureReturnsUser()
         {
             var resetPasswordGuid = Guid.NewGuid();
-            var dateTime = DateTime.Now;
-            A.CallTo(() => _getNowForSite.Now).Returns(dateTime);
+            var dateTime = DateTime.UtcNow;
+            A.CallTo(() => _getDateTimeNow.UtcNow).Returns(dateTime);
             var user = new User
             {
                 FirstName = "Test",

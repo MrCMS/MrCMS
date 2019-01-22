@@ -14,13 +14,13 @@ namespace MrCMS.Tasks
     {
         private readonly SiteSettings _siteSettings;
         private readonly IStatelessSession _statelessSession;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public DeleteExpiredLogsTask(SiteSettings siteSettings, IStatelessSession statelessSession, IGetNowForSite getNowForSite)
+        public DeleteExpiredLogsTask(SiteSettings siteSettings, IStatelessSession statelessSession, IGetDateTimeNow getDateTimeNow)
         {
             _siteSettings = siteSettings;
             _statelessSession = statelessSession;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public override int Priority { get { return 0; } }
@@ -46,7 +46,7 @@ namespace MrCMS.Tasks
 
         private IList<Log> GetLogs()
         {
-            var now = _getNowForSite.Now;
+            var now = _getDateTimeNow.LocalNow;
             return
                 _statelessSession.QueryOver<Log>()
                     .Where(data => data.CreatedOn <= now.AddDays(-_siteSettings.DaysToKeepLogs))

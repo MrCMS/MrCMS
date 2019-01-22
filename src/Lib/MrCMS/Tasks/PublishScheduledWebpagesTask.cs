@@ -12,12 +12,12 @@ namespace MrCMS.Tasks
     public class PublishScheduledWebpagesTask : SchedulableTask
     {
         private readonly ISession _session;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public PublishScheduledWebpagesTask(ISession session, IGetNowForSite getNowForSite)
+        public PublishScheduledWebpagesTask(ISession session, IGetDateTimeNow getDateTimeNow)
         {
             _session = session;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public override int Priority
@@ -29,7 +29,7 @@ namespace MrCMS.Tasks
         {
             using (new SiteFilterDisabler(_session))
             {
-                var now = _getNowForSite.Now;
+                var now = _getDateTimeNow.LocalNow;
                 var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
                 if (!due.Any())
                     return;

@@ -13,7 +13,7 @@ namespace MrCMS.Tasks
 {
     public class ScheduledTaskRunner : IScheduledTaskRunner
     {
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
         private readonly ILogger<ScheduledTaskRunner> _logger;
 
         private readonly IServiceProvider _serviceProvider;
@@ -27,14 +27,14 @@ namespace MrCMS.Tasks
         public ScheduledTaskRunner(SiteSettings siteSettings,
             IServiceProvider serviceProvider, ITaskSettingManager taskSettingManager,
             ITriggerUrls triggerUrls,
-            ILogger<ScheduledTaskRunner> logger, IGetNowForSite getNowForSite, IUrlHelper urlHelper)
+            ILogger<ScheduledTaskRunner> logger, IGetDateTimeNow getDateTimeNow, IUrlHelper urlHelper)
         {
             _siteSettings = siteSettings;
             _serviceProvider = serviceProvider;
             _taskSettingManager = taskSettingManager;
             _triggerUrls = triggerUrls;
             _logger = logger;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
             _urlHelper = urlHelper;
         }
 
@@ -80,7 +80,7 @@ namespace MrCMS.Tasks
 
         private List<TaskInfo> GetPendingScheduledTasks()
         {
-            var startTime = _getNowForSite.Now;
+            var startTime = _getDateTimeNow.LocalNow;
             var scheduledTasks =
                 _taskSettingManager.GetInfo()
                     .Where(task =>

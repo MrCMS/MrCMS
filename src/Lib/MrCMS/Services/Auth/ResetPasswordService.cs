@@ -13,13 +13,13 @@ namespace MrCMS.Services.Auth
         private readonly IUserLookup _userLookup;
         private readonly IEventContext _eventContext;
         private readonly ILogger<ResetPasswordService> _logger;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IUserManagementService _userManagementService;
 
         public ResetPasswordService(IUserManagementService userManagementService, IPasswordManagementService passwordManagementService,
             IUserLookup userLookup, IEventContext eventContext, ILogger<ResetPasswordService> logger,
-            IGetNowForSite getNowForSite)
+            IGetDateTimeNow getDateTimeNow)
         {
             _userManagementService = userManagementService;
             _passwordManagementService = passwordManagementService;
@@ -27,7 +27,7 @@ namespace MrCMS.Services.Auth
             _eventContext = eventContext;
             _logger = logger;
             // TODO: check if this is right for here, as users are system entities
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public void SetResetPassword(User user)
@@ -47,7 +47,7 @@ namespace MrCMS.Services.Auth
 
                 User user = _userLookup.GetUserByEmail(model.Email);
 
-                if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > _getNowForSite.Now &&
+                if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > _getDateTimeNow.LocalNow &&
                     _passwordManagementService.ValidatePassword(model.Password, model.ConfirmPassword))
                 {
                     _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);

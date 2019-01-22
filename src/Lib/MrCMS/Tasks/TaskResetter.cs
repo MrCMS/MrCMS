@@ -13,20 +13,20 @@ namespace MrCMS.Tasks
     {
         private readonly ISession _session;
         private readonly ITaskSettingManager _taskSettingManager;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public TaskResetter(ISession session, ITaskSettingManager taskSettingManager, IGetNowForSite getNowForSite)
+        public TaskResetter(ISession session, ITaskSettingManager taskSettingManager, IGetDateTimeNow getDateTimeNow)
         {
             _session = session;
             _taskSettingManager = taskSettingManager;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public void ResetHungTasks()
         {
             _session.Transact(session =>
             {
-                var now = _getNowForSite.Now;
+                var now = _getDateTimeNow.LocalNow;
                 using (new SiteFilterDisabler(session))
                     ResetQueuedTasks(session, now);
             });
@@ -35,7 +35,7 @@ namespace MrCMS.Tasks
 
         private void ResetScheduledTasks()
         {
-            var now = _getNowForSite.Now;
+            var now = _getDateTimeNow.LocalNow;
             var hungScheduledTasks = _taskSettingManager.GetInfo()
                 .Where(
                     task => task.Enabled &&

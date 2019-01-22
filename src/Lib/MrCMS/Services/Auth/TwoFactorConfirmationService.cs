@@ -10,14 +10,14 @@ namespace MrCMS.Services.Auth
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserLookup _userLookup;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public TwoFactorConfirmationService(IHttpContextAccessor contextAccessor, IUserLookup userLookup,IGetNowForSite getNowForSite)
+        public TwoFactorConfirmationService(IHttpContextAccessor contextAccessor, IUserLookup userLookup,IGetDateTimeNow getDateTimeNow)
         {
             _contextAccessor = contextAccessor;
             _userLookup = userLookup;
             // TODO: check if this is right for here, as users are system entities
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public TwoFactorStatus GetStatus()
@@ -30,7 +30,7 @@ namespace MrCMS.Services.Auth
             if (user == null)
                 return TwoFactorStatus.None;
 
-            return user.TwoFactorCodeExpiry != null && user.TwoFactorCodeExpiry > _getNowForSite.Now
+            return user.TwoFactorCodeExpiry != null && user.TwoFactorCodeExpiry > _getDateTimeNow.LocalNow
                 ? TwoFactorStatus.Valid
                 : TwoFactorStatus.Expired;
         }
@@ -46,7 +46,7 @@ namespace MrCMS.Services.Auth
             if (user == null)
                 return result;
 
-            if (user.TwoFactorCodeExpiry == null || user.TwoFactorCodeExpiry < _getNowForSite.Now)
+            if (user.TwoFactorCodeExpiry == null || user.TwoFactorCodeExpiry < _getDateTimeNow.LocalNow)
                 return result;
 
             var code = model.Code?.Trim();

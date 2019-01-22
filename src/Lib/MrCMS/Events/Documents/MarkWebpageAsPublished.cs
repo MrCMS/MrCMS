@@ -6,16 +6,16 @@ namespace MrCMS.Events.Documents
 {
     public class MarkWebpageAsPublished : IOnUpdating<Webpage>, IOnAdding<Webpage>
     {
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public MarkWebpageAsPublished(IGetNowForSite getNowForSite)
+        public MarkWebpageAsPublished(IGetDateTimeNow getDateTimeNow)
         {
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public void Execute(OnUpdatingArgs<Webpage> args)
         {
-            var now = _getNowForSite.Now;
+            var now = _getDateTimeNow.LocalNow;
             var webpage = args.Item;
             if (webpage.PublishOn.HasValue && webpage.PublishOn <= now && webpage.Published == false)
             {
@@ -25,7 +25,7 @@ namespace MrCMS.Events.Documents
 
         public void Execute(OnAddingArgs<Webpage> args)
         {
-            var now = _getNowForSite.Now;
+            var now = _getDateTimeNow.LocalNow;
             var webpage = args.Item;
             if (webpage.PublishOn.HasValue && webpage.PublishOn <= now && webpage.Published == false)
             {

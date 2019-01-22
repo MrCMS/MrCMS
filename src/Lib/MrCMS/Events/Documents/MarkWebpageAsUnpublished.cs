@@ -6,16 +6,16 @@ namespace MrCMS.Events.Documents
 {
     public class MarkWebpageAsUnpublished : IOnUpdating<Webpage>
     {
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public MarkWebpageAsUnpublished(IGetNowForSite getNowForSite)
+        public MarkWebpageAsUnpublished(IGetDateTimeNow getDateTimeNow)
         {
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public void Execute(OnUpdatingArgs<Webpage> args)
         {
-            var now = _getNowForSite.Now;
+            var now = _getDateTimeNow.LocalNow;
             var webpage = args.Item;
             if (webpage.Published && (webpage.PublishOn == null || webpage.PublishOn.Value > now))
             {

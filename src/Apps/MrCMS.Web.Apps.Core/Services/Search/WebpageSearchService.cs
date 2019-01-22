@@ -23,15 +23,15 @@ namespace MrCMS.Web.Apps.Core.Services.Search
     {
         private readonly ISearcher<Webpage, WebpageSearchIndexDefinition> _documentSearcher;
         private readonly IGetBreadcrumbs _getBreadcrumbs;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
         public WebpageSearchService(ISearcher<Webpage, WebpageSearchIndexDefinition> documentSearcher,
             IGetBreadcrumbs getBreadcrumbs, 
-            IGetNowForSite getNowForSite)
+            IGetDateTimeNow getDateTimeNow)
         {
             _documentSearcher = documentSearcher;
             _getBreadcrumbs = getBreadcrumbs;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
 
         public IPagedList<Webpage> Search(WebpageSearchQuery model)
@@ -50,7 +50,7 @@ namespace MrCMS.Web.Apps.Core.Services.Search
                 {
                     new TermRangeQuery(
                         _documentSearcher.Definition.GetFieldDefinition<PublishedOnFieldDefinition>().Name, null,
-                        new BytesRef( DateTools.DateToString(_getNowForSite.Now, DateTools.Resolution.SECOND)), false, true),
+                        new BytesRef( DateTools.DateToString(_getDateTimeNow.LocalNow, DateTools.Resolution.SECOND)), false, true),
                     Occur.MUST
                 }
             };

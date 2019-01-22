@@ -11,17 +11,17 @@ namespace MrCMS.Web.Apps.Admin.Services.Events
     public class SendTransientNotificationToHub : IOnTransientNotificationPublished
     {
         private readonly IHubContext<NotificationHub> _notificationHubContext;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public SendTransientNotificationToHub(IHubContext<NotificationHub> notificationHubContext, IGetNowForSite getNowForSite)
+        public SendTransientNotificationToHub(IHubContext<NotificationHub> notificationHubContext, IGetDateTimeNow getDateTimeNow)
         {
             _notificationHubContext = notificationHubContext;
-            _getNowForSite = getNowForSite;
+            _getDateTimeNow = getDateTimeNow;
         }
         public void Execute(OnTransientNotificationPublishedEventArgs args)
         {
             var notification = args.Notification;
-            var model = new NotificationModel { Message = notification.Message, DateValue = _getNowForSite.Now };
+            var model = new NotificationModel { Message = notification.Message, DateValue = _getDateTimeNow.LocalNow };
             switch (notification.NotificationType)
             {
                 case NotificationType.AdminOnly:

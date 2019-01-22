@@ -19,7 +19,7 @@ namespace MrCMS.Tests.Services.Auth
         private readonly ResetPasswordService _resetPasswordService;
         private readonly IUserLookup _userLookup;
         private readonly ILogger<ResetPasswordService> _logger;
-        private readonly IGetNowForSite _getNowForSite;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
         public ResetPasswordServiceTests()
         {
@@ -27,14 +27,14 @@ namespace MrCMS.Tests.Services.Auth
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _userLookup = A.Fake<IUserLookup>();
             _logger = A.Fake<ILogger<ResetPasswordService>>();
-            _getNowForSite = A.Fake<IGetNowForSite>();
+            _getDateTimeNow = A.Fake<IGetDateTimeNow>();
             _resetPasswordService = new ResetPasswordService(
                 _userManagementService,
                 _passwordManagementService,
                 _userLookup,
                 EventContext,
                 _logger,
-                _getNowForSite);
+                _getDateTimeNow);
         }
 
         [Fact]
