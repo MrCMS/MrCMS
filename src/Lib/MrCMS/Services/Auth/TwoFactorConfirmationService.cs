@@ -16,7 +16,6 @@ namespace MrCMS.Services.Auth
         {
             _contextAccessor = contextAccessor;
             _userLookup = userLookup;
-            // TODO: check if this is right for here, as users are system entities
             _getDateTimeNow = getDateTimeNow;
         }
 
@@ -30,7 +29,7 @@ namespace MrCMS.Services.Auth
             if (user == null)
                 return TwoFactorStatus.None;
 
-            return user.TwoFactorCodeExpiry != null && user.TwoFactorCodeExpiry > _getDateTimeNow.LocalNow
+            return user.TwoFactorCodeExpiry != null && user.TwoFactorCodeExpiry > _getDateTimeNow.UtcNow
                 ? TwoFactorStatus.Valid
                 : TwoFactorStatus.Expired;
         }

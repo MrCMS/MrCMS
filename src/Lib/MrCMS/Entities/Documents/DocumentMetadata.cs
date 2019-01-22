@@ -43,8 +43,6 @@ namespace MrCMS.Entities.Documents
 
         public bool HasBodyContent { get; set; }
 
-        public string App { get; set; }
-
         public IEnumerable<Type> ValidChildrenTypes
         {
             get

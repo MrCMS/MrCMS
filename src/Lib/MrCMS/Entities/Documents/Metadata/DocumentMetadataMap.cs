@@ -107,17 +107,6 @@ namespace MrCMS.Entities.Documents.Metadata
         public virtual Type EditModel => null;
 
         /// <summary>
-        /// Specifies the app that the document is a part of
-        /// </summary>
-        public virtual string App {
-            get
-            {
-                // TODO: apps
-                return string.Empty;
-                //return MrCMS.Apps.MrCMSApp.AppWebpages.ContainsKey(typeof(T)) ? MrCMS.Apps.MrCMSApp.AppWebpages[typeof(T)] : null;
-            } }
-
-        /// <summary>
         /// Specifies whether the children of the page are shown in the navigation tree
         /// </summary>
         public virtual bool ShowChildrenInAdminNav { get { return true; } }
@@ -162,7 +151,6 @@ namespace MrCMS.Entities.Documents.Metadata
                                DefaultLayoutName = DefaultLayoutName,
                                EditPartialView = EditPartialView,
                                ShowChildrenInAdminNav = ShowChildrenInAdminNav,
-                               App = App,
                                ChildrenMaintainHierarchy = ChildrenMaintainHierarchy,
                                RevealInNavigation = RevealInNavigation,
                                HasBodyContent = HasBodyContent

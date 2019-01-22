@@ -41,7 +41,6 @@ namespace MrCMS.Apps
         public IDictionary<Type, string> SignalRHubs =>
             Apps.SelectMany(app => app.SignalRHubs).ToDictionary(x => x.Key, x => x.Value); 
 
-        // TODO: get middleware per app
         public IEnumerable<RegistrationInfo> Registrations => Apps.SelectMany(app => app.Registrations);
 
         public string AppSummary

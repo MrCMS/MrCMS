@@ -26,7 +26,6 @@ namespace MrCMS.Services.Auth
             _userLookup = userLookup;
             _eventContext = eventContext;
             _logger = logger;
-            // TODO: check if this is right for here, as users are system entities
             _getDateTimeNow = getDateTimeNow;
         }
 
@@ -47,7 +46,7 @@ namespace MrCMS.Services.Auth
 
                 User user = _userLookup.GetUserByEmail(model.Email);
 
-                if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > _getDateTimeNow.LocalNow &&
+                if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > _getDateTimeNow.UtcNow &&
                     _passwordManagementService.ValidatePassword(model.Password, model.ConfirmPassword))
                 {
                     _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);

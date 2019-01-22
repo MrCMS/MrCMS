@@ -24,20 +24,6 @@ namespace MrCMS.Helpers
             }
         }
 
-        public static List<SelectListItem> AllowedWidgetTypeDropdownItems
-        {
-            get
-            {
-                return WidgetTypes.Where(
-                        type =>
-                            //CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add, type.FullName)
-                            true
-                            ) // TODO: refactor to allow user to be looked up
-                    .OrderBy(x => x.Name).BuildSelectItemList(type => type.Name.BreakUpString(), type => type.FullName,
-                        emptyItemText: null);
-            }
-        }
-
         public static Type GetTypeByName(string typeName)
         {
             return WidgetTypes.FirstOrDefault(x => x.FullName == typeName);
