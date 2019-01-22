@@ -1,10 +1,8 @@
 using Lucene.Net.Search;
-//using MrCMS.Services.Caching;
 
 namespace MrCMS.Indexing.Management
 {
-    // TODO: clear cache
-    public interface IGetLuceneIndexSearcher //: IClearCache
+    public interface IGetLuceneIndexSearcher 
     {
         IndexSearcher Get(IndexDefinition definition);
         IndexSearcher Get(string folderName);

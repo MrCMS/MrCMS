@@ -1,11 +1,9 @@
 using Lucene.Net.Analysis;
 using Lucene.Net.Index;
-//using MrCMS.Services.Caching;
 
 namespace MrCMS.Indexing.Management
 {
-    // TODO: clear cache
-    public interface IGetLuceneIndexWriter //: IClearCache
+    public interface IGetLuceneIndexWriter 
     {
         IndexWriter Get(IndexDefinition definition);
         IndexWriter Get(string definitionName, Analyzer analyzer);

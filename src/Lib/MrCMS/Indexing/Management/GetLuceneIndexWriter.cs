@@ -35,12 +35,6 @@ namespace MrCMS.Indexing.Management
 
         public void RecreateIndex(string definitionName, Analyzer analyzer)
         {
-            //if (Writers.ContainsKey(_site.Id) && Writers[_site.Id].ContainsKey(definitionName))
-            //{
-            //    var existing = Writers[_site.Id][definitionName];
-            //    if (existing != null) existing.Dispose();
-            //    Writers[_site.Id].Remove(definitionName);
-            //}
             using (GetNewIndexWriter(definitionName, analyzer, true)) { }
         }
 
@@ -53,15 +47,7 @@ namespace MrCMS.Indexing.Management
                 writer.Commit();
             }
             return writer;
-            //analyzer, recreateIndex, IndexWriter.MAX_TERM_LENGTH);
         }
 
-        public void ClearCache()
-        {
-            //foreach (var indexSearcher in Writers.SelectMany(x => x.Value.Values))
-            //    indexSearcher.Dispose();
-
-            //Writers.Clear();
-        }
     }
 }

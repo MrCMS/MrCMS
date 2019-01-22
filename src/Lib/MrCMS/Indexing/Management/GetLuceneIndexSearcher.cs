@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using MrCMS.Entities.Multisite;
@@ -54,14 +55,6 @@ namespace MrCMS.Indexing.Management
             {
                 IndexSearcherCache[SiteId].Remove(folderName);
             }
-        }
-
-        public void ClearCache()
-        {
-            //foreach (var indexSearcher in IndexSearcherCache.SelectMany(x => x.Value.Values))
-            //    indexSearcher.Dispose();
-
-            IndexSearcherCache.Clear();
         }
 
         public IndexSearcher GetInternal(string folderName)
