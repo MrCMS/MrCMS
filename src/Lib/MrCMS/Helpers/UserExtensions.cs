@@ -15,7 +15,7 @@ namespace MrCMS.Helpers
         {
             try
             {
-                defaultCultureInfo = defaultCultureInfo ?? CultureInfo.CurrentCulture; // TODO: replace this // MrCMSApplication.Get<SiteSettings>().CultureInfo;
+                defaultCultureInfo = defaultCultureInfo ?? CultureInfo.CurrentCulture; 
                 if (user == null || string.IsNullOrWhiteSpace(user.UICulture))
                     return defaultCultureInfo;
                 return CultureInfo.GetCultureInfo(user.UICulture);
@@ -25,11 +25,6 @@ namespace MrCMS.Helpers
                 return defaultCultureInfo;
             }
         }
-
-        //public static bool CanAccess<T>(this User user, string operation, string type = null) where T : ACLRule, new()
-        //{
-        //    return new T().CanAccess(user, operation, type);
-        //}
 
         public static T Get<T>(this User user) where T : UserProfileData
         {

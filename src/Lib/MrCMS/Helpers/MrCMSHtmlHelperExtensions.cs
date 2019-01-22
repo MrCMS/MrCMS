@@ -140,7 +140,6 @@ namespace MrCMS.Helpers
         private static void AddValidationAttributes(ViewContext viewContext, TagBuilder tagBuilder,
             ModelExplorer modelExplorer, string expression)
         {
-            // TODO: check this works
             modelExplorer = modelExplorer ??
                             ExpressionMetadataProvider.FromStringExpression(expression, viewContext.ViewData,
                                 modelExplorer.Metadata);
@@ -176,8 +175,6 @@ namespace MrCMS.Helpers
             var resolvedLabelText = labelText ??
                                     new HtmlString(metadata.DisplayName ??
                                                    metadata.PropertyName ?? htmlFieldName.Split('.').Last());
-            //if (string.IsNullOrEmpty(resolvedLabelText))
-            //    return HtmlString.Empty;
 
             var tag = new TagBuilder("label");
             tag.Attributes.Add("for",
@@ -207,7 +204,6 @@ namespace MrCMS.Helpers
         {
             tagBuilder.TagRenderMode = renderMode;
             return tagBuilder;
-            //return new MvcHtmlString(tagBuilder.ToString(renderMode));
         }
 
         private static string EvalString(this IHtmlHelper html, string key)
@@ -303,28 +299,6 @@ namespace MrCMS.Helpers
                     .FromStringExpression(labelFor, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
                 // ModelMetadata.FromStringExpression(labelFor, htmlHelper.ViewData),
                 labelFor, new RouteValueDictionary(htmlAttributes), text != null ? new HtmlString(text) : null);
-        }
-
-
-        public static string AbsoluteContent(this IUrlHelper url, string path)
-        {
-            return url.Content("~/" + path);
-            // TODO: verify this is working, if so, just replace it with the core method
-            //var uri = new Uri(path, UriKind.RelativeOrAbsolute);
-
-            ////If the URI is not already absolute, rebuild it based on the current request.
-            //if (!uri.IsAbsoluteUri)
-            //{
-            //    var requestUrl = url.ActionContext.HttpContext.Request.GetUri();
-            //    var builder = new UriBuilder(requestUrl.Scheme, requestUrl.Host, requestUrl.Port)
-            //    {
-            //        Path =
-            //    };
-
-            //    uri = builder.Uri;
-            //}
-
-            //return uri.ToString();
         }
 
         public static IHtmlContent Link(this IHtmlHelper helper, string text, string url, object htmlAttributes = null)
