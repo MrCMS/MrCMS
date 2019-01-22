@@ -107,13 +107,11 @@
                                         <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                             Add override <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li>
-                                                @Html.ActionLink("Site", "ChooseSite", "Resource", new {resource.Key}, new {data_toggle = "fb-modal"})
-                                                @Html.ActionLink("Language", "Add", "Resource", new {resource.Key, language = true}, new {data_toggle = "fb-modal"})
-                                                @Html.ActionLink("Site & Language", "ChooseSite", "Resource", new {resource.Key, language = true}, new {data_toggle = "fb-modal"})
-                                            </li>
-                                        </ul>
+                                        <div class="dropdown-menu" role="menu">
+                                            @Html.ActionLink("Site", "ChooseSite", "Resource", new {resource.Key}, new { @class = "dropdown-item", data_toggle = "fb-modal"})
+                                            @Html.ActionLink("Language", "Add", "Resource", new {resource.Key, language = true}, new { @class = "dropdown-item", data_toggle = "fb-modal"})
+                                            @Html.ActionLink("Site & Language", "ChooseSite", "Resource", new {resource.Key, language = true}, new { @class = "dropdown-item", data_toggle = "fb-modal"})
+                                        </div>
                                     }
                                     else
                                     {
