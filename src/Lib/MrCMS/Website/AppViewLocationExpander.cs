@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MrCMS.Website
 {
@@ -8,7 +7,6 @@ namespace MrCMS.Website
     {
         private const string Key = "app";
 
-        // TODO: implement properly
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             var value = context.ActionContext.RouteData.DataTokens[Key];
