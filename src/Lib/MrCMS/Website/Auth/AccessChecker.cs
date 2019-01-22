@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using MrCMS.ACL;
 using MrCMS.Entities.People;
 
@@ -18,6 +17,17 @@ namespace MrCMS.Website.Auth
             _checkStandardAccessLogic = checkStandardAccessLogic;
             _getAclKeys = getAclKeys;
             _performAclCheck = performAclCheck;
+        }
+
+        public bool CanAccess(string controllerName, string actionName)
+        {
+            return CanAccess(new ControllerActionDescriptor {ControllerName = controllerName, ActionName = actionName});
+        }
+
+        public bool CanAccess(string controllerName, string actionName, User user)
+        {
+            return CanAccess(new ControllerActionDescriptor {ControllerName = controllerName, ActionName = actionName},
+                user);
         }
 
         public bool CanAccess(ControllerActionDescriptor descriptor)

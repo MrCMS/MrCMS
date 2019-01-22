@@ -1,13 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Website.Auth;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -18,7 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IAccessChecker _accessChecker;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
-        public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService, 
+        public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService,
             IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
             IGetCurrentUser getCurrentUser,
             IAccessChecker accessChecker)
@@ -35,7 +34,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             IOrderedEnumerable<DocumentMetadata> validWebpageDocumentTypes = _validWebpageChildrenService
                 .GetValidWebpageDocumentTypes(parent,
-                    metadata => _accessChecker.CanAccess<TypeACLRule>(TypeACLRule.Add,_getCurrentUser.Get()))
+                    metadata => _accessChecker.CanAccess("Webpage", "Add", _getCurrentUser.Get()))
                 .OrderBy(metadata => metadata.DisplayOrder);
 
             var templates = _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);

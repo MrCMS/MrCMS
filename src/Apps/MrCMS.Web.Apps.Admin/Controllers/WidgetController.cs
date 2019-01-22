@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.ACL;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -53,9 +52,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        //[ValidateInput(false)]
         [ActionName("Edit")]
-        [Acl(typeof(Widget), TypeACLRule.Edit)]
         public ViewResult Edit_Get(int id, string returnUrl = null)
         {
             var editModel = _widgetService.GetEditModel(id);
@@ -76,7 +73,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        [Acl(typeof(Widget), TypeACLRule.Edit)]
         public async Task<ActionResult> Edit(UpdateWidgetModel model, string returnUrl = null)
         {
             var additionalPropertyModel = _widgetService.GetAdditionalPropertyModel(model.Id);
@@ -96,14 +92,12 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        [Acl(typeof(Widget), TypeACLRule.Delete)]
         public ActionResult Delete_Get(int id)
         {
             return PartialView(_widgetService.GetEditModel(id));
         }
 
         [HttpPost]
-        [Acl(typeof(Widget), TypeACLRule.Delete)]
         public ActionResult Delete(int id, string returnUrl)
         {
             var widget = _widgetService.DeleteWidget(id);

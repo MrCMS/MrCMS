@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -80,7 +79,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Edit")]
-        [Acl(typeof(Webpage), TypeACLRule.Edit)]
         public ViewResult Edit_Get(int id)
         {
             var webpage = _webpageAdminService.GetWebpage(id);
@@ -90,7 +88,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        [Acl(typeof(Webpage), TypeACLRule.Edit)]
         [ForceImmediateLuceneUpdate]
         public RedirectToActionResult Edit(UpdateWebpageViewModel model)
         {
@@ -100,7 +97,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        [Acl(typeof(Webpage), TypeACLRule.Delete)]
         [ActionName("Delete")]
         public ActionResult Delete_Get(int id)
         {
@@ -108,7 +104,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        [Acl(typeof(Webpage), TypeACLRule.Delete)]
         [ForceImmediateLuceneUpdate]
         public RedirectToActionResult Delete(int id)
         {

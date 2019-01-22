@@ -1,5 +1,4 @@
-﻿@using MrCMS.ACL
-@using MrCMS.ACL.Rules
+﻿@using MrCMS.ACL.Rules
 @using MrCMS.Settings
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject SiteSettings SiteSettings
@@ -7,7 +6,7 @@
 <link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css"/>
 <link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css"/>
 @{
-    var canEditPage = Html.CanAccess<TypeACLRule>(TypeACLRule.Edit, Model.GetType().FullName);
+    var canEditPage = Html.CanAccess("Webpage","Edit");
 }
 <div class="mrcms-admin-nav-bar">
     <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
