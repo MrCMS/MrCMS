@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Principal;
-using System.Web;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
-using MrCMS.Website;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services
@@ -12,15 +10,12 @@ namespace MrCMS.Services
     public class UserLookup : IUserLookup
     {
         private readonly IEnumerable<IExternalUserSource> _externalUserSources;
-        private readonly IGetNowForSite _getNowForSite;
         private readonly ISession _session;
 
-        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources, IGetNowForSite getNowForSite)
+        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources)
         {
             _session = session;
             _externalUserSources = externalUserSources;
-            // TODO: check if this is right for here, as users are system entities
-            _getNowForSite = getNowForSite;
         }
 
         public User GetUserByEmail(string email)
@@ -37,25 +32,25 @@ namespace MrCMS.Services
                 if (user != null)
                     return user;
             }
+
             return null;
         }
 
         public User GetUserByResetGuid(Guid resetGuid)
         {
-            var now = _getNowForSite.Now;
             return
                 _session.QueryOver<User>()
                     .Where(
                         user =>
-                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= now)
+                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= DateTime.UtcNow)
                     .Cacheable().SingleOrDefault();
         }
 
         public User GetUserByGuid(Guid guid)
         {
             return _session.QueryOver<User>()
-                    .Where(user => user.Guid == guid)
-                    .Cacheable().SingleOrDefault();
+                .Where(user => user.Guid == guid)
+                .Cacheable().SingleOrDefault();
         }
 
         public User GetCurrentUser(HttpContext context)
@@ -65,7 +60,7 @@ namespace MrCMS.Services
 
         public User GetCurrentUser(IPrincipal principal)
         {
-            return principal!= null && !string.IsNullOrWhiteSpace(principal.Identity.Name)
+            return principal != null && !string.IsNullOrWhiteSpace(principal.Identity.Name)
                 ? GetUserByEmail(principal.Identity.Name)
                 : null;
         }
