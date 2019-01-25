@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -6,5 +7,6 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface ISetWebpageAdminViewData
     {
         void SetViewData<T>(ViewDataDictionary viewData, T webpage) where T : Webpage;
+        void SetViewDataForAdd(ViewDataDictionary viewData, string type);
     }
 }

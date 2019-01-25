@@ -7,7 +7,6 @@ using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 using System.Collections.Generic;
@@ -185,8 +184,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public string GetServerDate()
         {
             return _webpageAdminService.GetServerDate();
-            //return DateTime.Now.ToString(); // TODO: sort out dates and cultures
-            //return CurrentRequestData.Now.ToString(CurrentRequestData.CultureInfo);
         }
 
         [HttpGet]
@@ -195,7 +192,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var model = _webpageAdminService.GetAdditionalPropertyModel(type);
             if (model != null)
             {
-                // TODO: viewdata
+                _setWebpageAdminViewData.SetViewDataForAdd(ViewData, type);
                 ViewData["type"] = TypeHelper.GetTypeByName(type);
                 return PartialView(model);
             }

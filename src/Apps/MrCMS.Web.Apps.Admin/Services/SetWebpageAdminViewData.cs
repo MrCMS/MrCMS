@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -49,17 +49,29 @@ namespace MrCMS.Web.Apps.Admin.Services
                 return;
             }
             var type = webpage.GetType();
-            if (AssignViewDataTypes.ContainsKey(type))
+            if (!AssignViewDataTypes.ContainsKey(type))
             {
-                foreach (
-                    var assignAdminViewData in
-                        AssignViewDataTypes[type].Select(assignViewDataType => _serviceProvider.GetService(assignViewDataType))
-                    )
+                return;
+            }
+
+            foreach (var assignAdminViewData in
+                AssignViewDataTypes[type].Select(assignViewDataType => _serviceProvider.GetService(assignViewDataType))
+            )
+            {
+                if (assignAdminViewData is BaseAssignWebpageAdminViewData adminViewData)
                 {
-                    var adminViewData = assignAdminViewData as BaseAssignWebpageAdminViewData;
-                    if (adminViewData != null) adminViewData.AssignViewDataBase(webpage, viewData);
+                    adminViewData.AssignViewDataBase(webpage, viewData);
                 }
             }
+        }
+
+        public void SetViewDataForAdd(ViewDataDictionary viewData, string type)
+        {
+            var documentType = TypeHelper.GetTypeByName(type);
+            if (documentType.IsAbstract || !documentType.IsImplementationOf(typeof(Webpage)))
+                return;
+
+            SetViewData(viewData, Activator.CreateInstance(documentType) as Webpage);
         }
     }
 }

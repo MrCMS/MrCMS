@@ -19,6 +19,5 @@ namespace MrCMS.Web.Apps.Admin.Helpers
                 .OrderBy(x => x.Name)
                 .BuildSelectItemList(x => x.Name.BreakUpString(), x => x.FullName, emptyItemText: "All");
         }
-        // TODO: universal search
     }
 }

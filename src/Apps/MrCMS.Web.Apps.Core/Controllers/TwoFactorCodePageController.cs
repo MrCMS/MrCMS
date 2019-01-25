@@ -47,7 +47,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             var result = _confirmationService.TryAndConfirmCode(model);
             if (result.Success)
             {
-                _logUserIn.Login(result.User, false); //TODO: pass this over
+                _logUserIn.Login(result.User, false).ExecuteSync(); 
                 return Redirect(result.ReturnUrl);
             }
 
