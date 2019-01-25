@@ -98,25 +98,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(searchModel);
         }
 
-        ////[ChildActionOnly]
-        //// TODO: refactor to view component
-        //public PartialViewResult Manage(MediaCategorySearchModel searchModel)
-        //{
-
-        //    return PartialView(searchModel);
-        //}
-
-
-        //public ActionResult Upload(/*[IoCModelBinder(typeof(NullableEntityModelBinder))] */MediaCategory category) // TODO: model binding
-        //{
-        //    return PartialView(category);
-        //}
-
-        //public PartialViewResult RemoveMedia()
-        //{
-        //    return PartialView();
-        //}
-
         [HttpGet]
         public ActionResult ShowFilesSimple(MediaCategory category)
         {
@@ -175,9 +156,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         public ActionResult Directory(MediaCategorySearchModel searchModel)
         {
-            //ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
-            //ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
-
             return PartialView(searchModel);
         }
     }

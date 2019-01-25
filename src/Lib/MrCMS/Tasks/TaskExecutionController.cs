@@ -10,14 +10,16 @@ namespace MrCMS.Tasks
         public const string ExecuteTaskURL = "execute-task";
         public const string ExecuteQueuedTasksURL = "execute-queued-tasks";
         private readonly IQueuedTaskRunner _queuedTaskRunner;
-        private readonly IScheduledTaskRunner _scheduledTaskRunner;
         private readonly ITaskResetter _taskResetter;
+        private readonly ITriggerScheduledTasks _triggerScheduledTasks;
+        private readonly IScheduledTaskRunner _scheduledTaskRunner;
 
         public TaskExecutionController(IQueuedTaskRunner queuedTaskRunner, ITaskResetter taskResetter,
-            IScheduledTaskRunner scheduledTaskRunner)
+            ITriggerScheduledTasks triggerScheduledTasks, IScheduledTaskRunner scheduledTaskRunner)
         {
             _queuedTaskRunner = queuedTaskRunner;
             _taskResetter = taskResetter;
+            _triggerScheduledTasks = triggerScheduledTasks;
             _scheduledTaskRunner = scheduledTaskRunner;
         }
 
@@ -26,7 +28,7 @@ namespace MrCMS.Tasks
         public ContentResult Execute()
         {
             _taskResetter.ResetHungTasks();
-            _scheduledTaskRunner.TriggerScheduledTasks();
+            _triggerScheduledTasks.Trigger();
             _queuedTaskRunner.TriggerPendingTasks();
             return new ContentResult {Content = "Executed", ContentType = "text/plain"};
         }

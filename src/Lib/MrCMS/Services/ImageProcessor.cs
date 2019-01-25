@@ -201,7 +201,6 @@ namespace MrCMS.Services
 
         private static string GetResizePart(string imageUrl)
         {
-            //TODO: get with regex? this looks likely to fail in an edge case
             if (imageUrl.LastIndexOf("_w", StringComparison.Ordinal) == -1 || imageUrl.LastIndexOf('.') == -1)
                 return null;
 

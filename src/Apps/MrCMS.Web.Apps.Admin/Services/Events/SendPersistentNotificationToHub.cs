@@ -1,32 +1,41 @@
 ﻿using System;
+using Microsoft.AspNetCore.SignalR;
 using MrCMS.Entities.Notifications;
 using MrCMS.Services.Notifications;
+using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Admin.Models.Notifications;
 
 namespace MrCMS.Web.Apps.Admin.Services.Events
 {
     public class SendPersistentNotificationToHub : IOnPersistentNotificationPublished
     {
+        private readonly IHubContext<NotificationHub> _hubContext;
+
+        public SendPersistentNotificationToHub(IHubContext<NotificationHub> hubContext)
+        {
+            _hubContext = hubContext;
+        }
         public void Execute(OnPersistentNotificationPublishedEventArgs args)
         {
-            // TODO: signalR notifications
-            //IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationHub>();
-            //var notification = args.Notification;
-            //var model = new NotificationModel {Message = notification.Message, DateValue = notification.CreatedOn};
-            //switch (notification.NotificationType)
-            //{
-            //    case NotificationType.AdminOnly:
-            //        hubContext.Clients.Group(NotificationHub.AdminGroup).sendPersistentNotification(model);
-            //        break;
-            //    case NotificationType.UserOnly:
-            //        hubContext.Clients.Group(NotificationHub.UsersGroup).sendPersistentNotification(model);
-            //        break;
-            //    case NotificationType.All:
-            //        hubContext.Clients.All.sendPersistentNotification(model);
-            //        break;
-            //    default:
-            //        throw new ArgumentOutOfRangeException();
-            //};
+            var notification = args.Notification;
+            var model = new NotificationModel { Message = notification.Message, DateValue = notification.CreatedOn };
+            switch (notification.NotificationType)
+            {
+                case NotificationType.AdminOnly:
+                    _hubContext.Clients.Group(NotificationHub.AdminGroup)
+                        .SendAsync("sendPersistentNotification", model);
+                    break;
+                case NotificationType.UserOnly:
+                    _hubContext.Clients.Group(NotificationHub.UsersGroup)
+                        .SendAsync("sendPersistentNotification", model);
+                    break;
+                case NotificationType.All:
+                    _hubContext.Clients.All
+                        .SendAsync("sendPersistentNotification", model);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            };
         }
     }
 }

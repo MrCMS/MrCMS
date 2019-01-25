@@ -12,7 +12,6 @@ using System.Reflection;
 
 namespace MrCMS.Helpers
 {
-    // TODO: refactor this to non-static
     public static class TypeHelper
     {
         private static HashSet<Type> _allTypes;

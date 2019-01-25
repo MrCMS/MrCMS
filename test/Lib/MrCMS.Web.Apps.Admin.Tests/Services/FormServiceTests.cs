@@ -20,7 +20,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         public FormAdminServiceTests()
         {
             _formAdminService = new FormAdminService(Session, A.Fake<IStringResourceProvider>(),
-                A.Fake<ILogger<FormAdminService>>(), A.Fake<IMapper>());
+                A.Fake<ILogger<FormAdminService>>(), A.Fake<IMapper>(), A.Fake<IGetCurrentUserCultureInfo>());
         }
 
         [Fact]

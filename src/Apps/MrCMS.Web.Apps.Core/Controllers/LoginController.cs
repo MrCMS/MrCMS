@@ -9,6 +9,7 @@ using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
@@ -19,6 +20,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         private readonly IResetPasswordService _resetPasswordService;
         private readonly ISetVerifiedUserData _setVerifiedUserData;
         private readonly IEventContext _eventContext;
+        private readonly ILogger<LoginController> _logger;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IUniquePageService _uniquePageService;
         private readonly IUserLookup _userLookup;
@@ -26,7 +28,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         public LoginController(IResetPasswordService resetPasswordService, IUniquePageService uniquePageService,
             ILoginService loginService, IStringResourceProvider stringResourceProvider, IUserLookup userLookup,
             ILogUserIn logUserIn, ISetVerifiedUserData setVerifiedUserData,
-            IEventContext eventContext)
+            IEventContext eventContext, ILogger<LoginController> logger)
         {
             _resetPasswordService = resetPasswordService;
             _uniquePageService = uniquePageService;
@@ -36,6 +38,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _logUserIn = logUserIn;
             _setVerifiedUserData = setVerifiedUserData;
             _eventContext = eventContext;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -154,9 +157,9 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 _resetPasswordService.ResetPassword(model);
                 return _uniquePageService.RedirectTo<LoginPage>();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                // TODO: should this not say what's wrong and redirect back to the password reset again?
+                _logger.LogError(exception, "Error logging in");
                 return _uniquePageService.RedirectTo<LoginPage>();
             }
         }

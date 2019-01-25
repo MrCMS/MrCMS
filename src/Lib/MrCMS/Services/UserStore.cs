@@ -46,7 +46,6 @@ namespace MrCMS.Services
 
         public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
-            // TODO: look to see if we want to be able to this
             return Task.CompletedTask;
         }
 
@@ -57,7 +56,6 @@ namespace MrCMS.Services
 
         public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
-            // TODO: look to see if we want to be able to this
             return Task.CompletedTask;
         }
 
@@ -222,7 +220,6 @@ namespace MrCMS.Services
 
         public Task SetNormalizedEmailAsync(User user, string normalizedEmail, CancellationToken cancellationToken)
         {
-            // TODO: implement normalised email
             return Task.CompletedTask;
         }
 

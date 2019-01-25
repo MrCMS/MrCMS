@@ -2,8 +2,7 @@ using System.Collections.Generic;
 
 namespace MrCMS.Settings
 {
-    // TODO: clear cache
-    public interface IConfigurationProvider //: IClearCache
+    public interface IConfigurationProvider 
     {
         TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new();
         void SaveSettings(SiteSettingsBase settings);

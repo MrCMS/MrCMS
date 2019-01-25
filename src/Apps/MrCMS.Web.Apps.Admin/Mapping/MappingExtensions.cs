@@ -20,18 +20,12 @@ namespace MrCMS.Web.Apps.Admin.Mapping
                     configurationExpression =>
                     {
                         configurationExpression.Ignore();
-                        //configurationExpression.Condition(source => selector.Compile()(source).HasValue);
-                        //configurationExpression
-                        //    .ResolveUsing<EntityResolver<TSource, TDestination, TEntity>, int?>(
-                        //        source => selector.Compile()(source) 
-                        //    );
                     }).AfterMap((source, destination, context) =>
                 {
                     if (condition != null && !condition.Compile()(source, destination))
                     {
                         return;
                     }
-                    // TODO: see if we don't need this - basically Automapper appears to be trying to map the Id property on the child object anyway if it exists
                     var session = context.Options.CreateInstance<ISession>();
                     var entityPropertyInfo = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo;
                     var idFunc = selector.Compile();

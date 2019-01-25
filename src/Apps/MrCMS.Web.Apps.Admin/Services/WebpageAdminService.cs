@@ -125,7 +125,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             if (webpage.PublishOn == null)
             {
                 webpage.Published = true;
-                webpage.PublishOn = DateTime.UtcNow; // todo: check date
+                webpage.PublishOn = DateTime.UtcNow; 
                 _webpageRepository.Update(webpage);
             }
         }

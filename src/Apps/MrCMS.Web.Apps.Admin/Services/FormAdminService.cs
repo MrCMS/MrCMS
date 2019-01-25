@@ -22,14 +22,16 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly ILogger<FormAdminService> _logger;
         private readonly IMapper _mapper;
+        private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
 
         public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger,
-            IMapper mapper)
+            IMapper mapper, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
         {
             _session = session;
             _stringResourceProvider = stringResourceProvider;
             _logger = logger;
             _mapper = mapper;
+            _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
         }
 
         public void ClearFormData(Form form)
@@ -171,6 +173,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         private Dictionary<int, List<string>> GetFormDataForExport(Form form)
         {
             var items = new Dictionary<int, List<string>>();
+            var formatProvider = _getCurrentUserCultureInfo.Get();
             for (int i = 0; i < form.FormPostings.Count; i++)
             {
                 FormPosting posting = form.FormPostings[i];
@@ -189,16 +192,12 @@ namespace MrCMS.Web.Apps.Admin.Services
                         items[i].Add("http://" + form.Site.BaseUrl + value.Value);
                     }
                 }
-                items[i].Add(posting.CreatedOn.ToString()); // TODO: culture info
+
+                items[i].Add(posting.CreatedOn.ToString(formatProvider));
             }
             return items.OrderByDescending(x => x.Value.Count).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-
-        public FormPosting GetFormPosting(int id)
-        {
-            return _session.Get<FormPosting>(id);
-        }
 
         private string FormatField(string data)
         {
