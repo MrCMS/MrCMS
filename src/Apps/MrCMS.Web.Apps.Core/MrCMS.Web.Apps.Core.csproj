@@ -10,51 +10,6 @@
     <EmbeddedResource Include="wwwroot\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Areas\Admin\Views\ContentBlock\FourColumnBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\FourColumnBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\FourColumnBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\OneColumnBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\OneColumnBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\OneColumnBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\OneColumnTextImageBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\OneColumnTextImageBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\OneColumnTextImageBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\PlainBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\PlainBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\PlainBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\SliderBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\SliderBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\SliderBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\ThreeColumnBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\ThreeColumnBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\ThreeColumnBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\TwoColumnBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\TwoColumnBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\TwoColumnBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\TwoColumnTextImageBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\TwoColumnTextImageBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\TwoColumnTextImageBlockFields.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\VideoBlock.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\VideoBlockAdd.cshtml" />
-    <None Remove="Areas\Admin\Views\ContentBlock\VideoBlockFields.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\FourColumnBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\OneColumnBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\OneColumnTextImageBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\PlainBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\SliderBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\ThreeColumnBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\TwoColumnBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\TwoColumnTextImageBlock.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlock\VideoBlock.cshtml" />
-    <None Remove="wwwroot\Content\Scripts\webpush.js" />
-    <None Remove="wwwroot\lib\bootstrap\LICENSE" />
-    <None Remove="wwwroot\lib\bootstrap\package-lock.json" />
-    <None Remove="wwwroot\lib\bootstrap\package.json" />
-    <None Remove="wwwroot\lib\bootstrap\README.md" />
-    <None Remove="wwwroot\lib\jquery-3.3.1.min.js" />
-    <None Remove="wwwroot\lib\popper.min.js" />
-  </ItemGroup>
 
   <!--<ItemGroup>
     <None Remove="Views\Shared\Components\LayoutArea\Editable.cshtml" />
