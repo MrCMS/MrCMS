@@ -128,7 +128,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var model = _widgetService.GetAdditionalPropertyModel(type);
             if (model != null)
             {
-                // TODO: viewdata
+                _setAdminViewData.SetViewDataForAdd(ViewData, type);
                 ViewData["type"] = TypeHelper.GetTypeByName(type);
                 return PartialView(model);
             }

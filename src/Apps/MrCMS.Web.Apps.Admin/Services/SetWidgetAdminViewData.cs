@@ -61,5 +61,14 @@ namespace MrCMS.Web.Apps.Admin.Services
                 }
             }
         }
+
+        public void SetViewDataForAdd(ViewDataDictionary viewData, string type)
+        {
+            var widgetType = TypeHelper.GetTypeByName(type);
+            if (widgetType.IsAbstract || !widgetType.IsImplementationOf(typeof(Widget)))
+                return;
+
+            SetViewData(viewData, Activator.CreateInstance(widgetType) as Widget);
+        }
     }
 }
