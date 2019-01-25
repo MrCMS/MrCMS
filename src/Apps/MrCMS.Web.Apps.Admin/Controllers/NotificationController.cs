@@ -1,8 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Notifications;
-using MrCMS.Services.Notifications;
 using MrCMS.Web.Apps.Admin.ACL;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
@@ -32,11 +29,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             ViewData["publish-type-options"] = _service.GetPublishTypeOptions();
             ViewData["notification-type-options"] = _service.GetNotificationTypeOptions();
-            return View(new PushNotificationModel());
+            return View(new NotificationModel());
         }
 
         [HttpPost]
-        public RedirectToActionResult Push(PushNotificationModel model)
+        public RedirectToActionResult Push(NotificationModel model)
         {
             _service.PushNotification(model);
             return RedirectToAction("Index");
@@ -57,15 +54,5 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _service.Delete(notification);
             return RedirectToAction("Index");
         }
-    }
-
-    public class PushNotificationModel
-    {
-        [Required]
-        public string Message { get; set; }
-        [DisplayName("Publish Type")]
-        public PublishType PublishType { get; set; }
-        [DisplayName("Notification Type")]
-        public NotificationType NotificationType { get; set; }
     }
 }

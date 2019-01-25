@@ -10,7 +10,7 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface INotificationAdminService
     {
         IPagedList<Notification> Search(NotificationSearchQuery searchQuery);
-        void PushNotification(PushNotificationModel model);
+        void PushNotification(NotificationModel model);
         List<SelectListItem> GetPublishTypeOptions();
         List<SelectListItem> GetNotificationTypeOptions(bool includeAnyOption = false);
         void Delete(Notification notification);

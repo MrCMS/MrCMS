@@ -1,0 +1,9 @@
+﻿@model dynamic
+<li class="nav-item dropdown">
+    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle"role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-share-alt"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" >
+        <a class="dropdown-item" asp-action="Index" asp-controller="PushNotification" data-toggle="fb-modal">@Html.Resource("Send push notification")</a>
+    </div>
+</li>

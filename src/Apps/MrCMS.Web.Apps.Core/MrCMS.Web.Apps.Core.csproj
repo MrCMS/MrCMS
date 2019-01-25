@@ -47,6 +47,7 @@
     <None Remove="Views\Shared\Components\ContentBlock\TwoColumnBlock.cshtml" />
     <None Remove="Views\Shared\Components\ContentBlock\TwoColumnTextImageBlock.cshtml" />
     <None Remove="Views\Shared\Components\ContentBlock\VideoBlock.cshtml" />
+    <None Remove="wwwroot\Content\Scripts\webpush.js" />
     <None Remove="wwwroot\lib\bootstrap\LICENSE" />
     <None Remove="wwwroot\lib\bootstrap\package-lock.json" />
     <None Remove="wwwroot\lib\bootstrap\package.json" />

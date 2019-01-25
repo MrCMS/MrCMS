@@ -6,7 +6,8 @@
         {
             <div class="btn-group">
                 <button type="submit" class="btn btn-secondary">@Html.Resource("Admin Dismiss All", "Dismiss all")</button>
-                <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary ">@Html.Resource("Admin View All", "View All")</a>
+                <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary">@Html.Resource("Admin View All", "View All")</a>
+                <a href="@Url.Action("Index", "PushNotification")" class="btn btn-secondary">@Html.Resource("Admin - Push Notification", "Send Push Notification")</a>
             </div>
         }
         <ul data-notification-list="true" class="persistent-notification">
