@@ -11,6 +11,8 @@ using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using MrCMS.Apps;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 {
@@ -83,9 +85,8 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
             {
                 return HtmlString.Empty;
             }
-            // TODO: app lookup
-            //if (MrCMSApp.AppEntities.ContainsKey(entityType))
-            //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppEntities[entityType];
+
+            SetApp(htmlHelper, entityType);
 
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();
@@ -106,6 +107,14 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
             return HtmlString.Empty;
         }
 
+        private static void SetApp(IHtmlHelper<User> htmlHelper, Type type)
+        {
+            var appContext = htmlHelper.GetRequiredService<MrCMSAppContext>();
+            if (appContext.Types.ContainsKey(type))
+                htmlHelper.ViewContext.RouteData.DataTokens[AppViewLocationExpander.Key] =
+                    appContext.Types[type].Name;
+        }
+
         public static async Task<IHtmlContent> RenderUserProfileProperties(this IHtmlHelper<User> htmlHelper, Type userProfileType)
         {
             var user = htmlHelper.ViewData.Model;
@@ -113,9 +122,8 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
             {
                 return HtmlString.Empty;
             }
-            // TODO: app lookup
-            //if (MrCMSApp.AppUserProfileDatas.ContainsKey(userProfileType))
-            //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppUserProfileDatas[userProfileType];
+
+            SetApp(htmlHelper, userProfileType);
 
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();

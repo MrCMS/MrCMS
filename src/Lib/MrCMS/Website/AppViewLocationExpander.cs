@@ -5,7 +5,7 @@ namespace MrCMS.Website
 {
     public class AppViewLocationExpander : IViewLocationExpander
     {
-        private const string Key = "app";
+        public const string Key = "app";
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {
