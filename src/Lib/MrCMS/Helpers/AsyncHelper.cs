@@ -6,11 +6,11 @@ namespace MrCMS.Helpers
     {
         public static T ExecuteSync<T>(this Task<T> task)
         {
-            return task.ExecuteSync();
+            return task.GetAwaiter().GetResult();
         }
         public static void ExecuteSync(this Task task)
         {
-            task.ExecuteSync();
+            task.GetAwaiter().GetResult();
         }
     }
 }

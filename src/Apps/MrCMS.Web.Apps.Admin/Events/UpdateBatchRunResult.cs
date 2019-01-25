@@ -24,11 +24,9 @@ namespace MrCMS.Web.Apps.Admin.Events
             _context.Clients.All.SendCoreAsync("updateResult", new object[] { batchRunResult.Id }).ExecuteSync();
             var batchRun = batchRunResult.BatchRun;
             _context.Clients.All.SendCoreAsync("updateRun",
-                    new object[] {batchRun.ToSimpleJson(_batchRunUIService.GetCompletionStatus(batchRun))}).GetAwaiter()
-                .GetResult();
+                    new object[] {batchRun.ToSimpleJson(_batchRunUIService.GetCompletionStatus(batchRun))}).ExecuteSync();
             _context.Clients.All.SendCoreAsync("updateJob",
-                    new object[] {batchRunResult.BatchJob.Id}).GetAwaiter()
-                .GetResult();
+                    new object[] {batchRunResult.BatchJob.Id}).ExecuteSync();
         }
     }
 }
