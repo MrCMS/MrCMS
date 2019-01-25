@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using MrCMS.DbConfiguration;
 using MrCMS.FileProviders;
 using MrCMS.Helpers;
 using MrCMS.Themes;
-using MrCMS.Website;
 using MrCMS.Website.CMS;
 using NHibernate.Cfg;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Apps
 {
@@ -20,11 +19,13 @@ namespace MrCMS.Apps
         {
             Apps = new HashSet<IMrCMSApp>();
             Themes = new HashSet<IMrCMSTheme>();
+            DatabaseProviders = new HashSet<Type>();
             Types = new Dictionary<Type, IMrCMSApp>();
         }
 
         public ISet<IMrCMSApp> Apps { get; }
         public ISet<IMrCMSTheme> Themes { get; }
+        public ISet<Type> DatabaseProviders { get; }
         public IDictionary<Type, IMrCMSApp> Types { get; }
 
         public IEnumerable<IFileProvider> ViewFileProviders =>
@@ -39,15 +40,11 @@ namespace MrCMS.Apps
         public IEnumerable<Type> DbBaseTypes => Apps.SelectMany(app => app.BaseTypes);
 
         public IDictionary<Type, string> SignalRHubs =>
-            Apps.SelectMany(app => app.SignalRHubs).ToDictionary(x => x.Key, x => x.Value); 
+            Apps.SelectMany(app => app.SignalRHubs).ToDictionary(x => x.Key, x => x.Value);
 
         public IEnumerable<RegistrationInfo> Registrations => Apps.SelectMany(app => app.Registrations);
 
-        public string AppSummary
-        {
-            get { return string.Join(", ", Apps.Select(app => $"{app.Name}: {app.Version}")); }
-
-        }
+        public string AppSummary => string.Join(", ", Apps.Select(app => $"{app.Name}: {app.Version}"));
 
         public void RegisterApp<TApp>(Action<MrCMSAppContextOptions> options = null) where TApp : IMrCMSApp, new()
         {
@@ -55,7 +52,10 @@ namespace MrCMS.Apps
             options?.Invoke(appOptions);
             var app = new TApp();
             if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
+            {
                 app.ContentPrefix = appOptions.ContentPrefix;
+            }
+
             Apps.Add(app);
 
             // register apps
@@ -69,8 +69,16 @@ namespace MrCMS.Apps
             options?.Invoke(appOptions);
             var theme = new TTheme();
             if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
+            {
                 theme.ContentPrefix = appOptions.ContentPrefix;
+            }
+
             Themes.Add(theme);
+        }
+        public void RegisterDatabaseProvider<TProvider>()
+            where TProvider : IDatabaseProvider
+        {
+            DatabaseProviders.Add(typeof(TProvider));
         }
 
         public void SetupMvcOptions(MvcOptions options)

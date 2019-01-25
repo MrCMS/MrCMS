@@ -121,7 +121,6 @@ namespace MrCMS.Services
                             Height = newSize.Height
                         };
                         image.Resize(geometry);
-                        // TODO: check that crop is in the right order
                         if (cropRectangle.HasValue)
                         {
                             Rectangle rectangle = cropRectangle.Value;

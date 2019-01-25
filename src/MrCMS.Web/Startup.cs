@@ -66,9 +66,6 @@ namespace MrCMS.Web
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            //todo: something else with this, just making sure the library is loaded for now
-            services.AddTransient<CreateSQLiteDatabase>();
-
             var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
 
             services.Configure<RequestLocalizationOptions>(options =>
@@ -84,6 +81,7 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSCoreApp>();
                 context.RegisterApp<MrCMSAdminApp>();
                 context.RegisterTheme<RedTheme>();
+                context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
             services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
