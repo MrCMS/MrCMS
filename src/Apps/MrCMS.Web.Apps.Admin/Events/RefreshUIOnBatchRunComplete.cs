@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Hubs;
 
 namespace MrCMS.Web.Apps.Admin.Events
@@ -19,7 +20,7 @@ namespace MrCMS.Web.Apps.Admin.Events
             var previous = args.Original;
             if (batchRun.Status == BatchRunStatus.Complete && previous.Status != BatchRunStatus.Complete)
             {
-                _context.Clients.All.SendCoreAsync("refreshBatchRunUI", new object[] { batchRun.Id }).GetAwaiter().GetResult();
+                _context.Clients.All.SendCoreAsync("refreshBatchRunUI", new object[] { batchRun.Id }).ExecuteSync();
             }
         }
     }

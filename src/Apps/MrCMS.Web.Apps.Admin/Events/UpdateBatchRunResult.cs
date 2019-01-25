@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Admin.Services.Batching;
@@ -20,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Events
         public void Execute(OnUpdatedArgs<BatchRunResult> args)
         {
             var batchRunResult = args.Item;
-            _context.Clients.All.SendCoreAsync("updateResult", new object[] { batchRunResult.Id }).GetAwaiter().GetResult();
+            _context.Clients.All.SendCoreAsync("updateResult", new object[] { batchRunResult.Id }).ExecuteSync();
             var batchRun = batchRunResult.BatchRun;
             _context.Clients.All.SendCoreAsync("updateRun",
                     new object[] {batchRun.ToSimpleJson(_batchRunUIService.GetCompletionStatus(batchRun))}).GetAwaiter()

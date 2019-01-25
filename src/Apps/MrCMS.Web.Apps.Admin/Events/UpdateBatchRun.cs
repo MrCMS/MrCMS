@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Admin.Services.Batching;
@@ -25,7 +26,7 @@ namespace MrCMS.Web.Apps.Admin.Events
                 new[]
                 {
                     batchRun.ToSimpleJson(_batchRunUIService.GetCompletionStatus(batchRun))
-                }).GetAwaiter().GetResult();
+                }).ExecuteSync();
 
         }
     }

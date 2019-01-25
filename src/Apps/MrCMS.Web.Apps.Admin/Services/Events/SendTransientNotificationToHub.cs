@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.SignalR;
 using MrCMS.Entities.Notifications;
+using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
 using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Admin.Models.Notifications;
@@ -26,15 +27,15 @@ namespace MrCMS.Web.Apps.Admin.Services.Events
             {
                 case NotificationType.AdminOnly:
                     _notificationHubContext.Clients.Group(NotificationHub.AdminGroup)
-                        .SendCoreAsync("sendTransientNotification", new object[] {model}).GetAwaiter().GetResult();
+                        .SendCoreAsync("sendTransientNotification", new object[] {model}).ExecuteSync();
                     break;
                 case NotificationType.UserOnly:
                     _notificationHubContext.Clients.Group(NotificationHub.UsersGroup)
-                        .SendCoreAsync("sendTransientNotification", new object[] {model}).GetAwaiter().GetResult();
+                        .SendCoreAsync("sendTransientNotification", new object[] {model}).ExecuteSync();
                     break;
                 case NotificationType.All:
                     _notificationHubContext.Clients.All
-                        .SendCoreAsync("sendTransientNotification", new object[] {model}).GetAwaiter().GetResult();
+                        .SendCoreAsync("sendTransientNotification", new object[] {model}).ExecuteSync();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

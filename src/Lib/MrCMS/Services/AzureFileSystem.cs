@@ -51,8 +51,7 @@ namespace MrCMS.Services
                 stream.Position = 0;
             }
 
-            // TODO: async
-            blob.UploadFromStreamAsync(stream).GetAwaiter().GetResult();
+            blob.UploadFromStreamAsync(stream).ExecuteSync();
 
             return blob.Uri.ToString();
         }
@@ -67,8 +66,7 @@ namespace MrCMS.Services
             CloudBlockBlob blob = GetBlockBlobReference(filePath);
             try
             {
-                // TODO: async
-                blob.DeleteAsync().GetAwaiter().GetResult();
+                blob.DeleteAsync().ExecuteSync();
             }
             catch
             {
@@ -82,8 +80,7 @@ namespace MrCMS.Services
                 return false;
             CloudBlockBlob blob = GetBlockBlobReference(filePath);
 
-            // TODO: async
-            return blob.ExistsAsync().GetAwaiter().GetResult();
+            return blob.ExistsAsync().ExecuteSync();
         }
 
         public byte[] ReadAllBytes(string filePath)
@@ -92,8 +89,7 @@ namespace MrCMS.Services
             CloudBlockBlob blob = GetBlockBlobReference(filePath);
             using (var memoryStream = new MemoryStream())
             {
-                // TODO: async
-                blob.DownloadToStreamAsync(memoryStream).GetAwaiter().GetResult();
+                blob.DownloadToStreamAsync(memoryStream).ExecuteSync();
                 return memoryStream.GetBuffer();
             }
         }
@@ -101,29 +97,37 @@ namespace MrCMS.Services
         public Stream GetReadStream(string filePath)
         {
             EnsureInitialized();
-            ICloudBlob blob = GetBlockBlobReference(filePath);
-            // TODO: async
-            throw new NotImplementedException("Not yet implemented");
-            //return blob.OpenReadAsync().GetAwaiter().GetResult();
+            var blob = GetBlockBlobReference(filePath);
+            return blob.OpenReadAsync()
+                .ExecuteSync();
         }
 
         public void WriteToStream(string filePath, Stream stream)
         {
             EnsureInitialized();
-            ICloudBlob blob = GetBlockBlobReference(filePath);
-            // TODO: async
-            blob.DownloadToStreamAsync(stream).GetAwaiter().GetResult();
+            var blob = GetBlockBlobReference(filePath);
+            blob.DownloadToStreamAsync(stream).ExecuteSync();
         }
 
         public IEnumerable<string> GetFiles(string filePath)
         {
             EnsureInitialized();
-            CloudBlobDirectory cloudBlobDirectory = Container.GetDirectoryReference(filePath);
+            var cloudBlobDirectory = Container.GetDirectoryReference(filePath);
 
-            // TODO: async
-            throw new NotImplementedException("Not yet implemented");
-            //var blobResultSegment = cloudBlobDirectory.ListBlobsSegmentedAsync().GetAwaiter().GetResult();  
-            //return blobResultSegment.Select(item => item.Uri.ToString());
+            var blobResultSegment = cloudBlobDirectory
+                .ListBlobsSegmentedAsync(true, BlobListingDetails.None, 500, null, null, null).ExecuteSync();
+
+            List<string> files =new List<string>();
+            var continuationToken = blobResultSegment.ContinuationToken;
+            files.AddRange(blobResultSegment.Results.Select(item => item.Uri.ToString()));
+
+            while (continuationToken != null)
+            {
+                var resultSegment = cloudBlobDirectory.ListBlobsSegmentedAsync(continuationToken).ExecuteSync();
+                files.AddRange(resultSegment.Results.Select(item => item.Uri.ToString()));
+                continuationToken = resultSegment.ContinuationToken;
+            }
+            return files;
         }
 
         public CdnInfo CdnInfo
@@ -158,14 +162,13 @@ namespace MrCMS.Services
                     cloudBlobClient.GetContainerReference(
                         SeoHelper.TidyUrl(
                             _fileSystemSettings.AzureContainerName.RemoveInvalidUrlCharacters()));
-                // TODO: async
-                if (_container.CreateIfNotExistsAsync().GetAwaiter().GetResult())
+                if (_container.CreateIfNotExistsAsync().ExecuteSync())
                 {
                     _container.SetPermissionsAsync(new BlobContainerPermissions
                     {
                         PublicAccess =
                             BlobContainerPublicAccessType.Blob
-                    }).GetAwaiter().GetResult();
+                    }).ExecuteSync();
                 }
                 initialized = true;
             }

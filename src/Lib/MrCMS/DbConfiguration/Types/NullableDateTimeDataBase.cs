@@ -27,24 +27,19 @@ namespace MrCMS.DbConfiguration.Types
         {
             if (value != null)
             {
-                //var dateTime = DateTime.SpecifyKind((DateTime)value, DateTimeKind.Unspecified);
-                //// NOTE: This is a temporary work around to handle daylight savings correctly. 
-                //var sourceTimeZone = GetTimeZone(session);
-                //if (sourceTimeZone.IsInvalidTime(dateTime))
-                //{
-                //    var adjustmentRules = sourceTimeZone.GetAdjustmentRules();
-                //    var adjustmentRule = adjustmentRules.FirstOrDefault();
-                //    dateTime = dateTime.Add(adjustmentRule?.DaylightDelta ?? TimeSpan.FromHours(1));
-                //}
-                //dateTime = TimeZoneInfo.ConvertTime(dateTime, sourceTimeZone, TimeZoneInfo.Utc);
                 var dateTime = (DateTime)value;
                 if (dateTime.Kind != DateTimeKind.Utc)
                 {
-                    //todo check if removing this effects date time loading
                     var zoneInfo = GetTimeZone(session);
+                // NOTE: This is a work around to handle daylight savings correctly. 
+                var sourceTimeZone = GetTimeZone(session);
+                if (sourceTimeZone.IsInvalidTime(dateTime))
+                {
+                    var adjustmentRules = sourceTimeZone.GetAdjustmentRules();
+                    var adjustmentRule = adjustmentRules.FirstOrDefault();
+                    dateTime = dateTime.Add(adjustmentRule?.DaylightDelta ?? TimeSpan.FromHours(1));
+                }
                     dateTime = TimeZoneInfo.ConvertTime(dateTime, zoneInfo, TimeZoneInfo.Utc);
-                    
-                    //dateTime = TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc);
                 }
 
                 NHibernateUtil.UtcDateTime.NullSafeSet(dbCommand, dateTime.ToUniversalTime(), index, session);

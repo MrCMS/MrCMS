@@ -39,7 +39,7 @@ namespace MrCMS.Services.Caching
         {
             return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () =>
                 {
-                    var htmlContent = func(helper).GetAwaiter().GetResult();
+                    var htmlContent = func(helper).ExecuteSync();
                     var stringBuilder = new StringBuilder();
                     TextWriter writer = new StringWriter(stringBuilder);
                     htmlContent.WriteTo(writer, HtmlEncoder.Default);

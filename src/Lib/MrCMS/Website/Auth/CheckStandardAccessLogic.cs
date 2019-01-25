@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.ACL;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 
@@ -47,7 +48,7 @@ namespace MrCMS.Website.Auth
         private StandardLogicCheckResult GetResult(User user)
         {
             // if they're an admin they're always allowed
-            if (_userRoleManager.IsInRoleAsync(user, UserRole.Administrator).GetAwaiter().GetResult()) // TODO: async?
+            if (_userRoleManager.IsInRoleAsync(user, UserRole.Administrator).ExecuteSync()) 
                 return new StandardLogicCheckResult { CanAccess = true };
 
             // if ACL isn't on, they're not allowed because they're not an admin
@@ -56,7 +57,7 @@ namespace MrCMS.Website.Auth
                 return new StandardLogicCheckResult { CanAccess = false };
 
             // if the user has no roles, they cannot have any acl access granted
-            var roles = _userRoleManager.GetRolesAsync(user).GetAwaiter().GetResult(); // TODO: async?
+            var roles = _userRoleManager.GetRolesAsync(user).ExecuteSync(); 
             if (!roles.Any())
                 return new StandardLogicCheckResult { CanAccess = false };
 

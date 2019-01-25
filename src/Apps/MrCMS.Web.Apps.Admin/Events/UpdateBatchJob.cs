@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Hubs;
 
 namespace MrCMS.Web.Apps.Admin.Events
@@ -15,7 +16,7 @@ namespace MrCMS.Web.Apps.Admin.Events
         }
         public void Execute(OnUpdatedArgs<BatchJob> args)
         {
-            _context.Clients.All.SendCoreAsync("updateJob", new object[] { args.Item.Id }).GetAwaiter().GetResult();
+            _context.Clients.All.SendCoreAsync("updateJob", new object[] { args.Item.Id }).ExecuteSync();
         }
     }
 
