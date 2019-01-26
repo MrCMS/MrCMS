@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.App">
+      <Version>2.2.1</Version>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

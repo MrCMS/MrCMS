@@ -118,6 +118,12 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 
 ## Release History
 
+## 1.0 - TBC 2019
+*   Feature: Upgrade to .NET Core
+*   Feature: Bootstrap 4 integration in admin / Core app
+*   Feature: Notifications (Web Push)
+*   Feature: Admin LTE admin base for more responsive experience
+
 ## 0.6 - January 2019
 *	Feature: Restore Cloudflare IP
 *	Feature: Tracking Scripts (top of body). Ability to add scripts below <body> (e.g Google AdTag manager iFrame) 

@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using FluentNHibernate.Cfg.Db;
 using MrCMS.Settings;
-using NHibernate.SqlAzure;
 
 //using NHibernate.SqlAzure;
 
@@ -21,8 +20,7 @@ namespace MrCMS.DbConfiguration
         {
 
             return
-                MsSqlConfiguration.MsSql2012.ConnectionString(x => x.Is(_databaseSettings.ConnectionString))
-                    .Driver<SqlAzureClientDriver>();
+                MsSqlConfiguration.MsSql2012.ConnectionString(x => x.Is(_databaseSettings.ConnectionString));
         }
 
         public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
