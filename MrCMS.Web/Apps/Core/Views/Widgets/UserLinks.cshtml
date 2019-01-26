@@ -1,8 +1,0 @@
-﻿@using MrCMS.Website
-@model System.Collections.Generic.List<MrCMS.Web.Apps.Core.Models.Navigation.NavigationRecord>
-<ul class="dropdown-menu">
-    @foreach (var page in Model)
-    {
-        <li><a href="@page.Url">@page.Text</a></li>    
-    }
-</ul>
