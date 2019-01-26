@@ -1,0 +1,13 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Website
+@using MrCMS.Website.PushNotifications
+@model MrCMS.Web.Apps.Core.Pages.TextPage
+@inject WebPushSettings WebPushSettings
+@Html.RenderImage(Model.FeatureImage)
+<button data-push-notification-btn data-public-key="@WebPushSettings.VapidPublicKey" class="btn btn-default"></button>
+
+@Html.Editable(page => page.BodyContent, true)
+@await Component.RenderContentBlocks(Model)
+@{
+    Html.IncludeScript("~/Apps/Core/Content/Scripts/webpush.js");
+}

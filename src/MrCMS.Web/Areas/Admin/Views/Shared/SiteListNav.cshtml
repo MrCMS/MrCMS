@@ -1,0 +1,11 @@
+﻿@using MrCMS.Web.Apps.Admin.Services
+@using MrCMS.Website
+@inject IAdminSiteListService Service
+@model dynamic
+
+
+    @foreach (var site in Service.GetSites())
+    {
+        <a href="@Context.Request.Scheme://@site.BaseUrl" class="dropdown-item">@site.Name</a>
+    }
+

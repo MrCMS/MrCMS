@@ -1,0 +1,12 @@
+﻿@model System.Collections.Generic.List<MrCMS.Web.Apps.Core.Models.Navigation.NavigationRecord>
+<a class="nav-item nav-link dropdown-toggle" href="#" id="dd-user" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-user"></i>
+</a>
+<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dd-user">
+    @foreach (var item in Model)
+    {
+        <a class="dropdown-item" href="@item.Url">
+            @item.Text
+        </a>
+    }
+</div>

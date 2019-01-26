@@ -1,0 +1,56 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Website
+@model MrCMS.Web.Apps.Admin.Models.WebpageEdit.RedirectSEOTabViewModel
+@{
+    var webpage = ViewData["webpage"] as Webpage;
+}
+<div class="d-inline">
+    <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
+            For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
+
+    @Html.Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
+    @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+    <button id="change-url" class="btn btn-secondary btn-sm">Change</button>
+
+    <hr />
+    
+    <div class="d-inline">
+        <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
+
+        @Html.ActionLink(Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-sm btn-success", data_toggle = "fb-modal" })
+    </div>
+    @if (webpage.Urls.Any())
+    {
+        <table class="table table-striped table-condensed pt-3">
+            <tbody>
+                @foreach (var url in webpage.Urls.OrderByDescending(history => history.CreatedOn))
+                {
+                    <tr>
+                        <td>
+                            <a href="http://@webpage.Site.BaseUrl/@url.UrlSegment" target="_blank">http://@webpage.Site.BaseUrl/@url.UrlSegment</a>
+                        </td>
+                        <td>
+                            @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @Html.Resource("Admin Webpage Seo No URL History", "No URL History")
+    }
+
+</div>
+
+<hr />
+<strong>@Html.Resource("Page type"):</strong> @Html.GetDocumentMetadata(Model.Id).Name
+<br />
+<strong>@Html.Resource("Created On"): </strong>@webpage.CreatedOn
+<br />
+<strong>@Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
+<br />
+<strong>Page Id: </strong>@Model.Id

@@ -1,0 +1,125 @@
+﻿@using System.Linq
+@using MrCMS.Helpers
+@using MrCMS.Logging
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model LogSearchQuery
+@{
+    ViewBag.Title = "Logs";
+    var logs = ViewData["logs"] as IPagedList<Log>;
+    var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+@using (Html.BeginForm("Index", "Log", FormMethod.Get))
+{
+    <fieldset>
+        <legend>
+            @Html.Resource("Admin Logs Title", "Logs")
+            <span class="btn-group d-inline pull-right">
+                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("Search")" />
+            </span>
+        </legend>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Type)
+                    @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.SiteId)
+                    @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.From)
+                    @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.To)
+                    @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Message)
+                    @Html.TextBoxFor(query => query.Message, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Detail)
+                    @Html.TextBoxFor(query => query.Detail, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
+    </fieldset>
+}
+
+@if (logs.Count == 0)
+{
+    @Html.Resource("Admin Logs No Logs", "No logs")
+}
+else
+{
+    <table class="table table-striped table-condensed" style="overflow: scroll">
+        <thead>
+            <tr>
+                <th>
+                    @Html.Resource("Date")
+                </th>
+                <th>
+                    @Html.Resource("Site")
+                </th>
+                <th>
+                    @Html.Resource("Level")
+                </th>
+                <th>
+                    @Html.Resource("Message")
+                </th>
+                <th>
+                    @Html.Resource("Type")
+                </th>
+                <th>
+                    @Html.Resource("Actions")
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in logs)
+            {
+                <tr>
+                    <td>
+                        @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td>
+                        @entry.SiteName
+                    </td>
+                    <td>
+                        @entry.LogLevel
+                    </td>
+                    <td>
+                        @entry.Message
+                    </td>
+                    <td>
+                        @entry.Type
+                    </td>
+                    <td>
+                        @Html.ActionLink(Html.Resource("Show"), "Show", new { id = entry.Id }, new { @class = "btn btn-sm btn-secondary" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@Html.PagedListPager(logs, page => Url.Action("Index", new { page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId }), MrCmsPagedListRenderOptions.Bootstrap4)

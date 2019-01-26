@@ -1,0 +1,39 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Settings
+@using System.Drawing
+@using MrCMS.Services
+@inject SiteSettings Settings
+@inject IGetCurrentUser GetCurrentUser
+@{
+    var user = GetCurrentUser.Get();
+    var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/160";
+}
+<a href="@Url.Action("Index", "Home")" tabindex="1" class="brand-link">
+    @{
+        var adminLogo = Settings.AdminLogo;
+    }
+    @if (!string.IsNullOrWhiteSpace(adminLogo))
+    {
+        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new {@class = "brand-image"})
+    }
+    else
+    {
+        <img src="/Areas/Admin/img/logo.png" class="brand-image elevation-2 img-circle" alt="dashboard logo"/>
+    }
+    <span class="brand-text font-weight-light">Mr CMS</span>
+</a>
+
+<div class="sidebar">
+
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src="@avatarImg" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="d-block">@user.Name</a>
+        </div>
+    </div>
+
+    <vc:nav-links/>
+
+</div>

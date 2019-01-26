@@ -1,0 +1,42 @@
+﻿@using System.Drawing
+@using System.Linq
+@using Microsoft.AspNetCore.Html
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
+<div id="file-list-simple" data-category-id="@Model.Id">
+    @if (Model.Files.Any())
+    {
+        <table class="table table-striped table-condensed">
+            <tr>
+                <th class="col-lg-6">File Name</th>
+                <th class="col-lg-4">Alt / Description</th>
+                <th class="col-lg-2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-sm btn-secondary" target="_new">Manage folder</a></th>
+            </tr>
+
+            @foreach (var file in Model.Files.OrderBy(x => x.DisplayOrder).ThenByDescending(x => x.CreatedOn))
+            {
+                <tr>
+                    <td>
+                        @if (file.IsImage())
+                        {
+                            <a href="@file.FileUrl">
+                                @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                            </a>
+                        }
+                        @Html.Link(file.FileName, file.FileUrl)
+
+                    </td>
+                    <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? new HtmlString("<br />" + file.Description) : null)</td>
+                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-sm delete-file-simple">Delete</a></th>
+                </tr>
+            }
+
+        </table>
+
+    }
+    else
+    {
+        <p>There are no files here yet - why not upload some?</p>
+        
+    }
+</div>

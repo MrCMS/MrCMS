@@ -1,0 +1,29 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Core.Models
+@using MrCMS.Website
+@model MrCMS.Web.Apps.Core.Pages.UserAccountPage
+<h1>@Html.Editable(page => page.Name) </h1>
+<hr />
+@Html.Editable(page => page.BodyContent, true)
+
+@{
+    var message = ViewData["message"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-success">
+        @message
+    </div>
+}
+
+@*
+    // TODO: User profile details
+    <div class="row">
+    <div class="col-lg-6">
+        @{Html.RenderAction("UserAccountDetails", "UserAccount");}
+    </div>
+    <div class="col-lg-6">
+        @{Html.RenderAction("ChangePassword", "UserAccount");}
+    </div>
+</div>*@

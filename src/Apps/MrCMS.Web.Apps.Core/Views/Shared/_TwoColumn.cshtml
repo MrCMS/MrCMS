@@ -1,0 +1,8 @@
+﻿@using MrCMS.Helpers
+@{
+    Layout = "_BaseLayout.cshtml";
+}
+<div class="row">
+    <div class="col-sm-8">@RenderBody()</div>
+    <div class="col-sm-4">@await Component.RenderZone("Right Column")</div>
+</div>

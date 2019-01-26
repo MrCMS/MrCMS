@@ -1,0 +1,115 @@
+﻿@using System.Linq
+@using MrCMS.ACL.Rules
+@using MrCMS.Entities.People
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Services
+@model User
+@inject IGetEditTabsService EditTabsService
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
+    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+    var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var tabs = EditTabsService.GetEditTabs(Html, Model);
+}
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "edit-user" }))
+{
+    <fieldset>
+        <legend>
+            @Model.Name
+            <span class="btn-group d-inline pull-right">
+                @Html.ActionLink(Html.Resource("Back"), "Index", "User", null, new { @class = "btn btn-secondary" })
+                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin User Reset Password", "Reset Password")</a>
+
+                @if (!onlyAdmin)
+                {
+                    <a href="@Url.Action("Delete", "User", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+                }
+                <button class="btn btn-primary">
+                    @Html.Resource("Save")
+                </button>
+            </span>
+        </legend>
+
+        @Html.HiddenFor(x => x.Id)
+        <div class="row">
+            <div class="col-md-6">
+                <h4>@Html.Resource("Properties")</h4>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Email)
+                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Email)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FirstName)
+                    @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FirstName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.LastName)
+                    @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.LastName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.UICulture)
+                    @Html.DropDownListFor(x => x.UICulture, cultureOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UICulture)
+                </div>
+                @if (!onlyAdmin)
+                {
+                    <div class="form-inline">
+                        @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { }, "Is Active")
+                    </div>
+                }
+
+            </div>
+            <div class="col-md-6">
+                <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
+                <div class="form-inline">
+                    @if (userRoles != null && Html.CanAccess<UserACL>(UserACL.Roles))
+                    {
+                        foreach (var role in userRoles)
+                        {
+                            bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
+                            bool isEnabled = !role.IsAdmin || !onlyAdmin;
+
+                            @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
+                            @:&nbsp;
+                            @Html.Label("Role-" + role.Id, role.Name)
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <p>@Html.Resource("Admin User Roles None", "You do not have access to administer roles").</p>
+                    }
+                </div>
+                <h4>Notifications</h4>
+                @Html.InlineCheckboxFor(x => x.DisableNotifications, null, null, "Disable system notifications")
+            </div>
+        </div>
+
+    </fieldset>
+    @Html.ValidationSummary()
+}
+<hr />
+@if (tabs.Any())
+{
+    ViewData["user"] = Model;
+    <ul class="nav nav-tabs pt-3" data-stickytabs="user-@Model.Id">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData" />
+        }
+    </ul>
+    <div class="tab-content">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Content" model="tab" view-data="ViewData" />
+        }
+    </div>
+}

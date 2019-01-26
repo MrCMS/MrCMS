@@ -1,8 +1,9 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
-
-*.idea/
+.vscode/*
+.vs/*
+.idea/*
 
 #Visual Studio files
 *.[Oo]bj
@@ -32,8 +33,7 @@ obj/
 [Dd]ebug*/
 [Rr]elease*/
 Ankh.NoLoad
-.vs/*
-.idea/*
+
 
 #MonoDevelop
 *.pidb
@@ -85,18 +85,24 @@ packages/
 *mrcms.config
 
 #Media files
-MrCMS.Web/media*
-MrCMS.Web/content/upload*
+*/MrCMS.Web/media*
+*/MrCMS.Web/content/upload*
+*/MrCMS.Web/wwwroot/Content/upload*
 *.orig
-MrCMS.Web/App_Data/*
+*/MrCMS.Web/App_Data/*
 *.jtconfig
 *.vspx
 NDependOut/*
 *.ndproj
-MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
+*/MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.stackdump
 *.psess
+
 *.vsp
 *.pubxml
 *sitemap.xml
+
+
+appsettings.Development.json
+
 

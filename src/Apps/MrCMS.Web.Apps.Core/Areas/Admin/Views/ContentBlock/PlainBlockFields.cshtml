@@ -1,0 +1,7 @@
+﻿@model MrCMS.Web.Apps.Core.Areas.Admin.Models.ContentBlocks.PlainBlockViewModel
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Text)
+    @Html.TextAreaFor(x => x.Text, new { @class = "ckedit-enabled" })
+    @Html.ValidationMessageFor(x => x.Text)
+</div>

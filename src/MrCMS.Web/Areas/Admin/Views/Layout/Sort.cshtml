@@ -1,0 +1,54 @@
+﻿@using MrCMS.Helpers
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
+@{
+    ViewBag.Title = "Sort Layouts";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section JavaScriptBlock
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#sortable").sortable({
+                update: function(event, ui) {
+                    $('#sortable li').each(function(index, domElement) {
+                        $(domElement).find('[name*="Order"]').val(index);
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<form method="POST" id="sort-layouts">
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-sort", "Sort") "/>
+
+            <admin-header-actions>
+                <span class="btn-group">
+                    <a asp-controller="Layout" asp-action="Index" class="btn btn-secondary">@Html.Resource("admin-back","back")</a>
+                    <button class="btn btn-primary">@Html.Resource("admin-save", "Save")</button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+
+            <ul id="sortable" class="list-group">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <li class="list-group-item">
+                        @Html.HiddenFor(model => model[i].Id)
+                        @Html.HiddenFor(model => model[i].Order)
+                        <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
+                        @Model[i].Name
+                    </li>
+                }
+            </ul>
+
+        </card-body>
+    </card>
+</form>

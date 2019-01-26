@@ -1,0 +1,18 @@
+﻿@model MrCMS.Web.Apps.Core.Areas.Admin.Models.ContentBlocks.VideoBlockViewModel
+
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Image, "Placeholder Image")<br />
+    @Html.TextBoxFor(x => x.Image, new { data_type = "media-selector" })
+    @Html.ValidationMessageFor(x => x.Image)
+</div>
+
+<div class="alert alert-info" role="alert">
+    Use youtube embed url:<br />https://www.youtube.com/embed/xxxxxxxxxxx
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Url)
+    @Html.TextBoxFor(x => x.Url, new{@class= "form-control" })
+    @Html.ValidationMessageFor(x => x.Url)
+</div>

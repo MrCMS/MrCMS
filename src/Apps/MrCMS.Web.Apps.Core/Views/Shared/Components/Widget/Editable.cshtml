@@ -1,0 +1,5 @@
+﻿@model MrCMS.Entities.Widget.Widget
+
+<div data-widget-id="@Model.Id" data-widget-name="@Model.Name" class="widget">
+    @await Component.InvokeAsync("Widget", new { Model.Id })
+</div>

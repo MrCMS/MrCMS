@@ -1,0 +1,35 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Admin.Models.UpdateMediaCategoryModel
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+
+    Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media-category.js");
+}
+
+<form asp-controller="MediaCategory" asp-action="Edit" asp-route-id="@Model.Id" method="post" id="edit-media", target="_top">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-edit", "Edit") @Model.Name"/>
+
+            <admin-header-actions>
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("admin-save", "Save")">
+
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Name, "Folder Name")
+                @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
+            </div>
+            @Html.EditorFor(x => x.IsGallery)
+
+        </card-body>
+    </card>
+
+</form>

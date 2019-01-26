@@ -1,0 +1,156 @@
+﻿@using MrCMS.Web.Apps.Admin.Helpers
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@model MrCMS.Logging.Log
+@{
+    ViewBag.Title = "View Log #" + Model.Id;
+    var contextData = Model.GetContextData();
+}
+
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("admin-log-view", "Log") @Model.Id"/>
+
+        <admin-header-actions>
+            <span class="btn-group">
+                @Html.ActionLink("Back to list", "Index", "Log", null, new {@class = "btn btn-secondary"})
+                <a href="@Url.Action("DeleteLog", "Log", new {Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+            </span>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+        <table class="table table-striped table-condensed">
+            <tbody>
+            <tr>
+                <td class="w-25">
+                    @Html.Resource("Type")
+                </td>
+                <td class="">
+                    @Model.Type
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Resource("Level")
+                </td>
+                <td>
+                    @Model.LogLevel
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Resource("Created on")
+                </td>
+                <td>
+                    @Model.CreatedOn
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Resource("Site")
+                </td>
+                <td>
+                    @Model.SiteName
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Resource("Message")
+                </td>
+                <td>
+                    @Model.Message
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Resource("Detail")
+                </td>
+                <td>
+                    @Html.Raw(Model.DetailFormatted)
+                </td>
+            </tr>
+            @*<tr>
+                <td>
+                    @Html.Resource("Exception Data")
+                </td>
+                <td>
+                    @Model.FormatExceptionData()
+                </td>
+            </tr>*@
+            </tbody>
+        </table>
+        @if (contextData != null)
+        {
+            <h4>@Html.Resource("Admin Logs - Request Data", "Request Data")</h4>
+            <table class="table table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th class="w-25">
+                        @Html.Resource("Key")
+                    </th>
+                    <th class="w-75">
+                        @Html.Resource("Value")
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        @Html.Resource("Uri")
+                    </td>
+                    <td>
+                        @contextData.Uri
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("Method")
+                    </td>
+                    <td>
+                        @contextData.Method
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("User Agent")
+                    </td>
+                    <td>
+                        @contextData.UserAgent
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("IP Address")
+                    </td>
+                    <td>
+                        @contextData.IPAddress
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("User")
+                    </td>
+                    <td>
+                        @contextData.User
+                    </td>
+                </tr>
+                @foreach (var header in contextData.Headers)
+                {
+                    <tr>
+                        <td class="w-25">
+                            @header.Key
+                        </td>
+                        <td class="w-75">
+                            @header.Value
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
+    </card-body>
+</card>

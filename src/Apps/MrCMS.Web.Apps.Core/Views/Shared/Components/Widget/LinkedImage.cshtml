@@ -1,0 +1,5 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Core.Widgets.LinkedImage 
+<a href="@Model.Link">
+    @Html.RenderImage(Model.Image, attributes: new { @class = "img-responsive" })
+</a>

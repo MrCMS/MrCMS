@@ -1,0 +1,108 @@
+﻿@using System.Drawing
+@using System.Linq
+@using MrCMS.Entities.Messaging
+@using MrCMS.Helpers
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Models.MessageQueueQuery
+@{
+    var queuedMessages = ViewData["data"] as IPagedList<QueuedMessage>;
+}
+@using (Html.BeginForm("Index", "MessageQueue", FormMethod.Get))
+{
+    <fieldset>
+        <legend>
+            @Html.Resource("Admin Queued Messages Title", "Queued Messages")
+            <span class="btn-group pull-right">
+                <input type="submit" value="@Html.Resource("Search")" class="btn btn-primary" />
+            </span>
+        </legend>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.FromQuery)
+                    @Html.TextBoxFor(query => query.FromQuery, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.ToQuery)
+                    @Html.TextBoxFor(query => query.ToQuery, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Subject)
+                    @Html.TextBoxFor(query => query.Subject, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.From)
+                    @Html.EditorFor(query => query.From)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.To)
+                    @Html.EditorFor(query => query.To)
+                </div>
+            </div>
+        </div>
+    </fieldset>
+}
+@if (queuedMessages.Any())
+{
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.Resource("From")
+                </th>
+                <th>
+                    @Html.Resource("To")
+                </th>
+                <th>
+                    @Html.Resource("Subject")
+                </th>
+                <th>
+                    @Html.Resource("Created On")
+                </th>
+                <th>
+                    @Html.Resource("Sent On")
+                </th>
+                <th>
+                    @Html.Resource("Actions")
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var message in queuedMessages)
+            {
+                <tr>
+                    <td>
+                        @message.FromDescription
+                    </td>
+                    <td>
+                        @message.ToDescription
+                    </td>
+                    <td>
+                        @message.Subject
+                    </td>
+                    <td>
+                        @message.CreatedOn.ToString()
+                    </td>
+                    <td>
+                        @(message.SentOnDescription)
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink(Html.Resource("View"), "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-sm btn-secondary" })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No results match your search.</p>
+}
+@Html.PagedListPager(queuedMessages, page => Url.Action("Index",  new { page }), MrCmsPagedListRenderOptions.Bootstrap4)
+

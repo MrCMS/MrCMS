@@ -1,0 +1,62 @@
+﻿@using System
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
+@model Webpage
+@inject IGetEditTabsService TabsService
+@inject IGetLiveUrl GetLiveUrl
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    ViewData["webpage"] = Model;
+    var tabs = TabsService.GetEditTabs(Html, Model);
+}
+
+@using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document", data_are_you_sure = Html.Resource(AdminMessages.AreYouSureDefaultMessage) }))
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="btn-group d-inline" id="edit-webpage-options">
+                <button class="btn btn-primary">@Html.Resource("Save")</button>
+                <a href="@GetLiveUrl.GetUrlSegment(Model,true)" class="btn btn-secondary">View</a>
+
+                @Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-secondary" })
+                @if (Model.CanAddChildren())
+                {
+                    @Html.ActionLink(Html.Resource("Add a child page"), "Add", new { Model.Id }, new { @class = "btn btn-secondary" })
+                }
+                @if (Html.CanDelete())
+                {
+                    <a href="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                }
+
+                @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" }) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+
+                @Html.EditorFor(x => x.PublishOn)
+                @Html.ValidationMessageFor(x => x.PublishOn)
+
+                <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "green" : "orange")">@Html.Resource(Model.PublishStatus.ToString())</span>
+            </div>
+        </div>
+    </div>
+    @Html.ValidationSummary()
+
+    <ul class="nav nav-tabs pt-3" data-stickytabs="webpage-@Model.Id">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData" />
+        }
+    </ul>
+    <div class="tab-content">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="TabContent" model="tab" view-data="ViewData" />
+        }
+    </div>
+
+    Html.IncludeScript("~/Areas/Admin/scripts/edit-webpage.js");
+}
+

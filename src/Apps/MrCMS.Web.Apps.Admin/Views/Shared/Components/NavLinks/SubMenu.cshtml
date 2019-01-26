@@ -1,0 +1,43 @@
+﻿@using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
+@model List<SitemapNode>
+@{
+    var nav = ViewData["submenu"] as string;
+    var indexOf = ViewData["indexOf"] as string;
+    var breadcrumbs = ViewData.Breadcrumbs();
+}
+<ul class="nav nav-treeview" id="@nav" aria-expanded="false">
+    @foreach (var item in Model)
+    {
+        if (item.Nodes != null && item.Nodes.Any())
+        {
+            int index = item.Nodes.IndexOf(item);
+            ViewData["submenu"] = item.Name;
+            indexOf = indexOf + index;
+            ViewData["indexOf"] = indexOf;
+            ViewData["item"] = item.Name;
+
+            <li class="nav-item has-treeview" data-menu="@indexOf">
+                <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
+                    <i class="fa  @(indexOf.Length > 1 ? "fa-circle" : "fa-circle-o") nav-icon"></i>
+                    <p>
+                        @Html.Resource("Nav Links - " + item.Name, item.Name)
+                        <i class="fa fa-angle-left right"></i>
+                    </p>
+                </a>
+
+                <partial name="Components/NavLinks/SubMenu" model="item.Nodes" view-data="ViewData" />
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a asp-action="@item.Action" asp-controller="@item.Controller" class="nav-link @(item.IsActive(breadcrumbs)? "active" : "")">
+                    <i class="fa fa-circle-o nav-icon"></i>
+                    <p>
+                        @Html.Resource("Nav Links - " + item.Name, item.Name)
+                    </p>
+                </a>
+            </li>
+        }
+    }
+</ul>

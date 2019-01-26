@@ -1,0 +1,8 @@
+﻿@using MrCMS.Website
+@model string
+
+<div class="form-group">
+    <label asp-for="@Model"></label>
+    <input asp-for="@Model" class="form-control"/>
+    <span asp-validation-for="@Model"></span>
+</div>

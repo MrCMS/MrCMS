@@ -1,0 +1,74 @@
+﻿@using MrCMS.ACL
+@using MrCMS.Entities.People
+@using MrCMS.Web.Apps.Admin.Models
+@model dynamic
+@{
+    var rules = ViewData["acl-rules"] as List<AclInfo>;
+    var roles = rules.SelectMany(x => x.Roles).Select(x => new { x.Id, x.Name }).Distinct().OrderBy(x => x.Name).ToList();
+}
+
+<form method="post" asp-action="Index">
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <h1>ACL</h1>
+                </div>
+                <div class="col">
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-outline-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            @foreach (var group in rules.GroupBy(x => x.Rule).OrderBy(x => x.Key))
+            {
+                <h3>@group.Key.BreakUpString()</h3>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>
+                                Operation
+                            </th>
+                            @foreach (var role in roles)
+                            {
+                                <th>
+                                    @role.Name
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rule in group.OrderBy(x => x.Type).ThenBy(x => x.Operation))
+                        {
+                            <tr>
+                                <td>
+                                    @rule.Operation.BreakUpString()
+                                </td>
+                                @foreach (var role in rule.Roles)
+                                {
+                                    var key = string.Format("{0}-{1}", role.Id, rule.Key);
+                                    if (role.Name != UserRole.Administrator)
+                                    {
+                                        <td>
+
+                                            <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "") />
+
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="checkbox" checked="checked" disabled="disabled" />
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</form>
