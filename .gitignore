@@ -85,11 +85,11 @@ packages/
 *mrcms.config
 
 #Media files
-*/MrCMS.Web/media*
-*/MrCMS.Web/content/upload*
-*/MrCMS.Web/wwwroot/Content/upload*
+*MrCMS.Web/media*
+*MrCMS.Web/content/upload*
+*MrCMS.Web/wwwroot/Content/upload*
 *.orig
-*/MrCMS.Web/App_Data/*
+*MrCMS.Web/App_Data/*
 *.jtconfig
 *.vspx
 NDependOut/*

@@ -10,10 +10,7 @@
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Helpers\Validation\" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>
