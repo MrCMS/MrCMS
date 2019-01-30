@@ -106,3 +106,5 @@ NDependOut/*
 appsettings.Development.json
 
 
+/src/MrCMS.Web/App_Data/Indexes/*
+/src/MrCMS.Web/wwwroot/content/upload/*

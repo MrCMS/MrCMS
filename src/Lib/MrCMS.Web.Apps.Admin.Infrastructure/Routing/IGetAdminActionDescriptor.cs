@@ -4,6 +4,6 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Routing
 {
     public interface IGetAdminActionDescriptor
     {
-        ControllerActionDescriptor GetDescriptor(string controllerName, string actionName);
+        ControllerActionDescriptor GetDescriptor(string controllerName, string actionName, string method = GetAdminActionDescriptor.DefaultMethod);
     }
 }

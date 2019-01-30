@@ -1,6 +1,4 @@
-﻿@using System
-@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
+﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @using MrCMS.Web.Apps.Admin.Models
 @using MrCMS.Web.Apps.Admin.Services
@@ -13,50 +11,61 @@
     var tabs = TabsService.GetEditTabs(Html, Model);
 }
 
-@using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document", data_are_you_sure = Html.Resource(AdminMessages.AreYouSureDefaultMessage) }))
-{
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="btn-group d-inline" id="edit-webpage-options">
-                <button class="btn btn-primary">@Html.Resource("Save")</button>
-                <a href="@GetLiveUrl.GetUrlSegment(Model,true)" class="btn btn-secondary">View</a>
+<form asp-controller="Webpage" asp-action="edit" id="edit-document" data-are-you-sure="@Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post">
+    <admin-header>
+        <row>
+            <admin-header-title title="@Model.Name" />
 
-                @Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-secondary" })
-                @if (Model.CanAddChildren())
+            <admin-header-actions>
+                <div class="input-group" id="edit-webpage-options">
+                    <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
+
+                    <input type="input" asp-for="PublishOn" class="form-control date-time-picker" />
+                    @Html.ValidationMessageFor(x => x.PublishOn)
+
+                    <div class="input-group-append">
+                        @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" }) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+
+                        <a href="@GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
+
+                        @*@Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new {Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})*@
+                        @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new { Model.Id }, new { @class = "btn btn-secondary" })
+                        @if (Html.AnyChildren())
+                        {
+                            @Html.ActionLink(Html.Resource("Merge"), "Index", "MergeWebpage", new { Model.Id }, new { @class = "btn btn-secondary" })
+                        }
+
+                        @if (Html.CanDelete())
+                        {
+                            <button class="btn btn-danger" data-toggle="confirmation" data-value="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">Delete</button>
+                        }
+                        <button class="btn btn-primary">@Html.Resource("Save")</button>
+                    </div>
+                </div>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+            <ul class="nav nav-tabs" data-stickytabs="webpage-@Model.Id" role="tablist">
+                @foreach (var tab in tabs)
                 {
-                    @Html.ActionLink(Html.Resource("Add a child page"), "Add", new { Model.Id }, new { @class = "btn btn-secondary" })
+                    ViewData["is-first"] = tab == tabs.First();
+                    <partial name="Tab" model="tab" view-data="ViewData" />
                 }
-                @if (Html.CanDelete())
+            </ul>
+            <div class="tab-content mt-3">
+                @foreach (var tab in tabs)
                 {
-                    <a href="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                    ViewData["is-first"] = tab == tabs.First();
+                    <partial name="TabContent" model="tab" view-data="ViewData" />
                 }
-
-                @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" }) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
-
-                @Html.EditorFor(x => x.PublishOn)
-                @Html.ValidationMessageFor(x => x.PublishOn)
-
-                <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "green" : "orange")">@Html.Resource(Model.PublishStatus.ToString())</span>
             </div>
-        </div>
-    </div>
-    @Html.ValidationSummary()
+        </card-body>
+    </card>
+</form>
 
-    <ul class="nav nav-tabs pt-3" data-stickytabs="webpage-@Model.Id">
-        @foreach (var tab in tabs)
-        {
-            ViewData["is-first"] = tab == tabs.First();
-            <partial name="Tab" model="tab" view-data="ViewData" />
-        }
-    </ul>
-    <div class="tab-content">
-        @foreach (var tab in tabs)
-        {
-            ViewData["is-first"] = tab == tabs.First();
-            <partial name="TabContent" model="tab" view-data="ViewData" />
-        }
-    </div>
-
+@{
     Html.IncludeScript("~/Areas/Admin/scripts/edit-webpage.js");
 }
-
