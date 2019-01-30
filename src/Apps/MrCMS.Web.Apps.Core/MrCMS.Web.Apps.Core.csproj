@@ -10,12 +10,6 @@
     <EmbeddedResource Include="wwwroot\**" />
   </ItemGroup>
 
-
-  <!--<ItemGroup>
-    <None Remove="Views\Shared\Components\LayoutArea\Editable.cshtml" />
-    <None Remove="Views\Shared\Components\Widget\Editable.cshtml" />
-  </ItemGroup>-->
-
   <ItemGroup>
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
   </ItemGroup>
