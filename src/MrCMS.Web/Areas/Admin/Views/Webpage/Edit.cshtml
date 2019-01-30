@@ -30,7 +30,13 @@
 
                         <a href="@GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
 
-                        @Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new {Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})
+                        @*@Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new {Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})*@
+                        @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new { Model.Id }, new { @class = "btn btn-secondary" })
+                        @if (Html.AnyChildren())
+                        {
+                            @Html.ActionLink(Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "btn btn-secondary"})
+                        }
+
                         @if (Html.CanDelete())
                         {
                             <button class="btn btn-danger" data-toggle="confirmation" data-value="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">Delete</button>

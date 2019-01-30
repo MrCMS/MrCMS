@@ -19,17 +19,6 @@ namespace MrCMS.Website.Auth
             _performAclCheck = performAclCheck;
         }
 
-        public bool CanAccess(string controllerName, string actionName)
-        {
-            return CanAccess(new ControllerActionDescriptor {ControllerName = controllerName, ActionName = actionName});
-        }
-
-        public bool CanAccess(string controllerName, string actionName, User user)
-        {
-            return CanAccess(new ControllerActionDescriptor {ControllerName = controllerName, ActionName = actionName},
-                user);
-        }
-
         public bool CanAccess(ControllerActionDescriptor descriptor)
         {
             var result = _checkStandardAccessLogic.Check();

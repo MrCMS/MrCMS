@@ -1,0 +1,67 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.MoveWebpageModel
+@{
+    var confirmationModel = ViewData["confirmation-model"] as MoveWebpageConfirmationModel;
+}
+<form asp-controller="MoveWebpage" asp-action="Confirm" asp-route-id="" method="post">
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("Admin Webpage Move", "Move")" />
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.ParentId)
+            @Html.HiddenFor(x => x.UpdateUrls)
+            <p>
+                @string.Format(Html.Resource("Admin Webpage Move - Confirm Text", "{0} record(s) will be impacted. Are you sure you would like to proceed?  This process will be added to a batch, it will not process immediately but may take several minutes to complete."), confirmationModel.ChangedPages.Count)
+            </p>
+            <div class="alert alert-warning">
+                @Html.Resource("Admin Webpage Move - Confirm Structure Warning", "This is a structural change, please confirm with your system administrator that a backup has been taken before proceeding")
+            </div>
+
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.Resource("Old location")
+                        </th>
+                        <th>
+                            @Html.Resource("Old URL")
+                        </th>
+                        <th>
+                            @Html.Resource("New location")
+                        </th>
+                        <th>
+                            @Html.Resource("New URL")
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in confirmationModel.ChangedPages)
+                    {
+                        <tr>
+                            <td>@item.OldHierarchy</td>
+                            <td>@item.OldUrl</td>
+                            <td>@item.NewHierarchy</td>
+                            <td>@item.NewUrl</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <hr />
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">@Html.Resource("Complete")</button>
+                @Html.ActionLink(Html.Resource("Cancel"), "Edit", "Webpage", new { Model.Id }, new { @class = "btn btn-default" })
+            </div>
+        </card-body>
+    </card>
+</form>
+@{
+    Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.css");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.min.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/move-webpage.js");
+}

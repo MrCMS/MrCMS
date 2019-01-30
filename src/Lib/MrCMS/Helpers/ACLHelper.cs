@@ -21,18 +21,6 @@ namespace MrCMS.Helpers
             var accessChecker = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IAccessChecker>();
             return user != null && accessChecker.CanAccess<T>(operation, user);
         }
-
-        public static bool CanAccess(this IHtmlHelper html, [AspMvcController]string controllerName, [AspMvcAction]string actionName)
-        {
-            var currentUser = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>().Get();
-            return html.CanAccess(currentUser, controllerName, actionName);
-        }
-
-        public static bool CanAccess(this IHtmlHelper html, User user, [AspMvcController]string controllerName, [AspMvcAction]string actionName)
-        {
-            var accessChecker = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IAccessChecker>();
-            return user != null && accessChecker.CanAccess(controllerName, actionName, user);
-        }
     }
 
 }

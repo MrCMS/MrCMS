@@ -7,6 +7,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Routing
 {
     public class GetAdminActionDescriptor : IGetAdminActionDescriptor
     {
+        public const string DefaultMethod = "GET";
         private readonly IGetAllAdminDescriptors _getAllAdminDescriptors;
 
         public GetAdminActionDescriptor(IGetAllAdminDescriptors getAllAdminDescriptors)
@@ -14,7 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Routing
             _getAllAdminDescriptors = getAllAdminDescriptors;
         }
 
-        public ControllerActionDescriptor GetDescriptor(string controllerName, string actionName)
+        public ControllerActionDescriptor GetDescriptor(string controllerName, string actionName, string method = DefaultMethod)
         {
             var adminDescriptors = _getAllAdminDescriptors.GetDescriptors();
             var getDescriptors = adminDescriptors.Where(x =>
@@ -23,7 +24,8 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Routing
                     return true;
                 var httpMethodConstraints = x.ActionConstraints.OfType<HttpMethodActionConstraint>().ToList();
                 return !httpMethodConstraints.Any() ||
-                       httpMethodConstraints.Any(constraint => constraint.HttpMethods.Contains(HttpMethod.Get.Method));
+                       httpMethodConstraints.Any(constraint =>
+                           constraint.HttpMethods.Contains(method ?? HttpMethod.Get.Method));
             });
 
             return getDescriptors.FirstOrDefault(x => x.ControllerName == controllerName && x.ActionName == actionName);

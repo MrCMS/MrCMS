@@ -3,6 +3,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Admin.Infrastructure.Routing;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Website.Auth;
 using System.Collections.Generic;
@@ -15,17 +16,20 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IGetValidPageTemplatesToAdd _getValidPageTemplatesToAdd;
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly IAccessChecker _accessChecker;
+        private readonly IGetAdminActionDescriptor _getDescriptor;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService,
             IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
             IGetCurrentUser getCurrentUser,
-            IAccessChecker accessChecker)
+            IAccessChecker accessChecker,
+            IGetAdminActionDescriptor getDescriptor)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
             _getCurrentUser = getCurrentUser;
             _accessChecker = accessChecker;
+            _getDescriptor = getDescriptor;
         }
 
         public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
@@ -34,7 +38,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             IOrderedEnumerable<DocumentMetadata> validWebpageDocumentTypes = _validWebpageChildrenService
                 .GetValidWebpageDocumentTypes(parent,
-                    metadata => _accessChecker.CanAccess("Webpage", "Add", _getCurrentUser.Get()))
+                    metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"), _getCurrentUser.Get()))
                 .OrderBy(metadata => metadata.DisplayOrder);
 
             var templates = _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);

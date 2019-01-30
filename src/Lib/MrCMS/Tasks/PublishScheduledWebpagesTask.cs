@@ -13,11 +13,13 @@ namespace MrCMS.Tasks
     {
         private readonly ISession _session;
         private readonly IGetDateTimeNow _getDateTimeNow;
+        private readonly INotificationDisabler _notificationDisabler;
 
-        public PublishScheduledWebpagesTask(ISession session, IGetDateTimeNow getDateTimeNow)
+        public PublishScheduledWebpagesTask(ISession session, IGetDateTimeNow getDateTimeNow, INotificationDisabler notificationDisabler)
         {
             _session = session;
             _getDateTimeNow = getDateTimeNow;
+            _notificationDisabler = notificationDisabler;
         }
 
         public override int Priority
@@ -28,22 +30,20 @@ namespace MrCMS.Tasks
         protected override void OnExecute()
         {
             using (new SiteFilterDisabler(_session))
+            using (_notificationDisabler.Disable())
             {
                 var now = _getDateTimeNow.LocalNow;
                 var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
                 if (!due.Any())
                     return;
-                using (new NotificationDisabler(_session.GetContext()))
+                _session.Transact(session =>
                 {
-                    _session.Transact(session =>
+                    foreach (var webpage in due)
                     {
-                        foreach (var webpage in due)
-                        {
-                            webpage.Published = true;
-                            session.Update(webpage);
-                        }
-                    });
-                }
+                        webpage.Published = true;
+                        session.Update(webpage);
+                    }
+                });
             }
         }
     }
