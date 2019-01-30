@@ -24,10 +24,6 @@ namespace MrCMS.Website.Auth
 
         public IList<string> GetKeys(ControllerActionDescriptor descriptor)
         {
-
-            if (descriptor.MethodInfo == null || descriptor.ControllerTypeInfo == null)
-                return null;
-            
             var acl = descriptor.MethodInfo.GetCustomAttribute<AclAttribute>() ??
                       descriptor.ControllerTypeInfo.GetCustomAttribute<AclAttribute>();
 
