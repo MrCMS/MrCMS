@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
     <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
-    <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
+    <ProjectReference Include="..\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
     <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
     <ProjectReference Include="..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
