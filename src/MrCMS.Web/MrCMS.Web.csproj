@@ -8,14 +8,6 @@
     <Compile Remove="App_Data\**" />
     <Content Remove="App_Data\**" />
     <EmbeddedResource Remove="App_Data\**" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\hidpi\justifyblock.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\hidpi\justifycenter.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\hidpi\justifyleft.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\hidpi\justifyright.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\justifyblock.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\justifycenter.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\justifyleft.png" />
-    <EmbeddedResource Include="wwwroot\Areas\Admin\lib\ckeditor\plugins\justify\icons\justifyright.png" />
     <None Remove="App_Data\**" />
   </ItemGroup>
 
