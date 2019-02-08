@@ -33,6 +33,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using MrCMS.Web.Apps.Articles;
 using StackExchange.Profiling.Storage;
 using ISession = NHibernate.ISession;
 
@@ -80,6 +81,7 @@ namespace MrCMS.Web
             {
                 context.RegisterApp<MrCMSCoreApp>();
                 context.RegisterApp<MrCMSAdminApp>();
+                context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
                 context.RegisterDatabaseProvider<SqliteProvider>();
             });

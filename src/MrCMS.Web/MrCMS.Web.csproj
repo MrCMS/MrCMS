@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
     <ProjectReference Include="..\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
     <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
+    <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Articles\MrCMS.Web.Apps.Articles.csproj" />
     <ProjectReference Include="..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
   

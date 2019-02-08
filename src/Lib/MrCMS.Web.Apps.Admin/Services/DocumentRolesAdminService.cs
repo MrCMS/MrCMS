@@ -1,5 +1,4 @@
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
 using System;
