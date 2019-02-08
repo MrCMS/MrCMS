@@ -11,6 +11,7 @@ namespace MrCMS.Services
         User GetUserByEmail(string email);
         User GetUserByResetGuid(Guid resetGuid);
         User GetUserByGuid(Guid guid);
+        User GetUserById(int id);
         User GetCurrentUser(HttpContext context);
         User GetCurrentUser(IPrincipal principal);
     }

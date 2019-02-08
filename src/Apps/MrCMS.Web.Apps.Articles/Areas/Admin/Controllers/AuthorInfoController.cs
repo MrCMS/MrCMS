@@ -1,51 +1,59 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
+using MrCMS.Web.Apps.Admin.Infrastructure.Models;
+using MrCMS.Web.Apps.Admin.Infrastructure.Services;
+using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Entities;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 {
-    //todo:
     public class AuthorInfoController : MrCMSAppAdminController<MrCMSArticlesApp>
     {
-        //private readonly IUserProfileDataService _userProfileDataService;
+        private readonly IUserProfileAdminService _adminService;
 
-        //public AuthorInfoController(IUserProfileDataService userProfileDataService)
-        //{
-        //    _userProfileDataService = userProfileDataService;
-        //}
+        public AuthorInfoController(IUserProfileAdminService adminService)
+        {
+            _adminService = adminService;
+        }
 
         [HttpGet]
-        public PartialViewResult Add(User user)
+        public PartialViewResult Add(int id)
         {
-            return PartialView(new AuthorInfo { User = user });
+            return PartialView(new AddAuthorInfoModel { UserId = id });
         }
 
-        //[HttpPost]
-        //public RedirectToRouteResult Add(AuthorInfo info)
-        //{
-        //    _userProfileDataService.Add(info);
-        //    return RedirectToAction("Edit", "User", new { id = info.User.Id });
-        //}
+        [HttpPost]
+        public RedirectToActionResult Add(AddAuthorInfoModel info)
+        {
+            _adminService.Add<AuthorInfo, AddAuthorInfoModel>(info);
+            return RedirectToAction("Edit", "User", new { id = info.UserId });
+        }
 
         [HttpGet]
-        public PartialViewResult Edit(AuthorInfo info)
+        public PartialViewResult Edit(int id)
         {
-            return PartialView(info);
+            return PartialView(_adminService.GetEditModel<AuthorInfo, EditAuthorInfoModel>(id));
         }
 
-        //[HttpPost]
-        //[ActionName("Edit")]
-        //public RedirectToRouteResult Edit_POST(AuthorInfo info)
+        [HttpPost]
+        [ActionName("Edit")]
+        public RedirectToActionResult Edit_POST(EditAuthorInfoModel model)
+        {
+            var info = _adminService.Update<AuthorInfo, EditAuthorInfoModel>(model);
+            return RedirectToAction("Edit", "User", new { id = info?.User.Id });
+        }
+
+        //public PartialViewResult Show(User user)
         //{
-        //    _userProfileDataService.Update(info);
-        //    return RedirectToAction("Edit", "User", new { id = info.User.Id });
+        //    return PartialView(user);
         //}
+    }
 
-        ////[ChildActionOnly]
-        public PartialViewResult Show(User user)
-        {
-            return PartialView(user);
-        }
+    public class EditAuthorInfoModel : IHaveId
+    {
+        int? IHaveId.Id => Id;
+        public int Id { get; set; }
+        public string Bio { get; set; }
     }
 }

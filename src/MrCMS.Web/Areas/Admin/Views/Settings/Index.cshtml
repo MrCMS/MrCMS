@@ -37,7 +37,8 @@
                 <div class="tab-content">
                     @foreach (var settingType in Model)
                     {
-                        Html.RenderPartial("Settings", settingType);
+                        <partial name="Settings" model="settingType"/>
+                        //Html.RenderPartial("Settings", settingType);
                     }
                 </div>
             </div>

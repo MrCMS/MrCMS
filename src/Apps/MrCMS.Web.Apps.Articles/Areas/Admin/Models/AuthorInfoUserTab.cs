@@ -1,41 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
+using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
+using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
 {
-    //public class AuthorInfoUserTab : UserTab
-    //{
-    //    public override int Order
-    //    {
-    //        get { return 1; }
-    //    }
+    public class AuthorInfoUserTab : AdminTab<User>
+    {
+        public override int Order => 1;
 
-    //    public override string Name(User user)
-    //    {
-    //        return "Author Info";
-    //    }
+        public override Type ParentType => null;
 
-    //    public override bool ShouldShow(User user)
-    //    {
-    //        return true;
-    //    }
+        public override Type ModelType { get; }
+        public override string Name(IServiceProvider serviceProvider, User entity)
+        {
+            return "Author Info";
+        }
 
-    //    public override Type ParentType
-    //    {
-    //        get { return null; }
-    //    }
+        public override bool ShouldShow(IServiceProvider serviceProvider, User entity)
+        {
+            return true;
+        }
 
-    //    public override string TabHtmlId
-    //    {
-    //        get { return "author-info"; }
-    //    }
+        public override string TabHtmlId => "author-info";
 
-    //    public override void RenderTabPane(HtmlHelper<User> html, User user)
-    //    {
-    //        html.RenderAction("Show", "AuthorInfo", new { user });
-    //    }
-    //}
+        public override async Task RenderTabPane(IHtmlHelper helper, IMapper mapper, User entity)
+        {
+            await helper.RenderPartialAsync("~/Areas/Admin/Views/AuthorInfo/Show.cshtml", entity);
+        }
+
+    }
 }

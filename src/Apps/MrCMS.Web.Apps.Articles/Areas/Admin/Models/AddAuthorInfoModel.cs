@@ -1,6 +1,8 @@
-﻿namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
+﻿using MrCMS.Web.Apps.Admin.Infrastructure.Models;
+
+namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
 {
-    public class AddAuthorInfoModel
+    public class AddAuthorInfoModel : IAddUserProfileDataModel
     {
         public int UserId { get; set; }
         public string Bio { get; set; }

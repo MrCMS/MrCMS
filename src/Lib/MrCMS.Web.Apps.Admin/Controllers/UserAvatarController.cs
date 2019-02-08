@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Set")]
-        public async Task<IActionResult> Set_POST(IFormFile file, int id)
+        public IActionResult Set_POST(IFormFile file, int id)
         {
             _userAvatarService.SetAvatar(id, file); 
             return Ok(new {id = 1});

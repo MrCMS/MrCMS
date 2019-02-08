@@ -20,10 +20,4 @@
     <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Private.Xml">
-      <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.0.9\System.Private.Xml.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

@@ -1,13 +1,13 @@
-﻿@model MrCMS.Web.Apps.Articles.Entities.AuthorInfo
+﻿@model MrCMS.Web.Apps.Articles.Areas.Admin.Controllers.EditAuthorInfoModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
 
-<form asp-action="Edit" asp-controller="AuthorInfo" method="post">
+<form asp-action="Edit" asp-controller="AuthorInfo" asp-route-id="@Model.Id" method="post">
     <fieldset>
         <legend>
             Edit Author information
-            <span class="btn-group  display-inline  pull-right">
+            <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn-primary btn" value="Edit Author Info" />
             </span>
         </legend>

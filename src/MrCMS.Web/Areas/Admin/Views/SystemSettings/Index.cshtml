@@ -40,7 +40,8 @@
                 <div class="tab-content">
                     @foreach (SystemSettingsBase settingType in Model)
                     {
-                        Html.RenderPartial("SystemSettings", settingType);
+                        <partial name="SystemSettings" model="settingType"/>
+                        //Html.RenderPartial("SystemSettings", settingType);
                     }
                 </div>
             </div>

@@ -27,11 +27,11 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@user.Name"/>
+            <admin-header-title title="@user.Name" />
 
             <admin-header-actions>
                 <span class="btn-group pull-right">
-                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Index", "User", null, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Index", "User", null, new { @class = "btn btn-secondary" })
                     <a href="@Url.Action("SetPassword", "User", new {id = Model.Id})" class="btn btn-secondary" data-toggle="fb-modal">@Html.Resource("Admin User Reset Password", "Reset Password")</a>
 
                     @if (!onlyAdmin)
@@ -71,22 +71,22 @@
 
                         <div class="form-group mt-3">
                             @Html.LabelFor(x => x.Email)
-                            @Html.TextBoxFor(x => x.Email, new {@class = "form-control"})
+                            @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.Email)
                         </div>
                         <div class="form-group">
                             @Html.LabelFor(x => x.FirstName)
-                            @Html.TextBoxFor(x => x.FirstName, new {@class = "form-control"})
+                            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.FirstName)
                         </div>
                         <div class="form-group">
                             @Html.LabelFor(x => x.LastName)
-                            @Html.TextBoxFor(x => x.LastName, new {@class = "form-control"})
+                            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.LastName)
                         </div>
                         <div class="form-group">
                             @Html.LabelFor(x => x.UICulture)
-                            @Html.DropDownListFor(x => x.UICulture, cultureOptions, new {@class = "form-control"})
+                            @Html.DropDownListFor(x => x.UICulture, cultureOptions, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.UICulture)
                         </div>
                         @Html.EditorFor(x => x.IsActive)
@@ -107,10 +107,10 @@
                                     var role = userRoles[index];
                                     bool isChecked = user.Roles.Any(x => x.Id == role.Id);
 
-                                    @Html.CheckBox("Role-" + role.Id, isChecked, new {})
+                                    @Html.CheckBox("Role-" + role.Id, isChecked, new { })
                                     <text>&nbsp;
                                         @Html.Label("Role-" + role.Id, role.Name)</text>
-                                    <br/>
+                                    <br />
                                 }
                             }
                             else
@@ -130,23 +130,30 @@
 
 </form>
 
-<hr/>
 
 @if (tabs.Any())
 {
-    ViewData["user"] = Model;
-    <ul class="nav nav-tabs pt-3" data-stickytabs="user-@Model.Id">
-        @foreach (var tab in tabs)
-        {
-            ViewData["is-first"] = tab == tabs.First();
-            <partial name="Tab" model="tab" view-data="ViewData"/>
-        }
-    </ul>
-    <div class="tab-content">
-        @foreach (var tab in tabs)
-        {
-            ViewData["is-first"] = tab == tabs.First();
-            <partial name="Content" model="tab" view-data="ViewData"/>
-        }
-    </div>
+    ViewData["user"] = user;
+    <card>
+        <card-body>
+            <h4>
+                @Html.Resource("User Profile Info")
+            </h4>
+            <ul class="nav nav-tabs pt-3" data-stickytabs="user-@Model.Id">
+                @foreach (var tab in tabs)
+                {
+                    ViewData["is-first"] = tab == tabs.First();
+                    <partial name="Tab" model="tab" view-data="ViewData" />
+                }
+            </ul>
+            <div class="tab-content mt-3">
+                @foreach (var tab in tabs)
+                {
+                    ViewData["is-first"] = tab == tabs.First();
+                    <partial name="Content" model="tab" view-data="ViewData" />
+                }
+            </div>
+        </card-body>
+    </card>
+
 }

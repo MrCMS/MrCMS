@@ -1,4 +1,4 @@
-﻿@model MrCMS.Web.Apps.Articles.Entities.AuthorInfo
+﻿@model MrCMS.Web.Apps.Articles.Areas.Admin.Models.AddAuthorInfoModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
@@ -10,7 +10,7 @@
                 <input type="submit" class="btn-primary btn" value="Add Author Info" />
             </span>
         </legend>
-        @Html.HiddenFor(info => info.User.Id)
+        @Html.HiddenFor(info => info.UserId)
         <div class="form-group">
             @Html.LabelFor(info => info.Bio)
             @Html.TextAreaFor(info => info.Bio, new{@class="form-control"})
