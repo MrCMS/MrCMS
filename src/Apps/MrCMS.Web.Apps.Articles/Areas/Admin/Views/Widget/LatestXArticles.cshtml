@@ -1,0 +1,13 @@
+﻿@using MrCMS.Web.Apps.Articles.Areas.Admin.Services
+@model MrCMS.Web.Apps.Articles.Areas.Admin.Models.UpdateLatestXArticlesModel
+@inject IGetArticleListOptions GetArticleListOptions
+
+<div class="form-group">
+    @Html.LabelFor(x => x.NumberOfArticles, "Number of articles to show")
+    @Html.TextBoxFor(x => x.NumberOfArticles, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.NumberOfArticles)
+</div>
+<div class="form-group">
+    @Html.LabelFor(x => x.RelatedNewsListId)
+    @Html.DropDownListFor(x => x.RelatedNewsListId, GetArticleListOptions.GetOptions(), new { @class = "form-control" })
+</div>

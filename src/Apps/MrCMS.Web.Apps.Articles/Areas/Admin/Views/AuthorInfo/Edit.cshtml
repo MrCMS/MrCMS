@@ -1,0 +1,20 @@
+﻿@model MrCMS.Web.Apps.Articles.Entities.AuthorInfo
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+<form asp-action="Edit" asp-controller="AuthorInfo" method="post">
+    <fieldset>
+        <legend>
+            Edit Author information
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Edit Author Info" />
+            </span>
+        </legend>
+        <div class="form-group">
+            @Html.LabelFor(info => info.Bio)
+            @Html.TextAreaFor(info => info.Bio, new { @class = "form-control" })
+            @Html.ValidationMessageFor(info => info.Bio)
+        </div>
+    </fieldset>
+</form>

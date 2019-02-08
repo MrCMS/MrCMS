@@ -1,0 +1,47 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Website
+@model MrCMS.Web.Apps.Articles.Pages.Article
+
+<article itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col">
+
+            <h1 itemprop="name">@Html.Editable(page => page.Name, false)</h1>
+
+            <a href="/@Model.Parent.UrlSegment" class="btn btn-secondary">Back</a>
+
+            <div class="mb-1">
+                <small>@Model.PublishOn.GetValueOrDefault().Day @Model.PublishOn.GetValueOrDefault().ToString("MMMMM") @Model.PublishOn.GetValueOrDefault().Year</small>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.FeatureImage))
+            {
+                <a href="/@Model.UrlSegment">
+                    @Html.RenderImage(Model.FeatureImage, attributes: new { @class = "img-responsive mb-3" })
+                </a>
+            }
+
+            <div itemprop="articleBody">
+                @Html.Editable(page => page.BodyContent, true)
+            </div>
+
+            @if (Model.User != null)
+            {
+                <div>
+                    Author : <span itemprop="author">@(Model.User.Name)</span>
+                </div>
+            }
+
+            @if (Model.Tags.Any())
+            {
+                <div>
+                    @foreach (var tagName in Model.Tags)
+                    {
+                        <a href="#category=@tagName.Name" class="badge badge-primary">@tagName.Name</a>
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+</article>
