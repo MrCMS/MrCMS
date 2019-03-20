@@ -6,31 +6,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Areas\Admin\Views\**" />
+    <EmbeddedResource Include="Areas\Admin\wwwroot\**" />
     <EmbeddedResource Include="Views\**" />
     <EmbeddedResource Include="wwwroot\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="wwwroot\scripts\article.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Areas\Admin\Views\Article\ForUser.cshtml" />
-    <None Remove="Areas\Admin\Views\AuthorInfo\Add.cshtml" />
-    <None Remove="Areas\Admin\Views\AuthorInfo\Edit.cshtml" />
-    <None Remove="Areas\Admin\Views\AuthorInfo\Show.cshtml" />
-    <None Remove="Areas\Admin\Views\User\Article.cshtml" />
-    <None Remove="Areas\Admin\Views\User\AuthorInfo.cshtml" />
-    <None Remove="Areas\Admin\Views\Webpage\Article.cshtml" />
-    <None Remove="Areas\Admin\Views\Webpage\ArticleList.cshtml" />
-    <None Remove="Areas\Admin\Views\Widget\ArticleArchive.cshtml" />
-    <None Remove="Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
-    <None Remove="Areas\Admin\Views\Widget\LatestXArticles.cshtml" />
-    <None Remove="Views\Pages\Article.cshtml" />
-    <None Remove="Views\Pages\ArticleList.cshtml" />
-    <None Remove="Views\Widgets\ArticleArchive.cshtml" />
-    <None Remove="Views\Widgets\ArticleCategories.cshtml" />
-    <None Remove="Views\Widgets\LatestXArticles.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,11 +21,6 @@
     <ProjectReference Include="..\..\Lib\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-    <Folder Include="wwwroot\lib\" />
-    <Folder Include="wwwroot\styles\" />
-  </ItemGroup>
+  
 
 </Project>

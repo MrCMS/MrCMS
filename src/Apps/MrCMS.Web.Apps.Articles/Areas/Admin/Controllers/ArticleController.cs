@@ -6,11 +6,11 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 {
-    public class ArticleControllerController : MrCMSAppAdminController<MrCMSArticlesApp>
+    public class ArticleController : MrCMSAppAdminController<MrCMSArticlesApp>
     {
         private readonly IBelongToUserLookupService _belongToUserLookupService;
 
-        public ArticleControllerController(IBelongToUserLookupService _belongToUserLookupService)
+        public ArticleController(IBelongToUserLookupService _belongToUserLookupService)
         {
             this._belongToUserLookupService = _belongToUserLookupService;
         }
