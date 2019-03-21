@@ -33,7 +33,7 @@ namespace MrCMS.Website
                 viewLocations = viewLocations.Prepend($"/Views/Pages/{context.Values[Key]}.cshtml");
 
                 // if we've set the view name, we want to look here for the view
-                // it's after the base on because we're prepending
+                // it's after the base one because we're prepending
                 if (!string.IsNullOrWhiteSpace(context.ViewName))
                 {
                     viewLocations = viewLocations.Prepend($"/Views/Pages/{context.ViewName}.cshtml");
