@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
