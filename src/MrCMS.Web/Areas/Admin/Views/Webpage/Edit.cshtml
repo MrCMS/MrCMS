@@ -22,7 +22,7 @@
                 <div class="input-group" id="edit-webpage-options">
                     <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
 
-                    <input type="input" asp-for="PublishOn" class="form-control date-time-picker"/>
+                    <input type="text" asp-for="PublishOn" class="form-control date-time-picker"/>
                     @Html.ValidationMessageFor(x => x.PublishOn)
 
                     <div class="input-group-append">

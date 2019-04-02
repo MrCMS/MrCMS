@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
-using NHibernate.Criterion;
 
 namespace MrCMS.Services
 {

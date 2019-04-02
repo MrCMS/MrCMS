@@ -64,7 +64,7 @@
                 @completionStatus.Failed
             </dd>
         </dl>
-        <partial />
-        @{Html.RenderPartial("ShowButton", Model);}
+        <partial model="Model" name="ShowButton" />
+@*        @{Html.RenderPartial("ShowButton", Model);}*@
     </div>
 </div>

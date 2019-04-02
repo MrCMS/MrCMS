@@ -97,7 +97,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
             _dropDownListRenderer.AppendElement(dropDownList, null, FormRenderingType.Bootstrap2);
 
             A.CallTo(() => _dropDownListOptionRenderer.GetOption(A<FormListOption>.Ignored, null))
-             .MustHaveHappened(Repeated.Exactly.Times(3));
+                .MustHaveHappenedANumberOfTimesMatching(i => i == 3);
         }
 
         [Fact]
@@ -117,7 +117,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         }
 
         [Fact]
-        public void DropDownListRendere_IsSelfClosing_ShouldBeFalse()
+        public void DropDownListRenderer_IsSelfClosing_ShouldBeFalse()
         {
             _dropDownListRenderer.IsSelfClosing.Should().BeFalse();
         }

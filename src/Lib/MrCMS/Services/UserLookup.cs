@@ -56,6 +56,11 @@ namespace MrCMS.Services
                     .Cacheable().SingleOrDefault();
         }
 
+        public User GetUserById(int id)
+        {
+            return _session.Get<User>(id);
+        }
+
         public User GetCurrentUser(HttpContext context)
         {
             return GetCurrentUser(context?.User);

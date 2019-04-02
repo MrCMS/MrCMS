@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.WebpageEdit;
-using MrCMS.Web.Apps.Core.Areas.Admin.Models;
 using MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages;
 
 namespace MrCMS.Web.Apps.Admin.Mapping

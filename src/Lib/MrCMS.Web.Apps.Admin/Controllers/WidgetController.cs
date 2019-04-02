@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using System;
 using System.Threading.Tasks;

@@ -1,0 +1,14 @@
+﻿@using MrCMS.Web.Apps.Articles.Areas.Admin.Services
+@model MrCMS.Web.Apps.Articles.Areas.Admin.Models.UpdateArticleArchiveModel
+@inject IGetArticleListOptions GetArticleListOptions
+
+<div class="form-group">
+    @Html.LabelFor(x => x.ArticleListId)
+    @Html.DropDownListFor(x => x.ArticleListId, GetArticleListOptions.GetOptions(), new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.ArticleListId)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.ShowNameAsTitle)
+    @Html.CheckBoxFor(x => x.ShowNameAsTitle)
+</div>

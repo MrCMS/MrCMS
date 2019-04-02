@@ -43,7 +43,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 
             _mediaCategoryController.Add(mediaCategory);
 
-            A.CallTo(() => _mediaCategoryAdminService.Add(mediaCategory)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _mediaCategoryAdminService.Add(mediaCategory)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]

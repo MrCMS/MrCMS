@@ -48,6 +48,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EB06600E-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Admin", "src\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj", "{8E83ED2E-049A-4F58-A616-C51E0429EE04}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Articles", "src\Apps\MrCMS.Web.Apps.Articles\MrCMS.Web.Apps.Articles.csproj", "{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{8E83ED2E-049A-4F58-A616-C51E0429EE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E83ED2E-049A-4F58-A616-C51E0429EE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E83ED2E-049A-4F58-A616-C51E0429EE04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{C616A9A0-709A-4252-88AC-374648BFA4B4} = {DA82127C-FA78-4708-997A-0F1EF2C73F3E}
 		{B1CB15CB-9E14-4C39-BBEF-3C979615C736} = {DA82127C-FA78-4708-997A-0F1EF2C73F3E}
 		{8E83ED2E-049A-4F58-A616-C51E0429EE04} = {26E32284-AE02-41E6-9D91-EE2E14032DDA}
+		{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3} = {C9C714DC-1D4C-4402-BAD6-58AEDF7DFB67}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E81A954-DE9B-49F5-BA40-EE5E535D5164}

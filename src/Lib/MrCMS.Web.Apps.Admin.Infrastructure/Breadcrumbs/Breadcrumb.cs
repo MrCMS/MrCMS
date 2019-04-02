@@ -5,6 +5,7 @@ using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Infrastructure.Models;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Models;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 {

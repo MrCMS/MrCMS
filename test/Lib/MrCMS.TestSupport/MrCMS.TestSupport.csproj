@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App"  />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="4.7.0" />
     <PackageReference Include="AutoFixture.Xunit2" Version="4.7.0" />
     <PackageReference Include="FakeItEasy" Version="5.0.1" />
