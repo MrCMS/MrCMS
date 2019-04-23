@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
 using MrCMS.Settings;
+using MrCMS.Shortcodes.Forms;
 
 namespace MrCMS.Website.Filters
 {
@@ -34,7 +35,7 @@ namespace MrCMS.Website.Filters
             message.AddCssClass(errorClass ?? "field-validation-error");
             message.Attributes["data-error-message"] = errorMessage ?? "Please fill in the reCAPTCHA before submitting";
 
-            return new HtmlString(string.Concat(recaptchaDiv.ToString(), message.ToString()));
+            return new HtmlString(string.Concat(recaptchaDiv.GetString(), message.GetString()));
         }
     }
 }

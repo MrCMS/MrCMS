@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="wwwroot\Scripts\recaptcha.js" />
+  </ItemGroup>
+
 </Project>

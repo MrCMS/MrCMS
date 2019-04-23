@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -46,7 +47,7 @@ namespace MrCMS.Shortcodes.Forms
             formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{validation:([^}]+)}", AddValidation(formProperties));
             formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(form1, submittedStatus));
-            formDesign = Regex.Replace(formDesign, "{recaptcha}", helper.RenderRecaptcha().ToString());
+            formDesign = Regex.Replace(formDesign, "{recaptcha}", helper.RenderRecaptcha().GetString());
             form.InnerHtml.AppendHtml(formDesign);
 
             if (_siteSettings.HasHoneyPot)
@@ -64,8 +65,8 @@ namespace MrCMS.Shortcodes.Forms
                     formProperties.FirstOrDefault(
                         property => property.Name.Equals(match.Groups[1].Value, StringComparison.OrdinalIgnoreCase));
                 return formProperty == null
-                           ? string.Empty
-                           : _validationMessaageRenderer.AppendRequiredMessage(formProperty).ToString();
+                    ? string.Empty
+                    : _validationMessaageRenderer.AppendRequiredMessage(formProperty).GetString();
             };
         }
 
@@ -73,7 +74,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             if (!submittedStatus.Submitted) return string.Empty;
 
-            return _submittedMessageRenderer.AppendSubmittedMessage(form, submittedStatus).ToString();
+            return _submittedMessageRenderer.AppendSubmittedMessage(form, submittedStatus).GetString();
         }
 
         private MatchEvaluator AddLabel(IList<FormProperty> formProperties)
@@ -84,8 +85,8 @@ namespace MrCMS.Shortcodes.Forms
                                formProperties.FirstOrDefault(
                                    property => property.Name.Equals(match.Groups[1].Value, StringComparison.OrdinalIgnoreCase));
                            return formProperty == null
-                                      ? string.Empty
-                                      : _labelRenderer.AppendLabel(formProperty).ToString();
+                               ? string.Empty
+                               : _labelRenderer.AppendLabel(formProperty).GetString();
                        };
         }
         private MatchEvaluator AddElement(IList<FormProperty> formProperties, FormSubmittedStatus submittedStatus)
@@ -106,7 +107,7 @@ namespace MrCMS.Shortcodes.Forms
                            element.TagRenderMode = renderer.IsSelfClosing
                                ? TagRenderMode.SelfClosing
                                : TagRenderMode.Normal;
-                           return element.ToString();
+                           return element.GetString();
                        };
         }
 
@@ -115,9 +116,9 @@ namespace MrCMS.Shortcodes.Forms
             var tagBuilder = new TagBuilder("form");
             tagBuilder.Attributes["method"] = "POST";
             tagBuilder.Attributes["enctype"] = "multipart/form-data";
-            tagBuilder.Attributes["action"] = string.Format("/save-form/{0}", form.Id);
+            tagBuilder.Attributes["action"] = $"/save-form/{form.Id}";
 
             return tagBuilder;
-        }
+        } 
     }
 }
