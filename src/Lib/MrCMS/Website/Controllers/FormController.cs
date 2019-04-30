@@ -24,11 +24,11 @@ namespace MrCMS.Website.Controllers
             if (form?.IsDeleted != false)
                 return new EmptyResult();
             var saveFormData = _formPostingHandler.SaveFormData(form, Request);
-
+            
             TempData["form-submitted"] = true;
-            TempData["form-submitted-message"] = saveFormData;
+            TempData.Set(saveFormData, "form-submitted-message");
             // if any errors add form data to be renderered, otherwise form should be empty
-            TempData["form-data"] = saveFormData.Any() ? Request.Form : null;
+            TempData.Set(saveFormData.Any() ? Request.Form : null, "form-data");
 
             var redirectUrl = _formPostingHandler.GetRefererUrl();
             if (!saveFormData.Any() && !string.IsNullOrEmpty(form.FormRedirectUrl))

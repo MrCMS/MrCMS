@@ -6,6 +6,7 @@ using MrCMS.Shortcodes.Forms;
 using NHibernate;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using MrCMS.Helpers;
 
 namespace MrCMS.Shortcodes
 {
@@ -49,8 +50,8 @@ namespace MrCMS.Shortcodes
         private static FormSubmittedStatus GetStatus(ViewContext viewContext)
         {
             var submitted = true.Equals(viewContext.TempData["form-submitted"]);
-            var errors = viewContext.TempData["form-submitted-message"] as List<string>;
-            var data = viewContext.TempData["form-data"] as NameValueCollection;
+            var errors = viewContext.TempData.Get<List<string>>("form-submitted-message");
+            var data = viewContext.TempData.Get<NameValueCollection>("form-data");
             var status = new FormSubmittedStatus(submitted, errors, data);
             return status;
         }

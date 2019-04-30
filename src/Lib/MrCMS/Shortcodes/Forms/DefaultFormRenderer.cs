@@ -64,7 +64,7 @@ namespace MrCMS.Shortcodes.Forms
                 }
             }
 
-            form.InnerHtml.AppendHtml(helper.RenderRecaptcha());
+            form.InnerHtml.AppendHtml(helper.RenderRecaptcha().GetString());
 
             var div = new TagBuilder("div");
             div.InnerHtml.AppendHtml(GetSubmitButton(form1));
@@ -83,7 +83,6 @@ namespace MrCMS.Shortcodes.Forms
 
             return form;
         }
-
 
         public TagBuilder GetSubmitButton(Form form)
         {

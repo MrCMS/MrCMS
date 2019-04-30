@@ -8,6 +8,7 @@ using MrCMS.Services.Resources;
 using MrCMS.Website;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Profiling;
+using StackExchange.Profiling.Internal;
 
 namespace MrCMS.Apps
 {
@@ -47,6 +48,10 @@ namespace MrCMS.Apps
                     options.Filters.Add<ProfilingAsyncActionFilter<WebpageCachingFilter>>();
                     options.Filters.Add<ActionProfilingFilter>();
                     options.Filters.Add<ResultProfilingFilter>();
+                    options.Filters.Add<GoogleRecaptchaFilter>();
+                    options.Filters.Add<HoneypotFilter>();
+                    options.Filters.Add<DoNotCacheFilter>();
+                    options.Filters.Add<ProfilingActionFilter>();
                     appContext.SetupMvcOptions(options);
 
                 }).AddRazorOptions(options =>
