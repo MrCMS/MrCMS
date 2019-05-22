@@ -19,7 +19,7 @@ namespace MrCMS.Helpers
             get
             {
                 return WidgetTypes.OrderBy(x => x.Name).BuildSelectItemList(type => type.Name.BreakUpString(),
-                    type => type.Name,
+                    type => type.FullName,
                     emptyItemText: null);
             }
         }
