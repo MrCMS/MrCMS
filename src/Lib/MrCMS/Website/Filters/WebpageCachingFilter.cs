@@ -39,7 +39,7 @@ namespace MrCMS.Website.Filters
 
             var controller = _getControllerFromFilterContext.GetController(context);
             // This will only exist if the previous request explicitly stated to cache-bust (e.g. form submission)
-            var doNotCache = controller?.TempData?[DoNotCacheAttribute.TempDataKey] is bool b && b;
+            var doNotCache = controller?.TempData?[DoNotCacheKey.TempDataKey] is bool b && b;
             var queryData = context.HttpContext.Request.Query;
 
             // if it's explicit, we always pass a non-caching CachingInfo instance to the service, so the page is rendered as per usual

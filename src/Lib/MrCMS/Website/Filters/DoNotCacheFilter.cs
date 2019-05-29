@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MrCMS.Website.Filters
 {
+    /// <summary>
+    /// This filter tells Mr CMS not to cache the next response if the page is in memory cache. We check to see if the request method is POST, and if so we insert a TempData key which we use in WebpageCachingFilter to uncache the page.
+    /// </summary>
     public class DoNotCacheFilter : IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext filterContext)
@@ -20,15 +23,12 @@ namespace MrCMS.Website.Filters
             if (!(filterContext.Controller is Controller controller))
                 return;
             // if it exists at this point, clear it, as it's left over from the previous request
-            if (controller.TempData.ContainsKey(DoNotCacheAttribute.TempDataKey))
-                controller.TempData.Remove(DoNotCacheAttribute.TempDataKey);
+            if (controller.TempData.ContainsKey(DoNotCacheKey.TempDataKey))
+                controller.TempData.Remove(DoNotCacheKey.TempDataKey);
 
-            // re-add it for the current action
-            var attributes =
-                (filterContext.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo.GetCustomAttributes<DoNotCacheAttribute>(true) ?? Enumerable.Empty<DoNotCacheAttribute>();
-            if (attributes.Any())
+            if (controller.Request.Method == "POST")
             {
-                controller.TempData[DoNotCacheAttribute.TempDataKey] = true;
+                controller.TempData[DoNotCacheKey.TempDataKey] = true;
                 controller.TempData.Keep();
             }
         }

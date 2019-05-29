@@ -16,7 +16,6 @@ namespace MrCMS.Website.Controllers
         }
 
         [GoogleRecaptcha]
-        [DoNotCache]
         [Route("save-form/{id}")]
         public ActionResult Save(int id)
         {
