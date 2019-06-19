@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -26,7 +27,7 @@ namespace MrCMS.Website.Filters
             if (controller.TempData.ContainsKey(DoNotCacheKey.TempDataKey))
                 controller.TempData.Remove(DoNotCacheKey.TempDataKey);
 
-            if (controller.Request.Method == "POST")
+            if (controller.Request.Method == HttpMethod.Post.Method)
             {
                 controller.TempData[DoNotCacheKey.TempDataKey] = true;
                 controller.TempData.Keep();

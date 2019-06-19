@@ -30,15 +30,19 @@ namespace MrCMS.DbConfiguration.Types
                 var dateTime = (DateTime)value;
                 if (dateTime.Kind != DateTimeKind.Utc)
                 {
+                    if (dateTime.Kind == DateTimeKind.Local)
+                    {
+                        dateTime = new DateTime(dateTime.Ticks, DateTimeKind.Unspecified);
+                    }
                     var zoneInfo = GetTimeZone(session);
-                // NOTE: This is a work around to handle daylight savings correctly. 
-                var sourceTimeZone = GetTimeZone(session);
-                if (sourceTimeZone.IsInvalidTime(dateTime))
-                {
-                    var adjustmentRules = sourceTimeZone.GetAdjustmentRules();
-                    var adjustmentRule = adjustmentRules.FirstOrDefault();
-                    dateTime = dateTime.Add(adjustmentRule?.DaylightDelta ?? TimeSpan.FromHours(1));
-                }
+                    // NOTE: This is a work around to handle daylight savings correctly. 
+                    var sourceTimeZone = GetTimeZone(session);
+                    if (sourceTimeZone.IsInvalidTime(dateTime))
+                    {
+                        var adjustmentRules = sourceTimeZone.GetAdjustmentRules();
+                        var adjustmentRule = adjustmentRules.FirstOrDefault();
+                        dateTime = dateTime.Add(adjustmentRule?.DaylightDelta ?? TimeSpan.FromHours(1));
+                    }
                     dateTime = TimeZoneInfo.ConvertTime(dateTime, zoneInfo, TimeZoneInfo.Utc);
                 }
 

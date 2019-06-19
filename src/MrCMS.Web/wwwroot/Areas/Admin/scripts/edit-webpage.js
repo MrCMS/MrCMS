@@ -68,37 +68,66 @@
         allowSpaces: true
     });
 
-    $('input[name=InheritFrontEndRolesFromParent]').change(function () {
-        $("#edit-document").submit();
-    });
+    $(document).on('change','#InheritFrontEndRolesFromParent',setPermissionVisibility);
+    $(document).on('change','#HasCustomPermissions',setPermissionVisibility);
+    $(document).on('change','#PermissionType',setPermissionVisibility);
 
 
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+    function setPermissionVisibility() {
+        var form = $('#edit-document');
+
+        var hasCustomPermissions = form.find('#HasCustomPermissions');
+        var customPermissions = form.find('[data-custom-permissions]');
+        var permissionType = customPermissions.find('#PermissionType');
+        var permissionTypeHolders = customPermissions.find('[data-custom-permissions-type]');
+        permissionTypeHolders.hide();
+
+        var showCustomPermissions = hasCustomPermissions.is(':checked');
+        customPermissions.toggle(showCustomPermissions);
+
+        if (!showCustomPermissions) {
+            return;
+        }
+
+        var permissionTypeValue = permissionType.val();
+        customPermissions.find('[data-custom-permissions-type="' + permissionTypeValue + '"]').show();
+
+        if (permissionTypeValue === 'RoleBased') {
+            var inheritRolesCheckbox = form.find('#InheritFrontEndRolesFromParent');
+            $('[data-custom-permissions-roles]').toggle(!inheritRolesCheckbox.is(':checked'));
+        }
+    }
+
+    setPermissionVisibility();
+
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         if (e.currentTarget.innerHTML === "Versions") {
-            $.get('/Admin/Versions/Show/' + $('#Id').val(), function(data) {
+            $.get('/Admin/Versions/Show/' + $('#Id').val(), function (data) {
                 $("#versions").html(data);
             });
         }
     });
 
 
-    $(document).on('keypress', function (event) {
-        if (event.which === 13) {
-            if ($('#SEOTargetPhrase:focus').length) {
-                event.preventDefault();
-                $('[data-seo-analyze]').click();
+    $(document).on('keypress',
+        function (event) {
+            if (event.which === 13) {
+                if ($('#SEOTargetPhrase:focus').length) {
+                    event.preventDefault();
+                    $('[data-seo-analyze]').click();
+                }
+                if ($('input#Search:focus').length) {
+                    event.preventDefault();
+                    $('#search-postings').click();
+                }
             }
-            if ($('input#Search:focus').length) {
-                event.preventDefault();
-                $('#search-postings').click();
-            }
-        }
 
-    })
+        });
     $(document).on('click', '[data-seo-analyze]', function (event) {
         event.preventDefault();
         var value = $('#SEOTargetPhrase').val();
-        if (value == '') {
+        if (value === '') {
             $('[data-seo-analysis-summary]').html('Please enter a term to analyze.');
         } else {
             $('[data-seo-analysis-summary]').html('Analyzing...');

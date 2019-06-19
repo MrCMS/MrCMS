@@ -24,7 +24,7 @@ namespace MrCMS.Entities.Documents.Web
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
             FrontEndAllowedRoles = new HashSet<UserRole>();
-            ContentBlocks = new List<ContentBlock>();   
+            ContentBlocks = new List<ContentBlock>();
         }
 
         [Required]
@@ -50,7 +50,7 @@ namespace MrCMS.Entities.Documents.Web
 
         [StringLength(8000)]
         public virtual string CustomHeaderScripts { get; set; }
- 
+
         [StringLength(8000)]
         public virtual string CustomFooterScripts { get; set; }
 
@@ -96,10 +96,15 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
 
+        public virtual bool HasCustomPermissions { get; set; }
+        public virtual WebpagePermissionType PermissionType { get; set; }
+
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
 
         public virtual ISet<UserRole> FrontEndAllowedRoles { get; set; }
+        public virtual string Password { get; set; }
+        public virtual Guid? PasswordAccessToken { get; set; }
 
         [DisplayName("Roles")]
         public virtual string FrontEndRoles
