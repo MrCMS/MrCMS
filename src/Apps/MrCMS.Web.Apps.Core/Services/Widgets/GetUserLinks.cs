@@ -37,7 +37,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                     {
                         Text = new HtmlString(_stringResourceProvider.GetValue("My Account")),
                         Url =
-                            new HtmlString(string.Format("/{0}", userAccountPage))
+                            new HtmlString(userAccountPage)
                     });
                 }
 

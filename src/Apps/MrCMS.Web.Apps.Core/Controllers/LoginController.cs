@@ -51,8 +51,8 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<RedirectResult> Post(
-            //[ModelBinder(typeof(LoginModelModelBinder))]
             LoginModel loginModel)
         {
             if (loginModel != null && ModelState.IsValid)

@@ -1,18 +1,26 @@
 ﻿@model MrCMS.Entities.Messaging.QueuedMessage
-<fieldset>
-    <legend>
-        @Html.Resource("Message") #@Model.Id
-        <span class="btn-group pull-right">
-            @Html.ActionLink(Html.Resource("Back"), "Index", null, new { @class = "btn " })
-        </span>
-    </legend>
-    <table class="table table-striped table-condensed">
-        <tbody>
+
+
+<admin-header>
+    <row>
+        <admin-header-title title="@Html.Resource("Message") #@Model.Id"/>
+
+        <admin-header-actions>
+            <a asp-action="Index" class = "btn btn-primary">@Html.Resource("Back")</a>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<card>
+    <card-body>
+
+        <table class="table table-striped table-condensed">
+            <tbody>
             <tr>
-                <td class="col-lg-2">
+                <td>
                     @Html.Resource("From")
                 </td>
-                <td class="col-lg-10">
+                <td>
                     @Model.FromDescription
                 </td>
             </tr>
@@ -72,9 +80,12 @@
                     @Model.SentOnDescription
                 </td>
             </tr>
-        </tbody>
-    </table>
-   
-     <iframe src="@Url.Content("/Admin/MessageQueue/GetBody/"+Model.Id)" style="width:100%; height:400px" frameborder="0"></iframe>
-    
-</fieldset>
+            </tbody>
+        </table>
+        
+        <h2 class="mt-2">Body</h2>
+
+        <iframe src="@Url.Content("/Admin/MessageQueue/GetBody/" + Model.Id)" style="width:100%; height:400px" frameborder="0"></iframe>
+
+    </card-body>
+</card>
