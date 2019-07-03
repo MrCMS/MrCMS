@@ -21,9 +21,9 @@ namespace MrCMS.Shortcodes.Forms
             return _serviceProvider.GetService(type) as IFormElementRenderer;
         }
 
-        public TagBuilder GetElementContainer(FormRenderingType formRendererType, FormProperty property)
+        public TagBuilder GetElementContainer(FormRenderingType formRenderingType, FormProperty property)
         {
-            if (formRendererType == FormRenderingType.Bootstrap3)
+            if (formRenderingType == FormRenderingType.Bootstrap3 || formRenderingType == FormRenderingType.Bootstrap4)
             {
                 if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload || property is Email)
                 {
