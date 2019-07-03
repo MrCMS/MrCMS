@@ -9,13 +9,16 @@ using MrCMS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.FileProviders;
 
 namespace MrCMS.Website.CMS
 {
     public class GetMrCMSParts : IGetMrCMSParts
     {
-        public IEnumerable<RegistrationInfo> GetSortedMiddleware(MrCMSAppContext appContext)
+        public IEnumerable<RegistrationInfo> GetSortedMiddleware(MrCMSAppContext appContext,
+               Action<IApplicationBuilder> coreFunctions)
         {
             var sortedMiddleware = new List<RegistrationInfo>
             {
@@ -33,6 +36,11 @@ namespace MrCMS.Website.CMS
                 {
                     Registration = builder => builder.UseMiddleware<CurrentWebpageMiddleware>(),
                     Order = int.MaxValue - 1
+                },
+                new RegistrationInfo
+                {
+                    Registration = coreFunctions,
+                    Order = 10000
                 },
                 new RegistrationInfo
                 {
