@@ -52,7 +52,7 @@ namespace MrCMS.Shortcodes.Forms
 
             if (_siteSettings.HasHoneyPot)
                 form.InnerHtml.AppendHtml(_siteSettings.GetHoneypot());
-
+  
             return form;
         }
 

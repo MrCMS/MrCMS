@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Website
 @model MrCMS.Web.Apps.Core.ContentBlocks.TwoColumnTextImageBlock
 
 <div class="row content-grids">
@@ -16,7 +17,7 @@
             }
             @if (!string.IsNullOrWhiteSpace(Model.Text))
             {
-                <div class="p-5">@Html.Raw(Model.Text)</div>
+                <div class="p-5">@Html.Editable(x=>x.Text)</div>
             }
         </div>
     </div>
@@ -34,7 +35,7 @@
             }
             @if (!string.IsNullOrWhiteSpace(Model.Text2))
             {
-                <div class="p-5">@Html.Raw(Model.Text2)</div>
+                <div class="p-5">@Html.Editable(x=>x.Text2)</div>
             }
         </div>
     </div>

@@ -1,10 +1,11 @@
-﻿@model MrCMS.Web.Apps.Core.ContentBlocks.OneColumnBlock
+﻿@using MrCMS.Website
+@model MrCMS.Web.Apps.Core.ContentBlocks.OneColumnBlock
 
 <div class="row">
     <div class="col">
         <div class="white-bg mb-5">
             <div class="p-5">
-                @Html.Raw(Model.Text)
+                @Html.Editable(x=>x.Text)
             </div>
         </div>
     </div>
