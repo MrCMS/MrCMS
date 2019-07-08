@@ -33,7 +33,7 @@ namespace MrCMS.Installation.Services
                 UICulture = model.UiCulture,
                 EnableInlineEditing = true,
                 SiteIsLive = true,
-                FormRendererType = FormRenderingType.Bootstrap3,
+                FormRendererType = FormRenderingType.Bootstrap4,
 
             };
             var mediaSettings = new MediaSettings
