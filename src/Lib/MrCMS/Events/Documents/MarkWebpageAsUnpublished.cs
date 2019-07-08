@@ -15,9 +15,9 @@ namespace MrCMS.Events.Documents
 
         public void Execute(OnUpdatingArgs<Webpage> args)
         {
-            var now = _getDateTimeNow.LocalNow;
+            var now = _getDateTimeNow.UtcNow;
             var webpage = args.Item;
-            if (webpage.Published && (webpage.PublishOn == null || webpage.PublishOn.Value > now))
+            if (webpage.Published && (webpage.PublishOn == null || webpage.PublishOn.Value.ToUniversalTime() > now))
             {
                 webpage.Published = false;
             }

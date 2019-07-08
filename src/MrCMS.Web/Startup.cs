@@ -220,16 +220,19 @@ namespace MrCMS.Web
                 return;
             }
 
-            app.UseRequestLocalization();
 
-            app.UseStaticFiles(new StaticFileOptions
+            app.UseMrCMS(builder =>
             {
-                FileProvider = new CompositeFileProvider(
-                    new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                app.UseRequestLocalization();
+                builder.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new CompositeFileProvider(
+                        new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                });
+                builder.UseAuthentication();
+                builder.UseMiniProfiler();
+
             });
-            app.UseAuthentication();
-            app.UseMiniProfiler();
-            app.UseMrCMS();
         }
     }
 }

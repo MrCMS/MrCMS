@@ -11,6 +11,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             var tagBuilder = new TagBuilder("input");
             tagBuilder.Attributes["type"] = "file";
+            tagBuilder.AddCssClass("form-control-file");
             tagBuilder.Attributes["name"] = formProperty.Name;
             tagBuilder.Attributes["id"] = formProperty.GetHtmlId();
 

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace MrCMS.Shortcodes
 {
@@ -36,7 +38,7 @@ namespace MrCMS.Shortcodes
                     return string.Empty;
                 }
 
-                var matches = AttributeMatcher.Matches(match.Groups[2].Value);
+                var matches = AttributeMatcher.Matches(HttpUtility.HtmlDecode( match.Groups[2].Value));
 
                 var attributes = matches.ToDictionary(m => m.Groups[1].Value, m => m.Groups[2].Value);
 
