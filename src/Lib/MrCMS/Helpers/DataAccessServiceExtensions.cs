@@ -27,7 +27,7 @@ namespace MrCMS.Helpers
                 var type = TypeHelper.GetTypeByName(storageType);
                 if (type?.IsAssignableFrom(typeof(IFileSystem)) != true)
                 {
-                    return provider.GetService<FileSystem>();
+                    return provider.GetService(type) as IFileSystem;
                 }
 
                 return provider.GetService(type) as IFileSystem;

@@ -51,9 +51,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult FileSystem(
-            [ModelBinder(typeof(FileSystemSettingsModelBinder))]
-            FileSystemSettings settings) 
+        public RedirectToActionResult FileSystem(FileSystemSettings settings) 
         {
             _configurationProvider.SaveSettings(settings);
             TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext));
