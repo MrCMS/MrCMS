@@ -27,7 +27,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             var tagBuilder = new TagBuilder("ul");
             errors.ForEach(error => tagBuilder.InnerHtml.AppendHtml(string.Format("<li>{0}</li>", error)));
-            return tagBuilder.ToString();
+            return tagBuilder.GetString();
         }
     }
 }

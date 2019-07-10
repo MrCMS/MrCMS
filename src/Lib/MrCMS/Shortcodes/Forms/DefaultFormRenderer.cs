@@ -64,7 +64,7 @@ namespace MrCMS.Shortcodes.Forms
                 }
             }
 
-            form.InnerHtml.AppendHtml(helper.RenderRecaptcha().GetString());
+            form.InnerHtml.AppendHtml(helper.RenderRecaptcha());
 
             var div = new TagBuilder("div");
             div.InnerHtml.AppendHtml(GetSubmitButton(form1));
