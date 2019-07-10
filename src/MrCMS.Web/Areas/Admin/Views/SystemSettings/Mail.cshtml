@@ -43,9 +43,13 @@
                 @Html.TextBoxFor(x => x.Port, new {@class = "form-control"})
                 @Html.ValidationMessageFor(x => x.Port)
             </div>
-            <hr/>
-            <partial name="TestEmailSettings" model="null"/>
         </card-body>
     </card>
 
 </form>
+
+<card>
+    <card-body>
+        <partial name="TestEmailSettings" model="null"/>
+    </card-body>
+</card>
