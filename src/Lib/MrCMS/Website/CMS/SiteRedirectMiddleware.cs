@@ -25,9 +25,18 @@ namespace MrCMS.Website.CMS
                 var stagingUrl = new HostString(webpage.Site.StagingUrl);
                 if (!context.Request.IsLocal() && (!authority.Equals(baseUrl) && !authority.Equals(stagingUrl)))
                 {
-                    var uriBuilder = new UriBuilder(scheme, baseUrl.Host, baseUrl.Port ?? 80, context.Request.Path,
-                        context.Request.QueryString.HasValue ? context.Request.QueryString.Value : null);
-                    var location = uriBuilder.ToString();
+                    var uri = new UriBuilder
+                    {
+                        Scheme = scheme,
+                        Host = baseUrl.Host,
+                        Path = context.Request.Path,
+                        Query = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : null,
+                    };
+                    if (baseUrl.Port != null && baseUrl.Port != 80 && baseUrl.Port != 443)
+                    {
+                        uri.Port = (int) baseUrl.Port;
+                    }
+                    var location = uri.ToString();
                     context.Response.Redirect(location);
                     return Task.CompletedTask;
                 }

@@ -29,6 +29,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public ContentResult GetBody(int id)
         {
             QueuedMessage queuedMessage = _messageQueueAdminService.GetMessageBody(id);
+            if (queuedMessage.IsHtml)
+                return Content(queuedMessage.Body, "text/html");
             return Content(queuedMessage.Body);
         }
     }

@@ -172,13 +172,13 @@ namespace MrCMS.Services
 
                     var title = new TagBuilder("b");
                     title.InnerHtml.AppendHtml( formValue.Key + ":");
-                    listItem.InnerHtml.AppendHtml(title.ToString() + " " +
+                    listItem.InnerHtml.AppendHtml(title.GetString() + " " +
                                           formValue.GetMessageValue());
 
-                    list.InnerHtml.AppendHtml(listItem.ToString());
+                    list.InnerHtml.AppendHtml(listItem.GetString());
                 }
 
-                return list.ToString();
+                return list.GetString();
             });
 
             formMessage = pageRegex.Replace(formMessage, match =>
