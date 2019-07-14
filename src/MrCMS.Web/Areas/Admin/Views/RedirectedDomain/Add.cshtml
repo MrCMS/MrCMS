@@ -9,7 +9,7 @@
             </span>
         </legend>
         <div class="form-group">
-            @Html.HiddenFor(x => x.Site.Id)
+            @Html.Hidden("siteId", @Model.Site.Id)
             @Html.LabelFor(x => x.Url)
             @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.Url)

@@ -26,6 +26,10 @@ namespace MrCMS.Web.Apps.Admin.Mapping
             CreateMap<TextBox, UpdateFormPropertyModel>()
                 .ForMember(model => model.ShowPlaceholder, expression => expression.MapFrom(x => true))
                 .ReverseMap();
+            
+            CreateMap<TextArea, UpdateFormPropertyModel>()
+                .ForMember(model => model.ShowPlaceholder, expression => expression.MapFrom(x => true))
+                .ReverseMap();
 
             CreateMap<Email, UpdateFormPropertyModel>()
                 .ForMember(model => model.ShowPlaceholder, expression => expression.MapFrom(x => true))

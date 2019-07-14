@@ -12,6 +12,7 @@ namespace MrCMS.Shortcodes.Forms
             var tagBuilder = new TagBuilder("textarea");
             tagBuilder.Attributes["name"] = formProperty.Name;
             tagBuilder.Attributes["id"] = formProperty.GetHtmlId();
+            tagBuilder.Attributes["placeholder"] = formProperty.PlaceHolder;
 
             if (formProperty.Required)
             {

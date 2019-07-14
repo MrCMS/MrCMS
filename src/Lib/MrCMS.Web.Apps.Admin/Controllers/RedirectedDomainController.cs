@@ -2,16 +2,19 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
+using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
     public class RedirectedDomainController : MrCMSAdminController
     {
         private readonly IRedirectedDomainService _redirectedDomainService;
+        private readonly ISession _session;
 
-        public RedirectedDomainController(IRedirectedDomainService redirectedDomainService)
+        public RedirectedDomainController(IRedirectedDomainService redirectedDomainService, ISession session)
         {
             _redirectedDomainService = redirectedDomainService;
+            _session = session;
         }
 
         [HttpGet]
@@ -21,10 +24,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(RedirectedDomain domain)
+        public RedirectToActionResult Add(string url, int siteId)
         {
-            _redirectedDomainService.Save(domain);
-            return RedirectToAction("Edit", "Sites", new {id = domain.Site.Id});
+            var site = _session.Get<Site>(siteId);
+            var rd = new RedirectedDomain(){Site = site, Url = url};
+            
+            _redirectedDomainService.Save(rd);
+            return RedirectToAction("Edit", "Sites", new {id = rd.Site.Id});
         }
 
         public PartialViewResult Delete(RedirectedDomain domain)
@@ -34,11 +40,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public RedirectToActionResult Delete_POST(RedirectedDomain domain)
+        public RedirectToActionResult Delete_POST(int id, int siteId)
         {
-            Site site = domain.Site;
-            _redirectedDomainService.Delete(domain);
-            return RedirectToAction("Edit", "Sites", new {id = site.Id});
+            _redirectedDomainService.Delete(id);
+            return RedirectToAction("Edit", "Sites", new {id = siteId});
         }
     }
 }

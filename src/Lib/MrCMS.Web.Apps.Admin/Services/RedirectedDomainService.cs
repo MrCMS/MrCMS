@@ -20,11 +20,12 @@ namespace MrCMS.Web.Apps.Admin.Services
             _session.Transact(session => session.Save(domain));
         }
 
-        public void Delete(RedirectedDomain domain)
+        public void Delete(int id)
         {
-            if (domain.Site != null)
-                domain.Site.RedirectedDomains.Remove(domain);
-            _session.Transact(session => session.Delete(domain));
+            var rd = _session.Get<RedirectedDomain>(id);
+            rd.Site.RedirectedDomains.Remove(rd);
+            
+            _session.Transact(session => session.Delete(rd));
         }
     }
 }
