@@ -5,8 +5,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IInPageAdminService
     {
-        SaveResult SaveBodyContent(UpdatePropertyData updatePropertyData);
-        string GetUnformattedBodyContent(GetPropertyData getPropertyData);
-        string GetFormattedBodyContent(GetPropertyData getPropertyData, Controller controller);
+        SaveResult SaveContent(UpdatePropertyData updatePropertyData);
+        ContentInfo GetContent(GetPropertyData getPropertyData);
     }
 }

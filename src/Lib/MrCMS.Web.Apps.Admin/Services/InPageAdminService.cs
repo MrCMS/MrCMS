@@ -32,7 +32,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             _logger = logger;
         }
 
-        public SaveResult SaveBodyContent(UpdatePropertyData updatePropertyData)
+        public SaveResult SaveContent(UpdatePropertyData updatePropertyData)
         {
             HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             Type entityType = types.FirstOrDefault(t => t.Name == updatePropertyData.Type);
@@ -80,17 +80,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             return new SaveResult();
         }
 
-        public string GetUnformattedBodyContent(GetPropertyData getPropertyData)
-        {
-            return GetContent(getPropertyData).Content;
-        }
-
-        public string GetFormattedBodyContent(GetPropertyData getPropertyData, Controller controller)
-        {
-            return _shortcodeParser.Parse(controller.GetHtmlHelper(), GetContent(getPropertyData).Content).ToString();
-        }
-
-        private ContentInfo GetContent(GetPropertyData getPropertyData)
+       
+        public ContentInfo GetContent(GetPropertyData getPropertyData)
         {
             HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             Type entityType = types.FirstOrDefault(t => t.Name == getPropertyData.Type);
@@ -108,12 +99,6 @@ namespace MrCMS.Web.Apps.Admin.Services
                 Content = Convert.ToString(propertyInfo.GetValue(entity, null)),
                 Entity = entity
             };
-        }
-
-        private struct ContentInfo
-        {
-            public string Content { get; set; }
-            public object Entity { get; set; }
         }
     }
 }

@@ -349,7 +349,9 @@ namespace MrCMS.Helpers
 
         public static IHtmlHelper GetHtmlHelper(this Controller controller)
         {
-            return controller.HttpContext.RequestServices.GetRequiredService<IHtmlHelper>();
+            var htmlHelper = (HtmlHelper)controller.HttpContext.RequestServices.GetRequiredService<IHtmlHelper>();
+            htmlHelper.Contextualize(new ViewContext());
+            return htmlHelper;
         }
 
         public static RouteValueDictionary Merge(this RouteValueDictionary baseDictionary,

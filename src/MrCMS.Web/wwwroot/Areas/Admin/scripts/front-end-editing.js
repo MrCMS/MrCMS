@@ -40,7 +40,7 @@
                     var editor = parent.CKEDITOR.inline(element);
                     var original = null;
                     editor.on('focus', function (e) {
-                        $.get('/Admin/InPageAdmin/GetUnformattedBodyContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
+                        $.get('/Admin/InPageAdmin/GetUnformattedContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
                             e.editor.setData(response);
                             original = e.editor.getData();
                         });
@@ -49,7 +49,7 @@
                         if (original != e.editor.getData()) {
                             $.ajax({
                                 type: "POST",
-                                url: "/Admin/InPageAdmin/SaveBodyContent",
+                                url: "/Admin/InPageAdmin/SaveContent",
                                 data: {
                                     id: el.data('id'),
                                     property: el.data('property'),
@@ -77,7 +77,7 @@
                         if (original != html) {
                             $.ajax({
                                 type: "POST",
-                                url: "/Admin/InPageAdmin/SaveBodyContent",
+                                url: "/Admin/InPageAdmin/SaveContent",
                                 data: {
                                     id: el.data('id'),
                                     property: el.data('property'),
@@ -209,7 +209,7 @@
     };
 
     function showLiveForm(el) {
-        $.get('/Admin/InPageAdmin/GetFormattedBodyContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
+        $.get('/Admin/InPageAdmin/GetFormattedContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
             el.html(response);
             $.validator.unobtrusive.parse(el.find('form'));
         });

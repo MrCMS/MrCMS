@@ -8,7 +8,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
-    [Acl(typeof (AdminBarACL), AdminBarACL.Show, ReturnEmptyResult = true)]
+    [Acl(typeof(AdminBarACL), AdminBarACL.Show, ReturnEmptyResult = true)]
     public class InPageAdminController : MrCMSAdminController
     {
         private readonly IInPageAdminService _inPageAdminService;
@@ -25,21 +25,21 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         //[ValidateInput(false)]
-        public JsonResult SaveBodyContent(UpdatePropertyData updatePropertyData)
+        public JsonResult SaveContent(UpdatePropertyData updatePropertyData)
         {
-            return Json(_inPageAdminService.SaveBodyContent(updatePropertyData));
+            return Json(_inPageAdminService.SaveContent(updatePropertyData));
         }
 
         //[ValidateInput(false)]
-        public string GetUnformattedBodyContent(GetPropertyData getPropertyData)
+        public PartialViewResult GetUnformattedContent(GetPropertyData getPropertyData)
         {
-            return _inPageAdminService.GetUnformattedBodyContent(getPropertyData);
+            return PartialView(_inPageAdminService.GetContent(getPropertyData));
         }
 
         //[ValidateInput(false)]
-        public string GetFormattedBodyContent(GetPropertyData getPropertyData)
+        public PartialViewResult GetFormattedContent(GetPropertyData getPropertyData)
         {
-            return _inPageAdminService.GetFormattedBodyContent(getPropertyData, this);
+            return PartialView(_inPageAdminService.GetContent(getPropertyData));
         }
     }
 }
