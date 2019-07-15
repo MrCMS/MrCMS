@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.People;
@@ -23,7 +24,13 @@ namespace MrCMS.Services.Auth
             if (!user.IsActive)
                 return new LoginResult { Status = LoginStatus.LockedOut, Message = "User is locked out." };
 
-            var redirectUrl = returnUrl ?? (user.IsAdmin ? "~/admin" : "~");
+            var loginModelReturnUrl = returnUrl;
+            if (!IsRelativeRedirect(loginModelReturnUrl))  //stop redirect to other sites
+            {
+                loginModelReturnUrl = null;
+            }
+            
+            var redirectUrl = loginModelReturnUrl ?? (user.IsAdmin ? "~/admin" : "/");
 
             if (_securitySettings.TwoFactorAuthEnabled && user.Roles.Any(role => _roleSettings.TwoFactorAuthRoles.Contains(role.Id)))
                 return new LoginResult
@@ -39,6 +46,13 @@ namespace MrCMS.Services.Auth
                 Status = LoginStatus.Success,
                 ReturnUrl = redirectUrl
             };
+        }
+        
+        private bool IsRelativeRedirect(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return false;
+            return Uri.IsWellFormedUriString(url, UriKind.Relative) && !url.Trim().StartsWith("//");
         }
     }
 }

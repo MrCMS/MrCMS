@@ -29,6 +29,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             var mappedUser = _mapper.Map(addUserModel, user);
             _service.AddUser(mappedUser);
             _passwordManagementService.SetPassword(mappedUser, addUserModel.Password, addUserModel.ConfirmPassword);
+            _service.SaveUser(mappedUser);
             return mappedUser.Id;
         }
 

@@ -64,8 +64,12 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var type = TypeHelper.GetTypeByName(model.DocumentType);
             var instance = Activator.CreateInstance(type) as Webpage;
-
+            var revealInNavigation = instance.GetMetadata().RevealInNavigation;    
             _mapper.Map(model, instance);
+
+            if (revealInNavigation)
+                if (instance != null)
+                    instance.RevealInNavigation = true;
 
             if (additionalPropertyModel != null)
                 _mapper.Map(additionalPropertyModel, instance);

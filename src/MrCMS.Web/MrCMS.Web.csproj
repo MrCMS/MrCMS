@@ -13,8 +13,6 @@
     <Compile Remove="App_Data\**" />
     <Content Remove="App_Data\**" />
     <EmbeddedResource Remove="App_Data\**" />
-    <EmbeddedResource Include="Areas\Admin\Views\InPageAdmin\GetFormattedContent.cshtml" />
-    <EmbeddedResource Include="Areas\Admin\Views\InPageAdmin\GetUnformattedContent.cshtml" />
     <None Remove="App_Data\**" />
   </ItemGroup>
 
