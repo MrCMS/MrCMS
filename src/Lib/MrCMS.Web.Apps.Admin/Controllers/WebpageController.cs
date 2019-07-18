@@ -120,9 +120,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Sort(
-            int? id,
-            List<SortItem> items)
+        public ActionResult Sort(List<SortItem> items, int? id)
         {
             _webpageAdminService.SetOrders(items);
             return RedirectToAction("Sort", new { id });

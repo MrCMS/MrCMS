@@ -15,7 +15,7 @@
                 </th>
             </tr>
 
-            @foreach (var file in Model.Files.OrderBy(x => x.DisplayOrder).ThenByDescending(x => x.CreatedOn))
+            @foreach (var file in Model.Files.OrderBy(x => x.DisplayOrder))
             {
                 <tr>
                     <td>

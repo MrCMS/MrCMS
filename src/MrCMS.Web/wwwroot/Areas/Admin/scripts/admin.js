@@ -113,6 +113,14 @@ $(function () {
     $(".main-content").scroll(function (e) {
         setStickyCkedtior(this);
     });
+
+    $("[data-color-picker]").each(function (index, element) {
+        var $element = $(element);
+        $element.spectrum({
+            preferredFormat: "hex",
+            showInput: true
+        });
+    });
 });
 
 function setStickyCkedtior(el) {

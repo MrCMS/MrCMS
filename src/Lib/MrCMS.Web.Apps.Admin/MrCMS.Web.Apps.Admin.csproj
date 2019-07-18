@@ -10,11 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Views\InPageAdmin\GetFormattedContent.cshtml" />
-    <None Remove="Views\InPageAdmin\GetUnformattedContent.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.8.14" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />

@@ -33,6 +33,7 @@ namespace MrCMS.Web.Apps.Admin.Bundles
                 yield return "~/Areas/Admin/lib/featherlight.js";
                 yield return "~/Areas/Admin/lib/jquery.are-you-sure.js";
                 yield return "~/Areas/Admin/lib/update-area.js";
+                yield return "~/Areas/Admin/lib/spectrum/spectrum.js";
             }
         }
     }

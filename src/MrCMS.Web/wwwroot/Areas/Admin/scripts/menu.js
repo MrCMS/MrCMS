@@ -9,6 +9,13 @@
         return id;
     }
 
+    function getParentId(node) {
+        var id = node.data.parentId;
+        if (id == null || (id === 0))
+            id = "";
+        return id;
+    }
+
     return {
         init: function (tree, url) {
             self = this;
@@ -69,7 +76,7 @@
                     items.sortMenuItem = {
                         label: "Sort",
                         action: function () {
-                            return location.href = "/Admin/" + node.data.controller + "/Sort/" + node.parent;
+                            return location.href = "/Admin/" + node.data.controller + "/Sort/" + getParentId(node);
                         }
                     };
                 }

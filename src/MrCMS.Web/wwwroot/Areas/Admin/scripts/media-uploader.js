@@ -13,8 +13,9 @@
                     url: val,
                     maxFilesize: settings.maxFileSize(element),
                     acceptedFiles: acceptFileTypes,
-                    dictDefaultMessage: upload.data('message')
-                });
+                    dictDefaultMessage: upload.data('message'),
+                    parallelUploads: 1
+            });
 
                 myDropzone.on("queuecomplete", function (file) {
                     settings.onFileUploadStopped(file, myDropzone);

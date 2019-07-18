@@ -23,6 +23,7 @@ namespace MrCMS.Web.Apps.Admin.Bundles
                 yield return "~/Areas/Admin/lib/sweetalert-master/lib/sweet-alert.css";
                 yield return "~/Areas/Admin/styles/dropzone.css";
                 yield return "~/Areas/Admin/styles/mrcms-admin.css";
+                yield return "~/Areas/Admin/lib/spectrum/spectrum.css";
             }
         }
     }
