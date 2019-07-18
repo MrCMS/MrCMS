@@ -3,7 +3,7 @@ using System;
 namespace MrCMS.DbConfiguration
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class NotNullableAttribute : Attribute
+    public class DbNotNullableAttribute : Attribute
     {
     }
 }

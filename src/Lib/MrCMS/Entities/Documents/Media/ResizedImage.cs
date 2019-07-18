@@ -7,7 +7,7 @@ namespace MrCMS.Entities.Documents.Media
     {
         public virtual MediaFile MediaFile { get; set; }
         public virtual Crop Crop { get; set; }
-        [StringLength(450), IsDBLength]
+        [StringLength(450)]
         public virtual string Url { get; set; }
     }
 }

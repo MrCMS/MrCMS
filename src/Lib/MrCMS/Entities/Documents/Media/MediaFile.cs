@@ -17,7 +17,7 @@ namespace MrCMS.Entities.Documents.Media
         public virtual string ContentType { get; set; }
         public virtual MediaCategory MediaCategory { get; set; }
 
-        [StringLength(450), IsDBLength]
+        [StringLength(450)]
         public virtual string FileUrl { get; set; }
         public virtual long ContentLength { get; set; }
         public virtual string FileName { get; set; }

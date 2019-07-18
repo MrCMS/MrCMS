@@ -15,10 +15,14 @@ namespace MrCMS.DbConfiguration.Conventions
                 return;
             var memberInfo = instance.Property.MemberInfo;
             var stringLengthAttribute = memberInfo.GetCustomAttribute<StringLengthAttribute>();
-            var isDbLengthAttribute = memberInfo.GetCustomAttribute<IsDBLengthAttribute>();
-            if (stringLengthAttribute != null && isDbLengthAttribute != null)
+            var maxLengthAttribute = memberInfo.GetCustomAttribute<MaxLengthAttribute>();
+            if (stringLengthAttribute != null)
             {
-                instance.Length(stringLengthAttribute.MaximumLength);
+                instance.Length(stringLengthAttribute.MaximumLength);               
+            } 
+            else if (maxLengthAttribute != null)
+            {
+                instance.Length(maxLengthAttribute.Length);
             }
             else
             {

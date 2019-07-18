@@ -91,7 +91,8 @@ namespace MrCMS.Web
             // TODO: Look to removing Site for constructors and resolving like this
             services.AddScoped(provider =>
             {
-                var site = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
+                var site =
+                    provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
 
                 site = site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
                 var session = provider.GetRequiredService<ISession>();
@@ -99,6 +100,7 @@ namespace MrCMS.Web
                 {
                     session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
                 }
+
                 return site;
             });
 
@@ -145,10 +147,11 @@ namespace MrCMS.Web
             services.AddSingleton<IClearableInMemoryCache>(provider =>
             {
                 var cacheOptions = new MemoryCacheOptions();
-                return new ClearableInMemoryCache(new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(cacheOptions)));
+                return new ClearableInMemoryCache(
+                    new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(cacheOptions)));
             });
             services.AddSingleton<IMemoryCache>(provider => provider.GetRequiredService<IClearableInMemoryCache>());
-
+            services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
             services.AddMiniProfiler(options =>
             {
                 // All of this is optional. You can simply call .AddMiniProfiler() for all defaults
@@ -189,9 +192,11 @@ namespace MrCMS.Web
 
             services.AddAuthentication();
             services.TryAddEnumerable(ServiceDescriptor
-                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>());
+                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
+                >());
             services
-                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>();
+                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
+                >();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
@@ -227,11 +232,10 @@ namespace MrCMS.Web
                 builder.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new CompositeFileProvider(
-                        new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                        new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
                 });
                 builder.UseAuthentication();
                 builder.UseMiniProfiler();
-
             });
         }
     }

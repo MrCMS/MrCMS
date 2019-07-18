@@ -46,6 +46,7 @@ namespace MrCMS.Tasks
                 {
                     settings.Status = TaskExecutionStatus.AwaitingExecution;
                     settings.LastStarted = startTime;
+                    Save(settings);
                 });
             }
         }
@@ -55,8 +56,8 @@ namespace MrCMS.Tasks
             Update(type, taskSettings =>
             {
                 taskSettings.Status = status;
-                if (action != null)
-                    action(taskSettings);
+                action?.Invoke(taskSettings);
+                Save(taskSettings);
             });
         }
 
@@ -67,6 +68,7 @@ namespace MrCMS.Tasks
             {
                 taskSettings.Enabled = enabled;
                 taskSettings.FrequencyInSeconds = frequencyInSeconds;
+                Save(taskSettings);
             });
         }
 
@@ -87,6 +89,7 @@ namespace MrCMS.Tasks
                 if (resetLastCompleted)
                     taskSettings.LastCompleted = null;
                 taskSettings.Status = TaskExecutionStatus.Pending;
+                Save(taskSettings);
             });
         }
 
@@ -98,7 +101,6 @@ namespace MrCMS.Tasks
 
             var taskSettings = allSettings[type];
             action(taskSettings);
-            Save(taskSettings);
         }
 
         private void Save(TaskSettings taskSettings)

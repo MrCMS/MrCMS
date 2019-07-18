@@ -28,5 +28,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         void DeleteFoldersSoft(IEnumerable<MediaCategory> folders);
         MediaCategory GetCategory(MediaCategorySearchModel searchModel);
         List<SelectListItem> GetSortByOptions(MediaCategorySearchModel searchModel);
+        MediaFile GetFile(int id);
     }
 }

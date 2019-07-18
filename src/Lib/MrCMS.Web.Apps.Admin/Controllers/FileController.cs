@@ -41,8 +41,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public ActionResult Delete_POST(MediaFile file)
+        //public ActionResult Delete_POST(MediaFile file)
+        public ActionResult Delete_POST(int id)
         {
+            var file = _fileService.GetFile(id);
+            if (file == null)
+                return RedirectToAction("Index", "MediaCategory");
+            
             int categoryId = file.MediaCategory.Id;
             _fileService.DeleteFile(file);
             return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });

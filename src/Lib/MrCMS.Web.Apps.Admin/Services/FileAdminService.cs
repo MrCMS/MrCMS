@@ -208,6 +208,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             return EnumHelper<MediaCategorySortMethod>.GetOptions();
         }
 
+        public MediaFile GetFile(int id)
+        {
+            return _session.Get<MediaFile>(id);
+        }
+
         public void DeleteFilesSoft(IEnumerable<MediaFile> files)
         {
             if (files != null)

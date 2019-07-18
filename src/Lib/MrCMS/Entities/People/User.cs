@@ -4,10 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.DbConfiguration.Configuration;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
-using MrCMS.Helpers.Validation;
 
 namespace MrCMS.Entities.People
 {
@@ -41,7 +38,7 @@ namespace MrCMS.Entities.People
 
         public virtual string CurrentEncryption { get; set; }
 
-        [MaxLength(200), IsDBLength]
+        [MaxLength(200)]
         public virtual string Source { get; set; }
 
         [Required]

@@ -5,13 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App"  />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="4.7.0" />
+    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="4.11.0" />
     <PackageReference Include="AutoFixture.Xunit2" Version="4.7.0" />
-    <PackageReference Include="FakeItEasy" Version="5.0.1" />
+    <PackageReference Include="FakeItEasy" Version="5.1.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>

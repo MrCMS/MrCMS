@@ -15,7 +15,7 @@ namespace MrCMS.Entities
 
         public virtual int Id { get; set; }
 
-        [NotNullable, ShouldMap]
+        [DbNotNullable, ShouldMap]
         public virtual Guid Guid
         {
             get { return _guid; }

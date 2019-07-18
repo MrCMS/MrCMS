@@ -17,28 +17,28 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string Name { get; set; }
 
         [DisplayName("Form Submitted Message")]
-        [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters."), IsDBLength]
+        [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
         public virtual string FormSubmittedMessage { get; set; }
 
         [DisplayName("Form Success Redirect")]
         public virtual string FormRedirectUrl { get; set; }
 
         [DisplayName("Subject")]
-        [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters."), IsDBLength]
+        [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
         public virtual string FormEmailTitle { get; set; }
 
         [DisplayName("Send Form To")]
-        [StringLength(500, ErrorMessage = "Send to cannot be longer than 500 characters."), IsDBLength]
+        [StringLength(500, ErrorMessage = "Send to cannot be longer than 500 characters.")]
         public virtual string SendFormTo { get; set; }
 
         [DisplayName("Form Email Message")]
         public virtual string FormMessage { get; set; }
 
-        [StringLength(100), IsDBLength]
+        [StringLength(100)]
         [DisplayName("Submit Button Css Class")]
         public virtual string SubmitButtonCssClass { get; set; }
 
-        [StringLength(100), IsDBLength]
+        [StringLength(100)]
         [DisplayName("Submit button custom text")]
         public virtual string SubmitButtonText { get; set; }
 

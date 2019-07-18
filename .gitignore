@@ -90,7 +90,7 @@ packages/
 *MrCMS\.Web/wwwroot/Content/upload*
 src/MrCMS\.Web/wwwroot/content/upload*
 *.orig
-*MrCMS.Web/App_Data/*
+src/MrCMS.Web/App_Data*
 *.jtconfig
 *.vspx
 NDependOut/*

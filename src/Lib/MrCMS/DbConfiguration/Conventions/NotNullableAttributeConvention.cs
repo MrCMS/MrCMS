@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Conventions
     {
         public void Apply(IPropertyInstance instance)
         {
-            var attribute = instance.Property.MemberInfo.GetCustomAttribute<NotNullableAttribute>();
+            var attribute = instance.Property.MemberInfo.GetCustomAttribute<DbNotNullableAttribute>();
             if (attribute != null)
             {
                 instance.Not.Nullable();
