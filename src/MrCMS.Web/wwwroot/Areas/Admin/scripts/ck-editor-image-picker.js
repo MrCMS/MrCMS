@@ -38,7 +38,32 @@
         if (fileValue !== '') {
             $.get('/Admin/MediaSelector/GetFileInfo/', { value: fileValue }, function (info) {
                 var funcNum = $('#CKEditorFuncNum').val();
-                window.opener.CKEDITOR.tools.callFunction(funcNum, info.url);
+                window.opener.CKEDITOR.tools.callFunction(funcNum, info.url, function() {
+                    // Get the reference to a dialog window.
+                    var dialog = this.getDialog();
+                    // Check if this is the Image Properties dialog window.
+                    if (dialog.getName() == 'image') {
+                        // Get the reference to a text field that stores the "alt" attribute.
+                        var element = dialog.getContentElement('info', 'txtAlt');
+                        // Assign the new value.
+                        if (element)
+                            element.setValue(info.alt);
+
+                        var classElement = dialog.getContentElement('advanced', 'txtGenClass');
+                        if (classElement) {
+                            classElement.setValue('img-fluid');
+                        }
+
+                        var titleElement = dialog.getContentElement('advanced', 'txtGenTitle');
+                        if (titleElement) {
+                            titleElement.setValue(info.description);
+                        }
+                    }
+                    dialog.originalElement.addClass('img-responsive');
+                    // Return "false" to stop further execution. In such case CKEditor will ignore the second argument ("fileUrl")
+                    // and the "onSelect" function assigned to the button that called the file manager (if defined).
+                    // return false;
+                });
                 window.close();
             });
         }

@@ -131,20 +131,32 @@ namespace MrCMS.Services
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 
-        public MediaFile GetFileByUrl(string value)
+        public MediaFile GetFileByUrl(string url)
         {
             return
                 _session.QueryOver<MediaFile>()
-                    .Where(file => file.FileUrl == value)
+                    .Where(file => file.FileUrl == url)
                     .Take(1)
                     .Cacheable()
                     .SingleOrDefault();
         }
 
-        public string GetFileUrl(string value)
+        public MediaFile GetFile(string value)
         {
             MediaFile mediaFile = GetFileByUrl(value);
             if (mediaFile != null)
+                return mediaFile;
+
+            string[] split = value.Split('-');
+            int id = Convert.ToInt32(split[0]);
+            return _session.Get<MediaFile>(id);
+        }
+
+        public string GetFileUrl(MediaFile mediaFile, string value)
+        {
+            if (mediaFile == null)
+                return null;
+            if (string.Equals(mediaFile.FileUrl, value, StringComparison.OrdinalIgnoreCase))
                 return mediaFile.FileUrl;
 
             string[] split = value.Split('-');

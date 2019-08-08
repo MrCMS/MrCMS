@@ -15,8 +15,9 @@ namespace MrCMS.Services
         string GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false);
         string GetFileLocation(Crop crop, Size imageSize, bool getCdn = false);
         FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
-        MediaFile GetFileByUrl(string value);
-        string GetFileUrl(string value);
+        MediaFile GetFileByUrl(string url);
+        MediaFile GetFile(string value);
+        string GetFileUrl(MediaFile file, string value);
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
         bool IsValidFileType(string fileName);

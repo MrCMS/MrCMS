@@ -57,11 +57,17 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public SelectedItemInfo GetFileInfo(string value)
         {
-            var fileUrl = _fileService.GetFileUrl(value);
+            var file = _fileService.GetFile(value);
+            if (file == null)
+            {
+                return null;
+            }
 
             return new SelectedItemInfo
             {
-                Url = fileUrl
+                Url = _fileService.GetFileUrl(file,value),
+                Alt = file.Title,
+                Description = file.Description,
             };
         }
 
