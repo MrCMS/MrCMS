@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,15 +34,22 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using MrCMS.Web.Apps.Articles;
+using MrCMS.Web.Apps.WebApi;
+using MrCMS.Web.Apps.WebApi.Helpers;
+using MrCMS.Web.IdentityServer.NHibernate.Storage;
 using StackExchange.Profiling.Storage;
 using ISession = NHibernate.ISession;
+using MrCMS.Web.Apps.IdentityServer4.Admin;
 
 namespace MrCMS.Web
 {
     public class Startup
     {
         private const string Database = nameof(Database);
+        
 
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
@@ -84,6 +92,9 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
                 context.RegisterDatabaseProvider<SqliteProvider>();
+                 context.RegisterApp<MrCmsWebApiApp>();
+                 context.RegisterApp<MrCMSIs4App>();
+                context.RegisterApp<MrCMSIs4AdminApp>();
             });
 
             services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
@@ -132,6 +143,8 @@ namespace MrCMS.Web
             services.RegisterTasks();
 
             services.AddMvcForMrCMS(appContext, fileProvider);
+            //  services.AddMvc();
+            
 
             services.AddLogging(builder => builder.AddMrCMSLogger());
 
@@ -190,7 +203,23 @@ namespace MrCMS.Web
                 .Create(null, null));
 
 
-            services.AddAuthentication();
+            services.AddAuthentication()
+             .AddJwtBearer("Bearer", options =>
+              {
+                  options.Authority = "http://localhost:7000";
+                  options.RequireHttpsMetadata = false;
+
+                  options.Audience = "mvc";
+              });
+            //.AddOpenIdConnect("oidc", options =>
+            //{
+            //    options.Authority = "http://localhost:7000";
+            //    options.RequireHttpsMetadata = false;
+
+            //    options.ClientId = "mvc";
+
+            //    options.SaveTokens = true;
+            //});
             services.TryAddEnumerable(ServiceDescriptor
                 .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
                 >());
@@ -225,6 +254,7 @@ namespace MrCMS.Web
                 return;
             }
 
+            app.UseMrCMSSwagger();
 
             app.UseMrCMS(builder =>
             {
@@ -237,6 +267,8 @@ namespace MrCMS.Web
                 builder.UseAuthentication();
                 builder.UseMiniProfiler();
             });
+
+          
         }
     }
 }

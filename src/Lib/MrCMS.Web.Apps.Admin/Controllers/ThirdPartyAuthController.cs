@@ -21,6 +21,12 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(_thirdPartyAuthSettingsAdminService.GetSettings());
         }
 
+        [HttpGet]
+        public ActionResult Index2()
+        {
+            return View(_thirdPartyAuthSettingsAdminService.GetSettings());
+        }
+
         [HttpPost]
         public RedirectToActionResult Index(
             [ModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))]

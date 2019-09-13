@@ -18,9 +18,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MrCMS.Web.IdentityServer.NHibernate.Storage\MrCMS.Web.IdentityServer.NHibernate.Storage.csproj" />
+    <ProjectReference Include="..\Apps\MrCMS.Web.Apps.WebAPI\MrCMS.Web.Apps.WebApi.csproj" />
+    <ProjectReference Include="..\Apps\MrCMS.Web.IdentityServer4.Admin\MrCMS.Web.Apps.IdentityServer4.Admin.csproj" />
     <ProjectReference Include="..\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
     <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
     <ProjectReference Include="..\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />

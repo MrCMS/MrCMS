@@ -22,6 +22,7 @@ namespace MrCMS.Tasks
             _site = site;
         }
 
+        [HttpPost]
         [TaskExecutionKeyPasswordAuth]
         [Route(WriteSitemapUrl)]
         public ContentResult Update()
@@ -30,6 +31,7 @@ namespace MrCMS.Tasks
             return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 
+        [HttpGet]
         [Route(SitemapUrl)]
         public ActionResult Show()
         {

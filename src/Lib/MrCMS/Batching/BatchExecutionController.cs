@@ -17,8 +17,10 @@ namespace MrCMS.Batching
             _batchExecutionService = batchExecutionService;
         }
 
+
         [TaskExecutionKeyPasswordAuth]
         [Route(BaseURL)]
+        [HttpGet()]
         public async Task<JsonResult> ExecuteNext(Guid? id)
         {
             var result = id == null ? null : await _batchExecutionService.ExecuteNextTask(id.GetValueOrDefault());

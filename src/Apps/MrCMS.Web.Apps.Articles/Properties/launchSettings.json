@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "MrCMS.Web.Apps.Articles": {
+      "commandName": "Project"
+    }
+  }
+}

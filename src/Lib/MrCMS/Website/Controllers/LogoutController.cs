@@ -14,6 +14,7 @@ namespace MrCMS.Website.Controllers
         }
 
 
+        [HttpGet]
         [Route(RouteUrl)]
         public RedirectResult Logout()
         {

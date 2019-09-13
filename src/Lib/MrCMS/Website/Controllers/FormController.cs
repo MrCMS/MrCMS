@@ -15,6 +15,7 @@ namespace MrCMS.Website.Controllers
             _formPostingHandler = formPostingHandler;
         }
 
+        [HttpPost]
         [GoogleRecaptcha]
         [Route("save-form/{id}")]
         public ActionResult Save(int id)
