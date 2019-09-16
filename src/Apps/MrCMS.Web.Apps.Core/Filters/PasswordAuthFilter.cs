@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc.Filters;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
@@ -19,23 +20,20 @@ namespace MrCMS.Web.Apps.Core.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!context.ActionArguments.ContainsKey("page"))
+            var webpage = context.ActionArguments.Values.OfType<Webpage>().FirstOrDefault();
+
+            if (webpage == null)
             {
                 return;
             }
 
-            if (!(context.ActionArguments["page"] is Webpage page))
-            {
-                return;
-            }
-
-            var canAccess = _checker.CanAccessPage(page, context.HttpContext.Request.Cookies);
+            var canAccess = _checker.CanAccessPage(webpage, context.HttpContext.Request.Cookies);
             if (canAccess)
             {
                 return;
             }
 
-            context.Result = _uniquePageService.RedirectTo<WebpagePasswordPage>(new {lockedPage = page.Id});
+            context.Result = _uniquePageService.RedirectTo<WebpagePasswordPage>(new {lockedPage = webpage.Id});
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
