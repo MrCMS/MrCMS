@@ -9,12 +9,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\MrCMS.Web.IdentityServer.NHibernate.Storage\MrCMS.Web.IdentityServer.NHibernate.Storage.csproj" />
+    <Folder Include="Dtos\Log\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Log\" />
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
+    <ProjectReference Include="..\MrCMS.Web.IdentityServer.NHibernate.Storage\MrCMS.Web.IdentityServer.NHibernate.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

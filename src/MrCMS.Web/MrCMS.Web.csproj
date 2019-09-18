@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MrCMS.Web.IdentityServer.NHibernate.Storage\MrCMS.Web.IdentityServer.NHibernate.Storage.csproj" />
     <ProjectReference Include="..\Apps\MrCMS.Web.Apps.WebAPI\MrCMS.Web.Apps.WebApi.csproj" />
     <ProjectReference Include="..\Apps\MrCMS.Web.IdentityServer4.Admin\MrCMS.Web.Apps.IdentityServer4.Admin.csproj" />
     <ProjectReference Include="..\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
