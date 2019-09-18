@@ -33,6 +33,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
         Task<int> DeleteApiResourceAsync(ApiResourceDto apiResource);
 
+        Task<int> DeleteApiResourceAsync(int apiResourceId);
+
         Task<bool> CanInsertApiResourceAsync(ApiResourceDto apiResource);
 
         Task<ApiScopesDto> GetApiScopesAsync(int apiResourceId, int page = 1, int pageSize = 10);

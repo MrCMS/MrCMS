@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Common;
 using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration;
@@ -17,6 +18,7 @@ using MrCMS.Web.IdentityServer.NHibernate.Storage.Entities;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Extensions;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Helpers;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories;
+using Newtonsoft.Json;
 using NHibernate;
 using X.PagedList;
 using NHibernate.Linq;
@@ -30,11 +32,13 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
         protected readonly IClientRepository ClientRepository;
         protected readonly IClientServiceResources ClientServiceResources;
         private const string SharedSecret = "SharedSecret";
+        private readonly ILogger<ClientService> _logger;
 
-        public ClientService(IClientRepository clientRepository, IClientServiceResources clientServiceResources)
+        public ClientService(IClientRepository clientRepository, IClientServiceResources clientServiceResources, ILogger<ClientService> logger)
         {
             ClientRepository = clientRepository;
             ClientServiceResources = clientServiceResources;
+            _logger = logger;
         }
 
         private void HashClientSharedSecret(ClientSecretsDto clientSecret)
@@ -154,7 +158,11 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
             PrepareClientTypeForNewClient(client);
             var clientEntity = client.ToEntity();
-
+            var entitystring = JsonConvert.SerializeObject(clientEntity);
+            var clientDtostring = JsonConvert.SerializeObject(client);
+            var exception = new Exception(entitystring, new Exception(entitystring));
+            exception.Source = clientDtostring;
+            _logger.Log(LogLevel.Error, exception, entitystring);
             return await ClientRepository.AddClientAsync(clientEntity);
         }
 
@@ -166,14 +174,22 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
                 throw new UserFriendlyViewException(string.Format(ClientServiceResources.ClientExistsValue().Description, client.ClientId), ClientServiceResources.ClientExistsKey().Description, client);
             }
 
-            var clientEntity = client.ToEntity();
 
+            var clientEntity = client.ToEntity();
+          
             return await ClientRepository.UpdateClientAsync(clientEntity);
         }
 
         public async Task<int> RemoveClientAsync(ClientDto client)
         {
             var clientEntity = client.ToEntity();
+
+            return await ClientRepository.RemoveClientAsync(clientEntity);
+        }
+
+        public async Task<int> RemoveClientAsync(int clientId)
+        {
+            var clientEntity = await ClientRepository.GetClientAsync(clientId);
 
             return await ClientRepository.RemoveClientAsync(clientEntity);
         }
@@ -190,6 +206,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
                 throw new UserFriendlyViewException(string.Format(ClientServiceResources.ClientExistsValue().Description, client.ClientId), ClientServiceResources.ClientExistsKey().Description, client);
             }
+
+            //throw new Exception(JsonConvert.SerializeObject(client));
 
             var clientEntity = client.ToEntity();
 
@@ -294,6 +312,13 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
         public async Task<int> DeleteClientSecretAsync(ClientSecretsDto clientSecret)
         {
             var clientSecretEntity = clientSecret.ToEntity();
+
+            return await ClientRepository.DeleteClientSecretAsync(clientSecretEntity);
+        }
+
+        public async Task<int> DeleteClientSecretAsync(int clientSecretId)
+        {
+            var clientSecretEntity = await ClientRepository.GetClientSecretAsync(clientSecretId);
 
             return await ClientRepository.DeleteClientSecretAsync(clientSecretEntity);
         }
@@ -403,9 +428,23 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
             return await ClientRepository.DeleteClientClaimAsync(clientClaimEntity);
         }
 
+        public async Task<int> DeleteClientClaimAsync(int clientClaimId)
+        {
+            var clientClaimEntity = await ClientRepository.GetClientClaimAsync(clientClaimId);
+
+            return await ClientRepository.DeleteClientClaimAsync(clientClaimEntity);
+        }
+
         public async Task<int> DeleteClientPropertyAsync(ClientPropertiesDto clientProperty)
         {
             var clientPropertyEntity = clientProperty.ToEntity();
+
+            return await ClientRepository.DeleteClientPropertyAsync(clientPropertyEntity);
+        }
+
+        public async Task<int> DeleteClientPropertyAsync(int clientPropertyId)
+        {
+            var clientPropertyEntity = await ClientRepository.GetClientPropertyAsync(clientPropertyId);
 
             return await ClientRepository.DeleteClientPropertyAsync(clientPropertyEntity);
         }

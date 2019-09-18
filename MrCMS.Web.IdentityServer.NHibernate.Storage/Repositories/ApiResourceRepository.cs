@@ -22,8 +22,8 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
         {
            // var pagedList = new PagedList<ApiResource>();
             Expression<Func<ApiResource, bool>> searchCondition = x => x.Name.Contains(search);
-            var apiResources = await PagedListExtensions.ToListAsync(_session.Query<ApiResource>().WhereIf(!string.IsNullOrEmpty(search), searchCondition)
-                    .OrderBy(x => x.Name).PageBy(x => x.Name, page, pageSize));
+            var apiResources = await (_session.Query<ApiResource>().WhereIf(!string.IsNullOrEmpty(search), searchCondition)
+                .PageBy(x => x.Name, page, pageSize)).ToListAsync();
           //  apiResources = apiResources.WhereIf(!string.IsNullOrEmpty(search), searchCondition);
          // return new Task<PagedList<ApiResource>>(function: null, Task.FromResult(apiResources).CreationOptions);
          return new PagedList<ApiResource>(apiResources, page, pageSize);
@@ -70,7 +70,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (propertyToDelete != null && propertyToDelete.Id > 0)
                 {
-                    session.DeleteAsync(propertyToDelete);
+                    session.Delete(propertyToDelete);
                     result = 1;
                 }
             });
@@ -87,13 +87,47 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
         public Task<int> AddApiResourceAsync(ApiResource apiResource)
         {
             var result = 0;
-            _session.Transact(async session =>
+            _session.Transact(session =>
             {
-               await session.SaveAsync(apiResource);
+               session.Save(apiResource);
+               
+               SaveApiResourceRelations(session, apiResource);
+
                 result = apiResource.Id;
             });
 
             return Task.FromResult(result);
+        }
+
+        private void SaveApiResourceRelations(ISession session, ApiResource resource)
+        {
+            foreach (var item in resource.Secrets)
+            {
+                item.ApiResource = resource;
+                session.SaveOrUpdate(item);
+            }
+            foreach (var item in resource.Scopes)
+            {
+                item.ApiResource = resource;
+                session.SaveOrUpdate(item);
+                foreach (var item2 in item.UserClaims)
+                {
+                    item2.ApiScope = item;
+                    session.SaveOrUpdate(item2);
+                }
+            }
+
+            foreach (var item in resource.UserClaims)
+            {
+                item.ApiResource = resource;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in resource.Properties)
+            {
+                item.ApiResource = resource;
+                session.SaveOrUpdate(item);
+            }
         }
 
 
@@ -116,19 +150,20 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             return result;
         }
 
-        public Task<int> DeleteApiResourceAsync(ApiResource apiResource)
+        public async Task<int> DeleteApiResourceAsync(ApiResource apiResource)
         {
             var result = 0;
-            _session.Transact(async session =>
+           await _session.TransactAsync(async (session , cts)=>
             {
                 if (apiResource != null && apiResource.Id > 0)
                 {
-                   await session.DeleteAsync(apiResource);
+                   await session.DeleteAsync(apiResource, cts);
                     result = 1;
                 }
             });
 
-            return Task.FromResult(result);
+          //  return Task.FromResult(result);
+          return result;
         }
 
         public async Task<bool> CanInsertApiResourceAsync(ApiResource apiResource)
@@ -196,19 +231,22 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             return result;
         }
 
-        public Task<int> DeleteApiScopeAsync(ApiScope apiScope)
+        public async Task<int> DeleteApiScopeAsync(ApiScope apiScope)
         {
+            var apiScopetoDelete = await _session.Query<ApiScope>()
+                .Where(x => apiScope != null && x.Id == apiScope.Id).SingleOrDefaultAsync();
             var result = 0;
-            _session.Transact(async session =>
+           _session.Transact((session) =>
             {
-                if (apiScope != null && apiScope.Id > 0)
+                if (apiScopetoDelete != null && apiScopetoDelete.Id > 0)
                 {
-                    await session.DeleteAsync(apiScope);
+                     session.Delete(apiScopetoDelete);
                     result = 1;
                 }
             });
 
-            return Task.FromResult(result);
+          //  return Task.FromResult(result);
+          return result;
         }
 
         public async Task<PagedList<ApiSecret>> GetApiSecretsAsync(int apiResourceId, int page = 1, int pageSize = 10)
@@ -239,19 +277,31 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                 .SingleOrDefaultAsync();
         }
 
-        public Task<int> DeleteApiSecretAsync(ApiSecret apiSecret)
+        public async Task<int> DeleteApiSecretAsync(ApiSecret apiSecret)
         {
             var result = 0;
-            _session.Transact(async session =>
-            {
-                if (apiSecret != null && apiSecret.Id > 0)
-                {
-                    await session.DeleteAsync(apiSecret);
-                    result = 1;
-                }
-            });
+           //await _session.TransactAsync(async (session, cts) =>
+           // {
+           //     if (apiSecret != null && apiSecret.Id > 0)
+           //     {
+           //         await session.DeleteAsync(apiSecret, cts);
+           //         result = 1;
+           //     }
+           // });
 
-            return Task.FromResult(result);
+           var secretToDelete = await _session.Query<ApiSecret>().Where(x => apiSecret != null && x.Id == apiSecret.Id).SingleOrDefaultAsync();
+           _session.Transact(session =>
+           {
+               if (secretToDelete != null && secretToDelete.Id > 0)
+               {
+                   session.Delete(secretToDelete);
+                   result = 1;
+               }
+           });
+
+           return result;
+            //  return Task.FromResult(result);
+           
         }
 
         public async Task<bool> CanInsertApiScopeAsync(ApiScope apiScope)

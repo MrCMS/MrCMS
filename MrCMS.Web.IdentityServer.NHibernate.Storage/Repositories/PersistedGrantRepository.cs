@@ -26,8 +26,8 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                 {
                     SubjectId = x.SubjectId,
                     SubjectName = string.Empty
-                })
-                .Distinct();
+                });
+              
 
             Expression<Func<PersistedGrantDataView, bool>> searchCondition = x => x.SubjectId.Contains(search);
             var persistedGrantsData = await persistedGrantByUsers.WhereIf(!string.IsNullOrEmpty(search), searchCondition).PageBy(x => x.SubjectId, page, pageSize).ToListAsync();
@@ -66,7 +66,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (persistedGrant != null && persistedGrant.Id > 0)
                 {
-                    session.DeleteAsync(persistedGrant);
+                    session.Delete(persistedGrant);
                     result = 1;
                 }
             });
@@ -82,7 +82,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 foreach (var grant in grants)
                 {
-                    session.DeleteAsync(grant);
+                    session.Delete(grant);
                 }
 
                 result = 1;

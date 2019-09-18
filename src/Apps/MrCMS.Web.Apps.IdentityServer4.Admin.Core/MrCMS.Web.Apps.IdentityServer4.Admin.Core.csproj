@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dtos\Common\MrCMSIs4AdminApp.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\MrCMS.Web.IdentityServer.NHibernate.Storage\MrCMS.Web.IdentityServer.NHibernate.Storage.csproj" />
   </ItemGroup>
 

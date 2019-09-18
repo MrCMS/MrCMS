@@ -22,6 +22,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
         Task<int> DeleteIdentityResourceAsync(IdentityResourceDto identityResource);
 
+        Task<int> DeleteIdentityResourceAsync(int identityResourceId);
+
         IdentityResourceDto BuildIdentityResourceViewModel(IdentityResourceDto identityResource);
 
         Task<IdentityResourcePropertiesDto> GetIdentityResourcePropertiesAsync(int identityResourceId, int page = 1,
@@ -32,6 +34,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
         Task<int> AddIdentityResourcePropertyAsync(IdentityResourcePropertiesDto identityResourceProperties);
 
         Task<int> DeleteIdentityResourcePropertyAsync(IdentityResourcePropertiesDto identityResourceProperty);
+
+        Task<int> DeleteIdentityResourcePropertyAsync(int identityResourcePropertyId);
 
         Task<bool> CanInsertIdentityResourcePropertyAsync(IdentityResourcePropertiesDto identityResourcePropertiesDto);
     }

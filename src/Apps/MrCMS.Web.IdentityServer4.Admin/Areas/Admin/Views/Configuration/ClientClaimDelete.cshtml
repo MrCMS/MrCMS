@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.ClientClaimsDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4ClientClaimDeletePageTitle", "Delete Client Claim");
+    Layout = "_Layout";
+}
+
+<form asp-controller="Configuration" asp-action="ClientClaimDelete" Method="post">
+    <div class="row">
+
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="Clients">@Localizer["IS4NavigationClients"]</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="Client" asp-route-id="@Model.ClientId">@Model.ClientName</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ClientClaims" asp-route-id="@Model.ClientId">@StringLocalizer.GetValue("IS4NavigationClientClaims", "Client Claims")</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@StringLocalizer.GetValue("IS4ClientClaimDeletePageTitle", "Delete Client Claim")</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-md-12">
+            <h3>@StringLocalizer.GetValue("IS4ClientClaimDeletePageTitle", "Delete Client Claim")</h3>
+
+            <!--Hidden -->
+            <input type="hidden" asp-for="ClientId" />
+            <input type="hidden" asp-for="ClientClaimId" />
+
+
+            <div class="card mt-3">
+                <h5 class="card-header">@StringLocalizer.GetValue("IS4ClientClaimDeletePanelTitle", "Delete Client Claim")</h5>
+                <div class="card-body">
+
+                    <!--Input - text -->
+                    <div class="form-group row">
+                        <label asp-for="Type" class="col-sm-3 col-form-label">
+                            @await Html.PartialAsync("Client/Section/Label", "Type")
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" disabled="disabled" asp-for="Type">
+                        </div>
+                    </div>
+
+                    <!--Input - text -->
+                    <div class="form-group row">
+                        <label asp-for="Value" class="col-sm-3 col-form-label">
+                            @await Html.PartialAsync("Client/Section/Label", "Value")
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" disabled="disabled" asp-for="Value">
+                        </div>
+                    </div>
+
+                    <!--Button-->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                        </label>
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-danger">@StringLocalizer.GetValue("IS4DeleteButtonClaim", "Delete Client Claim")</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

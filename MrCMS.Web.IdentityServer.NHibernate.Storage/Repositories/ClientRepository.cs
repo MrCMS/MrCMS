@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using MrCMS.Helpers;
@@ -9,6 +10,7 @@ using MrCMS.Web.IdentityServer.NHibernate.Storage.Constants;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Entities;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Extensions;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Helpers;
+using Newtonsoft.Json;
 using NHibernate;
 using NHibernate.Linq;
 using X.PagedList;
@@ -35,10 +37,82 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             _session.Transact(session =>
             {
                 session.Save(client);
+
+                SaveClientRelations(session, client);
                 result = client.Id;
             });
 
             return Task.FromResult(result);
+        }
+
+        private void SaveClientRelations(ISession session, Client client)
+        {
+            foreach (var item in client.AllowedGrantTypes)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+            foreach (var item in client.AllowedCorsOrigins)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+            foreach (var item in client.AllowedScopes)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+            foreach (var item in client.Claims)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+            foreach (var item in client.AllowedCorsOrigins)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in client.ClientSecrets)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in client.RedirectUris)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in client.PostLogoutRedirectUris)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+            foreach (var item in client.IdentityProviderRestrictions)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in client.AllowedCorsOrigins)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in client.IdentityProviderRestrictions)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in client.Properties)
+            {
+                item.Client = client;
+                session.SaveOrUpdate(item);
+            }
         }
 
         public async Task<int> UpdateClientAsync(Client client)
@@ -92,7 +166,10 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                 {
                     session.Delete(postredirect);
                 }
+                client.CreatedOn = DateTime.UtcNow;
+                client.UpdatedOn = DateTime.UtcNow;
                 session.Update(client);
+                SaveClientRelations(session, client);
                 result = 1;
             });
 
@@ -101,13 +178,15 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
 
         public async Task<int> RemoveClientAsync(Client client)
         {
+           // CancellationTokenSource cts = new CancellationTokenSource();
+            // await _session.TransactAsync((session, token) => session.DeleteAsync(role, token), cancellationToken);
             var result = 0;
             var clientToDelete = await _session.Query<Client>().Where(x => client != null && x.Id == client.Id).SingleOrDefaultAsync();
-            _session.Transact(session =>
+            await _session.TransactAsync(async  (session, cts) =>
             {
                 if (clientToDelete != null && clientToDelete.Id > 0)
                 {
-                    session.DeleteAsync(clientToDelete);
+                    await session.DeleteAsync(clientToDelete, cts);
                     result = 1;
                 }
             });
@@ -121,6 +200,11 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             bool cloneClientProperties = true)
         {
             var result = 0;
+            //throw new Exception(JsonConvert.SerializeObject(client, Formatting.Indented,
+            //    new JsonSerializerSettings()
+            //    {
+            //        ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //    }));
             var clientToClone = await _session.Query<Client>()
                 .FetchMany(x => x.AllowedGrantTypes)
                 .FetchMany(x => x.RedirectUris)
@@ -136,17 +220,26 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             clientToClone.ClientName = client.ClientName;
             clientToClone.ClientId = client.ClientId;
 
+            var newClient = new Client();
+
+            //throw new Exception(JsonConvert.SerializeObject(clientToClone, Formatting.Indented,
+            //    new JsonSerializerSettings()
+            //    {
+            //        ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //    }));
+
             //Clean original ids
             clientToClone.Id = 0;
-            clientToClone.AllowedCorsOrigins.ForEach(x => x.Id = 0);
-            clientToClone.RedirectUris.ForEach(x => x.Id = 0);
-            clientToClone.PostLogoutRedirectUris.ForEach(x => x.Id = 0);
-            clientToClone.AllowedScopes.ForEach(x => x.Id = 0);
-            clientToClone.ClientSecrets.ForEach(x => x.Id = 0);
-            clientToClone.IdentityProviderRestrictions.ForEach(x => x.Id = 0);
-            clientToClone.Claims.ForEach(x => x.Id = 0);
-            clientToClone.AllowedGrantTypes.ForEach(x => x.Id = 0);
-            clientToClone.Properties.ForEach(x => x.Id = 0);
+            clientToClone.SetGuid(new Guid());
+            //clientToClone.AllowedCorsOrigins.ForEach(x => x.Id = 0);
+            //clientToClone.RedirectUris.ForEach(x => x.Id = 0);
+            //clientToClone.PostLogoutRedirectUris.ForEach(x => x.Id = 0);
+            //clientToClone.AllowedScopes.ForEach(x => x.Id = 0);
+            //clientToClone.ClientSecrets.ForEach(x => x.Id = 0);
+            //clientToClone.IdentityProviderRestrictions.ForEach(x => x.Id = 0);
+            //clientToClone.Claims.ForEach(x => x.Id = 0);
+            //clientToClone.AllowedGrantTypes.ForEach(x => x.Id = 0);
+            //clientToClone.Properties.ForEach(x => x.Id = 0);
 
             //Client secret will be skipped
             clientToClone.ClientSecrets.Clear();
@@ -344,7 +437,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (secretToDelete != null && secretToDelete.Id > 0)
                 {
-                    session.DeleteAsync(secretToDelete);
+                    session.Delete(secretToDelete);
                     result = 1;
                 }
             });
@@ -440,7 +533,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (claimToDelete != null && claimToDelete.Id > 0)
                 {
-                    session.DeleteAsync(claimToDelete);
+                    session.Delete(claimToDelete);
                     result = 1;
                 }
             });
@@ -456,7 +549,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (propertyToDelete != null && propertyToDelete.Id > 0)
                 {
-                    session.DeleteAsync(propertyToDelete);
+                    session.Delete(propertyToDelete);
                     result = 1;
                 }
             });

@@ -23,6 +23,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
         Task<int> RemoveClientAsync(ClientDto client);
 
+        Task<int> RemoveClientAsync(int clientId);
+
         Task<int> CloneClientAsync(ClientCloneDto client);
 
         Task<bool> CanInsertClientAsync(ClientDto client, bool isCloned = false);
@@ -51,6 +53,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
         Task<int> DeleteClientSecretAsync(ClientSecretsDto clientSecret);
 
+        Task<int> DeleteClientSecretAsync(int clientSecretId);
+
         Task<ClientSecretsDto> GetClientSecretsAsync(int clientId, int page = 1, int pageSize = 10);
 
         Task<ClientSecretsDto> GetClientSecretAsync(int clientSecretId);
@@ -69,7 +73,11 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
 
         Task<int> DeleteClientClaimAsync(ClientClaimsDto clientClaim);
 
+        Task<int> DeleteClientClaimAsync(int clientClaimId);
+
         Task<int> DeleteClientPropertyAsync(ClientPropertiesDto clientProperty);
+
+        Task<int> DeleteClientPropertyAsync(int clientPropertyId);
 
         List<SelectItemDto> GetProtocolTypes();
     }

@@ -185,6 +185,13 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
             return await ApiResourceRepository.DeleteApiResourceAsync(resource);
         }
 
+        public async Task<int> DeleteApiResourceAsync(int apiResourceId)
+        {
+            var apiResourceEntity = await ApiResourceRepository.GetApiResourceAsync(apiResourceId);
+
+            return await ApiResourceRepository.DeleteApiResourceAsync(apiResourceEntity);
+        }
+
         public async Task<bool> CanInsertApiResourceAsync(ApiResourceDto apiResource)
         {
             var resource = apiResource.ToEntity();

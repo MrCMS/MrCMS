@@ -1,0 +1,63 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Helpers
+@using MrCMS.Services.Resources
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.ClientDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4ClientPageTitle", "Client");
+    Html.IncludeCss("~/styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+    Html.IncludeScript("~/dist/js/bundle.min.js");
+    // Layout = "_Layout";
+}
+
+<form id="client-form" asp-controller="Configuration" asp-action="Client" Method="post">
+
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="Clients">@StringLocalizer.GetValue("IS4NavigationClients", "Clients")</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.ClientId</li>
+                </ol>
+            </nav>
+        </div>
+
+        @if (Model.Id != 0)
+        {
+            <div class="col-12">
+                <h2>@StringLocalizer.GetValue("IS4ClientTitle", "Client -") @Model.ClientId</h2>
+            </div>
+        }
+
+        <div class="col-12">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    </div>
+
+    @if (Model.Id != 0)
+    {
+        @await Html.PartialAsync("Client/Section/ActionButtons")
+    }
+
+    @await Html.PartialAsync("Client/Settings")
+        @await Html.PartialAsync("Client/Section/ActionButtons")
+</form>
+
+@section JavaScriptBlock
+	{
+    <script>
+        $(function () {
+            //Disable enter for this form
+            FormMvc.disableEnter($('#client-form'));
+
+            //Radio image
+            $("label.radio-img>img").click(function () {
+                $(this).parent().find("input:radio").click();
+            });
+        });
+    </script>
+}
+

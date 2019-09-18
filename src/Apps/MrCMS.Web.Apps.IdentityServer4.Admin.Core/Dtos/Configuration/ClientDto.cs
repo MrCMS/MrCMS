@@ -104,8 +104,8 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration
         public List<ClientSecretDto> ClientSecrets { get; set; }
         public List<ClientPropertyDto> Properties { get; set; }
 
-        public DateTime? Updated { get; set; }
-        public DateTime? LastAccessed { get; set; }
+        public DateTime? Updated { get; set; } = DateTime.UtcNow;
+        public DateTime? LastAccessed { get; set; } = DateTime.UtcNow;
 
         public int? UserSsoLifetime { get; set; }
         public string UserCodeType { get; set; }

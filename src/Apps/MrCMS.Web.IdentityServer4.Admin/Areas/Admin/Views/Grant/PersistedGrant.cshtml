@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Common
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Grant
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Helpers
+@model PersistedGrantsDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4PersistedGrantPageTitle", "Persisted Grant");
+    Html.IncludeCss("~/styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+    //Html.IncludeScript("~/dist/js/bundle.min.js");
+}
+
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Grant" asp-action="PersistedGrants">@StringLocalizer.GetValue("IS4NavigationPersistedGrants", "Persisted Grants")</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.SubjectId</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-12">
+            <h2>@StringLocalizer.GetValue("IS4PersistedGrantPageTitle", "Persisted Grant")</h2>
+        </div>
+    </div>
+
+    <form id="client-form" asp-controller="Grant" asp-action="PersistedGrantsDelete" Method="post">
+
+        <a href="#" class="btn btn-danger mb-3" data-toggle="modal" data-target="#deletePersistedGrantsModal">@StringLocalizer.GetValue("IS4PersistedGrantButtonDeleteAll", "Delete All")</a>
+
+        <!--Hidden -->
+        <input type="hidden" asp-for="SubjectId" />
+
+        <div class="row table-responsive">
+            <div class="col-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>@StringLocalizer.GetValue("IS4PersistedGrantTableSubjectId", "Subject Id")</th>
+                            <th>@StringLocalizer.GetValue("IS4PersistedGrantTableType", "Type")</th>
+                            <th>@StringLocalizer.GetValue("IS4PersistedGrantTableExpiration", "Expiration")</th>
+                            <th>@StringLocalizer.GetValue("IS4PersistedGrantTableData", "Data")</th>
+                            <th>@StringLocalizer.GetValue("IS4PersistedGrantTableClient", "Client")</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var persistedGrant in Model.PersistedGrants)
+                        {
+                            <tr>
+                                <td><a class="btn btn-danger" asp-action="PersistedGrantDelete" asp-route-id="@UrlHelpers.QueryStringSafeHash(persistedGrant.Key)"><span class="oi oi-x"></span></a></td>
+                                <td>@persistedGrant.SubjectId</td>
+                                <td>@persistedGrant.Type</td>
+                                <td>@persistedGrant.Expiration</td>
+                                <td>@persistedGrant.Data</td>
+                                <td>@persistedGrant.ClientId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                @await Html.PartialAsync("Common/Pager", new Pager { Action = "PersistedGrant", PageSize = Model.PageSize, TotalCount = Model.TotalCount })
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deletePersistedGrantsModal" tabindex="-1" role="dialog" aria-labelledby="deletePersistedGrantsModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="deletePersistedGrantsModalLabel">@StringLocalizer.GetValue("IS4PersistedGrantDeleteDialogTitle", "Warning")</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        @StringLocalizer.GetValue("IS4PersistedGrantDeleteDialogMessage", "Are you sure? All persisted grants for this subject will be deleted.")
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">@StringLocalizer.GetValue("IS4PersistedGrantDeleteDialogYes", "Yes - delete")</button>
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">@StringLocalizer.GetValue("IS4PersistedGrantDeleteDialogNo", "No - close")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>

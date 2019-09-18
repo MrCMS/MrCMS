@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.ApiScopesDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4ApiScopeDeletePageTitle", "Delete Api Scope");
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiResources">@Localizer["IS4NavigationApiResources"]</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiResource" asp-route-id="@Model.ApiResourceId">@Model.ResourceName</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiScopes" asp-route-id="@Model.ApiResourceId">@Localizer["IS4NavigationApiScopes"]</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiScopes" asp-route-id="@Model.ApiResourceId" asp-route-scope="@Model.ApiScopeId">@Model.Name</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@StringLocalizer.GetValue("IS4ApiScopeDeletePageTitle", "Delete Api Scope")</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-12">
+        <h2>@StringLocalizer.GetValue("IS4ApiScopeDeletePageTitle", "Delete Api Scope")</h2>
+    </div>
+</div>
+
+<form asp-action="ApiScopeDelete" method="post">
+
+    <!--Hidden -->
+    <input type="hidden" asp-for="ApiScopeId" />
+
+    <!--Hidden -->
+    <input type="hidden" asp-for="ApiResourceId" />
+
+    <div class="card mt-3">
+        <h5 class="card-header">@StringLocalizer.GetValue("IS4ApiScopeDeletePanelTitle", "Delete Api Scope")</h5>
+        <div class="card-body">
+
+            <!--Input - text -->
+            <div class="form-group row">
+                <label asp-for="Name" class="col-sm-3 col-form-label">
+                    @await Html.PartialAsync("ApiResource/Section/Label", "Name")
+                </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" disabled="disabled" asp-for="Name">
+                </div>
+            </div>
+
+            <!--Button-->
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">
+                </label>
+                <div class="col-sm-9">
+                    <button type="submit" class="btn btn-danger">@StringLocalizer.GetValue("IS4ButtonDeleteApiScope", "Delete Api Scope")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

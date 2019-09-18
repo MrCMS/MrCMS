@@ -1,0 +1,15 @@
+﻿@using MrCMS.Web.Apps.Admin.Services
+@using MrCMS.Website
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+	ViewBag.Title = Localizer["PageTitle"];
+	//Layout = "_Layout";
+}
+
+<div class="welcome-block px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+	<h1 class="display-4">@Localizer["PageTitle"]</h1>
+	<p class="lead">@Localizer["PageSubTitle"]</p>
+</div>
+This is Is4 Admin Home

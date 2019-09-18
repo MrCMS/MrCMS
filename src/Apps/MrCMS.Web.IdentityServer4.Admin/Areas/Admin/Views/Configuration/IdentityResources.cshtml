@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Common
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.IdentityResourcesDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4IdentityResourcesPageTitle", "Identity Resources");
+    Html.IncludeCss("~/styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+    //Html.IncludeScript("~/dist/js/bundle.min.js");
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>@StringLocalizer.GetValue("IS4IdentityResourcesPageTitle", "Identity Resources")</h2>
+    </div>
+
+    <div class="col-12">
+        <a asp-action="IdentityResource" class="btn btn-outline-primary mb-3"><span class="oi oi-plus"></span>@StringLocalizer.GetValue("IS4ButtonAddIdentityResource", "Add Identity Resource")</a>
+    </div>
+
+    <div class="col-12">
+        @await Html.PartialAsync("Common/Search", new Search { Action = "IdentityResources", Controller = "Configuration" })
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>@StringLocalizer.GetValue("IS4ResourcesTableName", "Name")</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var identity in Model.IdentityResources)
+                    {
+                        <tr>
+                            <th scope="row"><a class="btn btn-primary" asp-action="IdentityResource" asp-route-id="@identity.Id">@StringLocalizer.GetValue("IS4ResourcesTableButtonEdit", "Edit")</a></th>
+                            <td>@identity.Name</td>
+                            <td>
+                                <a class="btn btn-danger" asp-action="IdentityResourceDelete" asp-route-id="@identity.Id"><span class="oi oi-x"></span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        @await Html.PartialAsync("Common/Pager", new Pager { Action = "IdentityResources", PageSize = Model.PageSize, TotalCount = Model.TotalCount, EnableSearch = true, Search = ViewBag.Search })
+    </div>
+</div>

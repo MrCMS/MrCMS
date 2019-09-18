@@ -97,9 +97,9 @@ namespace MrCMS.DbConfiguration
                     c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
                     c.SetProperty(Environment.BatchSize, "25");
 
-                    c.SetProperty(Environment.ShowSql, bool.TrueString);
-                    c.SetProperty(Environment.FormatSql, bool.TrueString);
-                    c.SetProperty(Environment.UseSqlComments, bool.TrueString);
+                   // c.SetProperty(Environment.ShowSql, bool.TrueString);
+                  //  c.SetProperty(Environment.FormatSql, bool.TrueString);
+                   // c.SetProperty(Environment.UseSqlComments, bool.TrueString);
                 })
                 .BuildConfiguration();
 

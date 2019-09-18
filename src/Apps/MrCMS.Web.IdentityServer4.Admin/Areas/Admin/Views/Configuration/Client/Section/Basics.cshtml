@@ -1,0 +1,184 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Services.Resources
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.ClientDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+<!--Hidden -->
+<input type="hidden" asp-for="Id" />
+
+<div class="card mt-3">
+    <h5 class="card-header">@StringLocalizer.GetValue("IS4ClientBasicsPanelTitle", "Basics")</h5>
+    <div class="card-body">
+        <!--Checkbox-->
+        <div class="form-group row">
+            <label asp-for="Enabled" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "Enabled")
+            </label>
+            <div class="col-sm-9">
+                <toggle-button>
+                    <input asp-for="Enabled" type="checkbox">
+                </toggle-button>
+            </div>
+        </div>
+
+        <!--Input - text -->
+        <div class="form-group row">
+            <label asp-for="Description" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "Description")
+            </label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" asp-for="Description">
+            </div>
+        </div>
+
+        <!--Select-->
+        <div class="form-group row">
+            <label asp-for="ProtocolType" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "ProtocolType")
+            </label>
+            <div class="col-sm-9">
+                <select asp-for="ProtocolType" asp-items="@(new SelectList(Model.ProtocolTypes,"Id","Text"))" class="form-control single-select"></select>
+            </div>
+        </div>
+
+        <!--Checkbox-->
+        <div class="form-group row">
+            <label asp-for="RequireClientSecret" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "RequireClientSecret")
+            </label>
+            <div class="col-sm-9">
+                <toggle-button>
+                    <input asp-for="RequireClientSecret" type="checkbox">
+                </toggle-button>
+            </div>
+        </div>
+
+        <!--Checkbox-->
+        <div class="form-group row">
+            <label asp-for="RequirePkce" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "RequirePkce")
+            </label>
+            <div class="col-sm-9">
+                <toggle-button>
+                    <input asp-for="RequirePkce" type="checkbox">
+                </toggle-button>
+            </div>
+        </div>
+
+        <!--Checkbox-->
+        <div class="form-group row">
+            <label asp-for="AllowPlainTextPkce" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "AllowPlainTextPkce")
+            </label>
+            <div class="col-sm-9">
+                <toggle-button>
+                    <input asp-for="AllowPlainTextPkce" type="checkbox">
+                </toggle-button>
+            </div>
+        </div>
+
+        <!--Checkbox-->
+        <div class="form-group row">
+            <label asp-for="AllowOfflineAccess" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "AllowOfflineAccess")
+            </label>
+            <div class="col-sm-9">
+                <toggle-button>
+                    <input asp-for="AllowOfflineAccess" type="checkbox">
+                </toggle-button>
+            </div>
+        </div>
+
+        <!--Checkbox-->
+        <div class="form-group row">
+            <label asp-for="AllowAccessTokensViaBrowser" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "AllowAccessTokensViaBrowser")
+            </label>
+            <div class="col-sm-9">
+                <toggle-button>
+                    <input asp-for="AllowAccessTokensViaBrowser" type="checkbox">
+                </toggle-button>
+            </div>
+        </div>
+
+        <!--Select with tags-->
+        <div class="form-group row">
+            <label asp-for="AllowedScopes" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "AllowedScopes")
+            </label>
+            <div class="col-sm-9">
+                <picker id="AllowedScopesItems" multiple-select="true" min-search-text="2"
+                        selected-items="@Model.AllowedScopes" url="@Url.Action("SearchScopes","Configuration")?scope"
+                        search-input-placeholder="@StringLocalizer.GetValue("PickerSearchItemPlaceholder", "Enter 2 and more characters")"
+                        selected-items-title="@StringLocalizer.GetValue("PickerSelectedItemsTitle", "Selected item/s: ")"
+                        search-result-title="@StringLocalizer.GetValue("PickerSearchResultTitle", "Search result: (click on the item to select)")"
+                        suggested-items-title="@StringLocalizer.GetValue("PickerSuggestedItemsTitle", "Suggested items: ")"
+                        no-item-selected-title="@StringLocalizer.GetValue("PickerNoItemSelectedTitle", "No item/s selected")"
+                        show-all-items-title="@StringLocalizer.GetValue("PickerShowAllItemsTitle", "more")"
+                        item-already-selected-title="@StringLocalizer.GetValue("PickerItemAlreadySelectedTitle", "item already selected")">
+                </picker>
+            </div>
+        </div>
+
+
+        <!--Select with tags-->
+        <div class="form-group row">
+            <label asp-for="RedirectUris" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "RedirectUris")
+            </label>
+            <div class="col-sm-9">
+                <picker id="RedirectUrisItems" multiple-select="true" min-search-text="2"
+                        selected-items="@Model.RedirectUris"
+                        search-input-placeholder="@StringLocalizer.GetValue("PickerSearchItemPlaceholder", "Enter 2 and more characters")"
+                        selected-items-title="@StringLocalizer.GetValue("PickerSelectedItemsTitle", "Selected item/s: ")"
+                        search-result-title="@StringLocalizer.GetValue("PickerSearchResultTitle", "Search result: (click on the item to select)")"
+                        suggested-items-title="@StringLocalizer.GetValue("PickerSuggestedItemsTitle", "Suggested items: ")"
+                        no-item-selected-title="@StringLocalizer.GetValue("PickerNoItemSelectedTitle", "No item/s selected")"
+                        show-all-items-title="@StringLocalizer.GetValue("PickerShowAllItemsTitle", "more")"
+                        item-already-selected-title="@StringLocalizer.GetValue("PickerItemAlreadySelectedTitle", "item already selected")">
+                </picker>
+            </div>
+        </div>
+
+        <!--Select with tags-->
+        <div class="form-group row">
+            <label asp-for="AllowedGrantTypes" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "AllowedGrantTypes")
+            </label>
+            <div class="col-sm-9">
+                <picker id="AllowedGrantTypesItems" multiple-select="true" min-search-text="2"
+                        url="@Url.Action("SearchGrantTypes","Configuration")?grant"
+                        selected-items="@Model.AllowedGrantTypes"
+                        search-input-placeholder="@StringLocalizer.GetValue("PickerSearchItemPlaceholder", "Enter 2 and more characters")"
+                        selected-items-title="@StringLocalizer.GetValue("PickerSelectedItemsTitle", "Selected item/s: ")"
+                        search-result-title="@StringLocalizer.GetValue("PickerSearchResultTitle", "Search result: (click on the item to select)")"
+                        suggested-items-title="@StringLocalizer.GetValue("PickerSuggestedItemsTitle", "Suggested items: ")"
+                        no-item-selected-title="@StringLocalizer.GetValue("PickerNoItemSelectedTitle", "No item/s selected")"
+                        show-all-items-title="@StringLocalizer.GetValue("PickerShowAllItemsTitle", "more")"
+                        item-already-selected-title="@StringLocalizer.GetValue("PickerItemAlreadySelectedTitle", "item already selected")">
+                </picker>
+            </div>
+        </div>
+
+        <!--Button-->
+        <div class="form-group row">
+            <label asp-for="ClientSecrets" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "ClientSecrets")
+            </label>
+            <div class="col-sm-9">
+                <a asp-action="ClientSecrets" asp-route-id="@Model.Id" @*target="_blank"*@ class="btn btn-primary">@StringLocalizer.GetValue("IS4ButtonManageClientSecrets", "Manage Client Secrets")</a>
+            </div>
+        </div>
+
+
+        <!--Button-->
+        <div class="form-group row">
+            <label asp-for="Properties" class="col-sm-3 col-form-label">
+                @await Html.PartialAsync("Client/Section/Label", "Properties")
+            </label>
+            <div class="col-sm-9">
+                <a asp-action="ClientProperties" asp-route-id="@Model.Id" @*target="_blank"*@ class="btn btn-primary">@StringLocalizer.GetValue("IS4ButtonManageClientProperties", "Manage Client Properties")</a>
+            </div>
+        </div>
+    </div>
+</div>

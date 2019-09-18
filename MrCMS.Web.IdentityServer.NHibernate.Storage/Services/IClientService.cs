@@ -91,15 +91,15 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
                     session.SaveOrUpdate(item);
                 }
 
-            foreach (var item in client.Properties)
-            {
-                item.Client = client;
-                session.SaveOrUpdate(item);
-            }
+                foreach (var item in client.Properties)
+                {
+                    item.Client = client;
+                    session.SaveOrUpdate(item);
+                }
 
       
 
-    });
+            });
 
             //_session.Transact(session =>
             //{

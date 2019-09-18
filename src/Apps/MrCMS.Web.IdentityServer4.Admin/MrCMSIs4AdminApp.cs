@@ -1,8 +1,8 @@
 ﻿using MrCMS.Apps;
 using NHibernate.Cfg;
 using System;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Web.Apps.IdentityServer4.Admin.ExceptionHandling;
 
 namespace MrCMS.Web.Apps.IdentityServer4.Admin
 {
@@ -26,8 +26,14 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin
         public override IServiceCollection RegisterServices(IServiceCollection serviceCollection)
         {
             //Exception handling
-            serviceCollection.AddScoped<ControllerExceptionFilterAttribute>();
-            return serviceCollection;
+           // serviceCollection.AddScoped<ControllerExceptionFilterAttribute>();
+            //serviceCollection.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            //serviceCollection.AddMvc()
+            //    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            //    .AddDataAnnotationsLocalization();
+            //  return serviceCollection;
+            return base.RegisterServices(serviceCollection);
         }
 
     }

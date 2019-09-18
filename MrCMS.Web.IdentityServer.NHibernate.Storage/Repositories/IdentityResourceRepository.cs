@@ -51,13 +51,31 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
         public Task<int> AddIdentityResourceAsync(IdentityResource identityResource)
         {
             var result = 0;
-            _session.Transact(async session =>
+            _session.Transact(session =>
             {
-                await session.SaveAsync(identityResource);
+                session.Save(identityResource);
+
+                SaveIdentityResourceRelations(session, identityResource);
+
                 result = identityResource.Id;
             });
 
             return Task.FromResult(result);
+        }
+
+        private void SaveIdentityResourceRelations(ISession session, IdentityResource resource)
+        {
+            foreach (var item in resource.UserClaims)
+            {
+                item.IdentityResource = resource;
+                session.SaveOrUpdate(item);
+            }
+
+            foreach (var item in resource.Properties)
+            {
+                item.IdentityResource = resource;
+                session.SaveOrUpdate(item);
+            }
         }
 
         public async Task<int> UpdateIdentityResourceAsync(IdentityResource identityResource)
@@ -72,6 +90,8 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                     session.Delete(claim);
                 }
 
+                identityResource.CreatedOn = DateTime.UtcNow;
+                identityResource.UpdatedOn = DateTime.UtcNow;
                 session.Update(identityResource);
                 result = 1;
             });
@@ -87,7 +107,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (identityResourceToDelete != null && identityResourceToDelete.Id > 0)
                 {
-                    session.DeleteAsync(identityResourceToDelete);
+                    session.Delete(identityResourceToDelete);
                     result = 1;
                 }
             });
@@ -138,7 +158,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             {
                 if (propertyToDelete != null && propertyToDelete.Id > 0)
                 {
-                    session.DeleteAsync(propertyToDelete);
+                    session.Delete(propertyToDelete);
                     result = 1;
                 }
             });

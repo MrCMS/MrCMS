@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model string
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+
+@*@Localizer[$"{Model}_Label"]
+<span data-toggle="tooltip" data-original-title="@Localizer[$"{Model}_Info"]"><span style="font-size: 12px;" class="oi oi-comment-square"></span></span>*@
+
+@StringLocalizer.GetValue($"{Model}_Label", $"{Model.BreakUpString()}")
+<span data-toggle="tooltip" data-original-title="@StringLocalizer.GetValue($"{Model}_Info", $"{Model.BreakUpString()}")"><span style="font-size: 12px;" class="oi oi-comment-square"></span></span>

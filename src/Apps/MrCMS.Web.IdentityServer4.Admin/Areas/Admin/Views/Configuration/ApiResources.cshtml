@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Common
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.ApiResourcesDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4ApiResourcesPageTitle", "Api Resources");
+    Html.IncludeCss("~/styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+}
+
+<div class="row">
+
+    <div class="col-12">
+        <h2>@StringLocalizer.GetValue("IS4ApiResourcesPageTitle", "Api Resources")</h2>
+    </div>
+
+    <div class="col-12">
+        <a asp-action="ApiResource" class="btn btn-outline-primary mb-3"><span class="oi oi-plus"></span> @StringLocalizer.GetValue("IS4ButtonAddApiResource", "Add Api Resource")</a>
+    </div>
+
+    <div class="col-12">
+        @await Html.PartialAsync("Common/Search", new Search() { Action = "ApiResources", Controller = "Configuration" })
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>@StringLocalizer.GetValue("IS4ResourcesTableName", "Name")</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var api in Model.ApiResources)
+                    {
+                        <tr>
+                            <th scope="row"><a class="btn btn-primary" asp-action="ApiResource" asp-route-id="@api.Id">@StringLocalizer.GetValue("IS4ResourcesTableButtonEdit", "Edit")</a></th>
+                            <td>@api.Name</td>
+                            <td>
+                                <a class="btn btn-danger" asp-action="ApiResourceDelete" asp-route-id="@api.Id"><span class="oi oi-x"></span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        @await Html.PartialAsync("Common/Pager", new Pager { Action = "ApiResources", PageSize = Model.PageSize, TotalCount = Model.TotalCount, EnableSearch = true, Search = @ViewBag.Search })
+    </div>
+</div>

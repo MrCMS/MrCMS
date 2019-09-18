@@ -86,6 +86,13 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
             return await IdentityResourceRepository.DeleteIdentityResourceAsync(resource);
         }
 
+
+        public async Task<int> DeleteIdentityResourceAsync(int identityResourceId)
+        {
+            var resource = await IdentityResourceRepository.GetIdentityResourceAsync(identityResourceId);
+
+            return await IdentityResourceRepository.DeleteIdentityResourceAsync(resource);
+        }
         public IdentityResourceDto BuildIdentityResourceViewModel(IdentityResourceDto identityResource)
         {
             ComboBoxHelpers.PopulateValuesToList(identityResource.UserClaimsItems, identityResource.UserClaims);
@@ -146,6 +153,11 @@ namespace MrCMS.Web.Apps.IdentityServer4.Admin.Core.Services
             var propertyEntity = identityResourceProperty.ToEntity();
 
             return await IdentityResourceRepository.DeleteIdentityResourcePropertyAsync(propertyEntity);
+        }
+
+        public Task<int> DeleteIdentityResourcePropertyAsync(int identityResourcePropertyId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> CanInsertIdentityResourcePropertyAsync(IdentityResourcePropertiesDto identityResourcePropertiesDto)

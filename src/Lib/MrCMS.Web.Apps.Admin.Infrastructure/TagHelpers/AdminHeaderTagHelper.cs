@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.TagHelpers
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
-    
+
     public class RowTagHelper : TagHelper
     {
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.TagHelpers
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
-    
+
     public class AdminHeaderTitleTagHelper : TagHelper
     {
         public string Title { get; set; }
@@ -38,7 +38,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.TagHelpers
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
-    
+
     public class AdminHeaderActionsTagHelper : TagHelper
     {
         public string Title { get; set; }
@@ -61,7 +61,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.TagHelpers
             output.AddClass("card", HtmlEncoder.Default);
         }
     }
-    
+
     public class CardBodyTagHelper : TagHelper
     {
         public override void Process(TagHelperContext context, TagHelperOutput output)

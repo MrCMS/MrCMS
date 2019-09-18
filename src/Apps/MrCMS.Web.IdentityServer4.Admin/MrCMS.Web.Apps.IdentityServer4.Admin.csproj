@@ -5,15 +5,145 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Breadcrumbs\IS4Admin\AllIS4AdminBreadcrumb.cs" />
+    <Compile Remove="ExceptionHandling\ControllerExceptionFilterAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Areas\Admin\Views\Configuration\ApiResource.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiResourceDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiResourceProperties.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiResourcePropertyDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiResources.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiResource\Section\Label.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiScopeDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiScopes.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiSecretDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ApiSecrets.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientClaimDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientClaims.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientClone.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientProperties.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientPropertyDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Clients.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientSecretDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\ClientSecrets.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\ActionButtons.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\Authentication.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\Basics.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\Consent.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\DeviceFlow.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\Label.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\Name.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Section\Token.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\Client\Settings.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\IdentityResource.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\IdentityResourceDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\IdentityResourceProperties.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\IdentityResourcePropertyDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\IdentityResources.cshtml" />
+    <None Remove="Areas\Admin\Views\Configuration\IdentityResource\Section\Label.cshtml" />
+    <None Remove="Areas\Admin\Views\Grant\PersistedGrant.cshtml" />
+    <None Remove="Areas\Admin\Views\Grant\PersistedGrantDelete.cshtml" />
+    <None Remove="Areas\Admin\Views\Grant\PersistedGrants.cshtml" />
     <None Remove="Areas\Admin\Views\IS4AdminHome\Index.cshtml" />
+    <None Remove="Areas\Admin\Views\IS4AdminHome\Index.en.cshtml" />
+    <None Remove="Areas\Admin\Views\Shared\ErrorPage.cshtml" />
+    <None Remove="Areas\Admin\Views\Shared\Pager.cshtml" />
+    <None Remove="Areas\Admin\Views\Shared\Search.cshtml" />
+    <None Remove="Areas\Admin\Views\_ViewImports.cshtml" />
+    <None Remove="Views\_ViewImports.cshtml" />
+    <None Remove="wwwroot\dist\js\bundle.min.js" />
+    <None Remove="wwwroot\images\icons\device-client.png" />
+    <None Remove="wwwroot\images\icons\empty-client.png" />
+    <None Remove="wwwroot\images\icons\native-client.png" />
+    <None Remove="wwwroot\images\icons\server-client.png" />
+    <None Remove="wwwroot\images\icons\spa-client.png" />
+    <None Remove="wwwroot\images\icons\web-client.png" />
+    <None Remove="wwwroot\images\loading.gif" />
+    <None Remove="wwwroot\images\skoruba-ico.png" />
+    <None Remove="wwwroot\styles\css\web.css" />
+    <None Remove="wwwroot\styles\openiconic\css\open-iconic-bootstrap.css" />
+    <None Remove="wwwroot\styles\openiconic\css\open-iconic-bootstrap.less" />
+    <None Remove="wwwroot\styles\openiconic\css\open-iconic-bootstrap.min.css" />
+    <None Remove="wwwroot\styles\openiconic\css\open-iconic-bootstrap.scss" />
+    <None Remove="wwwroot\styles\openiconic\css\open-iconic-bootstrap.styl" />
+    <None Remove="wwwroot\styles\openiconic\css\open-iconic.css" />
+    <None Remove="wwwroot\styles\openiconic\fonts\open-iconic.eot" />
+    <None Remove="wwwroot\styles\openiconic\fonts\open-iconic.otf" />
+    <None Remove="wwwroot\styles\openiconic\fonts\open-iconic.svg" />
+    <None Remove="wwwroot\styles\openiconic\fonts\open-iconic.ttf" />
+    <None Remove="wwwroot\styles\openiconic\fonts\open-iconic.woff" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiResource.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiResourceDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiResourceProperties.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiResourcePropertyDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiResources.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiResource\Section\Label.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiScopeDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiScopes.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiSecretDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ApiSecrets.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientClaimDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientClaims.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientClone.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientProperties.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientPropertyDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Clients.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientSecretDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\ClientSecrets.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\ActionButtons.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\Authentication.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\Basics.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\Consent.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\DeviceFlow.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\Label.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\Name.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Section\Token.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\Client\Settings.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\IdentityResource.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\IdentityResourceDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\IdentityResourceProperties.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\IdentityResourcePropertyDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\IdentityResources.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Configuration\IdentityResource\Section\Label.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Grant\PersistedGrant.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Grant\PersistedGrantDelete.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Grant\PersistedGrants.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\IS4AdminHome\Index.en.cshtml" />
     <EmbeddedResource Include="Areas\Admin\Views\IS4AdminHome\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Shared\Common\ErrorPage.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Shared\Common\Pager.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\Shared\Common\Search.cshtml" />
+    <EmbeddedResource Include="Areas\Admin\Views\_ViewImports.cshtml" />
+    <EmbeddedResource Include="Views\_ViewImports.cshtml" />
+    <EmbeddedResource Include="wwwroot\dist\js\bundle.min.js" />
+    <EmbeddedResource Include="wwwroot\images\icons\device-client.png" />
+    <EmbeddedResource Include="wwwroot\images\icons\empty-client.png" />
+    <EmbeddedResource Include="wwwroot\images\icons\native-client.png" />
+    <EmbeddedResource Include="wwwroot\images\icons\server-client.png" />
+    <EmbeddedResource Include="wwwroot\images\icons\spa-client.png" />
+    <EmbeddedResource Include="wwwroot\images\icons\web-client.png" />
+    <EmbeddedResource Include="wwwroot\images\loading.gif" />
+    <EmbeddedResource Include="wwwroot\images\skoruba-ico.png" />
+    <EmbeddedResource Include="wwwroot\styles\css\web.css" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\css\open-iconic-bootstrap.css" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\css\open-iconic-bootstrap.less" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\css\open-iconic-bootstrap.min.css" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\css\open-iconic-bootstrap.scss" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\css\open-iconic-bootstrap.styl" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\css\open-iconic.css" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\fonts\open-iconic.eot" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\fonts\open-iconic.otf" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\fonts\open-iconic.svg" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\fonts\open-iconic.ttf" />
+    <EmbeddedResource Include="wwwroot\styles\openiconic\fonts\open-iconic.woff" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,12 +162,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Breadcrumbs\IS4Admin\" />
+    <Folder Include="ExceptionHandling\" />
     <Folder Include="Middlewares\" />
-    <Folder Include="Resources\" />
     <Folder Include="Scripts\" />
     <Folder Include="Styles\" />
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\scripts\" />
   </ItemGroup>
 
 </Project>
