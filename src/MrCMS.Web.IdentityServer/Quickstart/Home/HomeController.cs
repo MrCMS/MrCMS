@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using MrCMS.Entities.People;
+using MrCMS.Services.Resources;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Entities;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Services;
 using NHibernate;
@@ -26,14 +28,19 @@ namespace MrCMS.Web.IdentityServer
         private readonly ILogger _logger;
         private readonly ISession _session;
         private readonly IDeveloperIS4Service _service;
+        private readonly IStringResourceProvider _stringLocalizer;
+        private readonly IStringLocalizer<HomeController> _localizer;
 
-        public HomeController(IIdentityServerInteractionService interaction, IHostingEnvironment environment, ILogger<HomeController> logger, ISession session, IDeveloperIS4Service service)
+        public HomeController(IIdentityServerInteractionService interaction, IHostingEnvironment environment, ILogger<HomeController> logger, ISession session, 
+            IDeveloperIS4Service service, IStringResourceProvider stringLocalizer, IStringLocalizer<HomeController> localizer)
         {
             _interaction = interaction;
             _environment = environment;
             _logger = logger;
             _session = session;
             _service = service;
+            _stringLocalizer = stringLocalizer;
+            _localizer = localizer;
 
         }
 
@@ -45,13 +52,13 @@ namespace MrCMS.Web.IdentityServer
             _logger.LogInformation(naming);
             if (_environment.IsDevelopment())
             {
-                _service.InitializeDatabaseData();
+                //_service.InitializeDatabaseData();
                 // only show in development
                 return View();
 
             }
 
-          //  var grantType = _session.QueryOver<ClientGrantType>().Where(x => x.).List();
+            //  var grantType = _session.QueryOver<ClientGrantType>().Where(x => x.).List();
 
             //  var session = HttpContext.RequestServices.GetRequiredService<IStatelessSession>();
 

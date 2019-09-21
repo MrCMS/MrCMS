@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
 {
-    public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
+    public class MrCMSIS4ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
     {
-        protected readonly ILogger Logger;
+        protected readonly ILogger<MrCMSIS4ResourceOwnerPasswordValidator> Logger;
         private readonly IUserLookup _userLookup;
         private readonly IPasswordManagementService _passwordManagementService;
 
-        public ResourceOwnerPasswordValidator(ILogger<MrCMSIS4ProfileService> logger, IUserLookup userLookup, IPasswordManagementService passwordManagementService)
+        public MrCMSIS4ResourceOwnerPasswordValidator(ILogger<MrCMSIS4ResourceOwnerPasswordValidator> logger, IUserLookup userLookup, IPasswordManagementService passwordManagementService)
         {
             Logger = logger;
             _userLookup = userLookup;
@@ -24,26 +24,29 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
         }
         Task IResourceOwnerPasswordValidator.ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-           try
-            {
-                Logger.LogDebug("Validating the user Details");
-                var user = _userLookup.GetUserByEmail(context.UserName);
+           // throw new NotImplementedException();
+            try
+           {
+               Logger.LogDebug("Validating the user Details");
+               var user = _userLookup.GetUserByEmail(context.UserName);
 
-                if (user != null && _passwordManagementService.ValidateUser(user, context.Password))
-                {
-                    Logger.LogDebug("Valid User Details");
-                    context.Result = new GrantValidationResult(user.Id.ToString(), "custom");
-                }
-                else
-                {
-                    Logger.LogDebug("Invalid User Details");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-            }
-            throw new NotImplementedException();
+               if (user != null && _passwordManagementService.ValidateUser(user, context.Password))
+               {
+                   Logger.LogDebug("Valid User Details");
+                   context.Result = new GrantValidationResult(user.Id.ToString(), "custom");
+               }
+               else
+               {
+                   Logger.LogDebug("Invalid User Details");
+               }
+           }
+           catch (Exception ex)
+           {
+               Logger.LogError(ex.Message);
+           }
+
+           return Task.FromResult(0);
+           // throw new NotImplementedException();
         }
 
         public static Claim[] GetUserClaims(User user)

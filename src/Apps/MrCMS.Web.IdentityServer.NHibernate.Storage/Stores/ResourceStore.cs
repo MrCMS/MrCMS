@@ -9,7 +9,9 @@ using Microsoft.Extensions.Logging;
 using MrCMS.Web.IdentityServer.NHibernate.Storage.Entities;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.Transform;
+using IdentityResource = IdentityServer4.Models.IdentityResource;
 
 namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Stores
 {
@@ -40,12 +42,20 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Stores
         /// </summary>
         public async Task<IdentityServer4.Models.ApiResource> FindApiResourceAsync(string name)
         {
-            var apiResource = await _session.QueryOver<Entities.ApiResource>()
+            //var apiResource = await _session.QueryOver<Entities.ApiResource>()
+            //    .Where(r => r.Name == name)
+            //    .Fetch(SelectMode.Fetch, r => r.Secrets)
+            //    .Fetch(SelectMode.Fetch, r => r.Scopes)
+            //    .Fetch(SelectMode.Fetch, r => r.UserClaims)
+            //    .SingleOrDefaultAsync();
+
+            var apiResource = await _session.Query<Entities.ApiResource>()
                 .Where(r => r.Name == name)
-                .Fetch(SelectMode.Fetch, r => r.Secrets)
-                .Fetch(SelectMode.Fetch, r => r.Scopes)
-                .Fetch(SelectMode.Fetch, r => r.UserClaims)
-                .SingleOrDefaultAsync();
+                .FetchMany(r => r.Secrets)
+                .FetchMany(r => r.Scopes).ThenFetchMany(x => x.UserClaims)
+                .FetchMany(x => x.UserClaims)
+                .FetchMany(x => x.Properties)
+                .FirstOrDefaultAsync();
 
             if (apiResource != null)
             {
@@ -113,17 +123,27 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Stores
             Resources result = null;
             using (var tx = _session.BeginTransaction())
             {
-                var identityResources = _session.QueryOver<Entities.IdentityResource>()
-                    .Fetch(SelectMode.Fetch, ir => ir.UserClaims)
-                    .Fetch(SelectMode.Fetch, ir => ir.Properties)
-                    .Future();
+                //var identityResources = _session.QueryOver<Entities.IdentityResource>()
+                //    .Fetch(SelectMode.Fetch, ir => ir.UserClaims)
+                //    .Fetch(SelectMode.Fetch, ir => ir.Properties)
+                //    .Future();
+                var identityResources = _session.Query<Entities.IdentityResource>()
+                    .FetchMany(x => x.UserClaims)
+                    .FetchMany(x => x.Properties)
+                    .ToFuture();
 
-                var apiResources = _session.QueryOver<Entities.ApiResource>()
-                    .Fetch(SelectMode.Fetch, ar => ar.Secrets)
-                    .Fetch(SelectMode.Fetch, ar => ar.Scopes)
-                    .Fetch(SelectMode.Fetch, ar => ar.UserClaims)
-                    .Fetch(SelectMode.Fetch, ar => ar.Properties)
-                    .Future();
+                //var apiResources = _session.QueryOver<Entities.ApiResource>()
+                //    .Fetch(SelectMode.Fetch, ar => ar.Secrets)
+                //    .Fetch(SelectMode.Fetch, ar => ar.Scopes)
+                //    .Fetch(SelectMode.Fetch, ar => ar.UserClaims)
+                //    .Fetch(SelectMode.Fetch, ar => ar.Properties)
+                //    .Future();
+
+                var apiResources = _session.Query<Entities.ApiResource>()
+                    .FetchMany(x => x.Secrets)
+                    .FetchMany(x => x.Scopes).ThenFetchMany(x => x.UserClaims)
+                    .FetchMany(x => x.UserClaims)
+                    .FetchMany(x => x.Properties).ToFuture();
 
                 result = new Resources(
                     (await identityResources.GetEnumerableAsync())

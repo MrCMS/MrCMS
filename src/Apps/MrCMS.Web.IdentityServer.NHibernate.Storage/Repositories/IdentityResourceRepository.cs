@@ -93,6 +93,8 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                 identityResource.CreatedOn = DateTime.UtcNow;
                 identityResource.UpdatedOn = DateTime.UtcNow;
                 session.Update(identityResource);
+
+                SaveIdentityResourceRelations(session, identityResource);
                 result = 1;
             });
 

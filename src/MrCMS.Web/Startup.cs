@@ -34,6 +34,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MrCMS.Web.Apps.Articles;
@@ -203,23 +204,29 @@ namespace MrCMS.Web
                 .Create(null, null));
 
 
-            services.AddAuthentication()
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie()
              .AddJwtBearer("Bearer", options =>
               {
                   options.Authority = "http://localhost:7000";
                   options.RequireHttpsMetadata = false;
 
-                  options.Audience = "mvc";
-              });
-            //.AddOpenIdConnect("oidc", options =>
-            //{
-            //    options.Authority = "http://localhost:7000";
-            //    options.RequireHttpsMetadata = false;
+                  options.Audience = "api1";
+                  // options.SaveToken = true;
+              })
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = "http://localhost:7000";
+                options.RequireHttpsMetadata = false;
 
-            //    options.ClientId = "mvc";
+                options.ClientId = "mvc";
 
-            //    options.SaveTokens = true;
-            //});
+                options.SaveTokens = true;
+            });
             services.TryAddEnumerable(ServiceDescriptor
                 .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
                 >());
@@ -228,7 +235,11 @@ namespace MrCMS.Web
                 >();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+                options.AddPolicy("admin", builder =>
+                {
+                    builder.RequireRole(UserRole.Administrator);
+                    builder.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+                });
             });
         }
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Website.Controllers;
@@ -17,11 +19,14 @@ namespace MrCMS.Web.Apps.WebApi.Api.Controllers
 
 
     [MrCMSWebApi]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [Route("api/[controller]")]
     [ApiController]
     public class MrCMSAuthApiController : Controller
     {
+        private const string AuthSchemes =
+            CookieAuthenticationDefaults.AuthenticationScheme + "," +
+            JwtBearerDefaults.AuthenticationScheme;
 
     }
 
@@ -31,8 +36,11 @@ namespace MrCMS.Web.Apps.WebApi.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class MrCMSAdminApiController : MrCMSController
+    [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Administrator")]
+    public class MrCMSAdminApiController : Controller
     {
-
+        private const string AuthSchemes =
+            CookieAuthenticationDefaults.AuthenticationScheme + "," +
+            JwtBearerDefaults.AuthenticationScheme;
     }
 }

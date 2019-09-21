@@ -11,7 +11,8 @@ using X.PagedList;
 namespace MrCMS.Web.Apps.WebApi.Controllers
 {
 
-    
+
+    [Route("api/v1/[controller]")]
     public class SampleController : MrCMSApiController
     {
 
@@ -46,28 +47,6 @@ namespace MrCMS.Web.Apps.WebApi.Controllers
             return await result.ToListAsync();
         }
 
-        [HttpGet]
-        public Task<IActionResult> GetById()
-        {
-            return Task.FromResult<IActionResult>(NoContent());
-        }
-    }
-
-
-    public class SampleAdminController : MrCMSAdminApiController
-    {
-
-
-        [Route("TodoItems")]
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<string>>> GetTodoItems()
-        {
-            var result = new string[] { "Charles", "Ejedawe" };
-            return CreatedAtAction("GetById", result);
-            return await result.ToListAsync();
-        }
-
-       
         [HttpGet]
         public Task<IActionResult> GetById()
         {

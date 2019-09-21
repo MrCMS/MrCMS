@@ -134,6 +134,12 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
         public async Task<int> UpdateApiResourceAsync(ApiResource apiResource)
         {
             var result = 0;
+
+            //Get Previous Update and Created Date
+
+            //var resource = await _session.Query<ApiResource>().Where(x => apiResource != null && x.Id == apiResource.Id)
+            //    .SingleOrDefaultAsync();
+
             //Remove old relations and Update with new Data
             var apiResourceClaims = await (_session.Query<ApiResourceClaim>().Where(x => x.ApiResource.Id == apiResource.Id).ToListAsync());
             _session.Transact(session =>
@@ -143,7 +149,16 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                     session.Delete(claim);
                 }
 
+                apiResource.CreatedOn = DateTime.UtcNow;
+                apiResource.UpdatedOn = DateTime.UtcNow;
                 session.Update(apiResource);
+
+
+                foreach (var item in apiResource.UserClaims)
+                {
+                    item.ApiResource = apiResource;
+                    session.SaveOrUpdate(item);
+                }
                 result = 1;
             });
 
@@ -195,6 +210,18 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                 .SingleOrDefaultAsync();
         }
 
+
+        private void SaveApiScopeRelations(ISession session, ApiScope apiScope)
+        {
+          
+
+            foreach (var item in apiScope.UserClaims)
+            {
+                item.ApiScope = apiScope;
+                session.SaveOrUpdate(item);
+            }
+        }
+
         public async Task<int> AddApiScopeAsync(int apiResourceId, ApiScope apiScope)
         {
             var result = 0;
@@ -203,6 +230,8 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
             _session.Transact(session =>
             {
                 session.Save(apiScope);
+
+                SaveApiScopeRelations(session, apiScope);
                 result = apiScope.Id;
             });
 
@@ -212,6 +241,9 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
         public async Task<int> UpdateApiScopeAsync(int apiResourceId, ApiScope apiScope)
         {
             var result = 0;
+
+            // get apiscope
+            //var scope = await _session.Query<ApiScope>().Where(x => x.Id == apiScope.Id).SingleOrDefaultAsync();
 
             var apiResource = await (_session.Query<ApiResource>().Where(x => x.Id == apiResourceId).SingleOrDefaultAsync());
             apiScope.ApiResource = apiResource;
@@ -224,7 +256,17 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Repositories
                     session.Delete(claim);
                 }
 
+                apiScope.CreatedOn = DateTime.UtcNow;
+                apiScope.UpdatedOn = DateTime.UtcNow;
                 session.Update(apiScope);
+
+                foreach (var item in apiScope.UserClaims)
+                {
+                    item.ApiScope = apiScope;
+                    session.SaveOrUpdate(item);
+                }
+
+                //SaveApiScopeRelations(session, apiScope);
                 result = 1;
             });
 

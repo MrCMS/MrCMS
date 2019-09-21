@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.AddUserConfiguration();
             builder.AddProfileService<MrCMSIS4ProfileService>();
-            builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator>();
+            builder.AddResourceOwnerValidator<MrCMSIS4ResourceOwnerPasswordValidator>();
 
           
             return builder;
@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         private static IIdentityServerBuilder AddUserConfiguration(this IIdentityServerBuilder builder)
         {
-            builder.Services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
+            builder.Services.AddTransient<IResourceOwnerPasswordValidator, MrCMSIS4ResourceOwnerPasswordValidator>();
             builder.Services.AddTransient<IProfileService, MrCMSIS4ProfileService>();
 
             return builder;

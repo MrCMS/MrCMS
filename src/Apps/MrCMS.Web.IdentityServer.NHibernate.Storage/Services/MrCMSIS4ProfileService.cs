@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityModel;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
 {
     public class MrCMSIS4ProfileService : IdentityServer4.Services.IProfileService
     {
-        protected readonly ILogger Logger;
+        protected readonly ILogger<MrCMSIS4ProfileService> Logger;
         private readonly IUserLookup _userLookup;
 
         public MrCMSIS4ProfileService(ILogger<MrCMSIS4ProfileService> logger, IUserLookup userLookup)
@@ -25,7 +26,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
         {
             try
             {
-                var sub = context.Subject.GetSubjectId();
+                //var sub = context.Subject.GetSubjectId();
 
                 Logger.LogInformation("Get profile called for subject {subject} from client {client} with claim types {claimTypes} via {caller}",
                     context.Subject.GetSubjectId(),
@@ -45,6 +46,8 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
                 new Claim(ClaimTypes.GivenName, user.FirstName ?? user.Email),
                 new Claim(ClaimTypes.Surname, user.LastName?? user.Email),
                 new Claim(ClaimTypes.Email, user.Email),
+                //new Claim(JwtClaimTypes.Subject, user.Guid.ToString()),
+                //new Claim(JwtClaimTypes.NickName, context.Subject.Identity.Name),
                 new Claim("username",  user.Email),
                // new Claim("phonenumber", user.TwoFactorDetails()?.PhoneNumber ?? "")
 
@@ -80,6 +83,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
                 new Claim(ClaimTypes.GivenName, user.FirstName ?? user.Email),
                 new Claim(ClaimTypes.Surname, user.LastName?? user.Email),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(JwtClaimTypes.NickName, user.Guid.ToString()),
                 new Claim("username",  user.Email),
                // new Claim("phonenumber", user.TwoFactorDetails()?.PhoneNumber ?? "")
 

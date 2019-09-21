@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Areas\Admin\Views\**" />
-    <EmbeddedResource Include="Views\**" />
     <EmbeddedResource Include="wwwroot\**" />
   </ItemGroup>
 
@@ -16,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="2.5.3" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />

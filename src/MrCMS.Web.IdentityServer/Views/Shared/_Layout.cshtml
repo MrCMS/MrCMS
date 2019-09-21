@@ -1,4 +1,7 @@
 ﻿@using IdentityServer4.Extensions
+@using MrCMS.Helpers
+@using MrCMS.Services.Resources
+@inject IStringResourceProvider StringLocalizer
 @{
     string name = null;
     if (!true.Equals(ViewData["signed-out"]))
@@ -15,8 +18,21 @@
     <title>IdentityServer4</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+
+    <environment include="Development">
+        <link href="~/dist/css/bundle.min.css" asp-append-version="true" rel="stylesheet" />
+        <link href="~/dist/css/web.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/dist/css/bundle.min.css" asp-append-version="true" rel="stylesheet" />
+        <link href="~/dist/css/web.min.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+
+    @RenderSection("styles", required: false)
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -30,7 +46,7 @@
                 </button>
                 <a href="~/">
                     <span class="navbar-brand">
-                        <img src="~/icon.png" class="icon-banner">
+                        <img src="~/img/mrcms-logo.png" class="icon-banner" height="30">
                         IdentityServer4
                     </span>
                 </a>
@@ -52,6 +68,15 @@
 
     <div class="container body-content">
         @RenderBody()
+        <footer class="pt-4 my-md-5 pt-md-5 border-top">
+            <div class="row">
+                <div class="col-6 col-md">
+                    @StringLocalizer.GetValue("IS4HFooter", "MrCMS IdentityServer4")
+                    <p>&copy; 2012-@DateTime.Now.Year - v@(Html.AssemblyVersion())</p>
+                </div>
+
+            </div>
+        </footer>
     </div>
 
     <script src="~/lib/jquery/jquery.js"></script>

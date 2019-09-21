@@ -48,8 +48,9 @@ namespace MrCMS.Web.IdentityServer
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // uncomment, if you want to add an MVC-based UI
-            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
-
+            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1)
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization();
             var appContext = services.AddMrCMSApps(context =>
             {
 

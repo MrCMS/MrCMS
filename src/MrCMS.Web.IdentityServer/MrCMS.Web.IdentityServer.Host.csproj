@@ -18,6 +18,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Apps\MrCMS.Web.IdentityServer.NHibernate.Storage\MrCMS.Web.IdentityServer.NHibernate.Storage.csproj" />
     <ProjectReference Include="..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 </Project>
