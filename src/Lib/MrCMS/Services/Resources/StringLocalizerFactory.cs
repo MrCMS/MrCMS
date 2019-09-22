@@ -35,8 +35,7 @@ namespace MrCMS.Services.Resources
 
         private IStringLocalizer CreateLocalizer()
         {
-            var requestServices = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext
-                .RequestServices;
+            var requestServices = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext.RequestServices;
             var localizationManager = requestServices.GetRequiredService<ILocalizationManager>();
             var currentCulture = requestServices.GetRequiredService<IGetCurrentUserCultureInfo>();
             var currentSiteLocator = requestServices.GetRequiredService<ICurrentSiteLocator>();

@@ -52,15 +52,12 @@ namespace MrCMS.Web.IdentityServer
             _logger.LogInformation(naming);
             if (_environment.IsDevelopment())
             {
-                //_service.InitializeDatabaseData();
+                _service.InitializeDatabaseData();
                 // only show in development
                 return View();
 
             }
 
-            //  var grantType = _session.QueryOver<ClientGrantType>().Where(x => x.).List();
-
-            //  var session = HttpContext.RequestServices.GetRequiredService<IStatelessSession>();
 
             _logger.LogInformation("Homepage is disabled in production. Returning 404.");
             return NotFound();

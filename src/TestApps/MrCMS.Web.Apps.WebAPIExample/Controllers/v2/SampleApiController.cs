@@ -1,31 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Web.Apps.WebApi.Api;
 using MrCMS.Web.Apps.WebApi.Api.Controllers;
-using MrCMS.Website.Controllers;
 using X.PagedList;
 
-namespace MrCMS.Web.Apps.WebApi.Controllers
+namespace MrCMS.Web.Apps.WebAPIExample.Controllers.v2
 {
 
 
-    
+    [ApiVersion("2.0")]
     public class SampleController : MrCMSApiController
     {
 
-       
+
         [Route("TodoItems")]
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<string>>> GetTodoItems()
         {
-            var result  = new string[] { "Charles", "Ejedawe"};
+            var result = new string[] { "MrCMS", "Web API v2" };
             return CreatedAtAction("GetById", result);
             return await result.ToListAsync();
         }
 
+
+        [HttpGet]
+        [Route("GetById")]
+        public Task<IActionResult> GetById()
+        {
+            return Task.FromResult<IActionResult>(NoContent());
+        }
+
+        [HttpGet]
+        public String Get()
+        {
+            return "Version 2.0";
+        }
+    }
+
+
+    [ApiVersion("2.0")]
+    public class SampleAuthController : MrCMSAuthApiController
+    {
+
+
+        [Route("TodoItems")]
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<string>>> GetTodoItems()
+        {
+            var result = new string[] { "Authenticated MrCMS", "Web API v2" };
+            return CreatedAtAction("GetById", result);
+            return await result.ToListAsync();
+        }
+
+        [Route("GetById")]
         [HttpGet]
         public Task<IActionResult> GetById()
         {
@@ -35,12 +63,13 @@ namespace MrCMS.Web.Apps.WebApi.Controllers
         [HttpGet]
         public String Get()
         {
-            return "Version 1.0";
+            return "Authenticated Version 2.0";
         }
     }
 
 
-    public class SampleAuthController : MrCMSAuthApiController
+    [ApiVersion("2.0")]
+    public class SampleAdminController : MrCMSAdminApiController
     {
 
 
@@ -48,15 +77,23 @@ namespace MrCMS.Web.Apps.WebApi.Controllers
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<string>>> GetTodoItems()
         {
-            var result = new string[] { "Charles", "Ejedawe" };
+            var result = new string[] { "Authenticated Admin MrCMS", "Web API v2" };
             return CreatedAtAction("GetById", result);
             return await result.ToListAsync();
         }
 
+
+        [Route("GetById")]
         [HttpGet]
         public Task<IActionResult> GetById()
         {
             return Task.FromResult<IActionResult>(NoContent());
+        }
+
+        [HttpGet]
+        public String Get()
+        {
+            return "Authenticated Version 2.0";
         }
     }
 }

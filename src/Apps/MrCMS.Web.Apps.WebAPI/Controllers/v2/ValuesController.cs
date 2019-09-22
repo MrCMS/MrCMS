@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Web.Apps.WebApi.Api;
 using MrCMS.Web.Apps.WebApi.Api.Controllers;
-using MrCMS.Website.Controllers;
 using X.PagedList;
 
-namespace MrCMS.Web.Apps.WebApi.Controllers
+namespace MrCMS.Web.Apps.WebApi.Controllers.v2
 {
 
 
-    
+    [ApiVersion("2")]
     public class SampleController : MrCMSApiController
     {
 
@@ -21,7 +18,7 @@ namespace MrCMS.Web.Apps.WebApi.Controllers
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<string>>> GetTodoItems()
         {
-            var result  = new string[] { "Charles", "Ejedawe"};
+            var result  = new string[] { "Charles 2.0 ", "Ejedawe 2.0"};
             return CreatedAtAction("GetById", result);
             return await result.ToListAsync();
         }
@@ -35,7 +32,7 @@ namespace MrCMS.Web.Apps.WebApi.Controllers
         [HttpGet]
         public String Get()
         {
-            return "Version 1.0";
+            return "Version 2.0";
         }
     }
 

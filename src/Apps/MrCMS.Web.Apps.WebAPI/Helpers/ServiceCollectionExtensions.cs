@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MrCMS.Helpers;
 using Microsoft.OpenApi.Models;
 using MrCMS.Web.Apps.WebApi.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MrCMS.Web.Apps.WebApi.Helpers
 {
@@ -15,65 +20,43 @@ namespace MrCMS.Web.Apps.WebApi.Helpers
     {
         public static IServiceCollection RegisterSwagger(this IServiceCollection services)
         {
-            // serviceCollection.addmv
-
+           
+            
             services.AddMvc(c =>
                 {
                     c.Conventions.Add(new ApiExplorerMrCMSWebApiOnlyConvention());
                 }
                );
-
+           
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo{Title = "MrCMS API", Version = "v1"});
-               // options.OperationFilter<WebApiOperationFilter>();
-               // options.TagActionsBy(api => api.HttpMethod);
+               
+                // add a custom operation filter which sets default values
+                options.OperationFilter<SwaggerDefaultValues>();
+
+                // integrate xml comments
+                //options.IncludeXmlComments(XmlCommentsFilePath);
+
+                // options.SwaggerDoc("v1", new OpenApiInfo{Title = "MrCMS API", Version = "v1"});
+                // options.OperationFilter<WebApiOperationFilter>();
+                // options.TagActionsBy(api => api.HttpMethod);
             });
 
-            //var builder = services.AddIdentityServer()
-            //    .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources())
-            //    .AddInMemoryApiResources(IdentityServerConfig.GetApis())
-            //    .AddInMemoryClients(IdentityServerConfig.GetClients())
-            //    .AddTestUsers(IdentityServerConfig.GetUsers());
-
-            //IServiceProvider serviceProvider = services.BuildServiceProvider();
-            //IHostingEnvironment env = serviceProvider.GetService<IHostingEnvironment>();
-
-            //if (env.IsDevelopment())
-            //{
-            //    builder.AddDeveloperSigningCredential();
-            //}
-            //else
-            //{
-            //    throw new Exception("need to configure key material");
-            //}
-
-            //services.AddAuthentication()
-            //    .AddGoogle("Google", options =>
-            //    {
-            //        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
-            //        options.ClientId = "158523382455-h9njt5fd2a04ruascm0d52dj9amtcvcp.apps.googleusercontent.com";
-            //        options.ClientSecret = "lmuz8Nr1B9-H4ExJEmL7zwbq";
-            //    })
-            //    .AddOpenIdConnect("oidc", "OpenID Connect", options =>
-            //    {
-            //        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-            //        options.SignOutScheme = IdentityServerConstants.SignoutScheme;
-            //        options.SaveTokens = true;
-
-            //        options.Authority = "https://demo.identityserver.io/";
-            //        options.ClientId = "implicit";
-
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            NameClaimType = "name",
-            //            RoleClaimType = "role"
-            //        };
-            //    });
+           
 
             return services;
 
         }
+
+        //static string XmlCommentsFilePath
+        //{
+        //    get
+        //    {
+        //        var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+        //        var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+        //        return Path.Combine(basePath, fileName);
+        //    }
+        //}
     }
 }

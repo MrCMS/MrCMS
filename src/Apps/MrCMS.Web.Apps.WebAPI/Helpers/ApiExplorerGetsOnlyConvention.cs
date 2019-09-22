@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using MrCMS.Web.Apps.WebApi.Api;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MrCMS.Web.Apps.WebApi.Helpers
 {

@@ -34,52 +34,7 @@ namespace MrCMS.Web.IdentityServer.NHibernate.Storage.Services
         public void InitializeDatabaseData()
         {
 
-            //foreach (var client in Config.GetClients())
-            //{
-            //    var newClient = _mapper.Map<Client>(client);
-
-            //    var propertyInfos = newClient.GetType().GetProperties();
-            //    foreach (var item in propertyInfos)
-            //    {
-            //        if (item.PropertyType.IsGenericType == true && item.PropertyType.GetGenericTypeDefinition() == typeof(ISet<>))
-            //        {
-            //            //_logger.LogInformation($"Name {item.Name}");
-            //            //_logger.LogInformation($"Module {item.Module.Name}");
-            //            //_logger.LogInformation($"Type Name {item.GetType().Name}");
-            //            //var obj = JsonConvert.SerializeObject(item.GetValue(newClient));
-            //            //var objtype = item.Name;
-            //            ////switch(objtype)
-            //            ////{
-            //            ////    case "AllowedScopes":
-            //            ////        var obj
-            //            ////        break;
-            //            ////}
-
-            //            var typeParams = item.GetValue(newClient);
-            //            var obj = JsonConvert.SerializeObject(typeParams);
-
-            //            if(typeParams != null)
-            //            {
-            //              //  _logger.LogInformation(typeParams.GetType().FindMembers();
-            //              if (typeParams is IEnumerable)
-            //                {
-            //                    foreach (var listitem in typeParams as IEnumerable)
-            //                    {
-            //                        // Console.WriteLine("Item: " + listitem.ToString());
-            //                        var obj2 = JsonConvert.SerializeObject(listitem);
-            //                        _logger.LogInformation(obj2);
-            //                        _logger.LogInformation(listitem.GetType().Name);
-            //                    }
-            //                    _logger.LogInformation(typeParams.GetType().Name);
-            //                }
-            //            }
-                       
-            //        }
-
-            //    }
-
-            //  //  _logger.LogInformation("Charles");
-            //}
+           
             var clients = _session.QueryOver<Client>().List();
             if (!clients.Any())
             {
