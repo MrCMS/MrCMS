@@ -130,7 +130,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
 
         [HttpGet]
-        public ActionResult PasswordReset(ResetPasswordPage page, Guid? id)
+        public ActionResult PasswordReset(ResetPasswordPage page, [FromQuery] Guid? id)
         {
             if (id == null)
             {
