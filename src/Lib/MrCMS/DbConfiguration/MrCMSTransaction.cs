@@ -37,12 +37,14 @@ namespace MrCMS.DbConfiguration
 
         public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+           return  _transaction.CommitAsync(cancellationToken);
         }
 
         public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+           return _transaction.RollbackAsync(cancellationToken);
         }
 
         public void Begin()

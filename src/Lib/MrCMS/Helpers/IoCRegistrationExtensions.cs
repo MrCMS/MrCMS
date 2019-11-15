@@ -121,5 +121,10 @@ namespace MrCMS.Helpers
                 container.AddTransient(type);
             }
         }
+
+
+       
+
+       
     }
 }

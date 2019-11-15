@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.ApiResourcePropertiesDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4ApiResourcePropertyDeletePageTitle", "Delete Api Resource Property");
+}
+
+<form asp-controller="Configuration" asp-action="ApiResourcePropertyDelete" Method="post">
+	<div class="row">
+
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiResources">@Localizer["IS4NavigationApiResources"]</a></li>
+					<li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiResource" asp-route-id="@Model.ApiResourceId">@Model.ApiResourceName</a></li>
+					<li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="ApiResourceProperties" asp-route-id="@Model.ApiResourceId">@StringLocalizer.GetValue("IS4ApiResourcePropertyDeletePageTitle", "Delete Api Resource Property")</a></li>
+					<li class="breadcrumb-item active" aria-current="page">@StringLocalizer.GetValue("IS4ApiResourcePropertyDeletePageTitle", "Delete Api Resource Property")</li>
+				</ol>
+			</nav>
+		</div>
+
+		<div class="col-md-12">
+            <h3>@StringLocalizer.GetValue("IS4ApiResourcePropertyDeletePageTitle", "Delete Api Resource Property")</h3>
+			
+			<!--Hidden -->
+			<input type="hidden" asp-for="ApiResourceId" />
+			<input type="hidden" asp-for="ApiResourcePropertyId" />
+
+			<div class="card mt-3">
+				<h5 class="card-header">@StringLocalizer.GetValue("IS4ApiResourcePropertyDeletePanelTitle", "Delete Api Resource Property")</h5>
+				<div class="card-body">
+					<!--Input - text -->
+					<div class="form-group row">
+						<label asp-for="Key" class="col-sm-3 col-form-label">
+							@await Html.PartialAsync("ApiResource/Section/Label", "PropertyKey")
+						</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" disabled="disabled" asp-for="Key">
+						</div>
+					</div>
+
+					<!--Input - text -->
+					<div class="form-group row">
+						<label asp-for="Value" class="col-sm-3 col-form-label">
+							@await Html.PartialAsync("ApiResource/Section/Label", "PropertyValue")
+						</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" disabled="disabled" asp-for="Value">
+						</div>
+					</div>
+
+					<!--Button-->
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label">
+						</label>
+						<div class="col-sm-9">
+							<button type="submit" class="btn btn-danger">@StringLocalizer.GetValue("IS4ApiResourcePropertyDeleteButtonClaim", "Delete Api Resource Property")</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

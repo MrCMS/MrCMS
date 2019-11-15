@@ -17,6 +17,8 @@ namespace MrCMS.Website.Controllers
             _session = session;
         }
 
+        //[Route("KeepAlive")]
+        //[HttpGet()]
         public ActionResult KeepAlive()
         {
             var item = HttpContext.Request.Query[_azureProbeSettings.Key].ToString();

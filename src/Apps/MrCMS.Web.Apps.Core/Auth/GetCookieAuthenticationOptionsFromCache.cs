@@ -32,6 +32,17 @@ namespace MrCMS.Web.Apps.Core.Auth
             options.AccessDeniedPath = AccessDeniedPath;
             options.LoginPath = LoginPath;
             options.LogoutPath = LogoutPath;
+            options.ForwardDefaultSelector = ctx =>
+            {
+                if (ctx.Request.Path.StartsWithSegments("/api"))
+                {
+                    return "Bearer";
+                }
+                else
+                {
+                    return CookieAuthenticationDefaults.AuthenticationScheme;
+                }
+            };
         }
 
         public CookieAuthenticationOptions GetOrAdd(string name, Func<CookieAuthenticationOptions> createOptions)

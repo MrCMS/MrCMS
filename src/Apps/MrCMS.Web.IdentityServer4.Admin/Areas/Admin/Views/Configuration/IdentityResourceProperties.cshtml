@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Common
+@model MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Configuration.IdentityResourcePropertiesDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4IdentityResourcePropertyPageTitle", "Identity Resource Properties");
+    Html.IncludeCss("~/styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+    Html.IncludeScript("~/dist/js/bundle.min.js");
+}
+
+<form asp-controller="Configuration" asp-action="IdentityResourceProperties" Method="post">
+    <div class="row">
+
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="IdentityResources">@Localizer["IS4NavigationIdentityResources"]</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Configuration" asp-action="IdentityResource" asp-route-id="@Model.IdentityResourceId">@Model.IdentityResourceName</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@StringLocalizer.GetValue("IS4NavigationIdentityResourceProperties", "Identity Resource Properties")</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-md-12">
+
+            <h3>@StringLocalizer.GetValue("IS4IdentityResourcePropertyPageTitle", "Identity Resource Properties")</h3>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <!--Hidden -->
+            <input type="hidden" asp-for="IdentityResourceId" />
+
+            <!--Hidden -->
+            <input type="hidden" asp-for="IdentityResourceName" />
+
+            <div class="card mt-3">
+                <h5 class="card-header">@StringLocalizer.GetValue("IS4IdentityResourcePropertyPanelTitleNew", "Identity Resource Property")</h5>
+                <div class="card-body">
+
+                    <!--Input - text -->
+                    <div class="form-group row">
+                        <label asp-for="Key" class="col-sm-3 col-form-label">
+                            @await Html.PartialAsync("IdentityResource/Section/Label", "PropertyKey")
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" required class="form-control" asp-for="Key">
+                            <span asp-validation-for="Key" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!--Input - text -->
+                    <div class="form-group row">
+                        <label asp-for="Value" class="col-sm-3 col-form-label">
+                            @await Html.PartialAsync("IdentityResource/Section/Label", "PropertyValue")
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" required class="form-control" asp-for="Value">
+                            <span asp-validation-for="Value" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!--Button-->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                        </label>
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-primary">@StringLocalizer.GetValue("IS4IdentityResourceButtonAddProperty", "Add Identity Resource Property")</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-3">
+            <h5 class="card-header">@StringLocalizer.GetValue("IS4IdentityResourcePropertyPanelTitle", "Identity Resource Property")</h5>
+            <div class="card-body">
+                <div class="row table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@StringLocalizer.GetValue("IS4PropertyTableKey", "Key")</th>
+                                <th>@StringLocalizer.GetValue("IS4PropertyTableValue", "Value")</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var identityResourceProperty in Model.IdentityResourceProperties)
+                            {
+                                <tr>
+                                    <td>@identityResourceProperty.Key</td>
+                                    <td>@identityResourceProperty.Value</td>
+                                    <td><a asp-action="IdentityResourcePropertyDelete" asp-route-id="@identityResourceProperty.Id" class="btn btn-danger">@StringLocalizer.GetValue("IS4TableButtonRemove", "Delete")</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        @await Html.PartialAsync("Common/Pager", new Pager { Action = "IdentityResourceProperties", PageSize = Model.PageSize, TotalCount = Model.TotalCount })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

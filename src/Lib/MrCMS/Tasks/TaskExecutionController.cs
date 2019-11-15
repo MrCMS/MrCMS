@@ -23,6 +23,7 @@ namespace MrCMS.Tasks
             _scheduledTaskRunner = scheduledTaskRunner;
         }
 
+        [HttpGet]
         [TaskExecutionKeyPasswordAuth]
         [Route(ExecutePendingTasksURL)]
         public ContentResult Execute()
@@ -33,6 +34,7 @@ namespace MrCMS.Tasks
             return new ContentResult {Content = "Executed", ContentType = "text/plain"};
         }
 
+        [HttpGet]
         [TaskExecutionKeyPasswordAuth]
         [Route(ExecuteTaskURL)]
         public ContentResult ExecuteTask(string type)
@@ -41,6 +43,7 @@ namespace MrCMS.Tasks
             return new ContentResult {Content = "Executed", ContentType = "text/plain"};
         }
 
+        [HttpGet]
         [TaskExecutionKeyPasswordAuth]
         [Route(ExecuteQueuedTasksURL)]
         public ContentResult ExecuteQueuedTasks()

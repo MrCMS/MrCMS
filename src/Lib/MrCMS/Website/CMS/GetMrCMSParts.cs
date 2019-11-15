@@ -12,6 +12,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.FileProviders;
+//using Microsoft.OpenApi.Models;
 
 namespace MrCMS.Website.CMS
 {
@@ -30,12 +31,12 @@ namespace MrCMS.Website.CMS
                 new RegistrationInfo
                 {
                     Registration = builder => builder.UseMiddleware<CurrentSiteSettingsMiddleware>(),
-                    Order = int.MaxValue - 1
+                    Order = int.MaxValue - 2
                 },
                 new RegistrationInfo
                 {
                     Registration = builder => builder.UseMiddleware<CurrentWebpageMiddleware>(),
-                    Order = int.MaxValue - 1
+                    Order = int.MaxValue - 2
                 },
                 new RegistrationInfo
                 {
@@ -89,6 +90,22 @@ namespace MrCMS.Website.CMS
                     }),
                     Order = 1001
                 },
+
+                //new RegistrationInfo
+                //{
+                //    Registration = app => app.UseSwagger(),
+                //    Order = int.MaxValue - 1
+                //},
+
+                //new RegistrationInfo
+                //{
+                //    Registration = app => app.UseSwaggerUI(c => {
+                //        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                //    } ),
+
+                //      Order = int.MaxValue - 1
+                //},
+
                 new RegistrationInfo
                 {
                     Registration = app => app.UseMvc(builder =>
@@ -98,7 +115,7 @@ namespace MrCMS.Website.CMS
 
                         builder.MapRoute(
                             "default",
-                            "{controller=Home}/{action=Index}/{id?}");
+                            "{controller=Documentation}/{action=Index}/{id?}");
 
                         builder.Routes.Add(new FileNotFoundRouter(builder.DefaultHandler));
                     }),

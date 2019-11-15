@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Common
+@using MrCMS.Web.Apps.IdentityServer4.Admin.Core.Dtos.Grant
+@model PersistedGrantsDto
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4PersistedGrantsPageTitle", "Persisted Grants");
+    Html.IncludeCss("~/styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+}
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <h2>@StringLocalizer.GetValue("IS4PersistedGrantsPageTitle", "Persisted Grants")</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        @await Html.PartialAsync("Common/Search", new Search { Action = "PersistedGrants", Controller = "Grant" })
+    </div>
+</div>
+
+<div class="row table-responsive">
+    <div class="col-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>@StringLocalizer.GetValue("IS4PersistedGrantsTableSubjectId", "Subject Id")</th>
+                    <th>@StringLocalizer.GetValue("IS4PersistedGrantsTableSubjectName", "Subject Name")</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var persistedGrant in Model.PersistedGrants)
+                {
+                    <tr>
+                        <th scope="row"><a class="btn btn-primary" asp-action="PersistedGrant" asp-route-id="@persistedGrant.SubjectId">@StringLocalizer.GetValue("IS4PersistedGrantsTableButtonDetail", "Detail")</a></th>
+                        <td>@persistedGrant.SubjectId</td>
+                        <td>@persistedGrant.SubjectName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        @await Html.PartialAsync("Common/Pager", new Pager() { Action = "PersistedGrants", PageSize = Model.PageSize, TotalCount = Model.TotalCount })
+    </div>
+</div>

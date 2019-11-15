@@ -1,0 +1,96 @@
+﻿@using MrCMS.Web.Apps.Admin.Services
+@using MrCMS.Website
+@using Microsoft.AspNetCore.Mvc.Localization
+@using MrCMS.Helpers
+@using MrCMS.Services.Resources
+@inject IViewLocalizer Localizer
+@inject IStringResourceProvider StringLocalizer
+
+@{
+    ViewBag.Title = StringLocalizer.GetValue("IS4PageTitle", "IdentityServer4 Admin");
+     Html.IncludeCss("~/Styles/openiconic/css/open-iconic-bootstrap.css");
+    Html.IncludeCss("~/styles/css/web.css");
+    //Layout = "_Layout";
+}
+
+<div class="welcome-block px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">@StringLocalizer.GetValue("IS4PageTitle", "IdentityServer4 Admin")</h1>
+    <p class="lead">@StringLocalizer.GetValue("IS4PageSubTitle", "The administration IdentityServer4 for MrCMS")</p>
+</div>
+<div class="card-deck mb-3 text-center">
+	<!-- Clients -->
+	<div class="card mb-4 box-shadow">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">@StringLocalizer.GetValue("ButtonClients", "Clients")</h4>
+		</div>
+		<div class="card-body">
+			<h1 class="card-title">
+				<span class="oi oi-monitor" title="Clients" aria-hidden="true"></span>
+			</h1>
+			<a asp-controller="Configuration" asp-action="Clients" class="btn btn-lg btn-block btn-primary">@StringLocalizer.GetValue("ButtonManage", "Manage")</a>
+		</div>
+	</div>
+	<!-- Identity Resources -->
+	<div class="card mb-4 box-shadow">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">@StringLocalizer.GetValue("ButtonIdentityClients", "Identity Resources")</h4>
+		</div>
+		<div class="card-body">
+			<h1 class="card-title">
+				<span class="oi oi-tags" title="Identity Resources" aria-hidden="true"></span>
+			</h1>
+			<a asp-controller="Configuration" asp-action="IdentityResources" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ButtonManage"]</a>
+		</div>
+	</div>
+	<!-- Api Resources -->
+	<div class="card mb-4 box-shadow">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">@StringLocalizer.GetValue("ButtonApiResources", "Api Resources")</h4>
+		</div>
+		<div class="card-body">
+			<h1 class="card-title">
+				<span class="oi oi-cloud" title="Api Resources" aria-hidden="true"></span>
+			</h1>
+			<a asp-controller="Configuration" asp-action="ApiResources" class="btn btn-lg btn-block btn-primary">@Localizer["ButtonManage"]</a>
+		</div>
+	</div>
+</div>
+<div class="card-deck mb-3 text-center">
+	<!-- Persisted Grants -->
+	<div class="card mb-4 box-shadow">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">@StringLocalizer.GetValue("ButtonPersistedGrants", "Persisted Grants")</h4>
+		</div>
+		<div class="card-body">
+			<h1 class="card-title">
+				<span class="oi oi-key" title="Persisted Grants" aria-hidden="true"></span>
+			</h1>
+			<a asp-controller="Grant" asp-action="PersistedGrants" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ButtonManage"]</a>
+		</div>
+	</div>
+	<!-- Users -->
+	<div class="card mb-4 box-shadow">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">@StringLocalizer.GetValue("ButtonUsers", "Users")</h4>
+		</div>
+		<div class="card-body">
+			<h1 class="card-title">
+				<span class="oi oi-person" title="Users" aria-hidden="true"></span>
+			</h1>
+			<a asp-controller="User" asp-action="Index" class="btn btn-lg btn-block btn-primary">@Localizer["ButtonManage"]</a>
+		</div>
+	</div>
+	<!-- Roles -->
+	<div class="card mb-4 box-shadow">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">@StringLocalizer.GetValue("ButtonRoles", "Roles")</h4>
+		</div>
+		<div class="card-body">
+			<h1 class="card-title">
+				<span class="oi oi-lock-locked" title="Roles" aria-hidden="true"></span>
+			</h1>
+			<a asp-controller="Role" asp-action="Index" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ButtonManage"]</a>
+		</div>
+	</div>
+</div>
+

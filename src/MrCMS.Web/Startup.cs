@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,15 +34,26 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using MrCMS.Web.Apps.Articles;
+using MrCMS.Web.Apps.WebApi;
+using MrCMS.Web.Apps.WebApi.Helpers;
+using MrCMS.Web.IdentityServer.NHibernate.Storage;
 using StackExchange.Profiling.Storage;
 using ISession = NHibernate.ISession;
+using MrCMS.Web.Apps.IdentityServer4.Admin;
+using MrCMS.Web.Apps.WebAPIExample;
 
 namespace MrCMS.Web
 {
     public class Startup
     {
         private const string Database = nameof(Database);
+        
 
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
@@ -54,17 +66,20 @@ namespace MrCMS.Web
         public IConfiguration Configuration { get; }
         public IHostingEnvironment Environment { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             var isInstalled = IsInstalled();
+           
 
             // services always required
             services.RegisterAllSimplePairings();
             services.RegisterOpenGenerics();
             services.SelfRegisterAllConcreteTypes();
             services.AddSession();
+            //services.AddHttpContextAccessor();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
@@ -84,6 +99,10 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
                 context.RegisterDatabaseProvider<SqliteProvider>();
+                 context.RegisterApp<MrCmsWebApiApp>();
+                 context.RegisterApp<MrCMSIs4App>();
+                context.RegisterApp<MrCMSIs4AdminApp>();
+                context.RegisterApp<MrCmsWebApiSampleApp>();
             });
 
             services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
@@ -132,6 +151,9 @@ namespace MrCMS.Web
             services.RegisterTasks();
 
             services.AddMvcForMrCMS(appContext, fileProvider);
+
+         
+
 
             services.AddLogging(builder => builder.AddMrCMSLogger());
 
@@ -190,7 +212,29 @@ namespace MrCMS.Web
                 .Create(null, null));
 
 
-            services.AddAuthentication();
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie()
+             .AddJwtBearer("Bearer", options =>
+              {
+                  options.Authority = "http://localhost:7000";
+                  options.RequireHttpsMetadata = false;
+
+                  options.Audience = "api1";
+                  // options.SaveToken = true;
+              })
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = "http://localhost:7000";
+                options.RequireHttpsMetadata = false;
+
+                options.ClientId = "mvc";
+
+                options.SaveTokens = true;
+            });
             services.TryAddEnumerable(ServiceDescriptor
                 .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
                 >());
@@ -199,8 +243,14 @@ namespace MrCMS.Web
                 >();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+                options.AddPolicy("admin", builder =>
+                {
+                    builder.RequireRole(UserRole.Administrator);
+                    builder.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+                });
             });
+
+            
         }
 
         private bool IsInstalled()
@@ -210,8 +260,10 @@ namespace MrCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext, IApiVersionDescriptionProvider provider)
         {
+            app.UseMvc();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -225,10 +277,12 @@ namespace MrCMS.Web
                 return;
             }
 
-
+            app.UseMrCMSSwagger(provider);
+          
             app.UseMrCMS(builder =>
             {
                 app.UseRequestLocalization();
+               
                 builder.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new CompositeFileProvider(
@@ -236,7 +290,24 @@ namespace MrCMS.Web
                 });
                 builder.UseAuthentication();
                 builder.UseMiniProfiler();
+               
             });
+
+           
+            //app.UseSwagger();
+
+            //// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            //// specifying the Swagger JSON endpoint.
+            //app.UseSwaggerUI(options =>
+            //{
+            //    // options.SwaggerEndpoint("/swagger/v1/swagger.json", "Mr CMS API V1");
+            //    foreach (var description in provider.ApiVersionDescriptions)
+            //    {
+            //        options.SwaggerEndpoint(
+            //            $"/swagger/{description.GroupName}/swagger.json",
+            //            description.GroupName.ToUpperInvariant());
+            //    }
+            //});
         }
     }
 }
