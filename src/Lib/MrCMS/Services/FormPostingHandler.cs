@@ -235,10 +235,11 @@ namespace MrCMS.Services
 
         private byte[] GetData(IFormFile formFile)
         {
-            using var memoryStream = new MemoryStream();
-
-            formFile.OpenReadStream().CopyTo(memoryStream);
-            return memoryStream.ToArray();
+            using (var memoryStream = new MemoryStream())
+            {
+                formFile.OpenReadStream().CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
 
         private static string ParseFormMessage(string formMessage, Form form, FormPosting formPosting)
