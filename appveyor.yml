@@ -58,7 +58,7 @@
     - /release\/.*/
   version: 1.0.{build}-master
   configuration: Release
-  image: Visual Studio 2019
+  image: Visual Studio 2019 Preview
   install:
     - nuget restore    
   build:
