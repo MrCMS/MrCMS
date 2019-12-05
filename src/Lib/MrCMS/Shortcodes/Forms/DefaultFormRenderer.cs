@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 using MrCMS.Website.Filters;
 using System.Linq;
+using MrCMS.Services;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -13,46 +14,47 @@ namespace MrCMS.Shortcodes.Forms
         private readonly ILabelRenderer _labelRenderer;
         private readonly SiteSettings _siteSettings;
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
-        private readonly IValidationMessaageRenderer _validationMessaageRenderer;
+        private readonly IValidationMessaageRenderer _validationMessageRenderer;
 
         public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer,
-            IValidationMessaageRenderer validationMessaageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
+            IValidationMessaageRenderer validationMessageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
             SiteSettings siteSettings)
         {
             _elementRendererManager = elementRendererManager;
             _labelRenderer = labelRenderer;
-            _validationMessaageRenderer = validationMessaageRenderer;
+            _validationMessageRenderer = validationMessageRenderer;
             _submittedMessageRenderer = submittedMessageRenderer;
             _siteSettings = siteSettings;
         }
 
-        public IHtmlContent GetDefault(IHtmlHelper helper, Form form1, FormSubmittedStatus submittedStatus)
+        public IHtmlContent GetDefault(IHtmlHelper helper, Form formEntity, FormSubmittedStatus submittedStatus)
         {
-            if (form1 == null)
+            if (formEntity == null)
             {
                 return HtmlString.Empty;
             }
 
-            var formProperties = form1.FormProperties.OrderBy(x => x.DisplayOrder);
+            var formProperties = formEntity.FormProperties.OrderBy(x => x.DisplayOrder);
             if (!formProperties.Any())
             {
                 return HtmlString.Empty;
             }
 
-            var form = GetForm(form1);
+            var form = GetForm(formEntity);
+            var renderingType = _siteSettings.FormRendererType;
             foreach (var property in formProperties)
             {
                 IHtmlContentBuilder elementHtml = new HtmlContentBuilder();
-                var renderer = _elementRendererManager.GetElementRenderer(property);
+                var renderer = _elementRendererManager.GetPropertyRenderer(property);
                 elementHtml.AppendHtml(_labelRenderer.AppendLabel(property));
                 var existingValue = submittedStatus.Data[property.Name];
 
-                var element = renderer.AppendElement(property, existingValue, _siteSettings.FormRendererType);
+                var element = renderer.AppendElement(property, existingValue, renderingType);
                 element.TagRenderMode = renderer.IsSelfClosing ? TagRenderMode.SelfClosing : TagRenderMode.Normal;
                 elementHtml.AppendHtml(element);
-                elementHtml.AppendHtml(_validationMessaageRenderer.AppendRequiredMessage(property));
+                elementHtml.AppendHtml(_validationMessageRenderer.AppendRequiredMessage(property));
                 var elementContainer =
-                    _elementRendererManager.GetElementContainer(_siteSettings.FormRendererType, property);
+                    _elementRendererManager.GetPropertyContainer(renderingType, property);
                 if (elementContainer != null)
                 {
                     elementContainer.InnerHtml.AppendHtml(elementHtml);
@@ -64,16 +66,21 @@ namespace MrCMS.Shortcodes.Forms
                 }
             }
 
+            if (formEntity.ShowGDPRConsentBox)
+            {
+                form.InnerHtml.AppendHtml(GetGDPRCheckbox(renderingType, _siteSettings.GDPRFairProcessingText));
+            }
+
             form.InnerHtml.AppendHtml(helper.RenderRecaptcha());
 
             var div = new TagBuilder("div");
-            div.InnerHtml.AppendHtml(GetSubmitButton(form1));
+            div.InnerHtml.AppendHtml(GetSubmitButton(formEntity));
             form.InnerHtml.AppendHtml(div);
 
             if (submittedStatus.Submitted)
             {
                 form.InnerHtml.AppendHtml(new TagBuilder("br"));
-                form.InnerHtml.AppendHtml(_submittedMessageRenderer.AppendSubmittedMessage(form1, submittedStatus));
+                form.InnerHtml.AppendHtml(_submittedMessageRenderer.AppendSubmittedMessage(formEntity, submittedStatus));
             }
 
             if (_siteSettings.HasHoneyPot)
@@ -82,6 +89,64 @@ namespace MrCMS.Shortcodes.Forms
             }
 
             return form;
+        }
+
+        public static IHtmlContent GetGDPRCheckbox(FormRenderingType renderingType, string labelText)
+        {
+            var cbLabelBuilder = new TagBuilder("label");
+            var sanitizedId = TagBuilder.CreateSanitizedId(FormPostingHandler.GDPRConsent, "-");
+            cbLabelBuilder.Attributes["for"] = sanitizedId;
+
+            var checkboxBuilder = new TagBuilder("input");
+            checkboxBuilder.Attributes["type"] = "checkbox";
+            checkboxBuilder.Attributes["value"] = "true";
+
+            var requiredMessage = "GDPR Consent is required";
+            checkboxBuilder.Attributes["data-val"] = "true";
+            checkboxBuilder.Attributes["data-val-mandatory"] = null;
+            checkboxBuilder.Attributes["data-val-required"] = requiredMessage;
+
+            checkboxBuilder.Attributes["name"] = FormPostingHandler.GDPRConsent;
+            checkboxBuilder.Attributes["id"] = sanitizedId;
+            checkboxBuilder.AddCssClass("form-check-input");
+
+            cbLabelBuilder.InnerHtml.AppendHtml(labelText);
+            var checkboxContainer = new TagBuilder("div");
+
+            if (renderingType == FormRenderingType.Bootstrap3)
+            {
+                cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+
+                checkboxContainer.AddCssClass("checkbox");
+                checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
+                var wrapper = new TagBuilder("div");
+                wrapper.AddCssClass("form-group");
+                wrapper.InnerHtml.AppendHtml(checkboxContainer);
+                wrapper.InnerHtml.AppendHtml(
+                    ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
+                return wrapper;
+            }
+
+            if (renderingType == FormRenderingType.Bootstrap4)
+            {
+                cbLabelBuilder.AddCssClass("form-check-label");
+                checkboxContainer.AddCssClass("form-check");
+                checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
+                checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
+                var wrapper = new TagBuilder("div");
+                wrapper.AddCssClass("form-group");
+                wrapper.InnerHtml.AppendHtml(checkboxContainer);
+                wrapper.InnerHtml.AppendHtml(
+                    ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
+                return wrapper;
+            }
+
+            cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+            checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
+            checkboxContainer.InnerHtml.AppendHtml(
+                ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
+            return checkboxContainer;
+
         }
 
         public TagBuilder GetSubmitButton(Form form)

@@ -65,7 +65,7 @@ namespace MrCMS.Shortcodes.Forms
             return tagBuilder;
         }
 
-        private static TagBuilder GetCheckbox(CheckboxList formProperty, string existingValue, FormListOption checkbox, List<string> values)
+        public static TagBuilder GetCheckbox(CheckboxList formProperty, string existingValue, FormListOption checkbox, List<string> values)
         {
             var checkboxBuilder = new TagBuilder("input");
             checkboxBuilder.Attributes["type"] = "checkbox";

@@ -15,13 +15,13 @@ namespace MrCMS.Shortcodes.Forms
             _serviceProvider = serviceProvider;
         }
 
-        public IFormElementRenderer GetElementRenderer<T>(T property) where T : FormProperty
+        public IFormElementRenderer GetPropertyRenderer<T>(T property) where T : FormProperty
         {
             var type = typeof(IFormElementRenderer<>).MakeGenericType(property.GetType());
             return _serviceProvider.GetService(type) as IFormElementRenderer;
         }
 
-        public TagBuilder GetElementContainer(FormRenderingType formRenderingType, FormProperty property)
+        public TagBuilder GetPropertyContainer(FormRenderingType formRenderingType, FormProperty property)
         {
             if (formRenderingType == FormRenderingType.Bootstrap3 || formRenderingType == FormRenderingType.Bootstrap4)
             {

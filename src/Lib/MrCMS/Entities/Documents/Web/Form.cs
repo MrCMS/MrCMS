@@ -47,5 +47,14 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<FormPosting> FormPostings { get; set; }
 
         public virtual string FormDesign { get; set; }
+
+
+
+        [DisplayName("Delete entries after (days)")]
+        public virtual int? DeleteEntriesAfter { get; set; }
+
+        public virtual bool SendByEmailOnly { get; set; }
+
+        public virtual bool ShowGDPRConsentBox { get; set; }
     }
 }

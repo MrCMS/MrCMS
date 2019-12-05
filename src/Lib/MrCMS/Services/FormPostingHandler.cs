@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,8 @@ namespace MrCMS.Services
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ISession _session;
 
+        public const string GDPRConsent = nameof(GDPRConsent);
+
         public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor)
         {
             _session = session;
@@ -39,16 +42,92 @@ namespace MrCMS.Services
         {
             var formProperties = form.FormProperties;
 
-            var formPosting = new FormPosting {Form = form};
-            _session.Transact(session =>
-            {
-                form.FormPostings.Add(formPosting);
-                session.SaveOrUpdate(formPosting);
-            });
             var errors = new List<string>();
-            _session.Transact(session =>
+            if (!form.SendByEmailOnly)
             {
+                var files = new List<IFormFile>();
+                var formPosting = new FormPosting { Form = form };
+                _session.Transact(session =>
+                {
+                    form.FormPostings.Add(formPosting);
+                    session.SaveOrUpdate(formPosting);
+                });
+                _session.Transact(session =>
+                {
+                    foreach (var formProperty in formProperties)
+                    {
+                        try
+                        {
+                            if (formProperty is FileUpload)
+                            {
+                                var file = request.Form.Files[formProperty.Name];
+
+                                if (file == null && formProperty.Required)
+                                    throw new RequiredFieldException("No file was attached to the " +
+                                                                     formProperty.Name + " field");
+
+                                files.Add(file);
+
+                                if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
+                                {
+                                    var value = _saveFormFileUpload.SaveFile(form, formPosting, file);
+
+                                    formPosting.FormValues.Add(new FormValue
+                                    {
+                                        Key = formProperty.Name,
+                                        Value = value,
+                                        IsFile = true,
+                                        FormPosting = formPosting
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
+
+                                if (string.IsNullOrWhiteSpace(value) && formProperty.Required)
+                                    throw new RequiredFieldException("No value was posted for the " +
+                                                                     formProperty.Name + " field");
+
+                                formPosting.FormValues.Add(new FormValue
+                                {
+                                    Key = formProperty.Name,
+                                    Value = value,
+                                    FormPosting = formPosting
+                                });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errors.Add(ex.Message);
+                        }
+                    }
+
+                    if (form.ShowGDPRConsentBox)
+                    {
+                        var value = SanitizeValue(null, request.Form[GDPRConsent]);
+                        if (string.IsNullOrWhiteSpace(value))
+                            errors.Add("GDPR consent is required");
+                    }
+
+                    if (errors.Any())
+                    {
+                        session.Delete(formPosting);
+                    }
+                    else
+                    {
+                        foreach (var value in formPosting.FormValues) session.Save(value);
+
+                        SendFormMessages(form, formPosting, files);
+                    }
+                });
+            }
+            else
+            {
+                var values = new List<FormValue>();
+                var files = new List<IFormFile>();
                 foreach (var formProperty in formProperties)
+                {
                     try
                     {
                         if (formProperty is FileUpload)
@@ -56,35 +135,23 @@ namespace MrCMS.Services
                             var file = request.Form.Files[formProperty.Name];
 
                             if (file == null && formProperty.Required)
-                                throw new RequiredFieldException("No file was attached to the " +
-                                                                 formProperty.Name + " field");
+                                throw new RequiredFieldException(
+                                    $"No file was attached to the {formProperty.Name} field");
 
-                            if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
-                            {
-                                var value = _saveFormFileUpload.SaveFile(form, formPosting, file);
-
-                                formPosting.FormValues.Add(new FormValue
-                                {
-                                    Key = formProperty.Name,
-                                    Value = value,
-                                    IsFile = true,
-                                    FormPosting = formPosting
-                                });
-                            }
+                            files.Add(file);
                         }
                         else
                         {
                             var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
 
                             if (string.IsNullOrWhiteSpace(value) && formProperty.Required)
-                                throw new RequiredFieldException("No value was posted for the " +
-                                                                 formProperty.Name + " field");
+                                throw new RequiredFieldException(
+                                    $"No value was posted for the {formProperty.Name} field");
 
-                            formPosting.FormValues.Add(new FormValue
+                            values.Add(new FormValue
                             {
                                 Key = formProperty.Name,
                                 Value = value,
-                                FormPosting = formPosting
                             });
                         }
                     }
@@ -92,18 +159,21 @@ namespace MrCMS.Services
                     {
                         errors.Add(ex.Message);
                     }
-
-                if (errors.Any())
-                {
-                    session.Delete(formPosting);
                 }
-                else
-                {
-                    foreach (var value in formPosting.FormValues) session.Save(value);
 
-                    SendFormMessages(form, formPosting);
+                if (form.ShowGDPRConsentBox)
+                {
+                    var value = SanitizeValue(null, request.Form[GDPRConsent]);
+                    if  (string.IsNullOrWhiteSpace(value))
+                        errors.Add("GDPR consent is required");
                 }
-            });
+
+                if (!errors.Any())
+                {
+                    SendFormMessages(form, new FormPosting { FormValues = values }, files);
+                }
+            }
+
             return errors;
         }
 
@@ -129,7 +199,7 @@ namespace MrCMS.Services
             return value;
         }
 
-        private void SendFormMessages(Form form, FormPosting formPosting)
+        private void SendFormMessages(Form form, FormPosting formPosting, List<IFormFile> files)
         {
             if (form.SendFormTo == null) return;
 
@@ -144,16 +214,31 @@ namespace MrCMS.Services
                         var formTitle = ParseFormMessage(form.FormEmailTitle, form,
                             formPosting);
 
-                        session.SaveOrUpdate(new QueuedMessage
+                        session.Save(new QueuedMessage
                         {
                             Subject = formTitle,
                             Body = formMessage,
                             FromAddress = _mailSettings.SystemEmailAddress,
                             ToAddress = email,
-                            IsHtml = true
+                            IsHtml = true,
+                            QueuedMessageAttachments = files.Select(x => new QueuedMessageAttachment
+                            {
+                                ContentType = x.ContentType,
+                                Data = GetData(x),
+                                FileSize = x.Length,
+                                FileName = x.FileName,
+                            }).ToList()
                         });
                     }
                 });
+        }
+
+        private byte[] GetData(IFormFile formFile)
+        {
+            using var memoryStream = new MemoryStream();
+
+            formFile.OpenReadStream().CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
 
         private static string ParseFormMessage(string formMessage, Form form, FormPosting formPosting)
@@ -171,7 +256,7 @@ namespace MrCMS.Services
                     var listItem = new TagBuilder("li");
 
                     var title = new TagBuilder("b");
-                    title.InnerHtml.AppendHtml( formValue.Key + ":");
+                    title.InnerHtml.AppendHtml(formValue.Key + ":");
                     listItem.InnerHtml.AppendHtml(title.GetString() + " " +
                                           formValue.GetMessageValue());
 

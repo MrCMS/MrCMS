@@ -6,7 +6,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public interface IElementRendererManager
     {
-        IFormElementRenderer GetElementRenderer<T>(T property) where T : FormProperty;
-        TagBuilder GetElementContainer(FormRenderingType formRenderingType, FormProperty property);
+        IFormElementRenderer GetPropertyRenderer<T>(T property) where T : FormProperty;
+        TagBuilder GetPropertyContainer(FormRenderingType formRenderingType, FormProperty property);
     }
 }

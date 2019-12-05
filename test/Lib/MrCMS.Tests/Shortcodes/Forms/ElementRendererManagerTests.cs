@@ -29,7 +29,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
             _serviceCollection.AddTransient<IFormElementRenderer<TextBox>>(provider => formElementRenderer);
 
             var sut = GetSUT();
-            var renderer = sut.GetElementRenderer(new TextBox());
+            var renderer = sut.GetPropertyRenderer(new TextBox());
 
             renderer.Should().Be(formElementRenderer);
         }

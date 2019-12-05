@@ -155,7 +155,8 @@ namespace MrCMS.Settings
         [DisplayName("Default Form Renderer Type"), DropDownSelection("DefaultFormRenderer")]
         public FormRenderingType FormRendererType { get; set; }
 
-
+        [TextArea]
+        public string GDPRFairProcessingText { get; set; }
 
         public override void SetViewData(IServiceProvider serviceProvider, ViewDataDictionary viewDataDictionary)
         {

@@ -67,14 +67,14 @@ namespace MrCMS.Tests.Shortcodes.Forms
                 FormProperties = new List<FormProperty> { textBox }
             };
             var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox))
+            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
              .Returns(formElementRenderer);
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
             //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Throws<Exception>();
 
             _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
-            A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox)).MustHaveHappened();
+            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox)).MustHaveHappened();
         }
 
 
@@ -87,7 +87,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
                 FormProperties = new List<FormProperty> { textBox }
             };
             var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox))
+            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
              .Returns(formElementRenderer);
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
 
@@ -105,7 +105,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
                 FormProperties = new List<FormProperty> { textBox }
             };
             var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox))
+            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
              .Returns(formElementRenderer);
             A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
 
@@ -127,9 +127,9 @@ namespace MrCMS.Tests.Shortcodes.Forms
             var formElementRenderer = A.Fake<IFormElementRenderer>();
             A.CallTo(() => formElementRenderer.AppendElement(textBox1, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
             A.CallTo(() => formElementRenderer.AppendElement(textBox2, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
-            A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox1))
+            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox1))
              .Returns(formElementRenderer);
-            A.CallTo(() => _elementRendererManager.GetElementRenderer<FormProperty>(textBox2))
+            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox2))
              .Returns(formElementRenderer);
 
             _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));

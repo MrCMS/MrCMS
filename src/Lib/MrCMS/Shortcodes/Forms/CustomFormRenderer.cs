@@ -48,6 +48,7 @@ namespace MrCMS.Shortcodes.Forms
             formDesign = Regex.Replace(formDesign, "{validation:([^}]+)}", AddValidation(formProperties));
             formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(form1, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{recaptcha}", helper.RenderRecaptcha().GetString());
+            formDesign = Regex.Replace(formDesign, "{gdpr}", DefaultFormRenderer.GetGDPRCheckbox(_siteSettings.FormRendererType, _siteSettings.GDPRFairProcessingText).GetString());
             form.InnerHtml.AppendHtml(formDesign);
 
             if (_siteSettings.HasHoneyPot)
@@ -101,7 +102,7 @@ namespace MrCMS.Shortcodes.Forms
                                return string.Empty;
                            var existingValue = submittedStatus.Data[formProperty.Name];
 
-                           var renderer = _elementRendererManager.GetElementRenderer(formProperty);
+                           var renderer = _elementRendererManager.GetPropertyRenderer(formProperty);
 
                            var element = renderer.AppendElement(formProperty, existingValue, _siteSettings.FormRendererType);
                            element.TagRenderMode = renderer.IsSelfClosing

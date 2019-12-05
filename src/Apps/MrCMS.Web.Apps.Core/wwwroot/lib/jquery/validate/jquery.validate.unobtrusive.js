@@ -384,6 +384,8 @@
             setValidationValues(options, "required", true);
         }
     });
+
+    adapters.addBool("mandatory", "required");
     adapters.add("remote", ["url", "type", "additionalfields"], function (options) {
         var value = {
             url: options.params.url,

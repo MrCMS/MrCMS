@@ -8,6 +8,7 @@ using MrCMS.Website.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Web.Apps.Admin.Helpers;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
@@ -55,6 +56,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public RedirectToActionResult Edit(UpdateFormModel model)
         {
             _formAdminService.Update(model);
+
+            TempData.SuccessMessages().Add($"'{model.Name}' updated");
 
             return RedirectToAction("Edit", new {model.Id});
         }

@@ -54,4 +54,4 @@
     @Html.LabelFor(model => model.FormMessage, "Message")
     @Html.TextAreaFor(x => x.FormMessage, new { @class = "ckedit-enabled" })
 </div>
-@Html.InfoBlock(Html.Resource("Heads up") + "!", string.Format( Html.Resource("Admin Webpage Form Email Embed Notification", "Use [form id=\"{0}\"] in the message body to embed the form result in the email."), Model.Id))
+@Html.InfoBlock(Html.Resource("Heads up") + "!", string.Format( Html.Resource("Admin Webpage Form Email Embed Notification", "Use [form] in the message body to embed the form result in the email."), Model.Id))

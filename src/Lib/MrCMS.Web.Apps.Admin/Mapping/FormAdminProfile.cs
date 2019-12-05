@@ -12,6 +12,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
             CreateMap<Form, AddFormModel>().ReverseMap();
             CreateMap<Form, UpdateFormModel>().ReverseMap();
             CreateMap<Form, FormMessageTabViewModel>().ReverseMap();
+            CreateMap<Form, FormGDPRTabViewModel>().ReverseMap();
             CreateMap<Form, FormDesignTabViewModel>().ReverseMap();
         }
     }
