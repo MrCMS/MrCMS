@@ -2,7 +2,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.TestSupport;
@@ -12,10 +11,6 @@ using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.Extensions.Options;
 using MrCMS.Web.Apps.Admin.Tests.Stubs;
 using Xunit;
 

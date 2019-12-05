@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -43,8 +42,7 @@ namespace MrCMS.Services.Resources
                 throw new ArgumentNullException(nameof(options));
             }
 
-            var metadataDetailsProvider = options.ModelMetadataDetailsProviders
-                .OfType<DataAnnotationsMetadataProvider>().FirstOrDefault();
+            var metadataDetailsProvider = options.ModelMetadataDetailsProviders.FirstOrDefault(x => x.GetType().Name == "DataAnnotationsMetadataProvider");
             
             if (metadataDetailsProvider != null)
                 options.ModelMetadataDetailsProviders.Remove(metadataDetailsProvider);

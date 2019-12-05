@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace MrCMS.Installation
 {
@@ -12,11 +14,11 @@ namespace MrCMS.Installation
         {
             services.AddSingleton<IFileProvider>(new InstallationContentFileProvider());
 
-            services.AddMvc().AddRazorOptions(options =>
-            {
-                var fileProvider = new InstallationViewFileProvider();
-                options.FileProviders.Insert(0, fileProvider);
-            });
+            services.AddMvc(options => { }).AddApplicationPart(Assembly.GetAssembly(typeof(InstallationExtensions))).AddRazorRuntimeCompilation(options =>
+                {
+                    var fileProvider = new InstallationViewFileProvider();
+                    options.FileProviders.Insert(0, fileProvider);
+                });
 
             return services;
         }
@@ -27,11 +29,12 @@ namespace MrCMS.Installation
             {
                 FileProvider = new InstallationContentFileProvider()
             });
-            app.UseMvc(builder =>
+            app.UseRouting();
+            app.UseEndpoints(builder =>
             {
-                builder.MapRoute("Installation", "",
+                builder.MapControllerRoute("Installation", "",
                     new { controller = "Install", action = "Setup" });
-                builder.Routes.Add(new InstallationRedirectRouter());
+                builder.MapFallbackToController("Redirect", "Install"); //.Routes.Add(new InstallationRedirectRouter());
             });
         }
 

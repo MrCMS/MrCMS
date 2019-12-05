@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using MrCMS.Entities;
+﻿using MrCMS.Entities;
 using MrCMS.Events;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;

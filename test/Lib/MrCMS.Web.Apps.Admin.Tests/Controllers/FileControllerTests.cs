@@ -1,7 +1,6 @@
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using MrCMS.Entities.Documents.Media;

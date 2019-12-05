@@ -1,4 +1,4 @@
-using X.PagedList.Mvc.Common;
+using X.PagedList.Mvc.Core.Common;
 
 namespace MrCMS.Helpers
 {

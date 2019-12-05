@@ -43,7 +43,7 @@ namespace MrCMS.Web
     {
         private const string Database = nameof(Database);
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
@@ -52,7 +52,7 @@ namespace MrCMS.Web
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -112,7 +112,7 @@ namespace MrCMS.Web
             {
                 expression.AllowNullDestinationValues = true;
                 appContext.ConfigureAutomapper(expression);
-            });
+            }, GetType().Assembly);
 
 
             // if the system is not installed we just want MrCMS to show the installation screen
@@ -232,7 +232,7 @@ namespace MrCMS.Web
                 builder.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new CompositeFileProvider(
-                        new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
+                        new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
                 });
                 builder.UseAuthentication();
                 builder.UseMiniProfiler();

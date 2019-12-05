@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MrCMS.Helpers;
 
 namespace MrCMS.Apps
 {
@@ -16,10 +17,7 @@ namespace MrCMS.Apps
         public abstract string Name { get; }
         public abstract string Version { get; }
         public virtual Assembly Assembly => GetType().Assembly;
-        public virtual IEnumerable<Type> Conventions
-        {
-            get { yield break; }
-        }
+        public virtual IEnumerable<Type> Conventions => Enumerable.Empty<Type>();
 
         public virtual IEnumerable<Type> BaseTypes => Enumerable.Empty<Type>();
         public virtual IDictionary<Type, string> SignalRHubs => new Dictionary<Type, string>();
@@ -43,7 +41,8 @@ namespace MrCMS.Apps
 
         public virtual void ConfigureAutomapper(IMapperConfigurationExpression expression)
         {
-            expression.AddProfiles(Assembly);
+            expression.AddProfiles(Assembly.GetTypes().Where(x => x.IsImplementationOf(typeof(Profile)))
+                .Select(Activator.CreateInstance).Cast<Profile>());
         }
 
         public virtual void AppendConfiguration(Configuration configuration) { }

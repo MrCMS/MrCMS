@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Internal;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -21,6 +18,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace MrCMS.Helpers
 {
@@ -140,9 +138,6 @@ namespace MrCMS.Helpers
         private static void AddValidationAttributes(ViewContext viewContext, TagBuilder tagBuilder,
             ModelExplorer modelExplorer, string expression)
         {
-            modelExplorer = modelExplorer ??
-                            ExpressionMetadataProvider.FromStringExpression(expression, viewContext.ViewData,
-                                modelExplorer.Metadata);
             var provider = new DefaultValidationHtmlAttributeProvider(
                 new OptionsWrapper<MvcViewOptions>(new MvcViewOptions()), modelExplorer.Metadata,
                 new ClientValidatorCache());
@@ -176,6 +171,12 @@ namespace MrCMS.Helpers
                                     new HtmlString(metadata.DisplayName ??
                                                    metadata.PropertyName ?? htmlFieldName.Split('.').Last());
 
+            return GetLabelTag(html, htmlFieldName, htmlAttributes, resolvedLabelText);
+        }
+
+        private static IHtmlContent GetLabelTag(IHtmlHelper html, string htmlFieldName, IDictionary<string, object> htmlAttributes,
+            IHtmlContent resolvedLabelText)
+        {
             var tag = new TagBuilder("label");
             tag.Attributes.Add("for",
                 TagBuilder.CreateSanitizedId(
@@ -194,7 +195,7 @@ namespace MrCMS.Helpers
         {
             if (html.ViewData.ModelState.TryGetValue(key, out ModelStateEntry modelState) && modelState.RawValue != null)
             {
-                return ModelBindingHelper.ConvertTo(modelState.RawValue, destinationType, null /* culture */);
+                return modelState.RawValue.To(destinationType, null /* culture */);
             }
 
             return null;
@@ -254,10 +255,10 @@ namespace MrCMS.Helpers
             Expression<Func<TModel, object>> expression, object htmlAttributes,
             string text = null)
         {
+            var modelExpressionProvider = htmlHelper.GetRequiredService<ModelExpressionProvider>();
             return LabelHelper(htmlHelper,
-                ExpressionMetadataProvider
-                    .FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
-                ExpressionHelper.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
+                modelExpressionProvider.CreateModelExpression(htmlHelper.ViewData, expression).Metadata,
+                modelExpressionProvider.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
                 text != null ? new HtmlString(text) : null);
         }
 
@@ -265,9 +266,9 @@ namespace MrCMS.Helpers
             Expression<Func<TModel, bool>> expression, object labelAttributes = null, object checkboxAttributes = null,
             string text = null)
         {
-            var metadata = ExpressionMetadataProvider
-                .FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata;
-            var htmlFieldName = ExpressionHelper.GetExpressionText(expression);
+            var modelExpressionProvider = htmlHelper.GetRequiredService<ModelExpressionProvider>();
+            var metadata = modelExpressionProvider.CreateModelExpression(htmlHelper.ViewData, expression).Metadata;
+            var htmlFieldName = modelExpressionProvider.GetExpressionText(expression);
             var checkbox =
                 CheckBoxHelper(htmlHelper, metadata, htmlFieldName,
                     htmlHelper.ViewData.Model != null ? expression.Compile()(htmlHelper.ViewData.Model) : (bool?)null,
@@ -294,11 +295,9 @@ namespace MrCMS.Helpers
         public static IHtmlContent Label(this IHtmlHelper htmlHelper, string labelFor, object htmlAttributes,
             string text = null)
         {
-            return LabelHelper(htmlHelper,
-                ExpressionMetadataProvider
-                    .FromStringExpression(labelFor, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
-                // ModelMetadata.FromStringExpression(labelFor, htmlHelper.ViewData),
-                labelFor, new RouteValueDictionary(htmlAttributes), text != null ? new HtmlString(text) : null);
+            return GetLabelTag(htmlHelper, labelFor,
+                htmlAttributes == null ? new RouteValueDictionary() : new RouteValueDictionary(htmlAttributes),
+                new HtmlString(text ?? labelFor.BreakUpString()));
         }
 
         public static IHtmlContent Link(this IHtmlHelper helper, string text, string url, object htmlAttributes = null)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,14 +53,19 @@ namespace MrCMS.Apps
                     options.Filters.Add<HoneypotFilter>();
                     options.Filters.Add<DoNotCacheFilter>();
                     options.Filters.Add<ProfilingActionFilter>();
+                    options.EnableEndpointRouting = false;
                     appContext.SetupMvcOptions(options);
-
-                }).AddRazorOptions(options =>
+                })
+                .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions)))
+                .AddRazorRuntimeCompilation(options =>
+                {
+                    options.FileProviders.Add(fileProvider);
+                })
+                .AddRazorOptions(options =>
                 {
                     options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());
                     options.ViewLocationExpanders.Insert(1, new AppViewLocationExpander());
                     options.ViewLocationExpanders.Insert(2, new ThemeViewLocationExpander());
-                    options.FileProviders.Add(fileProvider);
                 })
                 .AddViewLocalization()
                 .AddMrCMSDataAnnotations()
@@ -68,7 +74,7 @@ namespace MrCMS.Apps
         } 
 
         public static IFileProvider AddFileProvider(this IServiceCollection services,
-            IHostingEnvironment environment, MrCMSAppContext appContext)
+            IWebHostEnvironment environment, MrCMSAppContext appContext)
         {
             var physicalProvider = environment.ContentRootFileProvider;
             var compositeFileProvider =

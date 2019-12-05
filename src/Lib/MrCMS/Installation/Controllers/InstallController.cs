@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Installation.Models;
@@ -10,9 +11,9 @@ namespace MrCMS.Installation.Controllers
     public class InstallController : Controller
     {
         private readonly IInstallationService _installationService;
-        private readonly IApplicationLifetime _applicationLifetime;
+        private readonly IHostApplicationLifetime _applicationLifetime;
 
-        public InstallController(IInstallationService installationService, IApplicationLifetime applicationLifetime)
+        public InstallController(IInstallationService installationService, IHostApplicationLifetime applicationLifetime)
         {
             _installationService = installationService;
             _applicationLifetime = applicationLifetime;
@@ -59,6 +60,11 @@ namespace MrCMS.Installation.Controllers
 
             _applicationLifetime.StopApplication();
             return View("Success");
+        }
+
+        public IActionResult Redirect()
+        {
+            return Redirect("~/");
         }
     }
 }

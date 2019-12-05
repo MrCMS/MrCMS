@@ -10,7 +10,6 @@ using MrCMS.Services.Auth;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
-using AuthenticationProperties = Microsoft.AspNetCore.Http.Authentication.AuthenticationProperties;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
