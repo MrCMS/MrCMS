@@ -8,9 +8,6 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
   </ItemGroup>
   
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />

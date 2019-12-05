@@ -5,10 +5,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <EmbeddedResource Include="Areas\Admin\Views\**" />
     <EmbeddedResource Include="Views\**" />
     <EmbeddedResource Include="wwwroot\**" />

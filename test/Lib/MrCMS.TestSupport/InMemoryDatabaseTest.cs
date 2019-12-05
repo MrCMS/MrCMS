@@ -15,8 +15,8 @@ namespace MrCMS.TestSupport
 {
     public abstract class InMemoryDatabaseTest : MrCMSTest
     {
-        private Configuration Configuration;
-        private ISessionFactory SessionFactory;
+        private static Configuration Configuration;
+        private static ISessionFactory SessionFactory;
         protected ISession Session;
         private readonly object lockObject = new object();
 

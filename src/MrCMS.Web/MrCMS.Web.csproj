@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
     <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
     <ProjectReference Include="..\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
