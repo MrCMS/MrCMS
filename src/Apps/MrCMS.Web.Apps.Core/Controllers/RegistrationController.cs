@@ -67,6 +67,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     : Redirect("~/");
             }
 
+            model = model ?? new RegisterModel();
+
+            model.Password = null;
+            model.ConfirmPassword = null;
+
+            TempData["register-model"] = model;
+
             return _uniquePageService.RedirectTo<RegisterPage>();
         }
 

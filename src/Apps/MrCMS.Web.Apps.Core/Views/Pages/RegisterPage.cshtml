@@ -1,6 +1,10 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Models.Auth
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Pages.RegisterPage
+@{
+    var registrationModel = TempData["register-model"] as RegisterModel ?? new RegisterModel();
+}
 
 <h1>@Html.Editable(page => page.Name) </h1>
 <hr />
@@ -10,6 +14,5 @@
 }
 @Html.Editable(page => page.BodyContent, true)
 
-@*
-    // TODO: Registration details
-    @{Html.RenderAction("RegistrationDetails", "Registration");}*@
+
+<partial name="RegistrationDetails" model="registrationModel" />

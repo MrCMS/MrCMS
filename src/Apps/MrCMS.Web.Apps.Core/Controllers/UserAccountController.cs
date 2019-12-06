@@ -36,9 +36,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             ViewData["message"] = TempData["message"];
 
-            if (_getCurrentUser.Get() != null) return View(page);
+            var user = _getCurrentUser.Get();
+            if (user == null)
+                return _uniquePageService.RedirectTo<LoginPage>();
 
-            return _uniquePageService.RedirectTo<LoginPage>();
+            ViewData["user"] = user;
+            return View(page);
+
         }
 
         [HttpGet]
@@ -102,15 +106,14 @@ namespace MrCMS.Web.Apps.Core.Controllers
             {
                 var user = _getCurrentUser.Get();
                 _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
-                model.Message = _stringResourceProvider.GetValue("Login Password Updated", "Password updated.");
+                TempData["message"] = _stringResourceProvider.GetValue("Login Password Updated", "Password updated.");
             }
             else
             {
-                model.Message = _stringResourceProvider.GetValue("Login Invalid",
+                TempData["password-error-message"] = _stringResourceProvider.GetValue("Login Invalid",
                     "Please ensure both fields are filled out and valid");
             }
 
-            TempData["message"] = model.Message;
             return _uniquePageService.RedirectTo<UserAccountPage>();
         }
     }

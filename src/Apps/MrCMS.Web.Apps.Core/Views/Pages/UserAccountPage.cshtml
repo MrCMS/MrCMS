@@ -1,7 +1,15 @@
-﻿@using MrCMS.Helpers
+﻿@using MrCMS.Entities.People
+@using MrCMS.Helpers
+@using MrCMS.Models.Auth
 @using MrCMS.Web.Apps.Core.Models
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Pages.UserAccountPage
+@{
+    var user = ViewData["user"] as User;
+
+    var userAccountModel = new UserAccountModel() { Email = user.Email, FirstName = user.FirstName, LastName = user.LastName };
+    var changePasswordModel = new ChangePasswordModel { Message =   TempData["password-error-message"] as string };
+}
 <h1>@Html.Editable(page => page.Name) </h1>
 <hr />
 @Html.Editable(page => page.BodyContent, true)
@@ -17,13 +25,12 @@
     </div>
 }
 
-@*
-    // TODO: User profile details
-    <div class="row">
+
+<div class="row">
     <div class="col-lg-6">
-        @{Html.RenderAction("UserAccountDetails", "UserAccount");}
+        <partial name="UserAccountDetails" model="userAccountModel" />
     </div>
     <div class="col-lg-6">
-        @{Html.RenderAction("ChangePassword", "UserAccount");}
+        <partial name="ChangePassword" model="changePasswordModel" />
     </div>
-</div>*@
+</div>

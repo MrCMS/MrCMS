@@ -2,7 +2,10 @@
 @using MrCMS.Services.Resources
 @using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Models.Auth.RegisterModel
-@inject IUniquePageService UniquePageService  
+@inject IUniquePageService UniquePageService
+@{
+    var message = TempData["already-logged-in"] as string;
+}
 
 @using (Html.BeginForm("RegistrationDetails", "Registration", null, FormMethod.Post))
 {
@@ -35,16 +38,16 @@
                 @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ConfirmPassword)
             </div>
-            
+
             <div class="btn-group">
-            <button type="submit" class="btn btn-primary"><span class="fa fa-ok-sign"></span> @Html.Resource("Register")</button>
-            <a href="@(UniquePageService.GetUrl<LoginPage>())" class="btn btn-secondary">@Html.Resource("Already Registered? Login here")</a>            
+                <button type="submit" class="btn btn-primary"><span class="fa fa-ok-sign"></span> @Html.Resource("Register")</button>
+                <a href="@(UniquePageService.GetUrl<LoginPage>())" class="btn btn-secondary">@Html.Resource("Already Registered? Login here")</a>
             </div>
             <br />
-            @if (!String.IsNullOrEmpty(ViewBag.Message))
+            @if (!string.IsNullOrEmpty(message))
             {
                 <div class="alert alert-danger">
-                    @ViewBag.Message
+                    @message
                 </div>
             }
 
