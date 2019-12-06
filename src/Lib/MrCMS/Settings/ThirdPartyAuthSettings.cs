@@ -19,11 +19,11 @@ namespace MrCMS.Settings
         [DisplayName("Facebook App Secret"), AppSettingName("facebook-app-secret")]
         public string FacebookAppSecret { get; set; }
 
-        [DisplayName("Is LinkedIn Login Enabled?"), AppSettingName("linkedin-enabled")]
-        public bool LinkedInEnabled { get; set; }
-        [DisplayName("LinkedIn Client Id"), AppSettingName("linkedin-client-id")]
-        public string LinkedInClientId { get; set; }
-        [DisplayName("LinkedIn Client Secret"), AppSettingName("linkedin-client-secret")]
-        public string LinkedInClientSecret { get; set; }
+        //[DisplayName("Is LinkedIn Login Enabled?"), AppSettingName("linkedin-enabled")]
+        //public bool LinkedInEnabled { get; set; }
+        //[DisplayName("LinkedIn Client Id"), AppSettingName("linkedin-client-id")]
+        //public string LinkedInClientId { get; set; }
+        //[DisplayName("LinkedIn Client Secret"), AppSettingName("linkedin-client-secret")]
+        //public string LinkedInClientSecret { get; set; }
     }
 }

@@ -40,14 +40,6 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _eventContext = eventContext;
         }
 
-        public async Task<PartialViewResult> Providers(string returnUrl)
-        {
-            ViewData["returnUrl"] = returnUrl;
-            IEnumerable<AuthenticationScheme> externalAuthenticationTypes =
-                await _signInManager.GetExternalAuthenticationSchemesAsync();
-            return PartialView(externalAuthenticationTypes);
-        }
-
         [HttpPost]
         public ActionResult Login(string provider, string returnUrl)
         {
@@ -71,27 +63,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 //_logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
                 return this.RedirectToLocal(returnUrl);
             }
-            //if (signInResult.RequiresTwoFactor)
-            //{
-            //    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl });
-            //}
-            //if (signInResult.IsLockedOut)
-            //{
-            //    return View("Lockout");
-            //}
-            ////ExternalLoginInfo loginInfo = await _signInManager.GetExternalLoginInfoAsync();
-
-            ////if (loginInfo == null)
-            ////    return ThirdPartyError();
-
-            ////AuthenticateResult authenticateResult = 
-            ////    await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
-
-            ////loginInfo.Email = loginInfo.Email ?? _externalLoginService.GetEmail(authenticateResult);
-
-            ////if (string.IsNullOrWhiteSpace(loginInfo.Email))
-            ////    return ThirdPartyError();
-
+        
             var user = await _externalLoginService.GetUserToLogin(result.LoginInfo);
 
             var loginResult = _getVerifiedUserResult.GetResult(user, returnUrl);

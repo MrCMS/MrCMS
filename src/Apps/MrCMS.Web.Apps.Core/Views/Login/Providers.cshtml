@@ -1,0 +1,23 @@
+﻿@using System.Linq
+@using Microsoft.AspNetCore.Authentication
+@using MrCMS.Services.Auth
+@using MrCMS.Services.Resources
+@inject ISignInManager SignInManager
+@{
+    var schemes = await SignInManager.GetExternalAuthenticationSchemesAsync() ?? new List<AuthenticationScheme>();
+}
+@model dynamic
+@{
+    if (schemes.Any())
+    {
+        <h4>@Html.Resource("Use another service to login")</h4>
+        <div id="socialLoginList">
+            <p>
+                @foreach (var p in schemes)
+                {
+                    Html.RenderPartial(p.Name, p);
+                }
+            </p>
+        </div>
+    }
+}

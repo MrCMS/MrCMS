@@ -33,6 +33,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
 using StackExchange.Profiling.Storage;
 using ISession = NHibernate.ISession;
@@ -189,8 +190,30 @@ namespace MrCMS.Web
             services.AddScoped(provider => provider.GetService<IStringLocalizerFactory>()
                 .Create(null, null));
 
+                var authenticationBuilder = services.AddAuthentication();
+            var serviceProvider = services.BuildServiceProvider();
+            var thirdPartyAuthSettings = serviceProvider.GetRequiredService<ThirdPartyAuthSettings>();
 
-            services.AddAuthentication();
+            if (thirdPartyAuthSettings.GoogleEnabled)
+            {
+                authenticationBuilder.AddGoogle(options =>
+                {
+                    options.ClientId = thirdPartyAuthSettings.GoogleClientId;
+                    options.ClientSecret = thirdPartyAuthSettings.GoogleClientSecret;
+                });
+            }
+
+            if (thirdPartyAuthSettings.FacebookEnabled)
+            {
+                authenticationBuilder.AddFacebook(options =>
+                {
+                    options.AppId = thirdPartyAuthSettings.FacebookAppId;
+                    options.AppSecret = thirdPartyAuthSettings.FacebookAppSecret;
+                    options.Fields.Add("email");
+                    options.Scope.Add("email");
+                });
+            }
+
             services.TryAddEnumerable(ServiceDescriptor
                 .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
                 >());

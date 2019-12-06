@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Views\Login\Facebook.cshtml" />
+    <None Remove="Views\Login\Google.cshtml" />
+    <None Remove="Views\Login\LinkedIn.cshtml" />
+    <None Remove="Views\Login\Providers.cshtml" />
     <None Remove="Views\Pages\WebpagePasswordPage.cshtml" />
   </ItemGroup>
 
