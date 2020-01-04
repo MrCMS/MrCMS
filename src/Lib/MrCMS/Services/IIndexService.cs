@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Indexing.Management;
 using MrCMS.Models;
 
@@ -9,7 +10,7 @@ namespace MrCMS.Services
     {
         void InitializeAllIndices();
         List<MrCMSIndex> GetIndexes();
-        void Reindex(string typeName);
+        Task Reindex(string typeName);
         IIndexManagerBase GetIndexManagerBase(Type indexType);
         IEnumerable<IIndexManagerBase> GetAllIndexManagers();
     }

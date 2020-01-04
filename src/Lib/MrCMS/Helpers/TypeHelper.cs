@@ -1,7 +1,5 @@
-using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Settings;
-using NHibernate.Proxy;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -133,8 +131,7 @@ namespace MrCMS.Helpers
             return _allTypes ?? (_allTypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToHashSet());
         }
 
-        public static HashSet<Type> MappedClasses => GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type =>
-                                                                       !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any());
+        public static HashSet<Type> MappedClasses => GetAllConcreteTypesAssignableFrom<SystemEntity>();
 
         public static HashSet<Type> GetMappedClassesAssignableFrom<T>()
         {
@@ -257,7 +254,8 @@ namespace MrCMS.Helpers
             {
                 loadableTypes.AddRange(e.Types.Where(t => t != null));
             }
-            return loadableTypes.FindAll(type => !typeof(INHibernateProxy).IsAssignableFrom(type));
+
+            return loadableTypes;
         }
         /// <summary>
         /// Search for a method by name and parameter types.  Unlike GetMethod(), does 'loose' matching on generic
@@ -382,13 +380,14 @@ namespace MrCMS.Helpers
             return false;
         }
 
+        [Obsolete("Remnant from NHibernate implementation")]
         public static T Unproxy<T>(this T document) where T : SystemEntity
         {
-            var proxy = document as INHibernateProxy;
-            if (proxy != null)
-            {
-                return (T)proxy.HibernateLazyInitializer.GetImplementation();
-            }
+            //var proxy = document as INHibernateProxy;
+            //if (proxy != null)
+            //{
+            //    return (T)proxy.HibernateLazyInitializer.GetImplementation();
+            //}
 
             return document;
         }

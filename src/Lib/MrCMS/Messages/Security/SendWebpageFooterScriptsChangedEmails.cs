@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Documents.Web;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Events.Documents;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -17,18 +18,18 @@ namespace MrCMS.Messages.Security
             _parser = parser;
             _getLiveUrl = getLiveUrl;
         }
-        public void Execute(ScriptChangedEventArgs<Webpage> args)
+        public async Task Execute(ScriptChangedEventArgs<Webpage> args)
         {
             if (!_settings.SendScriptChangeNotificationEmails)
                 return;
-            var message = _parser.GetMessage(new WebpageScriptChangeModel
+            var message =await _parser.GetMessage(new WebpageScriptChangeModel
             {
                 Name = args.Holder?.Name,
                 Url = _getLiveUrl.GetAbsoluteUrl(args.Holder),
                 PreviousValue = args.PreviousValue,
                 CurrentValue = args.CurrentValue
             });
-            _parser.QueueMessage(message);
+            await _parser.QueueMessage(message);
         }
     }
 }

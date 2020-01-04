@@ -33,6 +33,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using MrCMS.DbConfiguration;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
 using StackExchange.Profiling.Storage;
@@ -84,18 +85,18 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSAdminApp>();
                 context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
-                context.RegisterDatabaseProvider<SqliteProvider>();
+                //context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
             services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
 
             // TODO: Look to removing Site for constructors and resolving like this
-            services.AddScoped(provider =>
+            services.AddScoped(async provider =>
             {
                 var site =
                     provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
 
-                site = site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
+                site = site ?? await provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
                 var session = provider.GetRequiredService<ISession>();
                 if (site != null)
                 {
@@ -233,7 +234,7 @@ namespace MrCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MrCMSAppContext appContext)
         {
             if (env.IsDevelopment())
             {

@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Helpers
 {
@@ -14,7 +14,7 @@ namespace MrCMS.Helpers
         }
         public static bool IsWebpageCacheable(this IHtmlHelper helper, int id)
         {
-            return helper.GetRequiredService<ISession>().Get<Webpage>(id)?.IsTypeCacheable() ?? false;
+            return helper.GetRequiredService<IRepository<Webpage>>().GetDataSync(id)?.IsTypeCacheable() ?? false;
         }
     }
 }

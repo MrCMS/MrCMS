@@ -401,7 +401,7 @@ namespace MrCMS.Helpers
             return tagBulder;
         }
 
-        public static IHtmlContent RenderFavicon(this IHtmlHelper html, Size size)
+        public static async Task<IHtmlContent> RenderFavicon(this IHtmlHelper html, Size size)
         {
             var seoSettings = html.ViewContext.HttpContext.RequestServices.GetRequiredService<SEOSettings>();
             var fileService = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IFileService>();
@@ -414,7 +414,7 @@ namespace MrCMS.Helpers
                 return HtmlString.Empty;
             }
 
-            var imageUrl = imageRenderingService.GetImageUrl(file.FileUrl, size);
+            var imageUrl = await imageRenderingService.GetImageUrl(file.FileUrl, size);
 
             var tagBuilder = new TagBuilder("link");
             tagBuilder.Attributes["rel"] = "icon";

@@ -6,7 +6,6 @@ using MrCMS.FileProviders;
 using MrCMS.Helpers;
 using MrCMS.Themes;
 using MrCMS.Website.CMS;
-using NHibernate.Cfg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +18,13 @@ namespace MrCMS.Apps
         {
             Apps = new HashSet<IMrCMSApp>();
             Themes = new HashSet<IMrCMSTheme>();
-            DatabaseProviders = new HashSet<Type>();
+            //DatabaseProviders = new HashSet<Type>();
             Types = new Dictionary<Type, IMrCMSApp>();
         }
 
         public ISet<IMrCMSApp> Apps { get; }
         public ISet<IMrCMSTheme> Themes { get; }
-        public ISet<Type> DatabaseProviders { get; }
+        //public ISet<Type> DatabaseProviders { get; }
         public IDictionary<Type, IMrCMSApp> Types { get; }
 
         public IEnumerable<IFileProvider> ViewFileProviders =>
@@ -75,11 +74,11 @@ namespace MrCMS.Apps
 
             Themes.Add(theme);
         }
-        public void RegisterDatabaseProvider<TProvider>()
-            where TProvider : IDatabaseProvider
-        {
-            DatabaseProviders.Add(typeof(TProvider));
-        }
+        //public void RegisterDatabaseProvider<TProvider>()
+        //    where TProvider : IDatabaseProvider
+        //{
+        //    DatabaseProviders.Add(typeof(TProvider));
+        //}
 
         public void SetupMvcOptions(MvcOptions options)
         {
@@ -91,9 +90,9 @@ namespace MrCMS.Apps
             Apps.ForEach(app => app.ConfigureAutomapper(expression));
         }
 
-        public void AppendConfiguration(Configuration configuration)
-        {
-            Apps.ForEach(app => app.AppendConfiguration(configuration));
-        }
+        //public void AppendConfiguration(Configuration configuration)
+        //{
+        //    Apps.ForEach(app => app.AppendConfiguration(configuration));
+        //}
     }
 }

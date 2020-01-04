@@ -5,28 +5,28 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Website.Caching;
-using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using MrCMS.Data;
 
 namespace MrCMS.Settings
 {
     public class SiteSettingsOptionGenerator : ISiteSettingsOptionGenerator
     {
-        private readonly ISession _session;
+        private readonly IDataReader _dataReader;
         private readonly MrCMSAppContext _appContext;
 
-        public SiteSettingsOptionGenerator(ISession session, MrCMSAppContext appContext)
+        public SiteSettingsOptionGenerator(IDataReader dataReader, MrCMSAppContext appContext)
         {
-            _session = session;
+            _dataReader = dataReader;
             _appContext = appContext;
         }
 
         public virtual List<SelectListItem> GetErrorPageOptions(int pageId)
         {
-            var list = _session.QueryOver<Webpage>().Where(webpage => webpage.Parent == null).Cacheable().List();
+            var list = _dataReader.Readonly<Webpage>().Where(webpage => webpage.Parent == null).ToList();
             return
                 list.Where(page => page.Published)
                          .BuildSelectItemList(
@@ -38,10 +38,9 @@ namespace MrCMS.Settings
         public virtual List<SelectListItem> GetMediaCategoryOptions(int? categoryId)
         {
             var list =
-                _session.QueryOver<MediaCategory>()
+                _dataReader.Readonly<MediaCategory>()
                        .Where(category => category.Parent == null && !category.HideInAdminNav)
-                       .Cacheable()
-                       .List();
+                       .ToList();
             return
                 list.BuildSelectItemList(
                     category => category.Name,
@@ -51,14 +50,13 @@ namespace MrCMS.Settings
 
         public virtual List<SelectListItem> GetLayoutOptions(int? selectedLayoutId)
         {
-            return _session.QueryOver<Layout>()
-                          .Cacheable()
-                          .List()
-                          .BuildSelectItemList(
-                              layout => layout.Name,
-                              layout => layout.Id.ToString(CultureInfo.InvariantCulture),
-                              layout => layout.Id == selectedLayoutId,
-                              emptyItem: null);
+            return _dataReader.Readonly<Layout>()
+                .ToList()
+                .BuildSelectItemList(
+                    layout => layout.Name,
+                    layout => layout.Id.ToString(CultureInfo.InvariantCulture),
+                    layout => layout.Id == selectedLayoutId,
+                    emptyItem: null);
         }
 
         public virtual List<SelectListItem> GetThemeNames(string themeName)

@@ -1,26 +1,29 @@
 using MrCMS.Helpers;
 using MrCMS.Services;
-using NHibernate;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
+using MrCMS.Entities.People;
 
 namespace MrCMS.Website.PushNotifications
 {
     public class PushNotificationSubscriptionManager : IPushNotificationSubscriptionManager
     {
+        private readonly IRepository<PushSubscription> _repository;
         private readonly IGetCurrentUser _getCurrentUser;
-        private readonly ISession _session;
         private readonly ISendPushNotification _sendPushNotification;
         private readonly WebPushSettings _settings;
 
-        public PushNotificationSubscriptionManager(IGetCurrentUser getCurrentUser, ISession session, IGetWebPushSettings getSettings, ISendPushNotification sendPushNotification)
+        public PushNotificationSubscriptionManager(IRepository<PushSubscription> repository, IGetCurrentUser getCurrentUser, IGetWebPushSettings getSettings, ISendPushNotification sendPushNotification)
         {
+            _repository = repository;
             _getCurrentUser = getCurrentUser;
-            _session = session;
             _settings = getSettings.GetSettings();
             _sendPushNotification = sendPushNotification;
         }
 
-        public WebPushResult CreateSubscription(PushNotificationSubscription subscription)
+        public async Task<WebPushResult> CreateSubscription(PushNotificationSubscription subscription)
         {
             var pushSubscription = new Entities.People.PushSubscription
             {
@@ -30,16 +33,16 @@ namespace MrCMS.Website.PushNotifications
                 User = _getCurrentUser.Get()
             };
 
-            _session.Transact(session => session.Save(pushSubscription));
+            await _repository.Add(pushSubscription);
 
-            return _sendPushNotification.SendNotification(pushSubscription, _settings.SubscriptionConfirmationMessage);
+            return await _sendPushNotification.SendNotification(pushSubscription, _settings.SubscriptionConfirmationMessage);
         }
 
 
-        public WebPushResult RemoveSubscription(string endpoint)
+        public async Task<WebPushResult> RemoveSubscription(string endpoint)
         {
-            var pushSubscriptions = _session.Query<Entities.People.PushSubscription>().Where(x => x.Endpoint == endpoint).ToList();
-            _session.Transact(session => pushSubscriptions.ForEach(session.Delete));
+            var pushSubscriptions = await _repository.Query().Where(x => x.Endpoint == endpoint).ToListAsync();
+            await _repository.DeleteRange(pushSubscriptions);
 
             return new WebPushResult();
         }

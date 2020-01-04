@@ -8,19 +8,19 @@ namespace MrCMS.Services
 {
     public interface IFileService
     {
-        MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength,
+        Task<MediaFile> AddFile(Stream stream, string fileName, string contentType, long contentLength,
             MediaCategory mediaCategory);
-        void DeleteFile(MediaFile mediaFile);
-        void SaveFile(MediaFile mediaFile);
-        string GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false);
-        string GetFileLocation(Crop crop, Size imageSize, bool getCdn = false);
-        FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
+        Task DeleteFile(MediaFile mediaFile);
+        Task UpdateFile(MediaFile mediaFile);
+        Task<string> GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false);
+        Task<string> GetFileLocation(Crop crop, Size imageSize, bool getCdn = false);
+        Task<FilesPagedResult> GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
         MediaFile GetFileByUrl(string url);
         MediaFile GetFile(string value);
-        string GetFileUrl(MediaFile file, string value);
+        Task<string> GetFileUrl(MediaFile file, string value);
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
         bool IsValidFileType(string fileName);
-        void DeleteFileSoft(MediaFile mediaFile);
+        Task DeleteFileSoft(MediaFile mediaFile);
     }
 }

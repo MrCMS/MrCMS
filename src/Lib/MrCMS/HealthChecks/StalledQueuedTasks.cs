@@ -1,33 +1,32 @@
 using System.Collections.Generic;
-using MrCMS.Helpers;
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Tasks;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
     public class StalledQueuedTasks : HealthCheck
     {
         private readonly IGetDateTimeNow _getDateTimeNow;
-        private readonly ISession _session;
+        private readonly IRepository<QueuedTask> _repository;
 
-        public StalledQueuedTasks(ISession session, IGetDateTimeNow getDateTimeNow)
+        public StalledQueuedTasks(IRepository<QueuedTask> repository, IGetDateTimeNow getDateTimeNow)
         {
-            _session = session;
+            _repository = repository;
             _getDateTimeNow = getDateTimeNow;
         }
 
         public override string DisplayName => "Stalled Queued Tasks";
 
-        public override HealthCheckResult PerformCheck()
+        public override Task<HealthCheckResult> PerformCheck()
         {
             var checkDate = _getDateTimeNow.LocalNow.AddMinutes(-30);
-            var any = _session.QueryOver<QueuedTask>()
-                .Where(
-                    task => task.Status == TaskExecutionStatus.Pending &&
-                            task.CreatedOn <= checkDate)
-                .Any();
-            return any
+            var any = _repository.Readonly()
+                .Any(task => task.Status == TaskExecutionStatus.Pending &&
+                             task.CreatedOn <= checkDate);
+            return Task.FromResult( any
                 ? new HealthCheckResult
                 {
                     Messages = new List<string>
@@ -36,7 +35,7 @@ namespace MrCMS.HealthChecks
                         "Please check that your scheduler is still configured correctly."
                     }
                 }
-                : HealthCheckResult.Success;
+                : HealthCheckResult.Success);
         }
     }
 }

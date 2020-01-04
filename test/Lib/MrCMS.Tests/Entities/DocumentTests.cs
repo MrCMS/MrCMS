@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
 using MrCMS.Entities.Documents;
-using NHibernate;
+
 
 namespace MrCMS.Tests.Entities
 {

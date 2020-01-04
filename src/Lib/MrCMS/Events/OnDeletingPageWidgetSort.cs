@@ -1,21 +1,24 @@
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingPageWidgetSort : IOnDeleting<PageWidgetSort>
+    public class OnDeletingPageWidgetSort : OnDataDeleting<PageWidgetSort>
     {
-        public void Execute(OnDeletingArgs<PageWidgetSort> args)
+        public override Task<IResult> OnDeleting(PageWidgetSort entity, DbContext dbContext)
         {
-            var sort = args.Item;
-            if (sort == null) return;
+            if (entity.LayoutArea.PageWidgetSorts.Contains(entity))
+                entity.LayoutArea.PageWidgetSorts.Remove(entity);
+            if (entity.Webpage.PageWidgetSorts.Contains(entity))
+                entity.Webpage.PageWidgetSorts.Remove(entity);
+            if (entity.Widget.PageWidgetSorts.Contains(entity))
+                entity.Widget.PageWidgetSorts.Remove(entity);
 
-            if (sort.LayoutArea.PageWidgetSorts.Contains(sort))
-                sort.LayoutArea.PageWidgetSorts.Remove(sort);
-            if (sort.Webpage.PageWidgetSorts.Contains(sort))
-                sort.Webpage.PageWidgetSorts.Remove(sort);
-            if (sort.Widget.PageWidgetSorts.Contains(sort))
-                sort.Widget.PageWidgetSorts.Remove(sort);
+            return Success;
         }
     }
 }

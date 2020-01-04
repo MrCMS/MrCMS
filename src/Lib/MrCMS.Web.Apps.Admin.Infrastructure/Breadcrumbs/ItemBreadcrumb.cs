@@ -1,17 +1,18 @@
-﻿using MrCMS.Entities;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 {
     public abstract class ItemBreadcrumb<TParent, TItem> : Breadcrumb<TParent>
         where TItem : SystemEntity where TParent : Breadcrumb
     {
-        protected readonly ISession Session;
+        protected readonly IRepositoryBase<TItem> Repository;
 
-        protected ItemBreadcrumb(ISession session)
+        protected ItemBreadcrumb(IRepositoryBase<TItem> repository)
         {
-            Session = session;
+            Repository = repository;
         }
 
         public override string Controller => typeof(TItem).Name;
@@ -37,11 +38,11 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             return property.GetValue(item)?.ToString() ?? DefaultName();
         }
 
-        public override void Populate()
+        public override async Task Populate()
         {
             if (Id.HasValue)
             {
-                var item = Session.Get<TItem>(Id.Value);
+                var item = await Repository.GetData<TItem>(Id.Value);
                 Name = GetName(item);
             }
         }

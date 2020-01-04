@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
-using NHibernate;
+
 using NHibernate.Criterion;
 
 namespace MrCMS.Web.Apps.Admin.Services.Batching

@@ -1,26 +1,27 @@
-﻿using System.Web;
+﻿using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Website;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services.Auth
 {
     public class LogLockedOutUserAuthed : IOnLockedOutUserAuthed
     {
         private readonly SecuritySettings _securitySettings;
-        private readonly ISession _session;
+        private readonly IRepository<LoginAttempt> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LogLockedOutUserAuthed(SecuritySettings securitySettings, ISession session, IHttpContextAccessor httpContextAccessor)
+        public LogLockedOutUserAuthed(SecuritySettings securitySettings, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
         {
             _securitySettings = securitySettings;
-            _session = session;
+            _repository = repository;
             _httpContextAccessor = httpContextAccessor;
         }
-        public void Execute(UserLockedOutEventArgs args)
+        public async Task Execute(UserLockedOutEventArgs args)
         {
             if (!_securitySettings.LogLoginAttempts)
                 return;
@@ -33,7 +34,7 @@ namespace MrCMS.Services.Auth
                 IpAddress = request.GetCurrentIP(),
                 UserAgent = request.UserAgent()
             };
-            _session.Transact(session => session.Save(loginAttempt));
+            await _repository.Add(loginAttempt);
         }
     }
 }

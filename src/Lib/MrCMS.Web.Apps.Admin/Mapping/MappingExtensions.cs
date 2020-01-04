@@ -2,8 +2,8 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
+using MrCMS.Data;
 using MrCMS.Entities;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Mapping
 {
@@ -17,21 +17,21 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         {
             return expression
                 .ForMember(destinationEntity,
-                    configurationExpression =>
+                    configurationExpression => { configurationExpression.Ignore(); }).AfterMap(
+                    (source, destination, context) =>
                     {
-                        configurationExpression.Ignore();
-                    }).AfterMap((source, destination, context) =>
-                {
-                    if (condition != null && !condition.Compile()(source, destination))
-                    {
-                        return;
-                    }
-                    var session = context.Options.CreateInstance<ISession>();
-                    var entityPropertyInfo = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo;
-                    var idFunc = selector.Compile();
-                    var id = idFunc(source);
-                    entityPropertyInfo?.SetValue(destination, id == null ? null : session.Get<TEntity>(id));
-                });
+                        if (condition != null && !condition.Compile()(source, destination))
+                        {
+                            return;
+                        }
+
+                        var resolver = context.Options.CreateInstance<IRepositoryResolver>();
+                        var entityPropertyInfo = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo;
+                        var idFunc = selector.Compile();
+                        var id = idFunc(source);
+                        entityPropertyInfo?.SetValue(destination,
+                            id == null ? null : resolver.GetGlobalRepository<TEntity>().GetDataSync(id.Value));
+                    });
         }
     }
 }

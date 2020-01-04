@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Messages;
 
@@ -13,11 +14,11 @@ namespace MrCMS.Services
             _emailSender = emailSender;
         }
 
-        public void Queue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true)
+        public async Task Queue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true)
         {
             if (queuedMessage != null)
             {
-                _emailSender.AddToQueue(queuedMessage, attachments);
+                await _emailSender.AddToQueue(queuedMessage, attachments);
                 if (trySendImmediately)
                 {
                     _emailSender.SendMailMessage(queuedMessage);

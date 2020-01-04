@@ -1,15 +1,15 @@
 ﻿using System;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     internal class DeleteIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public DeleteIndicesTask(ISession session, IIndexService indexService, IServiceProvider serviceProvider)
-            : base(session, indexService, serviceProvider)
+        public DeleteIndicesTask(IDataReader reader, IIndexService indexService, IServiceProvider serviceProvider)
+            : base(reader, indexService, serviceProvider)
         {
         }
 

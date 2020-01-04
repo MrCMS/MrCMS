@@ -15,7 +15,7 @@ namespace MrCMS.Website
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
             await next();
-            _manager.ExecuteTasks();
+            await _manager.ExecuteTasks(context.HttpContext.RequestAborted);
         }
     }
 }

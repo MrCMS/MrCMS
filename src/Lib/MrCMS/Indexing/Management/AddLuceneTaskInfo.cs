@@ -1,4 +1,5 @@
 using MrCMS.DbConfiguration.Configuration;
+using MrCMS.Tasks;
 using MrCMS.Website;
 
 namespace MrCMS.Indexing.Management

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using MrCMS.Entities;
@@ -11,11 +12,11 @@ namespace MrCMS.Search
         void Insert(SystemEntity entity);
         void Update(SystemEntity entity);
         void Delete(SystemEntity entity);
-        void ReindexAll();
+        Task ReindexAll();
         void Optimise();
         IndexSearcher GetSearcher();
-        void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false);
-        
+        Task Write(Func<IndexWriter, Task> writeFunc, bool recreateIndex = false);
+
         void EnsureIndexExists();
         MrCMSIndex GetUniversalIndexInfo();
     }

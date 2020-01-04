@@ -23,23 +23,23 @@ namespace MrCMS.Services.Caching
         }
 
 
-        public IHtmlContent GetContent(Controller controller, CachingInfo cachingInfo,
-            Func<IHtmlHelper, IHtmlContent> func)
+        public Task<IHtmlContent> GetContent(Controller controller, CachingInfo cachingInfo,
+            Func<IHtmlHelper, Task<IHtmlContent>> func)
         {
             return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () => func(controller.GetHtmlHelper()),
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
-        public IHtmlContent GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func)
+        public Task<IHtmlContent> GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, Task<IHtmlContent>> func)
         {
             return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () => func(helper),
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
-        public IHtmlContent GetContent(IViewComponentHelper helper, CachingInfo cachingInfo, Func<IViewComponentHelper, Task<IHtmlContent>> func)
+        public Task<IHtmlContent> GetContent(IViewComponentHelper helper, CachingInfo cachingInfo, Func<IViewComponentHelper, Task<IHtmlContent>> func)
         {
-            return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () =>
+            return _cacheManager.GetOrCreate(cachingInfo.CacheKey, async () =>
                 {
-                    var htmlContent = func(helper).ExecuteSync();
+                    var htmlContent = await func(helper);
                     var stringBuilder = new StringBuilder();
                     TextWriter writer = new StringWriter(stringBuilder);
                     htmlContent.WriteTo(writer, HtmlEncoder.Default);

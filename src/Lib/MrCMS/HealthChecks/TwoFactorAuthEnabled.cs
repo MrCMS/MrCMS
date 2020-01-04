@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Settings;
 
 namespace MrCMS.HealthChecks
@@ -14,10 +15,10 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName => "2FA Enabled";
 
-        public override HealthCheckResult PerformCheck()
+        public override Task<HealthCheckResult> PerformCheck()
         {
 
-            return _settings.TwoFactorAuthEnabled
+            return Task.FromResult(_settings.TwoFactorAuthEnabled
                 ? HealthCheckResult.Success
                 : new HealthCheckResult
                 {
@@ -26,7 +27,7 @@ namespace MrCMS.HealthChecks
                     {
                         "2FA has not been enabled for this site."
                     }
-                };
+                });
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Models;
@@ -47,12 +48,12 @@ namespace MrCMS.Services
             return indexManagerBase;
         }
 
-        public void Reindex(string typeName)
+        public async Task Reindex(string typeName)
         {
             Type definitionType = TypeHelper.GetTypeByName(typeName);
             IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
-            indexManagerBase.ReIndex();
+            await indexManagerBase.ReIndex();
         }
 
         private Func<Type, IIndexManagerBase> DefaultGetIndexManager()

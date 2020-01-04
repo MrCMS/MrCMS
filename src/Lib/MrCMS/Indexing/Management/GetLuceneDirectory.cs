@@ -19,10 +19,10 @@ namespace MrCMS.Indexing.Management
         private static readonly ConcurrentDictionary<int, ConcurrentDictionary<string, Directory>> DirectoryCache =
             new ConcurrentDictionary<int, ConcurrentDictionary<string, Directory>>();
 
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public GetLuceneDirectory(
-            IHostingEnvironment hostingEnvironment
+            IWebHostEnvironment hostingEnvironment
             )
         {
             _hostingEnvironment = hostingEnvironment;

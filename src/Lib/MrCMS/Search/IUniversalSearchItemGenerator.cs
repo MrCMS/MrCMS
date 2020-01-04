@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using MrCMS.Entities;
 using MrCMS.Search.Models;
@@ -11,6 +12,6 @@ namespace MrCMS.Search
         UniversalSearchItem GenerateItem(SystemEntity entity);
         Document GenerateDocument(SystemEntity entity);
         Dictionary<SystemEntity, Document> GenerateDocuments(IEnumerable<SystemEntity> entities);
-        IEnumerable<Document> GetAllItems();
+        Task<IEnumerable<Document>> GetAllItems();
     }
 }

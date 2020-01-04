@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Helpers;
@@ -21,9 +22,10 @@ namespace MrCMS.Tasks
             _getPendingScheduledTasks = getPendingScheduledTasks;
         }
 
-        public void Trigger()
+        public async Task Trigger()
         {
-            _triggerUrls.Trigger(_getPendingScheduledTasks.GetTasks()
+            var tasks = await _getPendingScheduledTasks.GetTasks();
+            _triggerUrls.Trigger(tasks
                 .Select(task => _urlHelper.AbsoluteAction("ExecuteTask", "TaskExecution",
                     new RouteValueDictionary
                     {

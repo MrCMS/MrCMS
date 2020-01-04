@@ -1,38 +1,36 @@
-using System;
-using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Widget;
-using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class WidgetService : IWidgetService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Widget> _repository;
 
-        public WidgetService(ISession session)
+        public WidgetService(IRepository<Widget> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public T GetWidget<T>(int id) where T : Widget
+        public async Task<T> GetWidget<T>(int id) where T : Widget
         {
-            return _session.Get<T>(id);
+            return await _repository.Load<Widget, T>(id);
         }
 
-        public void SaveWidget(Widget widget)
+        public async Task SaveWidget(Widget widget)
         {
-            _session.Transact(session => session.SaveOrUpdate(widget));
+            await _repository.Update(widget);
         }
 
-        public void DeleteWidget(Widget widget)
+        public async Task DeleteWidget(Widget widget)
         {
-            _session.Transact(session => session.Delete(widget));
+            await _repository.Delete(widget);
         }
 
-        public Widget AddWidget(Widget widget)
+        public async Task<Widget> AddWidget(Widget widget)
         {
-            _session.Transact(session => session.SaveOrUpdate(widget));
+            await _repository.Add(widget);
             return widget;
         }
     }

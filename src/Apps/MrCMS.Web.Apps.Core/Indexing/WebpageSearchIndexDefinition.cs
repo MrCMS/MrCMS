@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Indexing.Management;
-using NHibernate;
 using System;
+using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Core.Indexing
 {
     public class WebpageSearchIndexDefinition : IndexDefinition<Webpage>
     {
-        public WebpageSearchIndexDefinition(ISession session,
-            IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
-            : base(session, hostingEnvironment, serviceProvider)
+        public WebpageSearchIndexDefinition(IRepository<Webpage> repository,
+            IWebHostEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+            : base(repository, hostingEnvironment, serviceProvider)
         {
         }
 

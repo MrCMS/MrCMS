@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MrCMS.Tasks
 {
     public interface ITaskExecutor
     {
-        BatchExecutionResult Execute(IList<AdHocTask> tasksToExecute);
-        BatchExecutionResult Execute(AdHocTask task);
+        Task<BatchExecutionResult> Execute(IList<AdHocTask> tasksToExecute, CancellationToken token);
+        Task<BatchExecutionResult> Execute(AdHocTask task, CancellationToken token);
     }
 }

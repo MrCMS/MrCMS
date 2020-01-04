@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
-using MrCMS.Services;
-using MrCMS.Website;
-using NHibernate;
-using NHibernate.Criterion;
+using MrCMS.Helpers;
+using MrCMS.Search;
 
 namespace MrCMS.Indexing.Management
 {
@@ -22,19 +24,19 @@ namespace MrCMS.Indexing.Management
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
         private readonly Site _site;
         private readonly TDefinition _definition;
-        private readonly IStatelessSession _statelessSession;
+        private readonly IRepositoryResolver _repositoryResolver;
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly IGetIndexResult _getIndexResult;
 
         public IndexManager(IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            Site site, TDefinition definition, IStatelessSession statelessSession, IGetLuceneDirectory getLuceneDirectory,
+            Site site, TDefinition definition, IRepositoryResolver repositoryResolver, IGetLuceneDirectory getLuceneDirectory,
             IGetIndexResult getIndexResult)
         {
             _getLuceneIndexWriter = getLuceneIndexWriter;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
             _site = site;
             _definition = definition;
-            _statelessSession = statelessSession;
+            _repositoryResolver = repositoryResolver;
             _getLuceneDirectory = getLuceneDirectory;
             _getIndexResult = getIndexResult;
         }
@@ -205,20 +207,34 @@ namespace MrCMS.Indexing.Management
             return _getIndexResult.GetResult(() => Write(writer => writer.DeleteDocuments(Definition.GetIndex(entity))));
         }
 
-        public IndexResult ReIndex()
+        public async Task<IndexResult> ReIndex()
         {
-            var criteria = _statelessSession.CreateCriteria(typeof(TEntity))
-                .Add(Restrictions.Eq("IsDeleted", false));
-            if (typeof(SiteEntity).IsAssignableFrom(typeof(TEntity)))
-                criteria.Add(Restrictions.Eq("Site.Id", _site.Id));
-            var entities = criteria.SetCacheable(true)
-                .List<TEntity>().ToList();
+            var siteMethod = TypeHelper.GetMethodExt(typeof(IndexManager<,>), nameof(LoadAllOfType));
+            var globalMethod = TypeHelper.GetMethodExt(typeof(IndexManager<,>), nameof(GlobalLoadAllOfType));
+            var type = typeof(TEntity);
+            var entities = new List<TEntity>();
+            if (typeof(SiteEntity).IsAssignableFrom(type))
+                entities.AddRange(
+                    await (Task<List<TEntity>>)siteMethod.MakeGenericMethod(type).Invoke(this, null)
+                );
+            else
+                entities.AddRange(
+                    await (Task<List<TEntity>>)globalMethod.MakeGenericMethod(type).Invoke(this, null)
+                );
             return _getIndexResult.GetResult(() => Write(writer =>
             {
                 foreach (Document document in Definition.ConvertAll(entities))
                     writer.AddDocument(document);
-                //writer.Optimize();
             }, true));
+        }
+
+        private Task<List<T>> LoadAllOfType<T>() where T : class, IHaveId, IHaveSite
+        {
+            return _repositoryResolver.GetRepository<T>().Readonly().ToListAsync();
+        }
+        private Task<List<T>> GlobalLoadAllOfType<T>() where T : class, IHaveId
+        {
+            return _repositoryResolver.GetGlobalRepository<T>().Readonly().ToListAsync();
         }
 
         public Document GetDocument(object entity)

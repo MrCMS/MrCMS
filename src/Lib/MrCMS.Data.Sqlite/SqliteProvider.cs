@@ -1,5 +1,6 @@
+using System;
 using System.ComponentModel;
-using FluentNHibernate.Cfg.Db;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrCMS.DbConfiguration;
 using MrCMS.Settings;
@@ -17,19 +18,25 @@ namespace MrCMS.Data.Sqlite
             _databaseSettings = databaseSettings;
         }
 
-        public IPersistenceConfigurer GetPersistenceConfigurer()
-        {
-            return
-                SQLiteConfiguration.Standard.ConnectionString(builder => builder.Is(_databaseSettings.Value.ConnectionString));
-        }
+        //public IPersistenceConfigurer GetPersistenceConfigurer()
+        //{
+        //    return
+        //        SQLiteConfiguration.Standard.ConnectionString(builder => builder.Is(_databaseSettings.Value.ConnectionString));
+        //}
 
-        public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
-        {
-        }
+        //public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
+        //{
+        //}
 
         public string Type
         {
             get { return GetType().FullName; }
         }
+
+        public void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
+        {
+            builder.UseSqlite(_databaseSettings.Value.ConnectionString);
+        }
     }
+
 }

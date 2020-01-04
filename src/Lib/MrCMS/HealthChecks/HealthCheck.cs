@@ -1,4 +1,5 @@
-﻿using MrCMS.Helpers;
+﻿using System.Threading.Tasks;
+using MrCMS.Helpers;
 
 namespace MrCMS.HealthChecks
 {
@@ -6,6 +7,6 @@ namespace MrCMS.HealthChecks
     {
         public virtual string DisplayName { get { return GetType().Name.BreakUpString(); } }
         public string TypeName { get { return GetType().FullName; } }
-        public abstract HealthCheckResult PerformCheck();
+        public abstract Task<HealthCheckResult> PerformCheck();
     }
 }

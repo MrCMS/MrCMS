@@ -2,24 +2,23 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Batching.Entities;
-using NHibernate;
+using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {
     public class BatchRunGuidModelBinder : IModelBinder
     {
-        public Task BindModelAsync(ModelBindingContext bindingContext)
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var id = Convert.ToString(bindingContext.ActionContext.RouteData.Values["id"]);
             if (Guid.TryParse(id, out var guid))
             {
-                bindingContext.Result = ModelBindingResult.Success(bindingContext.HttpContext.RequestServices
-                    .GetRequiredService<ISession>().Query<BatchRun>().FirstOrDefault(x => x.Guid == guid));
+                bindingContext.Result = ModelBindingResult.Success(await bindingContext.HttpContext.RequestServices
+                    .GetRequiredService<IRepository<BatchRun>>().Query().FirstOrDefaultAsync(x => x.Guid == guid));
             }
-
-            return Task.CompletedTask;
         }
     }
 }

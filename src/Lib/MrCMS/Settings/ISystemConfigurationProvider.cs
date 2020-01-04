@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Services.Caching;
 
 namespace MrCMS.Settings
@@ -7,7 +8,7 @@ namespace MrCMS.Settings
     {
         TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new();
         void SaveSettings(SystemSettingsBase settings);
-        void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new();
+        Task SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new();
         List<SystemSettingsBase> GetAllSystemSettings();
     }
 }

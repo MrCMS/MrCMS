@@ -1,40 +1,43 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.Testing.Values;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class ClearFormEntries : SchedulableTask
     {
+        private readonly IRepository<Form> _formRepository;
+        private readonly IRepository<FormPosting> _formPostingRepository;
         public override int Priority => 0;
-        private readonly ISession _session;
 
-        public ClearFormEntries(ISession session)
+        public ClearFormEntries(IRepository<Form> formRepository, IRepository<FormPosting> formPostingRepository)
         {
-            _session = session;
+            _formRepository = formRepository;
+            _formPostingRepository = formPostingRepository;
         }
-        
 
-        protected override void OnExecute()
+
+        protected override async Task OnExecute(CancellationToken token)
         {
-            var formsToCheck = _session.Query<Form>().Where(x => x.DeleteEntriesAfter != null).ToList();
+            var formsToCheck = await _formRepository.Query().Where(x => x.DeleteEntriesAfter != null).ToListAsync(token);
 
             var toDelete = new List<FormPosting>();
 
             foreach (var form in formsToCheck)
             {
                 var cutoffDate = DateTime.UtcNow.AddDays(-form.DeleteEntriesAfter.GetValueOrDefault());
-                toDelete.AddRange(_session.Query<FormPosting>()
+                toDelete.AddRange(_formPostingRepository.Query()
                     .Where(x => x.Form.Id == form.Id && x.CreatedOn < cutoffDate));
             }
 
             if (toDelete.Any())
             {
-                _session.Transact(session => toDelete.ForEach(session.Delete));
+                await _formPostingRepository.DeleteRange(toDelete, token);
             }
         }
     }

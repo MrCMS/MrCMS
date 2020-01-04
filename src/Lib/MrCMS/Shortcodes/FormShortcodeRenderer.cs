@@ -3,22 +3,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Shortcodes.Forms;
-using NHibernate;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using MrCMS.Data;
 using MrCMS.Helpers;
 
 namespace MrCMS.Shortcodes
 {
     public class FormShortcodeRenderer : IShortcodeRenderer
     {
+        private readonly IRepository<Form> _repository;
         private readonly IFormRenderer _formRenderer;
         private readonly IGetCurrentPage _getCurrentPage;
-        private readonly ISession _session;
 
-        public FormShortcodeRenderer(ISession session, IFormRenderer formRenderer, IGetCurrentPage getCurrentPage)
+        public FormShortcodeRenderer(IRepository<Form> repository, IFormRenderer formRenderer, IGetCurrentPage getCurrentPage)
         {
-            _session = session;
+            _repository = repository;
             _formRenderer = formRenderer;
             _getCurrentPage = getCurrentPage;
         }
@@ -37,7 +37,7 @@ namespace MrCMS.Shortcodes
                 return HtmlString.Empty;
             }
 
-            var form = _session.Get<Form>(id);
+            var form = _repository.GetDataSync(id);
             if (form == null)
             {
                 return HtmlString.Empty;

@@ -15,7 +15,7 @@ using MrCMS.Indexing.Utils;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models.Search;
-using NHibernate;
+
 using NHibernate.Criterion;
 using X.PagedList;
 using Document = MrCMS.Entities.Documents.Document;

@@ -1,13 +1,14 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Services
 {
     public interface IUserManagementService
     {
-        void AddUser(User user);
-        void SaveUser(User user);
-        User GetUser(int id);
-        void DeleteUser(int id);
-        bool IsUniqueEmail(string email, int? id = null);
+        Task AddUser(User user);
+        Task SaveUser(User user);
+        Task<User> GetUser(int id);
+        Task DeleteUser(int id);
+        Task<bool> IsUniqueEmail(string email, int? id = null);
     }
 }

@@ -1,39 +1,36 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-75)]
     public class CopyWebpages : ICloneSiteParts
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Webpage> _repository;
 
-        public CopyWebpages(ISession session)
+        public CopyWebpages(IGlobalRepository<Webpage> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            IEnumerable<Webpage> copies = GetWebpageCopies(@from, to, siteCloneContext).ToList();
+            var copies = GetWebpageCopies(@from, to, siteCloneContext).ToList();
 
-            _session.Transact(session => copies.ForEach(webpage => session.Save(webpage)));
+            await _repository.AddRange(copies);
         }
 
         private IEnumerable<Webpage> GetWebpageCopies(Site @from, Site to, SiteCloneContext siteCloneContext,
             Webpage fromParent = null,
             Webpage toParent = null)
         {
-            IQueryOver<Webpage, Webpage> queryOver =
-                _session.QueryOver<Webpage>().Where(webpage => webpage.Site.Id == @from.Id);
-            queryOver = fromParent == null
-                ? queryOver.Where(webpage => webpage.Parent == null)
-                : queryOver.Where(webpage => webpage.Parent.Id == fromParent.Id);
-            IList<Webpage> webpages = queryOver.List();
+            var parentId = fromParent?.Id;
+            var webpages = _repository.Query().Where(webpage => webpage.Site.Id == @from.Id && webpage.ParentId == parentId).ToList();
             foreach (Webpage webpage in webpages)
             {
                 Webpage copy = webpage.GetCopyForSite(to);

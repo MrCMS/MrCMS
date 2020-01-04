@@ -1,55 +1,43 @@
-using System;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using MrCMS.Batching;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services.WebsiteManagement
 {
     public class MoveWebpageBatchJobExecutor : BaseBatchJobExecutor<MoveWebpageBatchJob>
     {
-        private readonly ISession _session;
         private readonly INotificationDisabler _notificationDisabler;
+        private readonly IRepository<Webpage> _repository;
 
-        public MoveWebpageBatchJobExecutor(ISession session, INotificationDisabler notificationDisabler)
+        public MoveWebpageBatchJobExecutor(IRepository<Webpage> repository, INotificationDisabler notificationDisabler)
         {
-            _session = session;
+            _repository = repository;
             _notificationDisabler = notificationDisabler;
         }
 
-        protected override BatchJobExecutionResult OnExecute(MoveWebpageBatchJob batchJob)
+
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(MoveWebpageBatchJob batchJob,
+            CancellationToken token)
         {
             using (_notificationDisabler.Disable())
             {
-                var webpage = _session.Get<Webpage>(batchJob.WebpageId);
+                var webpage = await _repository.Load(batchJob.WebpageId);
                 if (webpage == null)
-                {
                     return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
-                }
 
-                var parent = batchJob.NewParentId.HasValue ? _session.Get<Webpage>(batchJob.NewParentId) : null;
+                var parent = batchJob.NewParentId.HasValue ? await _repository.Load(batchJob.NewParentId.Value) : null;
                 if (batchJob.NewParentId.HasValue && parent == null)
-                {
-                    return BatchJobExecutionResult.Failure("Could not find the parent webpage with id " + batchJob.NewParentId);
-                }
+                    return BatchJobExecutionResult.Failure("Could not find the parent webpage with id " +
+                                                           batchJob.NewParentId);
 
-                _session.Transact(session =>
-                {
-                    webpage.Parent = parent;
-                    session.Update(webpage);
-                });
+                webpage.Parent = parent;
+                await _repository.Update(webpage, token);
 
                 return BatchJobExecutionResult.Success();
             }
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(MoveWebpageBatchJob batchJob)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

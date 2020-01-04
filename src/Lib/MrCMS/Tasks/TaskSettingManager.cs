@@ -1,24 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Helpers;
 using MrCMS.Tasks.Entities;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class TaskSettingManager : ITaskSettingManager
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<TaskSettings> _repository;
 
-        public TaskSettingManager(ISession session)
+        public TaskSettingManager(IGlobalRepository<TaskSettings> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public IList<TaskInfo> GetInfo()
+        public async Task<IList<TaskInfo>> GetInfo()
         {
-            var allSettings = GetAllSettings();
+            var allSettings = await GetAllSettings();
             var types = TypeHelper.GetAllConcreteTypesAssignableFrom<SchedulableTask>();
 
             return types.Select(type =>
@@ -38,79 +40,78 @@ namespace MrCMS.Tasks
             }).ToList();
         }
 
-        public void StartTasks(List<TaskInfo> scheduledTasks, DateTime startTime)
+        public async Task StartTasks(List<TaskInfo> scheduledTasks, DateTime startTime)
         {
             foreach (var scheduledTask in scheduledTasks)
             {
-                Update(scheduledTask.Type, settings =>
+                await Update(scheduledTask.Type, async settings =>
                 {
                     settings.Status = TaskExecutionStatus.AwaitingExecution;
                     settings.LastStarted = startTime;
-                    Save(settings);
+                    await Save(settings);
                 });
             }
         }
 
-        public void SetStatus(Type type, TaskExecutionStatus status, Action<TaskSettings> action)
+        public async Task SetStatus(Type type, TaskExecutionStatus status, Action<TaskSettings> action)
         {
-            Update(type, taskSettings =>
-            {
-                taskSettings.Status = status;
-                action?.Invoke(taskSettings);
-                Save(taskSettings);
-            });
+            await Update(type, async taskSettings =>
+             {
+                 taskSettings.Status = status;
+                 action?.Invoke(taskSettings);
+                 await Save(taskSettings);
+             });
         }
 
-        public void Update(Type type, bool enabled, int frequencyInSeconds)
+        public async Task Update(Type type, bool enabled, int frequencyInSeconds)
         {
-            CreateIfDoesNotExist(type);
-            Update(type, taskSettings =>
+            await CreateIfDoesNotExist(type);
+            await Update(type, async taskSettings =>
             {
                 taskSettings.Enabled = enabled;
                 taskSettings.FrequencyInSeconds = frequencyInSeconds;
-                Save(taskSettings);
+                await Save(taskSettings);
             });
         }
 
-        private void CreateIfDoesNotExist(Type type)
+        private async Task CreateIfDoesNotExist(Type type)
         {
-            if (GetAllSettings().ContainsKey(type))
+            var allSettings = await GetAllSettings();
+            if (allSettings.ContainsKey(type))
                 return;
-            _session.Transact(session =>
-            {
-                session.Save(new TaskSettings { TypeName = type.FullName });
-            });
+            await _repository.Add(new TaskSettings { TypeName = type.FullName });
         }
 
-        public void Reset(Type type, bool resetLastCompleted)
+        public async Task Reset(Type type, bool resetLastCompleted)
         {
-            Update(type, taskSettings =>
-            {
-                if (resetLastCompleted)
-                    taskSettings.LastCompleted = null;
-                taskSettings.Status = TaskExecutionStatus.Pending;
-                Save(taskSettings);
-            });
+            await Update(type, async taskSettings =>
+             {
+                 if (resetLastCompleted)
+                     taskSettings.LastCompleted = null;
+                 taskSettings.Status = TaskExecutionStatus.Pending;
+                 await Save(taskSettings);
+             });
         }
 
-        private void Update(Type type, Action<TaskSettings> action)
+        private async Task Update(Type type, Func<TaskSettings, Task> action)
         {
-            var allSettings = GetAllSettings();
+            var allSettings = await GetAllSettings();
             if (!allSettings.ContainsKey(type))
                 return;
 
             var taskSettings = allSettings[type];
-            action(taskSettings);
+            await action(taskSettings);
         }
 
-        private void Save(TaskSettings taskSettings)
+        private async Task Save(TaskSettings taskSettings)
         {
-            _session.Transact(session => session.Update(taskSettings));
+            await _repository.Update(taskSettings);
         }
 
-        private Dictionary<Type, TaskSettings> GetAllSettings()
+        private async Task<Dictionary<Type, TaskSettings>> GetAllSettings()
         {
-            return _session.QueryOver<TaskSettings>().Cacheable().List().Where(x => x.Type != null)
+            var list = await _repository.Query().ToListAsync();
+            return list.Where(x => x.Type != null)
                 .ToDictionary(settings => settings.Type);
         }
     }

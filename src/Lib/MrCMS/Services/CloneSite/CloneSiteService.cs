@@ -1,40 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MrCMS.DbConfiguration;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     public class CloneSiteService : ICloneSiteService
     {
         private readonly IServiceProvider _kernel;
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Site> _repository;
 
-        public CloneSiteService(IServiceProvider kernel, ISession session)
+        public CloneSiteService(IServiceProvider kernel, IGlobalRepository<Site> repository)
         {
             _kernel = kernel;
-            _session = session;
+            _repository = repository;
         }
 
         public void CloneData(Site site, List<SiteCopyOption> options)
         {
-            using (new SiteFilterDisabler(_session))
+            var siteCopyOptionInfos =
+                options.Select(option => GetSiteCopyOptionInfo(option, _kernel))
+                    .Where(info => info != null)
+                    .OrderBy(x => x.Order);
+            var siteCloneContext = new SiteCloneContext();
+            foreach (var info in siteCopyOptionInfos)
             {
-                var siteCopyOptionInfos =
-                    options.Select(option => GetSiteCopyOptionInfo(option, _kernel))
-                        .Where(info => info != null)
-                        .OrderBy(x => x.Order);
-                var siteCloneContext = new SiteCloneContext();
-                foreach (var info in siteCopyOptionInfos)
-                {
-                    var @from = _session.Get<Site>(info.SiteId);
-                    if (@from == null)
-                        continue;
-                    info.CloneSiteParts.Clone(@from, site, siteCloneContext);
-                }
+                var @from = _repository.LoadSync(info.SiteId);
+                if (@from == null)
+                    continue;
+                info.CloneSiteParts.Clone(@from, site, siteCloneContext);
             }
         }
 

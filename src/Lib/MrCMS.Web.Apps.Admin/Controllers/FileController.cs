@@ -66,7 +66,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             {
                 mediaFile.Title = title;
                 mediaFile.Description = description;
-                _fileService.SaveFile(mediaFile);
+                _fileService.UpdateFile(mediaFile);
 
                 return "Changes saved";
             }
@@ -85,7 +85,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ActionName("Edit")]
         public ActionResult Edit_POST(MediaFile file)
         {
-            _fileService.SaveFile(file);
+            _fileService.UpdateFile(file);
 
             return file.MediaCategory != null
                 ? RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id})

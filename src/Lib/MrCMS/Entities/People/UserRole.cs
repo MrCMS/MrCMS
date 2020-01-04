@@ -12,7 +12,7 @@ namespace MrCMS.Entities.People
         {
             FrontEndWebpages = new HashSet<Webpage>();
             ACLRoles = new List<ACLRole>();
-            Users = new HashSet<User>();
+            UserToRoles = new List<UserToRole>();
         }
         public const string Administrator = "Administrator";
 
@@ -20,7 +20,7 @@ namespace MrCMS.Entities.People
         [DisplayName("Role Name")]
         public virtual string Name { get; set; }
 
-        public virtual ISet<User> Users { get; set; }
+        public virtual IList<UserToRole> UserToRoles { get; set; }
 
         public virtual bool IsAdmin { get { return Name == Administrator; } }
 

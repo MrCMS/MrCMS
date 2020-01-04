@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Website;
 
 namespace MrCMS.Tasks
@@ -7,10 +9,7 @@ namespace MrCMS.Tasks
     {
         public abstract int Priority { get; }
 
-        public void Execute()
-        {
-            OnExecute();
-        }
-        protected abstract void OnExecute();
+        public async Task Execute(CancellationToken token) => await OnExecute(token);
+        protected abstract Task OnExecute(CancellationToken token);
     }
 }

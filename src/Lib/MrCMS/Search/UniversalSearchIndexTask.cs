@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Services;
 using MrCMS.Tasks;
 using Newtonsoft.Json;
@@ -36,10 +38,11 @@ namespace MrCMS.Search
             UniversalSearchIndexData = JsonConvert.DeserializeObject<UniversalSearchIndexData>(data);
         }
 
-        protected override void OnExecute()
+        protected override Task OnExecute(CancellationToken token)
         {
             var datas = new List<UniversalSearchIndexData> { UniversalSearchIndexData };
             UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, datas, _eventContext);
+            return Task.CompletedTask;
         }
     }
 }

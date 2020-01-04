@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using MrCMS.Events;
 using MrCMS.Helpers;
@@ -39,7 +40,7 @@ namespace MrCMS.TestSupport
             }
         }
 
-        public void Publish(Type eventType, object args)
+        public Task Publish(Type eventType, object args)
         {
             if (typeof(ICoreEvent).IsAssignableFrom(eventType) || !FakeNonCoreEvents)
             {

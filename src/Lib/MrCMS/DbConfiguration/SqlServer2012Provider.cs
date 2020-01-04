@@ -1,5 +1,6 @@
+using System;
 using System.ComponentModel;
-using FluentNHibernate.Cfg.Db;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrCMS.Settings;
 
@@ -14,20 +15,13 @@ namespace MrCMS.DbConfiguration
         {
             _databaseSettings = databaseSettings;
         }
-
-        public IPersistenceConfigurer GetPersistenceConfigurer()
-        {
-            return MsSqlConfiguration.MsSql2012.ConnectionString(x => x.Is(_databaseSettings.Value.ConnectionString));
-        }
-
-        public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
-        {
-            SqlServerGuidHelper.SetGuidToUniqueWithDefaultValue(config);
-        }
-
         public string Type
         {
             get { return GetType().FullName; }
+        }
+        public void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
+        {
+            builder.UseSqlServer(_databaseSettings.Value.ConnectionString);
         }
     }
 }

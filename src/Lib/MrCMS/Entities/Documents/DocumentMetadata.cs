@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MrCMS.Helpers;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using NHibernate;
 
 namespace MrCMS.Entities.Documents
 {

@@ -1,23 +1,23 @@
 using System.Collections.Generic;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class GetBreadcrumbs : IGetBreadcrumbs
     {
-        private readonly ISession _session;
+        private readonly IRepository<Document> _repository;
 
-        public GetBreadcrumbs(ISession session)
+        public GetBreadcrumbs(IRepository<Document> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public IEnumerable<Document> Get(int? parent)
         {
-            if (parent > 0)
+            if (parent.HasValue)
             {
-                var document = _session.Get<Document>(parent);
+                var document = _repository.LoadSync(parent.Value);
                 while (document != null)
                 {
                     yield return document;

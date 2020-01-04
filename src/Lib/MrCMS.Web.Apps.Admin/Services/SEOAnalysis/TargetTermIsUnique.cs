@@ -3,7 +3,7 @@ using System.Linq;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Models.SEOAnalysis;
-using NHibernate;
+
 using NHibernate.Criterion;
 
 namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis

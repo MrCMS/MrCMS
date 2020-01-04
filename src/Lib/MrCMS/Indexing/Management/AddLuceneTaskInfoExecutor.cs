@@ -1,37 +1,33 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.DbConfiguration.Configuration;
-using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Tasks;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Indexing.Management
 {
     public class AddLuceneTaskInfoExecutor : ExecuteEndRequestBase<AddLuceneTaskInfo, QueuedTaskInfo>
     {
-        private readonly ISession _session;
+        private readonly IRepository<QueuedTask> _repository;
 
-        public AddLuceneTaskInfoExecutor(ISession session)
+        public AddLuceneTaskInfoExecutor(IRepository<QueuedTask> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public override void Execute(IEnumerable<QueuedTaskInfo> data)
+        public override Task Execute(IEnumerable<QueuedTaskInfo> data, CancellationToken token)
         {
-            _session.Transact(session =>
-            {
-                foreach (var queuedTaskInfo in data)
+            return _repository.AddRange(data.Select(queuedTaskInfo =>
+                new QueuedTask
                 {
-                    session.Save(new QueuedTask
-                    {
-                        Data = queuedTaskInfo.Data,
-                        Type = queuedTaskInfo.Type.FullName,
-                        Status = TaskExecutionStatus.Pending,
-                        Site = _session.Get<Site>(queuedTaskInfo.SiteId)
-                    });
-                }
-            });
+                    Data = queuedTaskInfo.Data,
+                    Type = queuedTaskInfo.Type.FullName,
+                    Status = TaskExecutionStatus.Pending,
+                    SiteId = queuedTaskInfo.SiteId
+                }).ToList(), token);
         }
     }
 }

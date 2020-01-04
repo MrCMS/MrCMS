@@ -1,10 +1,14 @@
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
 
 namespace MrCMS.Events.Documents
 {
-    public class MarkWebpageAsUnpublished : IOnUpdating<Webpage>
+    public class MarkWebpageAsUnpublished : OnDataUpdating<Webpage>
     {
         private readonly IGetDateTimeNow _getDateTimeNow;
 
@@ -13,14 +17,15 @@ namespace MrCMS.Events.Documents
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public void Execute(OnUpdatingArgs<Webpage> args)
+        public override Task<IResult> OnUpdating(Webpage entity, DbContext context)
         {
             var now = _getDateTimeNow.UtcNow;
-            var webpage = args.Item;
-            if (webpage.Published && (webpage.PublishOn == null || webpage.PublishOn.Value.ToUniversalTime() > now))
+            if (entity.Published && (entity.PublishOn == null || entity.PublishOn.Value.ToUniversalTime() > now))
             {
-                webpage.Published = false;
+                entity.Published = false;
             }
+
+            return Success;
         }
     }
 }

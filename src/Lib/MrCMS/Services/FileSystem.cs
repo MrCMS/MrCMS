@@ -7,10 +7,10 @@ namespace MrCMS.Services
 {
     public class FileSystem : IFileSystem
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         public const string MediaDirectory = "/content/upload/";
 
-        public FileSystem(IHostingEnvironment hostingEnvironment)
+        public FileSystem(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Index;
 using MrCMS.Search;
 using MrCMS.Services;
@@ -8,7 +9,7 @@ namespace MrCMS.Tasks
 {
     public static class UniversalSearchActionExecutor
     {
-        public static void PerformActions(IUniversalSearchIndexManager universalSearchIndexManager,
+        public static async Task PerformActions(IUniversalSearchIndexManager universalSearchIndexManager,
             ISearchConverter searchConverter, List<UniversalSearchIndexData> searchIndexDatas,
             IEventContext eventContext)
         {
@@ -24,15 +25,16 @@ namespace MrCMS.Tasks
                     searchIndexDatas.Where(data => data.Action == UniversalSearchIndexAction.Update).ToList();
                 List<UniversalSearchIndexData> toDelete =
                     searchIndexDatas.Where(data => data.Action == UniversalSearchIndexAction.Delete).ToList();
-                universalSearchIndexManager.Write(writer =>
-                {
-                    foreach (UniversalSearchIndexData indexData in toAdd)
-                        writer.AddDocument(searchConverter.Convert(indexData.UniversalSearchItem));
-                    foreach (UniversalSearchIndexData indexData in toUpdate)
-                        writer.UpdateDocument(GetTerm(indexData), searchConverter.Convert(indexData.UniversalSearchItem));
-                    foreach (UniversalSearchIndexData indexData in toDelete)
-                        writer.DeleteDocuments(GetTerm(indexData));
-                });
+                await universalSearchIndexManager.Write(writer =>
+                 {
+                     foreach (UniversalSearchIndexData indexData in toAdd)
+                         writer.AddDocument(searchConverter.Convert(indexData.UniversalSearchItem));
+                     foreach (UniversalSearchIndexData indexData in toUpdate)
+                         writer.UpdateDocument(GetTerm(indexData), searchConverter.Convert(indexData.UniversalSearchItem));
+                     foreach (UniversalSearchIndexData indexData in toDelete)
+                         writer.DeleteDocuments(GetTerm(indexData));
+                     return Task.CompletedTask;
+                 });
             }
         }
 

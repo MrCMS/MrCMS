@@ -14,7 +14,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             int mediaCategoryId);
 
         void DeleteFile(MediaFile mediaFile);
-        void SaveFile(MediaFile mediaFile);
+        void AddFile(MediaFile mediaFile);
+        void UpdateFile(MediaFile mediaFile);
         bool IsValidFileType(string fileName);
         IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
         List<ImageSortItem> GetFilesToSort(MediaCategory category = null);

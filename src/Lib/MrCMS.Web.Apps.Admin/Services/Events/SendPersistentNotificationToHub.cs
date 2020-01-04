@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using MrCMS.Entities.Notifications;
 using MrCMS.Services.Notifications;
@@ -15,7 +16,7 @@ namespace MrCMS.Web.Apps.Admin.Services.Events
         {
             _hubContext = hubContext;
         }
-        public void Execute(OnPersistentNotificationPublishedEventArgs args)
+        public Task Execute(OnPersistentNotificationPublishedEventArgs args)
         {
             var notification = args.Notification;
             var model = new NotificationModel { Message = notification.Message, DateValue = notification.CreatedOn };

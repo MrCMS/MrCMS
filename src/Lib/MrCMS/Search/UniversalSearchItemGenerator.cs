@@ -1,13 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Search.Models;
-using NHibernate;
-using NHibernate.Criterion;
 
 namespace MrCMS.Search
 {
@@ -16,7 +19,7 @@ namespace MrCMS.Search
         public static readonly Dictionary<Type, Type> GetUniversalSearchItemTypes;
         private readonly IServiceProvider _serviceProvider;
         private readonly ISearchConverter _searchConverter;
-        private readonly IStatelessSession _session;
+        private readonly IRepositoryResolver _repositoryResolver;
         private readonly Site _site;
 
         static UniversalSearchItemGenerator()
@@ -45,12 +48,13 @@ namespace MrCMS.Search
             }
         }
 
-        public UniversalSearchItemGenerator(IServiceProvider serviceProvider, ISearchConverter searchConverter, IStatelessSession session,
+        public UniversalSearchItemGenerator(IServiceProvider serviceProvider, ISearchConverter searchConverter,
+            IRepositoryResolver repositoryResolver,
             Site site)
         {
             _serviceProvider = serviceProvider;
             _searchConverter = searchConverter;
-            _session = session;
+            _repositoryResolver = repositoryResolver;
             _site = site;
         }
 
@@ -117,33 +121,44 @@ namespace MrCMS.Search
             return documents;
         }
 
-        public IEnumerable<Document> GetAllItems()
+        public async Task<IEnumerable<Document>> GetAllItems()
         {
+            var siteMethod = TypeHelper.GetMethodExt(typeof(UniversalSearchItemGenerator), nameof(LoadAllOfType));
+            var globalMethod = TypeHelper.GetMethodExt(typeof(UniversalSearchItemGenerator), nameof(GlobalLoadAllOfType));
+            var docs = new List<Document>();
             foreach (var universalSearchItemType in GetUniversalSearchItemTypes.Keys.OrderByDescending(type =>
                 type.FullName))
-                //using (MiniProfiler.Current.Step("Getting " + universalSearchItemType.FullName))
+            //using (MiniProfiler.Current.Step("Getting " + universalSearchItemType.FullName))
+            {
+                var objects = new HashSet<object>();
+                //using (MiniProfiler.Current.Step("Loading objects " + universalSearchItemType.Name))
                 {
-                    var objects = new HashSet<object>();
-                    //using (MiniProfiler.Current.Step("Loading objects " + universalSearchItemType.Name))
-                    {
-                        var type = universalSearchItemType;
-                        var criteria = _session.CreateCriteria(universalSearchItemType);
-                        if (typeof(SiteEntity).IsAssignableFrom(type))
-                            criteria = criteria.Add(Restrictions.Eq("Site.Id", _site.Id));
+                    var type = universalSearchItemType;
+                    if (typeof(SiteEntity).IsAssignableFrom(type))
                         objects.AddRange(
-                            criteria
-                                .Add(Restrictions.Eq("IsDeleted", false))
-                                .SetCacheable(true)
-                                .List()
-                                .Cast<object>()
-                                .Where(o => o.GetType() == type));
-                    }
-
-                    foreach (
-                        var generateDocument in
-                        GenerateDocuments(objects.OfType<SystemEntity>().ToHashSet(), universalSearchItemType))
-                        yield return generateDocument;
+                            (await (Task<IEnumerable>)siteMethod.MakeGenericMethod(universalSearchItemType).Invoke(this, null))
+                            .Cast<object>()
+                        );
+                    else
+                        objects.AddRange(
+                            (await (Task<IEnumerable>)globalMethod.MakeGenericMethod(universalSearchItemType).Invoke(this, null))
+                            .Cast<object>()
+                        );
                 }
+
+                docs.AddRange(GenerateDocuments(objects.OfType<SystemEntity>().ToHashSet(), universalSearchItemType));
+            }
+
+            return docs;
+        }
+
+        private async Task<IEnumerable<T>> LoadAllOfType<T>() where T : class, IHaveId, IHaveSite
+        {
+            return await _repositoryResolver.GetRepository<T>().Readonly().ToListAsync();
+        }
+        private async Task<IEnumerable<T>> GlobalLoadAllOfType<T>() where T : class, IHaveId
+        {
+            return await _repositoryResolver.GetGlobalRepository<T>().Readonly().ToListAsync();
         }
 
         private HashSet<Document> GenerateDocuments(HashSet<SystemEntity> entities, Type type)

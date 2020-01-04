@@ -4,7 +4,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services

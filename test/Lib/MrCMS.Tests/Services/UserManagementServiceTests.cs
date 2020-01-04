@@ -5,7 +5,7 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.TestSupport;
-using NHibernate;
+
 using Xunit;
 
 namespace MrCMS.Tests.Services

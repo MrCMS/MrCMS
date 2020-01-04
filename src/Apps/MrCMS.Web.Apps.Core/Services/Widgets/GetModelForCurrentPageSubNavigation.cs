@@ -7,19 +7,19 @@ using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
 using System.Collections.Generic;
 using System.Linq;
-using ISession = NHibernate.ISession;
+using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
 {
     public class GetModelForCurrentPageSubNavigation : GetWidgetModelBase<CurrentPageSubNavigation>
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
         private readonly IGetCurrentPage _getCurrentPage;
         private readonly IGetLiveUrl _getLiveUrl;
 
-        public GetModelForCurrentPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage, IGetLiveUrl getLiveUrl)
+        public GetModelForCurrentPageSubNavigation(IRepository<Webpage> repository, IGetCurrentPage getCurrentPage, IGetLiveUrl getLiveUrl)
         {
-            _session = session;
+            _repository = repository;
             _getCurrentPage = getCurrentPage;
             _getLiveUrl = getLiveUrl;
         }
@@ -53,7 +53,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
 
         private IEnumerable<Webpage> GetPublishedChildWebpages(int parentId)
         {
-            return _session.QueryOver<Webpage>()
+            return _repository.Readonly()
                 .Where(
                     webpage =>
                         webpage.Parent.Id == parentId && webpage.RevealInNavigation)

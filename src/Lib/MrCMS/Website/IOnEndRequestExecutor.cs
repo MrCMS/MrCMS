@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
     public interface IOnEndRequestExecutor
     {
-        void ExecuteTasks(HashSet<EndRequestTask> tasks);
+        Task ExecuteTasks(HashSet<EndRequestTask> tasks, CancellationToken token);
     }
 }

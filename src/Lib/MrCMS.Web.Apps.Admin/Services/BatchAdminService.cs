@@ -2,7 +2,7 @@ using System.Linq;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services

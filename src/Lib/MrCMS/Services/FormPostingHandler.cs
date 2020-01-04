@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Messaging;
@@ -12,22 +14,33 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services
 {
     public class FormPostingHandler : IFormPostingHandler
     {
         private readonly MailSettings _mailSettings;
+        private readonly IRepository<Form> _formRepository;
+        private readonly IRepository<FormPosting> _formPostingRepository;
+        private readonly IRepository<FormValue> _formValueRepository;
+        private readonly IRepository<QueuedMessage> _queuedMessageRepository;
         private readonly ISaveFormFileUpload _saveFormFileUpload;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ISession _session;
 
         public const string GDPRConsent = nameof(GDPRConsent);
 
-        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor)
+        public FormPostingHandler(
+            IRepository<Form> formRepository,
+            IRepository<FormPosting> formPostingRepository,
+            IRepository<FormValue> formValueRepository,
+            IRepository<QueuedMessage> queuedMessageRepository,
+
+            MailSettings mailSettings, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor)
         {
-            _session = session;
+            _formRepository = formRepository;
+            _formPostingRepository = formPostingRepository;
+            _formValueRepository = formValueRepository;
+            _queuedMessageRepository = queuedMessageRepository;
             _saveFormFileUpload = saveFormFileUpload;
             _contextAccessor = contextAccessor;
             _mailSettings = mailSettings;
@@ -35,10 +48,10 @@ namespace MrCMS.Services
 
         public Form GetForm(int id)
         {
-            return _session.Get<Form>(id);
+            return _formRepository.LoadSync(id);
         }
 
-        public List<string> SaveFormData(Form form, HttpRequest request)
+        public async Task<List<string>> SaveFormData(Form form, HttpRequest request)
         {
             var formProperties = form.FormProperties;
 
@@ -47,80 +60,77 @@ namespace MrCMS.Services
             {
                 var files = new List<IFormFile>();
                 var formPosting = new FormPosting { Form = form };
-                _session.Transact(session =>
-                {
-                    form.FormPostings.Add(formPosting);
-                    session.SaveOrUpdate(formPosting);
-                });
-                _session.Transact(session =>
-                {
-                    foreach (var formProperty in formProperties)
-                    {
-                        try
-                        {
-                            if (formProperty is FileUpload)
-                            {
-                                var file = request.Form.Files[formProperty.Name];
+                form.FormPostings.Add(formPosting);
+                await _formPostingRepository.Add(formPosting);
+                await _formValueRepository.Transact(async (repo, ct) =>
+                 {
+                     foreach (var formProperty in formProperties)
+                     {
+                         try
+                         {
+                             if (formProperty is FileUpload)
+                             {
+                                 var file = request.Form.Files[formProperty.Name];
 
-                                if (file == null && formProperty.Required)
-                                    throw new RequiredFieldException("No file was attached to the " +
-                                                                     formProperty.Name + " field");
+                                 if (file == null && formProperty.Required)
+                                     throw new RequiredFieldException("No file was attached to the " +
+                                                                      formProperty.Name + " field");
 
-                                files.Add(file);
+                                 files.Add(file);
 
-                                if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
-                                {
-                                    var value = _saveFormFileUpload.SaveFile(form, formPosting, file);
+                                 if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
+                                 {
+                                     var value = await _saveFormFileUpload.SaveFile(form, formPosting, file);
 
-                                    formPosting.FormValues.Add(new FormValue
-                                    {
-                                        Key = formProperty.Name,
-                                        Value = value,
-                                        IsFile = true,
-                                        FormPosting = formPosting
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
+                                     formPosting.FormValues.Add(new FormValue
+                                     {
+                                         Key = formProperty.Name,
+                                         Value = value,
+                                         IsFile = true,
+                                         FormPosting = formPosting
+                                     });
+                                 }
+                             }
+                             else
+                             {
+                                 var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
 
-                                if (string.IsNullOrWhiteSpace(value) && formProperty.Required)
-                                    throw new RequiredFieldException("No value was posted for the " +
-                                                                     formProperty.Name + " field");
+                                 if (string.IsNullOrWhiteSpace(value) && formProperty.Required)
+                                     throw new RequiredFieldException("No value was posted for the " +
+                                                                      formProperty.Name + " field");
 
-                                formPosting.FormValues.Add(new FormValue
-                                {
-                                    Key = formProperty.Name,
-                                    Value = value,
-                                    FormPosting = formPosting
-                                });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            errors.Add(ex.Message);
-                        }
-                    }
+                                 formPosting.FormValues.Add(new FormValue
+                                 {
+                                     Key = formProperty.Name,
+                                     Value = value,
+                                     FormPosting = formPosting
+                                 });
+                             }
+                         }
+                         catch (Exception ex)
+                         {
+                             errors.Add(ex.Message);
+                         }
+                     }
 
-                    if (form.ShowGDPRConsentBox)
-                    {
-                        var value = SanitizeValue(null, request.Form[GDPRConsent]);
-                        if (string.IsNullOrWhiteSpace(value))
-                            errors.Add("GDPR consent is required");
-                    }
+                     if (form.ShowGDPRConsentBox)
+                     {
+                         var value = SanitizeValue(null, request.Form[GDPRConsent]);
+                         if (string.IsNullOrWhiteSpace(value))
+                             errors.Add("GDPR consent is required");
+                     }
 
-                    if (errors.Any())
-                    {
-                        session.Delete(formPosting);
-                    }
-                    else
-                    {
-                        foreach (var value in formPosting.FormValues) session.Save(value);
+                     if (errors.Any())
+                     {
+                         await _formPostingRepository.Delete(formPosting);
+                     }
+                     else
+                     {
+                         await repo.AddRange(formPosting.FormValues);
 
-                        SendFormMessages(form, formPosting, files);
-                    }
-                });
+                         await SendFormMessages(form, formPosting, files);
+                     }
+                 });
             }
             else
             {
@@ -164,13 +174,13 @@ namespace MrCMS.Services
                 if (form.ShowGDPRConsentBox)
                 {
                     var value = SanitizeValue(null, request.Form[GDPRConsent]);
-                    if  (string.IsNullOrWhiteSpace(value))
+                    if (string.IsNullOrWhiteSpace(value))
                         errors.Add("GDPR consent is required");
                 }
 
                 if (!errors.Any())
                 {
-                    SendFormMessages(form, new FormPosting { FormValues = values }, files);
+                    await SendFormMessages(form, new FormPosting { FormValues = values }, files);
                 }
             }
 
@@ -199,13 +209,13 @@ namespace MrCMS.Services
             return value;
         }
 
-        private void SendFormMessages(Form form, FormPosting formPosting, List<IFormFile> files)
+        private async Task SendFormMessages(Form form, FormPosting formPosting, List<IFormFile> files)
         {
             if (form.SendFormTo == null) return;
 
             var sendTo = form.SendFormTo.Split(',');
             if (sendTo.Any())
-                _session.Transact(session =>
+                await _queuedMessageRepository.Transact(async (repo, ct) =>
                 {
                     foreach (var email in sendTo)
                     {
@@ -214,7 +224,7 @@ namespace MrCMS.Services
                         var formTitle = ParseFormMessage(form.FormEmailTitle, form,
                             formPosting);
 
-                        session.Save(new QueuedMessage
+                        await repo.Add(new QueuedMessage
                         {
                             Subject = formTitle,
                             Body = formMessage,
@@ -228,7 +238,7 @@ namespace MrCMS.Services
                                 FileSize = x.Length,
                                 FileName = x.FileName,
                             }).ToList()
-                        });
+                        }, ct);
                     }
                 });
         }

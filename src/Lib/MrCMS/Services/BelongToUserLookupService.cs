@@ -1,37 +1,28 @@
 using System.Collections.Generic;
+using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Criterion;
-using X.PagedList;
 
 namespace MrCMS.Services
 {
     public class BelongToUserLookupService : IBelongToUserLookupService
     {
-        private readonly ISession _session;
+        private readonly IRepositoryResolver _repositoryResolver;
 
-        public BelongToUserLookupService(ISession session)
+        public BelongToUserLookupService( IRepositoryResolver repositoryResolver)
         {
-            _session = session;
+            _repositoryResolver = repositoryResolver;
         }
 
         public T Get<T>(User user) where T : SystemEntity, IBelongToUser
         {
-            return _session.QueryOver<T>().Where(arg => arg.User == user).Take(1).Cacheable().SingleOrDefault();
+            return _repositoryResolver.GetGlobalRepository<T>().Query().FirstOrDefault(arg => arg.User == user);
         }
 
         public IList<T> GetAll<T>(User user) where T : SystemEntity, IBelongToUser
         {
-            return _session.QueryOver<T>().Where(arg => arg.User == user).Cacheable().List();
+            return _repositoryResolver.GetGlobalRepository<T>().Query().Where(arg => arg.User == user).ToList();
         }
-
-        public IPagedList<T> GetPaged<T>(User user, QueryOver<T> query = null, int page = 1)
-            where T : SystemEntity, IBelongToUser
-        {
-            return _session.Paged(query ?? QueryOver.Of<T>(), page);
-        }
-
     }
 }

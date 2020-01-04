@@ -5,9 +5,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Events;
 using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Cfg;
-using NHibernate.Tool.hbm2ddl;
+
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -27,11 +25,12 @@ namespace MrCMS.TestSupport
                 lock (lockObject)
                 {
                     var assemblies = new List<Assembly> { typeof(InMemoryDatabaseTest).Assembly };
-                    var configurator = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
-                    {
-                        ManuallyAddedAssemblies = assemblies
-                    };
-                    Configuration = configurator.GetConfiguration();
+                    //var configurator = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
+                    //{
+                    //    ManuallyAddedAssemblies = assemblies
+                    //};
+                    //Configuration = configurator.GetConfiguration();
+                    // todo - work with ef
 
                     SessionFactory = Configuration.BuildSessionFactory();
                 }

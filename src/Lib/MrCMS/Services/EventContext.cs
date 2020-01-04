@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Events;
 using MrCMS.Helpers;
-using NHibernate.Util;
 
 namespace MrCMS.Services
 {
@@ -40,12 +40,12 @@ namespace MrCMS.Services
             get { return _disabledEvents; }
         }
 
-        public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
+        public Task Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
         {
-            Publish(typeof (TEvent), args);
+            return Publish(typeof (TEvent), args);
         }
 
-        public void Publish(Type eventType, object args)
+        public async Task Publish(Type eventType, object args)
         {
             //using (MiniProfiler.Current.Step("Publishing " + eventType.FullName))
             {
@@ -55,7 +55,7 @@ namespace MrCMS.Services
                     {
                         MethodInfo methodInfo = type.GetMethod("Execute", new[] {args.GetType()});
                         var instance = _serviceProvider.GetRequiredService(type);
-                        methodInfo.Invoke(instance, new[] {args});
+                        await (Task)methodInfo.Invoke(instance, new[] {args});
                     }
                 }
             }

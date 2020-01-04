@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
@@ -21,10 +22,11 @@ namespace MrCMS.Services
             _site = site;
         }
 
-        public QueuedMessage GetMessage(string fromAddress = null, string fromName = null, string toAddress = null,
+        public async Task<QueuedMessage> GetMessage(string fromAddress = null, string fromName = null,
+            string toAddress = null,
             string toName = null, string cc = null, string bcc = null)
         {
-            var template = _messageTemplateProvider.GetMessageTemplate<T>(_site);
+            var template = await _messageTemplateProvider.GetMessageTemplate<T>(_site);
             if (template == null || template.IsDisabled)
                 return null;
 
@@ -42,9 +44,10 @@ namespace MrCMS.Services
             };
         }
 
-        public void QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true)
+        public async Task QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null,
+            bool trySendImmediately = true)
         {
-            _queueMessage.Queue(queuedMessage, attachments, trySendImmediately);
+            await _queueMessage.Queue(queuedMessage, attachments, trySendImmediately);
         }
     }
 
@@ -64,10 +67,10 @@ namespace MrCMS.Services
             _queueMessage = queueMessage;
         }
 
-        public QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null,
+        public async Task<QueuedMessage> GetMessage(T2 obj, string fromAddress = null, string fromName = null,
             string toAddress = null, string toName = null, string cc = null, string bcc = null)
         {
-            var template = _messageTemplateProvider.GetMessageTemplate<T>(_site);
+            var template = await _messageTemplateProvider.GetMessageTemplate<T>(_site);
             if (template == null)
                 return null;
 
@@ -85,9 +88,10 @@ namespace MrCMS.Services
             };
         }
 
-        public void QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true)
+        public async Task QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null,
+            bool trySendImmediately = true)
         {
-            _queueMessage.Queue(queuedMessage, attachments, trySendImmediately);
+            await _queueMessage.Queue(queuedMessage, attachments, trySendImmediately);
         }
     }
 }

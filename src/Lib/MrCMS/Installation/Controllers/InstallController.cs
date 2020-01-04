@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using MrCMS.DbConfiguration;
@@ -35,7 +36,7 @@ namespace MrCMS.Installation.Controllers
                     SiteUrl = Request.Host.ToString(),
                     AdminEmail = "admin@yoursite.com",
                     DatabaseConnectionString = "",
-                    DatabaseProvider = typeof(SqlServer2012Provider).FullName,
+                    //DatabaseProvider = typeof(SqlServer2012Provider).FullName,
                     SqlAuthenticationType = SqlAuthenticationType.SQL,
                     SqlConnectionInfo = SqlConnectionInfo.Values,
                     SqlServerCreateDatabase = false,
@@ -47,9 +48,9 @@ namespace MrCMS.Installation.Controllers
         }
 
         [HttpPost]
-        public IActionResult Setup(InstallModel installModel)
+        public async Task<IActionResult> Setup(InstallModel installModel)
         {
-            var installationResult = _installationService.Install(installModel);
+            var installationResult =await _installationService.Install(installModel);
 
             if (!installationResult.Success)
             {

@@ -5,7 +5,7 @@ using FluentAssertions;
 using Iesi.Collections.Generic;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using NHibernate;
+
 using Xunit;
 using MrCMS.Helpers;
 using MrCMS.TestSupport;

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Tasks;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
@@ -23,10 +22,11 @@ namespace MrCMS.HealthChecks
             get { return "Task Runner"; }
         }
 
-        public override HealthCheckResult PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
             var nowForSite = _getDateTimeNow.LocalNow;
-            var tasks = _taskSettingManager.GetInfo()
+            var info =await _taskSettingManager.GetInfo();
+            var tasks = info
                         .ToList()
                         .Where(x => x.Enabled &&
                             (!x.LastCompleted.HasValue || x.LastCompleted.Value <= nowForSite.AddSeconds(-(x.FrequencyInSeconds + 120))));

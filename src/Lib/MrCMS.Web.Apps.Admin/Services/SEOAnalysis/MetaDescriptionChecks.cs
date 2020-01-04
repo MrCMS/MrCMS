@@ -6,7 +6,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.Models.SEOAnalysis;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {

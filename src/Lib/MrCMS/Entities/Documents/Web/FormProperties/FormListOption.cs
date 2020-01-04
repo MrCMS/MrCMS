@@ -1,6 +1,7 @@
-using NHibernate;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 
 namespace MrCMS.Entities.Documents.Web.FormProperties
 {
@@ -11,17 +12,18 @@ namespace MrCMS.Entities.Documents.Web.FormProperties
         public virtual string Value { get; set; }
         public virtual bool Selected { get; set; }
 
-        public virtual void OnSaving(ISession session)
+        public virtual async Task OnSaving(IRepository<FormListOption> repository)
         {
+            var otherOptions = FormProperty.Options.Except(new[] { this }).ToList();
             if (Selected && FormProperty.OnlyOneOptionSelectable)
             {
-                foreach (var option in FormProperty.Options.Except(new[] { this }))
+                foreach (var option in otherOptions)
                 {
                     option.Selected = false;
-                    session.Update(option);
                 }
+                await repository.UpdateRange(otherOptions);
             }
-            else if (FormProperty.OnlyOneOptionSelectable && !FormProperty.Options.Except(new[] { this }).Any())
+            else if (FormProperty.OnlyOneOptionSelectable && !otherOptions.Any())
             {
                 Selected = true;
             }

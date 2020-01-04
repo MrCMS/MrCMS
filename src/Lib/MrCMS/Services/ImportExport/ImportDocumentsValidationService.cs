@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -47,18 +48,18 @@ namespace MrCMS.Services.ImportExport
         /// Parse and Import to DTOs
         /// </summary>
         /// <param name="spreadsheet"></param>
-        /// <param name="parseErrors"></param>
         /// <returns></returns>
-        public List<DocumentImportDTO> ValidateAndImportDocuments(ExcelPackage spreadsheet, ref Dictionary<string, List<string>> parseErrors)
+        public async Task<(List<DocumentImportDTO>, Dictionary<string, List<string>>)> ValidateAndImportDocuments(ExcelPackage spreadsheet)
         {
             var items = new List<DocumentImportDTO>();
+            var parseErrors = new Dictionary<string, List<string>>();
 
             if (spreadsheet != null && spreadsheet.Workbook != null)
             {
                 var worksheet = spreadsheet.Workbook.Worksheets.SingleOrDefault(x => x.Name == "Items");
                 if (worksheet == null)
                 {
-                    return items;
+                    return (items, parseErrors);
                 }
                 var totalRows = worksheet.Dimension.End.Row;
                 for (var rowId = 2; rowId <= totalRows; rowId++)
@@ -75,7 +76,8 @@ namespace MrCMS.Services.ImportExport
                         ? parseErrors[handle]
                         : new List<string>();
 
-                    var item = GetDocumentImportDataTransferObject(worksheet, rowId, name, ref errors);
+                    var (item, newErrors) = await GetDocumentImportDataTransferObject(worksheet, rowId, name);
+                    errors.AddRange(newErrors);
                     parseErrors[handle] = errors;
 
                     items.Add(item);
@@ -90,12 +92,13 @@ namespace MrCMS.Services.ImportExport
             //Remove handles with no errors
             parseErrors = parseErrors.Where(x => x.Value.Any()).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            return items;
+            return (items, parseErrors);
         }
 
-        private DocumentImportDTO GetDocumentImportDataTransferObject(ExcelWorksheet worksheet, int rowId,
-                                                                                     string name, ref List<string> parseErrors)
+        private async Task<(DocumentImportDTO, List<string>)> GetDocumentImportDataTransferObject(ExcelWorksheet worksheet, int rowId,
+                                                                                     string name)
         {
+            var parseErrors = new List<string>();
             var item = new DocumentImportDTO();
             item.ParentUrl = worksheet.GetValue<string>(rowId, 2);
             if (worksheet.GetValue<string>(rowId, 3).HasValue())
@@ -103,7 +106,7 @@ namespace MrCMS.Services.ImportExport
                 item.DocumentType = worksheet.GetValue<string>(rowId, 3);
                 item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
                     ? worksheet.GetValue<string>(rowId, 1)
-                    : _webpageUrlService.Suggest(new SuggestParams { PageName = name, DocumentType = item.DocumentType });
+                    : await _webpageUrlService.Suggest(new SuggestParams { PageName = name, DocumentType = item.DocumentType });
             }
             else
                 parseErrors.Add("Document Type is required.");
@@ -156,7 +159,7 @@ namespace MrCMS.Services.ImportExport
             }
 
             item.UrlHistory = GetUrlHistory(worksheet, rowId, parseErrors);
-            return item;
+            return (item, parseErrors);
         }
 
         private static List<string> GetUrlHistory(ExcelWorksheet worksheet, int rowId, List<string> parseErrors)

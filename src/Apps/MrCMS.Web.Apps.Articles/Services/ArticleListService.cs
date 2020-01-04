@@ -2,7 +2,7 @@
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
-using NHibernate;
+
 using NHibernate.Criterion;
 using X.PagedList;
 

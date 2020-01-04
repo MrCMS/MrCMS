@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Services.Auth
 {
     public class Clear2FAData : IOnUserLoggedIn
@@ -8,14 +10,14 @@ namespace MrCMS.Services.Auth
         {
             _service = service;
         }
-        public void Execute(UserLoggedInEventArgs args)
+        public async Task Execute(UserLoggedInEventArgs args)
         {
             var user = args.User;
 
             user.TwoFactorCode = null;
             user.TwoFactorCodeExpiry = null;
 
-            _service.SaveUser(user);
+            await _service.SaveUser(user);
         }
     }
 }

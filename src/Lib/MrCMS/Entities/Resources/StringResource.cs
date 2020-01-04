@@ -14,6 +14,7 @@ namespace MrCMS.Entities.Resources
         public virtual string Value { get; set; }
 
         public virtual Site Site { get; set; }
+        public int? SiteId { get; set; }
 
         public virtual string UICulture { get; set; }
 

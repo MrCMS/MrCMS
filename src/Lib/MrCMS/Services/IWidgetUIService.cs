@@ -9,7 +9,8 @@ namespace MrCMS.Services
 {
     public interface IWidgetUIService
     {
-        IHtmlContent GetContent(IViewComponentHelper helper, int id, Func<IViewComponentHelper, Task<IHtmlContent>> func);
+        Task<IHtmlContent> GetContent(IViewComponentHelper helper, int id,
+            Func<IViewComponentHelper, Task<IHtmlContent>> func);
         (Widget Widget, object Model) GetModel(int id);
     }
 }

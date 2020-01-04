@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using NHibernate;
 
 namespace MrCMS.Settings
 {

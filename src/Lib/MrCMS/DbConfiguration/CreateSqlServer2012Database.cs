@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using MrCMS.Installation.Models;
 using MrCMS.Settings;
 
 namespace MrCMS.DbConfiguration
@@ -14,6 +15,7 @@ namespace MrCMS.DbConfiguration
             }));
         }
     }
+
     //public class CreateSqlServerAzureDatabase : CreateSqlServerDatabase, ICreateDatabase<SqlServerAzureProvider>
     //{
     //    protected override IDatabaseProvider GetProvider(string connectionString)
@@ -24,5 +26,4 @@ namespace MrCMS.DbConfiguration
     //        });
     //    }
     //}
-
 }

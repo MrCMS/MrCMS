@@ -90,7 +90,7 @@ namespace MrCMS.Services.ImportExport
             wsItems.Cells["G" + rowId].Value = webpage.MetaDescription;
             wsItems.Cells["G" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Fill;
             wsItems.Cells["H" + rowId].Value = webpage.MetaKeywords;
-            wsItems.Cells["I" + rowId].Value = string.Join(",", webpage.Tags.Select(tag => tag.Name));
+            wsItems.Cells["I" + rowId].Value = string.Join(",", webpage.DocumentTags.Select(tag => tag.Tag.Name));
             wsItems.Cells["I" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
             wsItems.Cells["J" + rowId].Value = webpage.RevealInNavigation;
             wsItems.Cells["K" + rowId].Value = webpage.DisplayOrder;

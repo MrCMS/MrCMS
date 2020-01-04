@@ -1,9 +1,11 @@
-﻿using MrCMS.Entities.Widget;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities.Widget;
 using MrCMS.Website.Caching;
 
 namespace MrCMS.Events.Widgets
 {
-    public class ClearWidgetsFromCache : IOnUpdated<Widget>
+    public class ClearWidgetsFromCache : OnDataUpdated<Widget>
     {
         private readonly ICacheManager _cacheManager;
 
@@ -12,10 +14,11 @@ namespace MrCMS.Events.Widgets
             _cacheManager = cacheManager;
         }
 
-        public void Execute(OnUpdatedArgs<Widget> args)
+        public override Task Execute(ChangeInfo data)
         {
-            var cacheKey = "Widget." + args.Item.Id;
+            var cacheKey = "Widget." + data.EntityId;
             _cacheManager.Clear(cacheKey);
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
+using System.Threading.Tasks;
 using MrCMS.Tasks;
-using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
@@ -21,9 +19,10 @@ namespace MrCMS.HealthChecks
             get { return "Send email task setup"; }
         }
 
-        public override HealthCheckResult PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
-            var any = _taskSettingManager.GetInfo().Any(x => x.Type == typeof (SendQueuedMessagesTask) && x.Enabled);
+            var info = await _taskSettingManager.GetInfo();
+            var any = info.Any(x => x.Type == typeof (SendQueuedMessagesTask) && x.Enabled);
 
             return !any
                 ? new HealthCheckResult

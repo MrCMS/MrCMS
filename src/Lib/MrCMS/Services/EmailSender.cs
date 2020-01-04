@@ -3,25 +3,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MrCMS.Data;
 using MrCMS.Entities.Messaging;
-using MrCMS.Helpers;
 using MrCMS.Messages;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class EmailSender : IEmailSender, IDisposable
     {
         //private readonly ErrorSignal _errorSignal;
-        private readonly ISession _session;
+        private readonly IRepository<QueuedMessage> _messageRepository;
+        private readonly IRepository<QueuedMessageAttachment> _attachmentRepository;
         private readonly ILogger<EmailSender> _logger;
         private readonly SmtpClient _smtpClient;
 
-        public EmailSender(ISession session, MailSettings mailSettings, ILogger<EmailSender> logger, IGetSmtpClient getSmtpClient)
+        public EmailSender(IRepository<QueuedMessage> messageRepository,
+            IRepository<QueuedMessageAttachment> attachmentRepository, MailSettings mailSettings,
+            ILogger<EmailSender> logger, IGetSmtpClient getSmtpClient)
         {
-            _session = session;
+            _messageRepository = messageRepository;
+            _attachmentRepository = attachmentRepository;
             _logger = logger;
             _smtpClient = getSmtpClient.GetClient(mailSettings);
         }
@@ -51,28 +55,27 @@ namespace MrCMS.Services
                 _logger.Log(LogLevel.Error, exception, exception.Message);
                 queuedMessage.Tries++;
             }
-            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+            _messageRepository.Update(queuedMessage);
         }
 
-        public void AddToQueue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null)
+        public async Task AddToQueue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null)
         {
-            _session.Transact(session =>
+            await _messageRepository.Transact(async (repo, ct) =>
             {
-                session.Save(queuedMessage);
+                await repo.Add(queuedMessage, ct);
                 if (attachments == null || !attachments.Any())
                     return;
-                foreach (var data in attachments)
+                foreach (var attachment in attachments.Select(data => new QueuedMessageAttachment
                 {
-                    var attachment = new QueuedMessageAttachment
-                    {
-                        QueuedMessage = queuedMessage,
-                        ContentType = data.ContentType,
-                        FileName = data.FileName,
-                        Data = data.Data,
-                        FileSize = data.Data.LongLength
-                    };
+                    QueuedMessageId = queuedMessage.Id,
+                    ContentType = data.ContentType,
+                    FileName = data.FileName,
+                    Data = data.Data,
+                    FileSize = data.Data.LongLength
+                }))
+                {
                     queuedMessage.QueuedMessageAttachments.Add(attachment);
-                    session.Save(attachment);
+                    await _attachmentRepository.Add(attachment, ct);
                 }
             });
         }
@@ -85,7 +88,7 @@ namespace MrCMS.Services
                 Subject = queuedMessage.Subject,
                 Body = queuedMessage.Body
             };
-            var multipleToAddress = queuedMessage.ToAddress.Split(new[] {',', ';'},
+            var multipleToAddress = queuedMessage.ToAddress.Split(new[] { ',', ';' },
                 StringSplitOptions.RemoveEmptyEntries);
             if (multipleToAddress.Any())
             {

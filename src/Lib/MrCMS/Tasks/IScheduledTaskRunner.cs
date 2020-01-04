@@ -1,9 +1,11 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MrCMS.Tasks
 {
     public interface IScheduledTaskRunner
     {
-        void ExecuteTask(string type);
+        Task ExecuteTask(string type, CancellationToken token);
     }
 }

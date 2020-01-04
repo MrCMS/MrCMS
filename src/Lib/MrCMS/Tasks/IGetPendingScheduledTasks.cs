@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Tasks
 {
     public interface IGetPendingScheduledTasks
     {
-        List<TaskInfo> GetTasks();
+        Task<List<TaskInfo>> GetTasks();
     }
 }

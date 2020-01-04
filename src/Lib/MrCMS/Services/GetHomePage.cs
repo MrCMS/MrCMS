@@ -1,30 +1,27 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
-using NHibernate;
 using System.Linq;
+using MrCMS.Data;
 
 namespace MrCMS.Services
 {
     public class GetHomePage : IGetHomePage
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
         private readonly ICacheInHttpContext _cacheInHttpContext;
 
-        public GetHomePage(ISession session, ICacheInHttpContext cacheInHttpContext)
+        public GetHomePage(IRepository<Webpage> repository, ICacheInHttpContext cacheInHttpContext)
         {
-            _session = session;
+            _repository = repository;
             _cacheInHttpContext = cacheInHttpContext;
         }
 
         public Webpage Get()
         {
-            return _cacheInHttpContext.GetForRequest("current.home-page", () => _session.QueryOver<Webpage>()
-                .Where(document => document.Parent == null && document.Published)
-                .OrderBy(webpage => webpage.DisplayOrder).Asc
-                .Take(1)
-                .Cacheable()
-                .List()
-                .FirstOrDefault());
+            return _cacheInHttpContext.GetForRequest("current.home-page", () => _repository
+                .Readonly()
+                .OrderBy(webpage => webpage.DisplayOrder)
+                .FirstOrDefault(document => document.ParentId == null && document.Published));
         }
     }
 }

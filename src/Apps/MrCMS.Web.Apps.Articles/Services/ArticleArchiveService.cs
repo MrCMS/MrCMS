@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Articles.Services
 {

@@ -1,37 +1,36 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class CropService : ICropService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Crop> _repository;
         private readonly IImageProcessor _imageProcessor;
         private readonly IFileSystem _fileSystem;
 
-        public CropService(ISession session, IImageProcessor imageProcessor, IFileSystem fileSystem)
+        public CropService(IRepository<Crop> repository, IImageProcessor imageProcessor, IFileSystem fileSystem)
         {
-            _session = session;
+            _repository = repository;
             _imageProcessor = imageProcessor;
             _fileSystem = fileSystem;
         }
 
-        public Crop CreateCrop(MediaFile file, CropType cropType, Rectangle details)
+        public async Task<Crop> CreateCrop(MediaFile file, CropType cropType, Rectangle details)
         {
             if (!file.IsImage())
                 throw new ArgumentException("file is not an image");
 
-            var existing =
-                _session.QueryOver<Crop>()
-                    .Where(c => c.MediaFile.Id == file.Id && c.CropType.Id == cropType.Id)
-                    .Cacheable()
-                    .List();
-            if (existing.Any())
-                return existing.First();
+
+            var existing = await _repository.Query().FirstOrDefaultAsync(c => c.MediaFile.Id == file.Id && c.CropType.Id == cropType.Id);
+            if (existing != null)
+                return existing;
 
 
             var filePath = file.FileUrl;
@@ -50,7 +49,7 @@ namespace MrCMS.Services
                 Top = details.Top,
                 Url = cropUrl
             };
-            _session.Transact(session => session.Save(crop));
+            await _repository.Add(crop);
             return crop;
         }
     }

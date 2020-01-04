@@ -1,36 +1,34 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-80)]
     public class CopyMediaCategories : ICloneSiteParts
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<MediaCategory> _repository;
 
-        public CopyMediaCategories(ISession session)
+        public CopyMediaCategories(IGlobalRepository<MediaCategory> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             IEnumerable<MediaCategory> copies = GetMediaCategoryCopies(@from, to, siteCloneContext);
 
-            _session.Transact(session => copies.ForEach(category => session.Save(category)));
+            await _repository.AddRange(copies.ToList());
         }
 
         private IEnumerable<MediaCategory> GetMediaCategoryCopies(Site @from, Site to, SiteCloneContext siteCloneContext, MediaCategory fromParent = null, MediaCategory toParent = null)
         {
-            IQueryOver<MediaCategory, MediaCategory> queryOver =
-                _session.QueryOver<MediaCategory>().Where(layout => layout.Site.Id == @from.Id);
-            queryOver = fromParent == null
-                ? queryOver.Where(layout => layout.Parent == null)
-                : queryOver.Where(layout => layout.Parent.Id == fromParent.Id);
-            IList<MediaCategory> categories = queryOver.List();
+            var parentId = fromParent?.Id;
+            IList<MediaCategory> categories = _repository.Query().Where(layout => layout.Site.Id == @from.Id && layout.ParentId == parentId).ToList();
             foreach (MediaCategory category in categories)
             {
                 MediaCategory copy = category.GetCopyForSite(to);

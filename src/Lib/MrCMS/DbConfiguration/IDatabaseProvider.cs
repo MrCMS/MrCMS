@@ -1,11 +1,11 @@
-using FluentNHibernate.Cfg.Db;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace MrCMS.DbConfiguration
 {
     public interface IDatabaseProvider
     {
         string Type { get; }
-        IPersistenceConfigurer GetPersistenceConfigurer();
-        void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config);
+        void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder);
     }
 }

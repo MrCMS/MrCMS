@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Website;
 
 namespace MrCMS.Tasks
@@ -15,17 +16,18 @@ namespace MrCMS.Tasks
             _taskSettingManager = taskSettingManager;
         }
 
-        public List<TaskInfo> GetTasks()
+        public async Task<List<TaskInfo>> GetTasks()
         {
             var startTime = _getDateTimeNow.LocalNow;
+            var info = await _taskSettingManager.GetInfo();
             var scheduledTasks =
-                _taskSettingManager.GetInfo()
+                info
                     .Where(task =>
                         task.Enabled && task.Status == TaskExecutionStatus.Pending &&
                         (task.LastCompleted < startTime.AddSeconds(-task.FrequencyInSeconds) ||
                          task.LastCompleted == null))
                     .ToList();
-            _taskSettingManager.StartTasks(scheduledTasks, startTime);
+            await _taskSettingManager.StartTasks(scheduledTasks, startTime);
             return scheduledTasks;
         }
     }

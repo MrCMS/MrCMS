@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 
@@ -25,28 +27,28 @@ namespace MrCMS.Tasks
 
         [TaskExecutionKeyPasswordAuth]
         [Route(ExecutePendingTasksURL)]
-        public ContentResult Execute()
+        public async Task<ContentResult> Execute()
         {
-            _taskResetter.ResetHungTasks();
-            _triggerScheduledTasks.Trigger();
-            _queuedTaskRunner.TriggerPendingTasks();
-            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
+            await _taskResetter.ResetHungTasks();
+            await _triggerScheduledTasks.Trigger();
+            await _queuedTaskRunner.TriggerPendingTasks();
+            return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 
         [TaskExecutionKeyPasswordAuth]
         [Route(ExecuteTaskURL)]
-        public ContentResult ExecuteTask(string type)
+        public async Task<ContentResult> ExecuteTask(string type, CancellationToken token)
         {
-            _scheduledTaskRunner.ExecuteTask(type);
-            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
+            await _scheduledTaskRunner.ExecuteTask(type, token);
+            return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 
         [TaskExecutionKeyPasswordAuth]
         [Route(ExecuteQueuedTasksURL)]
-        public ContentResult ExecuteQueuedTasks()
+        public async Task<ContentResult> ExecuteQueuedTasks(CancellationToken token)
         {
-            _queuedTaskRunner.ExecutePendingTasks();
-            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
+            await _queuedTaskRunner.ExecutePendingTasks(token);
+            return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
     }
 }

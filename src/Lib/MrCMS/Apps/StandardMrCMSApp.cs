@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Website.CMS;
-using NHibernate.Cfg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +44,6 @@ namespace MrCMS.Apps
                 .Select(Activator.CreateInstance).Cast<Profile>());
         }
 
-        public virtual void AppendConfiguration(Configuration configuration) { }
+        //public virtual void AppendConfiguration(Configuration configuration) { }
     }
 }

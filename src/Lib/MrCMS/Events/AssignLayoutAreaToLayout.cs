@@ -1,18 +1,33 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 
 namespace MrCMS.Events
 {
-    public class AssignLayoutAreaToLayout : IOnAdding<LayoutArea>
+    public class AssignLayoutAreaToLayout : OnDataAdded<LayoutArea>
     {
-        public void Execute(OnAddingArgs<LayoutArea> args)
+        private readonly IRepository<LayoutArea> _repository;
+        private readonly IRepository<Layout> _layoutRepository;
+
+        public AssignLayoutAreaToLayout(IRepository<LayoutArea> repository, IRepository<Layout> layoutRepository)
         {
-            var layoutArea = args.Item;
+            _repository = repository;
+            _layoutRepository = layoutRepository;
+        }
+
+        public override async Task Execute(EntityData data)
+        {
+            var id = data.EntityId;
+
+            var layoutArea = await _repository.Load(id,default, x => x.Layout);
             var layout = layoutArea.Layout;
             if (layout == null)
                 return;
-            
+
             layout.LayoutAreas.Add(layoutArea);
-            args.Session.SaveOrUpdate(layout);
+            await _layoutRepository.Update(layout);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MrCMS.Entities.People
     {
         public User()
         {
-            Roles = new HashSet<UserRole>();
+            UserToRoles = new List<UserToRole>();
             UserProfileData = new List<UserProfileData>();
             UserLogins = new List<UserLogin>();
             UserClaims = new List<UserClaim>();
@@ -59,12 +59,12 @@ namespace MrCMS.Entities.People
         public virtual string TwoFactorCode { get; set; }
         public virtual DateTime? TwoFactorCodeExpiry { get; set; }
 
-        public virtual ISet<UserRole> Roles { get; set; }
+        public virtual IList<UserToRole> UserToRoles { get; set; }
         public virtual IList<UserProfileData> UserProfileData { get; set; }
 
         public virtual bool IsAdmin
         {
-            get { return Roles != null && Roles.Any(role => role.Name == UserRole.Administrator); }
+            get { return UserToRoles != null && UserToRoles.Any(role => role.Role.Name == UserRole.Administrator); }
         }
 
         public static HashSet<Type> OwnedObjectTypes

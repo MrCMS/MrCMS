@@ -3,22 +3,22 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings.Events;
 using Newtonsoft.Json;
-using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 
 namespace MrCMS.Settings
 {
     public class SqlSystemConfigurationProvider : ISystemConfigurationProvider
     {
-        private readonly IStatelessSession _session;
-
+        private readonly IGlobalRepository<SystemSetting> _repository;
         private readonly IEventContext _eventContext;
 
-        public SqlSystemConfigurationProvider(IStatelessSession session, IEventContext eventContext)
+        public SqlSystemConfigurationProvider(IGlobalRepository<SystemSetting> repository, IEventContext eventContext)
         {
-            _session = session;
+            _repository = repository;
             _eventContext = eventContext;
         }
 
@@ -58,10 +58,9 @@ namespace MrCMS.Settings
             {
                 var typeName = typeof(TSettings).FullName.ToLower();
                 var settings =
-                        _session.QueryOver<SystemSetting>()
+                        _repository.Query()
                             .Where(x => x.SettingType == typeName)
-                            .Cacheable()
-                            .List();
+                            .ToList();
                 return settings.GroupBy(setting => setting.PropertyName)
                     .ToDictionary(x => x.Key, x => x.Select(y => y).First());
             }
@@ -109,31 +108,31 @@ namespace MrCMS.Settings
             genericMethod.Invoke(this, new object[] { settings });
         }
 
-        public void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
+        public async Task SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
         {
             var existing = GetSystemSettings<TSettings>();
             var existingInDb = GetDbSettings<TSettings>();
-            _session.Transact(session =>
-            {
-                /* We do not clear cache after each setting update.
-                 * This behavior can increase performance because cached settings will not be cleared 
-                 * and loaded from database after each update */
-                foreach (var prop in typeof(TSettings).GetProperties())
-                {
-                    // get properties we can read and write to
-                    if (!prop.CanRead || !prop.CanWrite)
-                    {
-                        continue;
-                    }
+            await _repository.Transact(async (repo, token) =>
+             {
+                 /* We do not clear cache after each setting update.
+                  * This behavior can increase performance because cached settings will not be cleared 
+                  * and loaded from database after each update */
+                 foreach (var prop in typeof(TSettings).GetProperties())
+                 {
+                     // get properties we can read and write to
+                     if (!prop.CanRead || !prop.CanWrite)
+                     {
+                         continue;
+                     }
 
-                    var typeName = typeof(TSettings).FullName;
-                    dynamic value = prop.GetValue(settings, null);
-                    SetSetting(existingInDb, typeName, prop.Name, value ?? "");
-                }
-            });
+                     var typeName = typeof(TSettings).FullName;
+                     dynamic value = prop.GetValue(settings, null);
+                     await SetSetting(existingInDb, typeName, prop.Name, value ?? "");
+                 }
+             });
 
-            _eventContext.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
-                new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
+            await _eventContext.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
+                           new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
         }
 
         public List<SystemSettingsBase> GetAllSystemSettings()
@@ -145,7 +144,7 @@ namespace MrCMS.Settings
                 .OfType<SystemSettingsBase>().ToList();
         }
 
-        protected virtual void SetSetting<T>(IDictionary<string, SystemSetting> existingSettings, string typeName,
+        protected virtual async Task SetSetting<T>(IDictionary<string, SystemSetting> existingSettings, string typeName,
             string propertyName, T value)
         {
             typeName = Standardise(typeName);
@@ -158,7 +157,7 @@ namespace MrCMS.Settings
                 //update
                 setting.Value = valueStr;
                 setting.UpdatedOn = DateTime.UtcNow;
-                UpdateSetting(setting);
+                await UpdateSetting(setting);
             }
             else
             {
@@ -171,7 +170,7 @@ namespace MrCMS.Settings
                     CreatedOn = DateTime.UtcNow,
                     UpdatedOn = DateTime.UtcNow
                 };
-                InsertSetting(setting);
+                await InsertSetting(setting);
             }
         }
 
@@ -181,14 +180,14 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void InsertSetting(SystemSetting setting)
+        protected virtual async Task InsertSetting(SystemSetting setting)
         {
             if (setting == null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
 
-            _session.Transact(session => session.Insert(setting));
+            await _repository.Add(setting);
         }
 
         /// <summary>
@@ -196,14 +195,14 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void UpdateSetting(SystemSetting setting)
+        protected virtual async Task UpdateSetting(SystemSetting setting)
         {
             if (setting == null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
 
-            _session.Transact(session => session.Update(setting));
+            await _repository.Update(setting);
         }
 
         /// <summary>
@@ -211,14 +210,14 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void DeleteSetting(SystemSetting setting)
+        protected virtual async Task DeleteSetting(SystemSetting setting)
         {
             if (setting == null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
 
-            _session.Delete(setting);
+            await _repository.Delete(setting);
         }
 
     }

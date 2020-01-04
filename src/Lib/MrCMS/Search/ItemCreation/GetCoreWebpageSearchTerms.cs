@@ -1,21 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Linq;
-using NHibernate.Transform;
 
 namespace MrCMS.Search.ItemCreation
 {
     public class GetCoreWebpageSearchTerms : IGetWebpageSearchTerms
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
 
-        public GetCoreWebpageSearchTerms(ISession session)
+        private readonly IQueryableRepository<DocumentTag> _tagRepository;
+        //private readonly ISession _session;
+
+        public GetCoreWebpageSearchTerms(IRepository<Webpage> repository, IQueryableRepository<DocumentTag> tagRepository)
         {
-            _session = session;
+            _repository = repository;
+            _tagRepository = tagRepository;
         }
 
         public IEnumerable<string> GetPrimary(Webpage webpage)
@@ -32,10 +34,9 @@ namespace MrCMS.Search.ItemCreation
         public IEnumerable<string> GetSecondary(Webpage webpage)
         {
             Tag tagAlias = null;
-            var documentTags = _session.QueryOver<Webpage>()
+            var documentTags = _repository.Query()
                 .Where(page => page.Id == webpage.Id)
-                .JoinAlias(page => page.Tags, () => tagAlias)
-                .Select(page => tagAlias.Name).List<string>();
+                .Select(page => tagAlias.Name).ToList();
             return GetSecondaryTerms(webpage, documentTags);
         }
 
@@ -46,15 +47,16 @@ namespace MrCMS.Search.ItemCreation
             Tag tagAlias = null;
             TagInfo tagInfo = null;
             string typeName = webpages.First().DocumentType;
-            Dictionary<int, IEnumerable<string>> tagInfoDictionary = _session.QueryOver<Webpage>()
-                .Where(webpage => webpage.DocumentType == typeName)
-                .JoinAlias(webpage => webpage.Tags, () => tagAlias)
-                .SelectList(builder =>
-                    builder.Select(webpage => webpage.Id).WithAlias(() => tagInfo.WebpageId)
-                        .Select(() => tagAlias.Name).WithAlias(() => tagInfo.TagName))
-                .TransformUsing(Transformers.AliasToBean<TagInfo>())
-                .Cacheable()
-                .List<TagInfo>()
+            Dictionary<int, IEnumerable<string>> tagInfoDictionary = _tagRepository.Query()
+                .Where(documentTag => documentTag.Document.DocumentType == typeName)
+                .Select(documentTag =>
+                    new TagInfo
+                    {
+                        TagName = documentTag.Tag.Name,
+                        WebpageId = documentTag.DocumentId
+                    }
+                )
+                .ToList()
                 .GroupBy(info => info.WebpageId)
                 .ToDictionary(infos => infos.Key, infos => infos.Select(x => x.TagName));
             return webpages.ToDictionary(webpage => webpage,

@@ -12,6 +12,7 @@ namespace MrCMS.Entities.Documents.Layout
         {
             Widgets = new List<Widget.Widget>();
         }
+        public int LayoutId { get; set; }
         public virtual Layout Layout { get; set; } //which layout does the area belong to?
 
         [Required]

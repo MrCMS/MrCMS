@@ -1,12 +1,13 @@
-﻿using MrCMS.Entities.Documents.Media;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Media
 {
     public class MediaFolderBreadcrumb : ItemBreadcrumb<MediaBreadcrumb, MediaCategory>
     {
-        public MediaFolderBreadcrumb(ISession session) : base(session)
+        public MediaFolderBreadcrumb(IRepository<MediaCategory> repository) : base(repository)
         {
         }
 
@@ -15,11 +16,11 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Media
         public override bool IsNav => false;
         public override bool Hierarchical => ParentId.HasValue;
 
-        public override void Populate()
+        public override async Task Populate()
         {
             if (!Id.HasValue)
                 return;
-            var item = Session.Get<MediaCategory>(Id.Value);
+            var item = await Repository.GetData(Id.Value);
             Name = GetName(item);
             ParentActionArguments = CreateIdArguments(item.Parent?.Id);
         }

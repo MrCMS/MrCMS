@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 
@@ -16,16 +17,17 @@ namespace MrCMS.Batching.Services
             _setBatchJobExecutionStatus = setBatchJobExecutionStatus;
         }
 
-        public async Task<BatchJobExecutionResult> Run(BatchRunResult runResult, Stopwatch stopWatch = null)
+        public async Task<BatchJobExecutionResult> Run(BatchRunResult runResult, CancellationToken token,
+            Stopwatch stopWatch = null)
         {
             stopWatch = stopWatch ?? Stopwatch.StartNew();
 
-            _setBatchJobExecutionStatus.Starting(runResult);
+            await _setBatchJobExecutionStatus.Starting(runResult);
 
-            var batchJobExecutionResult = await _batchJobExecutionService.Execute(runResult.BatchJob);
+            var batchJobExecutionResult = await _batchJobExecutionService.Execute(runResult.BatchJob, token);
 
             runResult.MillisecondsTaken = Convert.ToDecimal(stopWatch.Elapsed.TotalMilliseconds);
-            _setBatchJobExecutionStatus.Complete(runResult, batchJobExecutionResult);
+            await _setBatchJobExecutionStatus.Complete(runResult, batchJobExecutionResult);
             return batchJobExecutionResult;
         }
     }

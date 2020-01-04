@@ -3,20 +3,22 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using ImageMagick;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class ImageProcessor : IImageProcessor
     {
+        private readonly IRepository<MediaFile> _mediaFileRepository;
+        private readonly IRepository<Crop> _cropRepository;
         private readonly IFileSystem _fileSystem;
-        private readonly ISession _session;
 
-        public ImageProcessor(ISession session, IFileSystem fileSystem)
+        public ImageProcessor(IRepository<MediaFile>  mediaFileRepository, IRepository<Crop> cropRepository, IFileSystem fileSystem)
         {
-            _session = session;
+            _mediaFileRepository = mediaFileRepository;
+            _cropRepository = cropRepository;
             _fileSystem = fileSystem;
         }
 
@@ -24,10 +26,9 @@ namespace MrCMS.Services
         {
             string originalImageUrl = GetOriginalImageUrl(imageUrl);
             MediaFile fileByLocation =
-                _session.QueryOver<MediaFile>()
-                    .Where(file => file.FileUrl == originalImageUrl)
-                    .Cacheable()
-                    .List().FirstOrDefault();
+                _mediaFileRepository
+                    .Readonly()
+                    .FirstOrDefault(file => file.FileUrl == originalImageUrl);
 
             if (fileByLocation != null)
                 return fileByLocation;
@@ -42,13 +43,10 @@ namespace MrCMS.Services
         public Crop GetCrop(string imageUrl)
         {
             string originalImageUrl = GetOriginalImageUrl(imageUrl);
-            Crop crop =
-                _session.QueryOver<Crop>()
-                    .Where(file => file.Url == originalImageUrl)
-                    .Cacheable()
-                    .List().FirstOrDefault();
 
-            return crop;
+            return _cropRepository
+                .Readonly()
+                .FirstOrDefault(file => file.Url == originalImageUrl);
         }
 
         public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)

@@ -1,15 +1,15 @@
 ﻿using System;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     internal class InsertIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public InsertIndicesTask(ISession session, IIndexService indexService, IServiceProvider serviceProvider)
-            : base(session, indexService, serviceProvider)
+        public InsertIndicesTask(IDataReader dataReader, IIndexService indexService, IServiceProvider serviceProvider)
+            : base(dataReader, indexService, serviceProvider)
         {
         }
 

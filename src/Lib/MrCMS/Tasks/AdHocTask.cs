@@ -1,6 +1,7 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
-using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
@@ -8,16 +9,16 @@ namespace MrCMS.Tasks
     {
         public abstract int Priority { get; }
 
-        public TaskExecutionResult Execute()
+        public async Task<TaskExecutionResult> Execute(CancellationToken token)
         {
-            OnExecute();
+            await OnExecute(token);
             return TaskExecutionResult.Successful(this);
         }
 
         public abstract string GetData();
         public abstract void SetData(string data);
         public Site Site { get; set; }
-        public IHaveExecutionStatus Entity { get; set; }
+        public QueuedTask Entity { get; set; }
 
         public virtual void OnFailure(Exception exception)
         {
@@ -35,6 +36,6 @@ namespace MrCMS.Tasks
         {
         }
 
-        protected abstract void OnExecute();
+        protected abstract Task OnExecute(CancellationToken token);
     }
 }

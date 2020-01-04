@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Batching;
 using MrCMS.Batching.Services;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using Newtonsoft.Json;
-using NHibernate;
 
 namespace MrCMS.Services.FileMigration
 {
@@ -17,11 +19,11 @@ namespace MrCMS.Services.FileMigration
         private readonly Dictionary<string, IFileSystem> _allFileSystems;
         private readonly ICreateBatch _createBatch;
         private readonly FileSystemSettings _fileSystemSettings;
+        private readonly IRepository<MediaFile> _mediaFileRepository;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISession _session;
         private readonly IUrlHelper _urlHelper;
 
-        public FileMigrationService(IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings, ISession session,
+        public FileMigrationService(IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings, IRepository<MediaFile> mediaFileRepository,
             ICreateBatch createBatch, IUrlHelper urlHelper)
         {
             IEnumerable<IFileSystem> fileSystems = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>()
@@ -30,7 +32,7 @@ namespace MrCMS.Services.FileMigration
                 fileSystems
                     .ToDictionary(system => system.GetType().FullName);
             _fileSystemSettings = fileSystemSettings;
-            _session = session;
+            _mediaFileRepository = mediaFileRepository;
             _createBatch = createBatch;
             _serviceProvider = serviceProvider;
             _urlHelper = urlHelper;
@@ -45,9 +47,9 @@ namespace MrCMS.Services.FileMigration
             }
         }
 
-        public FileMigrationResult MigrateFiles()
+        public async Task<FileMigrationResult> MigrateFiles()
         {
-            IList<MediaFile> mediaFiles = _session.QueryOver<MediaFile>().List();
+            IList<MediaFile> mediaFiles = await _mediaFileRepository.Readonly().ToListAsync();
 
             List<Guid> guids =
                 mediaFiles.Where(
@@ -65,7 +67,7 @@ namespace MrCMS.Services.FileMigration
                 };
             }
 
-            BatchCreationResult result = _createBatch.Create(guids.Chunk(10)
+            BatchCreationResult result = await _createBatch.Create(guids.Chunk(10)
                 .Select(set => new MigrateFilesBatchJob
                 {
                     Data = JsonConvert.SerializeObject(set.ToHashSet()),
@@ -77,7 +79,7 @@ namespace MrCMS.Services.FileMigration
                 Message = string.Format(
                     "Batch created. Click <a target=\"_blank\" href=\"{0}\">here</a> to view and start.".AsResource(
                         _serviceProvider),
-                    _urlHelper.Action("Show", "BatchRun", new {id = result.InitialBatchRun.Id}))
+                    _urlHelper.Action("Show", "BatchRun", new { id = result.InitialBatchRun.Id }))
             };
         }
     }

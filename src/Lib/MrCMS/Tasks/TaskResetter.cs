@@ -1,42 +1,36 @@
 ﻿using System;
 using System.Linq;
-using MrCMS.DbConfiguration;
-using MrCMS.Helpers;
-using MrCMS.Settings;
-using MrCMS.Tasks.Entities;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class TaskResetter : ITaskResetter
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<QueuedTask> _repository;
         private readonly ITaskSettingManager _taskSettingManager;
         private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public TaskResetter(ISession session, ITaskSettingManager taskSettingManager, IGetDateTimeNow getDateTimeNow)
+        public TaskResetter(IGlobalRepository<QueuedTask> repository, ITaskSettingManager taskSettingManager, IGetDateTimeNow getDateTimeNow)
         {
-            _session = session;
+            _repository = repository;
             _taskSettingManager = taskSettingManager;
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public void ResetHungTasks()
+        public async Task ResetHungTasks()
         {
-            _session.Transact(session =>
-            {
-                var now = _getDateTimeNow.LocalNow;
-                using (new SiteFilterDisabler(session))
-                    ResetQueuedTasks(session, now);
-            });
-            ResetScheduledTasks();
+            await ResetQueuedTasks();
+            await ResetScheduledTasks();
         }
 
-        private void ResetScheduledTasks()
+        private async Task ResetScheduledTasks()
         {
             var now = _getDateTimeNow.LocalNow;
-            var hungScheduledTasks = _taskSettingManager.GetInfo()
+            var info = await _taskSettingManager.GetInfo();
+            var hungScheduledTasks = info
                 .Where(
                     task => task.Enabled &&
                         (task.Status == TaskExecutionStatus.AwaitingExecution ||
@@ -50,21 +44,23 @@ namespace MrCMS.Tasks
             }
         }
 
-        private void ResetQueuedTasks(ISession session, DateTime now)
+        private async Task ResetQueuedTasks()
         {
-            var hungTasks = session.QueryOver<QueuedTask>()
+            var now = _getDateTimeNow.LocalNow;
+            var hungTasks = await _repository.Query()
                 .Where(
                     task =>
                         (task.Status == TaskExecutionStatus.AwaitingExecution ||
                          task.Status == TaskExecutionStatus.Executing) &&
                         task.QueuedAt < now.AddMinutes(-15))
-                .List();
+                .ToListAsync();
             foreach (var task in hungTasks)
             {
                 task.QueuedAt = null;
                 task.Status = TaskExecutionStatus.Pending;
-                session.Update(task);
             }
+
+            await _repository.UpdateRange(hungTasks);
         }
     }
 }

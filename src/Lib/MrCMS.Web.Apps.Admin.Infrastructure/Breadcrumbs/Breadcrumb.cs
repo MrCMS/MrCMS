@@ -5,6 +5,7 @@ using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Infrastructure.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Models;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
@@ -60,7 +61,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
         /// This is to be called once to initialize the breadcrumb with data.
         /// Should be used for getting the data for parent ids and names
         /// </summary>
-        public virtual void Populate()
+        public virtual Task Populate()
         {
         }
 

@@ -1,22 +1,30 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
-using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Core.Pages;
-using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
 {
     public class SetupCoreWebpages : ISetupCoreWebpages
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
+        private readonly IRepository<Form> _formRepository;
+        private readonly IRepository<FormProperty> _formPropertyRepository;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public SetupCoreWebpages(ISession session, IConfigurationProvider configurationProvider)
+        public SetupCoreWebpages(IRepository<Webpage> repository,
+            IRepository<Form> formRepository,
+            IRepository<FormProperty> formPropertyRepository,
+            IConfigurationProvider configurationProvider)
         {
-            _session = session;
+            _repository = repository;
+            _formRepository = formRepository;
+            _formPropertyRepository = formPropertyRepository;
             _configurationProvider = configurationProvider;
         }
 
@@ -27,17 +35,17 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             public Webpage Error500 { get; set; }
         }
 
-        public void Setup()
+        public async Task Setup()
         {
             ErrorPages errorPages = GetErrorPages();
-            _session.Transact(session =>
-            {
-                GetBasicPages().ForEach(webpage => session.Save(webpage));
+            await _repository.Transact(async repo =>
+             {
+                 await repo.AddRange(GetBasicPages().ToList());
 
-                session.Save(errorPages.Error403);
-                session.Save(errorPages.Error404);
-                session.Save(errorPages.Error500);
-            });
+                 await repo.Add(errorPages.Error403);
+                 await repo.Add(errorPages.Error404);
+                 await repo.Add(errorPages.Error500);
+             });
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
             siteSettings.Error403PageId = errorPages.Error403.Id;
@@ -45,19 +53,18 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             siteSettings.Error500PageId = errorPages.Error500.Id;
             _configurationProvider.SaveSettings(siteSettings);
 
-            _session.Transact(session =>
+            await _repository.Transact(async repo =>
             {
+                await repo.AddRange(GetAccountPages().ToList());
 
-                GetAccountPages().ForEach(webpage => session.Save(webpage));
+                await repo.Add(GetSearchPage());
 
-                session.Save(GetSearchPage());
-
-                var webpages = _session.QueryOver<Webpage>().List();
+                var webpages = repo.Query().ToList();
                 var publishOn = DateTime.UtcNow;
                 webpages.ForEach(webpage =>
                 {
                     webpage.PublishOn = publishOn;
-                    session.Update(webpage);
+                    repo.Update(webpage);
                 });
             });
         }
@@ -188,15 +195,16 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
         }
 
 
-        private Form AddContactUsForm()
+        private async Task<Form> AddContactUsForm()
         {
             var form = new Form { Name = "Contact Us Form" };
+            await _formRepository.Add(form);
             var fieldName = new TextBox
             {
                 Name = "Name",
                 LabelText = "Your Name",
                 Required = true,
-                Form = form,
+                FormId = form.Id,
                 DisplayOrder = 0
             };
 
@@ -205,14 +213,13 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Name = "Email",
                 LabelText = "Your Email",
                 Required = true,
-                Form = form,
+                FormId = form.Id,
                 DisplayOrder = 1
             };
-            _session.Transact(s =>
+            await _formPropertyRepository.AddRange(new List<TextBox>
             {
-                s.Save(form);
-                s.Save(fieldName);
-                s.Save(fieldEmail);
+                fieldName,
+                fieldEmail
             });
             return form;
         }

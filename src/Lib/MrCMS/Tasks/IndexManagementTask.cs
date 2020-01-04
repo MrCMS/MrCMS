@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     internal abstract class IndexManagementTask<T> : AdHocTask, ILuceneIndexTask where T : SiteEntity
     {
+        private readonly IDataReader _dataReader;
         private readonly IIndexService _indexService;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISession _session;
+        //private readonly ISession _session;
 
-        protected IndexManagementTask(ISession session, IIndexService indexService, IServiceProvider serviceProvider)
+        protected IndexManagementTask(IDataReader dataReader, IIndexService indexService, IServiceProvider serviceProvider)
         {
-            _session = session;
+            _dataReader = dataReader;
             _indexService = indexService;
             _serviceProvider = serviceProvider;
         }
@@ -30,9 +33,9 @@ namespace MrCMS.Tasks
         public int Id { get; set; }
         protected abstract LuceneOperation Operation { get; }
 
-        public IEnumerable<LuceneAction> GetActions()
+        public async Task<IEnumerable<LuceneAction>> GetActions(CancellationToken token)
         {
-            T entity = GetObject();
+            T entity = await GetObject(token);
             return TypeHelper.GetAllConcreteTypesAssignableFrom<IndexDefinition>()
                 .SelectMany(
                     definitionType =>
@@ -50,16 +53,16 @@ namespace MrCMS.Tasks
             Id = int.Parse(data);
         }
 
-        protected override void OnExecute()
+        protected override async Task OnExecute(CancellationToken token)
         {
-            List<LuceneAction> luceneActions = GetActions().ToList();
+            var luceneActions = await GetActions(token);
 
-            LuceneActionExecutor.PerformActions(_indexService, luceneActions);
+            LuceneActionExecutor.PerformActions(_indexService, luceneActions.ToList());
         }
 
-        protected virtual T GetObject()
+        protected virtual async Task<T> GetObject(CancellationToken token)
         {
-            return _session.Get(typeof(T), Id) as T;
+            return await _dataReader.Get<T>(Id,token);// _session.Get(typeof(T), Id) as T;;
         }
 
         protected abstract void ExecuteLogic(IIndexManagerBase manager, T entity);

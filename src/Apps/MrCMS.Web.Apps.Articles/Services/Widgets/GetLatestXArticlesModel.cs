@@ -3,7 +3,7 @@ using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
 using MrCMS.Web.Apps.Articles.Widgets;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Articles.Services.Widgets
 {

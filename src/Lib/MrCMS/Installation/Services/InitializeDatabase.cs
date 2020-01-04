@@ -1,24 +1,20 @@
-﻿using MrCMS.Entities.Multisite;
+﻿using MrCMS.Data;
+using MrCMS.Entities.Multisite;
 using MrCMS.Installation.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
-using NHibernate;
 
 namespace MrCMS.Installation.Services
 {
     public class InitializeDatabase : IInitializeDatabase
     {
-        private readonly ISession _session;
-        private Site _site;
         private readonly IConfigurationProvider _configurationProvider;
         private readonly ISystemConfigurationProvider _systemConfigurationProvider;
         private readonly ITaskSettingManager _taskSettingManager;
 
-        public InitializeDatabase(ISession session, Site site, IConfigurationProvider configurationProvider, ISystemConfigurationProvider systemConfigurationProvider, ITaskSettingManager taskSettingManager)
+        public InitializeDatabase(IConfigurationProvider configurationProvider, ISystemConfigurationProvider systemConfigurationProvider, ITaskSettingManager taskSettingManager)
         {
-            _session = session;
-            _site = site;
             _configurationProvider = configurationProvider;
             _systemConfigurationProvider = systemConfigurationProvider;
             _taskSettingManager = taskSettingManager;

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {

@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
@@ -5,13 +9,15 @@ using MrCMS.Services.Notifications;
 
 namespace MrCMS.Events.Documents
 {
-    public class DocumentAddedNotification : IOnAdded<Document>
+    public class DocumentAddedNotification : OnDataAdded<Document>
     {
+        private readonly IRepository<Document> _documentRepository;
         private readonly INotificationPublisher _notificationPublisher;
         private readonly IDocumentModifiedUser _documentModifiedUser;
 
-        public DocumentAddedNotification(INotificationPublisher notificationPublisher, IDocumentModifiedUser documentModifiedUser)
+        public DocumentAddedNotification(IRepository<Document> documentRepository, INotificationPublisher notificationPublisher, IDocumentModifiedUser documentModifiedUser)
         {
+            _documentRepository = documentRepository;
             _notificationPublisher = notificationPublisher;
             _documentModifiedUser = documentModifiedUser;
         }
@@ -23,13 +29,10 @@ namespace MrCMS.Events.Documents
             _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
 
-        public void Execute(OnAddedArgs<Document> args)
+        public override async Task Execute(EntityData data)
         {
-            var document = args.Item;
-            if (document != null)
-            {
-                PublishMessage(document);
-            }
+            var document = await _documentRepository.GetData(data.EntityId);
+            PublishMessage(document);
         }
     }
 }

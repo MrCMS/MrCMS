@@ -1,17 +1,22 @@
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingLayoutArea : IOnDeleting<LayoutArea>
+    public class OnDeletingLayoutArea : OnDataDeleting<LayoutArea>
     {
-        public void Execute(OnDeletingArgs<LayoutArea> args)
+        public override Task<IResult> OnDeleting(LayoutArea entity, DbContext dbContext)
         {
-            var area = args.Item;
-            if (area.Layout != null)
+            if (entity.Layout != null)
             {
-                area.Layout.LayoutAreas.Remove(area); //required to clear cache
-                args.Session.SaveOrUpdate(area.Layout);
+                entity.Layout.LayoutAreas.Remove(entity); //required to clear cache
+                dbContext.Update(entity.Layout);
             }
+
+            return Success;
         }
     }
 }

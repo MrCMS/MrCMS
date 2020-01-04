@@ -7,7 +7,7 @@ using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
 using MrCMS.Web.Apps.Admin.Controllers;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using NHibernate.Criterion;
 using X.PagedList;
 

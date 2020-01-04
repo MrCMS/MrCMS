@@ -1,8 +1,9 @@
 ﻿using System;
+using MrCMS.Entities;
 
 namespace MrCMS.Tasks
 {
-    public interface IHaveExecutionStatus
+    public interface IHaveExecutionStatus : IHaveId
     {
         void OnStarting(AdHocTask executableTask);
         void OnSuccess(AdHocTask executableTask);

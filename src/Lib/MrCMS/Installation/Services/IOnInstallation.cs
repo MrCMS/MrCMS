@@ -1,4 +1,5 @@
-﻿using MrCMS.Installation.Models;
+﻿using System.Threading.Tasks;
+using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services
 {
@@ -8,6 +9,6 @@ namespace MrCMS.Installation.Services
         /// The order the installation occurs in (lower is earlier)
         /// </summary>
         int Priority { get; }
-        void Install(InstallModel model);
+        Task Install(InstallModel model);
     }
 }

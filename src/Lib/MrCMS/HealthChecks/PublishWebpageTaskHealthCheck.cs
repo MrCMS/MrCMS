@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
-using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
@@ -21,9 +21,10 @@ namespace MrCMS.HealthChecks
             get { return "Page Publisher task setup"; }
         }
 
-        public override HealthCheckResult PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
-            var any = _taskSettingManager.GetInfo().Any(x => x.Type == typeof(PublishScheduledWebpagesTask) && x.Enabled);
+            var info = await _taskSettingManager.GetInfo();
+            var any = info.Any(x => x.Type == typeof(PublishScheduledWebpagesTask) && x.Enabled);
 
             return !any
                 ? new HealthCheckResult

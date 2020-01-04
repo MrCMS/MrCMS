@@ -194,7 +194,7 @@ namespace MrCMS.Website.Metadata
 
                 // EnumDisplayNamesAndValues and EnumNamesAndValues
                 //
-                // Order EnumDisplayNamesAndValues to match Enum.GetNames(). That method orders by absolute value,
+                // Priority EnumDisplayNamesAndValues to match Enum.GetNames(). That method orders by absolute value,
                 // then its behavior is undefined (but hopefully stable). Add to EnumNamesAndValues in same order but
                 // Dictionary does not guarantee order will be preserved.
                 var groupedDisplayNamesAndValues = new List<KeyValuePair<EnumGroupAndName, string>>();
@@ -260,7 +260,7 @@ namespace MrCMS.Website.Metadata
                 displayMetadata.NullDisplayText = displayFormatAttribute.NullDisplayText;
             }
 
-            // Order
+            // Priority
             if (displayAttribute?.GetOrder() != null)
             {
                 displayMetadata.Order = displayAttribute.GetOrder().Value;

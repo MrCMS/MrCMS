@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services.Resources
 {
@@ -22,13 +22,13 @@ namespace MrCMS.Services.Resources
         private static readonly object LockObject = new object();
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
         private readonly ILogger<StringResourceProvider> _logger;
-        private readonly ISession _session;
+        private readonly IGlobalRepository<StringResource> _repository;
         private readonly Site _site;
         private bool _retryingAllResources;
 
-        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo, ILogger<StringResourceProvider> logger)
+        public StringResourceProvider(IGlobalRepository<StringResource> repository, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo, ILogger<StringResourceProvider> logger)
         {
-            _session = session;
+            _repository = repository;
             _site = site;
             _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
             _logger = logger;
@@ -45,7 +45,7 @@ namespace MrCMS.Services.Resources
             get
             {
                 var allResources =
-                    _allResources = _allResources ?? GetAllResourcesFromDb();
+                    _allResources ??= GetAllResourcesFromDb();
                 if (!allResources.Any())
                 {
                     try
@@ -136,7 +136,7 @@ namespace MrCMS.Services.Resources
                             Value = defaultValue ?? key,
                             //UICulture = currentUserCulture
                         };
-                        _session.Transact(session => session.Save(defaultResource));
+                        _repository.Add(defaultResource).GetAwaiter().GetResult();
                         //AllResources[key] = new HashSet<StringResource> {defaultResource};
                         ResetResourceCache();
                         return defaultResource.Value;
@@ -174,7 +174,7 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                _session.Transact(session => session.Save(resource));
+                _repository.Add(resource).GetAwaiter().GetResult();
                 ResetResourceCache();
             }
         }
@@ -185,7 +185,7 @@ namespace MrCMS.Services.Resources
             {
                 if (resource.UICulture == null && resource.Site == null)
                     return;
-                _session.Transact(session => session.Save(resource));
+                _repository.Add(resource).GetAwaiter().GetResult();
                 ResetResourceCache();
             }
         }
@@ -194,7 +194,7 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                _session.Transact(session => session.Update(resource));
+                _repository.Update(resource).GetAwaiter().GetResult();
                 ResetResourceCache();
             }
         }
@@ -203,7 +203,7 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                _session.Transact(session => session.Delete(resource));
+                _repository.Delete(resource).GetAwaiter().GetResult();
                 ResetResourceCache();
             }
         }
@@ -225,14 +225,11 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                using (new SiteFilterDisabler(_session))
-                {
-                    var allResourcesFromDb =
-                        _session.QueryOver<StringResource>().Cacheable().List().ToHashSet();
-                    var groupBy =
-                        allResourcesFromDb.GroupBy(resource => resource.Key);
-                    return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
-                }
+                var allResourcesFromDb =
+                    _repository.Readonly().ToHashSet();
+                var groupBy =
+                    allResourcesFromDb.GroupBy(resource => resource.Key);
+                return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
             }
         }
     }

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Helpers
 {
@@ -26,7 +26,7 @@ namespace MrCMS.Helpers
 
         public static DocumentMetadata GetDocumentMetadata(this IHtmlHelper helper, int id)
         {
-            var webpage = helper.GetRequiredService<ISession>().Get<Webpage>(id);
+            var webpage = helper.GetRequiredService<IRepository<Webpage>>().GetDataSync(id);
 
             return webpage?.GetMetadata();
         }

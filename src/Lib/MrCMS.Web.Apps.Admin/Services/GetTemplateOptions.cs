@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

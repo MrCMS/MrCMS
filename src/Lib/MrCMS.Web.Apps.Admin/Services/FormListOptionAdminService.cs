@@ -1,54 +1,49 @@
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
 using IMapper = AutoMapper.IMapper;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class FormListOptionAdminService : IFormListOptionAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<FormListOption> _repository;
         private readonly IMapper _mapper;
 
-        public FormListOptionAdminService(ISession session, IMapper mapper)
+        public FormListOptionAdminService(IRepository<FormListOption> repository, IMapper mapper)
         {
-            _session = session;
             _mapper = mapper;
+            _repository = repository;
         }
-        public void Add(AddFormListOptionModel model)
+        public async Task Add(AddFormListOptionModel model)
         {
             var formListOption = _mapper.Map<FormListOption>(model);
 
             FormPropertyWithOptions formProperty = formListOption.FormProperty;
             formProperty?.Options.Add(formListOption);
 
-            _session.Transact(session =>
-            {
-                formListOption.OnSaving(session);
-                session.Save(formListOption);
-            });
+            await formListOption.OnSaving(_repository);
+            await _repository.Add(formListOption);
         }
 
-        private FormListOption GetFormListOption(int id)
+        private Task<FormListOption> GetFormListOption(int id)
         {
-            return _session.Get<FormListOption>(id);
+            return _repository.Load(id);
         }
 
-        public void Update(UpdateFormListOptionModel model)
+        public async Task Update(UpdateFormListOptionModel model)
         {
-            var formListOption = GetFormListOption(model.Id);
+            var formListOption = await GetFormListOption(model.Id);
             _mapper.Map(model, formListOption);
-            _session.Transact(session =>
-            {
-                formListOption.OnSaving(session);
-                session.Update(formListOption);
-            });
+            await formListOption.OnSaving(_repository);
+            await _repository.Update(formListOption);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var formListOption = GetFormListOption(id);
+            var formListOption = await GetFormListOption(id);
             if (formListOption == null)
             {
                 return;
@@ -56,7 +51,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             FormPropertyWithOptions formProperty = formListOption.FormProperty;
             formProperty?.Options.Remove(formListOption);
-            _session.Transact(session => session.Delete(formListOption));
+            await _repository.Delete(formListOption);
         }
 
         public AddFormListOptionModel GetAddModel(int formPropertyId)
@@ -64,9 +59,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return new AddFormListOptionModel { FormPropertyId = formPropertyId };
         }
 
-        public UpdateFormListOptionModel GetUpdateModel(int id)
+        public async Task<UpdateFormListOptionModel> GetUpdateModel(int id)
         {
-            return _mapper.Map<UpdateFormListOptionModel>(GetFormListOption(id));
+            return _mapper.Map<UpdateFormListOptionModel>(await GetFormListOption(id));
         }
     }
 }

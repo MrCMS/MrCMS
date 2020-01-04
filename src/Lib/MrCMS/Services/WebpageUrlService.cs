@@ -1,29 +1,35 @@
 using System;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class WebpageUrlService : IWebpageUrlService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISession _session;
         private readonly PageDefaultsSettings _settings;
+        private readonly IRepository<Webpage> _repository;
+        private readonly IRepository<PageTemplate> _pageTemplateRepository;
         private readonly IUrlValidationService _urlValidationService;
 
-        public WebpageUrlService(IUrlValidationService urlValidationService, ISession session, IServiceProvider serviceProvider,
+        public WebpageUrlService(
+            IRepository<Webpage> repository,
+            IRepository<PageTemplate> pageTemplateRepository,
+            IUrlValidationService urlValidationService, IServiceProvider serviceProvider,
             PageDefaultsSettings settings)
         {
+            _repository = repository;
+            _pageTemplateRepository = pageTemplateRepository;
             _urlValidationService = urlValidationService;
-            _session = session;
             _serviceProvider = serviceProvider;
             _settings = settings;
         }
 
-        public string Suggest(SuggestParams suggestParams)
+        public async Task<string> Suggest(SuggestParams suggestParams)
         {
             var documentType = suggestParams.DocumentType;
             var parts = documentType.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries);
@@ -34,20 +40,20 @@ namespace MrCMS.Services
             }
 
             IWebpageUrlGenerator generator = GetGenerator(suggestParams.DocumentType, suggestParams.Template);
-            var parent = suggestParams.ParentId.HasValue ? _session.Get<Webpage>(suggestParams.ParentId.Value) : null;
+            var parent = suggestParams.ParentId.HasValue ? _repository.GetDataSync(suggestParams.ParentId.Value) : null;
 
             string url = generator.GetUrl(suggestParams.PageName, parent, suggestParams.UseHierarchy);
 
             //make sure the URL is unique
 
-            if (!_urlValidationService.UrlIsValidForWebpage(url, suggestParams.WebpageId))
+            if (!await _urlValidationService.UrlIsValidForWebpage(url, suggestParams.WebpageId))
             {
                 int counter = 1;
 
-                while (!_urlValidationService.UrlIsValidForWebpage(string.Format("{0}-{1}", url, counter), suggestParams.WebpageId))
+                while (!await _urlValidationService.UrlIsValidForWebpage(string.Format("{0}-{1}", url, counter), suggestParams.WebpageId))
                     counter++;
 
-                url = string.Format("{0}-{1}", url, counter);
+                url = $"{url}-{counter}";
             }
             return url;
         }
@@ -58,7 +64,7 @@ namespace MrCMS.Services
             int id = template.GetValueOrDefault(0);
             if (id > 0)
             {
-                var pageTemplate = _session.Get<PageTemplate>(id);
+                var pageTemplate = _pageTemplateRepository.GetDataSync(id);
                 Type urlGeneratorType = pageTemplate.GetUrlGeneratorType();
                 if (pageTemplate != null && urlGeneratorType != null)
                 {

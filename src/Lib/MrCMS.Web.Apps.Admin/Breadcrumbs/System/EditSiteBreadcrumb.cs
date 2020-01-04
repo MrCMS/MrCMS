@@ -1,28 +1,30 @@
-﻿using MrCMS.Entities.Multisite;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
+using MrCMS.Entities.Multisite;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
 {
     public class EditSiteBreadcrumb : Breadcrumb<SitesBreadcrumb>
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Site> _repository;
 
-        public EditSiteBreadcrumb(ISession session)
+        public EditSiteBreadcrumb(IGlobalRepository<Site> repository)
         {
-            _session = session;
+            _repository = repository;
         }
         public override string Controller => "Sites";
         public override string Action => "Edit";
 
-        public override void Populate()
+        public override async Task Populate()
         {
             if (!Id.HasValue)
             {
                 return;
             }
 
-            var site = _session.Get<Site>(Id);
+            var site = await _repository.GetData(Id.Value);
             Name = site.Name;
         }
     }

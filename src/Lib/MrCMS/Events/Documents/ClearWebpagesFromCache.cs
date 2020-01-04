@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website.Caching;
 
 namespace MrCMS.Events.Documents
 {
-    public class ClearWebpagesFromCache : IOnUpdated<Webpage>
+    public class ClearWebpagesFromCache : OnDataUpdated<Webpage>
     {
         private readonly ICacheManager _cacheManager;
 
@@ -12,10 +14,12 @@ namespace MrCMS.Events.Documents
             _cacheManager = cacheManager;
         }
 
-        public void Execute(OnUpdatedArgs<Webpage> args)
+        public override Task Execute(ChangeInfo data)
         {
-            var cacheKey = "Webpage." + args.Item.Id;
+            var cacheKey = $"Webpage.{data.EntityId}";
             _cacheManager.Clear(cacheKey);
+            return Task.CompletedTask;
         }
+
     }
 }

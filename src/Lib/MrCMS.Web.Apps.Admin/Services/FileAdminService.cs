@@ -11,7 +11,7 @@ using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using NHibernate.Criterion;
 using NHibernate.Transform;
 using X.PagedList;
@@ -52,9 +52,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             _fileService.DeleteFile(mediaFile);
         }
 
-        public void SaveFile(MediaFile mediaFile)
+        public void UpdateFile(MediaFile mediaFile)
         {
-            _fileService.SaveFile(mediaFile);
+            _fileService.UpdateFile(mediaFile);
         }
 
         public bool IsValidFileType(string fileName)

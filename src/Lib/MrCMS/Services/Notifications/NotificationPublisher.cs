@@ -1,27 +1,32 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Services.Notifications
 {
     public class NotificationPublisher : INotificationPublisher
     {
-        private readonly ISession _session;
+        private readonly IRepository<Notification> _repository;
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly IEventContext _eventContext;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public NotificationPublisher(ISession session, IGetCurrentUser getCurrentUser, IEventContext eventContext)
+        public NotificationPublisher(IRepository<Notification> repository, IGetCurrentUser getCurrentUser, IEventContext eventContext, IHttpContextAccessor contextAccessor)
         {
-            _session = session;
+            _repository = repository;
             _getCurrentUser = getCurrentUser;
             _eventContext = eventContext;
+            _contextAccessor = contextAccessor;
         }
 
-        public void PublishNotification(string message, PublishType publishType = PublishType.Both, NotificationType notificationType = NotificationType.All)
+        public async Task PublishNotification(string message, PublishType publishType = PublishType.Both,
+            NotificationType notificationType = NotificationType.All)
         {
-            if (_session.GetContext().AreNotificationsDisabled())
+            if (_contextAccessor.HttpContext.AreNotificationsDisabled())
                 return;
 
             var notification = new Notification
@@ -33,31 +38,31 @@ namespace MrCMS.Services.Notifications
             switch (publishType)
             {
                 case PublishType.Transient:
-                    PushNotification(notification);
+                    await PushNotification(notification);
                     break;
                 case PublishType.Persistent:
-                    SaveNotification(notification);
+                    await SaveNotification(notification);
                     break;
                 case PublishType.Both:
-                    SaveNotification(notification);
-                    PushNotification(notification);
+                    await SaveNotification(notification);
+                    await PushNotification(notification);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("publishType");
             }
         }
 
-        private void SaveNotification(Notification notification)
+        private async Task SaveNotification(Notification notification)
         {
-            _session.Transact(session => session.Save(notification));
-            _eventContext.Publish<IOnPersistentNotificationPublished, OnPersistentNotificationPublishedEventArgs>(
+            await _repository.Add(notification);
+            await _eventContext.Publish<IOnPersistentNotificationPublished, OnPersistentNotificationPublishedEventArgs>(
                             new OnPersistentNotificationPublishedEventArgs(notification));
         }
 
-        private void PushNotification(Notification notification)
+        private async Task PushNotification(Notification notification)
         {
-            _eventContext.Publish<IOnTransientNotificationPublished, OnTransientNotificationPublishedEventArgs>(
-                            new OnTransientNotificationPublishedEventArgs(notification));
+            await _eventContext.Publish<IOnTransientNotificationPublished, OnTransientNotificationPublishedEventArgs>(
+                                       new OnTransientNotificationPublishedEventArgs(notification));
         }
     }
 }

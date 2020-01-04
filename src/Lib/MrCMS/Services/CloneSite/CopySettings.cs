@@ -1,25 +1,32 @@
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.Settings;
+using MrCMS.Events;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-100)]
     public class CopySettings : ICloneSiteParts
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Setting> _repository;
 
-        public CopySettings(ISession session)
+        public CopySettings(IGlobalRepository<Setting> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var fromProvider = new SqlConfigurationProvider(_session, @from);// _legacySettingsProvider);
-            var toProvider = new SqlConfigurationProvider(_session, @to);//, _legacySettingsProvider);
+            var eventContext = new NullEventContext();
+            var fromProvider = new SqlConfigurationProvider(_repository, @from, eventContext);// _legacySettingsProvider);
+            var toProvider = new SqlConfigurationProvider(_repository, @to, eventContext);//, _legacySettingsProvider);
             var siteSettingsBases = fromProvider.GetAllSiteSettings();
-            siteSettingsBases.ForEach(toProvider.SaveSettings);
+            foreach (var settings in siteSettingsBases)
+            {
+                await toProvider.SaveSettings(settings);
+            }
             //AppDataConfigurationProvider.ClearCache();
         }
     }

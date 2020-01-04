@@ -8,21 +8,20 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
 using MrCMS.Tasks;
-using NHibernate;
-using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MrCMS.Data;
 using Version = Lucene.Net.Util.LuceneVersion;
 
 namespace MrCMS.Indexing.Management
 {
     public abstract class IndexDefinition
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        protected IndexDefinition(IHostingEnvironment hostingEnvironment)
+        protected IndexDefinition(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -92,13 +91,13 @@ namespace MrCMS.Indexing.Management
             }
         }
 
-        protected readonly ISession Session;
+        protected readonly IRepositoryBase<T> Repository;
         private readonly IServiceProvider _serviceProvider;
 
-        protected IndexDefinition(ISession session, IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+        protected IndexDefinition(IRepositoryBase<T> repository, IWebHostEnvironment hostingEnvironment, IServiceProvider serviceProvider)
         : base(hostingEnvironment)
         {
-            Session = session;
+            Repository = repository;
             _serviceProvider = serviceProvider;
         }
 
@@ -219,7 +218,7 @@ namespace MrCMS.Indexing.Management
 
         public virtual T Convert(Document document)
         {
-            return Session.Get<T>(document.GetValue<int>(Id.FieldName));
+            return Repository.GetData<T>(document.GetValue<int>(Id.FieldName)).GetAwaiter().GetResult();
         }
 
         public virtual IEnumerable<T> Convert(IEnumerable<Document> documents)
@@ -229,10 +228,10 @@ namespace MrCMS.Indexing.Management
                 ids.Chunk(100)
                     .SelectMany(
                         ints =>
-                            Session.QueryOver<T>()
-                                .Where(arg => arg.Id.IsIn(ints.ToList()))
-                                .Cacheable()
-                                .List()
+                            Repository.Query<T>()
+                                .Where(arg => ints.Contains(arg.Id))
+                                //.Cacheable()
+                                .ToList()
                                 .OrderBy(arg => ids.IndexOf(arg.Id)));
         }
         public virtual IEnumerable<T2> Convert<T2>(IEnumerable<Document> documents) where T2 : T
@@ -242,10 +241,10 @@ namespace MrCMS.Indexing.Management
                 ids.Chunk(100)
                     .SelectMany(
                         ints =>
-                            Session.QueryOver<T2>()
-                                .Where(arg => arg.Id.IsIn(ints.ToList()))
-                                .Cacheable()
-                                .List()
+                            Repository.Query<T2>()
+                                .Where(arg => ints.Contains(arg.Id))
+                                //.Cacheable()
+                                .ToList()
                                 .OrderBy(arg => ids.IndexOf(arg.Id)));
         }
 

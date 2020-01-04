@@ -32,7 +32,7 @@ namespace MrCMS.Services.Auth
             
             var redirectUrl = loginModelReturnUrl ?? (user.IsAdmin ? "~/admin" : "/");
 
-            if (_securitySettings.TwoFactorAuthEnabled && user.Roles.Any(role => _roleSettings.TwoFactorAuthRoles.Contains(role.Id)))
+            if (_securitySettings.TwoFactorAuthEnabled && user.UserToRoles.Any(role => _roleSettings.TwoFactorAuthRoles.Contains(role.RoleId)))
                 return new LoginResult
                 {
                     User = user,

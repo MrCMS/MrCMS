@@ -18,9 +18,9 @@ namespace MrCMS.Installation.Services
     {
         private const string ConfigKey = "Database";
         private readonly IServiceProvider _serviceProvider;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-        public DatabaseCreationService(IServiceProvider serviceProvider, IHostingEnvironment environment)
+        public DatabaseCreationService(IServiceProvider serviceProvider, IWebHostEnvironment environment)
         {
             _serviceProvider = serviceProvider;
             _environment = environment;

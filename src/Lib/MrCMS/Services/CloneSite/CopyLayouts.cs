@@ -1,66 +1,82 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-90)]
     public class CopyLayouts : ICloneSiteParts
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Layout> _layoutRepository;
+        private readonly IGlobalRepository<LayoutArea> _layoutAreaRepository;
+        private readonly IGlobalRepository<Widget> _widgetRepository;
 
-        public CopyLayouts(ISession session)
+        public CopyLayouts(IGlobalRepository<Layout> layoutRepository,
+            IGlobalRepository<LayoutArea> layoutAreaRepository,
+            IGlobalRepository<Widget> widgetRepository
+            )
         {
-            _session = session;
+            _layoutRepository = layoutRepository;
+            _layoutAreaRepository = layoutAreaRepository;
+            _widgetRepository = widgetRepository;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             var copies = GetLayoutCopies(@from, to, siteCloneContext);
 
-            _session.Transact(session => copies.ForEach(layout =>
+            await _layoutRepository.Transact(async (repo, ct) =>
             {
-                session.Save(layout);
-                var layoutAreas = layout.LayoutAreas.ToList();
-                foreach (var layoutArea in layoutAreas)
+                foreach (var layout in copies)
                 {
-                    session.Save(layoutArea);
-                    layoutArea.Widgets.ForEach(widget => session.Save(widget));
+                    await repo.Add(layout,ct);
+                    var layoutAreas = layout.LayoutAreas.ToList();
+                    foreach (var layoutArea in layoutAreas)
+                    {
+                        await _layoutAreaRepository.Add(layoutArea,ct);
+                        foreach (var widget in layoutArea.Widgets)
+                        {
+                            await _widgetRepository.Add(widget, ct);
+                        }
+                    }
                 }
-            }));
+
+            });
         }
         private IEnumerable<Layout> GetLayoutCopies(Site @from, Site to, SiteCloneContext siteCloneContext, Layout fromParent = null, Layout toParent = null)
         {
-            var queryOver = _session.QueryOver<Layout>().Where(layout => layout.Site.Id == @from.Id);
+            var queryOver = _layoutRepository.Query().Where(layout => layout.Site.Id == @from.Id);
             queryOver = fromParent == null
                 ? queryOver.Where(layout => layout.Parent == null)
                 : queryOver.Where(layout => layout.Parent.Id == fromParent.Id);
-            var layouts = queryOver.List();
+            var layouts = queryOver.ToList();
 
             foreach (var layout in layouts)
             {
                 var copy = layout.GetCopyForSite(to);
                 siteCloneContext.AddEntry(layout, copy);
-                copy.LayoutAreas = layout.LayoutAreas.Select(area =>
-                {
-                    var areaCopy = area.GetCopyForSite(to);
-                    siteCloneContext.AddEntry(area, areaCopy);
-                    areaCopy.Layout = copy;
-                    areaCopy.Widgets = area.Widgets
-                        .Where(widget => widget.Webpage == null)
-                        .Select(widget =>
-                        {
-                            var widgetCopy = widget.GetCopyForSite(to);
-                            siteCloneContext.AddEntry(widget, widgetCopy);
-                            widgetCopy.LayoutArea = areaCopy;
-                            return widgetCopy;
-                        })
-                        .ToList();
-                    return areaCopy;
-                }).ToList();
+                copy.LayoutAreas = _layoutAreaRepository.Query().Where(x => x.LayoutId == layout.Id).ToList().Select(area =>
+                 {
+                     var areaCopy = area.GetCopyForSite(to);
+                     siteCloneContext.AddEntry(area, areaCopy);
+                     areaCopy.Layout = copy;
+                     areaCopy.Widgets = _widgetRepository.Query().Where(x => x.LayoutAreaId == area.Id).ToList()
+                         .Where(widget => widget.Webpage == null)
+                         .Select(widget =>
+                         {
+                             var widgetCopy = widget.GetCopyForSite(to);
+                             siteCloneContext.AddEntry(widget, widgetCopy);
+                             widgetCopy.LayoutArea = areaCopy;
+                             return widgetCopy;
+                         })
+                         .ToList();
+                     return areaCopy;
+                 }).ToList();
                 copy.Parent = toParent;
                 yield return copy;
                 foreach (var child in GetLayoutCopies(@from, to, siteCloneContext, layout, copy))

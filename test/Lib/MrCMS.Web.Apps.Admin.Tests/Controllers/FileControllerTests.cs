@@ -59,7 +59,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
             FileController fileController = GetFileController();
 
             var mediaFile = new MediaFile();
-            A.CallTo(() => _fileAdminService.SaveFile(mediaFile)).Throws(new Exception("Test exception"));
+            A.CallTo(() => _fileAdminService.UpdateFile(mediaFile)).Throws(new Exception("Test exception"));
             fileController.UpdateSEO(mediaFile, "test-title", "test-description")
                           .Should()
                           .Be("There was an error saving the SEO values: Test exception");

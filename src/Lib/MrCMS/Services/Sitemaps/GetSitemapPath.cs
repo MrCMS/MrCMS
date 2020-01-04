@@ -8,9 +8,9 @@ namespace MrCMS.Services.Sitemaps
 {
     public class GetSitemapPath : IGetSitemapPath
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public GetSitemapPath(IHostingEnvironment hostingEnvironment)
+        public GetSitemapPath(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

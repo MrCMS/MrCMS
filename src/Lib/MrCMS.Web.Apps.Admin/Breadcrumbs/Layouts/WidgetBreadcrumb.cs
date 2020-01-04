@@ -1,22 +1,23 @@
-﻿using MrCMS.Entities.Widget;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities.Widget;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Layouts
 {
     public class WidgetBreadcrumb : ItemBreadcrumb<WidgetsBreadcrumb, Widget>
     {
-        public WidgetBreadcrumb(ISession session) : base(session)
+        public WidgetBreadcrumb(IRepository<Widget> session) : base(session)
         {
         }
-        public override void Populate()
+        public override async Task Populate()
         {
             if (!Id.HasValue)
             {
                 return;
             }
 
-            var item = Session.Get<Widget>(Id.Value);
+            var item = await Repository.GetData(Id.Value);
             Name = string.IsNullOrWhiteSpace(item.Name) ? $"{item.Name} ({item.WidgetTypeFormatted})" : item.WidgetTypeFormatted;
             ParentActionArguments = CreateIdArguments(item.LayoutArea?.Id);
         }

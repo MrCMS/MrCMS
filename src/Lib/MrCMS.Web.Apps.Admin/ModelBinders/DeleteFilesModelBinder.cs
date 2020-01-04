@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
-using NHibernate.Criterion;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {

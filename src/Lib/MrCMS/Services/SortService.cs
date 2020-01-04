@@ -1,29 +1,33 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class SortService : ISortService
     {
-        private readonly ISession _session;
+        private readonly IRepositoryResolver _repositoryResolver;
 
-        public SortService(ISession session)
+        public SortService(IRepositoryResolver repositoryResolver)
         {
-            _session = session;
+            _repositoryResolver = repositoryResolver;
         }
 
-        public void Sort<T>(IList<SortItem> sortItems) where T : SiteEntity, ISortable
+        public async Task Sort<T>(IList<SortItem> sortItems) where T : SiteEntity, ISortable
         {
-            _session.Transact(session => sortItems.ForEach(item =>
+            await _repositoryResolver.GetRepository<T>().Transact(async (repo, ct) =>
             {
-                var entity = session.Get<T>(item.Id);
-                entity.DisplayOrder = item.Order;
-                session.Update(entity);
-            }));
+                foreach (var item in sortItems)
+                {
+                    var entity = await repo.Load(item.Id, ct);
+                    entity.DisplayOrder = item.Order;
+                    await repo.Update(entity, ct);
+                };
+            });
         }
 
         public IList<SortItem> GetSortItems<T>(List<T> items) where T : SiteEntity, ISortable

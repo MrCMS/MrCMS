@@ -3,7 +3,7 @@ using FluentAssertions;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
-using NHibernate;
+
 using Xunit;
 using MrCMS.Helpers;
 using MrCMS.TestSupport;

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
@@ -6,6 +7,6 @@ namespace MrCMS.Services
 {
     public interface ISaveFormFileUpload
     {
-        string SaveFile(Form form, FormPosting formPosting, IFormFile file);
+        Task<string> SaveFile(Form form, FormPosting formPosting, IFormFile file);
     }
 }

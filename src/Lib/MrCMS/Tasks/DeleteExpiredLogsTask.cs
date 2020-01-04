@@ -1,57 +1,53 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.Settings;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class DeleteExpiredLogsTask : SchedulableTask
     {
         private readonly SiteSettings _siteSettings;
-        private readonly IStatelessSession _statelessSession;
+        private readonly IRepository<Log> _repository;
         private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public DeleteExpiredLogsTask(SiteSettings siteSettings, IStatelessSession statelessSession, IGetDateTimeNow getDateTimeNow)
+        public DeleteExpiredLogsTask(SiteSettings siteSettings, IRepository<Log> repository, IGetDateTimeNow getDateTimeNow)
         {
             _siteSettings = siteSettings;
-            _statelessSession = statelessSession;
+            _repository = repository;
             _getDateTimeNow = getDateTimeNow;
         }
 
         public override int Priority { get { return 0; } }
 
-        protected override void OnExecute()
+        protected override async Task OnExecute(CancellationToken token)
         {
-            var logs = GetLogs();
+            var logs = await GetLogs(token);
 
             while (logs.Any())
             {
                 IList<Log> currentLogs = logs;
-                _statelessSession.Transact(session =>
-                {
-                    foreach (var log in currentLogs)
-                    {
-                        _statelessSession.Delete(log);
-                    }
-
-                });
-                logs = GetLogs();
+                await _repository.DeleteRange(currentLogs, token);
+                logs = await GetLogs(token);
             }
         }
 
-        private IList<Log> GetLogs()
+        private Task<List<Log>> GetLogs(CancellationToken token)
         {
             var now = _getDateTimeNow.LocalNow;
             return
-                _statelessSession.QueryOver<Log>()
+                _repository.Query()
                     .Where(data => data.CreatedOn <= now.AddDays(-_siteSettings.DaysToKeepLogs))
                     .Take(1000)
-                    .List();
+                    .ToListAsync(token);
         }
     }
 }

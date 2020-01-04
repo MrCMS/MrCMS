@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Settings;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

@@ -5,21 +5,22 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
     public class RoleStore : IQueryableRoleStore<UserRole>//, IRoleClaimStore<UserRole>
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<UserRole> _repository;
 
-        public RoleStore(ISession session)
+        public RoleStore(IGlobalRepository<UserRole> repository)
         {
-            _session = session;
+            _repository = repository;
         }
+
         public void Dispose()
         {
             //throw new NotImplementedException();
@@ -27,19 +28,19 @@ namespace MrCMS.Services
 
         public async Task<IdentityResult> CreateAsync(UserRole role, CancellationToken cancellationToken)
         {
-            await _session.TransactAsync((session, token) => session.SaveAsync(role, token), cancellationToken);
+            await _repository.Add(role);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> UpdateAsync(UserRole role, CancellationToken cancellationToken)
         {
-            await _session.TransactAsync((session, token) => session.UpdateAsync(role, token), cancellationToken);
+            await _repository.Update(role);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> DeleteAsync(UserRole role, CancellationToken cancellationToken)
         {
-            await _session.TransactAsync((session, token) => session.DeleteAsync(role, token), cancellationToken);
+            await _repository.Delete(role);
             return IdentityResult.Success;
         }
 
@@ -71,15 +72,15 @@ namespace MrCMS.Services
 
         public Task<UserRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            return int.TryParse(roleId, out int id) ? _session.GetAsync<UserRole>(id, cancellationToken) : Task.FromResult<UserRole>(null);
+            return int.TryParse(roleId, out int id) ? _repository.Load(id) : Task.FromResult<UserRole>(null);
         }
 
         public Task<UserRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            return _session.Query<UserRole>().WithOptions(x => x.SetCacheable(true))
+            return _repository.Query()
                 .FirstOrDefaultAsync(x => x.Name == normalizedRoleName, cancellationToken);
         }
 
-        public IQueryable<UserRole> Roles => _session.Query<UserRole>().WithOptions(x => x.SetCacheable(true));
+        public IQueryable<UserRole> Roles => _repository.Query<UserRole>();
     }
 }

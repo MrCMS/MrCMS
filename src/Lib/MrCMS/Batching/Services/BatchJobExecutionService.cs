@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ namespace MrCMS.Batching.Services
             }
         }
 
-        public async Task<BatchJobExecutionResult> Execute(BatchJob batchJob)
+        public async Task<BatchJobExecutionResult> Execute(BatchJob batchJob, CancellationToken token)
         {
             batchJob = batchJob.Unproxy();
             if (batchJob == null)
@@ -54,9 +55,9 @@ namespace MrCMS.Batching.Services
 
             try
             {
-                _setBatchJobExecutionStatus.Starting(batchJob);
-                var result = await batchJobExecutor.Execute(batchJob);
-                _setBatchJobExecutionStatus.Complete(batchJob, result);
+                await _setBatchJobExecutionStatus.Starting(batchJob);
+                var result = await batchJobExecutor.Execute(batchJob, token);
+                await _setBatchJobExecutionStatus.Complete(batchJob, result);
                 return result;
             }
             catch (Exception exception)

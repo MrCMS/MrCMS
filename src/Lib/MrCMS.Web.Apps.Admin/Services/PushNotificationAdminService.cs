@@ -1,7 +1,7 @@
 ﻿using MrCMS.Batching.Services;
 using MrCMS.Entities.People;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using System.Linq;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;

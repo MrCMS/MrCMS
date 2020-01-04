@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
-using NHibernate;
-using NHibernate.Linq;
 
 namespace MrCMS.Services.ImportExport
 {
@@ -19,7 +18,7 @@ namespace MrCMS.Services.ImportExport
             _urlHistoryRepository = urlHistoryRepository;
         }
 
-        public void SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
+        public async Task SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
         {
             List<string> urlsToAdd =
                 documentDto.UrlHistory.Where(
@@ -33,30 +32,30 @@ namespace MrCMS.Services.ImportExport
                     .ToList();
             if (!urlsToAdd.Any() && !urlsToRemove.Any())
                 return;
-            UpdateUrlHistories(webpage, urlsToAdd, urlsToRemove);
+            await UpdateUrlHistories(webpage, urlsToAdd, urlsToRemove);
         }
 
-        private void UpdateUrlHistories(Webpage webpage, List<string> urlsToAdd, List<UrlHistory> urlsToRemove)
+        private async Task UpdateUrlHistories(Webpage webpage, List<string> urlsToAdd, List<UrlHistory> urlsToRemove)
         {
-            _urlHistoryRepository.Transact(session =>
-            {
-                AddUrls(webpage, urlsToAdd);
+            await _urlHistoryRepository.Transact(async (repo, ct) =>
+             {
+                 await AddUrls(webpage, urlsToAdd);
 
-                RemoveUrls(webpage, urlsToRemove);
-            });
+                 await RemoveUrls(webpage, urlsToRemove);
+             });
         }
 
-        private void RemoveUrls(Webpage webpage, List<UrlHistory> urlsToRemove)
+        private async Task RemoveUrls(Webpage webpage, List<UrlHistory> urlsToRemove)
         {
             foreach (UrlHistory history in urlsToRemove)
             {
                 webpage.Urls.Remove(history);
                 history.Webpage = null;
-                _urlHistoryRepository.Update(history);
             }
+            await _urlHistoryRepository.UpdateRange(urlsToRemove);
         }
 
-        private void AddUrls(Webpage webpage, List<string> urlsToAdd)
+        private async Task AddUrls(Webpage webpage, List<string> urlsToAdd)
         {
             foreach (string item in urlsToAdd)
             {
@@ -66,13 +65,13 @@ namespace MrCMS.Services.ImportExport
                 if (isNew)
                 {
                     history = new UrlHistory { UrlSegment = item, Webpage = webpage };
-                    _urlHistoryRepository.Add(history);
+                    await _urlHistoryRepository.Add(history);
                 }
                 else
                     history.Webpage = webpage;
                 if (!webpage.Urls.Contains(history))
                     webpage.Urls.Add(history);
-                _urlHistoryRepository.Update(history);
+                await _urlHistoryRepository.Update(history);
             }
         }
     }

@@ -1,22 +1,23 @@
-﻿using MrCMS.Entities.Documents.Layout;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Layouts
 {
     public class LayoutAreaBreadcrumb : ItemBreadcrumb<LayoutAreasBreadcrumb, LayoutArea>
     {
-        public LayoutAreaBreadcrumb(ISession session) : base(session)
+        public LayoutAreaBreadcrumb(IRepository<LayoutArea> session) : base(session)
         {
         }
-        public override void Populate()
+        public override async Task Populate()
         {
             if (!Id.HasValue)
             {
                 return;
             }
 
-            var item = Session.Get<LayoutArea>(Id.Value);
+            var item = await Repository.GetData(Id.Value);
             Name = item.AreaName;
             ParentActionArguments = CreateIdArguments(item.Layout?.Id);
         }

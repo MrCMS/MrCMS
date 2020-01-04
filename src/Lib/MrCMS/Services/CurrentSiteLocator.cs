@@ -1,7 +1,9 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -10,27 +12,29 @@ namespace MrCMS.Services
 {
     public class CurrentSiteLocator : ICurrentSiteLocator
     {
-        private readonly IRepository<Site> _siteRepository;
+        private readonly IGlobalRepository<Site> _siteRepository;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IConfiguration _configuration;
         private Site _currentSite;
 
-        public CurrentSiteLocator(IRepository<Site> siteRepository, IHttpContextAccessor contextAccessor)
+        public CurrentSiteLocator(IGlobalRepository<Site> siteRepository, IHttpContextAccessor contextAccessor, IConfiguration configuration)
         {
             _siteRepository = siteRepository;
             _contextAccessor = contextAccessor;
+            _configuration = configuration;
         }
 
-        public Site GetCurrentSite()
+        public async Task<Site> GetCurrentSite()
         {
-            return _currentSite ?? (_currentSite = GetSiteFromSettingForDebugging() ?? GetSiteFromRequest());
+            return _currentSite ?? (_currentSite = await GetSiteFromSettingForDebugging() ?? GetSiteFromRequest());
         }
 
-        private Site GetSiteFromSettingForDebugging()
+        private async Task<Site> GetSiteFromSettingForDebugging()
         {
-            var appSetting = ConfigurationManager.AppSettings["debugSiteId"];
+            var appSetting = _configuration["debugSiteId"];
 
             int id;
-            return int.TryParse(appSetting, out id) ? _siteRepository.Get(id) : null;
+            return int.TryParse(appSetting, out id) ? await _siteRepository.GetData(id) : null;
         }
 
         private Site GetSiteFromRequest()

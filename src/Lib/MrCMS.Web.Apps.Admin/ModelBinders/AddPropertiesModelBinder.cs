@@ -3,15 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {
     public class AddPropertiesModelBinder : IModelBinder
     {
-        public Task BindModelAsync(ModelBindingContext bindingContext)
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var typeName =
                 bindingContext.ValueProvider.GetValue("type").FirstValue.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries)
@@ -26,7 +26,8 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
                 int id;
                 if (int.TryParse(parentId, out id) && bindModel != null)
                 {
-                    bindModel.Parent = bindingContext.HttpContext.RequestServices.GetRequiredService<ISession>().Get<Webpage>(id);
+                    bindModel.Parent = await bindingContext.HttpContext.RequestServices
+                        .GetRequiredService<IRepository<Webpage>>().GetData(id);
                 }
 
                 bindingContext.Result = ModelBindingResult.Success(bindModel);
@@ -35,7 +36,6 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             {
                 bindingContext.Result = ModelBindingResult.Failed();
             }
-            return Task.CompletedTask;
 
         }
     }

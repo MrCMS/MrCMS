@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
@@ -20,9 +22,9 @@ namespace MrCMS.Website
             GetTasks().Add(task);
         }
 
-        public void ExecuteTasks()
+        public Task ExecuteTasks(CancellationToken token)
         {
-            _onEndRequestExecutor.ExecuteTasks(GetTasks());
+            return _onEndRequestExecutor.ExecuteTasks(GetTasks(), token);
         }
 
         public HashSet<EndRequestTask> GetTasks()

@@ -1,61 +1,66 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using Newtonsoft.Json;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class MoveFile : AdHocTask
     {
+        private readonly IRepository<MediaFile> _mediaFileRepository;
+        private readonly IRepository<ResizedImage> _resizedImageRepository;
         private readonly IEnumerable<IFileSystem> _fileSystems;
-        private readonly ISession _session;
 
-        public MoveFile(IServiceProvider kernel, ISession session)
+        public MoveFile(IServiceProvider kernel, IRepository<MediaFile> mediaFileRepository, IRepository<ResizedImage> resizedImageRepository)
         {
+            _mediaFileRepository = mediaFileRepository;
+            _resizedImageRepository = resizedImageRepository;
             _fileSystems =
                 TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
                     .Select(type => kernel.GetService(type) as IFileSystem)
                     .ToList();
-            _session = session;
         }
 
         public override int Priority => 0;
 
         private MoveFileData FileData { get; set; }
 
-        protected override void OnExecute()
+        protected override async Task OnExecute(CancellationToken token)
         {
-            _session.Transact(session =>
-            {
-                var file = _session.Get<MediaFile>(FileData.FileId);
-                var from = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.From);
-                var to = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.To);
+            await _mediaFileRepository.Transact(async (repo, ct) =>
+             {
+                 var file = await repo.Load(FileData.FileId, ct);
+                 var from = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.From);
+                 var to = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.To);
 
-                // remove resized images (they will be regenerated on the to system)
-                foreach (var resizedImage in file.ResizedImages.ToList())
-                {
-                    // check for resized file having same url as the original - 
-                    // do not delete from disc yet in that case, or else it will cause an error when copying
-                    if (resizedImage.Url != file.FileUrl) from.Delete(resizedImage.Url);
-                    file.ResizedImages.Remove(resizedImage);
-                    session.Delete(resizedImage);
-                }
+                 // remove resized images (they will be regenerated on the to system)
+                 foreach (var resizedImage in await _resizedImageRepository.Query().Where(x => x.MediaFileId == file.Id).ToListAsync(ct))
+                 {
+                     // check for resized file having same url as the original - 
+                     // do not delete from disc yet in that case, or else it will cause an error when copying
+                     if (resizedImage.Url != file.FileUrl) from.Delete(resizedImage.Url);
+                     file.ResizedImages.Remove(resizedImage);
+                     await _resizedImageRepository.Delete(resizedImage, ct);
+                 }
 
-                var existingUrl = file.FileUrl;
-                using (var readStream = from.GetReadStream(existingUrl))
-                {
-                    file.FileUrl = to.SaveFile(readStream, GetNewFilePath(file),
-                        file.ContentType);
-                }
+                 var existingUrl = file.FileUrl;
+                 await using (var readStream = from.GetReadStream(existingUrl))
+                 {
+                     file.FileUrl = to.SaveFile(readStream, GetNewFilePath(file),
+                         file.ContentType);
+                 }
 
-                from.Delete(existingUrl);
+                 from.Delete(existingUrl);
 
-                session.Update(file);
-            });
+                 await repo.Update(file, ct);
+             }, token);
         }
 
         private string GetNewFilePath(MediaFile file)

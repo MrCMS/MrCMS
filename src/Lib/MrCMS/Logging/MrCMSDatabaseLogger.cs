@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MrCMS.Data;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using Newtonsoft.Json;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Logging
 {
@@ -25,7 +25,7 @@ namespace MrCMS.Logging
                 return;
             var context = _contextAccessor.HttpContext;
             var currentSiteLocator = context.RequestServices.GetRequiredService<ICurrentSiteLocator>();
-            var session = context.RequestServices.GetRequiredService<ISession>();
+            var repository = context.RequestServices.GetRequiredService<IRepository<Log>>();
             var log = new Log
             {
                 LogLevel = logLevel,
@@ -33,9 +33,9 @@ namespace MrCMS.Logging
                 RequestData = GetRequestData(context),
                 Message = formatter(state, exception),
                 Detail = exception?.StackTrace,
-                Site = currentSiteLocator.GetCurrentSite()
+                Site = currentSiteLocator.GetCurrentSite().GetAwaiter().GetResult()
             };
-            session.Transact(s => s.Save(log));
+            repository.Add(log).GetAwaiter().GetResult();
         }
 
         private string GetRequestData(HttpContext httpContext)

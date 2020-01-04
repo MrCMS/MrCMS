@@ -1,4 +1,5 @@
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Website.PushNotifications;
 
@@ -20,17 +21,17 @@ namespace MrCMS.Website.Controllers
         }
 
         [HttpPost("push-notifications")]
-        public IActionResult Create([FromBody] PushNotificationSubscription subscription)
+        public async Task<IActionResult> Create([FromBody] PushNotificationSubscription subscription)
         {
-            var result = _manager.CreateSubscription(subscription);
+            var result = await _manager.CreateSubscription(subscription);
 
             return GetResult(result);
         }
 
         [HttpDelete("push-notifications")]
-        public IActionResult Delete(string endpoint)
+        public async Task<IActionResult> Delete(string endpoint)
         {
-            var result = _manager.RemoveSubscription(endpoint);
+            var result = await _manager.RemoveSubscription(endpoint);
 
             return GetResult(result);
         }

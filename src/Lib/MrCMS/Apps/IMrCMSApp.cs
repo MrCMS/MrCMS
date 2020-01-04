@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Website.CMS;
-using NHibernate.Cfg;
 
 namespace MrCMS.Apps
 {
@@ -28,6 +27,6 @@ namespace MrCMS.Apps
         IRouteBuilder MapRoutes(IRouteBuilder routeBuilder);
         void SetupMvcOptions(MvcOptions options);
         void ConfigureAutomapper(IMapperConfigurationExpression expression);
-        void AppendConfiguration(Configuration configuration);
+        //void AppendConfiguration(Configuration configuration);
     }
 }

@@ -4,7 +4,9 @@ namespace MrCMS.Batching.Entities
 {
     public class BatchRunResult : SiteEntity, IHaveJobExecutionStatus
     {
+        public int BatchRunId { get; set; }
         public virtual BatchRun BatchRun { get; set; }
+        public int BatchJobId { get; set; }
         public virtual BatchJob BatchJob { get; set; }
         public virtual int ExecutionOrder { get; set; }
 

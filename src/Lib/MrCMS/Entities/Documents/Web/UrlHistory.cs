@@ -8,5 +8,6 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string UrlSegment { get; set; }
 
         public virtual Webpage Webpage { get; set; }
+        public int WebpageId { get; set; }
     }
 }

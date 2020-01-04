@@ -46,8 +46,9 @@ namespace MrCMS.DbConfiguration
         {
             try
             {
-                var provider = GetProvider(connectionString);
-                new NHibernateConfigurator(provider, new MrCMSAppContext()).CreateSessionFactory();
+                // TODO - db live test
+                //var provider = GetProvider(connectionString);
+                //new NHibernateConfigurator(provider, new MrCMSAppContext()).CreateSessionFactory();
                 return true;
             }
             catch

@@ -8,7 +8,6 @@ using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {

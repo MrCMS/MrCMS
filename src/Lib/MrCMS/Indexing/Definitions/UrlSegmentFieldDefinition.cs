@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
@@ -10,22 +11,19 @@ using MrCMS.Indexing.Management;
 using MrCMS.Services;
 using MrCMS.Tasks;
 using MrCMS.Website;
-using NHibernate;
-using NHibernate.Mapping;
-using NHibernate.Transform;
 
 namespace MrCMS.Indexing.Definitions
 {
     public class UrlSegmentFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
-        private readonly IStatelessSession _statelessSession;
+        private readonly IRepository<UrlHistory> _repository;
         private readonly IServiceProvider _serviceProvider;
         private readonly IGetLiveUrl _getLiveUrl;
 
-        public UrlSegmentFieldDefinition(ILuceneSettingsService luceneSettingsService, IStatelessSession statelessSession, IServiceProvider serviceProvider, IGetLiveUrl getLiveUrl)
+        public UrlSegmentFieldDefinition(ILuceneSettingsService luceneSettingsService, IRepository<UrlHistory> repository, IServiceProvider serviceProvider, IGetLiveUrl getLiveUrl)
             : base(luceneSettingsService, "urlsegment")
         {
-            _statelessSession = statelessSession;
+            _repository = repository;
             _serviceProvider = serviceProvider;
             _getLiveUrl = getLiveUrl;
         }
@@ -61,12 +59,16 @@ namespace MrCMS.Indexing.Definitions
         protected override Dictionary<Webpage, IEnumerable<string>> GetValues(List<Webpage> objs)
         {
             UrlHistoryMap map = null;
-            var urlHistoryDatas = _statelessSession.QueryOver<UrlHistory>().SelectList(builder =>
-                    builder.Select(history => history.Webpage.Id).WithAlias(() => map.WebpageId)
-                        .Select(history => history.UrlSegment).WithAlias(() => map.Url))
-                .TransformUsing(Transformers.AliasToBean<UrlHistoryMap>())
-                .Cacheable()
-                .List<UrlHistoryMap>().Select(history => history.ToData()).ToHashSet();
+            var urlHistoryDatas =
+                _repository.Readonly().Select(history => new UrlHistoryData
+                        {WebpageId = history.Webpage.Id, Url = history.UrlSegment})
+                    .ToHashSet();
+                //_statelessSession.QueryOver<UrlHistory>().SelectList(builder =>
+                //    builder.Select(history => history.Webpage.Id).WithAlias(() => map.WebpageId)
+                //        .Select(history => history.UrlSegment).WithAlias(() => map.Url))
+                //.TransformUsing(Transformers.AliasToBean<UrlHistoryMap>())
+                //.Cacheable()
+                //.List<UrlHistoryMap>().Select(history => history.ToData()).ToHashSet();
 
             var dictionary = urlHistoryDatas.GroupBy(data => data.WebpageId)
                 .ToDictionary(datas => datas.Key, datas => datas.Select(data => data.Url).ToHashSet());

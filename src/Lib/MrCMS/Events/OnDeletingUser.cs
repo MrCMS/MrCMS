@@ -1,18 +1,22 @@
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingUser : IOnDeleting<User>
+    public class OnDeletingUser : OnDataDeleting<User>
     {
-        public void Execute(OnDeletingArgs<User> args)
-        {
-            User user = args.Item;
-            if (user == null)
-                return;
 
-            foreach (UserRole userRole in user.Roles)
-                userRole.Users.Remove(user);
-            user.Roles.Clear();
+        public override Task<IResult> OnDeleting(User entity, DbContext dbContext)
+        {
+            //foreach (UserRole userRole in entity.UserToRoles)
+            //    userRole.Users.Remove(entity);
+            //entity.Roles.Clear();
+
+            //return Success;
+            return Success;
         }
     }
 }

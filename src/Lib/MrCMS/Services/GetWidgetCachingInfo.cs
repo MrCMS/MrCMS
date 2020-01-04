@@ -22,7 +22,7 @@ namespace MrCMS.Services
 
         public CachingInfo Get(int id)
         {
-            return Get(_repository.Get(id));
+            return Get(_repository.LoadSync(id));
         }
 
         public CachingInfo Get(Widget widget)

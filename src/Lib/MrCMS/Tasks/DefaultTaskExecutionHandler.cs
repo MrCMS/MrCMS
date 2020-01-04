@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MrCMS.Website;
 
@@ -24,21 +26,21 @@ namespace MrCMS.Tasks
             return newList;
         }
 
-        public List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list)
+        public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
             _taskStatusUpdater.BeginExecution(list);
-            var results = list.Select(Execute).ToList();
+            var results = await Task.WhenAll(list.Select(task => Execute(task, token)));
 
             // we are batching these to increase performance (no need for 1 transaction per update)
             _taskStatusUpdater.CompleteExecution(results);
-            return results;
+            return results.ToList();
         }
 
-        private TaskExecutionResult Execute(AdHocTask executableTask)
+        private async Task<TaskExecutionResult> Execute(AdHocTask executableTask, CancellationToken token)
         {
             try
             {
-                return executableTask.Execute();
+                return await executableTask.Execute(token);
             }
             catch (Exception exception)
             {

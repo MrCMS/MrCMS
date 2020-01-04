@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Helpers;
-using NHibernate;
+
 
 namespace MrCMS.Website
 {
@@ -62,8 +63,8 @@ namespace MrCMS.Website
                 return null;
             }
 
-            return await context.HttpContext.RequestServices.GetRequiredService<ISession>()
-                       .GetAsync(type, id) ??
+            return await context.HttpContext.RequestServices.GetRequiredService<IDataReader>()
+                       .GlobalGet(type, id) ??
                    GetDefault(type);
         }
         public static async Task<TEntity> GetEntityById<TEntity>(this ModelBindingContext context)

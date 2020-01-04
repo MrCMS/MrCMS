@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Website;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services
 {
     public class UserLookup : IUserLookup
     {
+        private readonly IGlobalRepository<User> _repository;
         private readonly IEnumerable<IExternalUserSource> _externalUserSources;
         private readonly IGetDateTimeNow _getDateTimeNow;
-        private readonly ISession _session;
 
-        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources, IGetDateTimeNow getDateTimeNow)
+        public UserLookup(IGlobalRepository<User> repository, IEnumerable<IExternalUserSource> externalUserSources, IGetDateTimeNow getDateTimeNow)
         {
-            _session = session;
+            _repository = repository;
             _externalUserSources = externalUserSources;
             _getDateTimeNow = getDateTimeNow;
         }
@@ -26,7 +27,7 @@ namespace MrCMS.Services
         {
             var trimmedEmail = (email ?? string.Empty).Trim();
             var user =
-                _session.QueryOver<User>().Where(u => u.Email == trimmedEmail).Take(1).Cacheable().SingleOrDefault();
+                _repository.Query().FirstOrDefault(u => u.Email == trimmedEmail);
             if (user != null)
                 return user;
 
@@ -42,23 +43,22 @@ namespace MrCMS.Services
         public User GetUserByResetGuid(Guid resetGuid)
         {
             return
-                _session.QueryOver<User>()
-                    .Where(
+                _repository.Query()
+                    .FirstOrDefault(
                         user =>
-                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= _getDateTimeNow.UtcNow)
-                    .Cacheable().SingleOrDefault();
+                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= _getDateTimeNow.UtcNow);
         }
 
         public User GetUserByGuid(Guid guid)
         {
-            return _session.QueryOver<User>()
-                    .Where(user => user.Guid == guid)
-                    .Cacheable().SingleOrDefault();
+            return
+                _repository.Query()
+                    .FirstOrDefault(user => user.Guid == guid);
         }
 
         public User GetUserById(int id)
         {
-            return _session.Get<User>(id);
+            return _repository.LoadSync(id);
         }
 
         public User GetCurrentUser(HttpContext context)

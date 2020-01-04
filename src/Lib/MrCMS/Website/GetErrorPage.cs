@@ -20,12 +20,12 @@ namespace MrCMS.Website
             switch (code)
             {
                 case 404:
-                    return _webpageRepository.Get(_siteSettings.Error404PageId);
+                    return _webpageRepository.LoadSync(_siteSettings.Error404PageId);
                 case 401:
                 case 403:
-                    return _webpageRepository.Get(_siteSettings.Error403PageId);
+                    return _webpageRepository.LoadSync(_siteSettings.Error403PageId);
                 case 500:
-                    return _webpageRepository.Get(_siteSettings.Error500PageId);
+                    return _webpageRepository.LoadSync(_siteSettings.Error500PageId);
                 default:
                     return null;
             }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching;
 using MrCMS.Batching.CoreJobs;
 using MrCMS.Batching.Entities;
@@ -24,7 +25,7 @@ namespace MrCMS.Services.ImportExport
             _controlBatchRun = controlBatchRun;
         }
 
-        public Batch CreateBatch(List<DocumentImportDTO> items, bool autoStart = true)
+        public async Task<Batch> CreateBatch(List<DocumentImportDTO> items, bool autoStart = true)
         {
             List<BatchJob> jobs = items.Select(item => new ImportDocumentBatchJob
             {
@@ -38,9 +39,9 @@ namespace MrCMS.Services.ImportExport
                     IndexName = definition.FullName
                 }));
 
-            BatchCreationResult batchCreationResult = _createBatch.Create(jobs);
+            BatchCreationResult batchCreationResult = await _createBatch.Create(jobs);
             if (autoStart)
-                _controlBatchRun.Start(batchCreationResult.InitialBatchRun);
+               await _controlBatchRun.Start(batchCreationResult.InitialBatchRun);
             return batchCreationResult.Batch;
         }
     }

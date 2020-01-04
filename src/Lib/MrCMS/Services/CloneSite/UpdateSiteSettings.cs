@@ -1,26 +1,30 @@
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.Settings;
+using MrCMS.Events;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-65)]
     public class UpdateSiteSettings : ICloneSiteParts
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Setting> _repository;
 
-        public UpdateSiteSettings(ISession session)
+        public UpdateSiteSettings(IGlobalRepository<Setting> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var fromProvider = new SqlConfigurationProvider(_session,@from);
+            var nullEventContext = new NullEventContext();
+            var fromProvider = new SqlConfigurationProvider(_repository, @from, nullEventContext);
             var fromSiteSettings = fromProvider.GetSiteSettings<SiteSettings>();
-            var toProvider = new SqlConfigurationProvider(_session, @to);
+            var toProvider = new SqlConfigurationProvider(_repository, @to, nullEventContext);
             var toSiteSettings = toProvider.GetSiteSettings<SiteSettings>();
 
             var error403 = siteCloneContext.FindNew<Webpage>(fromSiteSettings.Error403PageId);
@@ -35,7 +39,7 @@ namespace MrCMS.Services.CloneSite
             var layout = siteCloneContext.FindNew<Layout>(fromSiteSettings.DefaultLayoutId);
             if (layout != null) toSiteSettings.DefaultLayoutId = layout.Id;
 
-            toProvider.SaveSettings(toSiteSettings);
+            return toProvider.SaveSettings(toSiteSettings);
         }
     }
 }

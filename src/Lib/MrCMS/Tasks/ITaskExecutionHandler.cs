@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MrCMS.Tasks
 {
@@ -6,6 +8,6 @@ namespace MrCMS.Tasks
     {
         int Priority { get; }
         IList<AdHocTask> ExtractTasksToHandle(ref IList<AdHocTask> list);
-        List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list);
+        Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token);
     }
 }

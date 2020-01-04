@@ -1,45 +1,48 @@
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services.Events;
 using MrCMS.Services.Events.Args;
-using NHibernate;
 using X.PagedList;
 
 namespace MrCMS.Services
 {
     public class UserManagementService : IUserManagementService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<User> _repository;
         private readonly IEventContext _eventContext;
 
-        public UserManagementService(ISession session, IEventContext eventContext)
+        public UserManagementService(IGlobalRepository<User> repository, IEventContext eventContext)
         {
-            _session = session;
+            _repository = repository;
             _eventContext = eventContext;
         }
 
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
-            _session.Transact(session => { session.Save(user); });
-            _eventContext.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
+            await _repository.Add(user);
+            await _eventContext.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
         }
 
-        public void SaveUser(User user)
+        public async Task SaveUser(User user)
         {
-            _session.Transact(session => session.Update(user));
+            await _repository.Update(user);
         }
 
-        public User GetUser(int id)
+        public Task<User> GetUser(int id)
         {
-            return _session.Get<User>(id);
+            return _repository.Load(id);
         }
 
-        public void DeleteUser(int id)
+        public async Task DeleteUser(int id)
         {
-            var user = GetUser(id);
+            var user = await GetUser(id);
             if (user == null)
                 return;
-            _session.Transact(session => session.Delete(user));
+            await _repository.Delete(user);
         }
 
         /// <summary>
@@ -48,19 +51,19 @@ namespace MrCMS.Services
         /// <param name="email"></param>
         /// <param name="id">The id of user to exclude from check. Has to be string because of AdditionFields on Remote property</param>
         /// <returns></returns>
-        public bool IsUniqueEmail(string email, int? id = null)
+        public Task<bool> IsUniqueEmail(string email, int? id = null)
         {
             if (id.HasValue)
             {
-                return _session.QueryOver<User>().Where(u => u.Email == email && u.Id != id.Value).RowCount() == 0;
+                return _repository.Query().AnyAsync(u => u.Email == email && u.Id != id.Value);
             }
 
-            return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
+            return _repository.Query().AnyAsync(u => u.Email == email);
         }
 
-        public IPagedList<User> GetAllUsersPaged(int page)
+        public Task<IPagedList<User>> GetAllUsersPaged(int page)
         {
-            return _session.QueryOver<User>().Paged(page);
+            return _repository.Query().ToPagedListAsync(page, 10);
         }
     }
 }

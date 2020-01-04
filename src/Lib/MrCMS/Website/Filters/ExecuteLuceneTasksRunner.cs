@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Tasks;
 
 namespace MrCMS.Website.Filters
@@ -12,9 +14,9 @@ namespace MrCMS.Website.Filters
             _queuedTaskRunner = queuedTaskRunner;
         }
 
-        public override void Execute(IEnumerable<int> data)
+        public override async Task Execute(IEnumerable<int> data, CancellationToken token)
         {
-            _queuedTaskRunner.ExecuteLuceneTasks();
+            await _queuedTaskRunner.ExecuteLuceneTasks(token);
         }
     }
 }

@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using NHibernate;
-using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 
 namespace MrCMS.Services
 {
@@ -24,12 +24,27 @@ namespace MrCMS.Services
         IQueryableUserStore<User>,
         IUserLoginStore<User>
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<User> _repository;
+        private readonly IGlobalRepository<UserClaim> _userClaimRepository;
+        private readonly IGlobalRepository<UserLogin> _userLoginRepository;
+        private readonly IGlobalRepository<UserRole> _roleRepository;
+        private readonly IQueryableRepository<UserToRole> _userToRoleRepository;
 
-        public UserStore(ISession session)
+        public UserStore(
+            IGlobalRepository<User> repository,
+            IGlobalRepository<UserClaim> userClaimRepository,
+            IGlobalRepository<UserLogin> userLoginRepository,
+            IGlobalRepository<UserRole> roleRepository,
+            IQueryableRepository<UserToRole> userToRoleRepository
+            )
         {
-            _session = session;
+            _repository = repository;
+            _userClaimRepository = userClaimRepository;
+            _userLoginRepository = userLoginRepository;
+            _roleRepository = roleRepository;
+            _userToRoleRepository = userToRoleRepository;
         }
+
         public void Dispose()
         {
         }
@@ -61,32 +76,32 @@ namespace MrCMS.Services
 
         public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            await _session.TransactAsync((session, token) => session.SaveAsync(user, token), cancellationToken);
+            await _repository.Add(user, cancellationToken);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
-            await _session.TransactAsync((session, token) => session.UpdateAsync(user, token), cancellationToken);
+            await _repository.Update(user, cancellationToken);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
-            await _session.TransactAsync((session, token) => session.DeleteAsync(user, token), cancellationToken);
+            await _repository.Delete(user, cancellationToken);
             return IdentityResult.Success;
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return int.TryParse(userId, out int id)
-                ? _session.GetAsync<User>(id, cancellationToken)
+                ? _repository.Load(id, cancellationToken)
                 : Task.FromResult<User>(null);
         }
 
         public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return _session.Query<User>().WithOptions(x => x.SetCacheable(true))
+            return _repository.Query()
                 .FirstOrDefaultAsync(x => x.Email == normalizedUserName, cancellationToken);
         }
 
@@ -104,24 +119,25 @@ namespace MrCMS.Services
                 return new List<UserClaim>();
             }
 
-            var userClaims = await _session.Query<UserClaim>().Where(x => x.User.Id == user.Id)
-                .WithOptions(options => options.SetCacheable(true))
+            var userClaims = await _userClaimRepository.Query().Where(x => x.UserId == user.Id)
+                //.WithOptions(options => options.SetCacheable(true))
                 .ToListAsync(cancellationToken);
             return userClaims;
         }
 
-        public Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        public async Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
         {
             var userClaims = claims.Select(claim => MapUserClaim(claim, user));
-            return _session.TransactAsync(async (session, token) =>
-             {
-                 foreach (var userClaim in userClaims)
-                 {
-                     await session.SaveAsync(userClaim, token);
-                     user.UserClaims.Add(userClaim);
-                 }
-                 await session.UpdateAsync(user, token);
-             }, cancellationToken);
+            await _repository.Transact(async (repo, ct) =>
+            {
+                foreach (var userClaim in userClaims)
+                {
+                    user.UserClaims.Add(userClaim);
+                }
+
+                await _userClaimRepository.AddRange(userClaims.ToList(), ct);
+                await repo.Update(user, ct);
+            }, cancellationToken);
         }
 
         private static UserClaim MapUserClaim(Claim claim, User user)
@@ -141,15 +157,15 @@ namespace MrCMS.Services
             var existingUserClaim = existingClaims.FirstOrDefault(x => x.Claim == claim.Type);
             var newUserClaim = MapUserClaim(newClaim, user);
 
-            await _session.TransactAsync(async (session, token) =>
+            await _repository.Transact(async (repo, ct) =>
             {
-                await session.DeleteAsync(existingUserClaim, token);
+                await _userClaimRepository.Delete(existingUserClaim, ct);
                 user.UserClaims.Remove(existingUserClaim);
 
-                await session.SaveAsync(newUserClaim, token);
+                await _userClaimRepository.Add(newUserClaim, ct);
                 user.UserClaims.Add(newUserClaim);
 
-                await session.UpdateAsync(user, token);
+                await repo.Update(user, ct);
             }, cancellationToken);
 
         }
@@ -157,7 +173,7 @@ namespace MrCMS.Services
         public async Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
         {
             var existingClaims = await GetUserClaimsAsync(user, cancellationToken);
-            await _session.TransactAsync(async (session, token) =>
+            await _repository.Transact(async (repo, ct) =>
             {
                 foreach (var claim in claims)
                 {
@@ -167,19 +183,19 @@ namespace MrCMS.Services
                         continue;
                     }
 
-                    await session.DeleteAsync(existingUserClaim, token);
+                    await _userClaimRepository.Delete(existingUserClaim, ct);
                     user.UserClaims.Remove(existingUserClaim);
                 }
-                await session.UpdateAsync(user, token);
+
+                await repo.Update(user, ct);
             }, cancellationToken);
         }
 
         public async Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
         {
-            return await _session.Query<UserClaim>()
+            return await _userClaimRepository.Query<UserClaim>()
                 .Where(x => x.Claim == claim.Type && x.Value == claim.Value)
-                .WithOptions(options => options.SetCacheable(true))
-                .Fetch(x => x.User)
+                .Include(x => x.User)
                 .Select(x => x.User)
                 .ToListAsync(cancellationToken);
         }
@@ -209,7 +225,7 @@ namespace MrCMS.Services
 
         public Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
-            return _session.Query<User>().WithOptions(x => x.SetCacheable(true))
+            return _repository.Query()
                 .FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
         }
 
@@ -228,21 +244,14 @@ namespace MrCMS.Services
             var role = await GetRoleByName(roleName, cancellationToken);
             if (role != null)
             {
-                if (!user.Roles.Contains(role))
+                var userToRole = new UserToRole { RoleId = role.Id, UserId = user.Id };
+                if (user.UserToRoles.All(x => x.RoleId != role.Id))
                 {
-                    user.Roles.Add(role);
+                    user.UserToRoles.Add(userToRole);
                 }
 
-                if (!role.Users.Contains(user))
-                {
-                    role.Users.Add(user);
-                }
 
-                await _session.TransactAsync(async (session, token) =>
-                {
-                    await session.UpdateAsync(user, cancellationToken);
-                    await session.UpdateAsync(role, cancellationToken);
-                }, cancellationToken);
+                await _repository.Update(user, cancellationToken);
             }
         }
 
@@ -250,9 +259,8 @@ namespace MrCMS.Services
         {
             if (roleName == null)
                 return null;
-            var role = await _session.Query<UserRole>().WithOptions(x => x.SetCacheable(true))
+            return await _roleRepository.Query()
                 .FirstOrDefaultAsync(x => x.Name.ToUpper() == roleName.ToUpper(), cancellationToken);
-            return role;
         }
 
         public async Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
@@ -260,20 +268,17 @@ namespace MrCMS.Services
             var role = await GetRoleByName(roleName, cancellationToken);
             if (role != null)
             {
-                if (user.Roles.Contains(role))
+                var existingRoleMapping = user.UserToRoles.FirstOrDefault(x => x.RoleId == role.Id);
+                if (existingRoleMapping != null)
                 {
-                    user.Roles.Remove(role);
+                    user.UserToRoles.Remove(existingRoleMapping);
+                    role.UserToRoles.Remove(existingRoleMapping);
                 }
 
-                if (role.Users.Contains(user))
+                await _repository.Transact(async (repo, token) =>
                 {
-                    role.Users.Remove(user);
-                }
-
-                await _session.TransactAsync(async (session, token) =>
-                {
-                    await session.UpdateAsync(user, cancellationToken);
-                    await session.UpdateAsync(role, cancellationToken);
+                    await repo.Update(user, token);
+                    await repo.Update(user, token);
                 }, cancellationToken);
             }
 
@@ -282,20 +287,21 @@ namespace MrCMS.Services
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
-            return user.Roles.Select(x => x.Name).ToList();
+            return await _userToRoleRepository.Readonly().Where(x => x.UserId == user.Id).Select(x => x.Role.Name)
+                .ToListAsync(cancellationToken);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
-            var role = await GetRoleByName(roleName, cancellationToken);
-            return user.Roles.Contains(role);
+            return await _userToRoleRepository.Readonly()
+                .AnyAsync(x => x.UserId == user.Id && x.Role.Name == roleName, cancellationToken);
         }
 
         public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            var role = await GetRoleByName(roleName, cancellationToken);
-            return role.Users.ToList();
+            return await _userToRoleRepository.Query().Where(x => x.Role.Name == roleName).Select(x => x.User)
+                           .ToListAsync(cancellationToken);
         }
 
         //public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
@@ -369,7 +375,7 @@ namespace MrCMS.Services
         //    throw new NotImplementedException();
         //}
 
-        public IQueryable<User> Users => _session.Query<User>().WithOptions(x => x.SetCacheable(true));
+        public IQueryable<User> Users => _repository.Query();
         public async Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken)
         {
             var userLogin = new UserLogin
@@ -380,10 +386,10 @@ namespace MrCMS.Services
                 User = user
             };
             user.UserLogins.Add(userLogin);
-            await _session.TransactAsync(async (session, token) =>
+            await _userLoginRepository.Transact(async (repo, token) =>
             {
-                await session.SaveAsync(userLogin, token);
-                await session.UpdateAsync(user, token);
+                await repo.Add(userLogin, token);
+                await _repository.Update(user, token);
             }, cancellationToken);
 
         }
@@ -394,11 +400,11 @@ namespace MrCMS.Services
                 user.UserLogins.FirstOrDefault(l => l.ProviderKey == providerKey && l.LoginProvider == loginProvider);
             if (userLogin != null)
             {
-                await _session.TransactAsync(async (session, token) =>
+                await _userLoginRepository.Transact(async (repo, token) =>
                 {
                     user.UserLogins.Remove(userLogin);
-                    await session.DeleteAsync(userLogin, cancellationToken);
-                    await session.UpdateAsync(user, cancellationToken);
+                    await repo.Delete(userLogin, token);
+                    await _repository.Update(user, token);
                 }, cancellationToken);
             }
         }
@@ -414,7 +420,7 @@ namespace MrCMS.Services
 
         public Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            return _session.Query<UserLogin>()
+            return _userLoginRepository.Query()
                     .Where(
                         userLogin =>
                             userLogin.ProviderKey == providerKey &&

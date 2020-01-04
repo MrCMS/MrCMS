@@ -1,4 +1,5 @@
-﻿using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
+﻿using System.Threading.Tasks;
+using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
 {
@@ -6,12 +7,13 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
     {
         public override string Controller => "Batch";
         public override string Action => "Show";
-        public override void Populate()
+        public override Task Populate()
         {
             if (Id.HasValue)
             {
                 Name = $"Batch #{Id}";
             }
+            return Task.CompletedTask;
         }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services.Resources;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
 {

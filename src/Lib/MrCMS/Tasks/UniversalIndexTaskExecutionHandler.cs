@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Search;
 using MrCMS.Services;
 
@@ -34,7 +36,7 @@ namespace MrCMS.Tasks
             return executableTasks;
         }
 
-        public List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list)
+        public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
             _taskStatusUpdater.BeginExecution(list);
             List<UniversalSearchIndexData> data =
@@ -43,7 +45,7 @@ namespace MrCMS.Tasks
                     .Distinct(UniversalSearchIndexData.Comparer)
                     .ToList();
 
-            UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, data, _eventContext);
+            await UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, data, _eventContext);
             List<TaskExecutionResult> results = list.Select(TaskExecutionResult.Successful).ToList();
             _taskStatusUpdater.CompleteExecution(results);
             return results;

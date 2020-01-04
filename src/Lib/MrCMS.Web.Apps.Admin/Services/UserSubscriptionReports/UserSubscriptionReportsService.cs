@@ -4,7 +4,7 @@ using System.Linq;
 using MrCMS.Entities.People;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.UserSubscriptionReports;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services.UserSubscriptionReports
 {

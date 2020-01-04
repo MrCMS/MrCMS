@@ -1,4 +1,5 @@
-﻿using MrCMS.Installation;
+﻿using System.Threading.Tasks;
+using MrCMS.Installation;
 using MrCMS.Installation.Models;
 using MrCMS.Installation.Services;
 
@@ -22,12 +23,12 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             get { return -1; }
         }
 
-        public void Install(InstallModel model)
+        public async Task Install(InstallModel model)
         {
             //settings
-            _setupCoreLayouts.Setup();
-            _setupCoreWebpages.Setup();
-            _setupCoreMedia.Setup();
+            await _setupCoreLayouts.Setup();
+            await _setupCoreWebpages.Setup();
+            await _setupCoreMedia.Setup();
         }
     }
 

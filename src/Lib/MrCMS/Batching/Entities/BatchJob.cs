@@ -7,6 +7,7 @@ namespace MrCMS.Batching.Entities
     {
         public virtual string Data { get; set; }
         public virtual int Tries { get; set; }
+        public int BatchId { get; set; }
         public virtual Batch Batch { get; set; }
         public virtual IList<BatchRunResult> BatchRunResults { get; set; }
         public abstract string Name { get; }

@@ -1,59 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class TaskStatusUpdater : ITaskStatusUpdater
     {
-        private readonly ISession _session;
+        private readonly IRepository<QueuedTask> _taskRepository;
 
-        public TaskStatusUpdater(ISession session)
+        public TaskStatusUpdater(IRepository<QueuedTask> taskRepository)
         {
-            _session = session;
+            _taskRepository = taskRepository;
         }
 
-        public void BeginExecution(IEnumerable<AdHocTask> executableTasks)
+        public async Task BeginExecution(IEnumerable<AdHocTask> executableTasks)
         {
-            SetStatus(executableTasks, (status, task) => status.OnStarting(task));
+            await SetStatus(executableTasks.ToList(), (status, task) => status.OnStarting(task));
         }
 
-        public void CompleteExecution(IEnumerable<TaskExecutionResult> results)
+        public async Task CompleteExecution(IEnumerable<TaskExecutionResult> results)
         {
             IList<TaskExecutionResult> taskExecutionResults = results as IList<TaskExecutionResult> ?? results.ToList();
-            _session.Transact(session =>
+            await _taskRepository.Transact(async (repo, ct) =>
                               {
-                                  SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
-                                  FailedExecution(taskExecutionResults.Where(result => !result.Success));
+                                  await SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
+                                  await FailedExecution(taskExecutionResults.Where(result => !result.Success).ToList());
                               });
         }
 
-        private void SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
+        private async Task SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
         {
-            SetStatus(executableTasks.Select(result => result.Task), (status, task) => status.OnSuccess(task));
+            await SetStatus(executableTasks.Select(result => result.Task).ToList(), (status, task) => status.OnSuccess(task));
         }
 
-        private void FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
+        private async Task FailedExecution(ICollection<TaskExecutionResult> taskFailureInfos)
         {
-            _session.Transact(session => taskFailureInfos.ForEach(
-                taskFailureInfo =>
+            await _taskRepository.Transact(async (repo, ct) =>
+            {
+                taskFailureInfos.ForEach(
+                    taskFailureInfo =>
+                    {
+                        AdHocTask executableTask = taskFailureInfo.Task;
+                        executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
+                    });
+                await repo.UpdateRange(taskFailureInfos.Select(x => x.Task.Entity).ToList(), ct);
+            });
+        }
+
+        private async Task SetStatus(ICollection<AdHocTask> executableTasks,
+            Action<QueuedTask, AdHocTask> action)
+        {
+            await _taskRepository.Transact(async (repo, ct) =>
+            {
+                executableTasks.ForEach(task =>
                 {
-                    AdHocTask executableTask = taskFailureInfo.Task;
-                    executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
-                    session.Update(executableTask.Entity);
-                }));
-        }
-
-        private void SetStatus(IEnumerable<AdHocTask> executableTasks,
-            Action<IHaveExecutionStatus, AdHocTask> action)
-        {
-            _session.Transact(session => executableTasks.ForEach(task =>
-                                                                 {
-                                                                     action(task.Entity, task);
-                                                                     session.Update(task.Entity);
-                                                                 }));
+                    action(task.Entity, task);
+                });
+                await repo.UpdateRange(executableTasks.Select(x => x.Entity).ToList(), ct);
+            });
         }
     }
 }

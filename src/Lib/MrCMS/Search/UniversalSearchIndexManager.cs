@@ -12,6 +12,7 @@ using MrCMS.Website;
 using StackExchange.Profiling;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Search
 {
@@ -84,7 +85,7 @@ namespace MrCMS.Search
             {
                 return;
             }
-            
+
             var data = new UniversalSearchIndexData
             {
                 Action = UniversalSearchIndexAction.Delete,
@@ -97,19 +98,19 @@ namespace MrCMS.Search
             }
         }
 
-        public void ReindexAll()
+        public async Task ReindexAll()
         {
             InitializeIndex();
-            Write(writer =>
-            {
-                using (MiniProfiler.Current.Step("Reindexing"))
-                {
-                    foreach (var document in _universalSearchItemGenerator.GetAllItems())
-                    {
-                        writer.AddDocument(document);
-                    }
-                }
-            });
+            await Write(async writer =>
+             {
+                 using (MiniProfiler.Current.Step("Reindexing"))
+                 {
+                     foreach (var document in await _universalSearchItemGenerator.GetAllItems())
+                     {
+                         writer.AddDocument(document);
+                     }
+                 }
+             });
         }
 
         public void Optimise()
@@ -143,7 +144,7 @@ namespace MrCMS.Search
             };
         }
 
-        public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
+        public async Task Write(Func<IndexWriter, Task> writeFunc, bool recreateIndex = false)
         {
             if (recreateIndex)
             {
@@ -152,7 +153,7 @@ namespace MrCMS.Search
 
             using (var indexWriter = _getLuceneIndexWriter.Get(FolderName, GetAnalyser()))
             {
-                writeFunc(indexWriter);
+                await writeFunc(indexWriter);
                 indexWriter.Commit();
             }
 
@@ -184,9 +185,9 @@ namespace MrCMS.Search
             }
         }
 
-        private void InitializeIndex()
+        private async Task InitializeIndex()
         {
-            Write(writer => { }, true);
+            await Write(writer => Task.CompletedTask, true);
         }
 
         public virtual Analyzer GetAnalyser()

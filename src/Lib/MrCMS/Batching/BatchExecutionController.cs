@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Batching.Entities;
@@ -19,9 +20,9 @@ namespace MrCMS.Batching
 
         [TaskExecutionKeyPasswordAuth]
         [Route(BaseURL)]
-        public async Task<JsonResult> ExecuteNext(Guid? id)
+        public async Task<JsonResult> ExecuteNext(Guid? id, CancellationToken token)
         {
-            var result = id == null ? null : await _batchExecutionService.ExecuteNextTask(id.GetValueOrDefault());
+            var result = id == null ? null : await _batchExecutionService.ExecuteNextTask(id.GetValueOrDefault(), token);
             if (result != null) _batchExecutionService.ExecuteRequestForNextTask(id.GetValueOrDefault());
             return Json(result);
         }

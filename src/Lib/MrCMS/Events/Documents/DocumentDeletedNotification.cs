@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
@@ -5,24 +7,29 @@ using MrCMS.Services.Notifications;
 
 namespace MrCMS.Events.Documents
 {
-    public class DocumentDeletedNotification : IOnDeleted<Document>
+    public class DocumentDeletedNotification : OnDataDeleted<Document>
     {
         private readonly IDocumentModifiedUser _documentModifiedUser;
+        private readonly IRepository<Document> _document;
         private readonly INotificationPublisher _notificationPublisher;
 
         public DocumentDeletedNotification(INotificationPublisher notificationPublisher,
-            IDocumentModifiedUser documentModifiedUser)
+            IDocumentModifiedUser documentModifiedUser,
+            IRepository<Document> document)
         {
             _notificationPublisher = notificationPublisher;
             _documentModifiedUser = documentModifiedUser;
+            _document = document;
         }
 
-        public void Execute(OnDeletedArgs<Document> args)
+        public override async Task Execute(EntityData data)
         {
-            string message = string.Format("{1} {0} has been deleted{2}.", args.Item.Name,
-                args.Item.GetAdminController(), _documentModifiedUser.GetInfo());
+            var document = await _document.GetData(data.EntityId);
+            string message = string.Format("{1} {0} has been deleted{2}.", document.Name,
+                document.GetAdminController(), _documentModifiedUser.GetInfo());
 
-            _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
+            await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
+
     }
 }

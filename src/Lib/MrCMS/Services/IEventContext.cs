@@ -1,12 +1,13 @@
 using System;
+using System.Threading.Tasks;
 using MrCMS.Events;
 
 namespace MrCMS.Services
 {
     public interface IEventContext
     {
-        void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>;
-        void Publish(Type eventType, object args);
+        Task Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>;
+        Task Publish(Type eventType, object args);
 
         /// <summary>
         /// Disables the publishing of events of the specified type in the event context until the result is disposed

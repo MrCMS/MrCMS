@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingMediaCategory : IOnDeleting<MediaCategory>
+    public class OnDeletingMediaCategory : OnDataDeleting<MediaCategory>
     {
         private readonly IFileService _fileService;
 
@@ -14,18 +18,17 @@ namespace MrCMS.Events
             _fileService = fileService;
         }
 
-        public void Execute(OnDeletingArgs<MediaCategory> args)
+
+        public override Task<IResult> OnDeleting(MediaCategory entity, DbContext dbContext)
         {
-            MediaCategory category = args.Item;
-            if (category == null)
-                return;
-            List<MediaFile> mediaFiles = category.Files.ToList();
+            List<MediaFile> mediaFiles = entity.Files.ToList();
 
             foreach (MediaFile mediaFile in mediaFiles)
             {
                 _fileService.DeleteFile(mediaFile);
             }
-            _fileService.RemoveFolder(category);
+            _fileService.RemoveFolder(entity);
+            return Success; 
         }
     }
 }

@@ -4,7 +4,7 @@ using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models.Notifications;
-using NHibernate;
+
 using NHibernate.Transform;
 
 namespace MrCMS.Web.Apps.Admin.Services

@@ -4,7 +4,7 @@ using MrCMS.DbConfiguration;
 
 namespace MrCMS.Entities
 {
-    public abstract class SystemEntity
+    public abstract class SystemEntity : IHaveId
     {
         private Guid _guid;
 
@@ -15,7 +15,7 @@ namespace MrCMS.Entities
 
         public virtual int Id { get; set; }
 
-        [DbNotNullable, ShouldMap]
+        //[DbNotNullable, ShouldMap]
         public virtual Guid Guid
         {
             get { return _guid; }

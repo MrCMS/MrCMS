@@ -1,29 +1,31 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Website.Controllers
 {
     public class AzureProbeController : MrCMSUIController
     {
         private readonly AzureProbeSettings _azureProbeSettings;
-        private readonly IStatelessSession _session;
+        private readonly IGlobalRepository<Site> _repository;
 
-        public AzureProbeController(AzureProbeSettings azureProbeSettings, IStatelessSession session)
+        public AzureProbeController(AzureProbeSettings azureProbeSettings, IGlobalRepository<Site> repository)
         {
             _azureProbeSettings = azureProbeSettings;
-            _session = session;
+            _repository = repository;
         }
 
-        public ActionResult KeepAlive()
+        public async Task<ActionResult> KeepAlive()
         {
             var item = HttpContext.Request.Query[_azureProbeSettings.Key].ToString();
             if (string.IsNullOrWhiteSpace(item) || item != _azureProbeSettings.Password)
                 return new StatusCodeResult(403);
 
-            return new StatusCodeResult(!_session.QueryOver<Site>().Any() ? 500 : 200);
+            return new StatusCodeResult(!await _repository.Query().AnyAsync() ? 500 : 200);
         }
     }
 }

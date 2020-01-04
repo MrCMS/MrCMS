@@ -2,35 +2,31 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
     public class RedirectedDomainController : MrCMSAdminController
     {
         private readonly IRedirectedDomainService _redirectedDomainService;
-        private readonly ISession _session;
 
-        public RedirectedDomainController(IRedirectedDomainService redirectedDomainService, ISession session)
+        public RedirectedDomainController(IRedirectedDomainService redirectedDomainService)
         {
             _redirectedDomainService = redirectedDomainService;
-            _session = session;
         }
 
         [HttpGet]
         public PartialViewResult Add(Site site)
         {
-            return PartialView(new RedirectedDomain {Site = site});
+            return PartialView(new RedirectedDomain { Site = site });
         }
 
         [HttpPost]
         public RedirectToActionResult Add(string url, int siteId)
         {
-            var site = _session.Get<Site>(siteId);
-            var rd = new RedirectedDomain(){Site = site, Url = url};
-            
+            var rd = new RedirectedDomain { SiteId = siteId, Url = url };
+
             _redirectedDomainService.Save(rd);
-            return RedirectToAction("Edit", "Sites", new {id = rd.Site.Id});
+            return RedirectToAction("Edit", "Sites", new { id = rd.Site.Id });
         }
 
         public PartialViewResult Delete(RedirectedDomain domain)
@@ -43,7 +39,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public RedirectToActionResult Delete_POST(int id, int siteId)
         {
             _redirectedDomainService.Delete(id);
-            return RedirectToAction("Edit", "Sites", new {id = siteId});
+            return RedirectToAction("Edit", "Sites", new { id = siteId });
         }
     }
 }

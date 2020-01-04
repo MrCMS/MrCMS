@@ -5,7 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Settings;
-using NHibernate;
+
 using Xunit;
 using MrCMS.Helpers;
 using System.Linq;

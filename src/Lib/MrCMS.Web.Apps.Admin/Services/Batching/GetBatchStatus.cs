@@ -1,6 +1,6 @@
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services.Batching
 {

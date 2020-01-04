@@ -6,7 +6,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;

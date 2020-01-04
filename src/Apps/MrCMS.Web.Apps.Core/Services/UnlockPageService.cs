@@ -1,34 +1,35 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
     public class UnlockPageService : IUnlockPageService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
         private readonly IUniquePageService _uniquePageService;
         private readonly IPasswordProtectedPageChecker _checker;
 
-        public UnlockPageService(ISession session, IUniquePageService uniquePageService, IPasswordProtectedPageChecker checker)
+        public UnlockPageService(IRepository<Webpage> repository, IUniquePageService uniquePageService, IPasswordProtectedPageChecker checker)
         {
-            _session = session;
+            _repository = repository;
             _uniquePageService = uniquePageService;
             _checker = checker;
         }
-        public Webpage GetLockedPage(int id)
+        public Task<Webpage> GetLockedPage(int id)
         {
-            return _session.Get<Webpage>(id);
+            return _repository.GetData(id);
         }
 
-        public UnlockPageResult TryUnlockPage(UnlockPageModel model, IResponseCookies cookies)
+        public async Task<UnlockPageResult> TryUnlockPage(UnlockPageModel model, IResponseCookies cookies)
         {
-            var page = GetLockedPage(model.LockedPage);
+            var page = await GetLockedPage(model.LockedPage);
             // if it's not found, we'll just redirect back and let the GET handle the page not being found
             if (page == null)
             {
@@ -46,22 +47,22 @@ namespace MrCMS.Web.Apps.Core.Services
             if (isMatch)
             {
                 _checker.GiveAccessToPage(page, cookies);
-                return new UnlockPageResult { Success = true, LockedPageId = page.Id};
+                return new UnlockPageResult { Success = true, LockedPageId = page.Id };
             }
 
             return new UnlockPageResult { Success = false, LockedPageId = page.Id };
         }
 
-        public RedirectResult RedirectToPage(int id)
+        public async Task<RedirectResult> RedirectToPage(int id)
         {
-            var page = GetLockedPage(id);
+            var page = await GetLockedPage(id);
             return new RedirectResult($"~/{page.UrlSegment}");
 
         }
 
         public RedirectResult RedirectBackToPage(UnlockPageModel model)
         {
-            return _uniquePageService.RedirectTo<WebpagePasswordPage>(new {lockedPage = model.LockedPage});
+            return _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = model.LockedPage });
         }
     }
 }

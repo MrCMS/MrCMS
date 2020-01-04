@@ -6,7 +6,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Messages;
 using MrCMS.Services;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

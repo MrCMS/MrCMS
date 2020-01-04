@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 
 namespace MrCMS.Models
 {
-    [DoNotMap]
     public class PageWidgetSortModel
     {
         public PageWidgetSortModel()

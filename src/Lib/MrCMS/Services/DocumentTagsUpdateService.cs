@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 
@@ -8,24 +10,29 @@ namespace MrCMS.Services
 {
     public class DocumentTagsUpdateService : IDocumentTagsUpdateService
     {
+        private readonly IJoinTableRepository<DocumentTag> _documentTagRepository;
+        private readonly IGetExistingTag _getExistingTag;
         private readonly IRepository<Document> _documentRepository;
         private readonly IRepository<Tag> _tagRepository;
-        private readonly IGetExistingTag _getExistingTag;
 
-        public DocumentTagsUpdateService(IRepository<Document> documentRepository, IRepository<Tag> tagRepository, IGetExistingTag getExistingTag)
+        public DocumentTagsUpdateService(IJoinTableRepository<DocumentTag> documentTagRepository,
+            IRepository<Document> documentRepository,
+            IRepository<Tag> tagRepository,
+            IGetExistingTag getExistingTag)
         {
+            _documentTagRepository = documentTagRepository;
             _documentRepository = documentRepository;
             _tagRepository = tagRepository;
             _getExistingTag = getExistingTag;
         }
 
-        public void SetTags(string taglist, int id)
+        public async Task SetTags(string taglist, int id)
         {
-            var document = _documentRepository.Get(id);
-            SetTags(taglist, document);
+            var document = _documentRepository.LoadSync(id);
+            await SetTags(taglist, document);
         }
 
-        public void SetTags(string taglist, Document document)
+        public async Task SetTags(string taglist, Document document)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
 
@@ -33,21 +40,23 @@ namespace MrCMS.Services
                 taglist = string.Empty;
 
             var tagNames =
-                taglist.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
+                taglist.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
                     x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-            SetTags(tagNames, document);
+            await SetTags(tagNames, document);
         }
 
-        public void SetTags(List<string> taglist, Document document)
+        public async Task SetTags(List<string> taglist, Document document)
         {
+            var existingTags = await _documentTagRepository.Query().Where(x => x.DocumentId == document.Id)
+                .Include(x => x.Tag).ToListAsync();
             var tagsToAdd =
                taglist.Where(
-                   s => !document.Tags.Select(tag => tag.Name).Contains(s, StringComparer.InvariantCultureIgnoreCase))
+                   s => !existingTags.Select(tag => tag.Tag.Name).Contains(s, StringComparer.InvariantCultureIgnoreCase))
                    .ToList();
             var tagsToRemove =
-                document.Tags.Where(
-                    tag => !taglist.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
+                existingTags.Where(
+                    tag => !taglist.Contains(tag.Tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
             foreach (var item in tagsToAdd)
             {
                 var tag = _getExistingTag.GetTag(item);
@@ -55,21 +64,29 @@ namespace MrCMS.Services
                 if (isNew)
                 {
                     tag = new Tag { Name = item };
-                    _tagRepository.Add(tag);
+                    await _tagRepository.Add(tag);
                 }
-                if (!document.Tags.Contains(tag))
-                    document.Tags.Add(tag);
 
-                if (!tag.Documents.Contains(document))
-                    tag.Documents.Add(document);
-                _tagRepository.Update(tag);
+                var documentTag = new DocumentTag
+                {
+                    Document = document,
+                    Tag = tag
+                };
+                document.DocumentTags.Add(documentTag);
+                tag.DocumentTags.Add(documentTag);
+
+                await _documentTagRepository.Add(documentTag);
             }
 
-            foreach (var tag in tagsToRemove)
+            if (tagsToRemove.Any())
             {
-                document.Tags.Remove(tag);
-                tag.Documents.Remove(document);
-                _tagRepository.Update(tag);
+                foreach (var tag in tagsToRemove)
+                {
+                    document.DocumentTags.Remove(tag);
+                    tag.Tag.DocumentTags.Remove(tag);
+                }
+
+                await _documentTagRepository.DeleteRange(tagsToRemove);
             }
         }
     }

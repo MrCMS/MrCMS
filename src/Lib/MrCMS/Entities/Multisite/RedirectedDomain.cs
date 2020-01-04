@@ -6,6 +6,7 @@ namespace MrCMS.Entities.Multisite
     {
         [Required]
         public virtual string Url { get; set; }
+        public int SiteId { get; set; }
         public virtual Site Site { get; set; }
     }
 }

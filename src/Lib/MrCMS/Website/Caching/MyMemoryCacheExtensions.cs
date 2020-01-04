@@ -70,6 +70,18 @@ namespace MrCMS.Website.Caching
 
             return (TItem)result;
         }
+        public static async Task<TItem> GetOrCreate<TItem>(this IClearableInMemoryCache cache, object key, Func<ICacheEntry, Task<TItem>> factory)
+        {
+            if (!cache.TryGetValue(key, out var result))
+            {
+                var entry = cache.CreateEntry(key);
+                result = await factory(entry);
+                entry.SetValue(result);
+                entry.Dispose();
+            }
+
+            return (TItem)result;
+        }
 
         public static async Task<TItem> GetOrCreateAsync<TItem>(this IClearableInMemoryCache cache, object key, Func<ICacheEntry, Task<TItem>> factory)
         {

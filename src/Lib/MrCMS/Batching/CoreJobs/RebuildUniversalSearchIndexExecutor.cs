@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MrCMS.Search;
 
@@ -13,15 +14,11 @@ namespace MrCMS.Batching.CoreJobs
             _universalSearchIndexManager = universalSearchIndexManager;
         }
 
-        protected override BatchJobExecutionResult OnExecute(RebuildUniversalSearchIndex batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(RebuildUniversalSearchIndex batchJob,
+            CancellationToken token)
         {
-            _universalSearchIndexManager.ReindexAll();
+            await _universalSearchIndexManager.ReindexAll();
             return BatchJobExecutionResult.Success();
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(RebuildUniversalSearchIndex batchJob)
-        {
-            throw new NotImplementedException();
         }
     }
 }

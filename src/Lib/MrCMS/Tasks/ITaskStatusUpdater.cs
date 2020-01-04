@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Tasks
 {
     public interface ITaskStatusUpdater
     {
-        void BeginExecution(IEnumerable<AdHocTask> executableTasks);
-        void CompleteExecution(IEnumerable<TaskExecutionResult> results);
+        Task BeginExecution(IEnumerable<AdHocTask> executableTasks);
+        Task CompleteExecution(IEnumerable<TaskExecutionResult> results);
     }
 }

@@ -1,19 +1,20 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
-using NHibernate;
+
 
 namespace MrCMS.Website
 {
     public class SitemapPlaceholderUIService : ISitemapPlaceholderUIService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
         private readonly IGetLiveUrl _getLiveUrl;
 
-        public SitemapPlaceholderUIService(ISession session, IGetLiveUrl getLiveUrl)
+        public SitemapPlaceholderUIService(IRepository<Webpage> repository, IGetLiveUrl getLiveUrl)
         {
-            _session = session;
+            _repository = repository;
             _getLiveUrl = getLiveUrl;
         }
 
@@ -23,9 +24,9 @@ namespace MrCMS.Website
                 return new RedirectResult("~");
 
             var child =
-                _session.QueryOver<Webpage>().Where(webpage => webpage.Parent.Id == page.Id && webpage.Published)
-                    .OrderBy(webpage => webpage.DisplayOrder).Asc
-                    .Take(1).Cacheable().List().FirstOrDefault();
+                _repository.Query().Where(webpage => webpage.ParentId == page.Id && webpage.Published)
+                    .OrderBy(webpage => webpage.DisplayOrder)
+                    .FirstOrDefault();
 
             if (child == null)
                 return new RedirectResult("~");
@@ -40,10 +41,10 @@ namespace MrCMS.Website
         private string GetTheLastRedirectChildLink(Webpage sitemapPlaceholder)
         {
             var child =
-                _session.QueryOver<Webpage>()
-                    .Where(webpage => webpage.Parent.Id == sitemapPlaceholder.Id && webpage.Published)
-                    .OrderBy(webpage => webpage.DisplayOrder).Asc
-                    .Take(1).Cacheable().List().FirstOrDefault();
+                _repository.Query()
+                    .Where(webpage => webpage.ParentId == sitemapPlaceholder.Id && webpage.Published)
+                    .OrderBy(webpage => webpage.DisplayOrder)
+                    .FirstOrDefault();
 
             if (child == null)
                 return string.Empty;

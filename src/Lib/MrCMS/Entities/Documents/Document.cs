@@ -10,32 +10,33 @@ namespace MrCMS.Entities.Documents
         protected Document()
         {
             Versions = new List<DocumentVersion>();
-            Tags = new HashSet<Tag>();
+            DocumentTags = new List<DocumentTag>();
         }
 
         [Required]
         [StringLength(255)]
         public virtual string Name { get; set; }
 
+        public int? ParentId { get; set; }
         public virtual Document Parent { get; set; }
 
         [Required]
-        [DisplayName("Display Order")]
+        [DisplayName("Display Priority")]
         public virtual int DisplayOrder { get; set; }
 
         public virtual string UrlSegment { get; set; }
 
-        public virtual ISet<Tag> Tags { get; set; }
+        public virtual IList<DocumentTag> DocumentTags { get; set; }
 
         public virtual string TagList
         {
-            get { return string.Join(",", Tags.Select(x => x.Name)); }
+            get { return string.Join(",", DocumentTags.Select(x => x.Tag.Name)); }
         }
 
-        public virtual int ParentId
-        {
-            get { return Parent == null ? 0 : Parent.Id; }
-        }
+        //public virtual int ParentId
+        //{
+        //    get { return Parent == null ? 0 : Parent.Id; }
+        //}
 
         public virtual string DocumentType
         {

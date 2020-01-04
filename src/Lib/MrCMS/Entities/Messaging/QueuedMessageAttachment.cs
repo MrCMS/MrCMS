@@ -2,6 +2,7 @@ namespace MrCMS.Entities.Messaging
 {
     public class QueuedMessageAttachment : SiteEntity
     {
+        public int QueuedMessageId { get; set; }
         public virtual QueuedMessage QueuedMessage { get; set; }
 
         public virtual byte[] Data { get; set; }

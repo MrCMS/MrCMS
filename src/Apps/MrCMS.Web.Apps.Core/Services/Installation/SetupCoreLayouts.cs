@@ -1,72 +1,72 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Core.Widgets;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
 {
     public class SetupCoreLayouts : ISetupCoreLayouts
     {
-        private readonly ISession _session;
+        private readonly IRepository<Layout> _layoutRepository;
+        private readonly IRepository<LayoutArea> _layoutAreaRepository;
+        private readonly IRepository<Widget> _widgetRepository;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public SetupCoreLayouts(ISession session, IConfigurationProvider configurationProvider)
+        public SetupCoreLayouts(IRepository<Layout> layoutRepository,
+            IRepository<LayoutArea> layoutAreaRepository,
+            IRepository<Widget> widgetRepository,
+            IConfigurationProvider configurationProvider)
         {
-            _session = session;
+            _layoutRepository = layoutRepository;
+            _layoutAreaRepository = layoutAreaRepository;
             _configurationProvider = configurationProvider;
+            _widgetRepository = widgetRepository;
         }
 
-        public void Setup()
+        public async Task Setup()
         {
-            Layout baseLayout = null;
-            _session.Transact(session =>
+            var baseLayout = new Layout
             {
-                baseLayout = new Layout
-                {
-                    Name = "Base Layout",
-                    UrlSegment = "_BaseLayout",
-                    LayoutAreas = new List<LayoutArea>()
-                };
+                Name = "Base Layout",
+                UrlSegment = "_BaseLayout",
+                LayoutAreas = new List<LayoutArea>()
+            };
 
-                session.Save(baseLayout);
-            });
+            await _layoutRepository.Add(baseLayout);
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
             siteSettings.DefaultLayoutId = baseLayout.Id;
             _configurationProvider.SaveSettings(siteSettings);
 
-            _session.Transact(session =>
+            List<LayoutArea> layoutAreas = GetDefaultAreas(baseLayout);
+            await _layoutAreaRepository.AddRange(layoutAreas);
+
+
+            var layoutTwoColumn = new Layout
             {
+                Parent = baseLayout,
+                Name = "Two Column"
+            };
 
-                List<LayoutArea> layoutAreas = GetDefaultAreas(baseLayout);
-                layoutAreas.ForEach(area => session.Save(area));
+            await _layoutRepository.Add(layoutTwoColumn);
 
-                var layoutTwoColumn = new Layout
+            var layoutAreasTwoColumn = new List<LayoutArea>
+            {
+                new LayoutArea
                 {
-                    Parent = baseLayout,
-                    Name = "Two Column"
-                };
+                    AreaName = "Right Column",
+                    Layout = layoutTwoColumn
+                }
+            };
+            await _layoutAreaRepository.AddRange(layoutAreasTwoColumn);
 
-                session.Save(layoutTwoColumn);
-
-                var layoutAreasTwoColumn = new List<LayoutArea>
-                {
-                    new LayoutArea
-                    {
-                        AreaName = "Right Column",
-                        Layout = layoutTwoColumn
-                    }
-                };
-                foreach (LayoutArea layoutArea in layoutAreasTwoColumn)
-                    session.Save(layoutArea);
-
-                AddWidgets(layoutAreas).ForEach(widget => session.Save(widget));
-            });
+            await _widgetRepository.AddRange(GetWidgets(layoutAreas).ToList());
         }
 
         private List<LayoutArea> GetDefaultAreas(Layout baseLayout)
@@ -113,7 +113,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             return layoutAreas;
         }
 
-        private IEnumerable<Widget> AddWidgets(List<LayoutArea> layoutAreas)
+        private IEnumerable<Widget> GetWidgets(List<LayoutArea> layoutAreas)
         {
             yield return new Navigation
             {

@@ -1,10 +1,12 @@
-﻿namespace MrCMS.Events
+using System.Threading.Tasks;
+
+namespace MrCMS.Events
 {
     public interface IEvent
     {
     }
     public interface IEvent<in T> : IEvent
     {
-        void Execute(T args);
+        Task Execute(T args);
     }
 }

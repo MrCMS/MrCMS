@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
-using NHibernate;
 
 namespace MrCMS.Messages
 {
@@ -14,14 +16,14 @@ namespace MrCMS.Messages
     {
         private static readonly Dictionary<Type, Type> DefaultTemplateProviders = new Dictionary<Type, Type>();
 
-        private static readonly MethodInfo GetMessageTemplateMethod = typeof (MessageTemplateProvider)
-            .GetMethodExt("GetMessageTemplate", typeof (Site));
+        private static readonly MethodInfo GetMessageTemplateMethod = typeof(MessageTemplateProvider)
+            .GetMethodExt("GetMessageTemplate", typeof(Site));
 
-        public static readonly MethodInfo GetNewMessageTemplateMethod = typeof (MessageTemplateProvider)
+        public static readonly MethodInfo GetNewMessageTemplateMethod = typeof(MessageTemplateProvider)
             .GetMethodExt("GetNewMessageTemplate");
 
+        private readonly IGlobalRepository<MessageTemplateData> _repository;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISession _session;
 
         static MessageTemplateProvider()
         {
@@ -31,7 +33,7 @@ namespace MrCMS.Messages
             {
                 var types =
                     TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof (GetDefaultTemplate<>).MakeGenericType(type));
+                        typeof(GetDefaultTemplate<>).MakeGenericType(type));
                 if (types.Any())
                 {
                     DefaultTemplateProviders.Add(type, types.First());
@@ -39,27 +41,27 @@ namespace MrCMS.Messages
             }
         }
 
-        public MessageTemplateProvider(ISession session, IServiceProvider serviceProvider)
+        public MessageTemplateProvider(IGlobalRepository<MessageTemplateData> repository, IServiceProvider serviceProvider)
         {
-            _session = session;
+            _repository = repository;
             _serviceProvider = serviceProvider;
         }
 
-        public void SaveTemplate(MessageTemplate messageTemplate)
+        public async Task SaveTemplate(MessageTemplate messageTemplate)
         {
-            Save(messageTemplate, null);
+            await Save(messageTemplate, null);
         }
 
-        public void SaveSiteOverride(MessageTemplate messageTemplate, Site site)
+        public async Task SaveSiteOverride(MessageTemplate messageTemplate, Site site)
         {
-            Save(messageTemplate, site.Id);
+            await Save(messageTemplate, site.Id);
         }
 
-        public void DeleteSiteOverride(MessageTemplate messageTemplate, Site site)
+        public async Task DeleteSiteOverride(MessageTemplate messageTemplate, Site site)
         {
-            var templateData = GetExistingTemplateData(messageTemplate.GetType().FullName, site.Id);
+            var templateData = await GetExistingTemplateData(messageTemplate.GetType().FullName, site.Id);
             if (templateData != null)
-                _session.Transact(session => session.Delete(templateData));
+                await _repository.Delete(templateData);
         }
 
         public List<MessageTemplate> GetAllMessageTemplates(Site site)
@@ -67,23 +69,23 @@ namespace MrCMS.Messages
             var types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>();
 
             return types.Select(type => GetMessageTemplateMethod.MakeGenericMethod(type)
-                .Invoke(this, new[] {site}) as MessageTemplate).ToList();
+                .Invoke(this, new[] { site }) as MessageTemplate).ToList();
         }
 
-        public T GetMessageTemplate<T>(Site site) where T : MessageTemplate, new()
+        public async Task<T> GetMessageTemplate<T>(Site site) where T : MessageTemplate, new()
         {
-            var templateType = typeof (T);
+            var templateType = typeof(T);
             var fullName = templateType.FullName;
-            var templateData = GetExistingTemplateData(fullName, site.Id);
+            var templateData = await GetExistingTemplateData(fullName, site.Id);
             if (templateData != null)
                 return JsonConvert.DeserializeObject<T>(templateData.Data);
 
-            templateData = GetExistingTemplateData(fullName, null);
+            templateData = await GetExistingTemplateData(fullName, null);
             if (templateData != null)
                 return JsonConvert.DeserializeObject<T>(templateData.Data);
 
             var template = GetNewMessageTemplate<T>();
-            SaveTemplate(template);
+            await SaveTemplate(template);
             return template;
         }
 
@@ -92,29 +94,36 @@ namespace MrCMS.Messages
             return GetNewMessageTemplateMethod.MakeGenericMethod(type).Invoke(this, new object[0]) as MessageTemplate;
         }
 
-        private void Save(MessageTemplate messageTemplate, int? siteId)
+        private async Task Save(MessageTemplate messageTemplate, int? siteId)
         {
             var type = messageTemplate.GetType().FullName;
-            var existingData = GetExistingTemplateData(type, siteId) ??
-                               new MessageTemplateData {Type = type, SiteId = siteId};
+            var existingData = await GetExistingTemplateData(type, siteId);
+
+            var isNew = existingData == null;
+            if (isNew)
+            {
+                existingData = new MessageTemplateData { Type = type, SiteId = siteId };
+            }
 
             existingData.Data = JsonConvert.SerializeObject(messageTemplate);
 
-            _session.Transact(session => session.SaveOrUpdate(existingData));
+            if (isNew)
+                await _repository.Add(existingData);
+            else
+                await _repository.Update(existingData);
         }
 
-        private MessageTemplateData GetExistingTemplateData(string type, int? siteId)
+        private Task<MessageTemplateData> GetExistingTemplateData(string type, int? siteId)
         {
-            return _session.QueryOver<MessageTemplateData>()
-                .Where(x => x.Type == type && x.SiteId == siteId)
-                .List()
-                .FirstOrDefault();
+            return _repository
+                .Query()
+                .FirstOrDefaultAsync(x => x.Type == type && x.SiteId == siteId);
         }
 
         public T GetNewMessageTemplate<T>() where T : MessageTemplate, new()
         {
             T template = null;
-            var templateType = typeof (T);
+            var templateType = typeof(T);
             if (DefaultTemplateProviders.ContainsKey(templateType))
             {
                 if (_serviceProvider.GetService(DefaultTemplateProviders[templateType]) is IGetDefaultMessageTemplate getDefaultMessageTemplate)

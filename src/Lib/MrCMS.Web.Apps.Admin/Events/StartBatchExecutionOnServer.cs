@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Batching;
 using MrCMS.Batching.Events;
 
@@ -12,9 +13,9 @@ namespace MrCMS.Web.Apps.Admin.Events
             _executeRequestForNextTask = executeRequestForNextTask;
         }
 
-        public void Execute(BatchRunStartArgs args)
+        public Task Execute(BatchRunStartArgs args)
         {
-            _executeRequestForNextTask.Execute(args.BatchRun);
+            return _executeRequestForNextTask.Execute(args.BatchRun);
         }
     }
 }

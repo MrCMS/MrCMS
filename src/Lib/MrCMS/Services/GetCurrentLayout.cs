@@ -1,20 +1,22 @@
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class GetCurrentLayout : IGetCurrentLayout
     {
         private readonly PageDefaultsSettings _pageDefaultsSettings;
-        private readonly ISession _session;
+        private readonly IRepository<Layout> _repository;
         private readonly SiteSettings _siteSettings;
 
-        public GetCurrentLayout(ISession session, SiteSettings siteSettings, PageDefaultsSettings pageDefaultsSettings)
+        public GetCurrentLayout(IRepository<Layout> repository, SiteSettings siteSettings, PageDefaultsSettings pageDefaultsSettings)
         {
-            _session = session;
+            _repository = repository;
             _siteSettings = siteSettings;
             _pageDefaultsSettings = pageDefaultsSettings;
         }
@@ -38,7 +40,7 @@ namespace MrCMS.Services
             var layoutId = _pageDefaultsSettings.GetLayoutId(documentMetadata.Type);
             if (layoutId.HasValue)
             {
-                var layout = _session.Get<Layout>(layoutId);
+                var layout = _repository.GetDataSync(layoutId.Value);
                 if (layout != null) return layout;
             }
 
@@ -55,11 +57,8 @@ namespace MrCMS.Services
         {
             var settingValue = _siteSettings.DefaultLayoutId;
 
-            return _session.Get<Layout>(settingValue) ??
-                   _session.QueryOver<Layout>()
-                       .Take(1)
-                       .Cacheable()
-                       .SingleOrDefault();
+            return _repository.GetDataSync<Layout>(settingValue) ??
+                   _repository.Readonly().FirstOrDefault();
         }
     }
 }

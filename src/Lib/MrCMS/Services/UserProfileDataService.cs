@@ -1,40 +1,41 @@
-﻿using MrCMS.Entities.People;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class UserProfileDataService : IUserProfileDataService
     {
-        private readonly ISession _session;
+        private readonly IRepositoryResolver _repositoryResolver;
 
-        public UserProfileDataService(ISession session)
+        public UserProfileDataService(IRepositoryResolver repositoryResolver)
         {
-            _session = session;
+            _repositoryResolver = repositoryResolver;
         }
 
-        public T Get<T>(int id) where T : UserProfileData
+        public Task<T> Get<T>(int id) where T : UserProfileData
         {
-            return _session.Get<T>(id);
+            return _repositoryResolver.GetGlobalRepository<T>().Load(id);
         }
 
-        public void Add<T>(T data) where T : UserProfileData
+        public async Task Add<T>(T data) where T : UserProfileData
         {
             var user = data.User;
             if (user != null) user.UserProfileData.Add(data);
-            _session.Transact(session => session.Save(data));
+            await _repositoryResolver.GetGlobalRepository<T>().Add(data);
         }
 
-        public void Update<T>(T data) where T : UserProfileData
+        public async Task Update<T>(T data) where T : UserProfileData
         {
-            _session.Transact(session => session.Update(data));
+            await _repositoryResolver.GetGlobalRepository<T>().Update(data);
         }
 
-        public void Delete<T>(T data) where T : UserProfileData
+        public async Task Delete<T>(T data) where T : UserProfileData
         {
             var user = data.User;
             if (user != null) user.UserProfileData.Remove(data);
-            _session.Transact(session => session.Delete(data));
+            await _repositoryResolver.GetGlobalRepository<T>().Delete(data);
         }
     }
 }

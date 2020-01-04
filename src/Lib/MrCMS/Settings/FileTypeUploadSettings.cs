@@ -9,7 +9,10 @@ namespace MrCMS.Settings
         private const string DefaultAllowedFileTypes =
             ".gif,.jpeg,.jpg,.png,.rar,.zip,.pdf,.mp3,.mp4,.wmv,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.avi,.mpg,.wav,.mov,.wma,.webm,.ogv,.mpeg,.7z,.txt,.csv,.svg";
 
-        public static string AllowedFileTypes => ConfigurationManager.AppSettings["allowed-file-types"] ?? DefaultAllowedFileTypes;
+        public static string AllowedFileTypes => 
+            // todo - wire in app settings
+            //ConfigurationManager.AppSettings["allowed-file-types"] ??
+            DefaultAllowedFileTypes;
 
         public static IEnumerable<string> AllowedFileTypeList
         {

@@ -10,9 +10,9 @@ namespace MrCMS.Installation.Services
 {
     public class FileSystemAccessService : IFileSystemAccessService
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public FileSystemAccessService(IHostingEnvironment hostingEnvironment)
+        public FileSystemAccessService(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

@@ -1,10 +1,14 @@
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Events;
 
 namespace MrCMS.Services
 {
-    public abstract class SetTopLevelDisplayOrder<T> : IOnAdding<T> where T : Document
+    public abstract class SetTopLevelDisplayOrder<T> : OnDataAdding<T> where T : Document
     {
         private readonly IGetDocumentsByParent<T> _getDocumentsByParent;
 
@@ -13,23 +17,23 @@ namespace MrCMS.Services
             _getDocumentsByParent = getDocumentsByParent;
         }
 
-        public void Execute(OnAddingArgs<T> args)
+        public override Task<IResult> OnAdding(T entity, DbContext context)
         {
-            T tDoc = args.Item;
             // if the document isn't set or it's not top level (i.e. has a parent) we don't want to deal with it here
-            if (tDoc == null || tDoc.Parent != null)
-                return;
+            if (entity == null || entity.Parent != null)
+                return Success;
 
             // if it's not 0 it means it's been set, so we'll not update it
-            if (tDoc.DisplayOrder != 0)
-                return;
+            if (entity.DisplayOrder != 0)
+                return Success;
 
             var documentsByParent = _getDocumentsByParent.GetDocuments(null)
-                .Where(doc => doc != tDoc).ToList();
+                .Where(doc => doc != entity).ToList();
 
-            tDoc.DisplayOrder = documentsByParent.Any()
+            entity.DisplayOrder = documentsByParent.Any()
                 ? documentsByParent.Max(category => category.DisplayOrder) + 1
                 : 0;
+            return Success;
         }
     }
 }

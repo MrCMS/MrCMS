@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
@@ -19,7 +20,7 @@ namespace MrCMS.Web.Apps.Admin.Services.Events
             _notificationHubContext = notificationHubContext;
             _getDateTimeNow = getDateTimeNow;
         }
-        public void Execute(OnTransientNotificationPublishedEventArgs args)
+        public Task Execute(OnTransientNotificationPublishedEventArgs args)
         {
             var notification = args.Notification;
             var model = new NotificationModel { Message = notification.Message, DateValue = _getDateTimeNow.LocalNow };

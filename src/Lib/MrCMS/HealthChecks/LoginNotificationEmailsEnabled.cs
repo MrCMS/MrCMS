@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Settings;
 
 namespace MrCMS.HealthChecks
@@ -14,10 +15,10 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName => "Login Notification Emails Enabled";
 
-        public override HealthCheckResult PerformCheck()
+        public override Task<HealthCheckResult> PerformCheck()
         {
 
-            return _settings.SendLoginNotificationEmails
+            return Task.FromResult( _settings.SendLoginNotificationEmails
                 ? HealthCheckResult.Success
                 : new HealthCheckResult
                 {
@@ -26,7 +27,7 @@ namespace MrCMS.HealthChecks
                     {
                         "Login notification emails have not been enabled for this site."
                     }
-                };
+                });
         }
     }
 }

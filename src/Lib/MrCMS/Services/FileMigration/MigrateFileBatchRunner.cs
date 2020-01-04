@@ -1,32 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Batching;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using Newtonsoft.Json;
-using NHibernate;
-using NHibernate.Criterion;
 
 namespace MrCMS.Services.FileMigration
 {
     public class MigrateFileBatchRunner : BaseBatchJobExecutor<MigrateFilesBatchJob>
     {
-        private readonly ISession _session;
         private readonly IEnumerable<IFileSystem> _fileSystems;
+        private readonly IRepository<MediaFile> _mediaFileRepository;
+        private readonly IRepository<ResizedImage> _resizedImageRepository;
         private readonly FileSystemSettings _fileSystemSettings;
 
-        public MigrateFileBatchRunner(ISession session,
+        public MigrateFileBatchRunner(
+            IRepository<MediaFile> mediaFileRepository,
+            IRepository<ResizedImage> resizedImageRepository,
             IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings)
         {
-            _session = session;
             _fileSystems =
                 TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
                     .Select(type => serviceProvider.GetService(type) as IFileSystem)
                     .ToList();
             ;
+            _mediaFileRepository = mediaFileRepository;
+            _resizedImageRepository = resizedImageRepository;
             _fileSystemSettings = fileSystemSettings;
         }
 
@@ -39,51 +44,6 @@ namespace MrCMS.Services.FileMigration
             }
         }
 
-        protected override BatchJobExecutionResult OnExecute(MigrateFilesBatchJob batchJob)
-        {
-            var guids = JsonConvert.DeserializeObject<HashSet<Guid>>(batchJob.Data).ToList();
-
-            var mediaFiles = _session.QueryOver<MediaFile>().Where(x => x.Guid.IsIn(guids)).List();
-
-
-            foreach (var mediaFile in mediaFiles)
-            {
-                var from = MediaFileExtensions.GetFileSystem(mediaFile, _fileSystems);
-                var to = CurrentFileSystem;
-                if (from.GetType() == to.GetType())
-                    continue;
-
-                _session.Transact(session =>
-                {
-                    // remove resized images (they will be regenerated on the to system)
-                    foreach (var resizedImage in mediaFile.ResizedImages.ToList())
-                    {
-                        // check for resized file having same url as the original - 
-                        // do not delete from disc yet in that case, or else it will cause an error when copying
-                        if (resizedImage.Url != mediaFile.FileUrl)
-                        {
-                            from.Delete(resizedImage.Url);
-                        }
-                        mediaFile.ResizedImages.Remove(resizedImage);
-                        session.Delete(resizedImage);
-                    }
-
-                    var existingUrl = mediaFile.FileUrl;
-                    using (var readStream = @from.GetReadStream(existingUrl))
-                    {
-                        mediaFile.FileUrl = to.SaveFile(readStream, GetNewFilePath(mediaFile),
-                            mediaFile.ContentType);
-                    }
-                    from.Delete(existingUrl);
-
-                    session.Update(mediaFile);
-                });
-            }
-
-
-            return BatchJobExecutionResult.Success();
-        }
-
         private string GetNewFilePath(MediaFile file)
         {
             var fileUrl = file.FileUrl;
@@ -93,9 +53,47 @@ namespace MrCMS.Services.FileMigration
             return newFilePath;
         }
 
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(MigrateFilesBatchJob batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(MigrateFilesBatchJob batchJob,
+            CancellationToken token)
         {
-            throw new NotImplementedException();
+            var guids = JsonConvert.DeserializeObject<HashSet<Guid>>(batchJob.Data).ToList();
+
+            var mediaFiles = await _mediaFileRepository.Query().Where(x => guids.Contains(x.Guid)).ToListAsync();
+
+            foreach (var mediaFile in mediaFiles)
+            {
+                var from = MediaFileExtensions.GetFileSystem(mediaFile, _fileSystems);
+                var to = CurrentFileSystem;
+                if (from.GetType() == to.GetType())
+                    continue;
+
+                await _mediaFileRepository.Transact(async (repo, ct) =>
+                 {
+                     // remove resized images (they will be regenerated on the to system)
+                     foreach (var resizedImage in await _resizedImageRepository.Query().Where(x => x.MediaFileId == mediaFile.Id).ToListAsync())
+                     {
+                         // check for resized file having same url as the original - 
+                         // do not delete from disc yet in that case, or else it will cause an error when copying
+                         if (resizedImage.Url != mediaFile.FileUrl)
+                         {
+                             from.Delete(resizedImage.Url);
+                         }
+                         mediaFile.ResizedImages.Remove(resizedImage);
+                         await _resizedImageRepository.Delete(resizedImage, ct);
+                     }
+
+                     var existingUrl = mediaFile.FileUrl;
+                     using (var readStream = @from.GetReadStream(existingUrl))
+                     {
+                         mediaFile.FileUrl = to.SaveFile(readStream, GetNewFilePath(mediaFile),
+                             mediaFile.ContentType);
+                     }
+                     from.Delete(existingUrl);
+
+                     await repo.Update(mediaFile, ct);
+                 }, token);
+            }
+            return BatchJobExecutionResult.Success();
         }
     }
 }

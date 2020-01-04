@@ -1,76 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Website;
-using NHibernate;
-using NHibernate.Criterion;
 
 namespace MrCMS.Tasks
 {
     public class TaskQueuer : ITaskQueuer
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<QueuedTask> _globalRepository;
+        private readonly IRepository<QueuedTask> _repository;
 
-        public TaskQueuer(ISession session)
+        public TaskQueuer(IGlobalRepository<QueuedTask> globalRepository, IRepository<QueuedTask> repository)
         {
-            _session = session;
+            _globalRepository = globalRepository;
+            _repository = repository;
         }
 
-        public IList<QueuedTask> GetPendingQueuedTasks()
+        public async Task<IList<QueuedTask>> GetPendingQueuedTasks()
         {
-            return _session.Transact(session =>
+            return await _repository.Transact(async (repo, ct) =>
             {
                 var queuedAt = DateTime.UtcNow;
-                var queuedTasks =
-                    session.QueryOver<QueuedTask>()
+                var queuedTasks = await
+                    repo.Query()
                         .Where(task => task.Status == TaskExecutionStatus.Pending)
-                        .List();
+                        .ToListAsync(ct);
 
                 foreach (var task in queuedTasks)
                 {
                     task.Status = TaskExecutionStatus.AwaitingExecution;
                     task.QueuedAt = queuedAt;
-                    _session.Update(task);
                 }
+                await repo.UpdateRange(queuedTasks, ct);
                 return queuedTasks;
             });
         }
 
 
-        public IList<Site> GetPendingQueuedTaskSites()
+        public async Task<IList<Site>> GetPendingQueuedTaskSites()
         {
-            using (new SiteFilterDisabler(_session))
-            {
-                Site siteAlias = null;
-                return _session.QueryOver(() => siteAlias)
-                    .WithSubquery.WhereExists(QueryOver.Of<QueuedTask>()
-                            .Where(task => task.Status == TaskExecutionStatus.Pending && task.Site.Id == siteAlias.Id)
-                            .Select(task => task.Id))
-                            .List();
-            }
+            return await _globalRepository.Query()
+                .Where(task => task.Status == TaskExecutionStatus.Pending)
+                .Select(task => task.Site)
+                .Distinct()
+                .ToListAsync();
         }
 
-        public IList<QueuedTask> GetPendingLuceneTasks()
+        public async Task<IList<QueuedTask>> GetPendingLuceneTasks()
         {
-            return _session.Transact(session =>
+            return await _repository.Transact(async (repo, ct) =>
             {
                 var queuedAt = DateTime.UtcNow;
-                var queuedTasks =
-                    session.QueryOver<QueuedTask>()
-                        .Where(task => (task.Type.IsLike(typeof(InsertIndicesTask<>).FullName, MatchMode.Start) ||
-                                        task.Type.IsLike(typeof(UpdateIndicesTask<>).FullName, MatchMode.Start) ||
-                                        task.Type.IsLike(typeof(DeleteIndicesTask<>).FullName, MatchMode.Start)
-                            ) && task.Status == TaskExecutionStatus.Pending)
-                        .List();
+                var queuedTasks = await
+                    repo.Query()
+                        .Where(task => task.Status == TaskExecutionStatus.Pending)
+                        .Where(task => EF.Functions.Like(task.Type, $"{typeof(InsertIndicesTask<>).FullName}%") ||
+                                       EF.Functions.Like(task.Type, $"{typeof(UpdateIndicesTask<>).FullName}%") ||
+                                       EF.Functions.Like(task.Type, $"{typeof(DeleteIndicesTask<>).FullName}%"))
+                        .ToListAsync(ct);
 
                 foreach (var task in queuedTasks)
                 {
                     task.Status = TaskExecutionStatus.AwaitingExecution;
                     task.QueuedAt = queuedAt;
-                    _session.Update(task);
                 }
+                await repo.UpdateRange(queuedTasks, ct);
                 return queuedTasks;
             });
         }

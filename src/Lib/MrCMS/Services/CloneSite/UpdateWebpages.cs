@@ -1,6 +1,8 @@
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
@@ -8,22 +10,22 @@ namespace MrCMS.Services.CloneSite
     public class UpdateWebpages : ICloneSiteParts
     {
         private readonly ICloneWebpageSiteParts _cloneWebpageSiteParts;
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Webpage> _repository;
 
-        public UpdateWebpages(ICloneWebpageSiteParts cloneWebpageSiteParts, ISession session)
+        public UpdateWebpages(ICloneWebpageSiteParts cloneWebpageSiteParts, IGlobalRepository<Webpage> repository)
         {
             _cloneWebpageSiteParts = cloneWebpageSiteParts;
-            _session = session;
+            _repository = repository;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var webpages = _session.QueryOver<Webpage>().Where(webpage => webpage.Site.Id == to.Id).List();
+            var webpages = _repository.Query().Where(webpage => webpage.Site.Id == to.Id).ToList();
             foreach (var webpage in webpages)
             {
                 var original = siteCloneContext.GetOriginal(webpage);
                 if (original != null)
-                    _cloneWebpageSiteParts.Clone(original, webpage, siteCloneContext);
+                    await _cloneWebpageSiteParts.Clone(original, webpage, siteCloneContext);
             }
         }
     }

@@ -16,9 +16,9 @@
     <meta name="description" content="@(this.Description())"/>
     <meta name="keywords" content="@(this.Keywords())"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @Html.RenderFavicon(new Size(16, 16))
-    @Html.RenderFavicon(new Size(32, 32))
-    @Html.RenderFavicon(new Size(152, 152))
+    @await Html.RenderFavicon(new Size(16, 16))
+    @await Html.RenderFavicon(new Size(32, 32))
+    @await Html.RenderFavicon(new Size(152, 152))
     @{
         Html.IncludeCss("~/Apps/Core/lib/bootstrap/dist/css/bootstrap.css");
         Html.IncludeCss("~/Apps/Core/lib/fontawesome/css/all.css");

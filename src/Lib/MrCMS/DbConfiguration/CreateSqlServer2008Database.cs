@@ -1,3 +1,5 @@
+using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrCMS.Settings;
 

@@ -13,7 +13,7 @@ namespace MrCMS.Batching
             _setBatchJobExecutionStatus = setBatchJobExecutionStatus;
         }
 
-        public Task<BatchJobExecutionResult> Execute(BatchJob batchJob)
+        public Task<BatchJobExecutionResult> Execute(BatchJob batchJob, CancellationToken token)
         {
             var message = string.Format("There is no executor for this job. To create one, implement {0}<{1}>",
                 typeof(IBatchJobExecutor).FullName,

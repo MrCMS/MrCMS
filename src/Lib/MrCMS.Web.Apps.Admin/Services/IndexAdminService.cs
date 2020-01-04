@@ -8,7 +8,7 @@ using MrCMS.Models;
 using MrCMS.Search;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 
 namespace MrCMS.Web.Apps.Admin.Services
 {

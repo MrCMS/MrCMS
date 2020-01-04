@@ -4,29 +4,30 @@ using MrCMS.Apps;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Installation.Models;
-using ISession = NHibernate.ISession;
+using MrCMS.Website;
 
 namespace MrCMS.Installation.Services
 {
     public class InstallationService : IInstallationService
     {
         private readonly IDatabaseCreationService _databaseCreationService;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceCollection _serviceCollection;
         private readonly IFileSystemAccessService _fileSystemAccessService;
 
-        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceProvider serviceProvider)
+        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceCollection serviceCollection)
         {
             _fileSystemAccessService = fileSystemAccessService;
             _databaseCreationService = databaseCreationService;
-            _serviceProvider = serviceProvider;
+            _serviceCollection = serviceCollection;
         }
 
-        public InstallationResult Install(InstallModel model)
+        public async Task<InstallationResult> Install(InstallModel model)
         {
             if (model.DatabaseConnectionString != null)
             {
@@ -52,7 +53,7 @@ namespace MrCMS.Installation.Services
                 IDatabaseProvider provider = _databaseCreationService.CreateDatabase(model);
 
                 //save settings
-                SetUpInitialData(model, provider);
+             await   SetUpInitialData(model, provider);
             }
             catch (Exception exception)
             {
@@ -74,18 +75,18 @@ namespace MrCMS.Installation.Services
             return _databaseCreationService.IsDatabaseInstalled();
         }
 
-        private void SetUpInitialData(InstallModel model, IDatabaseProvider provider)
+        private async Task SetUpInitialData(InstallModel model, IDatabaseProvider provider)
         {
-            var configurator =
-                new NHibernateConfigurator(provider, _serviceProvider.GetRequiredService<MrCMSAppContext>());
+            _serviceCollection.AddDbContext<WebsiteContext>(provider.SetupAction);
+            var serviceProvider = _serviceCollection.BuildServiceProvider();
 
-            ISessionFactory sessionFactory = configurator.CreateSessionFactory();
-            ISession session = sessionFactory.OpenFilteredSession(_serviceProvider);
-            IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
-            var contextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
+            //ISessionFactory sessionFactory = configurator.CreateSessionFactory();
+            //ISession session = sessionFactory.OpenFilteredSession(serviceProvider);
+            //IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
+            var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
             var context = contextAccessor.HttpContext;
-            context.Items["override-nh-session"] = session;
-            context.Items["override-nh-stateless-session"] = statelessSession;
+            //context.Items["override-nh-session"] = session;
+            //context.Items["override-nh-stateless-session"] = statelessSession;
             var site = new Site
             {
                 Name = model.SiteName,
@@ -93,17 +94,22 @@ namespace MrCMS.Installation.Services
                 CreatedOn = DateTime.UtcNow,
                 UpdatedOn = DateTime.UtcNow
             };
-            using (ITransaction transaction = statelessSession.BeginTransaction())
-            {
-                statelessSession.Insert(site);
-                transaction.Commit();
-            }
+            var repository = serviceProvider.GetRequiredService<IGlobalRepository<Site>>();
+            var setSiteId = serviceProvider.GetRequiredService<ISetSiteId>();
+
+            var result = await repository.Add(site);
+            
+            //using (ITransaction transaction = statelessSession.BeginTransaction())
+            //{
+            //    statelessSession.Insert(site);
+            //    transaction.Commit();
+            //}
             context.Items["override-site"] = site;
             //CurrentRequestData.CurrentSite = site;
 
-            _serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
-            _serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
-            _serviceProvider.GetServices<IOnInstallation>()
+            serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
+            serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
+            serviceProvider.GetServices<IOnInstallation>()
                 .OrderBy(installation => installation.Priority)
                 .ForEach(installation => installation.Install(model));
         }

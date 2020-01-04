@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
@@ -29,10 +30,10 @@ namespace MrCMS.Batching
             _executeRequestForNextTask.Execute(run);
         }
 
-        public async Task<int?> ExecuteNextTask(Guid guid)
+        public async Task<int?> ExecuteNextTask(Guid guid, CancellationToken token)
         {
             var run = _repository.Query().FirstOrDefault(x => x.Guid == guid);
-            return await _executeNextBatchJob.Execute(run) ? run?.Id : null;
+            return await _executeNextBatchJob.Execute(run, token) ? run?.Id : null;
         }
     }
 }

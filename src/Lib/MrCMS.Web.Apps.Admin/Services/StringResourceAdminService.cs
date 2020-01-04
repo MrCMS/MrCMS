@@ -9,7 +9,7 @@ using MrCMS.Helpers;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
-using NHibernate;
+
 using NHibernate.Linq;
 using X.PagedList;
 

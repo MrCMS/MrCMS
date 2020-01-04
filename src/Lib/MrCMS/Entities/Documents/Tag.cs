@@ -6,11 +6,11 @@ namespace MrCMS.Entities.Documents
     {
         public Tag()
         {
-            Documents = new HashSet<Document>();
+            DocumentTags = new List<DocumentTag>();
         }
 
         public virtual string Name { get; set; }
 
-        public virtual ISet<Document> Documents { get; set; }
+        public virtual IList<DocumentTag> DocumentTags { get; set; }
     }
 }

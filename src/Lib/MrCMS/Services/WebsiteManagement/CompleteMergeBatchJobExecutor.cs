@@ -5,9 +5,10 @@ using MrCMS.Services.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using ISession = NHibernate.ISession;
+using MrCMS.Data;
 
 namespace MrCMS.Services.WebsiteManagement
 {
@@ -38,53 +39,23 @@ namespace MrCMS.Services.WebsiteManagement
 
         }
 
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _webpageRepository;
+        private readonly IRepository<UrlHistory> _urlHistoryRepository;
         private readonly IServiceProvider _serviceProvider;
         private readonly INotificationDisabler _notificationDisabler;
         private static readonly Dictionary<Type, HashSet<Type>> CompleteMergeTypes;
 
-        public CompleteMergeBatchJobExecutor(ISession session, IServiceProvider serviceProvider, INotificationDisabler notificationDisabler)
+        public CompleteMergeBatchJobExecutor(
+            IRepository<Webpage> webpageRepository,
+            IRepository<UrlHistory> urlHistoryRepository,
+            IServiceProvider serviceProvider, INotificationDisabler notificationDisabler)
         {
-            _session = session;
+            _webpageRepository = webpageRepository;
+            _urlHistoryRepository = urlHistoryRepository;
             _serviceProvider = serviceProvider;
             _notificationDisabler = notificationDisabler;
         }
 
-
-        protected override BatchJobExecutionResult OnExecute(CompleteMergeBatchJob batchJob)
-        {
-            using (_notificationDisabler.Disable())
-            {
-                var webpage = _session.Get<Webpage>(batchJob.WebpageId);
-                if (webpage == null)
-                {
-                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
-                }
-                var mergeInto = _session.Get<Webpage>(batchJob.MergedIntoId);
-                if (mergeInto == null)
-                {
-                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.MergedIntoId);
-                }
-
-                _session.Transact(session =>
-                {
-                    ApplyCustomMergeLogic(webpage, mergeInto);
-
-                    var urlSegment = webpage.UrlSegment;
-                    session.Delete(webpage);
-                    var urlHistory = new UrlHistory
-                    {
-                        UrlSegment = urlSegment,
-                        Webpage = mergeInto,
-                    };
-                    mergeInto.Urls.Add(urlHistory);
-                    session.Save(urlHistory);
-                });
-
-
-                return BatchJobExecutionResult.Success();
-            }
-        }
 
         private void ApplyCustomMergeLogic(Webpage webpage, Webpage mergeInto)
         {
@@ -102,9 +73,40 @@ namespace MrCMS.Services.WebsiteManagement
             }
         }
 
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(CompleteMergeBatchJob batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(CompleteMergeBatchJob batchJob,
+            CancellationToken token1)
         {
-            throw new System.NotImplementedException();
+            using (_notificationDisabler.Disable())
+            {
+                var webpage = await _webpageRepository.Load(batchJob.WebpageId);
+                if (webpage == null)
+                {
+                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
+                }
+                var mergeInto = await _webpageRepository.Load(batchJob.MergedIntoId);
+                if (mergeInto == null)
+                {
+                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.MergedIntoId);
+                }
+
+                await _webpageRepository.Transact(async (repo, token) =>
+                {
+                    ApplyCustomMergeLogic(webpage, mergeInto);
+
+                    var urlSegment = webpage.UrlSegment;
+                    await repo.Delete(webpage, token);
+                    var urlHistory = new UrlHistory
+                    {
+                        UrlSegment = urlSegment,
+                        Webpage = mergeInto,
+                    };
+                    mergeInto.Urls.Add(urlHistory);
+                    await _urlHistoryRepository.Add(urlHistory, token);
+                });
+
+
+                return BatchJobExecutionResult.Success();
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
@@ -32,7 +33,7 @@ namespace MrCMS.Indexing.Management
         IndexResult Insert(object entity);
         IndexResult Delete(object entity);
         void ResetSearcher();
-        IndexResult ReIndex();
+        Task<IndexResult> ReIndex();
         IndexDefinition Definition { get; }
     }
 }

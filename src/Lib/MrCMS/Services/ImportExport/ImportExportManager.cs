@@ -3,6 +3,7 @@ using System.IO;
 using MrCMS.Services.ImportExport.DTOs;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
@@ -34,18 +35,17 @@ namespace MrCMS.Services.ImportExport
             _logger = logger;
         }
 
-        public ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true)
+        public async Task<ImportDocumentsResult> ImportDocumentsFromExcel(Stream file, bool autoStart = true)
         {
             var spreadsheet = new ExcelPackage(file);
 
-            Dictionary<string, List<string>> parseErrors;
-            var items = GetDocumentsFromSpreadSheet(spreadsheet, out parseErrors);
+            var (items, parseErrors) = await GetDocumentsFromSpreadSheet(spreadsheet);
             if (parseErrors.Any())
                 return ImportDocumentsResult.Failure(parseErrors);
             var businessLogicErrors = _importDocumentsValidationService.ValidateBusinessLogic(items);
             if (businessLogicErrors.Any())
                 return ImportDocumentsResult.Failure(businessLogicErrors);
-            var batch = _importDocumentService.CreateBatch(items, autoStart);
+            var batch = await _importDocumentService.CreateBatch(items, autoStart);
             //_importDocumentService.ImportDocumentsFromDTOs(items);
             return ImportDocumentsResult.Successful(batch);
         }
@@ -57,12 +57,12 @@ namespace MrCMS.Services.ImportExport
         /// <param name="spreadsheet"></param>
         /// <param name="parseErrors"></param>
         /// <returns></returns>
-        private List<DocumentImportDTO> GetDocumentsFromSpreadSheet(ExcelPackage spreadsheet, out Dictionary<string, List<string>> parseErrors)
+        private async Task<(List<DocumentImportDTO>, Dictionary<string, List<string>>)> GetDocumentsFromSpreadSheet(ExcelPackage spreadsheet)
         {
-            parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
+            var parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
             return parseErrors.Any()
-                       ? new List<DocumentImportDTO>()
-                       : _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet, ref parseErrors);
+                       ? (new List<DocumentImportDTO>(), parseErrors)
+                       : await _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet);
         }
 
         public byte[] ExportDocumentsToExcel()
@@ -80,20 +80,20 @@ namespace MrCMS.Services.ImportExport
             }
         }
 
-        public ExportDocumentsResult ExportDocumentsToEmail(ExportDocumentsModel model)
+        public async Task<ExportDocumentsResult> ExportDocumentsToEmail(ExportDocumentsModel model)
         {
             try
             {
-                var queuedMessage = _messageParser.GetMessage(toAddress: model.Email);
-                _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
-            {
-                new AttachmentData
+                var queuedMessage = await _messageParser.GetMessage(toAddress: model.Email);
+                await _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
                 {
-                    Data = ExportDocumentsToExcel(),
-                    ContentType = XlsxContentType,
-                    FileName = "Documents.xlsx"
-                }
-            });
+                    new AttachmentData
+                    {
+                        Data = ExportDocumentsToExcel(),
+                        ContentType = XlsxContentType,
+                        FileName = "Documents.xlsx"
+                    }
+                });
 
                 return new ExportDocumentsResult { Success = true };
             }

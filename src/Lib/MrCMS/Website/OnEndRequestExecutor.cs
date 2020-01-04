@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
@@ -29,7 +31,7 @@ namespace MrCMS.Website
             _serviceProvider = serviceProvider;
         }
 
-        public void ExecuteTasks(HashSet<EndRequestTask> tasks)
+        public async Task ExecuteTasks(HashSet<EndRequestTask> tasks, CancellationToken token)
         {
             var tasksGroupedByType = tasks.GroupBy(task => task.GetType())
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
@@ -42,7 +44,7 @@ namespace MrCMS.Website
                     if (requestBase != null)
                     {
                         var data = tasksGroupedByType[type].Select(task => task.BaseData).ToHashSet();
-                        requestBase.Execute(data);
+                        await requestBase.Execute(data, token);
                         continue;
 
                     }

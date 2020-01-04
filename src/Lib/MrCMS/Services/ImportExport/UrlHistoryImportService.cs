@@ -1,45 +1,37 @@
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
-using NHibernate;
-using NHibernate.Transform;
 
 namespace MrCMS.Services.ImportExport
 {
     public class UrlHistoryImportService : IUrlHistoryImportService
     {
-        private readonly ISession _session;
+        private readonly IRepository<UrlHistory> _urlHistoryRepository;
+        private readonly IRepository<Webpage> _webpageRepository;
 
-        public UrlHistoryImportService(ISession session)
+        public UrlHistoryImportService(IRepository<UrlHistory> urlHistoryRepository, IRepository<Webpage> webpageRepository)
         {
-            _session = session;
+            _urlHistoryRepository = urlHistoryRepository;
+            _webpageRepository = webpageRepository;
         }
 
         public List<UrlHistoryInfo> GetAllOtherUrls(Webpage webpage)
         {
-            var urlHistoryInfo = new UrlHistoryInfo();
             var urlHistoryInfoList =
-                _session.QueryOver<UrlHistory>()
-                    .SelectList(
-                        builder =>
-                            builder.Select(history => history.UrlSegment)
-                                .WithAlias(() => urlHistoryInfo.UrlSegment)
-                                .Select(history => history.Webpage.Id)
-                                .WithAlias(() => urlHistoryInfo.WebpageId))
-                    .TransformUsing(Transformers.AliasToBean<UrlHistoryInfo>())
-                    .Cacheable()
-                    .List<UrlHistoryInfo>();
+                _urlHistoryRepository.Readonly()
+                    .Select(url => new UrlHistoryInfo
+                    {
+                        UrlSegment = url.UrlSegment,
+                        WebpageId = url.WebpageId
+                    }).ToList();
             var webpageHistoryInfoList =
-                _session.QueryOver<Webpage>()
-                    .SelectList(
-                        builder =>
-                            builder.Select(page => page.UrlSegment)
-                                .WithAlias(() => urlHistoryInfo.UrlSegment)
-                                .Select(page => page.Id)
-                                .WithAlias(() => urlHistoryInfo.WebpageId))
-                    .TransformUsing(Transformers.AliasToBean<UrlHistoryInfo>())
-                    .Cacheable()
-                    .List<UrlHistoryInfo>();
+                _webpageRepository.Readonly()
+                    .Select(page => new UrlHistoryInfo
+                    {
+                        UrlSegment = page.UrlSegment,
+                        WebpageId = page.Id
+                    }).ToList();
 
             return urlHistoryInfoList.Union(webpageHistoryInfoList).Where(info => info.WebpageId != webpage.Id).ToList();
         }

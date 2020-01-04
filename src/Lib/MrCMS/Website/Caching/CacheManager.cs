@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website.Caching
 {
@@ -35,14 +36,14 @@ namespace MrCMS.Website.Caching
             return _cache.Set(key, obj, options);
         }
 
-        public T GetOrCreate<T>(string key, Func<T> func, TimeSpan time, CacheExpiryType cacheExpiryType)
+        public Task<T> GetOrCreate<T>(string key, Func<Task<T>> func, TimeSpan time, CacheExpiryType cacheExpiryType)
         {
             if (time <= TimeSpan.Zero)
             {
                 return func();
             }
 
-            return _cache.GetOrCreate(key, entry =>
+            return _cache.GetOrCreate(key, async entry =>
             {
                 if (cacheExpiryType == CacheExpiryType.Sliding)
                 {
@@ -53,7 +54,7 @@ namespace MrCMS.Website.Caching
                     entry.AbsoluteExpirationRelativeToNow = time;
                 }
 
-                var value = func();
+                var value = await func();
                 entry.Value = value;
                 return value;
             });

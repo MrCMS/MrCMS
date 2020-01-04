@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
@@ -13,7 +14,6 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Website;
 using Newtonsoft.Json;
-using NHibernate;
 
 namespace MrCMS.Helpers
 {
@@ -26,7 +26,7 @@ namespace MrCMS.Helpers
 
         public static bool AnyChildren(this IHtmlHelper helper, int id)
         {
-            var document = helper.GetRequiredService<ISession>().Get<Document>(id);
+            var document = helper.GetRequiredService<IRepository<Document>>().GetDataSync<Document>(id);
             if (document == null)
                 return false;
             return AnyChildren(helper, document);
@@ -34,11 +34,10 @@ namespace MrCMS.Helpers
 
         private static bool AnyChildren(this IHtmlHelper helper, Document document)
         {
-            return helper.GetRequiredService<ISession>()
-                .QueryOver<Document>()
-                .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
-                .Cacheable()
-                .Any();
+            return helper.GetRequiredService<IRepository<Document>>()
+                .Query()
+                //.Cacheable()
+                .Any(doc => doc.Parent != null && doc.Parent.Id == document.Id);
         }
 
         public static bool CanDelete<T>(this IHtmlHelper<T> helper) where T : Document

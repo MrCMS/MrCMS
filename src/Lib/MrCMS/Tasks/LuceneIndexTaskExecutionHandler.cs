@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Services;
 
 namespace MrCMS.Tasks
@@ -28,14 +30,14 @@ namespace MrCMS.Tasks
             return executableTasks;
         }
 
-        public List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list)
+        public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
             _taskStatusUpdater.BeginExecution(list);
-            List<LuceneAction> luceneActions =
-                list.Select(task => task as ILuceneIndexTask)
-                    .SelectMany(task => task.GetActions())
-                    .Distinct(LuceneActionComparison.Comparer)
-                    .ToList();
+            var actions = (await Task.WhenAll(list.Select(task => task as ILuceneIndexTask)
+                .Select(task => task.GetActions(token)))).SelectMany(x => x);
+            List<LuceneAction> luceneActions = actions
+                .Distinct(LuceneActionComparison.Comparer)
+                .ToList();
 
             LuceneActionExecutor.PerformActions(_indexService, luceneActions);
             List<TaskExecutionResult> results = list.Select(TaskExecutionResult.Successful).ToList();

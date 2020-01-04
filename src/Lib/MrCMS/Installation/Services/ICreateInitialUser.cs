@@ -1,9 +1,10 @@
-﻿using MrCMS.Installation.Models;
+﻿using System.Threading.Tasks;
+using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services
 {
     public interface ICreateInitialUser
     {
-        void Create(InstallModel model);
+        Task Create(InstallModel model);
     }
 }

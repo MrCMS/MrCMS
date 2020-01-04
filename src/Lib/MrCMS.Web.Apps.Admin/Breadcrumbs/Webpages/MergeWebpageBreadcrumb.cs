@@ -1,4 +1,5 @@
-﻿using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
+﻿using System.Threading.Tasks;
+using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Webpages
 {
@@ -7,7 +8,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Webpages
         public override string Controller => "MergeWebpage";
         public override string Action => "Index";
         public override string Name => "Merge";
-        public override void Populate()
+        public override Task Populate()
         {
             ParentActionArguments = CreateIdArguments(Id);
         }

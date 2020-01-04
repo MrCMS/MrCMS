@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing;
 using MrCMS.Batching.Entities;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 
@@ -9,11 +10,11 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
         public override string Controller => "BatchRun";
         public override string Action => "Show";
 
-        public override void Populate()
+        public override Task Populate()
         {
             if (!Id.HasValue)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             Name = $"Run #{Id}";
@@ -21,6 +22,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
             {
                 ParentActionArguments = new RouteValueDictionary { ["batch"] = batchRun.Batch };
             }
+            return Task.CompletedTask;
         }
     }
 }

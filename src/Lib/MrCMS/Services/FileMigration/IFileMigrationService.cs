@@ -1,9 +1,10 @@
-﻿using MrCMS.Batching.Entities;
+﻿using System.Threading.Tasks;
+using MrCMS.Batching.Entities;
 
 namespace MrCMS.Services.FileMigration
 {
     public interface IFileMigrationService
     {
-        FileMigrationResult MigrateFiles();
+        Task<FileMigrationResult> MigrateFiles();
     }
 }

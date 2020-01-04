@@ -1,35 +1,32 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Batching.Entities;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Batching
 {
     public class SetBatchJobExecutionStatus : ISetBatchJobExecutionStatus
     {
-        private readonly ISession _session;
+        private readonly IServiceProvider _serviceProvider;
 
-        public SetBatchJobExecutionStatus(ISession session)
+        public SetBatchJobExecutionStatus(IServiceProvider serviceProvider)
         {
-            _session = session;
+            _serviceProvider = serviceProvider;
         }
 
-        public void Starting<T>(T entity) where T : SystemEntity, IHaveJobExecutionStatus
+        public async Task Starting<T>(T entity) where T : SystemEntity, IHaveJobExecutionStatus
         {
-            _session.Transact(session =>
-            {
-                entity.Status = JobExecutionStatus.Executing;
-                session.Update(entity);
-            });
+            entity.Status = JobExecutionStatus.Executing;
+            await _serviceProvider.GetRequiredService<IGlobalRepository<T>>().Update(entity);
         }
 
-        public void Complete<T>(T entity, BatchJobExecutionResult result) where T : SystemEntity, IHaveJobExecutionStatus
+        public async Task Complete<T>(T entity, BatchJobExecutionResult result) where T : SystemEntity, IHaveJobExecutionStatus
         {
-            _session.Transact(session =>
-            {
-                entity.Status = result.Successful ? JobExecutionStatus.Succeeded : JobExecutionStatus.Failed;
-                session.Update(entity);
-            });
+            entity.Status = result.Successful ? JobExecutionStatus.Succeeded : JobExecutionStatus.Failed;
+            await _serviceProvider.GetRequiredService<IGlobalRepository<T>>().Update(entity);
 
         }
     }

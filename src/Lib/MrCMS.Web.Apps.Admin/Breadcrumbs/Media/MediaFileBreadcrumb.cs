@@ -1,25 +1,26 @@
-﻿using MrCMS.Entities.Documents.Media;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Media
 {
     public class MediaFileBreadcrumb : ItemBreadcrumb<MediaFolderBreadcrumb, MediaFile>
     {
-        public MediaFileBreadcrumb(ISession session) : base(session)
+        public MediaFileBreadcrumb(IRepository<MediaFile> repository) : base(repository)
         {
         }
 
         public override string Controller => "File";
 
-        public override void Populate()
+        public override async Task Populate()
         {
             if (!Id.HasValue)
             {
                 return;
             }
 
-            var mediaFile = Session.Get<MediaFile>(Id.Value);
+            var mediaFile = await Repository.GetData(Id.Value);
             Name = mediaFile.FileName;
             ParentActionArguments = CreateIdArguments(mediaFile.MediaCategory?.Id);
         }

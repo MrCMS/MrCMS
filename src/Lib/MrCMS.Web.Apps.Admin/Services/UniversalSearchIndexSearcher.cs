@@ -10,7 +10,7 @@ using MrCMS.Search.Models;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.Search;
-using NHibernate;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

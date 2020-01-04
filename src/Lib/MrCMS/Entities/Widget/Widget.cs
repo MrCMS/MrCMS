@@ -16,6 +16,7 @@ namespace MrCMS.Entities.Widget
         }
 
         public virtual LayoutArea LayoutArea { get; set; }
+        public int LayoutAreaId { get; set; }
 
         public virtual string Name { get; set; }
 
@@ -58,5 +59,6 @@ namespace MrCMS.Entities.Widget
         {
             get { return true; }
         }
+
     }
 }
