@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 
@@ -6,26 +8,26 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class RedirectedDomainService : IRedirectedDomainService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<RedirectedDomain> _repository;
+        //private readonly ISession _session;
 
-        public RedirectedDomainService(ISession session)
+        public RedirectedDomainService(IGlobalRepository<RedirectedDomain> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public void Save(RedirectedDomain domain)
+        public async Task Save(RedirectedDomain domain)
         {
-            if (domain.Site != null)
-                domain.Site.RedirectedDomains.Add(domain);
-            _session.Transact(session => session.Save(domain));
+            domain.Site?.RedirectedDomains.Add(domain);
+            await _repository.Add(domain);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var rd = _session.Get<RedirectedDomain>(id);
+            var rd =await _repository.Load(id);
             rd.Site.RedirectedDomains.Remove(rd);
-            
-            _session.Transact(session => session.Delete(rd));
+
+            await _repository.Delete(rd);
         }
     }
 }

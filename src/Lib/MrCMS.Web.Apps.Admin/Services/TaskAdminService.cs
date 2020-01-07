@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
@@ -11,23 +13,25 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class TaskAdminService : ITaskAdminService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<QueuedTask> _repository;
         private readonly ITaskSettingManager _taskSettingManager;
 
-        public TaskAdminService(ISession session,ITaskSettingManager taskSettingManager)
+        public TaskAdminService(IGlobalRepository<QueuedTask> repository, ITaskSettingManager taskSettingManager)
         {
-            _session = session;
+            _repository = repository;
             _taskSettingManager = taskSettingManager;
         }
 
-        public List<TaskInfo> GetAllScheduledTasks()
+        public async Task<List<TaskInfo>> GetAllScheduledTasks()
         {
-            return _taskSettingManager.GetInfo().OrderBy(x => x.Name).ToList();
+            var info = await _taskSettingManager.GetInfo();
+            return info.OrderBy(x => x.Name).ToList();
         }
 
-        public TaskUpdateData GetTaskUpdateData(string type)
+        public async Task<TaskUpdateData> GetTaskUpdateData(string type)
         {
-            var info = GetAllScheduledTasks().FirstOrDefault(x => x.TypeName == type);
+            var allScheduledTasks = await GetAllScheduledTasks();
+            var info = allScheduledTasks.FirstOrDefault(x => x.TypeName == type);
 
             return info == null
                 ? null
@@ -42,12 +46,9 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IPagedList<QueuedTask> GetQueuedTasks(QueuedTaskSearchQuery searchQuery)
         {
-            using (new SiteFilterDisabler(_session))
-            {
-                return _session.QueryOver<QueuedTask>()
-                    .OrderBy(task => task.CreatedOn).Desc
-                    .Paged(searchQuery.Page);
-            }
+            return _repository.Query()
+                .OrderByDescending(task => task.CreatedOn)
+                .ToPagedList(searchQuery.Page);
         }
 
         public void Update(TaskUpdateData info)

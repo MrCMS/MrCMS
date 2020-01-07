@@ -1,5 +1,6 @@
 using System.Linq;
 using MrCMS.Batching.Entities;
+using MrCMS.Data;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
 
@@ -9,16 +10,16 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class BatchAdminService : IBatchAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Batch> _repository;
 
-        public BatchAdminService(ISession session)
+        public BatchAdminService(IRepository<Batch> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public IPagedList<Batch> Search(BatchSearchModel searchModel)
         {
-            return _session.Query<Batch>().OrderByDescending(batch => batch.Id).ToPagedList(searchModel.Page);
+            return _repository.Readonly().OrderByDescending(batch => batch.Id).ToPagedList(searchModel.Page);
         }
     }
 }

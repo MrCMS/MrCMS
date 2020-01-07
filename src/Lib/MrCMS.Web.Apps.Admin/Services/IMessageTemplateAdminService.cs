@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Messages;
 using MrCMS.Web.Apps.Admin.Models;
 
@@ -12,9 +13,9 @@ namespace MrCMS.Web.Apps.Admin.Services
         MessageTemplate GetOverride(string type);
         MessageTemplate GetTemplate(string type);
 
-        void AddOverride(MessageTemplate messageTemplate);
+        Task AddOverride(MessageTemplate messageTemplate);
         void Save(MessageTemplate messageTemplate);
         void DeleteOverride(string type);
-        void ImportLegacyTemplate(string type);
+        Task ImportLegacyTemplate(string type);
     }
 }

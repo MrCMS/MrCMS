@@ -3,30 +3,31 @@ using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
+using MrCMS.Website;
 
 namespace MrCMS.Services
 {
     public class MessageParser<T> : IMessageParser<T> where T : MessageTemplate, new()
     {
         private readonly IMessageTemplateParser _messageTemplateParser;
+        private readonly IGetSiteId _getSiteId;
         private readonly IMessageTemplateProvider _messageTemplateProvider;
         private readonly IQueueMessage _queueMessage;
-        private readonly Site _site;
 
         public MessageParser(IQueueMessage queueMessage, IMessageTemplateProvider messageTemplateProvider,
-            IMessageTemplateParser messageTemplateParser, Site site)
+            IMessageTemplateParser messageTemplateParser, IGetSiteId getSiteId)
         {
             _queueMessage = queueMessage;
             _messageTemplateProvider = messageTemplateProvider;
             _messageTemplateParser = messageTemplateParser;
-            _site = site;
+            _getSiteId = getSiteId;
         }
 
         public async Task<QueuedMessage> GetMessage(string fromAddress = null, string fromName = null,
             string toAddress = null,
             string toName = null, string cc = null, string bcc = null)
         {
-            var template = await _messageTemplateProvider.GetMessageTemplate<T>(_site);
+            var template = await _messageTemplateProvider.GetMessageTemplate<T>(_getSiteId.GetId());
             if (template == null || template.IsDisabled)
                 return null;
 
@@ -54,15 +55,15 @@ namespace MrCMS.Services
     public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplate<T2>, new()
     {
         private readonly IMessageTemplateParser _messageTemplateParser;
+        private readonly IGetSiteId _getSiteId;
         private readonly IMessageTemplateProvider _messageTemplateProvider;
         private readonly IQueueMessage _queueMessage;
-        private readonly Site _site;
 
-        public MessageParser(IMessageTemplateParser messageTemplateParser, Site site,
+        public MessageParser(IMessageTemplateParser messageTemplateParser, IGetSiteId getSiteId,
             IMessageTemplateProvider messageTemplateProvider, IQueueMessage queueMessage)
         {
             _messageTemplateParser = messageTemplateParser;
-            _site = site;
+            _getSiteId = getSiteId;
             _messageTemplateProvider = messageTemplateProvider;
             _queueMessage = queueMessage;
         }
@@ -70,7 +71,7 @@ namespace MrCMS.Services
         public async Task<QueuedMessage> GetMessage(T2 obj, string fromAddress = null, string fromName = null,
             string toAddress = null, string toName = null, string cc = null, string bcc = null)
         {
-            var template = await _messageTemplateProvider.GetMessageTemplate<T>(_site);
+            var template = await _messageTemplateProvider.GetMessageTemplate<T>(_getSiteId.GetId());
             if (template == null)
                 return null;
 

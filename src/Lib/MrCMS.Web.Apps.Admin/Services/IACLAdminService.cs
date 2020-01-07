@@ -10,6 +10,6 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface IAclAdminService
     {
         List<AclInfo> GetOptions();
-        bool UpdateAcl(IFormCollection collection);
+        Task<bool> UpdateAcl(IFormCollection collection);
     }
 }

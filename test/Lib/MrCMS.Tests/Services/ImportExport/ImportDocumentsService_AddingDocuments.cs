@@ -23,7 +23,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //        _indexService = A.Fake<IIndexService>();
     //        _updateTagsService = A.Fake<IUpdateTagsService>();
     //        _updateUrlHistoryService = A.Fake<IUpdateUrlHistoryService>();
-    //        _importDocumentsService = new ImportDocumentsService(Session, CurrentSite, _indexService, _updateTagsService, _updateUrlHistoryService);
+    //        _importDocumentsService = new ImportDocumentsService(Context, CurrentSite, _indexService, _updateTagsService, _updateUrlHistoryService);
     //    }
 
     //    [Fact]
@@ -40,7 +40,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                    }
     //                                                            });
 
-    //        var webpages = Session.QueryOver<Webpage>().List();
+    //        var webpages = Context.QueryOver<Webpage>().List();
     //        webpages.Should().HaveCount(1);
     //        webpages[0].Should().BeOfType<BasicMappedWebpage>();
     //        webpages[0].Name.Should().Be("Test");
@@ -69,7 +69,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                    }
     //                                                            });
 
-    //        var webpages = Session.QueryOver<Webpage>().List();
+    //        var webpages = Context.QueryOver<Webpage>().List();
     //        webpages.Should().HaveCount(2);
     //        webpages.Where(webpage => webpage.Parent == null).Should().HaveCount(1);
     //        webpages.First(webpage => webpage.Parent != null).Parent.UrlSegment.Should().Be("test");
@@ -97,7 +97,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                    }
     //                                                            });
 
-    //        var webpages = Session.QueryOver<Webpage>().List();
+    //        var webpages = Context.QueryOver<Webpage>().List();
     //        webpages.Should().HaveCount(2);
     //        webpages.Where(webpage => webpage.Parent == null).Should().HaveCount(1);
     //        webpages.First(webpage => webpage.Parent != null).Parent.UrlSegment.Should().Be("test");
@@ -133,7 +133,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                    }
     //                                                            });
 
-    //        var webpages = Session.QueryOver<Webpage>().List();
+    //        var webpages = Context.QueryOver<Webpage>().List();
     //        webpages.Should().HaveCount(3);
     //        webpages.Where(webpage => webpage.Parent == null).Should().HaveCount(1);
     //        var children = webpages.Where(webpage => webpage.Parent != null).ToList();

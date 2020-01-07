@@ -1,5 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models.SEOAnalysis;
@@ -9,19 +14,20 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class PageNameIsUnique : BaseSEOAnalysisFacetProvider
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
 
-        public PageNameIsUnique(ISession session)
+        public PageNameIsUnique(IRepository<Webpage> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
-            bool anyWithSameTitle =
-                _session.QueryOver<Webpage>()
-                    .Where(page => page.Site.Id == webpage.Site.Id && page.Id != webpage.Id && page.Name == webpage.Name)
-                    .Any();
+            bool anyWithSameTitle = await
+                _repository
+                    .Query()
+                    .AnyAsync(page => page.Id != webpage.Id && page.Name == webpage.Name);
 
             if (anyWithSameTitle)
                 yield return

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
@@ -12,8 +14,6 @@ using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
 
-using NHibernate.Criterion;
-using NHibernate.Transform;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -21,29 +21,29 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class FileAdminService : IFileAdminService
     {
         private readonly IFileService _fileService;
+        private readonly IRepository<MediaFile> _mediaFileRepository;
         private readonly MediaSettings _mediaSettings;
         private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
-        private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
 
-        public FileAdminService(IFileService fileService, ISession session,
+        public FileAdminService(IFileService fileService, IRepository<MediaFile> mediaFileRepository,
             IStringResourceProvider stringResourceProvider, IRepository<MediaCategory> mediaCategoryRepository,
             MediaSettings mediaSettings, IGetDocumentsByParent<MediaCategory> getDocumentsByParent)
         {
             _fileService = fileService;
-            _session = session;
+            _mediaFileRepository = mediaFileRepository;
             _stringResourceProvider = stringResourceProvider;
             _mediaCategoryRepository = mediaCategoryRepository;
             _mediaSettings = mediaSettings;
             _getDocumentsByParent = getDocumentsByParent;
         }
 
-        public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
+        public async Task<ViewDataUploadFilesResult> AddFile(Stream stream, string fileName, string contentType,
+            long contentLength,
             int mediaCategoryId)
         {
-            MediaFile mediaFile = _fileService.AddFile(stream, fileName, contentType, contentLength,
-                _session.Get<MediaCategory>(mediaCategoryId));
+            MediaFile mediaFile = await _fileService.AddFile(stream, fileName, contentType, contentLength, await _mediaCategoryRepository.Load(mediaCategoryId));
             return mediaFile.GetUploadFilesResult();
         }
 
@@ -64,63 +64,61 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel)
         {
-            IQueryOver<MediaFile, MediaFile> query = _session.QueryOver<MediaFile>();
+            var query = _mediaFileRepository.Readonly();
             query = searchModel.Id.HasValue
                 ? query.Where(file => file.MediaCategory.Id == searchModel.Id)
                 : query.Where(file => file.MediaCategory == null);
             if (!string.IsNullOrWhiteSpace(searchModel.SearchText))
             {
                 query = query.Where(file =>
-                    file.FileName.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere)
+                    EF.Functions.Like(file.FileName, $"%{searchModel.SearchText}%")
                     ||
-                    file.Title.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere)
+                    EF.Functions.Like(file.Title, $"%{searchModel.SearchText}%")
                     ||
-                    file.Description.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere)
+                    EF.Functions.Like(file.Description, $"%{searchModel.SearchText}%")
                     );
             }
             query = query.OrderBy(searchModel.SortBy);
 
-            return query.Paged(searchModel.Page, _mediaSettings.MediaPageSize);
+            return PagedListExtensions.ToPagedList(query, searchModel.Page, _mediaSettings.MediaPageSize);
         }
 
         public List<ImageSortItem> GetFilesToSort(MediaCategory category = null)
         {
-            IQueryOver<MediaFile, MediaFile> query = _session.QueryOver<MediaFile>();
+            var query = _mediaFileRepository.Readonly();
             query = category != null
                 ? query.Where(file => file.MediaCategory.Id == category.Id)
                 : query.Where(file => file.MediaCategory == null);
-            query = query.OrderBy(x => x.DisplayOrder).Asc;
+            query = query.OrderBy(x => x.DisplayOrder);
 
-            ImageSortItem item = null;
-            return query.SelectList(builder =>
+            return query.Select(mediaFile =>
+                new ImageSortItem
                 {
-                    builder.Select(file => file.FileName).WithAlias(() => item.Name);
-                    builder.Select(file => file.Id).WithAlias(() => item.Id);
-                    builder.Select(file => file.DisplayOrder).WithAlias(() => item.Order);
-                    builder.Select(file => file.FileExtension).WithAlias(() => item.FileExtension);
-                    builder.Select(file => file.FileUrl).WithAlias(() => item.ImageUrl);
-                    return builder;
-                }).TransformUsing(Transformers.AliasToBean<ImageSortItem>())
-                .Cacheable()
-                .List<ImageSortItem>().ToList();
+                    Id = mediaFile.Id,
+                    Name = mediaFile.FileName,
+                    FileExtension = mediaFile.FileExtension,
+                    ImageUrl = mediaFile.FileUrl,
+                    Order = mediaFile.DisplayOrder
+                }).ToList();
         }
 
 
 
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _session.Transact(session => items.ForEach(item =>
+            var mediaFiles = items.Select(item =>
             {
-                var mediaFile = session.Get<MediaFile>(item.Id);
+                var mediaFile = _mediaFileRepository.LoadSync(item.Id);
                 mediaFile.DisplayOrder = item.Order;
-                session.Update(mediaFile);
-            }));
+                return mediaFile;
+            });
+            await _mediaFileRepository.UpdateRange(mediaFiles.ToList());
         }
 
         public IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel)
         {
-            IQueryOver<MediaCategory, MediaCategory> queryOver =
-                _session.QueryOver<MediaCategory>().Where(x => !x.HideInAdminNav);
+            var queryOver =
+                _mediaCategoryRepository.Query().Where(x => !x.HideInAdminNav);
             queryOver = searchModel.Id.HasValue
                 ? queryOver.Where(x => x.Parent.Id == searchModel.Id)
                 : queryOver.Where(x => x.Parent == null);
@@ -128,78 +126,76 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 queryOver =
                     queryOver.Where(
-                        category => category.Name.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere));
+                        category => EF.Functions.Like(category.Name, $"%{searchModel.SearchText}%"));
             }
 
             queryOver = queryOver.OrderBy(searchModel.SortBy);
 
-            return queryOver.Cacheable().List();
+            return queryOver.ToList();
         }
 
-        public string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null)
+        public async Task<string> MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null)
         {
             string message = string.Empty;
             if (folders != null)
             {
-                _session.Transact(s => folders.ForEach(item =>
+                folders.ForEach(item =>
                 {
-                    var mediaFolder = s.Get<MediaCategory>(item.Id);
-                    if (parent != null && mediaFolder.Id != parent.Id)
+                    //var mediaFolder = _mediaCategoryRepository.LoadSync(item.Id);
+                    if (parent != null && item.Id != parent.Id)
                     {
-                        mediaFolder.Parent = parent;
-                        s.Update(mediaFolder);
+                        item.Parent = parent;
                     }
                     else if (parent == null)
                     {
-                        mediaFolder.Parent = null;
-                        s.Update(mediaFolder);
+                        item.Parent = null;
                     }
                     else
                     {
                         message = _stringResourceProvider.GetValue("Cannot move folder to the same folder");
                     }
-                }));
+                });
+                await _mediaCategoryRepository.UpdateRange(folders.ToList());
             }
             return message;
         }
 
-        public void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null)
+        public async Task MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null)
         {
             if (files != null)
             {
-                _session.Transact(session => files.ForEach(item =>
+                files.ForEach(item =>
                 {
-                    var mediaFile = session.Get<MediaFile>(item.Id);
-                    mediaFile.MediaCategory = parent;
-                    session.Update(mediaFile);
-                }));
+                    item.MediaCategory = parent;
+                });
+                await _mediaFileRepository.UpdateRange(files.ToList());
             }
         }
 
-        public void DeleteFoldersSoft(IEnumerable<MediaCategory> folders)
+        public async Task DeleteFoldersSoft(IEnumerable<MediaCategory> folders)
         {
             if (folders != null)
             {
                 IEnumerable<MediaCategory> foldersRecursive = GetFoldersRecursive(folders);
-                _mediaCategoryRepository.Transact(repository =>
-                {
-                    foreach (MediaCategory f in foldersRecursive)
-                    {
-                        var folder = repository.Get(f.Id);
-                        List<MediaFile> files = folder.Files.ToList();
-                        foreach (MediaFile file in files)
-                            _fileService.DeleteFileSoft(file);
+                await _mediaCategoryRepository.Transact(async (repo, ct) =>
+                 {
+                     foreach (MediaCategory f in foldersRecursive)
+                     {
+                         var folder = repo.LoadSync(f.Id);
+                         List<MediaFile> files = folder.Files.ToList();
+                         foreach (MediaFile file in files)
+                             await _fileService.DeleteFileSoft(file);
 
-                        repository.Delete(folder);
-                    }
-                });
+                         await repo.Delete(folder, ct);
+                     }
+                 });
             }
         }
 
         public MediaCategory GetCategory(MediaCategorySearchModel searchModel)
         {
             return searchModel.Id.HasValue
-                ? _session.Get<MediaCategory>(searchModel.Id.Value)
+                ? _mediaCategoryRepository.LoadSync(searchModel.Id.Value)
                 : null;
         }
 
@@ -210,7 +206,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public MediaFile GetFile(int id)
         {
-            return _session.Get<MediaFile>(id);
+            return _mediaFileRepository.LoadSync(id);
         }
 
         public void DeleteFilesSoft(IEnumerable<MediaFile> files)

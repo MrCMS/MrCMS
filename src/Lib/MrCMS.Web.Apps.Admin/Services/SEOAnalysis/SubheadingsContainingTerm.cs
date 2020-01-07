@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Helpers;
@@ -10,7 +11,8 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class SubheadingsContainingTerm : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
             var subheadings = document.GetElementsOfType("h2").ToList();
             if (!subheadings.Any())

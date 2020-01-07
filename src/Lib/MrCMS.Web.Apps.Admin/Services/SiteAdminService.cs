@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -12,62 +15,64 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class SiteAdminService : ISiteAdminService
     {
+        private readonly IGlobalRepository<Site> _repository;
+        private readonly IGlobalRepository<RedirectedDomain> _redirectedDomainRepository;
         private readonly ICloneSiteService _cloneSiteService;
         private readonly IMapper _mapper;
-        private readonly ISession _session;
 
-        public SiteAdminService(ISession session, ICloneSiteService cloneSiteService, IMapper mapper)
+        public SiteAdminService(IGlobalRepository<Site> repository, IGlobalRepository<RedirectedDomain> redirectedDomainRepository, ICloneSiteService cloneSiteService, IMapper mapper)
         {
-            _session = session;
+            _repository = repository;
+            _redirectedDomainRepository = redirectedDomainRepository;
             _cloneSiteService = cloneSiteService;
             _mapper = mapper;
         }
 
         public List<Site> GetAllSites()
         {
-            return _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.Cacheable().List().ToList();
+            return _repository.Query().ToList();
         }
 
         public Site GetSite(int id)
         {
-            return _session.Get<Site>(id);
+            return _repository.LoadSync(id);
         }
 
-        public void AddSite(AddSiteModel model, List<SiteCopyOption> options)
+        public async Task AddSite(AddSiteModel model, List<SiteCopyOption> options)
         {
             var site = _mapper.Map<Site>(model);
 
-            _session.Transact(session => session.Save(site));
+            await _repository.Add(site);
 
             _cloneSiteService.CloneData(site, options);
         }
 
         public UpdateSiteModel GetEditModel(int id)
         {
-            var site =  _session.Get<Site>(id);
+            var site =  _repository.GetDataSync(id);
 
             return _mapper.Map<UpdateSiteModel>(site);
         }
 
         public IList<RedirectedDomain> GetRedirectedDomains(int id)
         {
-            return _session.Query<RedirectedDomain>()
+            return _redirectedDomainRepository.Query()
                 .Where(x => x.Site.Id == id)
                 .OrderBy(x => x.CreatedOn)
                 .ToList();
         }
 
-        public void SaveSite(UpdateSiteModel model)
+        public async Task SaveSite(UpdateSiteModel model)
         {
-            var site = _session.Get<Site>(model.Id);
+            var site = await _repository.Load(model.Id);
             _mapper.Map(model, site);
-            _session.Transact(session => session.Update(site));
+            await _repository.Update(site);
         }
 
-        public void DeleteSite(int id)
+        public async Task DeleteSite(int id)
         {
-            var site = _session.Get<Site>(id);
-            _session.Transact(session => session.Delete(site));
+            var site = await _repository.Load(id);
+            await _repository.Delete(site);
         }
     }
 }

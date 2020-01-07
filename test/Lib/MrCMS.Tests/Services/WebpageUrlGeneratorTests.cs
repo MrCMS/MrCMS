@@ -1,5 +1,8 @@
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -10,28 +13,32 @@ using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class WebpageUrlGeneratorTests : InMemoryDatabaseTest
+    public class WebpageUrlGeneratorTests : MrCMSTest
     {
         private readonly IUrlValidationService _urlValidationService;
         private readonly WebpageUrlService _webpageUrlService;
         private readonly PageDefaultsSettings _pageDefaultsSettings;
+        private IRepository<Webpage> _webpageRepository;
+        private IRepository<PageTemplate> _pageTemplateRepository;
 
         public WebpageUrlGeneratorTests()
         {
             _urlValidationService = A.Fake<IUrlValidationService>();
+            _webpageRepository = A.Fake<IRepository<Webpage>>();
+            _pageTemplateRepository = A.Fake<IRepository<PageTemplate>>();
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(A<string>.Ignored, A<int?>.Ignored)).Returns(true);
             _pageDefaultsSettings = new PageDefaultsSettings();
-            _webpageUrlService = new WebpageUrlService(_urlValidationService, Session, ServiceProvider, _pageDefaultsSettings);
+            _webpageUrlService = new WebpageUrlService(_webpageRepository, _pageTemplateRepository, _urlValidationService, ServiceProvider, _pageDefaultsSettings);
         }
 
         [Fact]
-        public void WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheHierarchyIfTheFlagIsSetToTrue()
+        public async Task WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheHierarchyIfTheFlagIsSetToTrue()
         {
-            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page" };
 
-            Session.Transact(session => session.SaveOrUpdate(textPage));
+            A.CallTo(() => _webpageRepository.Readonly()).ReturnsAsAsyncQueryable(textPage);
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
@@ -39,17 +46,17 @@ namespace MrCMS.Tests.Services
                 UseHierarchy = true
             });
 
-           documentUrl.Should().Be("test-page/nested-page");
+            documentUrl.Should().Be("test-page/nested-page");
         }
 
         [Fact]
-        public void WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheNameIfTheFlagIsSetToFalse()
+        public async Task WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheNameIfTheFlagIsSetToFalse()
         {
-            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page" };
 
-            Session.Transact(session => session.SaveOrUpdate(textPage));
+            A.CallTo(() => _webpageRepository.Readonly()).ReturnsAsAsyncQueryable(textPage);
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
@@ -61,25 +68,21 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void WebpageUrlGenerator_GetDocumentUrlWithExistingName_ShouldReturnTheUrlWithADigitAppended()
+        public async Task WebpageUrlGenerator_GetDocumentUrlWithExistingName_ShouldReturnTheUrlWithADigitAppended()
         {
-            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
+            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Id = 123 };
             var textPage = new BasicMappedWebpage
             {
                 Name = "Test Page",
                 Parent = parent,
                 UrlSegment = "parent/test-page",
-                Site = CurrentSite
+                Id = 234
             };
-            Session.Transact(session =>
-            {
-                session.SaveOrUpdate(parent);
-                session.SaveOrUpdate(textPage);
-            });
+            A.CallTo(() => _webpageRepository.Readonly()).ReturnsAsAsyncQueryable(parent, textPage);
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page", null))
                 .Returns(false);
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
@@ -91,28 +94,24 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void
+        public async Task
             WebpageUrlGenerator_GetDocumentUrlWithExistingName_MultipleFilesWithSameNameShouldNotAppendMultipleDigits()
         {
-            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
+            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Id = 123 };
             var textPage = new BasicMappedWebpage
             {
                 Name = "Test Page",
                 Parent = parent,
                 UrlSegment = "parent/test-page",
-                Site = CurrentSite
+                Id = 234
             };
-            Session.Transact(session =>
-            {
-                session.SaveOrUpdate(parent);
-                session.SaveOrUpdate(textPage);
-            });
+            A.CallTo(() => _webpageRepository.Readonly()).ReturnsAsAsyncQueryable(parent, textPage);
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page", null))
                 .Returns(false);
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page-1", null))
                 .Returns(false);
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,

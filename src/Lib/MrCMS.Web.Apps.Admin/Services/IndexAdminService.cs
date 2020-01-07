@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using MrCMS.Data;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Models;
@@ -17,15 +19,15 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IIndexService _indexService;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISession _session;
+        private readonly IRepository<LuceneFieldBoost> _repository;
         private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
-        public IndexAdminService(IServiceProvider serviceProvider, ISession session,
+        public IndexAdminService(IServiceProvider serviceProvider, IRepository<LuceneFieldBoost> repository,
             IUniversalSearchIndexManager universalSearchIndexManager,
             IIndexService indexService, IMapper mapper)
         {
             _serviceProvider = serviceProvider;
-            _session = session;
+            _repository = repository;
             _universalSearchIndexManager = universalSearchIndexManager;
             _indexService = indexService;
             _mapper = mapper;
@@ -40,34 +42,35 @@ namespace MrCMS.Web.Apps.Admin.Services
                 var luceneFieldBoosts = indexDefinition.DefinitionInfos.Select(info => info.TypeName)
                     .Select(
                         fieldName =>
-                            _session.QueryOver<LuceneFieldBoost>()
-                                .Where(boost => boost.Definition == fieldName)
-                                .Cacheable()
-                                .SingleOrDefault() ?? new LuceneFieldBoost
-                            {
-                                Definition = fieldName,
-                            }).ToList();
+                            _repository
+                                .Readonly()
+                                .SingleOrDefault(boost => boost.Definition == fieldName) ?? new LuceneFieldBoost
+                                {
+                                    Definition = fieldName,
+                                }).ToList();
                 return _mapper.Map<List<UpdateLuceneFieldBoostModel>>(luceneFieldBoosts);
             }
 
             return new List<UpdateLuceneFieldBoostModel>();
         }
 
-        public void SaveBoosts(List<UpdateLuceneFieldBoostModel> boosts)
+        public async Task SaveBoosts(List<UpdateLuceneFieldBoostModel> boosts)
         {
-            _session.Transact(session => boosts.ForEach(model =>
-            {
-                if (model.Id == 0)
+            await _repository.Transact(async (repo, ct) =>
                 {
-                    session.Save(_mapper.Map<LuceneFieldBoost>(model));
+                    foreach (var model in boosts)
+                        if (model.Id == 0)
+                        {
+                            await repo.Add(_mapper.Map<LuceneFieldBoost>(model), ct);
+                        }
+                        else
+                        {
+                            var luceneFieldBoost = await repo.Load(model.Id, ct);
+                            _mapper.Map(model, luceneFieldBoost);
+                            await repo.Update(luceneFieldBoost, ct);
+                        }
                 }
-                else
-                {
-                    var luceneFieldBoost = session.Get<LuceneFieldBoost>(model.Id);
-                    _mapper.Map(model, luceneFieldBoost);
-                    session.Update(luceneFieldBoost);
-                }
-            }));
+            );
         }
 
         public MrCMSIndex GetUniversalSearchIndexInfo()

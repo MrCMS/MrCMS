@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -17,9 +18,9 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class TreeNavService : ITreeNavService
     {
         private static readonly Dictionary<string, Type> TreeNavListings;
+        private readonly IRepository<Document> _repository;
         private readonly IServiceProvider _serviceProvider;
         private readonly IUrlHelper _urlHelper;
-        private readonly ISession _session;
 
         static TreeNavService()
         {
@@ -39,9 +40,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
         }
 
-        public TreeNavService(ISession session, IServiceProvider serviceProvider, IUrlHelper urlHelper)
+        public TreeNavService(IRepository<Document> repository, IServiceProvider serviceProvider, IUrlHelper urlHelper)
         {
-            _session = session;
+            _repository = repository;
             _serviceProvider = serviceProvider;
             _urlHelper = urlHelper;
         }
@@ -76,7 +77,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             //using (MiniProfiler.Current.Step("Get Listing"))
             {
-                var parent = id.HasValue ? _session.Get<Webpage>(id) : null;
+                var parent = id.HasValue ? _repository.GetDataSync<Document,Webpage>(id.Value) : null;
                 IWebpageTreeNavListing listing = null;
                 if (parent != null && TreeNavListings.ContainsKey(parent.GetType().FullName))
                 {
@@ -94,11 +95,10 @@ namespace MrCMS.Web.Apps.Admin.Services
                 adminTree.IsRootRequest = true;
             }
             IList<T> query =
-                _session.QueryOver<T>()
+                _repository.Readonly<T>()
                     .Where(x => x.Parent.Id == id && (x.HideInAdminNav != true))
                     .OrderBy(x => x.Name)
-                    .Asc.Cacheable()
-                    .List();
+                    .ToList();
             query.ForEach(doc =>
             {
                 var type = typeof(T);
@@ -110,7 +110,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     IconClass = iconClass,
                     NodeType = type.Name,
                     Type = type.FullName,
-                    HasChildren = _session.QueryOver<T>().Where(arg => arg.Parent.Id == doc.Id).Cacheable().Any(),
+                    HasChildren = _repository.Readonly().Any(arg => arg.ParentId == doc.Id),
                     CanAddChild = true,
                     IsPublished = true,
                     RevealInNavigation = true,

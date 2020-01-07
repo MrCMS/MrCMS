@@ -14,6 +14,7 @@ using MrCMS.Web.Apps.Admin.Models.Search;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -21,16 +22,16 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class UniversalSearchIndexSearcher : IUniversalSearchIndexSearcher
     {
         private readonly ISearchConverter _searchConverter;
-        private readonly ISession _session;
+        private readonly IDataReader _dataReader;
         private readonly SiteSettings _siteSettings;
         private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
         public UniversalSearchIndexSearcher(IUniversalSearchIndexManager universalSearchIndexManager,
-            ISearchConverter searchConverter, ISession session, SiteSettings siteSettings)
+            ISearchConverter searchConverter, IDataReader dataReader, SiteSettings siteSettings)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
-            _session = session;
+            _dataReader = dataReader;
             _siteSettings = siteSettings;
         }
 
@@ -81,7 +82,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 adminSearchResults = universalSearchItems.Select(item =>
                 {
                     Type systemType = TypeHelper.GetTypeByName(item.SystemType);
-                    var entity = _session.Get(systemType, item.Id) as SystemEntity;
+                    var entity = _dataReader.Get(systemType, item.Id).GetAwaiter().GetResult() as SystemEntity; // todo - refactor out sync call
                     return new AdminSearchResult(item, entity);
                 }).ToList();
 

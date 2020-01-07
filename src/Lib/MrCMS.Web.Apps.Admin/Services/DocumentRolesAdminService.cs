@@ -1,19 +1,20 @@
 using MrCMS.Entities.People;
 
-using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class DocumentRolesAdminService : IDocumentRolesAdminService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<UserRole> _repository;
 
-        public DocumentRolesAdminService(ISession session)
+        public DocumentRolesAdminService(IGlobalRepository<UserRole> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public ISet<UserRole> GetFrontEndRoles(string frontEndRoles, bool inheritFromParent)
@@ -37,7 +38,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         private UserRole GetRole(string name)
         {
-            return _session.QueryOver<UserRole>().Where(role => role.Name.IsInsensitiveLike(name, MatchMode.Exact)).SingleOrDefault();
+            return _repository.Query().SingleOrDefault(role => EF.Functions.Like(role.Name, name));
         }
     }
 }

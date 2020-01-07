@@ -1,56 +1,49 @@
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
 
-using NHibernate.Criterion;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class UrlHistoryAdminService : IUrlHistoryAdminService
     {
-        private readonly ISession _session;
-        private readonly Site _site;
+        private readonly IRepository<UrlHistory> _repository;
         private readonly IMapper _mapper;
 
-        public UrlHistoryAdminService(ISession session, Site site, IMapper mapper)
+        public UrlHistoryAdminService(IRepository<UrlHistory> repository, IMapper mapper)
         {
-            _session = session;
-            _site = site;
+            _repository = repository;
             _mapper = mapper;
         }
 
-        public UrlHistory Delete(int id)
+        public async Task<UrlHistory> Delete(int id)
         {
-            var urlHistory = _session.Get<UrlHistory>(id);
+            var urlHistory = await _repository.Load(id);
             if (urlHistory == null)
             {
                 return null;
             }
 
             urlHistory.Webpage?.Urls.Remove(urlHistory);
-            _session.Transact(session => _session.Delete(urlHistory));
+            await _repository.Delete(urlHistory);
             return urlHistory;
         }
 
-        public void Add(AddUrlHistoryModel model)
+        public async Task Add(AddUrlHistoryModel model)
         {
             var urlHistory = _mapper.Map<UrlHistory>(model);
             urlHistory.Webpage?.Urls.Add(urlHistory);
-            _session.Transact(session => session.Save(urlHistory));
+            await _repository.Add(urlHistory);
         }
 
         public UrlHistory GetByUrlSegment(string url)
         {
-            return _session.QueryOver<UrlHistory>().Where(x => x.Site.Id == _site.Id
-                && x.UrlSegment.IsInsensitiveLike(url, MatchMode.Exact)).SingleOrDefault();
-        }
-
-        public UrlHistory GetByUrlSegmentWithSite(string url, Site site, Webpage page)
-        {
-            return _session.QueryOver<UrlHistory>().Where(x => x.Site == site && x.Webpage == page
-                && x.UrlSegment.IsInsensitiveLike(url, MatchMode.Exact)).SingleOrDefault();
+            return _repository.Query().SingleOrDefault(x => EF.Functions.Like(x.UrlSegment, url));
         }
 
         public AddUrlHistoryModel GetUrlHistoryToAdd(int webpageId)

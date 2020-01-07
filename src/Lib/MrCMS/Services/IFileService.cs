@@ -15,8 +15,8 @@ namespace MrCMS.Services
         Task<string> GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false);
         Task<string> GetFileLocation(Crop crop, Size imageSize, bool getCdn = false);
         Task<FilesPagedResult> GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
-        MediaFile GetFileByUrl(string url);
-        MediaFile GetFile(string value);
+        Task<MediaFile> GetFileByUrl(string url);
+        Task<MediaFile> GetFile(string value);
         Task<string> GetFileUrl(MediaFile file, string value);
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);

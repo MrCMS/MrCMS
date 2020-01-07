@@ -4,43 +4,43 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.Website;
-
-using NHibernate.Criterion;
-using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class LogAdminService : ILogAdminService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Log> _repository;
+        private readonly IGlobalRepository<Site> _siteRepository;
 
-        public LogAdminService(ISession session)
+        public LogAdminService(IGlobalRepository<Log> repository, IGlobalRepository<Site> siteRepository)
         {
-            _session = session;
+            _repository = repository;
+            _siteRepository = siteRepository;
         }
 
 
-        public void DeleteAllLogs()
+        public async Task DeleteAllLogs()
         {
             // we need to load these as the hql version doesn't remove from the queries and throws
-            var logs = _session.Query<Log>().ToList();
-            _session.Transact(session =>
-            {
-                logs.ForEach(session.Delete);
-            });
+            var logs = _repository.Query<Log>().ToList();
+            await _repository.DeleteRange(logs);
         }
 
-        public void DeleteLog(int id)
+        public async Task DeleteLog(int id)
         {
-            _session.Transact(session => session.Delete(session.Get<Log>(id)));
+            var log = await _repository.Load(id);
+            await _repository.Delete(log);
         }
 
         public List<SelectListItem> GetSiteOptions()
         {
-            IList<Site> sites = _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.List();
+            IList<Site> sites = _siteRepository.Readonly().OrderBy(site => site.Name).ToList();
             return sites.Count == 1
                 ? new List<SelectListItem>()
                 : sites
@@ -50,9 +50,8 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery)
         {
-            using (new SiteFilterDisabler(_session))
             {
-                IQueryOver<Log, Log> query = BaseQuery();
+                var query = BaseQuery();
                 if (searchQuery.Type.HasValue)
                 {
                     query = query.Where(log => log.Type == searchQuery.Type);
@@ -62,13 +61,15 @@ namespace MrCMS.Web.Apps.Admin.Services
                 {
                     query =
                         query.Where(
-                            log =>
-                                log.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
+                            log => EF.Functions.Like(searchQuery.Message, $"%{searchQuery.Message}%")
+                        );
                 }
 
                 if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
                 {
-                    query = query.Where(log => log.Detail.IsInsensitiveLike(searchQuery.Detail, MatchMode.Anywhere));
+                    query = query.Where(
+                            log => EF.Functions.Like(searchQuery.Detail, $"%{searchQuery.Detail}%")
+                        );
                 }
 
                 if (searchQuery.SiteId.HasValue)
@@ -86,21 +87,20 @@ namespace MrCMS.Web.Apps.Admin.Services
                     query = query.Where(log => log.CreatedOn <= searchQuery.To);
                 }
 
-                return query.Paged(searchQuery.Page);
+                return query.ToPagedList(searchQuery.Page);
             }
         }
 
         public IList<Log> GetAllLogEntries()
         {
-            return BaseQuery().Cacheable().List();
+            return BaseQuery().ToList();
         }
 
-        private IQueryOver<Log, Log> BaseQuery()
+        private IQueryable<Log> BaseQuery()
         {
             return
-                _session.QueryOver<Log>()
-                    .OrderBy(entry => entry.Id)
-                    .Desc;
+                _repository.Readonly()
+                    .OrderByDescending(entry => entry.Id);
         }
     }
 }

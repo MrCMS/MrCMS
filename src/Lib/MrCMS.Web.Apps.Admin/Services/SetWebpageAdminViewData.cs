@@ -4,6 +4,7 @@ using MrCMS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -42,7 +43,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         private static readonly Dictionary<Type, HashSet<Type>> AssignViewDataTypes;
 
-        public void SetViewData<T>(ViewDataDictionary viewData, T webpage) where T : Webpage
+        public async Task SetViewData<T>(ViewDataDictionary viewData, T webpage) where T : Webpage
         {
             if (webpage == null)
             {
@@ -60,18 +61,18 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 if (assignAdminViewData is BaseAssignWebpageAdminViewData adminViewData)
                 {
-                    adminViewData.AssignViewDataBase(webpage, viewData);
+                    await adminViewData.AssignViewDataBase(webpage, viewData);
                 }
             }
         }
 
-        public void SetViewDataForAdd(ViewDataDictionary viewData, string type)
+        public async Task SetViewDataForAdd(ViewDataDictionary viewData, string type)
         {
             var documentType = TypeHelper.GetTypeByName(type);
             if (documentType.IsAbstract || !documentType.IsImplementationOf(typeof(Webpage)))
                 return;
 
-            SetViewData(viewData, Activator.CreateInstance(documentType) as Webpage);
+            await SetViewData(viewData, Activator.CreateInstance(documentType) as Webpage);
         }
     }
 }

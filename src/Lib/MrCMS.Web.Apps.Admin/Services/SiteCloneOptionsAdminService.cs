@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services.CloneSite;
@@ -11,11 +12,11 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class SiteCloneOptionsAdminService : ISiteCloneOptionsAdminService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Site> _repository;
 
-        public SiteCloneOptionsAdminService(ISession session)
+        public SiteCloneOptionsAdminService(IGlobalRepository<Site> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public List<SiteCloneOption> GetClonePartOptions()
@@ -31,7 +32,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public List<SelectListItem> GetOtherSiteOptions()
         {
-            return _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.Cacheable().List()
+            return _repository.Readonly().OrderBy(x=>x.Name).ToList()
                 .BuildSelectItemList(site => site.DisplayName, site => site.Id.ToString(), emptyItem: new SelectListItem
                 {
                     Text = "Do not copy",

@@ -9,7 +9,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class TitleContainsTerm : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
             string titleText = document.GetElementText("title");
             if (titleText != null && titleText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))

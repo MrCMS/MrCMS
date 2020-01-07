@@ -9,6 +9,7 @@ namespace MrCMS.Tests.Services.Events
         public Task Execute(TestEventArgs args)
         {
             ExecutionCount++;
+            return Task.CompletedTask;
         }
 
         public static void Reset()

@@ -6,6 +6,7 @@ using System.Web;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -15,15 +16,17 @@ using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class UserLookupTests : InMemoryDatabaseTest
+    public class UserLookupTests : MrCMSTest
     {
         private readonly UserLookup _userService;
         private IGetDateTimeNow _getDateTimeNow;
+        private IGlobalRepository<User> _repository;
 
         public UserLookupTests()
         {
             _getDateTimeNow = A.Fake<IGetDateTimeNow>();
-            _userService = new UserLookup(Session, new List<IExternalUserSource>(), _getDateTimeNow);
+            _repository = A.Fake<IGlobalRepository<User>>();
+            _userService = new UserLookup(_repository, new List<IExternalUserSource>(), _getDateTimeNow);
         }
         [Fact]
         public void UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
@@ -35,9 +38,8 @@ namespace MrCMS.Tests.Services
         public void UserService_GetUserByEmail_WithValidEmailReturnsTheCorrectUser()
         {
             var user = new User { FirstName = "Test", LastName = "User", Email = "test@example.com" };
-            Session.Transact(session => Session.Save(user));
             var user2 = new User { FirstName = "Test", LastName = "User2", Email = "test2@example.com" };
-            Session.Transact(session => Session.Save(user2));
+            A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(user, user2);
 
             _userService.GetUserByEmail("test2@example.com").Should().Be(user2);
         }
@@ -62,7 +64,7 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = resetPasswordGuid,
                 ResetPasswordExpiry = dateTime.AddDays(-2)
             };
-            Session.Transact(session => Session.Save(user));
+            A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(user);
 
             _userService.GetUserByResetGuid(resetPasswordGuid).Should().BeNull();
         }
@@ -81,7 +83,7 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = resetPasswordGuid,
                 ResetPasswordExpiry = dateTime.AddDays(1)
             };
-            Session.Transact(session => Session.Save(user));
+            A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(user);
 
             _userService.GetUserByResetGuid(resetPasswordGuid).Should().Be(user);
         }
@@ -107,7 +109,7 @@ namespace MrCMS.Tests.Services
                 LastName = "User",
                 Email = "test@example.com",
             };
-            Session.Transact(session => Session.Save(user));
+            A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(user);
 
             _userService.GetCurrentUser(httpContextBase).Should().Be(user);
         }

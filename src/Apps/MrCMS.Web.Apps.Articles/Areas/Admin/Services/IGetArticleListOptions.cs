@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Helpers;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Articles.Pages;
@@ -14,20 +16,19 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
 
     public class GetArticleListOptions : IGetArticleListOptions
     {
-        private readonly ISession _session;
+        private readonly IRepository<ArticleList> _repository;
         private readonly IStringResourceProvider _stringResourceProvider;
 
-        public GetArticleListOptions(ISession session, IStringResourceProvider stringResourceProvider)
+        public GetArticleListOptions(IRepository<ArticleList> repository, IStringResourceProvider stringResourceProvider)
         {
-            _session = session;
+            _repository = repository;
             _stringResourceProvider = stringResourceProvider;
         }
 
         public IList<SelectListItem> GetOptions()
         {
-            return _session.QueryOver<ArticleList>()
+            return _repository.Readonly()
                 .OrderBy(list => list.Name)
-                .Asc.Cacheable().List()
                 .BuildSelectItemList(category => category.Name,
                     category => category.Id.ToString(),
                     emptyItemText: _stringResourceProvider.GetValue("Select an article list..."));

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
@@ -10,7 +11,6 @@ using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
 
-using NHibernate.Linq;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -19,16 +19,21 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private const string DefaultLanguage = "Default";
         private readonly IStringResourceProvider _provider;
-        private readonly ISession _session;
         private readonly IMapper _mapper;
         private readonly SiteSettings _siteSettings;
+        private readonly IGlobalRepository<StringResource> _repository;
+        private readonly IGlobalRepository<Site> _siteRepository;
 
         public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
-            ISession session, IMapper mapper)
+            IGlobalRepository<StringResource> repository,
+            IGlobalRepository<Site> siteRepository, // todo - refactor this out
+            
+            IMapper mapper)
         {
             _provider = provider;
             _siteSettings = siteSettings;
-            _session = session;
+            _repository = repository;
+            _siteRepository = siteRepository;
             _mapper = mapper;
         }
 
@@ -70,7 +75,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public StringResource GetResource(int id)
         {
-            return _session.Get<StringResource>(id);
+            return _repository.GetDataSync(id);
         }
 
         public UpdateStringResourceModel GetEditModel(StringResource resource)
@@ -87,7 +92,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public void Delete(int id)
         {
-            var resource = _session.Get<StringResource>(id);
+            var resource = _repository.LoadSync(id);
             _provider.Delete(resource);
         }
 
@@ -157,8 +162,8 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         private List<Site> GetAllSites()
         {
-            return _session.Query<Site>()
-                .OrderBy(x => x.Name).WithOptions(x => x.SetCacheable(true)).ToList();
+            return _siteRepository.Query()
+                .OrderBy(x => x.Name).ToList();
         }
     }
 }

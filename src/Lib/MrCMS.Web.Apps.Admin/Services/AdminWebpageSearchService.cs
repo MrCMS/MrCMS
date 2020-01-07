@@ -5,6 +5,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
 using MrCMS.Entities.Multisite;
@@ -16,7 +17,6 @@ using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models.Search;
 
-using NHibernate.Criterion;
 using X.PagedList;
 using Document = MrCMS.Entities.Documents.Document;
 
@@ -26,19 +26,17 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly ISearcher<Webpage, AdminWebpageIndexDefinition> _documentSearcher;
         private readonly IGetBreadcrumbs _getBreadcrumbs;
+        private readonly IRepository<Webpage> _repository;
         private readonly IGetLiveUrl _getLiveUrl;
-        private readonly ISession _session;
-        private readonly Site _site;
         private readonly IStringResourceProvider _stringResourceProvider;
 
         public AdminWebpageSearchService(ISearcher<Webpage, AdminWebpageIndexDefinition> documentSearcher,
-            IGetBreadcrumbs getBreadcrumbs, ISession session, Site site, IStringResourceProvider stringResourceProvider,
+            IGetBreadcrumbs getBreadcrumbs, IRepository<Webpage> repository, IStringResourceProvider stringResourceProvider,
             IGetLiveUrl getLiveUrl)
         {
             _documentSearcher = documentSearcher;
             _getBreadcrumbs = getBreadcrumbs;
-            _session = session;
-            _site = site;
+            _repository = repository;
             _stringResourceProvider = stringResourceProvider;
             _getLiveUrl = getLiveUrl;
         }
@@ -75,18 +73,13 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public List<SelectListItem> GetParentsList()
         {
-            var parentIds = _session.QueryOver<Webpage>()
-                .Where(webpage => webpage.Parent != null)
-                .SelectList(
-                    builder =>
-                        builder.Select(
-                            Projections.Distinct(Projections.Property<Webpage>(webpage => webpage.Parent.Id))))
-                .Cacheable()
-                .List<int>().ToList();
-            var rootWebpages = _session.QueryOver<Webpage>()
-                .Where(webpage => webpage.Parent == null && webpage.Site.Id == _site.Id && webpage.Id.IsIn(parentIds))
+            var parentIds = _repository.Readonly()
+                .Where(webpage => webpage.ParentId != null)
+                .Select(x => x.ParentId).ToList();
+            var rootWebpages = _repository.Readonly()
+                .Where(webpage => webpage.ParentId == null && parentIds.Contains(webpage.Id))
                 .OrderBy(webpage => webpage.DisplayOrder)
-                .Asc.List();
+                .ToList();
             var selectListItems =
                 GetPageListItems(
                     rootWebpages, parentIds, 1).ToList();
@@ -138,7 +131,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     : null, model.CreatedOnFrom.HasValue, model.CreatedOnTo.HasValue);
         }
 
-        private IEnumerable<SelectListItem> GetPageListItems(IEnumerable<Webpage> pages, List<int> parentIds, int depth)
+        private IEnumerable<SelectListItem> GetPageListItems(IEnumerable<Webpage> pages, List<int?> parentIds, int depth)
         {
             var items = new List<SelectListItem>();
 
@@ -150,11 +143,10 @@ namespace MrCMS.Web.Apps.Admin.Services
                     Text = GetDashes(depth) + node.Name,
                     Value = node.Id.ToString()
                 });
-                items.AddRange(GetPageListItems(_session.QueryOver<Webpage>()
-                        .Where(webpage => webpage.Parent.Id == node.Id && webpage.Id.IsIn(parentIds))
+                items.AddRange(GetPageListItems(_repository.Readonly()
+                        .Where(webpage => webpage.Parent.Id == node.Id && parentIds.Contains(webpage.Id))
                         .OrderBy(webpage => webpage.DisplayOrder)
-                        .Asc.Cacheable()
-                        .List(), parentIds, depth + 1));
+                        .ToList(), parentIds, depth + 1));
             }
 
             return items;

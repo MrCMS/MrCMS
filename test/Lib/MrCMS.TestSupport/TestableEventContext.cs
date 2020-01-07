@@ -27,29 +27,29 @@ namespace MrCMS.TestSupport
             get { return _fakeEventContext; }
         }
 
-        public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
+        public async Task Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
         {
             if (typeof(ICoreEvent).IsAssignableFrom(typeof(TEvent)) || !FakeNonCoreEvents)
             {
-                _coreEventContext.Publish<TEvent, TArgs>(args);
+                await _coreEventContext.Publish<TEvent, TArgs>(args);
             }
             else
             {
                 if (!IsDisabled(typeof(TEvent)))
-                    _fakeEventContext.Publish<TEvent, TArgs>(args);
+                    await _fakeEventContext.Publish<TEvent, TArgs>(args);
             }
         }
 
-        public Task Publish(Type eventType, object args)
+        public async Task Publish(Type eventType, object args)
         {
             if (typeof(ICoreEvent).IsAssignableFrom(eventType) || !FakeNonCoreEvents)
             {
-                _coreEventContext.Publish(eventType, args);
+                await _coreEventContext.Publish(eventType, args);
             }
             else
             {
                 if (!IsDisabled(eventType))
-                    _fakeEventContext.Publish(eventType, args);
+                    await _fakeEventContext.Publish(eventType, args);
             }
         }
 

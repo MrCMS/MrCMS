@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using MrCMS.Data;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
@@ -9,11 +11,11 @@ namespace MrCMS.Web.Apps.Articles.Services.Widgets
 {
     public class GetLatestXArticlesModel : GetWidgetModelBase<LatestXArticles>
     {
-        private readonly ISession _session;
+        private readonly IRepository<Article> _repository;
 
-        public GetLatestXArticlesModel(ISession session)
+        public GetLatestXArticlesModel(IRepository<Article> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public override object GetModel(LatestXArticles widget)
@@ -23,13 +25,12 @@ namespace MrCMS.Web.Apps.Articles.Services.Widgets
 
             return new LatestXArticlesViewModel
             {
-                Articles = _session.QueryOver<Article>()
-                    .Where(article => article.Parent.Id == widget.RelatedNewsList.Id
+                Articles = _repository.Readonly()
+                    .Where(article => article.ParentId == widget.RelatedNewsList.Id
                                       && article.PublishOn != null && article.PublishOn <= DateTime.UtcNow)
-                    .OrderBy(x => x.PublishOn).Desc
+                    .OrderByDescending(x => x.PublishOn)
                     .Take(widget.NumberOfArticles)
-                    .Cacheable()
-                    .List(),
+                    .ToList(),
                 Title = widget.Name
             };
         }

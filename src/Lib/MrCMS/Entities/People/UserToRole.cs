@@ -1,6 +1,8 @@
-﻿namespace MrCMS.Entities.People
+﻿using MrCMS.Data;
+
+namespace MrCMS.Entities.People
 {
-    public class UserToRole
+    public class UserToRole : IJoinTable
     {
         public User User { get; set; }
         public int UserId { get; set; }

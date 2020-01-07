@@ -12,7 +12,7 @@ using Xunit;
 
 namespace MrCMS.Tests.Services.Auth
 {
-    public class ResetPasswordServiceTests : InMemoryDatabaseTest
+    public class ResetPasswordServiceTests : MrCMSTest
     {
         private readonly IUserManagementService _userManagementService;
         private readonly IPasswordManagementService _passwordManagementService;

@@ -17,7 +17,7 @@ namespace MrCMS.Messages
         private static readonly Dictionary<Type, Type> DefaultTemplateProviders = new Dictionary<Type, Type>();
 
         private static readonly MethodInfo GetMessageTemplateMethod = typeof(MessageTemplateProvider)
-            .GetMethodExt("GetMessageTemplate", typeof(Site));
+            .GetMethodExt("GetMessageTemplate", typeof(int));
 
         public static readonly MethodInfo GetNewMessageTemplateMethod = typeof(MessageTemplateProvider)
             .GetMethodExt("GetNewMessageTemplate");
@@ -52,31 +52,31 @@ namespace MrCMS.Messages
             await Save(messageTemplate, null);
         }
 
-        public async Task SaveSiteOverride(MessageTemplate messageTemplate, Site site)
+        public async Task SaveSiteOverride(MessageTemplate messageTemplate, int siteId)
         {
-            await Save(messageTemplate, site.Id);
+            await Save(messageTemplate, siteId);
         }
 
-        public async Task DeleteSiteOverride(MessageTemplate messageTemplate, Site site)
+        public async Task DeleteSiteOverride(MessageTemplate messageTemplate, int siteId)
         {
-            var templateData = await GetExistingTemplateData(messageTemplate.GetType().FullName, site.Id);
+            var templateData = await GetExistingTemplateData(messageTemplate.GetType().FullName, siteId);
             if (templateData != null)
                 await _repository.Delete(templateData);
         }
 
-        public List<MessageTemplate> GetAllMessageTemplates(Site site)
+        public List<MessageTemplate> GetAllMessageTemplates(int siteId)
         {
             var types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>();
 
             return types.Select(type => GetMessageTemplateMethod.MakeGenericMethod(type)
-                .Invoke(this, new[] { site }) as MessageTemplate).ToList();
+                .Invoke(this, new object[] { siteId }) as MessageTemplate).ToList();
         }
 
-        public async Task<T> GetMessageTemplate<T>(Site site) where T : MessageTemplate, new()
+        public async Task<T> GetMessageTemplate<T>(int siteId) where T : MessageTemplate, new()
         {
             var templateType = typeof(T);
             var fullName = templateType.FullName;
-            var templateData = await GetExistingTemplateData(fullName, site.Id);
+            var templateData = await GetExistingTemplateData(fullName, siteId);
             if (templateData != null)
                 return JsonConvert.DeserializeObject<T>(templateData.Data);
 

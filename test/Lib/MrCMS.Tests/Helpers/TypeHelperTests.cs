@@ -12,7 +12,6 @@ using MrCMS.Helpers;
 using MrCMS.Tests.Services.Events;
 using MrCMS.Website.CMS;
 using MrCMS.Website.Controllers;
-using NHibernate.Cfg;
 using Xunit;
 
 namespace MrCMS.Tests.Helpers
@@ -123,8 +122,5 @@ namespace MrCMS.Tests.Helpers
         {
         }
 
-        public void AppendConfiguration(Configuration configuration)
-        {
-        }
     }
 }

@@ -23,35 +23,35 @@ namespace MrCMS.Tests.Services.ImportExport
     //        _indexService = A.Fake<IIndexService>();
     //        _updateTagsService = A.Fake<IUpdateTagsService>();
     //        _updateUrlHistoryService = A.Fake<IUpdateUrlHistoryService>();
-    //        _importDocumentsService = new ImportDocumentsService(Session, CurrentSite, _indexService, _updateTagsService, _updateUrlHistoryService);
+    //        _importDocumentsService = new ImportDocumentsService(Context, CurrentSite, _indexService, _updateTagsService, _updateUrlHistoryService);
     //    }
 
     //    [Fact]
     //    public void ShouldNotReAddAnExistingDocument()
     //    {
-    //        Session.Transact(session => session.Save(new BasicMappedWebpage { UrlSegment = "test" }));
-    //        Session.QueryOver<Webpage>().RowCount().Should().Be(1);
+    //        Context.Transact(session => session.Save(new BasicMappedWebpage { UrlSegment = "test" }));
+    //        Context.QueryOver<Webpage>().RowCount().Should().Be(1);
 
     //        _importDocumentsService.ImportDocumentsFromDTOs(new HashSet<DocumentImportDTO>
     //                                                            {
     //                                                                new DocumentImportDTO{UrlSegment = "test"}
     //                                                            });
 
-    //        Session.QueryOver<Webpage>().RowCount().Should().Be(1);
+    //        Context.QueryOver<Webpage>().RowCount().Should().Be(1);
     //    }
 
     //    [Fact]
     //    public void ShouldUpdatePropertiesFromDTO()
     //    {
-    //        Session.Transact(session => session.Save(new BasicMappedWebpage { UrlSegment = "test", Name = "old" }));
-    //        Session.QueryOver<Webpage>().RowCount().Should().Be(1);
+    //        Context.Transact(session => session.Save(new BasicMappedWebpage { UrlSegment = "test", Name = "old" }));
+    //        Context.QueryOver<Webpage>().RowCount().Should().Be(1);
 
     //        _importDocumentsService.ImportDocumentsFromDTOs(new HashSet<DocumentImportDTO>
     //                                                            {
     //                                                                new DocumentImportDTO{UrlSegment = "test", Name = "New"}
     //                                                            });
 
-    //        Session.QueryOver<Webpage>().List()[0].Name.Should().Be("New");
+    //        Context.QueryOver<Webpage>().List()[0].Name.Should().Be("New");
     //    }
 
     //    [Fact]

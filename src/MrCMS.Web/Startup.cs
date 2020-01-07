@@ -33,11 +33,11 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.Hosting;
 using MrCMS.DbConfiguration;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
 using StackExchange.Profiling.Storage;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web
 {
@@ -88,8 +88,6 @@ namespace MrCMS.Web
                 //context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
-            services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
-
             // TODO: Look to removing Site for constructors and resolving like this
             services.AddScoped(async provider =>
             {
@@ -97,11 +95,6 @@ namespace MrCMS.Web
                     provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
 
                 site = site ?? await provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
-                var session = provider.GetRequiredService<ISession>();
-                if (site != null)
-                {
-                    session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
-                }
 
                 return site;
             });

@@ -1,3 +1,5 @@
+using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Web.Apps.Admin.Models;
 
@@ -6,20 +8,20 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class AdminUserStatsService : IAdminUserStatsService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<User> _repository;
 
-        public AdminUserStatsService(ISession session)
+        public AdminUserStatsService(IGlobalRepository<User> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public UserStats GetSummary()
         {
             return new UserStats
-                   {
-                       ActiveUsers = _session.QueryOver<User>().Where(x => x.IsActive).Cacheable().RowCount(),
-                       InactiveUsers = _session.QueryOver<User>().WhereNot(x => x.IsActive).Cacheable().RowCount()
-                   };
+            {
+                ActiveUsers = _repository.Readonly().Count(x => x.IsActive),
+                InactiveUsers = _repository.Readonly().Count(x => !x.IsActive)
+            };
         }
     }
 }

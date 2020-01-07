@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Apps;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -16,14 +19,16 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class PageTemplateAdminService : IPageTemplateAdminService
     {
+        private readonly IRepository<PageTemplate> _pageTemplateRepository;
+        private readonly IRepository<Layout> _layoutRepository;
         private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
         private readonly IMapper _mapper;
         private readonly MrCMSAppContext _appContext;
-        private readonly ISession _session;
 
-        public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions, IMapper mapper, MrCMSAppContext appContext)
+        public PageTemplateAdminService(IRepository<PageTemplate> pageTemplateRepository, IRepository<Layout> layoutRepository, IGetUrlGeneratorOptions getUrlGeneratorOptions, IMapper mapper, MrCMSAppContext appContext)
         {
-            _session = session;
+            _pageTemplateRepository = pageTemplateRepository;
+            _layoutRepository = layoutRepository;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
             _mapper = mapper;
             _appContext = appContext;
@@ -31,33 +36,33 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IPagedList<PageTemplate> Search(PageTemplateSearchQuery query)
         {
-            IQueryOver<PageTemplate, PageTemplate> queryOver = _session.QueryOver<PageTemplate>();
+            var queryOver = _pageTemplateRepository.Query();
 
-            return queryOver.Paged(query.Page);
+            return queryOver.ToPagedList(query.Page);
         }
 
-        public void Add(AddPageTemplateModel model)
+        public async Task Add(AddPageTemplateModel model)
         {
             var template = _mapper.Map<PageTemplate>(model);
-            _session.Transact(session => session.Save(template));
+            await _pageTemplateRepository.Add(template);
         }
 
-        public UpdatePageTemplateModel GetEditModel(int id)
+        public async Task<UpdatePageTemplateModel> GetEditModel(int id)
         {
-            var template = GetTemplate(id);
+            var template = await GetTemplate(id);
             return _mapper.Map<UpdatePageTemplateModel>(template);
         }
 
-        public void Update(UpdatePageTemplateModel model)
+        public async Task Update(UpdatePageTemplateModel model)
         {
-            var template = GetTemplate(model.Id);
+            var template = await GetTemplate(model.Id);
             _mapper.Map(model, template);
-            _session.Transact(session => session.Update(template));
+            await _pageTemplateRepository.Update(template);
         }
 
-        private PageTemplate GetTemplate(int id)
+        private async Task<PageTemplate> GetTemplate(int id)
         {
-            return _session.Get<PageTemplate>(id);
+            return await _pageTemplateRepository.Load(id);
         }
 
         public List<SelectListItem> GetPageTypeOptions()
@@ -79,7 +84,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         public List<SelectListItem> GetLayoutOptions()
         {
             IEnumerable<Layout> layouts =
-                _session.QueryOver<Layout>().Where(x => x.Hidden == false).Cacheable().List();
+                _layoutRepository.Query().Where(x => x.Hidden == false).ToList();
 
             return layouts.BuildSelectItemList(layout => layout.Name,
                 layout => layout.Id.ToString(CultureInfo.InvariantCulture),

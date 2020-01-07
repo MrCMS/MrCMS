@@ -7,21 +7,23 @@ using MrCMS.Web.Apps.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class FormPropertyAdminService : IFormPropertyAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<FormProperty> _repository;
         private readonly IMapper _mapper;
 
-        public FormPropertyAdminService(ISession session, IMapper mapper)
+        public FormPropertyAdminService(IRepository<FormProperty> repository, IMapper mapper)
         {
-            _session = session;
+            _repository = repository;
             _mapper = mapper;
         }
 
-        public void Add(AddFormPropertyModel model)
+        public async Task Add(AddFormPropertyModel model)
         {
             var type = TypeHelper.GetTypeByName(model.PropertyType);
             var property = Activator.CreateInstance(type) as FormProperty;
@@ -34,29 +36,26 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             property.Form?.FormProperties.Add(property);
 
-            _session.Transact(session =>
+            if (property.Form.FormProperties != null)
             {
-                if (property.Form.FormProperties != null)
-                {
-                    property.DisplayOrder = property.Form.FormProperties.Count;
-                }
+                property.DisplayOrder = property.Form.FormProperties.Count;
+            }
 
-                session.Save(property);
-            });
+            await _repository.Add(property);
         }
 
-        public void Update(UpdateFormPropertyModel model)
+        public async Task Update(UpdateFormPropertyModel model)
         {
-            var property = GetFormProperty(model.Id);
+            var property = await GetFormProperty(model.Id);
             _mapper.Map(model, property);
-            _session.Transact(session => session.Update(property));
+            await _repository.Update(property);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var property = GetFormProperty(id);
+            var property = await GetFormProperty(id);
             property.Form.FormProperties.Remove(property);
-            _session.Transact(session => session.Delete(property));
+            await _repository.Delete(property);
         }
 
         public List<SelectListItem> GetPropertyTypeOptions()
@@ -83,15 +82,15 @@ namespace MrCMS.Web.Apps.Admin.Services
                     emptyItemText: null);
         }
 
-        public UpdateFormPropertyModel GetUpdateModel(int id)
+        public async Task<UpdateFormPropertyModel> GetUpdateModel(int id)
         {
-            var formProperty = GetFormProperty(id);
+            var formProperty = await GetFormProperty(id);
             return _mapper.Map<UpdateFormPropertyModel>(formProperty);
         }
 
-        private FormProperty GetFormProperty(int id)
+        private Task<FormProperty> GetFormProperty(int id)
         {
-            return _session.Get<FormProperty>(id);
+            return _repository.Load(id);
         }
     }
 }

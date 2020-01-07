@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -15,18 +18,19 @@ namespace MrCMS.Tests.Services
     {
         //private HttpRequestBase _httpRequestBase;
         private CurrentSiteLocator _currentSiteLocator;
-        private InMemoryRepository<Site> _inMemoryRepository;
+        private IGlobalRepository<Site> _repository;
         private readonly Site CurrentSite;
         private IHttpContextAccessor _contextAccessor;
+        private IConfiguration _configuration;
 
         public CurrentSiteLocatorTests()
         {
             CurrentSite = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1 };
             //_httpRequestBase = A.Fake<HttpRequestBase>();
             _contextAccessor = A.Fake<IHttpContextAccessor>();
-            _inMemoryRepository = new InMemoryRepository<Site>();
-            _currentSiteLocator = new CurrentSiteLocator(_inMemoryRepository, _contextAccessor);
-            _inMemoryRepository.Add(CurrentSite);
+            _repository = A.Fake<IGlobalRepository<Site>>();
+            _configuration = A.Fake<IConfiguration>();
+            _currentSiteLocator = new CurrentSiteLocator(_repository, _contextAccessor, _configuration);
         }
 
         [Fact]
@@ -34,8 +38,7 @@ namespace MrCMS.Tests.Services
         {
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "test2" };
-            _inMemoryRepository.Add(site1);
-            _inMemoryRepository.Add(site2);
+            A.CallTo(() => _repository.Query()).Returns(new List<Site> {CurrentSite, site1, site2}.AsAsyncQueryable());
             A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
 
             _currentSiteLocator.GetCurrentSite().Should().Be(CurrentSite);
@@ -46,8 +49,7 @@ namespace MrCMS.Tests.Services
         {
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "www.example.com" };
-            _inMemoryRepository.Add(site1);
-            _inMemoryRepository.Add(site2);
+            A.CallTo(() => _repository.Query()).Returns(new List<Site> {CurrentSite, site1, site2}.AsAsyncQueryable());
             A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
 
             _currentSiteLocator.GetCurrentSite().Should().Be(site2);

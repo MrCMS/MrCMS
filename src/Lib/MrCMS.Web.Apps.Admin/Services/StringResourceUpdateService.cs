@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -17,12 +17,12 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         public const string Quote = "\"";
         private readonly IStringResourceProvider _provider;
-        private readonly ISession _session;
+        private readonly IGlobalRepository<StringResource> _repository;
 
-        public StringResourceUpdateService(IStringResourceProvider provider, ISession session)
+        public StringResourceUpdateService(IStringResourceProvider provider, IGlobalRepository<StringResource> repository)
         {
             _provider = provider;
-            _session = session;
+            _repository = repository;
         }
 
         public FileResult Export(StringResourceSearchQuery searchQuery)
@@ -105,7 +105,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 if (stringResource != null)
                 {
                     // we need to load the one out of the current session or else we'll have issues when saving
-                    stringResource = _session.Get<StringResource>(stringResource.Id);
+                    stringResource = _repository.LoadSync(stringResource.Id);
                     stringResource.Value = stringResourceData.Value;
                     _provider.Update(stringResource);
                     updated++;
@@ -117,7 +117,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                         Key = stringResourceData.Key,
                         Value = stringResourceData.Value,
                         UICulture = uiCulture,
-                        Site = stringResourceData.SiteId.HasValue ? _session.Get<Site>(stringResourceData.SiteId) : null,
+                        SiteId = stringResourceData.SiteId
                     });
                     added++;
                 }

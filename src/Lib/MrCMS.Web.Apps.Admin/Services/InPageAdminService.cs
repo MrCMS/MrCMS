@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -18,27 +21,29 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class InPageAdminService : IInPageAdminService
     {
-        private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
-        private readonly IShortcodeParser _shortcodeParser;
+        private readonly IDataReader _dataReader;
+        private readonly IRepositoryResolver _repositoryResolver;
         private readonly ILogger<InPageAdminService> _logger;
 
-        public InPageAdminService(ISession session, IStringResourceProvider stringResourceProvider,
-            IShortcodeParser shortcodeParser, ILogger<InPageAdminService> logger)
+        public InPageAdminService(
+            IStringResourceProvider stringResourceProvider,
+            IDataReader dataReader,
+            IRepositoryResolver repositoryResolver, ILogger<InPageAdminService> logger)
         {
-            _session = session;
             _stringResourceProvider = stringResourceProvider;
-            _shortcodeParser = shortcodeParser;
+            _dataReader = dataReader;
+            _repositoryResolver = repositoryResolver;
             _logger = logger;
         }
 
-        public SaveResult SaveContent(UpdatePropertyData updatePropertyData)
+        public async Task<SaveResult> SaveContent(UpdatePropertyData updatePropertyData)
         {
             HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             Type entityType = types.FirstOrDefault(t => t.Name == updatePropertyData.Type);
             if (entityType == null)
                 return new SaveResult(false, string.Format(_stringResourceProvider.GetValue("Admin Inline Editing Save Entity Not Found", "Could not find entity type '{0}'"), updatePropertyData.Type));
-            object entity = _session.Get(entityType, updatePropertyData.Id);
+            object entity = await _dataReader.GlobalGet(entityType, updatePropertyData.Id);
             if (entity == null)
                 return new SaveResult(false,
                     string.Format(_stringResourceProvider.GetValue("Admin InlineEditing Save Not Found", "Could not find entity of type '{0}' with id {1}"), updatePropertyData.Type,
@@ -68,7 +73,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             try
             {
                 propertyInfo.SetValue(entity, updatePropertyData.Content, null);
-                _session.Transact(session => session.SaveOrUpdate(entity));
+                var globalMethod = typeof(InPageAdminService).GetMethodExt(nameof(UpdateEntity));
+
+                await (Task) globalMethod.MakeGenericMethod(entityType).Invoke(this, new[] {entity});
             }
             catch (Exception exception)
             {
@@ -80,14 +87,18 @@ namespace MrCMS.Web.Apps.Admin.Services
             return new SaveResult();
         }
 
-       
-        public ContentInfo GetContent(GetPropertyData getPropertyData)
+        private async Task UpdateEntity<T>(T entity) where T : class, IHaveId
+        {
+            await _repositoryResolver.GetGlobalRepository<T>().Update(entity);
+        }
+
+        public async Task<ContentInfo> GetContent(GetPropertyData getPropertyData)
         {
             HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             Type entityType = types.FirstOrDefault(t => t.Name == getPropertyData.Type);
             if (entityType == null)
                 return new ContentInfo();
-            object entity = _session.Get(entityType, getPropertyData.Id);
+            object entity =await _dataReader.GlobalGet(entityType, getPropertyData.Id);
             if (entity == null)
                 return new ContentInfo();
             PropertyInfo propertyInfo =

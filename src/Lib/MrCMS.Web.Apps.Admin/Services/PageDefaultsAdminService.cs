@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Apps;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -18,18 +19,18 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
         private readonly IGetLayoutOptions _getLayoutOptions;
-        private readonly ISession _session;
+        private readonly IRepository<Layout> _repository;
         private readonly MrCMSAppContext _appContext;
         private readonly IConfigurationProvider _configurationProvider;
 
         public PageDefaultsAdminService(IConfigurationProvider configurationProvider,
-            IGetUrlGeneratorOptions getUrlGeneratorOptions, IGetLayoutOptions getLayoutOptions, ISession session,
+            IGetUrlGeneratorOptions getUrlGeneratorOptions, IGetLayoutOptions getLayoutOptions, IRepository<Layout> repository,
             MrCMSAppContext appContext)
         {
             _configurationProvider = configurationProvider;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
             _getLayoutOptions = getLayoutOptions;
-            _session = session;
+            _repository = repository;
             _appContext = appContext;
         }
 
@@ -67,10 +68,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             if (!layoutId.HasValue || layoutOptions.All(item => item.Value != layoutId.ToString()))
             {
                 var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
-                var systemDefaultLayout = _session.Get<Layout>(siteSettings.DefaultLayoutId);
+                var systemDefaultLayout = _repository.GetDataSync(siteSettings.DefaultLayoutId);
                 return string.Format("System Default ({0})", systemDefaultLayout.Name);
             }
-            return _session.Get<Layout>(layoutId.Value).Name;
+            return _repository.GetDataSync(layoutId.Value).Name;
         }
 
         public List<SelectListItem> GetUrlGeneratorOptions(Type type)

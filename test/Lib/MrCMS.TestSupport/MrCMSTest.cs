@@ -13,6 +13,7 @@ namespace MrCMS.TestSupport
     {
         protected TestableEventContext _eventContext = new TestableEventContext();
         private readonly ServiceCollection _serviceCollection = new ServiceCollection();
+        private IServiceProvider _serviceProvider;
         protected TestableEventContext EventContext => _eventContext;
 
 
@@ -30,7 +31,9 @@ namespace MrCMS.TestSupport
         public IEnumerable<ICompletedFakeObjectCall> EventsRaised => Fake.GetCalls(EventContext.FakeEventContext);
 
         public IServiceCollection ServiceCollection => _serviceCollection;
-        public IServiceProvider ServiceProvider => _serviceCollection.BuildServiceProvider();
+
+        public IServiceProvider ServiceProvider =>
+            _serviceProvider ??= _serviceCollection.BuildServiceProvider();
 
         public virtual void Dispose()
         {

@@ -11,6 +11,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Webpages
         public override Task Populate()
         {
             ParentActionArguments = CreateIdArguments(Id);
+            return Task.CompletedTask;
         }
     }
 }

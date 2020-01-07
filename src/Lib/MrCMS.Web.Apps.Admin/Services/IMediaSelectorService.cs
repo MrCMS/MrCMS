@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Apps.Admin.Models;
@@ -10,10 +11,10 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         IPagedList<MediaFile> Search(MediaSelectorSearchQuery searchQuery);
         List<SelectListItem> GetCategories();
-        SelectedItemInfo GetFileInfo(string value);
+        Task<SelectedItemInfo> GetFileInfo(string value);
         string GetAlt(string url);
         string GetDescription(string url);
-        bool UpdateAlt(UpdateMediaParams updateMediaParams);
-        bool UpdateDescription(UpdateMediaParams updateMediaParams);
+        Task<bool> UpdateAlt(UpdateMediaParams updateMediaParams);
+        Task<bool> UpdateDescription(UpdateMediaParams updateMediaParams);
     }
 }

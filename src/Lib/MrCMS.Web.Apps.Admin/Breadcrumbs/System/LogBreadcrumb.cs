@@ -13,6 +13,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
             {
                 Name = $"Log #{Id:N0}";
             }
+            return Task.CompletedTask;
         }
     }
 }

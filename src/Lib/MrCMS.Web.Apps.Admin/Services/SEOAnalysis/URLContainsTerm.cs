@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
         {
             _getLiveUrl = getLiveUrl;
         }
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
             string url = _getLiveUrl.GetAbsoluteUrl(webpage);
             yield return

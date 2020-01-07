@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -14,38 +16,48 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class SEOAnalysisService : ISEOAnalysisService
     {
-        private readonly ISession _session;
+        private readonly ITemporaryPublisher _temporaryPublisher;
+        private readonly IRepository<Webpage> _repository;
         private readonly IGetLiveUrl _getLiveUrl;
         private readonly IServiceProvider _serviceProvider;
 
-        public SEOAnalysisService(ISession session, IGetLiveUrl getLiveUrl, IServiceProvider serviceProvider)
+        public SEOAnalysisService(ITemporaryPublisher temporaryPublisher, IRepository<Webpage> repository, IGetLiveUrl getLiveUrl, IServiceProvider serviceProvider)
         {
-            _session = session;
+            _temporaryPublisher = temporaryPublisher;
+            _repository = repository;
             _getLiveUrl = getLiveUrl;
             _serviceProvider = serviceProvider;
         }
 
-        public SEOAnalysisResult Analyze(Webpage webpage, string analysisTerm)
+        public async Task<SEOAnalysisResult> Analyze(Webpage webpage, string analysisTerm)
         {
             HtmlNode htmlNode;
-            using (new TemporaryPublisher(_session, webpage))
+            await using (await _temporaryPublisher.TemporarilyPublish(webpage))
             {
                 htmlNode = GetDocument(webpage);
             }
 
             var providers = GetProviders();
+            var facets = new List<SEOAnalysisFacet>();
+            foreach (var provider in providers)
+            {
+                await foreach (var facet in provider.GetFacets(webpage, htmlNode, analysisTerm))
+                {
+                    facets.Add(facet);
+                }
+            }
+
             return
-                new SEOAnalysisResult(
-                    providers.SelectMany(provider => provider.GetFacets(webpage, htmlNode, analysisTerm)));
+                new SEOAnalysisResult(facets);
         }
 
-        public Webpage UpdateAnalysisTerm(int webpageId, string targetSeoPhrase)
+        public async Task<Webpage> UpdateAnalysisTerm(int webpageId, string targetSeoPhrase)
         {
-            var webpage = _session.Get<Webpage>(webpageId);
+            var webpage = await _repository.Load(webpageId);
             if (webpage == null)
                 throw new NullReferenceException("Webpage does not exist");
             webpage.SEOTargetPhrase = targetSeoPhrase;
-            _session.Transact(session => session.Update(webpage));
+            await _repository.Update(webpage);
             return webpage;
         }
 
@@ -68,32 +80,5 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             return htmlNode;
         }
 
-        public class TemporaryPublisher : IDisposable
-        {
-            private readonly bool _published;
-            private readonly ISession _session;
-            private readonly Webpage _webpage;
-
-            public TemporaryPublisher(ISession session, Webpage webpage)
-            {
-                _session = session;
-                _webpage = webpage;
-                _published = webpage.Published;
-                if (!_published)
-                {
-                    webpage.Published = true;
-                    _session.Transact(s => s.Update(_webpage));
-                }
-            }
-
-            public void Dispose()
-            {
-                if (!_published)
-                {
-                    _webpage.Published = false;
-                    _session.Transact(s => s.Update(_webpage));
-                }
-            }
-        }
     }
 }

@@ -15,7 +15,7 @@ using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {
-    public class SiteAdminServiceTests : InMemoryDatabaseTest
+    public class SiteAdminServiceTests : MrCMSTest
     {
         private readonly ICloneSiteService _cloneSiteService;
         private readonly SiteAdminService _siteService;
@@ -25,14 +25,14 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         {
             _cloneSiteService = A.Fake<ICloneSiteService>();
             _mapper = A.Fake<IMapper>();
-            _siteService = new SiteAdminService(Session, _cloneSiteService, _mapper);
+            _siteService = new SiteAdminService(Context, _cloneSiteService, _mapper);
         }
 
         [Fact]
         public void SiteAdminService_GetAllSites_ReturnsPersistedSites()
         {
             List<Site> sites = Enumerable.Range(1, 10).Select(i => new Site { Name = "Site " + i }).ToList();
-            sites.ForEach(site => Session.Transact(session => session.Save(site)));
+            sites.ForEach(site => Context.Transact(session => session.Save(site)));
 
             List<Site> allSites = _siteService.GetAllSites();
 
@@ -43,7 +43,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         public void SiteAdminService_AddSite_ShouldPersistSiteToSession()
         {
             var user = new User();
-            Session.Transact(session => session.Save(user));
+            Context.Transact(session => session.Save(user));
             //CurrentRequestData.CurrentUser = user;
             AddSiteModel model = new AddSiteModel();
             var site = new Site();
@@ -53,7 +53,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
             _siteService.AddSite(model, options);
 
             // Including CurrentSite from the base class
-            Session.QueryOver<Site>().RowCount().Should().Be(2);
+            Context.QueryOver<Site>().RowCount().Should().Be(2);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
 
             _siteService.AddSite(model, options);
 
-            Session.QueryOver<Site>().List().Should().Contain(site);
+            Context.QueryOver<Site>().List().Should().Contain(site);
         }
 
 
@@ -74,26 +74,26 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         public void SiteAdminService_SaveSite_UpdatesPassedSite()
         {
             var site = new Site();
-            Session.Transact(session => session.Save(site));
+            Context.Transact(session => session.Save(site));
             site.Name = "updated";
             var updateSiteModel = new UpdateSiteModel{Id=site.Id};
 
             _siteService.SaveSite(updateSiteModel);
 
             A.CallTo(() => _mapper.Map(updateSiteModel, site)).MustHaveHappened();
-            Session.Evict(site);
-            Session.QueryOver<Site>().Where(s => s.Name == "updated").RowCount().Should().Be(1);
+            Context.Evict(site);
+            Context.QueryOver<Site>().Where(s => s.Name == "updated").RowCount().Should().Be(1);
         }
 
         [Fact]
         public void SiteAdminService_DeleteSite_ShouldDeleteSiteFromSession()
         {
             var site = new Site();
-            Session.Transact(session => session.Save(site));
+            Context.Transact(session => session.Save(site));
 
             _siteService.DeleteSite(site.Id);
 
-            Session.QueryOver<Site>().List().Should().NotContain(site);
+            Context.QueryOver<Site>().List().Should().NotContain(site);
         }
 
         [Fact]
@@ -102,14 +102,14 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
             _siteService.DeleteSite(CurrentSite.Id);
 
             // Including CurrentSite from the base class
-            Session.QueryOver<Site>().RowCount().Should().Be(0);
+            Context.QueryOver<Site>().RowCount().Should().Be(0);
         }
 
         [Fact]
         public void SiteAdminService_GetSite_ReturnsResultFromSessionGetAsResult()
         {
             var site = new Site();
-            Session.Transact(session => session.Save(site));
+            Context.Transact(session => session.Save(site));
 
             _siteService.GetSite(site.Id).Should().Be(site);
         }

@@ -16,7 +16,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         {
             _webpageWidgetAdminService = new WebpageWidgetAdminService(_webpageRepository, _widgetRepository);
             // persist current user for events
-            //Session.Transact(session => session.Save(CurrentRequestData.CurrentUser));
+            //Context.Transact(session => session.Save(CurrentRequestData.CurrentUser));
         }
 
         private readonly WebpageWidgetAdminService _webpageWidgetAdminService;

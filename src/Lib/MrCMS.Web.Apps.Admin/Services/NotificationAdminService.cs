@@ -1,42 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
 using MrCMS.Web.Apps.Admin.Controllers;
 using MrCMS.Web.Apps.Admin.Models;
 
-using NHibernate.Criterion;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class NotificationAdminService : INotificationAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Notification> _repository;
         private readonly INotificationPublisher _notificationPublisher;
 
-        public NotificationAdminService(ISession session, INotificationPublisher notificationPublisher)
+        public NotificationAdminService(IRepository<Notification> repository, INotificationPublisher notificationPublisher)
         {
-            _session = session;
+            _repository = repository;
             _notificationPublisher = notificationPublisher;
         }
 
         public IPagedList<Notification> Search(NotificationSearchQuery searchQuery)
         {
-            var queryOver = _session.QueryOver<Notification>();
+            var queryOver = _repository.Query();
 
             if (!string.IsNullOrWhiteSpace(searchQuery.Message))
             {
                 queryOver =
                     queryOver.Where(
-                        notification => notification.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
+                        notification => EF.Functions.Like(notification.Message, $"%{searchQuery.Message}%"));
             }
             if (searchQuery.UserId.HasValue)
             {
-                queryOver = queryOver.Where(notification => notification.User.Id == searchQuery.UserId);
+                queryOver = queryOver.Where(notification => notification.UserId == searchQuery.UserId);
             }
             if (searchQuery.From.HasValue)
             {
@@ -52,7 +54,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     queryOver.Where(notification => notification.NotificationType == searchQuery.NotificationType);
             }
 
-            return queryOver.OrderBy(notification => notification.CreatedOn).Desc.Paged(searchQuery.Page);
+            return queryOver.OrderByDescending(notification => notification.CreatedOn).ToPagedList(searchQuery.Page);
         }
 
         public void PushNotification(NotificationModel model)
@@ -74,9 +76,9 @@ namespace MrCMS.Web.Apps.Admin.Services
                                             emptyItemText: includeAnyOption ? "Any" : null);
         }
 
-        public void Delete(Notification notification)
+        public async Task Delete(Notification notification)
         {
-            _session.Transact(session => session.Delete(notification));
+            await _repository.Delete(notification);
         }
     }
 }

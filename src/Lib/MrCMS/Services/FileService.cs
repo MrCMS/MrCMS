@@ -134,17 +134,17 @@ namespace MrCMS.Services
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 
-        public MediaFile GetFileByUrl(string url)
+        public Task<MediaFile> GetFileByUrl(string url)
         {
             return
                 _repository
                     .Query()
-                    .FirstOrDefault(file => file.FileUrl == url);
+                    .FirstOrDefaultAsync(file => file.FileUrl == url);
         }
 
-        public MediaFile GetFile(string value)
+        public async Task<MediaFile> GetFile(string value)
         {
-            MediaFile mediaFile = GetFileByUrl(value);
+            MediaFile mediaFile = await GetFileByUrl(value);
             if (mediaFile != null)
                 return mediaFile;
 

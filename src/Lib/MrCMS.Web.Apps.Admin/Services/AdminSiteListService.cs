@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 
@@ -8,12 +10,12 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class AdminSiteListService : IAdminSiteListService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<Site> _repository;
         private readonly Site _site;
 
-        public AdminSiteListService(ISession session, Site site)
+        public AdminSiteListService(IGlobalRepository<Site> repository, Site site)
         {
-            _session = session;
+            _repository = repository;
             _site = site;
         }
 
@@ -26,7 +28,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IList<Site> GetSites()
         {
-            return _session.QueryOver<Site>().OrderBy(x => x.Name).Asc.Cacheable().List();
+            return _repository.Query().OrderBy(x => x.Name).ToList();
         }
     }
 }

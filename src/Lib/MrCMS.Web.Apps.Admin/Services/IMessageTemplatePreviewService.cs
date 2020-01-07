@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Messages;
 
@@ -6,6 +7,6 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface IMessageTemplatePreviewService
     {
         MessageTemplate GetTemplate(string type);
-        QueuedMessage GetPreview(string type, int id);
+        Task<QueuedMessage> GetPreview(string type, int id);
     }
 }

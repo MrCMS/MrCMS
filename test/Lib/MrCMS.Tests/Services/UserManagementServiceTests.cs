@@ -1,6 +1,10 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -10,104 +14,112 @@ using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class UserManagementServiceTests : InMemoryDatabaseTest
+    public class UserManagementServiceTests : MrCMSTest
     {
-        private ISession _session;
-        private UserManagementService _userManagementService;
 
-        public UserManagementServiceTests()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_AddUser_SavesAUserToSession
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            _session = Session;
-            _userManagementService = new UserManagementService(_session, EventContext);
-        }
-
-        [Fact]
-        public void UserService_AddUser_SavesAUserToSession()
-        {
-            _session = A.Fake<ISession>();
-            _userManagementService = new UserManagementService(_session, EventContext);
             var user = new User();
 
-            _userManagementService.AddUser(user);
+            await sut.AddUser(user);
 
-            A.CallTo(() => _session.Save(user)).MustHaveHappened();
+            A.CallTo(() => repository.Add(user, default)).MustHaveHappened();
         }
 
-        [Fact]
-        public void UserService_SaveUser_UpdatesAUser()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_SaveUser_UpdatesAUser
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            _session = A.Fake<ISession>();
-            _userManagementService = new UserManagementService(_session, EventContext);
             var user = new User();
 
-            _userManagementService.SaveUser(user);
+            await sut.SaveUser(user);
 
-            A.CallTo(() => _session.Update(user)).MustHaveHappened();
+            A.CallTo(() => repository.Update(user, default)).MustHaveHappened();
         }
 
-        [Fact]
-        public void UserService_GetUser_ShouldReturnCorrectUser()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_GetUser_ShouldReturnCorrectUser
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            var user = new User {FirstName = "Test", LastName = "User"};
-            Session.Transact(session => session.SaveOrUpdate(user));
+            var user = new User { FirstName = "Test", LastName = "User", Id = 123 };
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(user);
 
-            var loadedUser = _userManagementService.GetUser(user.Id);
+            var loadedUser = await sut.GetUser(user.Id);
 
             loadedUser.Should().BeSameAs(user);
         }
 
-        [Fact]
-        public void UserService_GetUserDoesNotExist_ShouldReturnNull()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_GetUserDoesNotExist_ShouldReturnNull
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            var loadedUser = _userManagementService.GetUser(-1);
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable();
+
+            var loadedUser = await sut.GetUser(-1);
 
             loadedUser.Should().BeNull();
         }
 
-        [Fact]
-        public void UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            Enumerable.Range(1, 15).ForEach(
-                i =>
-                    Session.Transact(
-                        session => session.SaveOrUpdate(new User {FirstName = "Test " + i, LastName = "User"})));
+            var enumerable = Enumerable.Range(1, 15).Select(i => new User { FirstName = "Test " + i, LastName = "User" });
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(enumerable.ToArray());
 
-            var users = _userManagementService.GetAllUsersPaged(1);
+            var users = await sut.GetAllUsersPaged(1);
 
             users.Count.Should().Be(10);
             users.PageCount.Should().Be(2);
         }
 
-        [Fact]
-        public void UserService_DeleteUser_ShouldRemoveAUser()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_DeleteUser_ShouldRemoveAUser
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            var user = new User();
-            Session.Transact(session => session.Save(user));
+            var user = new User { Id = 123 };
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(user);
 
-            _userManagementService.DeleteUser(user.Id);
+            await sut.DeleteUser(user.Id);
 
-            Session.QueryOver<User>().RowCount().Should().Be(0);
+            A.CallTo(() => repository.Delete(user, default)).MustHaveHappened();
         }
 
-        [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            _userManagementService.IsUniqueEmail("test@example.com").Should().BeTrue();
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable();
+
+            var result = await sut.IsUniqueEmail("test@example.com");
+
+            result.Should().BeTrue();
         }
 
-        [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnFalseIfThereIsAnotherUserWithTheSameEmail()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_IsUniqueEmail_ShouldReturnFalseIfThereIsAnotherUserWithTheSameEmail
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            Session.Transact(session => session.Save(new User {Email = "test@example.com"}));
-            _userManagementService.IsUniqueEmail("test@example.com").Should().BeFalse();
+            var user = new User { Email = "test@example.com" };
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(user);
+
+            var result = await sut.IsUniqueEmail("test@example.com");
+
+            result.Should().BeFalse();
         }
 
-        [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnTrueIfTheIdPassedAlongWithTheSavedEmailIsThatOfTheSameUser()
+        [Theory, AutoFakeItEasyData]
+        public async Task UserService_IsUniqueEmail_ShouldReturnTrueIfTheIdPassedAlongWithTheSavedEmailIsThatOfTheSameUser
+        ([Frozen] IGlobalRepository<User> repository, UserManagementService sut)
         {
-            var user = new User {Email = "test@example.com"};
-            Session.Transact(session => session.Save(user));
-            _userManagementService.IsUniqueEmail("test@example.com", user.Id).Should().BeTrue();
+            var user = new User { Email = "test@example.com", Id=123 };
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(user);
+
+            var result = await sut.IsUniqueEmail("test@example.com");
+
+            result.Should().BeTrue();
         }
     }
 }

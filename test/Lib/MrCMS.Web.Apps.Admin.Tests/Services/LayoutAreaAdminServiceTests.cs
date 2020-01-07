@@ -5,7 +5,6 @@ using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
-using MrCMS.TestSupport;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using Xunit;
@@ -107,7 +106,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         //    for (int index = 0; index < widgets.Count; index++)
 
         //    _layoutAreaService.SetWidgetOrders("10,9,8,7,6,5,4,3,2,1");
-        //    widgets.ForEach(widget => Session.Transact(session => session.Save(widget)));
+        //    widgets.ForEach(widget => Context.Transact(session => session.Save(widget)));
         //    var widgets = Enumerable.Range(1, 10).Select(i => new BasicMappedWidget()).ToList();
         //{
         //public void LayoutAreaAdminService_SetOrders_ShouldSetOrderToBeTheOrderOfTheWidgetIdInTheArgumentString()

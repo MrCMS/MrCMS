@@ -7,40 +7,51 @@ using MrCMS.Models;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models;
 
-using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class FormAdminService : IFormAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Form> _formRepository;
+        private readonly IRepository<FormPosting> _formPostingRepository;
+        private readonly IRepository<FormProperty> _formPropertyRepository;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly ILogger<FormAdminService> _logger;
         private readonly IMapper _mapper;
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
 
-        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger,
+        public FormAdminService(IRepository<Form> formRepository,
+            IRepository<FormPosting> formPostingRepository,
+            IRepository<FormProperty> formPropertyRepository,
+             IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger,
             IMapper mapper, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
         {
-            _session = session;
+            _formRepository = formRepository;
+            _formPostingRepository = formPostingRepository;
+            _formPropertyRepository = formPropertyRepository;
             _stringResourceProvider = stringResourceProvider;
             _logger = logger;
             _mapper = mapper;
             _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
         }
 
-        public void ClearFormData(Form form)
+        public async Task ClearFormData(Form form)
         {
-            _session.Transact(session =>
-            {
-                form.FormPostings.ForEach(session.Delete);
-                form.FormPostings.Clear();
-            });
+            await _formPostingRepository.DeleteRange(form.FormPostings);
+            form.FormPostings.Clear();
+            //_session.Transact(session =>
+            //{
+            //    form.FormPostings.ForEach(session.Delete);
+            //    form.FormPostings.Clear();
+            //});
         }
 
         public byte[] ExportFormData(Form form)
@@ -67,27 +78,28 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
         }
 
-        public FormPosting DeletePosting(int id)
+        public async Task<FormPosting> DeletePosting(int id)
         {
-            var posting = _session.Get<FormPosting>(id);
+            var posting = await _formPostingRepository.Load(id);
             posting.Form.FormPostings.Remove(posting);
-            _session.Transact(session => session.Delete(posting));
+            await _formPostingRepository.Delete(posting);
             return posting;
         }
 
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _session.Transact(session => items.ForEach(item =>
+            var properties = items.Select(item =>
             {
-                var formItem = session.Get<FormProperty>(item.Id);
+                var formItem = _formPropertyRepository.LoadSync(item.Id);
                 formItem.DisplayOrder = item.Order;
-                session.Update(formItem);
-            }));
+                return formItem;
+            }).ToList();
+            await _formPropertyRepository.UpdateRange(properties);
         }
 
         public IPagedList<Form> Search(FormSearchModel model)
         {
-            var query = _session.Query<Form>();
+            var query = _formRepository.Query<Form>();
 
             if (!string.IsNullOrWhiteSpace(model.Name))
             {
@@ -97,18 +109,18 @@ namespace MrCMS.Web.Apps.Admin.Services
             return query.ToPagedList(model.Page);
         }
 
-        public Form AddForm(AddFormModel model)
+        public async Task<Form> AddForm(AddFormModel model)
         {
             var form = _mapper.Map<Form>(model);
 
-            _session.Transact(session => session.Save(form));
+            await _formRepository.Add(form);
 
             return form;
         }
 
         public Form GetForm(int id)
         {
-            return _session.Get<Form>(id);
+            return _formRepository.LoadSync(id);
         }
 
         public UpdateFormModel GetUpdateModel(int id)
@@ -118,7 +130,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _mapper.Map<UpdateFormModel>(form);
         }
 
-        public void Update(UpdateFormModel model)
+        public async Task Update(UpdateFormModel model)
         {
             var form = GetForm(model.Id);
             _mapper.Map(model, form);
@@ -128,33 +140,33 @@ namespace MrCMS.Web.Apps.Admin.Services
                 _mapper.Map(o, form);
             }
 
-            _session.Transact(session => session.Update(form));
+            await _formRepository.Update(form);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             var form = GetForm(id);
 
-            _session.Transact(session => session.Delete(form));
+            await _formRepository.Delete(form);
         }
 
         public PostingsModel GetFormPostings(Form form, int page, string search)
         {
-            FormPosting posting = null;
-            var query =
-                _session.QueryOver(() => posting).Where(() => posting.Form.Id == form.Id);
+            var query = _formPostingRepository.Query().Where(x => x.FormId == form.Id);
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query =
-                    query.WithSubquery.WhereExists(
-                        QueryOver.Of<FormValue>()
-                            .Where(
-                                value =>
-                                    value.FormPosting.Id == posting.Id &&
-                                    value.Value.IsInsensitiveLike(search, MatchMode.Anywhere)).Select(value => value.Id));
+                    query.Where(posting =>
+                        posting.FormValues.Any(value => EF.Functions.Like(value.Value, $"%{search}%")));
+                //query.WithSubquery.WhereExists(
+                //    QueryOver.Of<FormValue>()
+                //        .Where(
+                //            value =>
+                //                value.FormPosting.Id == posting.Id &&
+                //                value.Value.IsInsensitiveLike(search, MatchMode.Anywhere)).Select(value => value.Id));
             }
 
-            IPagedList<FormPosting> formPostings = query.OrderBy(() => posting.CreatedOn).Desc.Paged(page);
+            IPagedList<FormPosting> formPostings = query.OrderByDescending(x => x.CreatedOn).ToPagedList(page);
 
             return new PostingsModel(formPostings, form.Id);
         }

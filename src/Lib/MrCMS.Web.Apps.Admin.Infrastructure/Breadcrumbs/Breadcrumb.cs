@@ -63,6 +63,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
         /// </summary>
         public virtual Task Populate()
         {
+            return Task.CompletedTask;
         }
 
         private int? GetIdFromArguments(IDictionary<string, object> arguments)

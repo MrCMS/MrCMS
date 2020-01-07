@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Messages;
+using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Website;
 
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -14,25 +18,24 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class MessageTemplateAdminService : IMessageTemplateAdminService
     {
         private readonly IMessageTemplateProvider _messageTemplateProvider;
-        private readonly ISession _session;
-        private readonly Site _site;
+        private readonly IRepository<LegacyMessageTemplate> _repository;
+        private readonly IGetSiteId _getSiteId;
 
-        public MessageTemplateAdminService(IMessageTemplateProvider messageTemplateProvider, Site site, ISession session)
+        public MessageTemplateAdminService(IMessageTemplateProvider messageTemplateProvider, IRepository<LegacyMessageTemplate> repository, IGetSiteId getSiteId)
         {
             _messageTemplateProvider = messageTemplateProvider;
-            _site = site;
-            _session = session;
+            _repository = repository;
+            _getSiteId = getSiteId;
         }
 
         public List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails()
         {
-            List<MessageTemplate> templates = _messageTemplateProvider.GetAllMessageTemplates(_site);
+            List<MessageTemplate> templates = _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId());
             IList<string> legacyMessageTemplateTypes =
-                _session.QueryOver<LegacyMessageTemplate>()
+                _repository.Query()
                     .Where(template => !template.Imported)
                     .Select(template => template.MessageTemplateType)
-                    .Cacheable()
-                    .List<string>();
+                    .ToList();
             return templates.Select(template =>
             {
                 Type type = template.GetType();
@@ -53,13 +56,14 @@ namespace MrCMS.Web.Apps.Admin.Services
             Type typeByName = TypeHelper.GetTypeByName(type);
             MessageTemplate messageTemplateBase = _messageTemplateProvider.GetNewMessageTemplate(typeByName);
             if (messageTemplateBase == null) return null;
-            messageTemplateBase.SiteId = _site.Id;
+            messageTemplateBase.SiteId = _getSiteId.GetId();
             return messageTemplateBase;
         }
 
-        public void AddOverride(MessageTemplate messageTemplate)
+        public async Task AddOverride(MessageTemplate messageTemplate)
         {
-            _messageTemplateProvider.SaveSiteOverride(messageTemplate, _site);
+            var siteId = _getSiteId.GetId();
+            await _messageTemplateProvider.SaveSiteOverride(messageTemplate, siteId);
         }
 
         public MessageTemplate GetOverride(string type)
@@ -76,12 +80,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             var messageTemplate = GetOverride(type);
             if (messageTemplate == null)
                 return;
-            _messageTemplateProvider.DeleteSiteOverride(messageTemplate, _site);
+            var siteId = _getSiteId.GetId();
+            _messageTemplateProvider.DeleteSiteOverride(messageTemplate, siteId);
         }
 
-        public void ImportLegacyTemplate(string type)
+        public async Task ImportLegacyTemplate(string type)
         {
-            var legacyMessageTemplate = _session.QueryOver<LegacyMessageTemplate>()
+            var legacyMessageTemplate = _repository.Query()
                 .Where(template => template.MessageTemplateType == type)
                 .Take(1)
                 .SingleOrDefault();
@@ -105,20 +110,20 @@ namespace MrCMS.Web.Apps.Admin.Services
             messageTemplate.ToName = legacyMessageTemplate.ToName;
             Save(messageTemplate);
             legacyMessageTemplate.Imported = true;
-            _session.Transact(session => session.Save(legacyMessageTemplate));
+            await _repository.Update(legacyMessageTemplate);
         }
 
         public MessageTemplate GetTemplate(string type)
         {
             return
-                _messageTemplateProvider.GetAllMessageTemplates(_site)
+                _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId())
                     .FirstOrDefault(@base => @base.GetType().FullName == type);
         }
 
         public void Save(MessageTemplate messageTemplate)
         {
             if (messageTemplate.SiteId.HasValue)
-                _messageTemplateProvider.SaveSiteOverride(messageTemplate, _session.Get<Site>(messageTemplate.SiteId));
+                _messageTemplateProvider.SaveSiteOverride(messageTemplate, _getSiteId.GetId());
             else
                 _messageTemplateProvider.SaveTemplate(messageTemplate);
         }

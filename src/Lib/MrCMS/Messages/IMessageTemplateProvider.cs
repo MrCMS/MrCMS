@@ -8,10 +8,10 @@ namespace MrCMS.Messages
     public interface IMessageTemplateProvider
     {
         Task SaveTemplate(MessageTemplate messageTemplate);
-        Task SaveSiteOverride(MessageTemplate messageTemplate, Site site);
-        Task DeleteSiteOverride(MessageTemplate messageTemplate, Site site);
-        List<MessageTemplate> GetAllMessageTemplates(Site site);
-        Task<T> GetMessageTemplate<T>(Site site) where T : MessageTemplate, new();
+        Task SaveSiteOverride(MessageTemplate messageTemplate, int siteId);
+        Task DeleteSiteOverride(MessageTemplate messageTemplate, int siteId);
+        List<MessageTemplate> GetAllMessageTemplates(int siteId);
+        Task<T> GetMessageTemplate<T>(int siteId) where T : MessageTemplate, new();
         MessageTemplate GetNewMessageTemplate(Type type);
     }
 }

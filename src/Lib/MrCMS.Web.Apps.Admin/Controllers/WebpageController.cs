@@ -58,10 +58,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ForceImmediateLuceneUpdate]
         public async Task<ActionResult> Add(AddWebpageModel model)
         {
-            if (!_urlValidationService.UrlIsValidForWebpage(model.UrlSegment, null))
+            if (!await _urlValidationService.UrlIsValidForWebpage(model.UrlSegment, null))
             {
                 Webpage parent = _webpageAdminService.GetWebpage(model.ParentId);
-                _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
+                await _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
                 return View(model);
             }
 
@@ -78,11 +78,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Edit")]
-        public ViewResult Edit_Get(int id)
+        public async Task<ViewResult> Edit_Get(int id)
         {
             var webpage = _webpageAdminService.GetWebpage(id);
-            _webpageBaseViewDataService.SetEditPageViewData(ViewData, webpage);
-            _setWebpageAdminViewData.SetViewData(ViewData, webpage);
+            await _webpageBaseViewDataService.SetEditPageViewData(ViewData, webpage);
+            await _setWebpageAdminViewData.SetViewData(ViewData, webpage);
             return View(webpage);
         }
 
@@ -168,9 +168,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         /// <param name="urlSegment">The URL Segment entered</param>
         /// <param name="id">The Id of the current document if it is set</param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
+        public async Task<ActionResult> ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_urlValidationService.UrlIsValidForWebpage(urlSegment, id)
+            return !await _urlValidationService.UrlIsValidForWebpage(urlSegment, id)
                 ? Json("Please choose a different URL as this one is already used.")
                 : Json(true);
         }

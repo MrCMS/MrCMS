@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Entities;
 using MrCMS.Entities.People;
-using MrCMS.Web.Apps.Admin.Infrastructure.Models;
 using MrCMS.Web.Apps.Admin.Infrastructure.Services;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Entities;
@@ -24,23 +25,23 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddAuthorInfoModel info)
+        public async Task<RedirectToActionResult> Add(AddAuthorInfoModel info)
         {
-            _adminService.Add<AuthorInfo, AddAuthorInfoModel>(info);
+            await _adminService.Add<AuthorInfo, AddAuthorInfoModel>(info);
             return RedirectToAction("Edit", "User", new { id = info.UserId });
         }
 
         [HttpGet]
-        public PartialViewResult Edit(int id)
+        public async Task<PartialViewResult> Edit(int id)
         {
-            return PartialView(_adminService.GetEditModel<AuthorInfo, EditAuthorInfoModel>(id));
+            return PartialView(await _adminService.GetEditModel<AuthorInfo, EditAuthorInfoModel>(id));
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public RedirectToActionResult Edit_POST(EditAuthorInfoModel model)
+        public async Task<RedirectToActionResult> Edit_POST(EditAuthorInfoModel model)
         {
-            var info = _adminService.Update<AuthorInfo, EditAuthorInfoModel>(model);
+            var info = await _adminService.Update<AuthorInfo, EditAuthorInfoModel>(model);
             return RedirectToAction("Edit", "User", new { id = info?.User.Id });
         }
 
@@ -52,7 +53,6 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 
     public class EditAuthorInfoModel : IHaveId
     {
-        int? IHaveId.Id => Id;
         public int Id { get; set; }
         public string Bio { get; set; }
     }

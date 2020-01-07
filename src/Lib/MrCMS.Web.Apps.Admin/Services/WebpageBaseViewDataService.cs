@@ -8,6 +8,7 @@ using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Website.Auth;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -32,7 +33,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             _getDescriptor = getDescriptor;
         }
 
-        public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
+        public async Task SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
         {
             viewData["parent"] = parent;
 
@@ -41,7 +42,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"), _getCurrentUser.Get()))
                 .OrderBy(metadata => metadata.DisplayOrder);
 
-            var templates = _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);
+            var templates = await _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);
 
             var documentTypeToAdds = new List<DocumentTypeToAdd>();
 
@@ -73,13 +74,14 @@ namespace MrCMS.Web.Apps.Admin.Services
             viewData["DocumentTypes"] = documentTypeToAdds;
         }
 
-        public void SetEditPageViewData(ViewDataDictionary viewData, Webpage page)
+        public Task SetEditPageViewData(ViewDataDictionary viewData, Webpage page)
         {
             DocumentMetadata documentMetadata = page.GetMetadata();
             if (documentMetadata != null)
             {
                 viewData["EditView"] = documentMetadata.EditPartialView;
             }
+            return Task.CompletedTask;
         }
     }
 }

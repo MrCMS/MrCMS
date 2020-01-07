@@ -15,6 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.System
             var type = ActionArguments["type"] as string;
             var typeByName = TypeHelper.GetTypeByName(type);
             Name = typeByName.Name.BreakUpString();
+            return Task.CompletedTask;
         }
     }
 }

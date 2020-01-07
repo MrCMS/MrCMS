@@ -9,13 +9,13 @@ using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {
-    public class LogAdminServiceTests : InMemoryDatabaseTest
+    public class LogAdminServiceTests : MrCMSTest
     {
         private readonly LogAdminService _logService;
 
         public LogAdminServiceTests()
         {
-            _logService = new LogAdminService(Session);
+            _logService = new LogAdminService(Context);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
 
             _logService.DeleteAllLogs();
 
-            Session.QueryOver<Log>().RowCount().Should().Be(0);
+            Context.QueryOver<Log>().RowCount().Should().Be(0);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
 
             _logService.DeleteLog(list[0].Id);
 
-            Session.QueryOver<Log>().List().Should().NotContain(list[0]);
+            Context.QueryOver<Log>().List().Should().NotContain(list[0]);
         }
 
 
@@ -53,7 +53,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         {
             List<Log> logList =
                 Enumerable.Range(1, 20).Select(i => new Log { Message = i.ToString() }).ToList();
-            logList.ForEach(log => Session.Transact(session => session.Save(log)));
+            logList.ForEach(log => Context.Transact(session => session.Save(log)));
             return logList;
         }
     }

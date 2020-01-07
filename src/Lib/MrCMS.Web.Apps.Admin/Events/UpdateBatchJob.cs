@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
+using MrCMS.Data;
 using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Hubs;
 
 namespace MrCMS.Web.Apps.Admin.Events
 {
-    public class UpdateBatchJob : IOnUpdated<BatchJob>
+    public class UpdateBatchJob : OnDataUpdated<BatchJob>
     {
         private readonly IHubContext<BatchProcessingHub> _context;
 
@@ -14,9 +16,10 @@ namespace MrCMS.Web.Apps.Admin.Events
         {
             _context = context;
         }
-        public void Execute(OnUpdatedArgs<BatchJob> args)
+
+        public override async Task Execute(ChangeInfo data)
         {
-            _context.Clients.All.SendCoreAsync("updateJob", new object[] { args.Item.Id }).ExecuteSync();
+            await _context.Clients.All.SendCoreAsync("updateJob", new object[] {data.EntityId});
         }
     }
 

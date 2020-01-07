@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Models;
@@ -9,17 +10,17 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface IFormAdminService
     {
         IPagedList<Form> Search(FormSearchModel model);
-        Form AddForm(AddFormModel model);
+        Task<Form> AddForm(AddFormModel model);
         Form GetForm(int id);
         UpdateFormModel GetUpdateModel(int id);
-        void Update(UpdateFormModel model);
-        void Delete(int id);
+        Task Update(UpdateFormModel model);
+        Task Delete(int id);
 
 
         PostingsModel GetFormPostings(Form form, int page, string search);
-        void SetOrders(List<SortItem> items);
-        void ClearFormData(Form form);
+        Task SetOrders(List<SortItem> items);
+        Task ClearFormData(Form form);
         byte[] ExportFormData(Form form);
-        FormPosting DeletePosting(int id);
+        Task<FormPosting> DeletePosting(int id);
     }
 }

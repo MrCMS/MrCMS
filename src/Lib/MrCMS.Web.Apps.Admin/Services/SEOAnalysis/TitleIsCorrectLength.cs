@@ -8,7 +8,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class TitleIsCorrectLength : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
             string titleText = document.GetElementText("title") ?? string.Empty;
 

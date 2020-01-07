@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.UserSubscriptionReports;
@@ -10,16 +11,16 @@ namespace MrCMS.Web.Apps.Admin.Services.UserSubscriptionReports
 {
     public class UserSubscriptionReportsService : IUserSubscriptionReportsService
     {
-        private readonly ISession _session;
+        private readonly IGlobalRepository<User> _userRepository;
 
-        public UserSubscriptionReportsService(ISession session)
+        public UserSubscriptionReportsService(IGlobalRepository<User> userRepository)
         {
-            _session = session;
+            _userRepository = userRepository;
         }
 
         public IEnumerable<LineGraphData> GetAllSubscriptions(UserSubscriptionReportsSearchQuery searchQuery)
         {
-            var query = from user in _session.Query<User>()
+            var query = from user in _userRepository.Readonly()
                 where user.CreatedOn >= searchQuery.StartDate && user.CreatedOn <= searchQuery.EndDate
                 group user by new {user.CreatedOn.Year, user.CreatedOn.Month}
                 into userGroup

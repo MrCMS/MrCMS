@@ -5,109 +5,113 @@ using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
 using System;
+using AutoFixture.Xunit2;
+using FakeItEasy;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Settings
 {
-    public class SiteSettingsOptionGeneratorTests : InMemoryDatabaseTest
+    public class SiteSettingsOptionGeneratorTests : MrCMSTest
     {
-        private readonly MrCMSAppContext _mrCMSAppContext = new MrCMSAppContext();
-        private readonly SiteSettingsOptionGenerator _sut;
+        //private readonly MrCMSAppContext _mrCMSAppContext = new MrCMSAppContext();
+        //private readonly SiteSettingsOptionGenerator _sut;
 
-        public SiteSettingsOptionGeneratorTests()
-        {
-            _sut = new SiteSettingsOptionGenerator(Session, _mrCMSAppContext);
-        }
-        [Fact]
-        public void SiteSettingsOptionGenerator_GetErrorPageOptions_IsEmptyWithNoPages()
+        //public SiteSettingsOptionGeneratorTests()
+        //{
+        //    _sut = new SiteSettingsOptionGenerator(Context, _mrCMSAppContext);
+        //}
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingsOptionGenerator_GetErrorPageOptions_IsEmptyWithNoPages
+            (SiteSettingsOptionGenerator sut)
         {
 
-            var errorPageOptions = _sut.GetErrorPageOptions(-1);
+            var errorPageOptions = sut.GetErrorPageOptions(-1);
 
             errorPageOptions.Should().BeEmpty();
         }
 
-        [Fact]
-        public void SiteSettingsOptionGenerator_GetErrorPageOptions_IncludesSavedPublishedWebpages()
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingsOptionGenerator_GetErrorPageOptions_IncludesSavedPublishedWebpages
+            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
         {
             var textPage = new BasicMappedWebpage
             {
                 PublishOn = DateTime.Now.AddDays(-1),
                 Name = "Test 1",
-                Site = CurrentSite,
                 Published = true
             };
-            Session.Transact(session => session.Save(textPage));
+            A.CallTo(() => dataReader.Readonly<Webpage>()).ReturnsAsAsyncQueryable(textPage);
 
-            var errorPageOptions = _sut.GetErrorPageOptions(-1);
+            var errorPageOptions = sut.GetErrorPageOptions(-1);
 
             errorPageOptions.Should().HaveCount(1);
             errorPageOptions[0].Text.Should().Be("Test 1");
             errorPageOptions[0].Value.Should().Be(textPage.Id.ToString());
         }
-        [Fact]
-        public void SiteSettingOptionGenerator_GetErrorPageOptions_ExcludesSavedUnpublishedWebpages()
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingOptionGenerator_GetErrorPageOptions_ExcludesSavedUnpublishedWebpages
+            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
         {
-            var textPage = new BasicMappedWebpage { Name = "Test 1" };
-            Session.Transact(session => session.Save(textPage));
+            var textPage = new BasicMappedWebpage { Name = "Test 1", Published = false };
+            A.CallTo(() => dataReader.Readonly<Webpage>()).ReturnsAsAsyncQueryable(textPage);
 
-            var errorPageOptions = _sut.GetErrorPageOptions(-1);
+            var errorPageOptions = sut.GetErrorPageOptions(-1);
 
             errorPageOptions.Should().HaveCount(0);
         }
 
-        [Fact]
-        public void SiteSettingsOptionGenerator_GetErrorPageOptions_ItemIsSelectedIfTheIdMatches()
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingsOptionGenerator_GetErrorPageOptions_ItemIsSelectedIfTheIdMatches
+            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
         {
             var textPage = new BasicMappedWebpage
             {
-                PublishOn = DateTime.Now.AddDays(-1),
                 Name = "Test 1",
-                Site = CurrentSite,
                 Published = true
             };
-            Session.Transact(session => session.Save(textPage));
+            A.CallTo(() => dataReader.Readonly<Webpage>()).ReturnsAsAsyncQueryable(textPage);
 
-            var errorPageOptions = _sut.GetErrorPageOptions(textPage.Id);
+            var errorPageOptions = sut.GetErrorPageOptions(textPage.Id);
 
             errorPageOptions.Should().HaveCount(1);
             errorPageOptions[0].Selected.Should().BeTrue();
         }
 
-        [Fact]
-        public void SiteSettingsOptionGenerator_GetLayoutOptions_WithoutDefaultIncludedIsEmpty()
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingsOptionGenerator_GetLayoutOptions_WithoutDefaultIncludedIsEmpty
+            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
         {
-            var errorPageOptions = _sut.GetLayoutOptions(-1);
+            var errorPageOptions = sut.GetLayoutOptions(-1);
 
             errorPageOptions.Should().HaveCount(0);
         }
 
-        [Fact]
-        public void SiteSettingsOptionGenerator_GetLayoutOptions_IncludesLayouts()
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingsOptionGenerator_GetLayoutOptions_IncludesLayouts
+            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
         {
-            var layout = new Layout { Name = "Test Layout", Site = CurrentSite };
-            Session.Transact(session => session.Save(layout));
+            var layout = new Layout { Name = "Test Layout", Id = 123 };
+            A.CallTo(() => dataReader.Readonly<Layout>()).ReturnsAsAsyncQueryable(layout);
 
-            var errorPageOptions = _sut.GetLayoutOptions(-1);
+            var errorPageOptions = sut.GetLayoutOptions(-1);
 
             errorPageOptions.Should().HaveCount(1);
             errorPageOptions[0].Text.Should().Be("Test Layout");
             errorPageOptions[0].Value.Should().Be(layout.Id.ToString());
         }
 
-        [Fact]
-        public void SiteSettingsOptionGenerator_GetLayoutOptions_IfLayoutIdIsPassedFlagIsTrue()
+        [Theory, AutoFakeItEasyData]
+        public void SiteSettingsOptionGenerator_GetLayoutOptions_IfLayoutIdIsPassedFlagIsTrue
+            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
         {
-            var layout = new Layout { Name = "Test Layout", Site = CurrentSite };
-            var layout2 = new Layout { Name = "Test Layout 2", Site = CurrentSite };
-            Session.Transact(session =>
-            {
-                session.Save(layout);
-                session.Save(layout2);
-            });
+            var layout = new Layout { Name = "Test Layout", Id = 123 };
+            var layout2 = new Layout { Name = "Test Layout 2", Id = 234 };
+            A.CallTo(() => dataReader.Readonly<Layout>()).ReturnsAsAsyncQueryable(layout, layout2);
 
-            var errorPageOptions = _sut.GetLayoutOptions(layout2.Id);
+            var errorPageOptions = sut.GetLayoutOptions(layout2.Id);
 
             errorPageOptions.Should().HaveCount(2);
             errorPageOptions[0].Selected.Should().BeFalse();

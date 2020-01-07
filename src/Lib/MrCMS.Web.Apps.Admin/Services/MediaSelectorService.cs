@@ -1,34 +1,37 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
 
-using NHibernate.Criterion;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class MediaSelectorService : IMediaSelectorService
     {
-        private readonly ISession _session;
+        private readonly IRepository<MediaFile> _mediaFileRepository;
+        private readonly IRepository<MediaCategory> _mediaCategoryRepository;
         private readonly IFileService _fileService;
         private readonly IImageProcessor _imageProcessor;
-        private readonly Site _site;
 
-        public MediaSelectorService(ISession session, IFileService fileService, IImageProcessor imageProcessor, Site site)
+        public MediaSelectorService(IRepository<MediaFile> mediaFileRepository, IRepository<MediaCategory> mediaCategoryRepository, IFileService fileService, IImageProcessor imageProcessor)
         {
-            _session = session;
+            _mediaFileRepository = mediaFileRepository;
+            _mediaCategoryRepository = mediaCategoryRepository;
             _fileService = fileService;
             _imageProcessor = imageProcessor;
-            _site = site;
         }
 
         public IPagedList<MediaFile> Search(MediaSelectorSearchQuery searchQuery)
         {
-            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site.Id == _site.Id);
+            var queryOver = _mediaFileRepository.Query();
             if (searchQuery.CategoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == searchQuery.CategoryId);
             if (!string.IsNullOrWhiteSpace(searchQuery.Query))
@@ -37,27 +40,25 @@ namespace MrCMS.Web.Apps.Admin.Services
                 queryOver =
                     queryOver.Where(
                         file =>
-                            file.FileName.IsLike(term, MatchMode.Anywhere) ||
-                            file.Title.IsLike(term, MatchMode.Anywhere) ||
-                            file.Description.IsLike(term, MatchMode.Anywhere));
+                            EF.Functions.Like(file.FileName, $"%{term}%") ||
+                            EF.Functions.Like(file.Title, $"%{term}%") ||
+                            EF.Functions.Like(file.Description, $"%{term}%"));
             }
-            return queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(searchQuery.Page);
+            return queryOver.OrderByDescending(file => file.CreatedOn).ToPagedList(searchQuery.Page);
         }
 
         public List<SelectListItem> GetCategories()
         {
-            return _session.QueryOver<MediaCategory>()
-                .Where(category => category.Site.Id == _site.Id)
+            return _mediaCategoryRepository.Readonly()
                 .Where(category => category.HideInAdminNav != true)
-                .Cacheable()
-                .List()
+                .ToList()
                 .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),
                     emptyItemText: "All categories");
         }
 
-        public SelectedItemInfo GetFileInfo(string value)
+        public async Task<SelectedItemInfo> GetFileInfo(string value)
         {
-            var file = _fileService.GetFile(value);
+            var file = await _fileService.GetFile(value);
             if (file == null)
             {
                 return null;
@@ -65,7 +66,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             return new SelectedItemInfo
             {
-                Url = _fileService.GetFileUrl(file,value),
+                Url = await _fileService.GetFileUrl(file, value),
                 Alt = file.Title,
                 Description = file.Description,
             };
@@ -88,23 +89,23 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _imageProcessor.GetImage(url);
         }
 
-        public bool UpdateAlt(UpdateMediaParams updateMediaParams)
+        public async Task<bool> UpdateAlt(UpdateMediaParams updateMediaParams)
         {
             var mediaFile = GetImage(updateMediaParams.Url);
             if (mediaFile == null)
                 return false;
             mediaFile.Title = updateMediaParams.Value;
-            _session.Transact(session => session.Update(mediaFile));
+            await _mediaFileRepository.Update((mediaFile));
             return true;
         }
 
-        public bool UpdateDescription(UpdateMediaParams updateMediaParams)
+        public async Task<bool> UpdateDescription(UpdateMediaParams updateMediaParams)
         {
             var mediaFile = GetImage(updateMediaParams.Url);
             if (mediaFile == null)
                 return false;
             mediaFile.Description = updateMediaParams.Value;
-            _session.Transact(session => session.Update(mediaFile));
+            await _mediaFileRepository.Update((mediaFile));
             return true;
         }
     }

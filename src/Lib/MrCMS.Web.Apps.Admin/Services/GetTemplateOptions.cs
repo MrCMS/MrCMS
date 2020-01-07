@@ -1,6 +1,9 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 
@@ -9,26 +12,28 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class GetTemplateOptions : BaseAssignWebpageAdminViewData<Webpage>
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _webpageRepository;
+        private readonly IRepository<PageTemplate> _pageTemplateRepository;
 
-        public GetTemplateOptions(ISession session)
+        public GetTemplateOptions(IRepository<Webpage> webpageRepository, IRepository<PageTemplate> pageTemplateRepository)
         {
-            _session = session;
+            _webpageRepository = webpageRepository;
+            _pageTemplateRepository = pageTemplateRepository;
         }
 
-        public override void AssignViewData(Webpage webpage, ViewDataDictionary viewData)
+        public override async Task AssignViewData(Webpage webpage, ViewDataDictionary viewData)
         {
             if (webpage == null)
                 return;
             var typeName = webpage.GetType().FullName;
-            var templates = _session.QueryOver<PageTemplate>().Where(template => template.PageType == typeName)
-                .OrderBy(template => template.Name).Asc.Cacheable().List().ToList();
+            var templates = await _pageTemplateRepository.Readonly().Where(template => template.PageType == typeName)
+                .OrderBy(template => template.Name).ToListAsync();
 
             templates = templates.FindAll(template =>
             {
                 if (!template.SingleUse)
                     return true;
-                return !_session.QueryOver<Webpage>().Where(page => page.PageTemplate.Id == template.Id && page.Id != webpage.Id).Any();
+                return !_webpageRepository.Readonly().Any(page => page.PageTemplate.Id == template.Id && page.Id != webpage.Id);
             });
 
             viewData["template-options"] = templates.BuildSelectItemList(template => template.Name,

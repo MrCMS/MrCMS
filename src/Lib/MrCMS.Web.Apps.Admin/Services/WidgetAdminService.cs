@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using MrCMS.Data;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
@@ -11,12 +13,12 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class WidgetAdminService : IWidgetAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Widget> _repository;
         private readonly IMapper _mapper;
 
-        public WidgetAdminService(ISession session, IMapper mapper)
+        public WidgetAdminService(IRepository<Widget> repository, IMapper mapper)
         {
-            _session = session;
+            _repository = repository;
             _mapper = mapper;
         }
         public object GetAdditionalPropertyModel(string type)
@@ -36,7 +38,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return Activator.CreateInstance(additionalPropertyType);
         }
 
-        public Widget AddWidget(AddWidgetModel model, object additionalPropertyModel)
+        public async Task<Widget> AddWidget(AddWidgetModel model, object additionalPropertyModel)
         {
             var type = TypeHelper.GetTypeByName(model.WidgetType);
             var instance = Activator.CreateInstance(type) as Widget;
@@ -45,7 +47,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 _mapper.Map(additionalPropertyModel, instance);
 
             instance.LayoutArea.AddWidget(instance);
-            _session.Transact(session => session.Save(instance));
+            await _repository.Add(instance);
 
             return instance;
         }
@@ -57,7 +59,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public Widget GetWidget(int id)
         {
-            return _session.Get<Widget>(id);
+            return _repository.LoadSync(id);
         }
 
         public object GetAdditionalPropertyModel(int id)
@@ -66,7 +68,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return GetAdditionalPropertyModel(widget?.WidgetType);
         }
 
-        public Widget UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel)
+        public async Task<Widget> UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel)
         {
             var widget = GetWidget(model.Id);
             _mapper.Map(model, widget);
@@ -74,16 +76,16 @@ namespace MrCMS.Web.Apps.Admin.Services
             if (additionalPropertyModel != null)
                 _mapper.Map(additionalPropertyModel, widget);
 
-            _session.Transact(session => session.Update(widget));
+            await _repository.Update(widget);
 
             return widget;
         }
 
-        public Widget DeleteWidget(int id)
+        public async Task<Widget> DeleteWidget(int id)
         {
             var widget = GetWidget(id);
 
-            _session.Transact(session => session.Delete(widget));
+            await _repository.Delete(widget);
 
             return widget;
         }

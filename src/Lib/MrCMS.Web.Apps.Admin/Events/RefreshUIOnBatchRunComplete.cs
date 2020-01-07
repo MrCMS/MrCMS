@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
+using MrCMS.Data;
 using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Hubs;
 
 namespace MrCMS.Web.Apps.Admin.Events
 {
-    public class RefreshUIOnBatchRunComplete : IOnUpdated<BatchRun>
+    public class RefreshUIOnBatchRunComplete : OnDataUpdated<BatchRun>
     {
         private readonly IHubContext<BatchProcessingHub> _context;
 
@@ -14,13 +17,13 @@ namespace MrCMS.Web.Apps.Admin.Events
         {
             _context = context;
         }
-        public void Execute(OnUpdatedArgs<BatchRun> args)
+
+        public override async Task Execute(ChangeInfo data)
         {
-            var batchRun = args.Item;
-            var previous = args.Original;
-            if (batchRun.Status == BatchRunStatus.Complete && previous.Status != BatchRunStatus.Complete)
+            var statusUpdate = data.PropertiesUpdated.FirstOrDefault(x => x.Name == nameof(BatchRun.Status));
+            if (statusUpdate != null && statusUpdate.CurrentValue == (object)BatchRunStatus.Complete && statusUpdate.OriginalValue != (object)BatchRunStatus.Complete)
             {
-                _context.Clients.All.SendCoreAsync("refreshBatchRunUI", new object[] { batchRun.Id }).ExecuteSync();
+                await _context.Clients.All.SendCoreAsync("refreshBatchRunUI", new object[] {data.EntityId});
             }
         }
     }

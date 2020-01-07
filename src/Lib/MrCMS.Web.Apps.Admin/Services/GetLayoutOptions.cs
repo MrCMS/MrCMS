@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Settings;
 
@@ -9,20 +10,20 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class GetLayoutOptions : IGetLayoutOptions
     {
-        private readonly ISession _session;
+        private readonly IRepository<Layout> _layoutRepository;
         private readonly SiteSettings _siteSettings;
 
-        public GetLayoutOptions(ISession session, SiteSettings siteSettings)
+        public GetLayoutOptions(IRepository<Layout> layoutRepository, SiteSettings siteSettings)
         {
-            _session = session;
+            _layoutRepository = layoutRepository;
             _siteSettings = siteSettings;
         }
 
         public List<SelectListItem> Get()
         {
             var layouts =
-                _session.QueryOver<Layout>().OrderBy(layout => layout.DisplayOrder).Asc.Cacheable().List().ToList();
-            var systemDefaultLayout = _session.Get<Layout>(_siteSettings.DefaultLayoutId);
+                _layoutRepository.Readonly().OrderBy(layout => layout.DisplayOrder).ToList();
+            var systemDefaultLayout = _layoutRepository.GetDataSync(_siteSettings.DefaultLayoutId);
             var selectListItems = new List<SelectListItem>
             {
                 new SelectListItem {Text = string.Format("System Default ({0})", systemDefaultLayout.Name), Value = ""}

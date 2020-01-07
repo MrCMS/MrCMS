@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.ACL;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
-using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -14,17 +15,17 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly IGetAclOptions _getAclInfos;
         private readonly IRoleManager _roleManager;
-        private readonly ISession _session;
+        private readonly IRepository<ACLRole> _aclRoleRepository;
 
         public AclAdminService(
             IGetAclOptions getAclInfos,
             IRoleManager roleManager,
-            ISession session
+            IRepository<ACLRole> aclRoleRepository
         )
         {
             _getAclInfos = getAclInfos;
             _roleManager = roleManager;
-            _session = session;
+            _aclRoleRepository = aclRoleRepository;
         }
 
         public List<AclInfo> GetOptions()
@@ -32,7 +33,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             var infos = _getAclInfos.GetInfos();
 
             var roles = _roleManager.Roles.OrderBy(x => x.Name).ToList();
-            var aclRoles = _session.Query<ACLRole>().ToList();
+            var aclRoles = _aclRoleRepository.Query().ToList();
 
             foreach (var info in infos)
                 info.Roles = roles
@@ -48,35 +49,24 @@ namespace MrCMS.Web.Apps.Admin.Services
         }
 
 
-        public bool UpdateAcl(IFormCollection collection)
+        public async Task<bool> UpdateAcl(IFormCollection collection)
         {
             var records = GetUpdateRecords(collection["acl"]);
 
-            var aclRoles = _session.Query<ACLRole>().ToList(); 
+            var aclRoles = _aclRoleRepository.Query().ToList();
 
             var toAdd = records.Where(
                 x => !aclRoles.Any(aclRole => aclRole.UserRole?.Id == x.RoleId && aclRole.Name == x.Key));
             var toRemove =
                 aclRoles.Where(x => !records.Any(record => record.RoleId == x.UserRole?.Id && record.Key == x.Name));
 
-            _session.Transact(session =>
-            {
-                foreach (var record in toAdd)
-                {
-                    session.Save(new ACLRole {Name = record.Key, UserRole = GetRole(record.RoleId)});
-                }
+            await _aclRoleRepository.Transact(async (repo, ct) =>
+             {
+                 await repo.AddRange(toAdd.Select(record => new ACLRole { Name = record.Key, UserRoleId = record.RoleId }).ToList(), ct);
 
-                foreach (var aclRole in toRemove)
-                {
-                    session.Delete(aclRole);
-                }
-            });
+                 await repo.DeleteRange(toRemove.ToList(), ct);
+             });
             return true;
-        }
-
-        private UserRole GetRole(int id)
-        {
-            return _session.Get<UserRole>(id);
         }
 
         private static List<AclUpdateRecord> GetUpdateRecords(IList<string> values)

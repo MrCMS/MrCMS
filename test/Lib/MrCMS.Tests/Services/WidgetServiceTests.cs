@@ -1,5 +1,8 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
+using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Data;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
@@ -10,51 +13,43 @@ using MrCMS.TestSupport;
 
 namespace MrCMS.Tests.Services
 {
-    public class WidgetServiceTests : InMemoryDatabaseTest
+    public class WidgetServiceTests : MrCMSTest
     {
-        private readonly WidgetService _widgetService;
 
-        public WidgetServiceTests()
-        {
-            _widgetService = new WidgetService(Session);
-        }
-        [Fact]
-        public void WidgetService_GetWidget_ReturnsAWidgetWhenIdExists()
+        [Theory, AutoFakeItEasyData]
+        public async Task WidgetService_GetWidget_ReturnsAWidgetWhenIdExists
+            ([Frozen] IRepository<Widget> repository, WidgetService sut)
         {
 
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.SaveOrUpdate(textWidget));
+            A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(textWidget);
 
-            var loadedWidget = _widgetService.GetWidget<BasicMappedWidget>(textWidget.Id);
+            var loadedWidget = await sut.GetWidget<BasicMappedWidget>(textWidget.Id);
 
             loadedWidget.Should().BeSameAs(textWidget);
         }
 
-        [Fact]
-        public void WidgetService_GetWidget_WhenIdIsInvalidShouldReturnNull()
-        {
-            var loadedWidget = _widgetService.GetWidget<BasicMappedWidget>(-1);
 
-            loadedWidget.Should().BeNull();
-        }
-
-        [Fact]
-        public void WidgetService_SaveWidget_ShouldAddWidgetToDb()
-        {
-            _widgetService.SaveWidget(new BasicMappedWidget());
-
-            Session.QueryOver<Widget>().RowCount().Should().Be(1);
-        }
-
-        [Fact]
-        public void WidgetService_Delete_RemovesWidgetFromDatabase()
+        [Theory, AutoFakeItEasyData]
+        public async Task WidgetService_SaveWidget_ShouldAddWidgetToRepo
+            ([Frozen] IRepository<Widget> repository, WidgetService sut)
         {
             var widget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(widget));
 
-            _widgetService.DeleteWidget(widget);
+            await sut.SaveWidget(widget);
 
-            Session.QueryOver<Widget>().RowCount().Should().Be(0);
+            A.CallTo(() => repository.Add(widget, default)).MustHaveHappened();
+        }
+
+        [Theory, AutoFakeItEasyData]
+        public async Task WidgetService_Delete_RemovesWidgetFromRepo
+            ([Frozen] IRepository<Widget> repository, WidgetService sut)
+        {
+            var widget = new BasicMappedWidget();
+
+            await sut.DeleteWidget(widget);
+
+            A.CallTo(() => repository.Delete(widget, default)).MustHaveHappened();
         }
     }
 }

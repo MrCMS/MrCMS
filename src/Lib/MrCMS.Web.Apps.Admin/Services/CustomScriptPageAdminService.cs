@@ -1,4 +1,6 @@
-﻿using MrCMS.Entities.Documents.Web;
+﻿using System.Linq;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models;
 
@@ -8,23 +10,24 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class CustomScriptPageAdminService : ICustomScriptPageAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
 
-        public CustomScriptPageAdminService(ISession session)
+        public CustomScriptPageAdminService(IRepository<Webpage> repository)
         {
-            _session = session;
+            _repository = repository;
         }
+
 
         public IPagedList<Webpage> Search(CustomScriptPagesSearchModel searchModel)
         {
-            return _session.QueryOver<Webpage>()
+            return _repository.Query()
                 .Where(x =>
                     (x.CustomHeaderScripts != null && x.CustomHeaderScripts != "")
                     ||
                     (x.CustomFooterScripts != null && x.CustomFooterScripts != "")
                 )
-                .OrderBy(x => x.Name).Asc
-                .Paged(searchModel.Page);
+                .OrderBy(x => x.Name)
+                .ToPagedList(searchModel.Page);
         }
     }
 }

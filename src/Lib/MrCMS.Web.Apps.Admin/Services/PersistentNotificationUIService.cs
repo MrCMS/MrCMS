@@ -1,63 +1,68 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Notifications;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models.Notifications;
 
-using NHibernate.Transform;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class PersistentNotificationUIService : IPersistentNotificationUIService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Notification> _repository;
+        private readonly IGlobalRepository<User> _userRepository;
         private readonly IGetCurrentUser _getCurrentUser;
 
-        public PersistentNotificationUIService(ISession session,  IGetCurrentUser getCurrentUser)
+        public PersistentNotificationUIService(IRepository<Notification> repository, 
+            IGlobalRepository<User> userRepository,
+            IGetCurrentUser getCurrentUser)
         {
-            _session = session;
+            _repository = repository;
+            _userRepository = userRepository;
             _getCurrentUser = getCurrentUser;
         }
 
         public IList<NotificationModel> GetNotifications()
         {
             var user = _getCurrentUser.Get();
-            var queryOver = _session.QueryOver<Notification>();
+            var queryOver = _repository.Query();
 
             if (user.LastNotificationReadDate.HasValue)
                 queryOver = queryOver.Where(notification => notification.CreatedOn >= user.LastNotificationReadDate);
 
-            NotificationModel notificationModelAlias = null;
-            return queryOver.SelectList(
-                builder =>
-                    builder.Select(notification => notification.Message)
-                        .WithAlias(() => notificationModelAlias.Message)
-                        .Select(notification => notification.CreatedOn)
-                        .WithAlias(() => notificationModelAlias.DateValue))
-                .OrderBy(notification => notification.CreatedOn).Desc
-                .TransformUsing(Transformers.AliasToBean<NotificationModel>())
+            //NotificationModel notificationModelAlias = null;
+            return queryOver.Select(
+                    notification => new NotificationModel
+                    {
+                        Message = notification.Message,
+                        DateValue = notification.CreatedOn
+                    })
+                .OrderByDescending(notification => notification.DateValue)
                 .Take(15)
-                .Cacheable()
-                .List<NotificationModel>();
+                .ToList();
         }
 
         public int GetNotificationCount()
         {
             var user = _getCurrentUser.Get();
-            var queryOver = _session.QueryOver<Notification>();
+            var queryOver = _repository.Query();
 
             if (user.LastNotificationReadDate.HasValue)
                 queryOver = queryOver.Where(notification => notification.CreatedOn >= user.LastNotificationReadDate);
 
-            return queryOver.RowCount();
+            return queryOver.Count();
         }
 
-        public void MarkAllAsRead()
+        public async Task MarkAllAsRead()
         {
             var user = _getCurrentUser.Get();
             user.LastNotificationReadDate = DateTime.UtcNow;
-            _session.Transact(session => session.Update(user));
+            await _userRepository.Update(user);
         }
     }
 }

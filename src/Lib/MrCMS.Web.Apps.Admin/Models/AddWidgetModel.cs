@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using MrCMS.DbConfiguration.Mapping;
-using MrCMS.Entities.Widget;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
 
@@ -9,16 +10,16 @@ namespace MrCMS.Web.Apps.Articles.Services
 {
     public class ArticleArchiveService : IArticleArchiveService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Article> _repository;
 
-        public ArticleArchiveService(ISession session)
+        public ArticleArchiveService(IRepository<Article> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
         public List<ArchiveModel> GetMonthsAndYears(ArticleList articleList)
         {
-            var query = (from article in _session.Query<Article>()
+            var query = (from article in _repository.Readonly()
                 where article.Parent == articleList && article.PublishOn != null
                 group article by new { article.PublishOn.Value.Year, article.PublishOn.Value.Month } into entryGroup
                 select new ArchiveModel

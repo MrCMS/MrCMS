@@ -1,20 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
+using MrCMS.Data;
 
-using NHibernate.Criterion;
 
 namespace MrCMS.Web.Apps.Admin.Services.Batching
 {
     public class BatchRunUIService : IBatchRunUIService
     {
-        private readonly IControlBatchRun _controlBatchRun;
-        private readonly ISession _session;
+        private readonly IRepository<BatchRun> _repository;
+        private readonly IRepository<BatchRunResult> _batchRunResultRepository;
 
-        public BatchRunUIService(ISession session, IControlBatchRun controlBatchRun)
+        private readonly IControlBatchRun _controlBatchRun;
+
+        public BatchRunUIService(IRepository<BatchRun> repository, IRepository<BatchRunResult> batchRunResultRepository, IControlBatchRun controlBatchRun)
         {
-            _session = session;
+            _repository = repository;
+            _batchRunResultRepository = batchRunResultRepository;
             _controlBatchRun = controlBatchRun;
         }
 
@@ -22,80 +27,69 @@ namespace MrCMS.Web.Apps.Admin.Services.Batching
         {
             return GetResultsQuery(batchRun)
                 .OrderBy(result => result.ExecutionOrder)
-                .Asc.Cacheable()
-                .List();
+                .ToList();
         }
 
-        public int? Start(int id)
+        public async Task<int?> Start(int id)
         {
-            var run = _session.Get<BatchRun>(id);
-            return _controlBatchRun.Start(run) ? run.Id : (int?) null;
+            var run = await _repository.Load(id);
+            return await _controlBatchRun.Start(run) ? run.Id : (int?)null;
         }
 
-        public bool Pause(int id)
+        public async Task<bool> Pause(int id)
         {
-            var run = _session.Get<BatchRun>(id);
-            return _controlBatchRun.Pause(run);
+            var run = await _repository.Load(id);
+            return await _controlBatchRun.Pause(run);
         }
 
         public BatchCompletionStatus GetCompletionStatus(BatchRun batchRun)
         {
-            IFutureValue<decimal?> timeTaken =
+            var timeTaken =
+                    GetResultsQuery(batchRun)
+                        .Where(result => result.MillisecondsTaken != null)
+                        .Sum(result => result.MillisecondsTaken)
+                ;
+            var averageTimeTaken =
                 GetResultsQuery(batchRun)
                     .Where(result => result.MillisecondsTaken != null)
-                    .Select(Projections.Sum<BatchRunResult>(result => result.MillisecondsTaken))
-                    .Cacheable()
-                    .FutureValue<decimal?>();
-            IFutureValue<double?> averageTimeTaken =
+                    .Average(result => result.MillisecondsTaken);
+            var pending =
+                    GetResultsQuery(batchRun)
+                        .Count(result => result.Status == JobExecutionStatus.Pending)
+                ;
+            var failed =
                 GetResultsQuery(batchRun)
-                    .Where(result => result.MillisecondsTaken != null)
-                    .Select(Projections.Avg<BatchRunResult>(result => result.MillisecondsTaken))
-                    .Cacheable()
-                    .FutureValue<double?>();
-            IFutureValue<int> pending =
+                    .Count(result => result.Status == JobExecutionStatus.Failed);
+
+            var succeeded =
                 GetResultsQuery(batchRun)
-                    .Where(result => result.Status == JobExecutionStatus.Pending)
-                    .Select(Projections.Count<BatchRunResult>(result => result.Id))
-                    .Cacheable()
-                    .FutureValue<int>();
-            IFutureValue<int> failed =
+                    .Count(result => result.Status == JobExecutionStatus.Succeeded);
+
+            var total =
                 GetResultsQuery(batchRun)
-                    .Where(result => result.Status == JobExecutionStatus.Failed)
-                    .Select(Projections.Count<BatchRunResult>(result => result.Id))
-                    .Cacheable()
-                    .FutureValue<int>();
-            IFutureValue<int> succeeded =
-                GetResultsQuery(batchRun)
-                    .Where(result => result.Status == JobExecutionStatus.Succeeded)
-                    .Select(Projections.Count<BatchRunResult>(result => result.Id))
-                    .Cacheable()
-                    .FutureValue<int>();
-            IFutureValue<int> total =
-                GetResultsQuery(batchRun)
-                    .Select(Projections.Count<BatchRunResult>(result => result.Id))
-                    .Cacheable()
-                    .FutureValue<int>();
+                    .Count();
 
 
-            double averageTime = averageTimeTaken.Value.GetValueOrDefault();
-            int pendingNumber = pending.Value;
+
+            decimal averageTime = averageTimeTaken.GetValueOrDefault();
+            int pendingNumber = pending;
             return new BatchCompletionStatus
             {
-                Total = total.Value,
-                Failed = failed.Value,
+                Total = total,
+                Failed = failed,
                 Pending = pendingNumber,
-                Succeeded = succeeded.Value,
-                TimeTaken = TimeSpan.FromMilliseconds(Convert.ToDouble(timeTaken.Value.GetValueOrDefault())),
+                Succeeded = succeeded,
+                TimeTaken = TimeSpan.FromMilliseconds(Convert.ToDouble(timeTaken.GetValueOrDefault())),
                 AverageTimeTaken = averageTime.ToString("0.00ms"),
-                EstimatedTimeRemaining = TimeSpan.FromMilliseconds(averageTime*pendingNumber)
+                EstimatedTimeRemaining = TimeSpan.FromMilliseconds(Convert.ToDouble(averageTime * pendingNumber))
             };
         }
 
-        private IQueryOver<BatchRunResult, BatchRunResult> GetResultsQuery(BatchRun batchRun)
+        private IQueryable<BatchRunResult> GetResultsQuery(BatchRun batchRun)
         {
-            IQueryOver<BatchRunResult, BatchRunResult> queryOver = _session.QueryOver<BatchRunResult>();
+            var queryOver = _batchRunResultRepository.Query();
             if (batchRun != null)
-                return queryOver.Where(result => result.BatchRun.Id == batchRun.Id);
+                return queryOver.Where(result => result.BatchRunId == batchRun.Id);
             // query to return 0;
             return queryOver.Where(result => result.Id < 0);
         }

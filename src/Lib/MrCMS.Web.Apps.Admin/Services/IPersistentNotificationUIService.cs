@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Web.Apps.Admin.Models.Notifications;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -7,6 +8,6 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         IList<NotificationModel> GetNotifications();
         int GetNotificationCount();
-        void MarkAllAsRead();
+        Task MarkAllAsRead();
     }
 }

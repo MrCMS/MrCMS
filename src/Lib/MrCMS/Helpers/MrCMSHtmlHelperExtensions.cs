@@ -408,7 +408,7 @@ namespace MrCMS.Helpers
             var imageRenderingService =
                 html.ViewContext.HttpContext.RequestServices.GetRequiredService<IImageRenderingService>();
 
-            var file = fileService.GetFileByUrl(seoSettings.Favicon);
+            var file = await fileService.GetFileByUrl(seoSettings.Favicon);
             if (file == null)
             {
                 return HtmlString.Empty;

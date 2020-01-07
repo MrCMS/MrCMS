@@ -10,22 +10,22 @@ using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {
-    public class TagAdminServiceTests : InMemoryDatabaseTest
+    public class TagAdminServiceTests : MrCMSTest
     {
         [Fact]
         public void TagAdminService_Search_ShouldReturnTagsStartingWithTerm()
         {
-            var tagService = new TagAdminService(Session);
+            var tagService = new TagAdminService(Context);
 
             var tag1 = new Tag {Name = "tag-1", Site = CurrentSite};
             var tag2 = new Tag {Name = "tag-2", Site = CurrentSite};
             var tag3 = new Tag {Name = "not-the-same", Site = CurrentSite};
 
-            Session.Transact(session =>
+            Context.Transact(session =>
             {
-                Session.SaveOrUpdate(tag1);
-                Session.SaveOrUpdate(tag2);
-                Session.SaveOrUpdate(tag3);
+                Context.SaveOrUpdate(tag1);
+                Context.SaveOrUpdate(tag2);
+                Context.SaveOrUpdate(tag3);
             });
 
             IEnumerable<AutoCompleteResult> tags = tagService.Search("tag");

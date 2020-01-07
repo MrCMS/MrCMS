@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Helpers;
@@ -12,14 +15,15 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 {
     public class MetaDescriptionChecks : BaseSEOAnalysisFacetProvider
     {
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _repository;
 
-        public MetaDescriptionChecks(ISession session)
+        public MetaDescriptionChecks(IRepository<Webpage> repository)
         {
-            _session = session;
+            _repository = repository;
         }
 
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
             var descriptionElement = document.ChildNodesRecursive().FirstOrDefault(node => node.Name == "meta" && node.GetAttributeValue("name","") == "description");
             string metaDescription = descriptionElement != null
@@ -54,9 +58,9 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
                         "Meta description is of optimal length (between 120 and 200 characters)");
             }
             bool anyWithSameDescription =
-                _session.QueryOver<Webpage>()
+                await _repository.Readonly()
                     .Where(page => page.Site.Id == webpage.Site.Id && page.Id != webpage.Id && page.MetaDescription == webpage.MetaDescription)
-                    .Any();
+                    .AnyAsync();
 
             if (anyWithSameDescription)
                 yield return

@@ -1,12 +1,9 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.DbConfiguration.Mapping;
-using MrCMS.Entities.People;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
-    [DoNotMap]
     public class AddUserModel
     {
         [Required]

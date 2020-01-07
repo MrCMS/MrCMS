@@ -7,6 +7,7 @@ namespace MrCMS.Entities.Notifications
     {
         public virtual string Message { get; set; }
         public virtual User User { get; set; }
+        public int UserId { get; set; }
         public virtual NotificationType NotificationType { get; set; }
 
         public virtual string UserName

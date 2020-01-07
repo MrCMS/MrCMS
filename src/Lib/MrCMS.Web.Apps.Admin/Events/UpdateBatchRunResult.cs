@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using MrCMS.Batching.Entities;
+using MrCMS.Data;
 using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Helpers;
@@ -8,7 +10,7 @@ using MrCMS.Web.Apps.Admin.Services.Batching;
 
 namespace MrCMS.Web.Apps.Admin.Events
 {
-    public class UpdateBatchRunResult : IOnUpdated<BatchRunResult>
+    public class UpdateBatchRunResult : OnDataUpdated<BatchRunResult>
     {
         private readonly IBatchRunUIService _batchRunUIService;
         private readonly IHubContext<BatchProcessingHub> _context;
@@ -18,15 +20,14 @@ namespace MrCMS.Web.Apps.Admin.Events
             _batchRunUIService = batchRunUIService;
             _context = context;
         }
-        public void Execute(OnUpdatedArgs<BatchRunResult> args)
+
+        public override async Task Execute(ChangeInfo data)
         {
-            var batchRunResult = args.Item;
-            _context.Clients.All.SendCoreAsync("updateResult", new object[] { batchRunResult.Id }).ExecuteSync();
+            var batchRunResult = data.Entity() as BatchRunResult;
+            await _context.Clients.All.SendCoreAsync("updateResult", new object[] { batchRunResult.Id });
             var batchRun = batchRunResult.BatchRun;
-            _context.Clients.All.SendCoreAsync("updateRun",
-                    new object[] {batchRun.ToSimpleJson(_batchRunUIService.GetCompletionStatus(batchRun))}).ExecuteSync();
-            _context.Clients.All.SendCoreAsync("updateJob",
-                    new object[] {batchRunResult.BatchJob.Id}).ExecuteSync();
+            await _context.Clients.All.SendCoreAsync("updateRun", new object[] { batchRun.ToSimpleJson(_batchRunUIService.GetCompletionStatus(batchRun)) });
+            await _context.Clients.All.SendCoreAsync("updateJob", new object[] { batchRunResult.BatchJob.Id });
         }
     }
 }
