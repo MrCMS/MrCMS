@@ -42,7 +42,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
             siteSettings.DefaultLayoutId = baseLayout.Id;
-            _configurationProvider.SaveSettings(siteSettings);
+            await _configurationProvider.SaveSettings(siteSettings);
 
             List<LayoutArea> layoutAreas = GetDefaultAreas(baseLayout);
             await _layoutAreaRepository.AddRange(layoutAreas);

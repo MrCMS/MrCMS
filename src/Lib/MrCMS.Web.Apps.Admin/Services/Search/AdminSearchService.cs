@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Web.Apps.Admin.Models.Search;
 using X.PagedList;
 
@@ -12,9 +13,9 @@ namespace MrCMS.Web.Apps.Admin.Services.Search
             _universalSearchIndexSearcher = universalSearchIndexSearcher;
         }
 
-        public IPagedList<AdminSearchResult> Search(AdminSearchQuery model)
+        public async Task<IPagedList<AdminSearchResult>> Search(AdminSearchQuery model)
         {
-            return _universalSearchIndexSearcher.Search(model);
+            return await _universalSearchIndexSearcher.Search(model);
         }
     }
 }

@@ -31,10 +31,10 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 
             if (anyWithSameTitle)
                 yield return
-                    GetFacet("Any other pages with same title?", SEOAnalysisStatus.Error, "The title is not unique");
+                    await GetFacet("Any other pages with same title?", SEOAnalysisStatus.Error, "The title is not unique");
             else
                 yield return
-                    GetFacet("Any other pages with same title?", SEOAnalysisStatus.Success, "The title is unique");
+                    await GetFacet("Any other pages with same title?", SEOAnalysisStatus.Success, "The title is unique");
         }
     }
 }

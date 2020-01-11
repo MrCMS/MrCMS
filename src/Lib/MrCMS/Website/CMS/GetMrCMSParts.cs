@@ -76,7 +76,8 @@ namespace MrCMS.Website.CMS
 
                 new RegistrationInfo
                 {
-                    Registration = app => app.UseSignalR(routes =>
+#pragma warning disable 618
+                    Registration = app =>app.UseSignalR(routes =>
                     {
                         var methodInfo = typeof(HubRouteBuilder).GetMethod(nameof(HubRouteBuilder.MapHub),
                             new Type[] {typeof(PathString)});
@@ -87,6 +88,7 @@ namespace MrCMS.Website.CMS
                             methodInfo.MakeGenericMethod(key).Invoke(routes, new object[] {pathString});
                         }
                     }),
+#pragma warning restore 618
                     Order = 1001
                 },
                 new RegistrationInfo

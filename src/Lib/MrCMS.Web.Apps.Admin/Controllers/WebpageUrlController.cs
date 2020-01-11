@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
@@ -16,10 +17,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _webpageUrlService = webpageUrlService;
         }
 
-        public string Suggest(
-            SuggestParams suggestParams) 
+        public async Task<string> Suggest(SuggestParams suggestParams)
         {
-            return _webpageUrlService.Suggest(suggestParams);
+            return await _webpageUrlService.Suggest(suggestParams);
         }
     }
 }

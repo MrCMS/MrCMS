@@ -100,7 +100,7 @@ namespace MrCMS.Search
 
         public async Task ReindexAll()
         {
-            InitializeIndex();
+            await InitializeIndex();
             await Write(async writer =>
              {
                  using (MiniProfiler.Current.Step("Reindexing"))
@@ -118,18 +118,18 @@ namespace MrCMS.Search
             // optimise no longer exists - left for compatability
         }
 
-        public IndexSearcher GetSearcher()
+        public async Task<IndexSearcher> GetSearcher()
         {
-            EnsureIndexExists();
+            await EnsureIndexExists();
             return _getLuceneIndexSearcher.Get(FolderName);
         }
 
 
-        public void EnsureIndexExists()
+        public async Task EnsureIndexExists()
         {
             if (!IndexExists)
             {
-                ReindexAll();
+                await ReindexAll();
             }
         }
 

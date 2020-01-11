@@ -58,7 +58,6 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
         }
         protected override Dictionary<Webpage, IEnumerable<string>> GetValues(List<Webpage> objs)
         {
-            MrCMS.Indexing.Definitions.UrlSegmentFieldDefinition.UrlHistoryMap map = null;
             var urlHistoryDatas =
                 _repository.Readonly().Select(history => new MrCMS.Indexing.Definitions.UrlSegmentFieldDefinition.UrlHistoryData
                 { WebpageId = history.Webpage.Id, Url = history.UrlSegment })

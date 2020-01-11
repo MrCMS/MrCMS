@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
@@ -34,7 +35,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public Webpage GetWebpage(int? id)
         {
-            return id.HasValue ? _webpageRepository.Get(id.Value) : null;
+            return id.HasValue ? _webpageRepository.LoadSync(id.Value) : null;
         }
 
         public AddWebpageModel GetAddModel(int? id)
@@ -64,7 +65,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var type = TypeHelper.GetTypeByName(model.DocumentType);
             var instance = Activator.CreateInstance(type) as Webpage;
-            var revealInNavigation = instance.GetMetadata().RevealInNavigation;    
+            var revealInNavigation = instance.GetMetadata().RevealInNavigation;
             _mapper.Map(model, instance);
 
             if (revealInNavigation)
@@ -79,24 +80,24 @@ namespace MrCMS.Web.Apps.Admin.Services
             return instance;
         }
 
-        public Webpage Update(UpdateWebpageViewModel viewModel)
+        public async Task<Webpage> Update(UpdateWebpageViewModel viewModel)
         {
-            var webpage = _webpageRepository.Get(viewModel.Id);
+            var webpage = GetWebpage(viewModel.Id);
 
             _mapper.Map(viewModel, webpage);
 
             foreach (var model in viewModel.Models)
                 _mapper.Map(model, webpage);
 
-            _webpageRepository.Update(webpage);
+            await _webpageRepository.Update(webpage);
 
             return webpage;
         }
 
-        public Webpage Delete(int id)
+        public async Task<Webpage> Delete(int id)
         {
             var webpage = GetWebpage(id);
-            _webpageRepository.Delete(webpage);
+            await _webpageRepository.Delete(webpage);
             return webpage;
         }
 
@@ -110,38 +111,40 @@ namespace MrCMS.Web.Apps.Admin.Services
                 .ToList();
         }
 
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _webpageRepository.Transact(repository => items.ForEach(item =>
+            var pages = items.Select(item =>
             {
-                var mediaFile = repository.Get(item.Id);
-                mediaFile.DisplayOrder = item.Order;
-                repository.Update(mediaFile);
-            }));
+                var webpage = _webpageRepository.LoadSync(item.Id);
+                webpage.DisplayOrder = item.Order;
+                return webpage;
+            }).ToList();
+
+            await _webpageRepository.UpdateRange(pages);
         }
 
-        public void PublishNow(int id)
+        public async Task PublishNow(int id)
         {
-            var webpage = _webpageRepository.Get(id);
+            var webpage = await _webpageRepository.Load(id);
             if (webpage == null)
                 return;
 
             if (webpage.PublishOn == null)
             {
                 webpage.Published = true;
-                webpage.PublishOn = DateTime.UtcNow; 
-                _webpageRepository.Update(webpage);
+                webpage.PublishOn = DateTime.UtcNow;
+                await _webpageRepository.Update(webpage);
             }
         }
 
-        public void Unpublish(int id)
+        public async Task Unpublish(int id)
         {
-            var webpage = _webpageRepository.Get(id);
+            var webpage = GetWebpage(id);
             if (webpage == null)
                 return;
             webpage.Published = false;
             webpage.PublishOn = null;
-            _webpageRepository.Update(webpage);
+            await _webpageRepository.Update(webpage);
         }
 
         public string GetServerDate()

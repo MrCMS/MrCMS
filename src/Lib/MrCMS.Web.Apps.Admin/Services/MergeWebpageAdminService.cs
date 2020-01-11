@@ -9,6 +9,7 @@ using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -78,15 +79,15 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         private Webpage GetParent(MergeWebpageModel moveWebpageModel)
         {
-            return _webpageRepository.Get(moveWebpageModel.MergeIntoId);
+            return _webpageRepository.LoadSync(moveWebpageModel.MergeIntoId);
         }
 
         private Webpage GetWebpage(MergeWebpageModel moveWebpageModel)
         {
-            return _webpageRepository.Get(moveWebpageModel.Id);
+            return _webpageRepository.LoadSync(moveWebpageModel.Id);
         }
 
-        public MergeWebpageConfirmationModel GetConfirmationModel(MergeWebpageModel model)
+        public async Task<MergeWebpageConfirmationModel> GetConfirmationModel(MergeWebpageModel model)
         {
             var webpage = GetWebpage(model);
             var parent = GetParent(model);
@@ -96,10 +97,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 Webpage = webpage,
                 MergedInto = parent,
-                ChangedPages = GetChangedPages(model, webpage, parent)
+                ChangedPages = await GetChangedPages(model, webpage, parent)
             };
         }
-        private List<MergeWebpageChangedPageModel> GetChangedPages(MergeWebpageModel model, Webpage webpage, Webpage parent)
+        private async Task<List<MergeWebpageChangedPageModel>> GetChangedPages(MergeWebpageModel model, Webpage webpage, Webpage parent)
         {
             var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
 
@@ -119,7 +120,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     Id = page.Id,
                     ParentId = immediateParent?.Id ?? model.Id,
                     OldUrl = page.UrlSegment,
-                    NewUrl = newUrl,
+                    NewUrl = await newUrl,
                     OldHierarchy = GetHierarchy(activePages),
                     NewHierarchy = GetHierarchy(parentActivePages.Concat(childActivePages))
                 });
@@ -127,7 +128,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return models;
         }
 
-        private string GetNewUrl(MergeWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent, MergeWebpageChangedPageModel parentModel)
+        private async Task<string> GetNewUrl(MergeWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent, MergeWebpageChangedPageModel parentModel)
         {
             if (!model.UpdateUrls)
             {
@@ -136,7 +137,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             if (immediateParent == null)
             {
-                return _webpageUrlService.Suggest(new SuggestParams
+                return await _webpageUrlService.Suggest(new SuggestParams
                 {
                     DocumentType = page.DocumentType,
                     PageName = page.Name,
@@ -147,7 +148,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 });
             }
 
-            return _webpageUrlService.Suggest(new SuggestParams
+            return await _webpageUrlService.Suggest(new SuggestParams
             {
                 DocumentType = page.DocumentType,
                 PageName = $"{parentModel.NewUrl}/{page.Name}",
@@ -177,11 +178,11 @@ namespace MrCMS.Web.Apps.Admin.Services
         }
 
 
-        public MergeWebpageResult Confirm(MergeWebpageModel model)
+        public async Task<MergeWebpageResult> Confirm(MergeWebpageModel model)
         {
-            var confirmationModel = GetConfirmationModel(model);
+            var confirmationModel = await GetConfirmationModel(model);
 
-            var success = _createMergeBatch.CreateBatch(confirmationModel);
+            var success = await _createMergeBatch.CreateBatch(confirmationModel);
 
             return new MergeWebpageResult
             {

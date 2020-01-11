@@ -38,9 +38,9 @@ namespace MrCMS.Entities.Documents.Layout
 
                 widgets.AddRange(allWidgets.Where(widget => widget.Webpage != null && widget.Webpage.Id == page.Id));
 
-                while ((page.Parent.Unproxy() as Webpage) != null)
+                while ((page.Parent as Webpage) != null)
                 {
-                    page = page.Parent.Unproxy() as Webpage;
+                    page = page.Parent as Webpage;
 
                     widgets.AddRange(
                         allWidgets.Where(widget => widget.Webpage != null && widget.Webpage.Id == page.Id && widget.IsRecursive));

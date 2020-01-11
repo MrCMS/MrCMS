@@ -8,5 +8,6 @@ namespace MrCMS.Entities.People
         public virtual string DisplayName { get; set; }
 
         public virtual User User { get; set; }
+        public int UserId { get; set; }
     }
 }

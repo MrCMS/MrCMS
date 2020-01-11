@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Helpers;
@@ -45,7 +46,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost, ActionName("Confirm")]
-        public RedirectToActionResult Confirm_POST(MergeWebpageModel model)
+        public async Task<RedirectToActionResult> Confirm_POST(MergeWebpageModel model)
         {
             var validationResult = _mergeWebpageAdminService.Validate(model);
             if (!validationResult.Success)
@@ -54,7 +55,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 return RedirectToAction("Index", new { model.Id });
             }
 
-            var confirmResult = _mergeWebpageAdminService.Confirm(model);
+            var confirmResult = await _mergeWebpageAdminService.Confirm(model);
             if (!confirmResult.Success)
             {
                 TempData.ErrorMessages().Add(confirmResult.Message);

@@ -7,6 +7,7 @@ namespace MrCMS.Entities.People
     public abstract class UserProfileData : SystemEntity
     {
         public virtual User User { get; set; }
+        public int UserId { get; set; }
 
         public static IEnumerable<Type> Types
         {

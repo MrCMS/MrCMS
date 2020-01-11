@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
                 return HtmlString.Empty;
             }
 
-            var type = entity.Unproxy().GetType();
+            var type = entity.GetType();
 
             var modelType = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IUpdatePropertiesViewModel<>).MakeGenericType(type)).FirstOrDefault();
             if (modelType == null)

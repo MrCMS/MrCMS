@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
 
@@ -13,9 +14,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _imageRenderingService = imageRenderingService;
         }
 
-        public JsonResult GetImageData(string url)
+        public async Task<JsonResult> GetImageData(string url)
         {
-            var imageInfo =
+            var imageInfo =await
                 _imageRenderingService.GetImageInfo(url, ImageProcessor.GetRequestedSize(url).GetValueOrDefault());
 
             return imageInfo != null

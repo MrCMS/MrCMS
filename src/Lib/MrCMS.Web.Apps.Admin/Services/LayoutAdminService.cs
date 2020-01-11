@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
@@ -35,7 +36,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             };
         }
 
-        public Layout GetLayout(int? id) => id.HasValue ? _layoutRepository.Get(id.Value) : null;
+        public Layout GetLayout(int? id) => id.HasValue ? _layoutRepository.LoadSync(id.Value) : null;
 
         public Layout Add(AddLayoutModel model)
         {
@@ -78,19 +79,21 @@ namespace MrCMS.Web.Apps.Admin.Services
                 .ToList();
         }
 
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _layoutRepository.Transact(repository => items.ForEach(item =>
-            {
-                var mediaFile = repository.Get(item.Id);
-                mediaFile.DisplayOrder = item.Order;
-                repository.Update(mediaFile);
-            }));
+            var layouts = items.Select(item =>
+           {
+               var layout = _layoutRepository.LoadSync(item.Id);
+               layout.DisplayOrder = item.Order;
+               return layout;
+           }).ToList();
+
+            await _layoutRepository.UpdateRange(layouts);
         }
 
-        public bool UrlIsValidForLayout(string urlSegment, int? id)
+        public async Task<bool> UrlIsValidForLayout(string urlSegment, int? id)
         {
-            return _urlValidationService.UrlIsValidForLayout(urlSegment, id);
+            return await _urlValidationService.UrlIsValidForLayout(urlSegment, id);
         }
 
         public IEnumerable<SelectListItem> GetValidParents(int id)
@@ -107,16 +110,14 @@ namespace MrCMS.Web.Apps.Admin.Services
             return result.Prepend(new SelectListItem { Value = string.Empty, Text = "Root", Selected = layout.Parent == null });
         }
 
-        public void SetParent(int id, int? parentId)
+        public async Task SetParent(int id, int? parentId)
         {
             var layout = GetLayout(id);
             if (layout == null) return;
 
-            Layout parent = parentId.HasValue ? _layoutRepository.Get(parentId.Value) : null;
+            layout.ParentId = parentId;
 
-            layout.Parent = parent;
-
-            _layoutRepository.Update(layout);
+            await _layoutRepository.Update(layout);
         }
     }
 }

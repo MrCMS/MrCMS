@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
@@ -34,9 +35,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddMediaCategoryModel model)
+        public async Task<RedirectToActionResult> Add(AddMediaCategoryModel model)
         {
-            var doc = _mediaCategoryAdminService.Add(model);
+            var doc = await _mediaCategoryAdminService.Add(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Show", new { id = doc.Id });
         }
@@ -48,9 +49,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateMediaCategoryModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateMediaCategoryModel model)
         {
-            var category = _mediaCategoryAdminService.Update(model);
+            var category = await _mediaCategoryAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", category.Name));
             return RedirectToAction("Show", new { id = category.Id });
         }
@@ -62,9 +63,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var category = _mediaCategoryAdminService.Delete(id);
+            var category = await _mediaCategoryAdminService.Delete(id);
             TempData.InfoMessages().Add(string.Format("{0} deleted", category.Name));
             return RedirectToAction("Index");
         }
@@ -78,9 +79,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Sort(int id, List<SortItem> items)
+        public async Task<ActionResult> Sort(int id, List<SortItem> items)
         {
-            _mediaCategoryAdminService.SetOrders(items);
+            await _mediaCategoryAdminService.SetOrders(items);
             return RedirectToAction("Sort", new { id });
         }
 
@@ -115,9 +116,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult SortFiles(int? id, List<SortItem> items)
+        public async Task<ActionResult> SortFiles(int? id, List<SortItem> items)
         {
-            _fileAdminService.SetOrders(items);
+            await _fileAdminService.SetOrders(items);
             return RedirectToAction("SortFiles", new { id });
         }
 
@@ -127,29 +128,29 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         /// <param name="urlSegment">The URL Segment entered</param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
+        public async Task<ActionResult> ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_mediaCategoryAdminService.UrlIsValidForMediaCategory(urlSegment, id)
+            return !await _mediaCategoryAdminService.UrlIsValidForMediaCategory(urlSegment, id)
                 ? Json("Please choose a different Path as this one is already used.")
                 : Json(true);
         }
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Cut)]
-        public JsonResult MoveFilesAndFolders(
+        public async Task<JsonResult> MoveFilesAndFolders(
             [ModelBinder(typeof(MoveFilesModelBinder))]MoveFilesAndFoldersModel model)
         {
-            _fileAdminService.MoveFiles(model.Files, model.Folder);
-            string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
+            await _fileAdminService.MoveFiles(model.Files, model.Folder);
+            string message = await _fileAdminService.MoveFolders(model.Folders, model.Folder);
             return Json(new FormActionResult { success = true, message = message });
         }
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Delete)]
-        public JsonResult DeleteFilesAndFolders(
+        public async Task<JsonResult> DeleteFilesAndFolders(
             [ModelBinder(typeof(DeleteFilesModelBinder))]
             DeleteFilesAndFoldersModel model)
         {
-            _fileAdminService.DeleteFilesSoft(model.Files);
-            _fileAdminService.DeleteFoldersSoft(model.Folders);
+            await _fileAdminService.DeleteFilesSoft(model.Files);
+            await _fileAdminService.DeleteFoldersSoft(model.Folders);
 
             return Json(new FormActionResult { success = true, message = "" });
         }

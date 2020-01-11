@@ -14,6 +14,7 @@ using MrCMS.Web.Apps.Admin.Models.Search;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using X.PagedList;
 
@@ -35,9 +36,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             _siteSettings = siteSettings;
         }
 
-        public List<UniversalSearchItemQuickSearch> QuickSearch(QuickSearchParams searchParams)
+        public async Task<List<UniversalSearchItemQuickSearch>> QuickSearch(QuickSearchParams searchParams)
         {
-            IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
+            IndexSearcher searcher = await _universalSearchIndexManager.GetSearcher();
             var query = new BooleanQuery();
             AddFilter(query, searchParams.Term);
 
@@ -54,12 +55,12 @@ namespace MrCMS.Web.Apps.Admin.Services
             return universalSearchItems.Select(item => new UniversalSearchItemQuickSearch(item)).ToList();
         }
 
-        public IPagedList<AdminSearchResult> Search(AdminSearchQuery searchQuery)
+        public async Task<IPagedList<AdminSearchResult>> Search(AdminSearchQuery searchQuery)
         {
             int pageSize = _siteSettings.DefaultPageSize;
             //using (MiniProfiler.Current.Step("Search for results"))
             {
-                IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
+                IndexSearcher searcher =await _universalSearchIndexManager.GetSearcher();
                 var query = new BooleanQuery();
                 AddFilter(query, searchQuery.Term);
                 if (!string.IsNullOrWhiteSpace(searchQuery.Type))
@@ -77,9 +78,8 @@ namespace MrCMS.Web.Apps.Admin.Services
                     GetUniversalSearchItems(searchQuery, topDocs, pageSize, searcher);
 
 
-                List<AdminSearchResult> adminSearchResults;
                 //using (MiniProfiler.Current.Step("Get Results"))
-                adminSearchResults = universalSearchItems.Select(item =>
+                var adminSearchResults = universalSearchItems.Select(item =>
                 {
                     Type systemType = TypeHelper.GetTypeByName(item.SystemType);
                     var entity = _dataReader.Get(systemType, item.Id).GetAwaiter().GetResult() as SystemEntity; // todo - refactor out sync call

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
 using MrCMS.Helpers;
@@ -29,13 +30,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public RedirectResult Post(WebpagePasswordPage page, UnlockPageModel model)
+        public async Task<RedirectResult> Post(WebpagePasswordPage page, UnlockPageModel model)
         {
-            var result = _unlockPageService.TryUnlockPage(model,Response.Cookies);
+            var result = await _unlockPageService.TryUnlockPage(model,Response.Cookies);
 
             if (result.Success)
             {
-                return _unlockPageService.RedirectToPage(result.LockedPageId);
+                return await _unlockPageService.RedirectToPage(result.LockedPageId);
             }
 
             TempData["error"] = true;

@@ -18,18 +18,18 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             if (!paragraphs.Any())
             {
                 yield return
-                    GetFacet("Body Content", SEOAnalysisStatus.Error,
+                    await GetFacet("Body Content", SEOAnalysisStatus.Error,
                         string.Format("Body content contains no paragraphs of text"));
                 yield break;
             }
             if (paragraphs[0].InnerText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
             {
-                yield return GetFacet("Body Content", SEOAnalysisStatus.Success,
+                yield return await GetFacet("Body Content", SEOAnalysisStatus.Success,
                     string.Format("The first paragraph contains the term '{0}'", analysisTerm));
             }
             else
             {
-                yield return GetFacet("Body Content", SEOAnalysisStatus.CanBeImproved,
+                yield return await GetFacet("Body Content", SEOAnalysisStatus.CanBeImproved,
                     string.Format("The first paragraph does not contain the term '{0}'", analysisTerm));
             }
         }

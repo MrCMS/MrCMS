@@ -16,7 +16,7 @@ namespace MrCMS.Tasks
             if (!searchIndexDatas.Any())
                 return;
 
-            universalSearchIndexManager.EnsureIndexExists();
+            await universalSearchIndexManager.EnsureIndexExists();
             using (eventContext.Disable<UpdateUniversalSearch>())
             {
                 List<UniversalSearchIndexData> toAdd =

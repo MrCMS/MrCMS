@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
@@ -71,7 +72,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             }
 
             // add implementation view models
-            var entity = await serviceProvider.GetRequiredService<ISession>().GetAsync(modelType, id);
+            var entity = await serviceProvider.GetRequiredService<IDataReader>().Get(modelType, id.Value);
 
             var implementationModelTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(
                 typeof(IUpdatePropertiesViewModel<>).MakeGenericType(entity.GetType()));

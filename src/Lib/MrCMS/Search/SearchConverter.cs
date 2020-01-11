@@ -76,7 +76,7 @@ namespace MrCMS.Search
 
         public UniversalSearchItem Convert(Document document)
         {
-            var item = new UniversalSearchItem
+            return new UniversalSearchItem
             {
                 Id = document.GetValue<int>(UniversalSearchFieldNames.Id),
                 DisplayName = document.GetValue<string>(UniversalSearchFieldNames.DisplayName),
@@ -84,7 +84,6 @@ namespace MrCMS.Search
                 SystemType = document.GetValue<string>(UniversalSearchFieldNames.SystemType),
                 ActionUrl = document.GetValue<string>(UniversalSearchFieldNames.ActionUrl)
             };
-            return item;
         }
     }
 }

@@ -14,8 +14,8 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task<ViewDataUploadFilesResult> AddFile(Stream stream, string fileName, string contentType, long contentLength,
             int mediaCategoryId);
 
-        void DeleteFile(MediaFile mediaFile);
-        void UpdateFile(MediaFile mediaFile);
+        Task DeleteFile(MediaFile mediaFile);
+        Task UpdateFile(MediaFile mediaFile);
         bool IsValidFileType(string fileName);
         IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
         List<ImageSortItem> GetFilesToSort(MediaCategory category = null);
@@ -24,8 +24,8 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         Task<string> MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null);
         Task MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null);
-        void DeleteFilesSoft(IEnumerable<MediaFile> files);
-        void DeleteFilesHard(IEnumerable<MediaFile> files);
+        Task DeleteFilesSoft(IEnumerable<MediaFile> files);
+        Task DeleteFilesHard(IEnumerable<MediaFile> files);
         Task DeleteFoldersSoft(IEnumerable<MediaCategory> folders);
         MediaCategory GetCategory(MediaCategorySearchModel searchModel);
         List<SelectListItem> GetSortByOptions(MediaCategorySearchModel searchModel);

@@ -27,5 +27,6 @@ namespace MrCMS.Entities.Settings
         /// </summary>
         public virtual string Value { get; set; }
         public virtual Site Site { get; set; }
+        public int SiteId { get; set; }
     }
 }

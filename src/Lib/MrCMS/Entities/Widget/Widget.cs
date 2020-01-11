@@ -11,8 +11,8 @@ namespace MrCMS.Entities.Widget
     {
         protected Widget()
         {
-            ShownOn = new HashSet<Webpage>();
-            HiddenOn = new HashSet<Webpage>();
+            ShownOn = new List<ShownWidget>();
+            HiddenOn = new List<HiddenWidget>();
         }
 
         public virtual LayoutArea LayoutArea { get; set; }
@@ -34,6 +34,7 @@ namespace MrCMS.Entities.Widget
         }
 
         public virtual Webpage Webpage { get; set; }
+        public int? WebpageId { get; set; }
         public virtual int DisplayOrder { get; set; }
 
 
@@ -52,8 +53,8 @@ namespace MrCMS.Entities.Widget
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
-        public virtual ISet<Webpage> HiddenOn { get; set; }
-        public virtual ISet<Webpage> ShownOn { get; set; }
+        public virtual IList<HiddenWidget> HiddenOn { get; set; }
+        public virtual IList<ShownWidget> ShownOn { get; set; }
 
         public virtual bool HasProperties
         {

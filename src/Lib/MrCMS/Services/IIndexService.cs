@@ -8,7 +8,7 @@ namespace MrCMS.Services
 {
     public interface IIndexService
     {
-        void InitializeAllIndices();
+        Task InitializeAllIndices();
         List<MrCMSIndex> GetIndexes();
         Task Reindex(string typeName);
         IIndexManagerBase GetIndexManagerBase(Type indexType);

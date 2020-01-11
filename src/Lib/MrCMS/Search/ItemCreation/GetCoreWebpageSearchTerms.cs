@@ -44,8 +44,6 @@ namespace MrCMS.Search.ItemCreation
         {
             if (!webpages.Any())
                 return new Dictionary<Webpage, HashSet<string>>();
-            Tag tagAlias = null;
-            TagInfo tagInfo = null;
             string typeName = webpages.First().DocumentType;
             Dictionary<int, IEnumerable<string>> tagInfoDictionary = _tagRepository.Query()
                 .Where(documentTag => documentTag.Document.DocumentType == typeName)

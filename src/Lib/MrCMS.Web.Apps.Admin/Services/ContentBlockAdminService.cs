@@ -9,6 +9,7 @@ using MrCMS.Web.Apps.Admin.Models.ContentBlocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -66,7 +67,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 return null;
             }
 
-            return GetAdditionalPropertyModel(block.Unproxy().GetType());
+            return GetAdditionalPropertyModel(block.GetType());
         }
 
         public int? Add(AddContentBlockViewModel addModel, object additionalPropertyModel)
@@ -147,14 +148,14 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _sortService.GetSortItems(GetBlocks(webpageId).ToList());
         }
 
-        public void Sort(IList<SortItem> sortItems)
+        public async Task Sort(IList<SortItem> sortItems)
         {
-            _sortService.Sort<ContentBlock>(sortItems);
+       await     _sortService.Sort<ContentBlock>(sortItems);
         }
 
         public ContentBlock GetEntity(int id)
         {
-            return _repository.Get(id).Unproxy();
+            return _repository.LoadSync(id);
         }
     }
 }

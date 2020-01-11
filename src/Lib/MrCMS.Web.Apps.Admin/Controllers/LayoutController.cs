@@ -7,6 +7,7 @@ using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
@@ -102,9 +103,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         /// <param name="urlSegment">The URL Segment entered</param>
         /// <param name="id">The id of the current page (if it exists yet)</param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
+        public async Task<ActionResult> ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_layoutAdminService.UrlIsValidForLayout(urlSegment, id)
+            return !await _layoutAdminService.UrlIsValidForLayout(urlSegment, id)
                 ? Json("Path already in use.")
                 : Json(true);
         }

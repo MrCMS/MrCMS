@@ -21,14 +21,14 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
                        Importance = importance
                    };
         }
-        protected SEOAnalysisFacet GetFacet(string name, SEOAnalysisStatus status, params string[] messages)
+        protected Task<SEOAnalysisFacet> GetFacet(string name, SEOAnalysisStatus status, params string[] messages)
         {
-            return new SEOAnalysisFacet
-                   {
-                       Name = name,
-                       Status = status,
-                       Messages = messages.ToList()
-                   };
+            return Task.FromResult(new SEOAnalysisFacet
+            {
+                Name = name,
+                Status = status,
+                Messages = messages.ToList()
+            });
         }
     }
 }

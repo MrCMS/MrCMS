@@ -38,11 +38,10 @@ namespace MrCMS.Search
             UniversalSearchIndexData = JsonConvert.DeserializeObject<UniversalSearchIndexData>(data);
         }
 
-        protected override Task OnExecute(CancellationToken token)
+        protected override async Task OnExecute(CancellationToken token)
         {
             var datas = new List<UniversalSearchIndexData> { UniversalSearchIndexData };
-            UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, datas, _eventContext);
-            return Task.CompletedTask;
+            await UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, datas, _eventContext);
         }
     }
 }

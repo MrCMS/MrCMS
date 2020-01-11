@@ -57,7 +57,7 @@ namespace MrCMS.Helpers
 
         public static T GetVersion<T>(this T doc, int id) where T : Document
         {
-            var documentVersion = doc.Versions.FirstOrDefault(version => version.Id == id).Unproxy();
+            var documentVersion = doc.Versions.FirstOrDefault(version => version.Id == id);
 
             return documentVersion != null ? DeserializeVersion(documentVersion, doc) : null;
         }
@@ -105,7 +105,7 @@ namespace MrCMS.Helpers
 
         public static List<VersionChange> GetComparisonToCurrent(this DocumentVersion currentVersion)
         {
-            var document = currentVersion.Document.Unproxy();
+            var document = currentVersion.Document;
             var previousVersion = DeserializeVersion(currentVersion, document);
 
             return GetVersionChanges(document, previousVersion);

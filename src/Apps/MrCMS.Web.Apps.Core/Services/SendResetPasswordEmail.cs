@@ -18,7 +18,7 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public async Task Execute(ResetPasswordEventArgs args)
         {
-            QueuedMessage queuedMessage = _messageParser.GetMessage(args.User);
+            QueuedMessage queuedMessage = await _messageParser.GetMessage(args.User);
             await _messageParser.QueueMessage(queuedMessage);
         }
     }

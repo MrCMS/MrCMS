@@ -9,6 +9,7 @@ namespace MrCMS.Entities.Documents
         [Required, StringLength(200)]
         public virtual string Name { get; set; }
         public virtual Webpage Webpage { get; set; }
+        public int WebpageId { get; set; }
         public virtual int DisplayOrder { get; set; }
         public virtual string DisplayName => Name;
     }

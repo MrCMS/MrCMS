@@ -42,7 +42,6 @@ namespace MrCMS.Batching.Services
 
         public async Task<BatchJobExecutionResult> Execute(BatchJob batchJob, CancellationToken token)
         {
-            batchJob = batchJob.Unproxy();
             if (batchJob == null)
                 return BatchJobExecutionResult.Failure();
             var type = batchJob.GetType();

@@ -19,7 +19,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public Webpage GetWebpage(int id)
         {
-            return _webpageRepository.Get(id);
+            return _webpageRepository.LoadSync(id);
         }
 
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
@@ -53,7 +53,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             if (webpage == null)
                 return;
 
-            Webpage parent = parentVal.HasValue ? _webpageRepository.Get(parentVal.Value) : null;
+            Webpage parent = parentVal.HasValue ? _webpageRepository.LoadSync(parentVal.Value) : null;
 
             webpage.Parent = parent;
 

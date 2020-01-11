@@ -73,7 +73,7 @@ namespace MrCMS.Services.Auth
                 return null;
             }
             var user = new User { Email = model.Email };
-            _userManagementService.AddUser(user);
+            await _userManagementService.AddUser(user);
             var result = await _userLoginManager.AddLoginAsync(user, info);
             if (result.Succeeded)
             {
@@ -115,7 +115,7 @@ namespace MrCMS.Services.Auth
             if (user == null)
             {
                 user = new User { Email = email, IsActive = true };
-                _userManagementService.AddUser(user);
+                await _userManagementService.AddUser(user);
             }
             await _userLoginManager.AddLoginAsync(user, loginInfo);
             return user;

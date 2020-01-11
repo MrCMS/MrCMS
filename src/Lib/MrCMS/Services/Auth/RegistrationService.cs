@@ -38,9 +38,9 @@ namespace MrCMS.Services.Auth
                 IsActive = true
             };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
-            _userManagementService.AddUser(user);
+            await _userManagementService.AddUser(user);
             await _authorisationService.SetAuthCookie(user, false);
-            _eventContext.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(
+            await _eventContext.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(
                 new OnUserRegisteredEventArgs(user, guid));
             return user;
         }

@@ -45,7 +45,7 @@ namespace MrCMS.Services
             var site = allSites.FirstOrDefault(s => s.BaseUrl != null && (s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase) || (s.StagingUrl != null && s.StagingUrl.Equals(authority, StringComparison.OrdinalIgnoreCase))));
             if (site == null)
             {
-                var redirectedDomains = allSites.SelectMany(s => s.RedirectedDomains).Select(x => x.Unproxy()).ToList();
+                var redirectedDomains = allSites.SelectMany(s => s.RedirectedDomains).ToList();
                 var redirectedDomain =
                     redirectedDomains.FirstOrDefault(
                         s => s.Url != null && s.Url.Equals(authority, StringComparison.OrdinalIgnoreCase));

@@ -17,16 +17,16 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             var subheadings = document.GetElementsOfType("h2").ToList();
             if (!subheadings.Any())
             {
-                yield return GetFacet("Subheadings", SEOAnalysisStatus.CanBeImproved, "The page contains no subheadings (i.e. h2 tags)");
+                yield return await GetFacet("Subheadings", SEOAnalysisStatus.CanBeImproved, "The page contains no subheadings (i.e. h2 tags)");
                 yield break;
             }
             var matchingNodes = subheadings.FindAll(node => node.InnerHtml.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase));
             if (!matchingNodes.Any())
                 yield return
-                    GetFacet("Subheadings", SEOAnalysisStatus.CanBeImproved, string.Format("{0} of the {1} subheadings contain the target term", matchingNodes.Count(), subheadings.Count()));
+                    await GetFacet("Subheadings", SEOAnalysisStatus.CanBeImproved, string.Format("{0} of the {1} subheadings contain the target term", matchingNodes.Count(), subheadings.Count()));
             else
                 yield return
-                    GetFacet("Subheadings", SEOAnalysisStatus.Success, string.Format("{0} of the {1} subheadings contain the target term", matchingNodes.Count(), subheadings.Count()));
+                    await GetFacet("Subheadings", SEOAnalysisStatus.Success, string.Format("{0} of the {1} subheadings contain the target term", matchingNodes.Count(), subheadings.Count()));
         }
     }
 }

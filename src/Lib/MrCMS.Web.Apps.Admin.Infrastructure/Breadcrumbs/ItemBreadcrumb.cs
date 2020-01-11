@@ -22,7 +22,6 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 
         protected virtual string GetName(TItem item)
         {
-            item = item.Unproxy();
             if (item == null)
                 return "-";
             var type = item.GetType();

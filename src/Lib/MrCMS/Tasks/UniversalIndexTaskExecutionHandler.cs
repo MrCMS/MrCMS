@@ -38,7 +38,7 @@ namespace MrCMS.Tasks
 
         public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
-            _taskStatusUpdater.BeginExecution(list);
+            await _taskStatusUpdater.BeginExecution(list);
             List<UniversalSearchIndexData> data =
                 list.Select(task => task as IUniversalSearchIndexTask)
                     .Select(task => task.UniversalSearchIndexData)
@@ -47,7 +47,7 @@ namespace MrCMS.Tasks
 
             await UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, data, _eventContext);
             List<TaskExecutionResult> results = list.Select(TaskExecutionResult.Successful).ToList();
-            _taskStatusUpdater.CompleteExecution(results);
+            await _taskStatusUpdater.CompleteExecution(results);
             return results;
         }
     }

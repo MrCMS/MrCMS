@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
@@ -16,9 +17,9 @@ namespace MrCMS.Web.Apps.Admin.Services
         void Update(UpdateLayoutModel layout);
         Layout Delete(int id);
         List<SortItem> GetSortItems(int? parent);
-        void SetOrders(List<SortItem> items);
-        bool UrlIsValidForLayout(string urlSegment, int? id);
-        void SetParent(int id, int? parentId);
+        Task SetOrders(List<SortItem> items);
+        Task<bool> UrlIsValidForLayout(string urlSegment, int? id);
+        Task SetParent(int id, int? parentId);
         IEnumerable<SelectListItem> GetValidParents(int id);
     }
 

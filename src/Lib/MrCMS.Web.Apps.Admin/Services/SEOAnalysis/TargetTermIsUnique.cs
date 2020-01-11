@@ -33,11 +33,11 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
                         page => string.Format("<a href=\"/Admin/Webpage/Edit/{0}\" target=\"_blank\">{1}</a>", page.Id, page.Name)
                             ));
                 yield return
-                    GetFacet("Any other pages with same target term?", SEOAnalysisStatus.Error, messages.ToArray());
+                    await GetFacet("Any other pages with same target term?", SEOAnalysisStatus.Error, messages.ToArray());
             }
             else
                 yield return
-                    GetFacet("Any other pages with same target term?", SEOAnalysisStatus.Success, "The target term is unique");
+                    await GetFacet("Any other pages with same target term?", SEOAnalysisStatus.Success, "The target term is unique");
         }
     }
 }

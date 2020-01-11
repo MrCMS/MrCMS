@@ -85,7 +85,7 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                 webpage.PublishOn = documentImportDto.PublishDate;
 
                 _updateTagsService.SetTags(documentImportDto, webpage);
-                _updateUrlHistoryService.SetUrlHistory(documentImportDto, webpage);
+                await _updateUrlHistoryService.SetUrlHistory(documentImportDto, webpage);
 
                 await _repository.Transact(async (repo, ct) =>
                 {

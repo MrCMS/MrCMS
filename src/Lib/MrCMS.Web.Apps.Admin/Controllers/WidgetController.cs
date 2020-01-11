@@ -44,7 +44,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
-            var widget = _widgetService.AddWidget(model, additionalPropertyModel);
+            var widget = await _widgetService.AddWidget(model, additionalPropertyModel);
 
             return Json(widget.Id);
         }
@@ -66,7 +66,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             {
                 ViewData["return-url"] = returnUrl;
             }
-    
+
             return View(editModel);
         }
 
@@ -79,7 +79,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
-            var widget = _widgetService.UpdateWidget(model, additionalPropertyModel);
+            var widget = await _widgetService.UpdateWidget(model, additionalPropertyModel);
 
             return string.IsNullOrWhiteSpace(returnUrl)
                 ? widget.Webpage != null
@@ -96,9 +96,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id, string returnUrl)
+        public async Task<ActionResult> Delete(int id, string returnUrl)
         {
-            var widget = _widgetService.DeleteWidget(id);
+            var widget = await _widgetService.DeleteWidget(id);
 
             int webpageId = 0;
             int layoutAreaId = 0;

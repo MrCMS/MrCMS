@@ -40,7 +40,7 @@ namespace MrCMS.Tasks
                 .ToList();
             foreach (var task in hungScheduledTasks)
             {
-                _taskSettingManager.Reset(task.Type, false);
+                await _taskSettingManager.Reset(task.Type, false);
             }
         }
 

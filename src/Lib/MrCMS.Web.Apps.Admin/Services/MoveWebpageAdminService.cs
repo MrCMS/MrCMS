@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
@@ -78,7 +79,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             var webpage = GetWebpage(moveWebpageModel);
             var parent = GetParent(moveWebpageModel);
 
-            if (parent == webpage.Parent.Unproxy())
+            if (parent == webpage.Parent)
             {
                 return new MoveWebpageResult
                 {
@@ -100,13 +101,13 @@ namespace MrCMS.Web.Apps.Admin.Services
         private Webpage GetParent(MoveWebpageModel moveWebpageModel)
         {
             return moveWebpageModel.ParentId.HasValue
-                ? _webpageRepository.Get(moveWebpageModel.ParentId.Value)
+                ? _webpageRepository.LoadSync(moveWebpageModel.ParentId.Value)
                 : null;
         }
 
         private Webpage GetWebpage(MoveWebpageModel moveWebpageModel)
         {
-            return _webpageRepository.Get(moveWebpageModel.Id);
+            return _webpageRepository.LoadSync(moveWebpageModel.Id);
         }
 
         private bool IsRootAllowed(Webpage webpage)
@@ -114,7 +115,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return !webpage.GetMetadata().RequiresParent;
         }
 
-        public MoveWebpageConfirmationModel GetConfirmationModel(MoveWebpageModel model)
+        public async Task<MoveWebpageConfirmationModel> GetConfirmationModel(MoveWebpageModel model)
         {
             var webpage = GetWebpage(model);
             var parent = GetParent(model);
@@ -124,11 +125,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 Webpage = webpage,
                 Parent = parent,
-                ChangedPages = GetChangedPages(model, webpage, parent)
+                ChangedPages = await GetChangedPages(model, webpage, parent)
             };
         }
 
-        private List<MoveWebpageChangedPageModel> GetChangedPages(MoveWebpageModel model, Webpage webpage, Webpage parent)
+        private async Task<List<MoveWebpageChangedPageModel>> GetChangedPages(MoveWebpageModel model, Webpage webpage, Webpage parent)
         {
             var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
 
@@ -142,7 +143,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 activePages.Reverse();
                 var immediateParent = childActivePages.ElementAtOrDefault(1);
                 childActivePages.Reverse();
-                var newUrl = GetNewUrl(model, parent, page, immediateParent, models.FirstOrDefault(x => x.Id == immediateParent?.Id));
+                var newUrl = await GetNewUrl(model, parent, page, immediateParent, models.FirstOrDefault(x => x.Id == immediateParent?.Id));
                 models.Add(new MoveWebpageChangedPageModel
                 {
                     Id = page.Id,
@@ -156,7 +157,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return models;
         }
 
-        private string GetNewUrl(MoveWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent,
+        private async Task<string> GetNewUrl(MoveWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent,
             MoveWebpageChangedPageModel parentModel)
         {
             if (!model.UpdateUrls)
@@ -166,7 +167,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             if (immediateParent == null)
             {
-                return _webpageUrlService.Suggest(new SuggestParams
+                return await _webpageUrlService.Suggest(new SuggestParams
                 {
                     DocumentType = page.DocumentType,
                     PageName = page.Name,
@@ -177,7 +178,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 });
             }
 
-            return _webpageUrlService.Suggest(
+            return await _webpageUrlService.Suggest(
                 new SuggestParams
                 {
                     DocumentType = page.DocumentType,
@@ -208,9 +209,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
         }
 
-        public MoveWebpageResult Confirm(MoveWebpageModel model)
+        public async Task<MoveWebpageResult> Confirm(MoveWebpageModel model)
         {
-            var confirmationModel = GetConfirmationModel(model);
+            var confirmationModel = await GetConfirmationModel(model);
 
             var success = SetParent(confirmationModel.Webpage, confirmationModel.Parent);
             if (!success)
@@ -222,7 +223,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 };
             }
 
-            success = _createUpdateUrlBatch.CreateBatch(confirmationModel);
+            success = await _createUpdateUrlBatch.CreateBatch(confirmationModel);
 
             return new MoveWebpageResult
             {

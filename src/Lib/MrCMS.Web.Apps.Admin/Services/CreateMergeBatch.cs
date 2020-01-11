@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
 using MrCMS.Services.WebsiteManagement;
@@ -18,7 +19,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             _controlBatchRun = controlBatchRun;
         }
 
-        public bool CreateBatch(MergeWebpageConfirmationModel model)
+        public async Task<bool> CreateBatch(MergeWebpageConfirmationModel model)
         {
             var list = new List<BatchJob>();
 
@@ -41,9 +42,9 @@ namespace MrCMS.Web.Apps.Admin.Services
                 MergedIntoId = model.MergedInto.Id
             });
 
-            var result = _createBatch.Create(list);
+            var result = await _createBatch.Create(list);
 
-            return _controlBatchRun.Start(result.InitialBatchRun);
+            return await _controlBatchRun.Start(result.InitialBatchRun);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
@@ -50,11 +51,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Add)]
-        public RedirectToActionResult Add(AddUserModel addUserModel)
+        public async Task<RedirectToActionResult> Add(AddUserModel addUserModel)
         {
-            var addUser = _userAdminService.AddUser(addUserModel);
+            var addUser = await _userAdminService.AddUser(addUserModel);
 
-            return RedirectToAction("Edit", new { id = addUser});
+            return RedirectToAction("Edit", new { id = addUser });
         }
 
         [HttpGet]
@@ -70,14 +71,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             ViewData["user"] = user;
 
             var updateUserModel = _userAdminService.GetUpdateModel(user);
-            return View(updateUserModel); 
+            return View(updateUserModel);
         }
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Edit)]
-        public RedirectToActionResult Edit(UpdateUserModel model, [ModelBinder(typeof(UpdateUserRoleModelBinder))]List<int> roles)
+        public async Task<RedirectToActionResult> Edit(UpdateUserModel model, [ModelBinder(typeof(UpdateUserRoleModelBinder))]List<int> roles)
         {
-            var user = _userAdminService.SaveUser(model, roles);
+            var user = await _userAdminService.SaveUser(model, roles);
             TempData.SuccessMessages().Add($"{user.Name} successfully saved");
             return RedirectToAction("Edit", "User", new { Id = user.Id });
         }
@@ -92,9 +93,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Delete)]
-        public RedirectToActionResult Delete(int id)
+        public async Task<RedirectToActionResult> Delete(int id)
         {
-            _userAdminService.DeleteUser(id);
+            await _userAdminService.DeleteUser(id);
 
             return RedirectToAction("Index");
         }
@@ -108,15 +109,15 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.SetPassword)]
-        public RedirectToActionResult SetPassword(int id, string password)
+        public async Task<RedirectToActionResult> SetPassword(int id, string password)
         {
-            _userAdminService.SetPassword(id, password);
+            await _userAdminService.SetPassword(id, password);
             return RedirectToAction("Edit", new { id });
         }
 
-        public JsonResult IsUniqueEmail(string email, int? id)
+        public async Task<JsonResult> IsUniqueEmail(string email, int? id)
         {
-            if (_userAdminService.IsUniqueEmail(email, id))
+            if (await _userAdminService.IsUniqueEmail(email, id))
             {
                 return Json(true);
             }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
         //{
         //}
 
-        public Task BindModelAsync(ModelBindingContext bindingContext)
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var folderId =
                 bindingContext.ValueProvider.GetValue("folderId").FirstValue;
@@ -41,21 +42,20 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var mediaFileRepository = bindingContext.HttpContext.RequestServices.GetRequiredService<IRepository<MediaFile>>();
             if (folderId != "")
             {
-                model.Folder = mediaCategoryRepository.Get(Convert.ToInt32(folderId));
+                model.Folder = await mediaCategoryRepository.Load(Convert.ToInt32(folderId));
             }
             if (files != "")
             {
                 var filesList = files.Split(',').Select(int.Parse).ToList();
-                model.Files = mediaFileRepository.Query().Where(arg => filesList.Contains(arg.Id)).ToList();
+                model.Files = await mediaFileRepository.Query().Where(arg => filesList.Contains(arg.Id)).ToListAsync();
             }
             if (folders != "")
             {
                 var foldersList = folders.Split(',').Select(int.Parse).ToList();
-                model.Folders = mediaCategoryRepository.Query().Where(arg => foldersList.Contains(arg.Id)).ToList();
+                model.Folders = await mediaCategoryRepository.Query().Where(arg => foldersList.Contains(arg.Id)).ToListAsync();
             }
 
             bindingContext.Result = ModelBindingResult.Success(model);
-            return Task.CompletedTask;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Web.Apps.Admin.Services;
@@ -22,9 +23,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Revert")]
-        public RedirectToActionResult Revert_POST(int id)
+        public async Task<RedirectToActionResult> Revert_POST(int id)
         {
-            var version =_service.RevertToVersion(id);
+            var version = await _service.RevertToVersion(id);
             return RedirectToAction("Edit", "Webpage", new { id = version.Document.Id });
         }
     }

@@ -73,7 +73,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.Email = model.Email;
-                    _userManagementService.SaveUser(user);
+                    await _userManagementService.SaveUser(user);
                     await _authorisationService.SetAuthCookie(user, false);
 
                     return _uniquePageService.RedirectTo<UserAccountPage>();
@@ -83,9 +83,9 @@ namespace MrCMS.Web.Apps.Core.Controllers
             return _uniquePageService.RedirectTo<UserAccountPage>();
         }
 
-        public JsonResult IsUniqueEmail(string email)
+        public async Task<JsonResult> IsUniqueEmail(string email)
         {
-            return _userManagementService.IsUniqueEmail(email, _getCurrentUser.Get()?.Id)
+            return await _userManagementService.IsUniqueEmail(email, _getCurrentUser.Get()?.Id)
                 ? Json(true)
                 : Json(_stringResourceProvider.GetValue("Register Email Already Registered",
                     "Email already registered."));
@@ -100,12 +100,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         [HttpPost]
         [ActionName("ChangePassword")]
-        public RedirectResult ChangePassword_POST(ChangePasswordModel model)
+        public async Task<RedirectResult> ChangePassword_POST(ChangePasswordModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = _getCurrentUser.Get();
                 _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
+                await _userManagementService.SaveUser(user);
                 TempData["message"] = _stringResourceProvider.GetValue("Login Password Updated", "Password updated.");
             }
             else

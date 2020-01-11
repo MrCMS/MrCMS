@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
@@ -48,7 +49,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public Layout GetLayout(int id)
         {
-            return GetArea(id)?.Layout.Unproxy();
+            return GetArea(id)?.Layout;
         }
 
         public IList<Widget> GetWidgets(int id)
@@ -74,7 +75,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public LayoutArea GetArea(int layoutAreaId)
         {
-            return _layoutAreaRepository.Get(layoutAreaId);
+            return _layoutAreaRepository.LoadSync(layoutAreaId, x => x.Layout);
         }
 
         public LayoutArea DeleteArea(int id)
@@ -88,68 +89,69 @@ namespace MrCMS.Web.Apps.Admin.Services
             return area;
         }
 
-        public void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel)
+        public async Task SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel)
         {
-            _widgetRepository.Transact(repository => pageWidgetSortModel.Widgets.ForEach(model =>
-            {
-                var widget = repository.Get(model.Id);
-                widget.DisplayOrder = model.Order;
-                repository.Update(widget);
-            }));
+
+            var widgets = pageWidgetSortModel.Widgets.Select(model =>
+              {
+                  var widget = _widgetRepository.LoadSync(model.Id);
+                  widget.DisplayOrder = model.Order;
+                  return widget;
+              }).ToList();
+
+            await _widgetRepository.UpdateRange(widgets);
         }
 
-        public void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel)
+        public async Task SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel)
         {
-            _layoutAreaRepository.Transact(layoutAreaRepository =>
+
+            var layoutArea = _layoutAreaRepository.LoadSync(pageWidgetSortModel.LayoutAreaId);
+            var webpage = _webpageRepository.LoadSync(pageWidgetSortModel.WebpageId);
+            foreach (var model in pageWidgetSortModel.Widgets)
             {
+                var widget = _widgetRepository.LoadSync(model.Id);
 
-                var layoutArea = layoutAreaRepository.Get(pageWidgetSortModel.LayoutAreaId);
-                var webpage = _webpageRepository.Get(pageWidgetSortModel.WebpageId);
-                pageWidgetSortModel.Widgets.ForEach(model =>
-                                                        {
-                                                            var widget = _widgetRepository.Get(model.Id);
+                PageWidgetSort widgetSort = _pageWidgetSortRepository.Query()
+                    .SingleOrDefault(
+                        sort => sort.LayoutArea == layoutArea &&
+                                sort.Webpage == webpage &&
+                                sort.Widget == widget);
+                var isNew = widgetSort == null;
+                if (isNew)
+                    widgetSort = new PageWidgetSort
+                    {
+                        LayoutArea =
+                            layoutArea,
+                        Webpage = webpage,
+                        Widget = widget
+                    };
+                widgetSort.Order = model.Order;
+                if (!layoutArea.PageWidgetSorts.Contains(widgetSort))
+                    layoutArea.PageWidgetSorts.Add(widgetSort);
+                if (!webpage.PageWidgetSorts.Contains(widgetSort))
+                    webpage.PageWidgetSorts.Add(widgetSort);
+                if (!widget.PageWidgetSorts.Contains(widgetSort))
+                    widget.PageWidgetSorts.Add(widgetSort);
+                if (isNew)
+                    await _pageWidgetSortRepository.Add(widgetSort);
+                else
+                    await _pageWidgetSortRepository.Update(widgetSort);
+            }
 
-                                                            PageWidgetSort widgetSort = _pageWidgetSortRepository.Query()
-                                                                .SingleOrDefault(
-                                                                    sort => sort.LayoutArea == layoutArea &&
-                                                                            sort.Webpage == webpage &&
-                                                                            sort.Widget == widget);
-                                                            var isNew = widgetSort == null;
-                                                            if (isNew)
-                                                                widgetSort = new PageWidgetSort
-                                                                {
-                                                                    LayoutArea =
-                                                                        layoutArea,
-                                                                    Webpage = webpage,
-                                                                    Widget = widget
-                                                                };
-                                                            widgetSort.Order = model.Order;
-                                                            if (!layoutArea.PageWidgetSorts.Contains(widgetSort))
-                                                                layoutArea.PageWidgetSorts.Add(widgetSort);
-                                                            if (!webpage.PageWidgetSorts.Contains(widgetSort))
-                                                                webpage.PageWidgetSorts.Add(widgetSort);
-                                                            if (!widget.PageWidgetSorts.Contains(widgetSort))
-                                                                widget.PageWidgetSorts.Add(widgetSort);
-                                                            if (isNew)
-                                                                _pageWidgetSortRepository.Add(widgetSort);
-                                                            else
-                                                                _pageWidgetSortRepository.Update(widgetSort);
-                                                        });
-
-            });
         }
 
-        public void ResetSorting(int id, int pageId)
+
+        public async Task ResetSorting(int id, int pageId)
         {
-            var webpage = _webpageRepository.Get(pageId);
+            var webpage = _webpageRepository.LoadSync(pageId, x => x.PageWidgetSorts);
             var list = webpage.PageWidgetSorts.Where(sort => sort.LayoutArea?.Id == id).ToList();
 
-            _pageWidgetSortRepository.Transact(repository => list.ForEach(repository.Delete));
+            await _pageWidgetSortRepository.DeleteRange(list);
         }
 
         public PageWidgetSortModel GetSortModel(LayoutArea area, int pageId)
         {
-            var webpage = _webpageRepository.Get(pageId);
+            var webpage = _webpageRepository.LoadSync(pageId);
             return new PageWidgetSortModel(area.GetWidgets(webpage), area, webpage);
         }
 

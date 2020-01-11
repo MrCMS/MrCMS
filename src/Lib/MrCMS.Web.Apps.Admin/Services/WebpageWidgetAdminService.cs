@@ -1,47 +1,40 @@
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class WebpageWidgetAdminService : IWebpageWidgetAdminService
     {
-        private readonly IRepository<Webpage> _webpageRepository;
-        private readonly IRepository<Widget> _widgetRepository;
+        private readonly IJoinTableRepository<HiddenWidget> _hiddenWidgetRepository;
+        private readonly IJoinTableRepository<ShownWidget> _shownWidgetRepository;
 
 
-        public WebpageWidgetAdminService(IRepository<Webpage> webpageRepository, IRepository<Widget> widgetRepository)
+        public WebpageWidgetAdminService(IJoinTableRepository<HiddenWidget> hiddenWidgetRepository, IJoinTableRepository<ShownWidget> shownWidgetRepository)
         {
-            _webpageRepository = webpageRepository;
-            _widgetRepository = widgetRepository;
+            _hiddenWidgetRepository = hiddenWidgetRepository;
+            _shownWidgetRepository = shownWidgetRepository;
         }
 
-        public void Hide(int webpageId, int widgetId)
+        public async Task Hide(int webpageId, int widgetId)
         {
-            var webpage = _webpageRepository.Get(webpageId);
-            var widget = _widgetRepository.Get(widgetId);
-
-            if (webpage == null || widget == null) return;
-
-            if (webpage.ShownWidgets.Contains(widget))
-                webpage.ShownWidgets.Remove(widget);
-            else if (!webpage.HiddenWidgets.Contains(widget))
-                webpage.HiddenWidgets.Add(widget);
-            _webpageRepository.Update(webpage);
+            var shownWidgets = await _shownWidgetRepository.Query()
+                .Where(x => x.WebpageId == webpageId && x.WidgetId == widgetId).ToListAsync();
+            if (shownWidgets.Any())
+                await _shownWidgetRepository.DeleteRange(shownWidgets);
+            await _hiddenWidgetRepository.Add(new HiddenWidget { WebpageId = webpageId, WidgetId = widgetId });
         }
 
-        public void Show(int webpageId, int widgetId)
+        public async Task Show(int webpageId, int widgetId)
         {
-            var webpage = _webpageRepository.Get(webpageId);
-            var widget = _widgetRepository.Get(widgetId);
-
-            if (webpage == null || widget == null) return;
-
-            if (webpage.HiddenWidgets.Contains(widget))
-                webpage.HiddenWidgets.Remove(widget);
-            else if (!webpage.ShownWidgets.Contains(widget))
-                webpage.ShownWidgets.Add(widget);
-            _webpageRepository.Update(webpage);
+            var hiddenWidgets = await _hiddenWidgetRepository.Query()
+                .Where(x => x.WebpageId == webpageId && x.WidgetId == widgetId).ToListAsync();
+            if (hiddenWidgets.Any())
+                await _hiddenWidgetRepository.DeleteRange(hiddenWidgets);
+            await _shownWidgetRepository.Add(new ShownWidget() { WebpageId = webpageId, WidgetId = widgetId });
         }
     }
 }

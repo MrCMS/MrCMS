@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
@@ -36,9 +37,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Add)]
-        public RedirectToActionResult Add(AddRoleModel model)
+        public async Task<RedirectToActionResult> Add(AddRoleModel model)
         {
-            var addRoleResult = _roleAdminService.AddRole(model);
+            var addRoleResult = await _roleAdminService.AddRole(model);
             if (!addRoleResult.Success)
                 TempData.ErrorMessages().Add(addRoleResult.Error);
             return RedirectToAction("Index");

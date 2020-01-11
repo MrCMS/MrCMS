@@ -84,7 +84,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     _setVerifiedUserData.SetUserData(loginResult.User);
                     return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { loginResult.ReturnUrl });
                 case LoginStatus.LockedOut:
-                    _eventContext.Publish<IOnLockedOutUserAuthed, UserLockedOutEventArgs>(
+                    await _eventContext.Publish<IOnLockedOutUserAuthed, UserLockedOutEventArgs>(
                         new UserLockedOutEventArgs(loginResult.User));
                     break;
             }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Models;
@@ -9,8 +10,8 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
         MoveWebpageResult Validate(MoveWebpageModel moveWebpageModel);
-        MoveWebpageConfirmationModel GetConfirmationModel(MoveWebpageModel model);
-        MoveWebpageResult Confirm(MoveWebpageModel model);
+        Task<MoveWebpageConfirmationModel> GetConfirmationModel(MoveWebpageModel model);
+        Task<MoveWebpageResult> Confirm(MoveWebpageModel model);
         MoveWebpageModel GetModel(Webpage webpage);
     }
 }

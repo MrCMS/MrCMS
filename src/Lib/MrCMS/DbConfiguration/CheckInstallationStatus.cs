@@ -24,7 +24,7 @@ namespace MrCMS.DbConfiguration
                 _installed = true;
                 return InstallationStatus.Installed;
             }
-            catch(Exception ex)
+            catch
             {
                 return InstallationStatus.NeedsConnectionString;
             }

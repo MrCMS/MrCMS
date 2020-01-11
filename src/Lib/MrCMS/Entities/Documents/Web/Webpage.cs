@@ -73,8 +73,8 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual DateTime? PublishOn { get; set; }
 
-        public virtual ISet<Widget.Widget> ShownWidgets { get; set; }
-        public virtual ISet<Widget.Widget> HiddenWidgets { get; set; }
+        public virtual IList<ShownWidget> ShownWidgets { get; set; }
+        public virtual IList<HiddenWidget> HiddenWidgets { get; set; }
         public virtual IList<Widget.Widget> Widgets { get; set; }
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
@@ -88,7 +88,7 @@ namespace MrCMS.Entities.Documents.Web
                 while (page != null)
                 {
                     yield return page;
-                    page = page.Parent.Unproxy() as Webpage;
+                    page = page.Parent as Webpage;
                 }
             }
         }
@@ -115,6 +115,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<UrlHistory> Urls { get; set; }
 
         public virtual PageTemplate PageTemplate { get; set; }
+        public int? PageTemplateId { get; set; }
 
         [DisplayName("Do not cache?")]
         public virtual bool DoNotCache { get; set; }

@@ -108,7 +108,7 @@ namespace MrCMS.Installation.Services
             //CurrentRequestData.CurrentSite = site;
 
             serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
-            serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
+            await serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
             serviceProvider.GetServices<IOnInstallation>()
                 .OrderBy(installation => installation.Priority)
                 .ForEach(installation => installation.Install(model));

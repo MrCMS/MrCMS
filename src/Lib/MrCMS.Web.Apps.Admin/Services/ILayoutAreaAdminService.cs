@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Widget;
 using MrCMS.Models;
@@ -16,9 +17,9 @@ namespace MrCMS.Web.Apps.Admin.Services
         IList<Widget> GetWidgets(int id);
         LayoutArea Update(UpdateLayoutAreaModel model);
         LayoutArea DeleteArea(int id);
-        void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel);
-        void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel);
-        void ResetSorting(int id, int pageId);
+        Task SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel);
+        Task SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel);
+        Task ResetSorting(int id, int pageId);
         PageWidgetSortModel GetSortModel(LayoutArea area, int pageId);
     }
 }

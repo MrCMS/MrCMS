@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -34,16 +35,16 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddPageTemplateModel model)
+        public async Task<RedirectToActionResult> Add(AddPageTemplateModel model)
         {
-            _service.Add(model);
+          await  _service.Add(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public PartialViewResult Edit(int id)
+        public async Task<PartialViewResult> Edit(int id)
         {
-            var model = _service.GetEditModel(id);
+            var model = await _service.GetEditModel(id);
             ViewData["layout-options"] = _service.GetLayoutOptions();
             ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(model.PageType);
             return PartialView(model);
@@ -51,9 +52,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public RedirectToActionResult Edit_POST(UpdatePageTemplateModel model)
+        public async Task<RedirectToActionResult> Edit_POST(UpdatePageTemplateModel model)
         {
-            _service.Update(model);
+            await _service.Update(model);
             return RedirectToAction("Index");
         }
 

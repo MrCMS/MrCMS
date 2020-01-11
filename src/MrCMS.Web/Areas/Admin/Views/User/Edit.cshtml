@@ -105,7 +105,7 @@
                                 for (var index = 0; index < userRoles.Count; index++)
                                 {
                                     var role = userRoles[index];
-                                    bool isChecked = user.Roles.Any(x => x.Id == role.Id);
+                                    bool isChecked = user.UserToRoles.Any(x => x.RoleId == role.Id);
 
                                     @Html.CheckBox("Role-" + role.Id, isChecked, new { })
                                     <text>&nbsp;

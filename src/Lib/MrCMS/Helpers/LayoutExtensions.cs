@@ -13,7 +13,7 @@ namespace MrCMS.Helpers
             while (current != null)
             {
                 layoutAreas.AddRange(current.LayoutAreas);
-                current = current.Parent.Unproxy() as Layout;
+                current = current.Parent as Layout;
             }
 
             return layoutAreas;

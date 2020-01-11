@@ -3,6 +3,7 @@ using MrCMS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Services.Dashboard
 {
@@ -21,7 +22,7 @@ namespace MrCMS.Web.Apps.Admin.Services.Dashboard
             return types.Select(type => _serviceProvider.GetService(type)).OfType<IHealthCheck>().ToList();
         }
 
-        public HealthCheckResult CheckType(string typeName)
+        public async Task<HealthCheckResult> CheckType(string typeName)
         {
             var type = TypeHelper.GetTypeByName(typeName);
             if (type == null)
@@ -29,7 +30,8 @@ namespace MrCMS.Web.Apps.Admin.Services.Dashboard
                 return new HealthCheckResult();
             }
 
-            return (_serviceProvider.GetService(type) as IHealthCheck)?.PerformCheck() ?? new HealthCheckResult();
+            var check = _serviceProvider.GetService(type) is IHealthCheck ? await ((IHealthCheck)_serviceProvider.GetService(type)).PerformCheck() : null;
+            return check ?? new HealthCheckResult();
         }
     }
 }

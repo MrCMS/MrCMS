@@ -251,7 +251,7 @@ namespace MrCMS.Services
                 // if it exists but isn't cached, we should add it to the cache
                 if (_fileSystem.Exists(requestedImageFileUrl))
                 {
-                    CacheResizedImage(file, requestedImageFileUrl);
+                    await CacheResizedImage(file, requestedImageFileUrl);
                     return requestedImageFileUrl;
                 }
 

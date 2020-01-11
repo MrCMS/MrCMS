@@ -13,13 +13,13 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             string titleText = document.GetElementText("title") ?? string.Empty;
 
             if (titleText.Length < 50)
-                yield return GetFacet("Title length", SEOAnalysisStatus.Error, "The title should be at least 50 characters long");
+                yield return await GetFacet("Title length", SEOAnalysisStatus.Error, "The title should be at least 50 characters long");
             else if (titleText.Length > 90)
                 yield return
-                    GetFacet("Title length", SEOAnalysisStatus.Error, "The title should be at most 90 characters long");
+                    await GetFacet("Title length", SEOAnalysisStatus.Error, "The title should be at most 90 characters long");
             else
                 yield return
-                    GetFacet("Title length", SEOAnalysisStatus.Success,
+                    await GetFacet("Title length", SEOAnalysisStatus.Success,
                         "The title is of optimal length (50-90 characters)");
         }
     }

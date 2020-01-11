@@ -8,6 +8,7 @@ using MrCMS.Website.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Web.Apps.Admin.Helpers;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
@@ -34,9 +35,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddFormModel model)
+        public async Task<RedirectToActionResult> Add(AddFormModel model)
         {
-            var form = _formAdminService.AddForm(model);
+            var form = await _formAdminService.AddForm(model);
             if (form != null)
             {
                 return RedirectToAction("Edit", new { form.Id });
@@ -53,13 +54,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateFormModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateFormModel model)
         {
-            _formAdminService.Update(model);
+            await _formAdminService.Update(model);
 
             TempData.SuccessMessages().Add($"'{model.Name}' updated");
 
-            return RedirectToAction("Edit", new {model.Id});
+            return RedirectToAction("Edit", new { model.Id });
         }
 
         public ViewResult Delete(int id)
@@ -68,9 +69,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost, ActionName(nameof(Delete))]
-        public RedirectToActionResult Delete_POST(int id)
+        public async Task<RedirectToActionResult> Delete_POST(int id)
         {
-            _formAdminService.Delete(id);
+            await _formAdminService.Delete(id);
             return RedirectToAction("Index");
         }
 
@@ -98,9 +99,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public void Sort(List<SortItem> items)
+        public async Task Sort(List<SortItem> items)
         {
-            _formAdminService.SetOrders(items);
+            await _formAdminService.SetOrders(items);
         }
 
         [HttpGet]
@@ -111,9 +112,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("ClearFormData")]
-        public RedirectToActionResult ClearFormData_POST(Form form)
+        public async Task<RedirectToActionResult> ClearFormData_POST(Form form)
         {
-            _formAdminService.ClearFormData(form);
+            await _formAdminService.ClearFormData(form);
             return RedirectToAction("Edit", "Form", new { id = form.Id });
         }
 
@@ -137,9 +138,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(posting);
         }
         [HttpPost]
-        public ActionResult DeleteEntry(int id)
+        public async Task<ActionResult> DeleteEntry(int id)
         {
-            var posting = _formAdminService.DeletePosting(id);
+            var posting = await _formAdminService.DeletePosting(id);
             return RedirectToAction("Edit", "Form", new { id = posting.Form.Id });
         }
 

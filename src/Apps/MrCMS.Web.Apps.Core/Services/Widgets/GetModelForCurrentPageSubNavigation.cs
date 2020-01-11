@@ -57,9 +57,8 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 .Where(
                     webpage =>
                         webpage.Parent.Id == parentId && webpage.RevealInNavigation)
-                .OrderBy(webpage => webpage.DisplayOrder).Asc
-                .Cacheable()
-                .List()
+                .OrderBy(webpage => webpage.DisplayOrder)
+                .ToList()
                 .Where(webpage => webpage.Published);
         }
     }

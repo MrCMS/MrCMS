@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Documents;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Documents;
 using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -8,6 +9,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         VersionsModel GetVersions(Document document, int page);
 
         DocumentVersion GetDocumentVersion(int id);
-        DocumentVersion RevertToVersion(int id);
+        Task<DocumentVersion> RevertToVersion(int id);
     }
 }

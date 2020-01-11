@@ -16,7 +16,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             var elements = document.GetElementsOfType("h1");
             if (elements.Count() > 1)
                 yield return
-                    GetFacet("Document contains multiple H1 tags", SEOAnalysisStatus.Error,
+           await GetFacet("Document contains multiple H1 tags", SEOAnalysisStatus.Error,
                         "There should only be one H1 tag in a document.");
         }
     }

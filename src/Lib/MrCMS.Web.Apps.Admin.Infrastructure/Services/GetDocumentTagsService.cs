@@ -29,6 +29,12 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Services
             return tagNames.Select(GetTag).Where(x => x != null).ToHashSet();
         }
 
+        public IList<DocumentTag> GetDocumentTags(Document document, string tagList)
+        {
+            var tags = GetTags(tagList);
+            return tags.Select(x => new DocumentTag {Tag = x, Document = document}).ToList();
+        }
+
         private Tag GetTag(string arg)
         {
             return

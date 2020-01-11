@@ -26,7 +26,7 @@ namespace MrCMS.Services
             {
                 var documentTypeDefinition =
                     DocumentMetadataHelper.WebpageMetadata.FirstOrDefault(
-                        definition => definition.TypeName == webpage.Unproxy().GetType().Name);
+                        definition => definition.TypeName == webpage.GetType().Name);
 
                 if (documentTypeDefinition == null) return Enumerable.Empty<DocumentMetadata>();
 

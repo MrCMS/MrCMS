@@ -13,25 +13,30 @@ namespace MrCMS.Events
 {
     public class OnDeletingWidget : OnDataDeleting<Widget>
     {
-        private readonly IRepository<Widget> _widgetRepository;
+        private readonly IJoinTableRepository<ShownWidget> _shownWidgetRepository;
+        private readonly IJoinTableRepository<HiddenWidget> _hiddenWidgetRepository;
 
-        public OnDeletingWidget(IRepository<Widget> widgetRepository)
+        public OnDeletingWidget(IJoinTableRepository<ShownWidget> shownWidgetRepository, IJoinTableRepository<HiddenWidget> hiddenWidgetRepository)
         {
-            _widgetRepository = widgetRepository;
+            _shownWidgetRepository = shownWidgetRepository;
+            _hiddenWidgetRepository = hiddenWidgetRepository;
         }
-        //public void Execute(OnDeletingArgs<Widget> args)
-        //{
-        //    Widget widget = args.Item;
-        //}
 
-        public override Task<IResult> OnDeleting(Widget entity, DbContext dbContext)
+        public override async Task<IResult> OnDeleting(Widget entity, DbContext dbContext)
         {
-            entity.ShownOn.ForEach(webpage => webpage.ShownWidgets.Remove(entity));
-            entity.HiddenOn.ForEach(webpage => webpage.HiddenWidgets.Remove(entity));
+            var shownWidgets =
+                await _shownWidgetRepository.Query().Where(x => x.WidgetId == entity.Id).ToListAsync();
+            if (shownWidgets.Any())
+                await _shownWidgetRepository.DeleteRange(shownWidgets);
+            var hiddenWidgets =
+                await _hiddenWidgetRepository.Query().Where(x => x.WidgetId == entity.Id).ToListAsync();
+            if (hiddenWidgets.Any())
+                await _hiddenWidgetRepository.DeleteRange(hiddenWidgets);
+
             entity.LayoutArea?.Widgets.Remove(entity); //required to clear cache
             entity.Webpage?.Widgets.Remove(entity);
 
-            return Success;
+            return new Successful();
         }
     }
 }

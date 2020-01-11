@@ -88,9 +88,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ForceImmediateLuceneUpdate]
-        public RedirectToActionResult Edit(UpdateWebpageViewModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateWebpageViewModel model)
         {
-            var result = _webpageAdminService.Update(model);
+            var result = await _webpageAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Name));
             return RedirectToAction("Edit", new { id = result.Id });
         }
@@ -104,9 +104,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ForceImmediateLuceneUpdate]
-        public RedirectToActionResult Delete(int id)
+        public async Task<RedirectToActionResult> Delete(int id)
         {
-            var webpage = _webpageAdminService.Delete(id);
+            var webpage = await _webpageAdminService.Delete(id);
             TempData.InfoMessages().Add(string.Format("{0} deleted", webpage.Name));
             return RedirectToAction("Index");
         }
@@ -120,9 +120,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Sort(List<SortItem> items, int? id)
+        public async Task<ActionResult> Sort(List<SortItem> items, int? id)
         {
-            _webpageAdminService.SetOrders(items);
+            await _webpageAdminService.SetOrders(items);
             return RedirectToAction("Sort", new { id });
         }
 
@@ -137,17 +137,17 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         //}
 
         [HttpPost]
-        public RedirectToActionResult PublishNow(int id)
+        public async Task<RedirectToActionResult> PublishNow(int id)
         {
-            _webpageAdminService.PublishNow(id);
+            await _webpageAdminService.PublishNow(id);
 
             return RedirectToAction("Edit", new { id });
         }
 
         [HttpPost]
-        public RedirectToActionResult Unpublish(int id)
+        public async Task<RedirectToActionResult> Unpublish(int id)
         {
-            _webpageAdminService.Unpublish(id);
+            await _webpageAdminService.Unpublish(id);
 
             return RedirectToAction("Edit", new { id });
         }

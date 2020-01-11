@@ -82,7 +82,7 @@ namespace MrCMS.Tests.Settings
 
         [Theory, AutoFakeItEasyData]
         public void SiteSettingsOptionGenerator_GetLayoutOptions_WithoutDefaultIncludedIsEmpty
-            ([Frozen] IDataReader dataReader, SiteSettingsOptionGenerator sut)
+            (SiteSettingsOptionGenerator sut)
         {
             var errorPageOptions = sut.GetLayoutOptions(-1);
 

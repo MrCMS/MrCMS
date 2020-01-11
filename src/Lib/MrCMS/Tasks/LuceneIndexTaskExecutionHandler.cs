@@ -32,7 +32,7 @@ namespace MrCMS.Tasks
 
         public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
-            _taskStatusUpdater.BeginExecution(list);
+            await _taskStatusUpdater.BeginExecution(list);
             var actions = (await Task.WhenAll(list.Select(task => task as ILuceneIndexTask)
                 .Select(task => task.GetActions(token)))).SelectMany(x => x);
             List<LuceneAction> luceneActions = actions
@@ -41,7 +41,7 @@ namespace MrCMS.Tasks
 
             LuceneActionExecutor.PerformActions(_indexService, luceneActions);
             List<TaskExecutionResult> results = list.Select(TaskExecutionResult.Successful).ToList();
-            _taskStatusUpdater.CompleteExecution(results);
+            await _taskStatusUpdater.CompleteExecution(results);
             return results;
         }
     }

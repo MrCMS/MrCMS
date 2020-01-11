@@ -14,10 +14,10 @@ namespace MrCMS.Search
         void Delete(SystemEntity entity);
         Task ReindexAll();
         void Optimise();
-        IndexSearcher GetSearcher();
+        Task<IndexSearcher> GetSearcher();
         Task Write(Func<IndexWriter, Task> writeFunc, bool recreateIndex = false);
 
-        void EnsureIndexExists();
+        Task EnsureIndexExists();
         MrCMSIndex GetUniversalIndexInfo();
     }
 }

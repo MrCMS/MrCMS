@@ -94,7 +94,7 @@ namespace MrCMS.Web
                 var site =
                     provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
 
-                site = site ?? await provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
+                site ??= await provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
 
                 return site;
             });
@@ -184,7 +184,7 @@ namespace MrCMS.Web
             services.AddScoped(provider => provider.GetService<IStringLocalizerFactory>()
                 .Create(null, null));
 
-                var authenticationBuilder = services.AddAuthentication();
+            var authenticationBuilder = services.AddAuthentication();
             var serviceProvider = services.BuildServiceProvider();
             var thirdPartyAuthSettings = serviceProvider.GetRequiredService<ThirdPartyAuthSettings>();
 

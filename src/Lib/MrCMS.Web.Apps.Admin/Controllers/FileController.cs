@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Media;
@@ -22,14 +23,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post(int id) 
+        public async Task<JsonResult> Files_Post(int id) 
         {
             var list = new List<ViewDataUploadFilesResult>();
             foreach (var file in Request.Form?.Files ?? new FormFileCollection())
             {
                 if (_fileService.IsValidFileType(file.FileName))
                 {
-                    ViewDataUploadFilesResult dbFile = _fileService.AddFile(file.OpenReadStream(), file.FileName,
+                    ViewDataUploadFilesResult dbFile = await _fileService.AddFile(file.OpenReadStream(), file.FileName,
                         file.ContentType, file.Length, id);
                     list.Add(dbFile);
                 }

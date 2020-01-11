@@ -16,10 +16,10 @@ namespace MrCMS.Web.Apps.Core.Services
             _messageParser = messageParser;
         }
 
-        public Task Execute(VerifiedPending2FAEventArgs args)
+        public async Task Execute(VerifiedPending2FAEventArgs args)
         {
-            QueuedMessage queuedMessage = _messageParser.GetMessage(args.User);
-            _messageParser.QueueMessage(queuedMessage);
+            QueuedMessage queuedMessage = await _messageParser.GetMessage(args.User);
+            await _messageParser.QueueMessage(queuedMessage);
         }
     }
 }

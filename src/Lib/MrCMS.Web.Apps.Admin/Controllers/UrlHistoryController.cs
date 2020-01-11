@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
@@ -26,9 +27,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var history =_urlHistoryAdminService.Delete(id);
+            var history = await _urlHistoryAdminService.Delete(id);
 
             return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }
@@ -43,16 +44,16 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(AddUrlHistoryModel model)
+        public async Task<ActionResult> Add(AddUrlHistoryModel model)
         {
-            _urlHistoryAdminService.Add(model);
+        await    _urlHistoryAdminService.Add(model);
 
             return RedirectToAction("Edit", "Webpage", new { id = model.WebpageId });
         }
 
-        public ActionResult ValidateUrlIsAllowed(string urlsegment)
+        public async Task<ActionResult> ValidateUrlIsAllowed(string urlsegment)
         {
-            return !_urlValidationService.UrlIsValidForWebpageUrlHistory(urlsegment)
+            return !await _urlValidationService.UrlIsValidForWebpageUrlHistory(urlsegment)
                 ? Json("Please choose a different URL as this one is already used.")
                 : Json(true);
         }

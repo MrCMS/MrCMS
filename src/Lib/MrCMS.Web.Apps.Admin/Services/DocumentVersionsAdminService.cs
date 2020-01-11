@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
@@ -23,21 +24,21 @@ namespace MrCMS.Web.Apps.Admin.Services
             IPagedList<DocumentVersion> versions = _documentVersionRepository.Query()
                 .Where(version => version.Document.Id == document.Id)
                 .OrderByDescending(version => version.CreatedOn)
-                .Paged(page);
+                .ToPagedList(page);
 
             return new VersionsModel(versions, document.Id);
         }
 
         public DocumentVersion GetDocumentVersion(int id)
         {
-            return _documentVersionRepository.Get(id);
+            return _documentVersionRepository.LoadSync(id, version => version.Document);
         }
 
-        public DocumentVersion RevertToVersion(int id)
+        public async Task<DocumentVersion> RevertToVersion(int id)
         {
             var documentVersion = GetDocumentVersion(id);
 
-            var currentVersion = documentVersion.Document.Unproxy();
+            var currentVersion = documentVersion.Document;
             var previousVersion = currentVersion.GetVersion(documentVersion.Id);
 
             var versionProperties = currentVersion.GetType().GetVersionProperties();
@@ -45,7 +46,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
             }
-            _documentRepository.Update(currentVersion);
+            await _documentRepository.Update(currentVersion);
             return documentVersion;
         }
     }

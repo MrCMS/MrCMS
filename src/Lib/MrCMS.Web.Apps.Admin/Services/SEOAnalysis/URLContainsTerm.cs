@@ -20,8 +20,8 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             string url = _getLiveUrl.GetAbsoluteUrl(webpage);
             yield return
                 url.Replace("-", " ").Contains(analysisTerm, StringComparison.OrdinalIgnoreCase)
-                    ? GetFacet("URL contains term", SEOAnalysisStatus.Success, "The URL contains '" + analysisTerm + "'")
-                    : GetFacet("URL contains term", SEOAnalysisStatus.Error, "The URL does not contain '" + analysisTerm + "'");
+                    ? await GetFacet("URL contains term", SEOAnalysisStatus.Success, "The URL contains '" + analysisTerm + "'")
+                    : await GetFacet("URL contains term", SEOAnalysisStatus.Error, "The URL does not contain '" + analysisTerm + "'");
         }
     }
 }

@@ -7,6 +7,7 @@ namespace MrCMS.Entities.Audit
         public int Id { get; set; }
 
         public EntityUpdated EntityUpdated { get; set; }
+        public int EntityUpdatedId { get; set; }
 
         [MaxLength(100)]
         public string Name { get; set; }

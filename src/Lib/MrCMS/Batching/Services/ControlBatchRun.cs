@@ -26,7 +26,7 @@ namespace MrCMS.Batching.Services
                 return false;
             batchRun.Status = BatchRunStatus.Executing;
             await _repository.Update(batchRun);
-            _eventContext.Publish<IOnBatchRunStart, BatchRunStartArgs>(new BatchRunStartArgs
+            await _eventContext.Publish<IOnBatchRunStart, BatchRunStartArgs>(new BatchRunStartArgs
             {
                 BatchRun = batchRun
             });
@@ -41,7 +41,7 @@ namespace MrCMS.Batching.Services
                 return false;
             batchRun.Status = BatchRunStatus.Paused;
             await _repository.Update(batchRun);
-            _eventContext.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
+            await _eventContext.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
             {
                 BatchRun = batchRun
             });

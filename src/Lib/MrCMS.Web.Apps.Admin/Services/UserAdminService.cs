@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -15,21 +16,23 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IMapper _mapper;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IRoleService _roleService;
+        private readonly IUserRoleManager _userRoleManager;
 
-        public UserAdminService(IUserManagementService service, IMapper mapper, IPasswordManagementService passwordManagementService, IRoleService roleService)
+        public UserAdminService(IUserManagementService service, IMapper mapper, IPasswordManagementService passwordManagementService, IRoleService roleService, IUserRoleManager userRoleManager)
         {
             _service = service;
             _mapper = mapper;
             _passwordManagementService = passwordManagementService;
             _roleService = roleService;
+            _userRoleManager = userRoleManager;
         }
-        public int AddUser(AddUserModel addUserModel)
+        public async Task<int> AddUser(AddUserModel addUserModel)
         {
             var user = new User();
             var mappedUser = _mapper.Map(addUserModel, user);
-            _service.AddUser(mappedUser);
+            await _service.AddUser(mappedUser);
             _passwordManagementService.SetPassword(mappedUser, addUserModel.Password, addUserModel.ConfirmPassword);
-            _service.SaveUser(mappedUser);
+            await _service.SaveUser(mappedUser);
             return mappedUser.Id;
         }
 
@@ -38,42 +41,40 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _mapper.Map<UpdateUserModel>(user);
         }
 
-        public User SaveUser(UpdateUserModel model, List<int> roles)
+        public async Task<User> SaveUser(UpdateUserModel model, List<int> roles)
         {
-            var user = _service.GetUser(model.Id);
+            var user = await _service.GetUser(model.Id);
             _mapper.Map(model, user);
 
-            var userRoles = _roleService.GetAllRoles().ToList();
-            userRoles.ForEach(x => x.Users.Remove(user));
+            await _service.SaveUser(user);
 
-            var rolesToSet = roles.Select(id => _roleService.GetRole(id)).Where(x => x != null).ToHashSet();
-            rolesToSet.ForEach(role => role.Users.Add(user));
-            user.Roles = rolesToSet;
-            _service.SaveUser(user);
+            var roleEntities = roles.Select(x => _roleService.GetRole(x)).ToList();
+            await _userRoleManager.AssignRoles(user, roleEntities.Select(x => x.Name).ToList());
+
             return user;
         }
 
-        public void DeleteUser(int id)
+        public async Task DeleteUser(int id)
         {
-            _service.DeleteUser(id);
+            await _service.DeleteUser(id);
         }
 
-        public User GetUser(int id)
+        public async Task<User> GetUser(int id)
         {
-            return _service.GetUser(id);
+            return await _service.GetUser(id);
         }
 
-        public bool IsUniqueEmail(string email, int? id)
+        public async Task<bool> IsUniqueEmail(string email, int? id)
         {
-            return _service.IsUniqueEmail(email, id);
+            return await _service.IsUniqueEmail(email, id);
         }
 
-        public void SetPassword(int id, string password)
+        public async Task SetPassword(int id, string password)
         {
 
-            var user = _service.GetUser(id);
+            var user = await _service.GetUser(id);
             _passwordManagementService.SetPassword(user, password, password);
-            _service.SaveUser(user);
+            await _service.SaveUser(user);
         }
     }
 }

@@ -14,7 +14,10 @@ namespace MrCMS.Entities.Documents.Media
         }
 
         public virtual MediaFile MediaFile { get; set; }
+        public int MediaFileId { get; set; }
         public virtual CropType CropType { get; set; }
+        public int CropTypeId { get; set; }
+
         public virtual int Left { get; set; }
         public virtual int Top { get; set; }
         public virtual int Right { get; set; }

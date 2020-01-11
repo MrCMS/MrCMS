@@ -9,8 +9,7 @@ namespace MrCMS.ViewComponents
 
         public IViewComponentResult Invoke(ContentBlock block)
         {
-            var contentBlock = block.Unproxy();
-            return View(contentBlock.GetType().Name, contentBlock);
+            return View(block.GetType().Name, block);
         }
     }
 }

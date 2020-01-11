@@ -14,13 +14,13 @@ namespace MrCMS.Helpers
 
             foreach (Webpage item in webpage.ActivePages)
             {
-                if (item.HiddenWidgets.Contains(widget))
+                if (item.HiddenWidgets.Any(x => x.WidgetId == widget.Id))
                     return true;
-                if (item.ShownWidgets.Contains(widget))
+                if (item.ShownWidgets.Any(x => x.WidgetId == widget.Id))
                     return false;
 
                 // if it's not overidden somehow and it is from the item we're looking at, use the recursive flag from the widget
-                if (widget.Webpage.Unproxy() == item)
+                if (widget.Webpage == item)
                     return !widget.IsRecursive;
             }
             return false;

@@ -16,22 +16,22 @@ namespace MrCMS.Web.Apps.Admin.Services.Events
         {
             _hubContext = hubContext;
         }
-        public Task Execute(OnPersistentNotificationPublishedEventArgs args)
+        public async Task Execute(OnPersistentNotificationPublishedEventArgs args)
         {
             var notification = args.Notification;
             var model = new NotificationModel { Message = notification.Message, DateValue = notification.CreatedOn };
             switch (notification.NotificationType)
             {
                 case NotificationType.AdminOnly:
-                    _hubContext.Clients.Group(NotificationHub.AdminGroup)
+                    await _hubContext.Clients.Group(NotificationHub.AdminGroup)
                         .SendAsync("sendPersistentNotification", model);
                     break;
                 case NotificationType.UserOnly:
-                    _hubContext.Clients.Group(NotificationHub.UsersGroup)
+                    await _hubContext.Clients.Group(NotificationHub.UsersGroup)
                         .SendAsync("sendPersistentNotification", model);
                     break;
                 case NotificationType.All:
-                    _hubContext.Clients.All
+                    await _hubContext.Clients.All
                         .SendAsync("sendPersistentNotification", model);
                     break;
                 default:

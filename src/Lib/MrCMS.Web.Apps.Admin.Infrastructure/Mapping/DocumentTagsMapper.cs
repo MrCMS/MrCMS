@@ -7,7 +7,7 @@ using MrCMS.Web.Apps.Admin.Infrastructure.Services;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Mapping
 {
-    public class DocumentTagsMapper : IValueResolver<IHaveTagList, Webpage, ISet<Tag>> 
+    public class DocumentTagsMapper : IValueResolver<IHaveTagList, Webpage, IList<DocumentTag>> 
     {
         private readonly IGetDocumentTagsService _getDocumentTagsService;
 
@@ -16,10 +16,9 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Mapping
             _getDocumentTagsService = getDocumentTagsService;
         }
 
-        public ISet<Tag> Resolve(IHaveTagList source, Webpage destination, ISet<Tag> destMember, ResolutionContext context)
+        public IList<DocumentTag> Resolve(IHaveTagList source, Webpage destination, IList<DocumentTag> destMember, ResolutionContext context)
         {
-            return _getDocumentTagsService.GetTags(source.TagList);
+            return _getDocumentTagsService.GetDocumentTags(destination, source.TagList);
         }
-
     }
 }

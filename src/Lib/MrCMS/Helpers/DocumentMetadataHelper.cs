@@ -92,7 +92,7 @@ namespace MrCMS.Helpers
 
         public static List<DocumentMetadata> GetValidParentTypes(Webpage webpage)
         {
-            Type type = webpage.Unproxy().GetType();
+            Type type = webpage.GetType();
             return DocumentMetadatas.FindAll(metadata => metadata.ValidChildrenTypes.Contains(type));
         }
 

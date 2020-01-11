@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             if (wordCount <= 300)
             {
                 yield return
-                    GetFacet("Word Count", SEOAnalysisStatus.Error,
+               await      GetFacet("Word Count", SEOAnalysisStatus.Error,
                         string.Format(
                             "The word count is currently less than the 300 word recommended minimum ({0} words)",
                             wordCount));
@@ -29,7 +29,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             else
             {
                 yield return
-                    GetFacet("Word Count", SEOAnalysisStatus.Success,
+                    await GetFacet("Word Count", SEOAnalysisStatus.Success,
                         string.Format(
                             "The word count is currently at leastt the 300 word recommended minimum ({0} words)",
                             wordCount));

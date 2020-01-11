@@ -14,6 +14,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string PageType { get; set; }
 
         public virtual Layout.Layout Layout { get; set; }
+        public int? LayoutId { get; set; }
 
         [Required]
         public virtual string UrlGeneratorType { get; set; }

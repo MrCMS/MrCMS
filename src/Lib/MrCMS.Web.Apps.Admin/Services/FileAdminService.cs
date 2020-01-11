@@ -47,14 +47,14 @@ namespace MrCMS.Web.Apps.Admin.Services
             return mediaFile.GetUploadFilesResult();
         }
 
-        public void DeleteFile(MediaFile mediaFile)
+        public async Task DeleteFile(MediaFile mediaFile)
         {
-            _fileService.DeleteFile(mediaFile);
+            await _fileService.DeleteFile(mediaFile);
         }
 
-        public void UpdateFile(MediaFile mediaFile)
+        public async Task UpdateFile(MediaFile mediaFile)
         {
-            _fileService.UpdateFile(mediaFile);
+            await _fileService.UpdateFile(mediaFile);
         }
 
         public bool IsValidFileType(string fileName)
@@ -209,21 +209,21 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _mediaFileRepository.LoadSync(id);
         }
 
-        public void DeleteFilesSoft(IEnumerable<MediaFile> files)
+        public async Task DeleteFilesSoft(IEnumerable<MediaFile> files)
         {
             if (files != null)
             {
                 foreach (MediaFile file in files)
-                    _fileService.DeleteFileSoft(file);
+                    await _fileService.DeleteFileSoft(file);
             }
         }
 
-        public void DeleteFilesHard(IEnumerable<MediaFile> files)
+        public async Task DeleteFilesHard(IEnumerable<MediaFile> files)
         {
             if (files != null)
             {
                 foreach (MediaFile file in files)
-                    _fileService.DeleteFile(file);
+                    await _fileService.DeleteFile(file);
             }
         }
 

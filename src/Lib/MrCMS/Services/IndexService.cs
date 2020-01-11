@@ -17,10 +17,11 @@ namespace MrCMS.Services
             _serviceProvider = serviceProvider;
         }
 
-        public void InitializeAllIndices()
+        public async Task InitializeAllIndices()
         {
             List<MrCMSIndex> mrCMSIndices = GetIndexes();
-            mrCMSIndices.ForEach(index => Reindex(index.TypeName));
+            foreach (var index in mrCMSIndices)
+                await Reindex(index.TypeName);
         }
 
         public IEnumerable<IIndexManagerBase> GetAllIndexManagers()

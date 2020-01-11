@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Data;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -45,7 +46,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public List<AdminTabBase<T>> GetEditTabs<T>(IServiceProvider serviceProvider, int id) where T : SystemEntity
         {
-            var entity = serviceProvider.GetRequiredService<ISession>().Get<T>(id);
+            var entity = serviceProvider.GetRequiredService<IGlobalRepository<T>>().GetDataSync(id);
             return GetEditTabs(serviceProvider, entity);
         }
 

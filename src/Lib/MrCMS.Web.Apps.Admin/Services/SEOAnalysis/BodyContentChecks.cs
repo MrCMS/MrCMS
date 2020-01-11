@@ -19,13 +19,13 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
             if (text.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
             {
                 yield return
-                    GetFacet("Body Content", SEOAnalysisStatus.Success,
+                    await GetFacet("Body Content", SEOAnalysisStatus.Success,
                         string.Format("Body content contains '{0}'", analysisTerm));
             }
             else
             {
                 yield return
-                    GetFacet("Body Content", SEOAnalysisStatus.Error,
+                    await GetFacet("Body Content", SEOAnalysisStatus.Error,
                         string.Format("Body content does not contain '{0}'", analysisTerm));
             }
         }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
@@ -20,6 +21,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         IList<ContentBlock> GetBlocks(int webpageId);
 
         IList<SortItem> GetSortItems(int webpageId);
-        void Sort(IList<SortItem> sortItems);
+        Task Sort(IList<SortItem> sortItems);
     }
 }

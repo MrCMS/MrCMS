@@ -38,7 +38,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
         public async Task Setup()
         {
             ErrorPages errorPages = GetErrorPages();
-            await _repository.Transact(async repo =>
+            await _repository.Transact(async (repo, ct) =>
              {
                  await repo.AddRange(GetBasicPages().ToList());
 
@@ -51,21 +51,21 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             siteSettings.Error403PageId = errorPages.Error403.Id;
             siteSettings.Error404PageId = errorPages.Error404.Id;
             siteSettings.Error500PageId = errorPages.Error500.Id;
-            _configurationProvider.SaveSettings(siteSettings);
+            await _configurationProvider.SaveSettings(siteSettings);
 
-            await _repository.Transact(async repo =>
+            await _repository.Transact(async (repo, ct) =>
             {
-                await repo.AddRange(GetAccountPages().ToList());
+                await repo.AddRange(GetAccountPages().ToList(), ct);
 
-                await repo.Add(GetSearchPage());
+                await repo.Add(GetSearchPage(), ct);
 
                 var webpages = repo.Query().ToList();
                 var publishOn = DateTime.UtcNow;
                 webpages.ForEach(webpage =>
                 {
                     webpage.PublishOn = publishOn;
-                    repo.Update(webpage);
                 });
+                await repo.UpdateRange(webpages, ct);
             });
         }
 

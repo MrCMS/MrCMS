@@ -51,7 +51,6 @@ namespace MrCMS.Services.Canonical
         {
             if (webpage == null)
                 return null;
-            webpage = webpage.Unproxy();
             var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
@@ -72,7 +71,6 @@ namespace MrCMS.Services.Canonical
         {
             if (webpage == null)
                 return null;
-            webpage = webpage.Unproxy();
             var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();

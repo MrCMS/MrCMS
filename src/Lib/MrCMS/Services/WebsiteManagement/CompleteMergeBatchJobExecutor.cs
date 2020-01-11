@@ -59,7 +59,7 @@ namespace MrCMS.Services.WebsiteManagement
 
         private void ApplyCustomMergeLogic(Webpage webpage, Webpage mergeInto)
         {
-            var type = webpage.Unproxy().GetType();
+            var type = webpage.GetType();
 
             if (!CompleteMergeTypes.ContainsKey(type))
             {

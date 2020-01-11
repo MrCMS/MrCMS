@@ -20,7 +20,7 @@ namespace MrCMS.Services.Auth
         {
             var previousSession = _getCurrentUserGuid.Get();
             await _authorisationService.SetAuthCookie(user, rememberMe);
-            _eventContext.Publish<IOnUserLoggedIn, UserLoggedInEventArgs>(new UserLoggedInEventArgs(user, previousSession));
+            await _eventContext.Publish<IOnUserLoggedIn, UserLoggedInEventArgs>(new UserLoggedInEventArgs(user, previousSession));
         }
     }
 }
