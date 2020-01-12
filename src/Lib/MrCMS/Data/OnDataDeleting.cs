@@ -10,14 +10,14 @@ namespace MrCMS.Data
 {
     public abstract class OnDataDeleting
     {
-        public abstract Task<IResult> OnDeleting(IHaveId entity, DbContext dbContext);
-        public abstract Task<IResult> OnDeleting(IEnumerable<IHaveId> entities, DbContext dbContext);
+        public abstract Task<IResult> OnDeleting(object entity, DbContext dbContext);
+        public abstract Task<IResult> OnDeleting(IEnumerable<object> entities, DbContext dbContext);
         public static readonly Task<IResult> Success = Task.FromResult((IResult)new Successful());
     }
-    public abstract class OnDataDeleting<T> : OnDataDeleting where T : class, IHaveId
+    public abstract class OnDataDeleting<T> : OnDataDeleting where T : class
     {
         public abstract Task<IResult> OnDeleting(T entity, DbContext dbContext);
-        public override Task<IResult> OnDeleting(IHaveId entity, DbContext dbContext)
+        public override Task<IResult> OnDeleting(object entity, DbContext dbContext)
         {
             return entity is T typed
                 ? OnDeleting(typed, dbContext)
@@ -36,9 +36,9 @@ namespace MrCMS.Data
             return await Success;
         }
 
-        public override Task<IResult> OnDeleting(IEnumerable<IHaveId> entities, DbContext dbContext)
+        public override Task<IResult> OnDeleting(IEnumerable<object> entities, DbContext dbContext)
         {
-            var haveIds = entities as IList<IHaveId> ?? entities.ToList();
+            var haveIds = entities as IList<object> ?? entities.ToList();
             var typed = haveIds.OfType<T>().ToList();
             return haveIds.Count == typed.Count
                 ? OnDeleting(typed, dbContext)

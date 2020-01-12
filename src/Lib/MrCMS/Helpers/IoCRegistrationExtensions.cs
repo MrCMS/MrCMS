@@ -7,6 +7,8 @@ using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
 using System;
 using System.Linq;
+using Lucene.Net.Index;
+using MrCMS.Events;
 
 namespace MrCMS.Helpers
 {
@@ -17,7 +19,8 @@ namespace MrCMS.Helpers
             var pairings = TypeHelper.GetSimpleInterfaceImplementationPairings();
             foreach (var interfaceType in pairings.Keys)
             {
-                container.AddScoped(interfaceType, pairings[interfaceType]);
+                if (container.All(x => x.ServiceType != interfaceType))
+                    container.AddScoped(interfaceType, pairings[interfaceType]);
             }
         }
 
@@ -42,6 +45,15 @@ namespace MrCMS.Helpers
             }
         }
 
+        public static void RegisterEvents(this IServiceCollection container)
+        {
+            container.AddSingleton<IEventContext, EventContext>();
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IEvent>())
+            {
+                if (container.All(x => x.ImplementationType != type))
+                    container.AddScoped(type);
+            }
+        }
         public static void RegisterSettings(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())

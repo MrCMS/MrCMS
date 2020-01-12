@@ -10,14 +10,14 @@ namespace MrCMS.Data
 {
     public abstract class OnDataAdding
     {
-        public abstract Task<IResult> OnAdding(IHaveId entity, DbContext context);
-        public abstract Task<IResult> OnAdding(IEnumerable<IHaveId> entities, DbContext context);
+        public abstract Task<IResult> OnAdding(object entity, DbContext context);
+        public abstract Task<IResult> OnAdding(IEnumerable<object> entities, DbContext context);
         public static readonly Task<IResult> Success = Task.FromResult((IResult)new Successful());
     }
-    public abstract class OnDataAdding<T> : OnDataAdding where T : class, IHaveId
+    public abstract class OnDataAdding<T> : OnDataAdding where T : class
     {
         public abstract Task<IResult> OnAdding(T entity, DbContext context);
-        public sealed override Task<IResult> OnAdding(IHaveId entity, DbContext context)
+        public sealed override Task<IResult> OnAdding(object entity, DbContext context)
         {
             return entity is T typed
                 ? OnAdding(typed, context)
@@ -36,9 +36,9 @@ namespace MrCMS.Data
             return await Success;
         }
 
-        public sealed override Task<IResult> OnAdding(IEnumerable<IHaveId> entities, DbContext context)
+        public sealed override Task<IResult> OnAdding(IEnumerable<object> entities, DbContext context)
         {
-            var haveIds = entities as IList<IHaveId> ?? entities.ToList();
+            var haveIds = entities as IList<object> ?? entities.ToList();
             var typed = haveIds.OfType<T>().ToList();
             return haveIds.Count == typed.Count
                 ? OnAdding(typed, context)

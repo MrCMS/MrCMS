@@ -8,7 +8,7 @@ using MrCMS.Entities;
 
 namespace MrCMS.Data
 {
-    public class ApplyPrePersistence<T> : IApplyPrePersistence<T> where T : class, IHaveId
+    public class ApplyPrePersistence<T> : IApplyPrePersistence<T> where T : class
     {
         private readonly IGetPrePersistence _getPrePersistence;
 
@@ -89,12 +89,4 @@ namespace MrCMS.Data
             return new Successful<ICollection<TSubtype>>(entities);
         }
     }
-
-    public interface IGetPrePersistence
-    {
-        IEnumerable<OnDataAdding> GetOnAdding<TSubtype>();
-        IEnumerable<OnDataUpdating> GetOnUpdating<TSubtype>();
-        IEnumerable<OnDataDeleting> GetOnDeleting<TSubtype>();
-    }
-
 }

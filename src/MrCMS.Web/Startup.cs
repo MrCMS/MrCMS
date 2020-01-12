@@ -34,6 +34,8 @@ using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
 using Microsoft.Extensions.Hosting;
+using MrCMS.Common;
+using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
@@ -61,6 +63,8 @@ namespace MrCMS.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var isInstalled = IsInstalled();
+            var allMrCmsAssemblies = TypeHelper.GetAllMrCMSAssemblies();
+            allMrCmsAssemblies.Add(typeof(SqliteProvider).Assembly);
 
             // services always required
             services.RegisterAllSimplePairings();
@@ -68,6 +72,10 @@ namespace MrCMS.Web
             services.SelfRegisterAllConcreteTypes();
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            var reflectionHelper = new ReflectionHelper(allMrCmsAssemblies.ToArray());
+            services.AddSingleton<IReflectionHelper>(reflectionHelper);
+            services.AddSingleton(reflectionHelper);
 
             var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
 
@@ -121,10 +129,12 @@ namespace MrCMS.Web
 
             var fileProvider = services.AddFileProvider(Environment, appContext);
 
+            services.AddMrCMSData(Configuration);
             services.RegisterSettings();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
             services.RegisterTasks();
+            services.RegisterEvents();
 
             services.AddMvcForMrCMS(appContext, fileProvider);
 

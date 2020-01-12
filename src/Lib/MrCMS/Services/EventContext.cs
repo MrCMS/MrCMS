@@ -12,33 +12,13 @@ namespace MrCMS.Services
     public class EventContext : IEventContext
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly HashSet<Type> _disabledEvents = new HashSet<Type>();
 
         public EventContext(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        //public static IEventContext Instance
-        //{
-        //    get
-        //    {
-        //        try
-        //        {
-        //            //return MrCMSApplication.Get<IEventContext>();
-        //            return null;
-        //        }
-        //        catch
-        //        {
-        //            return new InstallationEventContext();
-        //        }
-        //    }
-        //}
-
-        public HashSet<Type> DisabledEvents
-        {
-            get { return _disabledEvents; }
-        }
+        public HashSet<Type> DisabledEvents { get; } = new HashSet<Type>();
 
         public Task Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
         {

@@ -13,5 +13,7 @@ namespace MrCMS.Web.Apps.Articles.Pages
 
         [DisplayName("Author")]
         public virtual User User { get; set; }
+
+        public int UserId { get; set; }
     }
 }

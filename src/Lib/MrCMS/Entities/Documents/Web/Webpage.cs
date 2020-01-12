@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 
@@ -121,5 +122,13 @@ namespace MrCMS.Entities.Documents.Web
         public virtual bool DoNotCache { get; set; }
 
         public virtual IList<ContentBlock> ContentBlocks { get; set; }
+    }
+
+    public class FrontEndAllowedRoles : IJoinTable
+    {
+        public Webpage Webpage { get; set; }
+        public int WebpageId { get; set; }
+        public UserRole UserRole { get; set; }
+        public int UserRoleId { get; set; }
     }
 }
