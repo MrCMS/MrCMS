@@ -10,7 +10,7 @@ namespace MrCMS.Entities.People
     {
         public UserRole()
         {
-            FrontEndWebpages = new HashSet<Webpage>();
+            FrontEndAllowedRoles = new List<FrontEndAllowedRole>();
             ACLRoles = new List<ACLRole>();
             UserToRoles = new List<UserToRole>();
         }
@@ -24,7 +24,7 @@ namespace MrCMS.Entities.People
 
         public virtual bool IsAdmin { get { return Name == Administrator; } }
 
-        public virtual ISet<Webpage> FrontEndWebpages { get; set; }
+        public virtual IList<FrontEndAllowedRole> FrontEndAllowedRoles { get; set; }
         public virtual IList<ACLRole> ACLRoles { get; set; }
     }
 }

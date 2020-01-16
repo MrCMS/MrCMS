@@ -16,15 +16,15 @@ namespace MrCMS.Tests.Services.ImportExport
     //                       {
     //                           new DocumentImportDTO
     //                               {
-    //                                   Name = "Test", UrlSegment = "test", DocumentType = typeof (BasicMappedWebpage).Name
+    //                                   Name = "Test", UrlSegment = "test", DocumentClrType = typeof (BasicMappedWebpage).Name
     //                               },
     //                           new DocumentImportDTO
     //                               {
-    //                                   Name = "Child", UrlSegment = "child", ParentUrl = "test", DocumentType = typeof (BasicMappedWebpage).Name
+    //                                   Name = "Child", UrlSegment = "child", ParentUrl = "test", DocumentClrType = typeof (BasicMappedWebpage).Name
     //                               },
     //                           new DocumentImportDTO
     //                               {
-    //                                   Name = "Another Child", UrlSegment = "another-child", ParentUrl = "child", DocumentType = typeof (BasicMappedWebpage).Name
+    //                                   Name = "Another Child", UrlSegment = "another-child", ParentUrl = "child", DocumentClrType = typeof (BasicMappedWebpage).Name
     //                               }
     //                       };
 

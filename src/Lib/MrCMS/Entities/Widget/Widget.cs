@@ -23,7 +23,7 @@ namespace MrCMS.Entities.Widget
         [DisplayName("Custom Layout (leave blank to use default)")]
         public virtual string CustomLayout { get; set; }
 
-        public virtual string WidgetType
+        public virtual string WidgetClrType
         {
             get { return GetType().FullName; }
         }

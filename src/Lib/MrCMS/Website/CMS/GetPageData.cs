@@ -19,7 +19,7 @@ namespace MrCMS.Website.CMS
 
         public PageData GetData(string url, string method)
         {
-            Webpage webpage = _getWebpageForPath.GetWebpage(url);
+            Webpage webpage = _getWebpageForPath.GetWebpage(url).UnProxy();
             if (webpage == null)
             {
                 return null;

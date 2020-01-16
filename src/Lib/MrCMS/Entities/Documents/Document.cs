@@ -38,7 +38,7 @@ namespace MrCMS.Entities.Documents
         //    get { return Parent == null ? 0 : Parent.Id; }
         //}
 
-        public virtual string DocumentType
+        public virtual string DocumentClrType
         {
             get { return GetType().Name; }
         }

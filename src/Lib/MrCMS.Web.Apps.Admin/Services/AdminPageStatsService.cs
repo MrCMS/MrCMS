@@ -19,9 +19,9 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IList<WebpageStats> GetSummary()
         {
-            var allByType = _repository.Readonly().GroupBy(x => x.DocumentType)
+            var allByType = _repository.Readonly().GroupBy(x => x.DocumentClrType)
                 .Select(x => new { type = x.Key, count = x.Count() }).ToList();
-            var publishedByType = _repository.Readonly().Where(x => x.Published).GroupBy(x => x.DocumentType)
+            var publishedByType = _repository.Readonly().Where(x => x.Published).GroupBy(x => x.DocumentClrType)
                 .Select(x => new { type = x.Key, count = x.Count() }).ToDictionary(x => x.type, x => x.count);
 
             return allByType.Select(x => new WebpageStats
@@ -36,8 +36,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             //    .Where(x => x.Site.Id == _site.Id)
             //    .SelectList(
             //        builder =>
-            //            builder.SelectGroup(() => webpageAlias.DocumentType)
-            //                .WithAlias(() => countAlias.DocumentType)
+            //            builder.SelectGroup(() => webpageAlias.DocumentClrType)
+            //                .WithAlias(() => countAlias.DocumentClrType)
             //                .SelectCount(() => webpageAlias.Id)
             //                .WithAlias(() => countAlias.NumberOfPages)
             //                .SelectSubQuery(
@@ -45,7 +45,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             //                        .Where(
             //                            webpage =>
             //                                webpage.Site.Id == _site.Id &&
-            //                                webpage.DocumentType == webpageAlias.DocumentType &&
+            //                                webpage.DocumentClrType == webpageAlias.DocumentClrType &&
             //                               !webpage.Published && !webpage.IsDeleted)
             //                        .ToRowCountQuery())
             //                .WithAlias(() => countAlias.NumberOfUnPublishedPages))

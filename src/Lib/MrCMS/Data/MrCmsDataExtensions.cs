@@ -12,27 +12,31 @@ namespace MrCMS.Data
     public static class MrCmsDataExtensions
     {
         public static IServiceCollection AddMrCMSData(this IServiceCollection serviceCollection,
+            IReflectionHelper reflectionHelper,
             IConfiguration configSection,
             Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = null,
             ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
         {
             serviceCollection.Configure<DatabaseSettings>(configSection.GetSection("Database"));
-            serviceCollection.AddSingleton<IDatabaseProvider>(provider =>
+            serviceCollection.AddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<DatabaseSettings>>();
-                if (options.Value != null)
-                {
-                    var reflectionHelper = provider.GetRequiredService<IReflectionHelper>();
-                    var type = reflectionHelper.GetTypeByFullName(options.Value.DatabaseProviderType);
-                    return (IDatabaseProvider)provider.GetRequiredService(type);
-                }
-                return null;
+                if (options.Value == null) return null;
+                var reflectionHelper = provider.GetRequiredService<IReflectionHelper>();
+                var type = reflectionHelper.GetTypeByFullName(options.Value.DatabaseProviderType);
+                return (IDatabaseProvider)provider.GetRequiredService(type);
             });
+            foreach (var type in reflectionHelper.GetAllConcreteImplementationsOf<IDatabaseProvider>())
+            {
+                serviceCollection.AddSingleton(type);
+            }
+
 
             serviceCollection.AddDbContext<WebsiteContext>((provider, builder) =>
             {
                 var databaseProvider = provider.GetRequiredService<IDatabaseProvider>();
                 databaseProvider.SetupAction(provider, builder);
+                builder.UseLazyLoadingProxies();
                 if (optionsAction == null)
                     return;
                 optionsAction(provider, builder);

@@ -65,7 +65,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         public object GetAdditionalPropertyModel(int id)
         {
             var widget = GetWidget(id);
-            return GetAdditionalPropertyModel(widget?.WidgetType);
+            return GetAdditionalPropertyModel(widget?.WidgetClrType);
         }
 
         public async Task<Widget> UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel)

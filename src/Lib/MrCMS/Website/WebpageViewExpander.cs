@@ -21,7 +21,7 @@ namespace MrCMS.Website
 
             if (webpage != null)
             {
-                context.Values[Key] = webpage.DocumentType;
+                context.Values[Key] = webpage.DocumentClrType;
             }
         }
 

@@ -129,7 +129,7 @@ namespace MrCMS.Web
 
             var fileProvider = services.AddFileProvider(Environment, appContext);
 
-            services.AddMrCMSData(Configuration);
+            services.AddMrCMSData(reflectionHelper, Configuration);
             services.RegisterSettings();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();

@@ -28,7 +28,7 @@ namespace MrCMS.Services
         {
             var webpageCounts =
                 _repository.Readonly()
-                    .GroupBy(x => x.DocumentType).Select(g => new
+                    .GroupBy(x => x.DocumentClrType).Select(g => new
                     {
                         Type = g.Key,
                         Count = g.Count()

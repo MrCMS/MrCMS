@@ -7,7 +7,7 @@ using MrCMS.Web.Apps.Admin.Services;
 
 namespace MrCMS.Web.Apps.Admin.Mapping
 {
-    public class FrontEndAllowedRoleMapper : IValueResolver<PermissionsTabViewModel, Webpage, ISet<UserRole>>
+    public class FrontEndAllowedRoleMapper : IValueResolver<PermissionsTabViewModel, Webpage, IList<FrontEndAllowedRole>>
     {
         private readonly IDocumentRolesAdminService _documentRolesAdminService;
 
@@ -16,15 +16,15 @@ namespace MrCMS.Web.Apps.Admin.Mapping
             _documentRolesAdminService = documentRolesAdminService;
         }
 
-        public ISet<UserRole> Resolve(PermissionsTabViewModel source, Webpage destination, ISet<UserRole> destMember, ResolutionContext context)
+        public IList<FrontEndAllowedRole> Resolve(PermissionsTabViewModel source, Webpage destination, IList<FrontEndAllowedRole> destMember, ResolutionContext context)
         {
             // if should not be set
             if (!source.HasCustomPermissions || source.InheritFrontEndRolesFromParent || source.PermissionType != WebpagePermissionType.RoleBased)
             {
                 // return empty collection
-                return new HashSet<UserRole>();
+                return new List<FrontEndAllowedRole>();
             }
-            return _documentRolesAdminService.GetFrontEndRoles(source.FrontEndRoles, source.InheritFrontEndRolesFromParent);
+            return _documentRolesAdminService.GetFrontEndRoles(destination, source.FrontEndRoles, source.InheritFrontEndRolesFromParent);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
                 _webpageRepository.Query()
-                    .Where(page => validParentTypeNames.Contains(page.DocumentType))
+                    .Where(page => validParentTypeNames.Contains(page.DocumentClrType))
                     .ToList();
 
             var webpages = potentialParents.Distinct()
@@ -139,7 +139,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 return await _webpageUrlService.Suggest(new SuggestParams
                 {
-                    DocumentType = page.DocumentType,
+                    DocumentType = page.DocumentClrType,
                     PageName = page.Name,
                     Template = page.PageTemplate?.Id,
                     UseHierarchy = true,
@@ -150,7 +150,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             return await _webpageUrlService.Suggest(new SuggestParams
             {
-                DocumentType = page.DocumentType,
+                DocumentType = page.DocumentClrType,
                 PageName = $"{parentModel.NewUrl}/{page.Name}",
                 Template = page.PageTemplate?.Id,
                 UseHierarchy = false,

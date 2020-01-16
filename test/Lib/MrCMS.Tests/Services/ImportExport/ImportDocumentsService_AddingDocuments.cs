@@ -35,7 +35,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                    {
     //                                                                        Name = "Test",
     //                                                                        UrlSegment = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    }
     //                                                            });
@@ -56,7 +56,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                    {
     //                                                                        Name = "Test",
     //                                                                        UrlSegment = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    },
     //                                                                new DocumentImportDTO
@@ -64,7 +64,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                        Name = "Child",
     //                                                                        UrlSegment = "child",
     //                                                                        ParentUrl = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    }
     //                                                            });
@@ -85,14 +85,14 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                        Name = "Child",
     //                                                                        UrlSegment = "child",
     //                                                                        ParentUrl = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    },
     //                                                                new DocumentImportDTO
     //                                                                    {
     //                                                                        Name = "Test",
     //                                                                        UrlSegment = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    }
     //                                                            });
@@ -113,7 +113,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                        Name = "Another Child",
     //                                                                        UrlSegment = "another-child",
     //                                                                        ParentUrl = "child",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    },
     //                                                                new DocumentImportDTO
@@ -121,14 +121,14 @@ namespace MrCMS.Tests.Services.ImportExport
     //                                                                        Name = "Child",
     //                                                                        UrlSegment = "child",
     //                                                                        ParentUrl = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    },
     //                                                                new DocumentImportDTO
     //                                                                    {
     //                                                                        Name = "Test",
     //                                                                        UrlSegment = "test",
-    //                                                                        DocumentType =
+    //                                                                        DocumentClrType =
     //                                                                            typeof (BasicMappedWebpage).Name
     //                                                                    }
     //                                                            });

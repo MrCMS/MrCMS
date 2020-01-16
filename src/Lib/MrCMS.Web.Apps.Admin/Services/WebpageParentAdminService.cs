@@ -30,7 +30,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
                 _webpageRepository.Query()
-                    .Where(page => validParentTypeNames.Contains(page.DocumentType))
+                    .Where(page => validParentTypeNames.Contains(page.DocumentClrType))
                     .ToList();
 
             List<SelectListItem> result = potentialParents.Distinct()

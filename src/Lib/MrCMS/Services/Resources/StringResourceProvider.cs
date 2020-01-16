@@ -226,7 +226,7 @@ namespace MrCMS.Services.Resources
             lock (LockObject)
             {
                 var allResourcesFromDb =
-                    _repository.Readonly().ToHashSet();
+                    _repository.Query().ToHashSet();
                 var groupBy =
                     allResourcesFromDb.GroupBy(resource => resource.Key);
                 return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());

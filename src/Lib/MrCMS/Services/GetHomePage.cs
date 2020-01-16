@@ -19,7 +19,7 @@ namespace MrCMS.Services
         public Webpage Get()
         {
             return _cacheInHttpContext.GetForRequest("current.home-page", () => _repository
-                .Readonly()
+                .Query()
                 .OrderBy(webpage => webpage.DisplayOrder)
                 .FirstOrDefault(document => document.ParentId == null && document.Published));
         }

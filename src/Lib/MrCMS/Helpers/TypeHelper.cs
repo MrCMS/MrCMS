@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace MrCMS.Helpers
 {
@@ -380,17 +382,36 @@ namespace MrCMS.Helpers
             return false;
         }
 
-        [Obsolete("Remnant from NHibernate implementation")]
-        public static T Unproxy<T>(this T document) where T : SystemEntity
-        {
-            //var proxy = document as INHibernateProxy;
-            //if (proxy != null)
-            //{
-            //    return (T)proxy.HibernateLazyInitializer.GetImplementation();
-            //}
+        //[Obsolete("Remnant from NHibernate implementation")]
+        //public static T UnProxy<T>(this T proxyObject) where T : class
+        //{
+        //    if (proxyObject == null)
+        //        return null;
 
-            return document;
-        }
+        //    var property = proxyObject.GetType().GetProperty("LazyLoader");
+        //    if (property == null)
+        //        return proxyObject;
+
+        //    if (!property.PropertyType.IsImplementationOf(typeof(ILazyLoader)))
+        //        return proxyObject;
+
+        //    //var loader = property.GetValue(proxyObject) as ILazyLoader;
+        //    //loader.Load(proxyObject);
+
+        //    //var proxyTargetAccessor = 
+        //    //var proxyCreationEnabled = proxyTargetAccessor.DynProxyGetTarget()
+        //    //try
+        //    //{
+        //    //    context.Configuration.ProxyCreationEnabled = false;
+        //    //    T poco = context.Entry(proxyObject).CurrentValues.ToObject() as T;
+        //    //    return poco;
+        //    //}
+        //    //finally
+        //    //{
+        //    //    context.Configuration.ProxyCreationEnabled = proxyCreationEnabled;
+        //    //}
+        //    return proxyObject;
+        //}
 
         /// <summary>
         /// Converts a value to a destination type.

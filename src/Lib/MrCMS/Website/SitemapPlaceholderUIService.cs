@@ -49,7 +49,7 @@ namespace MrCMS.Website
             if (child == null)
                 return string.Empty;
 
-            if (child.DocumentType == typeof(SitemapPlaceholder).FullName)
+            if (child.DocumentClrType == typeof(SitemapPlaceholder).FullName)
                 GetTheLastRedirectChildLink(child);
 
             return _getLiveUrl.GetAbsoluteUrl(child);

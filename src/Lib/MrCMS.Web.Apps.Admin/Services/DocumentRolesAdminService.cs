@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -17,7 +18,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             _repository = repository;
         }
 
-        public ISet<UserRole> GetFrontEndRoles(string frontEndRoles, bool inheritFromParent)
+        public IList<FrontEndAllowedRole> GetFrontEndRoles(Webpage webpage, string frontEndRoles,
+            bool inheritFromParent)
         {
             if (frontEndRoles == null)
             {
@@ -26,14 +28,15 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             if (inheritFromParent)
             {
-                return new HashSet<UserRole>();
+                return new List<FrontEndAllowedRole>();
             }
 
             var roleNames =
                 frontEndRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
                     x => !string.IsNullOrWhiteSpace(x));
 
-            return roleNames.Select(GetRole).Where(x => x != null).ToHashSet();
+            return roleNames.Select(GetRole).Where(x => x != null)
+                .Select(userRole => new FrontEndAllowedRole {Webpage = webpage, UserRole = userRole}).ToList();
         }
 
         private UserRole GetRole(string name)

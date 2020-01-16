@@ -13,8 +13,8 @@ namespace MrCMS.Events
         {
             if (entity.LayoutArea.PageWidgetSorts.Contains(entity))
                 entity.LayoutArea.PageWidgetSorts.Remove(entity);
-            if (entity.Webpage.PageWidgetSorts.Contains(entity))
-                entity.Webpage.PageWidgetSorts.Remove(entity);
+            //if (entity.Webpage.PageWidgetSorts.Contains(entity))
+            //    entity.Webpage.PageWidgetSorts.Remove(entity);
             if (entity.Widget.PageWidgetSorts.Contains(entity))
                 entity.Widget.PageWidgetSorts.Remove(entity);
 

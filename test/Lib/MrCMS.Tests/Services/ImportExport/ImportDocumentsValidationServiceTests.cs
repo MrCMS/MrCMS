@@ -91,7 +91,7 @@ namespace MrCMS.Tests.Services.ImportExport
         //    items.First().RevealInNavigation.Should().BeTrue();
         //    items.First().RequireSSL.Should().BeFalse();
         //    items.First().PublishDate.Should().Be(currentTime);
-        //    items.First().DocumentType.Should().BeEquivalentTo("StubWebpage");
+        //    items.First().DocumentClrType.Should().BeEquivalentTo("StubWebpage");
         //}
 
         //[Fact]

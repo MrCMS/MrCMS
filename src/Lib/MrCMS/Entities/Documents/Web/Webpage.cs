@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 
@@ -24,7 +23,7 @@ namespace MrCMS.Entities.Documents.Web
             IncludeInSitemap = true;
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
-            FrontEndAllowedRoles = new HashSet<UserRole>();
+            FrontEndAllowedRoles = new List<FrontEndAllowedRole>();
             ContentBlocks = new List<ContentBlock>();
         }
 
@@ -103,14 +102,14 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
 
-        public virtual ISet<UserRole> FrontEndAllowedRoles { get; set; }
+        public virtual IList<FrontEndAllowedRole> FrontEndAllowedRoles { get; set; }
         public virtual string Password { get; set; }
         public virtual Guid? PasswordAccessToken { get; set; }
 
         [DisplayName("Roles")]
         public virtual string FrontEndRoles
         {
-            get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.Name)); }
+            get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.UserRole.Name)); }
         }
 
         public virtual IList<UrlHistory> Urls { get; set; }
@@ -122,13 +121,5 @@ namespace MrCMS.Entities.Documents.Web
         public virtual bool DoNotCache { get; set; }
 
         public virtual IList<ContentBlock> ContentBlocks { get; set; }
-    }
-
-    public class FrontEndAllowedRoles : IJoinTable
-    {
-        public Webpage Webpage { get; set; }
-        public int WebpageId { get; set; }
-        public UserRole UserRole { get; set; }
-        public int UserRoleId { get; set; }
     }
 }

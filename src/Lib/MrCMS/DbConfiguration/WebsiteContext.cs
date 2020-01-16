@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
 {
@@ -23,7 +25,9 @@ namespace MrCMS.DbConfiguration
             // use non-pluralised tablenames
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
-                entity.SetTableName(entity.DisplayName());
+                //entity.SetTableName((entity.BaseType ?? entity).DisplayName());
+                if (entity.BaseType == null && entity.ClrType.IsImplementationOf(typeof(IHaveId))) 
+                    entity.SetPrimaryKey(entity.FindProperty(nameof(IHaveId.Id)));
 
                 // Replace column names            
                 foreach (var property in entity.GetProperties())

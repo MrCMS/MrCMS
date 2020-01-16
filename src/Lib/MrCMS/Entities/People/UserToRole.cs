@@ -4,9 +4,9 @@ namespace MrCMS.Entities.People
 {
     public class UserToRole : IJoinTable
     {
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public int UserId { get; set; }
-        public UserRole Role { get; set; }
+        public virtual UserRole Role { get; set; }
         public int RoleId { get; set; }
     }
 }

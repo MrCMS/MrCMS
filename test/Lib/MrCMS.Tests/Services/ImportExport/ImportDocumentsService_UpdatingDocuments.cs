@@ -57,7 +57,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //    [Fact]
     //    public void ShouldCallSetTags()
     //    {
-    //        var dto = new DocumentImportDTO { UrlSegment = "test", Name = "New", DocumentType = typeof(BasicMappedWebpage).Name };
+    //        var dto = new DocumentImportDTO { UrlSegment = "test", Name = "New", DocumentClrType = typeof(BasicMappedWebpage).Name };
 
     //        _importDocumentsService.ImportDocumentsFromDTOs(new HashSet<DocumentImportDTO> { dto });
 
@@ -67,7 +67,7 @@ namespace MrCMS.Tests.Services.ImportExport
     //    [Fact]
     //    public void ShouldCallSetUrlHistories()
     //    {
-    //        var dto = new DocumentImportDTO { UrlSegment = "test", Name = "New", DocumentType = typeof(BasicMappedWebpage).Name };
+    //        var dto = new DocumentImportDTO { UrlSegment = "test", Name = "New", DocumentClrType = typeof(BasicMappedWebpage).Name };
 
     //        _importDocumentsService.ImportDocumentsFromDTOs(new HashSet<DocumentImportDTO> { dto });
 
