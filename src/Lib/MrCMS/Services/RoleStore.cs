@@ -12,11 +12,11 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
-    public class RoleStore : IQueryableRoleStore<UserRole>//, IRoleClaimStore<UserRole>
+    public class RoleStore : IQueryableRoleStore<Role>//, IRoleClaimStore<UserRole>
     {
-        private readonly IGlobalRepository<UserRole> _repository;
+        private readonly IGlobalRepository<Role> _repository;
 
-        public RoleStore(IGlobalRepository<UserRole> repository)
+        public RoleStore(IGlobalRepository<Role> repository)
         {
             _repository = repository;
         }
@@ -26,61 +26,61 @@ namespace MrCMS.Services
             //throw new NotImplementedException();
         }
 
-        public async Task<IdentityResult> CreateAsync(UserRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
         {
             await _repository.Add(role);
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> UpdateAsync(UserRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
         {
             await _repository.Update(role);
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DeleteAsync(UserRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
         {
             await _repository.Delete(role);
             return IdentityResult.Success;
         }
 
-        public Task<string> GetRoleIdAsync(UserRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleIdAsync(Role role, CancellationToken cancellationToken)
         {
             return Task.FromResult(role?.Id.ToString());
         }
 
-        public Task<string> GetRoleNameAsync(UserRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleNameAsync(Role role, CancellationToken cancellationToken)
         {
             return Task.FromResult(role?.Name);
         }
 
-        public Task SetRoleNameAsync(UserRole role, string roleName, CancellationToken cancellationToken)
+        public Task SetRoleNameAsync(Role role, string roleName, CancellationToken cancellationToken)
         {
             role.Name = roleName;
             return UpdateAsync(role, cancellationToken);
         }
 
-        public Task<string> GetNormalizedRoleNameAsync(UserRole role, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
         {
             return Task.FromResult(role?.Name);
         }
 
-        public Task SetNormalizedRoleNameAsync(UserRole role, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedRoleNameAsync(Role role, string normalizedName, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
-        public Task<UserRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        public Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            return int.TryParse(roleId, out int id) ? _repository.Load(id) : Task.FromResult<UserRole>(null);
+            return int.TryParse(roleId, out int id) ? _repository.Load(id) : Task.FromResult<Role>(null);
         }
 
-        public Task<UserRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        public Task<Role> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
             return _repository.Query()
                 .FirstOrDefaultAsync(x => x.Name == normalizedRoleName, cancellationToken);
         }
 
-        public IQueryable<UserRole> Roles => _repository.Query<UserRole>();
+        public IQueryable<Role> Roles => _repository.Query<Role>();
     }
 }

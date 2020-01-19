@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
@@ -20,8 +21,8 @@ namespace MrCMS.Services.CloneSite
         public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             var eventContext = new NullEventContext();
-            var fromProvider = new SqlConfigurationProvider(_repository, @from, eventContext);// _legacySettingsProvider);
-            var toProvider = new SqlConfigurationProvider(_repository, @to, eventContext);//, _legacySettingsProvider);
+            var fromProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@from), eventContext);// _legacySettingsProvider);
+            var toProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@to), eventContext);//, _legacySettingsProvider);
             var siteSettingsBases = fromProvider.GetAllSiteSettings();
             foreach (var settings in siteSettingsBases)
             {

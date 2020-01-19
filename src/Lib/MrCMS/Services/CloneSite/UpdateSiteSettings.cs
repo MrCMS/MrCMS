@@ -22,9 +22,9 @@ namespace MrCMS.Services.CloneSite
         public Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             var nullEventContext = new NullEventContext();
-            var fromProvider = new SqlConfigurationProvider(_repository, @from, nullEventContext);
+            var fromProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@from), nullEventContext);
             var fromSiteSettings = fromProvider.GetSiteSettings<SiteSettings>();
-            var toProvider = new SqlConfigurationProvider(_repository, @to, nullEventContext);
+            var toProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@to), nullEventContext);
             var toSiteSettings = toProvider.GetSiteSettings<SiteSettings>();
 
             var error403 = siteCloneContext.FindNew<Webpage>(fromSiteSettings.Error403PageId);

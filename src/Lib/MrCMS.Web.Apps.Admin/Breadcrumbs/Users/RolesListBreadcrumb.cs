@@ -3,7 +3,7 @@ using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 
 namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Users
 {
-    public class RolesListBreadcrumb : ChildListBreadcrumb<UsersBreadcrumb, UserRole>
+    public class RolesListBreadcrumb : ChildListBreadcrumb<UsersBreadcrumb, Role>
     {
         public RolesListBreadcrumb() : base(1)
         {

@@ -94,7 +94,7 @@
                             @user.Name
                         </td>
                         <td>
-                            @(user.UserToRoles.Any() ? string.Join(", ", user.UserToRoles.Select(role => role.Role.Name)) : "-")
+                            @(user.UserToRoles.Any() ? string.Join(", ", user.UserToRoles.Select(role => role.UserRole.Name)) : "-")
                         </td>
                         <td>
                             @user.CreatedOn

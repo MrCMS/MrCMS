@@ -44,7 +44,7 @@ namespace MrCMS.Apps
             return services.AddMvc(options =>
                 {
                     // add custom binder to beginning of collection
-                    options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
+                    options.ModelBinderProviders.Insert(0, new SystemEntityModelBinderProvider());
                     options.Filters.Add<EndRequestHandlerFilter>();
                     options.Filters.Add<ProfilingAsyncActionFilter<WebpageCachingFilter>>();
                     options.Filters.Add<ActionProfilingFilter>();

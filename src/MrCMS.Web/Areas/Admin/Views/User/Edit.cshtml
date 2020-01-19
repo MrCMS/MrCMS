@@ -10,7 +10,7 @@
     ViewBag.Title = "Edit | " + user.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
-    var userRoles = (ViewData["AvailableRoles"] as IEnumerable<UserRole> ?? Enumerable.Empty<UserRole>()).ToList();
+    var userRoles = (ViewData["AvailableRoles"] as IEnumerable<Role> ?? Enumerable.Empty<Role>()).ToList();
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var tabs = EditTabsService.GetEditTabs(Html, user);
 
@@ -105,7 +105,7 @@
                                 for (var index = 0; index < userRoles.Count; index++)
                                 {
                                     var role = userRoles[index];
-                                    bool isChecked = user.UserToRoles.Any(x => x.RoleId == role.Id);
+                                    bool isChecked = user.UserToRoles.Any(x => x.UserRoleId == role.Id);
 
                                     @Html.CheckBox("Role-" + role.Id, isChecked, new { })
                                     <text>&nbsp;

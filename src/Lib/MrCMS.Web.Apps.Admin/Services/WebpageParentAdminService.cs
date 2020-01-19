@@ -1,20 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public class WebpageParentAdminService : IWebpageParentAdminService
     {
         private readonly IRepository<Webpage> _webpageRepository;
+        private readonly IActivePagesLoader _activePagesLoader;
 
-        public WebpageParentAdminService(IRepository<Webpage> webpageRepository)
+        public WebpageParentAdminService(IRepository<Webpage> webpageRepository, IActivePagesLoader activePagesLoader)
         {
             _webpageRepository = webpageRepository;
+            _activePagesLoader = activePagesLoader;
         }
 
         public Webpage GetWebpage(int id)
@@ -22,7 +26,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _webpageRepository.LoadSync(id);
         }
 
-        public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
+        public async Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage)
         {
             List<DocumentMetadata> validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
 
@@ -33,8 +37,15 @@ namespace MrCMS.Web.Apps.Admin.Services
                     .Where(page => validParentTypeNames.Contains(page.DocumentClrType))
                     .ToList();
 
-            List<SelectListItem> result = potentialParents.Distinct()
-                .Where(page => !page.ActivePages.Contains(webpage))
+            var webpages = new List<Webpage>();
+
+            foreach (var potentialParent in potentialParents.Distinct())
+            {
+                if(!(await _activePagesLoader.GetActivePages(potentialParent)).Contains(webpage))
+                    webpages.Add(potentialParent);
+            }
+
+            List<SelectListItem> result = webpages
                 .OrderBy(x => x.Name)
                 .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
                     page => page.Id.ToString(),

@@ -11,8 +11,6 @@ namespace MrCMS.Entities.Widget
     {
         protected Widget()
         {
-            ShownOn = new List<ShownWidget>();
-            HiddenOn = new List<HiddenWidget>();
         }
 
         public virtual LayoutArea LayoutArea { get; set; }
@@ -51,10 +49,10 @@ namespace MrCMS.Entities.Widget
         [DisplayName("Show on child pages")]
         public virtual bool IsRecursive { get; set; }
 
-        public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
+        //public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
-        public virtual IList<HiddenWidget> HiddenOn { get; set; }
-        public virtual IList<ShownWidget> ShownOn { get; set; }
+        //public virtual IList<HiddenWidget> HiddenOn { get; set; }
+        //public virtual IList<ShownWidget> ShownOn { get; set; }
 
         public virtual bool HasProperties
         {

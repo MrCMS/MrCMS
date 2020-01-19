@@ -63,6 +63,10 @@ namespace MrCMS.Website
                 return null;
             }
 
+            if (type.IsImplementationOf(typeof(IHaveSite)))
+                return await context.HttpContext.RequestServices.GetRequiredService<IDataReader>()
+                           .Get(type, id) ??
+                       GetDefault(type);
             return await context.HttpContext.RequestServices.GetRequiredService<IDataReader>()
                        .GlobalGet(type, id) ??
                    GetDefault(type);

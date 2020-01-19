@@ -41,7 +41,7 @@ namespace MrCMS.Web.Apps.Core.Services
 
             var loginAttempt = data.Entity() as LoginAttempt;
 
-            if (!_userToRoleRepository.Readonly().Any(x => x.UserId == loginAttempt.UserId && _roleSettings.SendNotificationEmailRoles.Contains(x.RoleId)))
+            if (!_userToRoleRepository.Readonly().Any(x => x.UserId == loginAttempt.UserId && _roleSettings.SendNotificationEmailRoles.Contains(x.UserRoleId)))
                 return;
 
             QueuedMessage message;

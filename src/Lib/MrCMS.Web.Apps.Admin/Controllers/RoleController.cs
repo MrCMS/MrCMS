@@ -31,7 +31,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(RoleACL), RoleACL.Add)]
         public PartialViewResult Add()
         {
-            var model = new UserRole();
+            var model = new Role();
             return PartialView(model);
         }
 

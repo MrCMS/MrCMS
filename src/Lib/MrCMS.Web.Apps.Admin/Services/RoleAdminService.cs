@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<UserRole> GetAllRoles()
+        public IEnumerable<Role> GetAllRoles()
         {
             return _roleService.GetAllRoles();
         }
@@ -40,7 +40,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             if (_roleService.GetRoleByName(model.Name) != null)
                 return new AddRoleResult(false, string.Format("{0} already exists.", model.Name));
-            var role = _mapper.Map<UserRole>(model);
+            var role = _mapper.Map<Role>(model);
             await _roleService.AddRole(role);
             return new AddRoleResult(true, null);
         }
@@ -50,7 +50,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _mapper.Map<UpdateRoleModel>(GetRole(id));
         }
 
-        private UserRole GetRole(int id)
+        private Role GetRole(int id)
         {
             return _roleService.GetRole(id);
         }

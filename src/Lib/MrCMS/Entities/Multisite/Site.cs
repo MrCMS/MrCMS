@@ -31,7 +31,7 @@ namespace MrCMS.Entities.Multisite
         {
             if (entity.GetType().GetCustomAttributes(typeof(AdminUISiteAgnosticAttribute), true).Any())
                 return true;
-            return entity.Site != null && entity.Site.Id == Id;
+            return entity.SiteId != Id;
         }
     }
 }

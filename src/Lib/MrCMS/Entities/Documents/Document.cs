@@ -24,7 +24,7 @@ namespace MrCMS.Entities.Documents
         [DisplayName("Display Priority")]
         public virtual int DisplayOrder { get; set; }
 
-        public virtual string UrlSegment { get; set; }
+        public abstract string UrlSegment { get; set; }
 
         public virtual IList<DocumentTag> DocumentTags { get; set; }
 

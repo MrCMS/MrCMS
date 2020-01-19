@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MrCMS.Website
 {
-    public class SystemEntityBinder : IModelBinder
+    public class SystemEntityModelBinder : IModelBinder
     {
         public async Task BindModelAsync(ModelBindingContext bindingContext)
         {

@@ -28,15 +28,15 @@ namespace MrCMS.Services
         public async Task Publish(Type eventType, object args)
         {
             //using (MiniProfiler.Current.Step("Publishing " + eventType.FullName))
+            using var scope = _serviceProvider.CreateScope();
+
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(eventType).Where(type => !IsDisabled(type)))
             {
-                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(eventType).Where(type => !IsDisabled(type)))
+                //using (MiniProfiler.Current.Step("Invoking " + @event.GetType().FullName))
                 {
-                    //using (MiniProfiler.Current.Step("Invoking " + @event.GetType().FullName))
-                    {
-                        MethodInfo methodInfo = type.GetMethod("Execute", new[] {args.GetType()});
-                        var instance = _serviceProvider.GetRequiredService(type);
-                        await (Task)methodInfo.Invoke(instance, new[] {args});
-                    }
+                    MethodInfo methodInfo = type.GetMethod("Execute", new[] {args.GetType()});
+                    var instance = scope.ServiceProvider.GetRequiredService(type);
+                    await (Task)methodInfo.Invoke(instance, new[] {args});
                 }
             }
         }

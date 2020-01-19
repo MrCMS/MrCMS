@@ -10,6 +10,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 using MrCMS.Events;
 using MrCMS.Helpers;
+using MrCMS.Services.CloneSite;
 using MrCMS.Settings;
 
 namespace MrCMS.Tasks
@@ -42,7 +43,7 @@ namespace MrCMS.Tasks
 
             _triggerUrls.Trigger(sites.Select(site =>
             {
-                var siteSettings = new SqlConfigurationProvider(_repositoryResolver.GetGlobalRepository<Setting>(), site, new NullEventContext()).GetSiteSettings<SiteSettings>();
+                var siteSettings = new SqlConfigurationProvider(_repositoryResolver.GetGlobalRepository<Setting>(), SiteId.GetForSite(site), new NullEventContext()).GetSiteSettings<SiteSettings>();
                 return _urlHelper.AbsoluteAction("Update", "Sitemap",
                     new RouteValueDictionary { [siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword }, site);
             }));

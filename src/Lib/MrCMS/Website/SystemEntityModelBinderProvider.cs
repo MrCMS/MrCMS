@@ -6,7 +6,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Website
 {
-    public class SystemEntityBinderProvider : IModelBinderProvider
+    public class SystemEntityModelBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
@@ -15,7 +15,7 @@ namespace MrCMS.Website
             if (context.Metadata.ModelType.IsImplementationOf(typeof(SystemEntity)))
             {
                 // this will just try and load the entity by id
-                return new BinderTypeModelBinder(typeof(SystemEntityBinder));
+                return new BinderTypeModelBinder(typeof(SystemEntityModelBinder));
             }
 
             return null;

@@ -26,8 +26,8 @@ namespace MrCMS.Services
             }
             if (!webpage.FrontEndAllowedRoles.Any()) return true;
             if (webpage.FrontEndAllowedRoles.Any() && user == null) return false;
-            return user != null && user.UserToRoles.Select(y => y.RoleId)
-                       .Intersect(webpage.FrontEndAllowedRoles.Select(y => y.UserRoleId)).Any();
+            return user != null && user.UserToRoles.Select(y => y.UserRoleId)
+                       .Intersect(webpage.FrontEndAllowedRoles.Select(y => y.RoleId)).Any();
         }
     }
 }

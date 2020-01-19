@@ -8,6 +8,7 @@ using MrCMS.Web.Apps.Admin.Controllers;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
@@ -133,35 +134,22 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void LayoutAreaController_SortWidgets_ReturnsGetWidgetsOfArea()
-        {
-            var layoutArea = A.Fake<LayoutArea>();
-            var widgets = new List<Widget>();
-            A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
-            A.CallTo(() => _layoutAreaAdminService.GetArea(123)).Returns(layoutArea);
-
-            _layoutAreaController.SortWidgets(123)
-                                .Model.As<PageWidgetSortModel>()
-                                .Widgets.Should()
-                                .BeEquivalentTo(widgets);
-        }
-
-        [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ReturnsViewResult()
         {
             _layoutAreaController.SortWidgetsForPage(123, 2).Should().BeOfType<ViewResult>();
         }
 
         [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_IsResultOfCallToGetSortModel()
+        public async Task LayoutAreaController_SortWidgetsForPage_IsResultOfCallToGetSortModel()
         {
             var newLayoutArea = GetNewLayoutArea();
             var pageWidgetSortModel = new PageWidgetSortModel();
             A.CallTo(() => _layoutAreaAdminService.GetSortModel(newLayoutArea, 2)).Returns(pageWidgetSortModel);
             A.CallTo(() => _layoutAreaAdminService.GetArea(123)).Returns(newLayoutArea);
-            _layoutAreaController.SortWidgetsForPage(123, 2)
-                .Model.Should()
-                .Be(pageWidgetSortModel);
+
+            var result = (await _layoutAreaController.SortWidgetsForPage(123, 2));
+
+            result.Model.Should().Be(pageWidgetSortModel);
         }
 
         private LayoutArea GetNewLayoutArea()

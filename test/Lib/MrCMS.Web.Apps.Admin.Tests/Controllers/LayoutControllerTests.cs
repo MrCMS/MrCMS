@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,13 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 
         public LayoutControllerTests()
         {
-            _layoutController = new LayoutController(_layoutAdminService){TempData=new MockTempDataDictionary()};
+            _layoutController = new LayoutController(_layoutAdminService) { TempData = new MockTempDataDictionary() };
         }
 
         [Fact]
         public void LayoutController_AddGet_ShouldReturnAnAddLayoutModel()
         {
-            var model = new AddLayoutModel();  
+            var model = new AddLayoutModel();
             A.CallTo(() => _layoutAdminService.GetAddLayoutModel(123)).Returns(model);
             var actionResult = _layoutController.Add_Get(123);
 
@@ -34,23 +35,23 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 
 
         [Fact]
-        public void LayoutController_AddPost_ShouldCallSaveDocument()
+        public async Task LayoutController_AddPost_ShouldCallSaveDocument()
         {
             var model = new AddLayoutModel();
 
-            _layoutController.Add(model);
+            await _layoutController.Add(model);
 
             A.CallTo(() => _layoutAdminService.Add(model)).MustHaveHappened();
         }
 
         [Fact]
-        public void LayoutController_AddPost_ShouldRedirectToEdit()
+        public async Task LayoutController_AddPost_ShouldRedirectToEdit()
         {
-            var layout = new Layout {Id = 123};
+            var layout = new Layout { Id = 123 };
             var model = new AddLayoutModel();
             A.CallTo(() => _layoutAdminService.Add(model)).Returns(layout);
 
-            var result = _layoutController.Add(model);
+            var result = await _layoutController.Add(model);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(123);
@@ -58,12 +59,12 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 
 
         [Fact]
-        public void LayoutController_EditGet_ShouldReturnUpdateModelAsModel()
+        public async Task LayoutController_EditGet_ShouldReturnUpdateModelAsModel()
         {
             var model = new UpdateLayoutModel();
             A.CallTo(() => _layoutAdminService.GetEditModel(123)).Returns(model);
 
-            var result = _layoutController.Edit_Get(123);
+            var result = await _layoutController.Edit_Get(123);
 
             result.Model.Should().Be(model);
         }
@@ -71,7 +72,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void LayoutController_EditPost_ShouldCallUpdate()
         {
-            var model = new UpdateLayoutModel {Id = 1};
+            var model = new UpdateLayoutModel { Id = 1 };
 
             _layoutController.Edit(model);
 
@@ -81,7 +82,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void LayoutController_EditPost_ShouldRedirectToEdit()
         {
-            var model = new UpdateLayoutModel {Id = 1};
+            var model = new UpdateLayoutModel { Id = 1 };
 
             var result = _layoutController.Edit(model);
 
@@ -93,7 +94,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         [Fact]
         public void LayoutController_Sort_ShouldBeAListOfSortItems()
         {
-            var sortItems = new List<SortItem> {};
+            var sortItems = new List<SortItem> { };
             A.CallTo(() => _layoutAdminService.GetSortItems(123)).Returns(sortItems);
 
             var viewResult = _layoutController.Sort(123);

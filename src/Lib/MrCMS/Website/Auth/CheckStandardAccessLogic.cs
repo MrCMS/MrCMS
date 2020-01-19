@@ -48,7 +48,7 @@ namespace MrCMS.Website.Auth
         private StandardLogicCheckResult GetResult(User user)
         {
             // if they're an admin they're always allowed
-            if (_userRoleManager.IsInRoleAsync(user, UserRole.Administrator).ExecuteSync()) 
+            if (_userRoleManager.IsInRoleAsync(user, Role.Administrator).ExecuteSync()) 
                 return new StandardLogicCheckResult { CanAccess = true };
 
             // if ACL isn't on, they're not allowed because they're not an admin

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -20,7 +21,7 @@ namespace MrCMS.Website
             _getWidgetDisplayInfo = getWidgetDisplayInfo;
         }
 
-        public void Process(ViewResult result, Webpage webpage)
+        public async Task Process(ViewResult result, Webpage webpage)
         {
 
             if (string.IsNullOrWhiteSpace(result.ViewName))
@@ -37,7 +38,7 @@ namespace MrCMS.Website
                 if (layout != null)
                 {
                     result.ViewData[LayoutFile] = layout.GetLayoutName();
-                    result.ViewData[WidgetData] = _getWidgetDisplayInfo.GetWidgets(layout, webpage);
+                    result.ViewData[WidgetData] = await _getWidgetDisplayInfo.GetWidgets(layout, webpage);
                 }
             }
         }

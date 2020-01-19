@@ -40,7 +40,7 @@
                     </td>
                     @foreach (var role in operation.Roles)
                     {
-                        if (role.RoleName != UserRole.Administrator)
+                        if (role.RoleName != Role.Administrator)
                         {
                         <td>
                             @Html.CheckBox(string.Format("acl-{0}-{1}", role.Role.Name, operation.Key), role.IsAllowed)

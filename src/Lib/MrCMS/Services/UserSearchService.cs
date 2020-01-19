@@ -21,7 +21,7 @@ namespace MrCMS.Services
 
         public List<SelectListItem> GetAllRoleOptions()
         {
-            var roles = _dataReader.GlobalReadonly<UserRole>().OrderBy(x => x.Name).ToList();
+            var roles = _dataReader.GlobalReadonly<Role>().OrderBy(x => x.Name).ToList();
 
             return roles.BuildSelectItemList(role => role.Name, role => role.Id.ToString(), emptyItemText: "Any role");
         }
@@ -52,7 +52,7 @@ namespace MrCMS.Services
 
             if (searchQuery.UserRoleId != null)
             {
-                query = query.Where(x => x.UserToRoles.Any(y => y.RoleId == searchQuery.UserRoleId));
+                query = query.Where(x => x.UserToRoles.Any(y => y.UserRoleId == searchQuery.UserRoleId));
             }
 
             return query.ToPagedList(searchQuery.Page);

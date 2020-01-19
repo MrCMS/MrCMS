@@ -11,6 +11,7 @@ using MrCMS.Tests.Stubs;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using MrCMS.Data;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms
@@ -26,17 +27,21 @@ namespace MrCMS.Tests.Shortcodes.Forms
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
         private readonly SiteSettings _siteSettings;
         private readonly IHtmlHelper _htmlHelper;
+        private IRepository<FormProperty> _repository;
 
         public DefaultFormRendererTests()
         {
             _formCollection = new NameValueCollection();
             _elementRendererManager = A.Fake<IElementRendererManager>();
+            _repository = A.Fake<IRepository<FormProperty>>();
             _labelRenderer = A.Fake<ILabelRenderer>();
             _validationMessageRenderer = A.Fake<IValidationMessaageRenderer>();
             _submittedMessageRenderer = A.Fake<ISubmittedMessageRenderer>();
             _htmlHelper = A.Fake<IHtmlHelper>();
             _siteSettings = new SiteSettings();
-            _defaultFormRenderer = new DefaultFormRenderer(_elementRendererManager, _labelRenderer,
+            _defaultFormRenderer = new DefaultFormRenderer(_elementRendererManager,
+                _repository,
+                _labelRenderer,
                                                            _validationMessageRenderer, _submittedMessageRenderer, _siteSettings);
         }
 

@@ -6,7 +6,7 @@ namespace MrCMS.Entities.People
     {
         public virtual User User { get; set; }
         public int UserId { get; set; }
-        public virtual UserRole Role { get; set; }
-        public int RoleId { get; set; }
+        public virtual Role UserRole { get; set; }
+        public int UserRoleId { get; set; }
     }
 }

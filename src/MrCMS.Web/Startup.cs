@@ -130,6 +130,7 @@ namespace MrCMS.Web
             var fileProvider = services.AddFileProvider(Environment, appContext);
 
             services.AddMrCMSData(reflectionHelper, Configuration);
+            services.RegisterCurrentSite();
             services.RegisterSettings();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
@@ -226,7 +227,7 @@ namespace MrCMS.Web
                 >();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+                options.AddPolicy("admin", builder => builder.RequireRole(Role.Administrator));
             });
         }
 

@@ -10,6 +10,8 @@ namespace MrCMS.Tests.Stubs
         {
             Versions = versions;
         }
+
+        public override string UrlSegment { get; set; }
     }
     public class StubUniquePage : IUniquePage
     {

@@ -11,7 +11,7 @@ namespace MrCMS.Events
 
         public override Task<IResult> OnDeleting(User entity, DbContext dbContext)
         {
-            //foreach (UserRole userRole in entity.UserToRoles)
+            //foreach (UserRole userRole in entity.UserRoles)
             //    userRole.Users.Remove(entity);
             //entity.Roles.Clear();
 

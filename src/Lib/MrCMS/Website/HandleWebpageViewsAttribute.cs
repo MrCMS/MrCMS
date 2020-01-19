@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
@@ -8,13 +9,13 @@ namespace MrCMS.Website
 {
     public class HandleWebpageViewsAttribute : ActionFilterAttribute
     {
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var result = filterContext.Result as ViewResult;
-            if (result == null) return;
-            var webpage = result.Model as Webpage;
-            if (webpage == null) return;
-            filterContext.HttpContext.RequestServices.GetRequiredService<IProcessWebpageViews>().Process(result, webpage);
+            var actionExecutedContext = await next();
+
+            var result = actionExecutedContext.Result as ViewResult;
+            if (!(result?.Model is Webpage webpage)) return;
+            await actionExecutedContext.HttpContext.RequestServices.GetRequiredService<IProcessWebpageViews>().Process(result, webpage);
         }
     }
 }

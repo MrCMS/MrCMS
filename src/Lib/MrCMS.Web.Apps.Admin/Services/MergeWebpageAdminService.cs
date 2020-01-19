@@ -10,6 +10,7 @@ using MrCMS.Web.Apps.Admin.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MrCMS.Website;
 
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -20,19 +21,27 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IStringResourceProvider _resourceProvider;
         private readonly IWebpageUrlService _webpageUrlService;
         private readonly ICreateMergeBatch _createMergeBatch;
+        private readonly IActivePagesLoader _activePagesLoader;
 
-        public MergeWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateMergeBatch createMergeBatch)
+        public MergeWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateMergeBatch createMergeBatch, IActivePagesLoader activePagesLoader)
         {
             _webpageRepository = webpageRepository;
             _resourceProvider = resourceProvider;
             _webpageUrlService = webpageUrlService;
             _createMergeBatch = createMergeBatch;
+            _activePagesLoader = activePagesLoader;
         }
-        public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
+        public async Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage)
         {
             var children = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id).ToList();
             // get the matching pages for all types
-            var potentialParents = children.Select(child => GetValidParentWebpages(child).ToHashSet()).ToHashSet();
+            var potentialParents = new HashSet<IEnumerable<Webpage>>();
+            ;
+            foreach (var child in children)
+            {
+                var validParentWebpages = await GetValidParentWebpages(child);
+                potentialParents.Add(validParentWebpages);
+            }
 
             var validForAll = potentialParents.SelectMany(x => x).Distinct()
                 .Where(x => x != webpage && potentialParents.All(y => y.Contains(x))).ToHashSet();
@@ -45,7 +54,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return items;
         }
 
-        private IOrderedEnumerable<Webpage> GetValidParentWebpages(Webpage webpage)
+        private async Task<IOrderedEnumerable<Webpage>> GetValidParentWebpages(Webpage webpage)
         {
             List<DocumentMetadata> validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
 
@@ -56,18 +65,22 @@ namespace MrCMS.Web.Apps.Admin.Services
                     .Where(page => validParentTypeNames.Contains(page.DocumentClrType))
                     .ToList();
 
-            var webpages = potentialParents.Distinct()
-                .Where(page => !page.ActivePages.Contains(webpage))
-                .OrderBy(x => x.Name);
-            return webpages;
+            var validParentWebpages = new List<Webpage>();
+            foreach (var potentialParent in potentialParents)
+            {
+                var activePages = await _activePagesLoader.GetActivePages(potentialParent);
+                if (activePages.Any(x => x.Id == potentialParent.Id))
+                    validParentWebpages.Add(potentialParent);
+            }
+            return validParentWebpages.OrderBy(x => x.Name);
         }
 
-        public MergeWebpageResult Validate(MergeWebpageModel moveWebpageModel)
+        public async Task<MergeWebpageResult> Validate(MergeWebpageModel moveWebpageModel)
         {
             var webpage = GetWebpage(moveWebpageModel);
             var parent = GetParent(moveWebpageModel);
 
-            var validParentWebpages = GetValidParentWebpages(webpage);
+            var validParentWebpages = await GetValidParentWebpages(webpage);
             var valid = webpage != null && parent != null && validParentWebpages.Contains(parent);
 
             return new MergeWebpageResult
@@ -104,11 +117,12 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
 
-            var parentActivePages = (parent.ActivePages.Reverse()).ToList();
+            var parentActivePages = await _activePagesLoader.GetActivePages(parent);
+            parentActivePages.Reverse();
             List<MergeWebpageChangedPageModel> models = new List<MergeWebpageChangedPageModel>();
             foreach (var page in webpageHierarchy)
             {
-                var activePages = page.ActivePages.ToList();
+                var activePages = await _activePagesLoader.GetActivePages(page);
                 var indexOf = activePages.IndexOf(webpage);
                 var childActivePages = activePages.Take(indexOf).ToList();
                 activePages.Reverse();

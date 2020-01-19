@@ -11,11 +11,11 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         AddLayoutModel GetAddLayoutModel(int? id);
         Layout GetLayout(int? id);
-        Layout Add(AddLayoutModel layout);
+        Task<Layout> Add(AddLayoutModel layout);
         UpdateLayoutModel GetEditModel(int id);
-        List<LayoutArea> GetLayoutAreas(int id);
-        void Update(UpdateLayoutModel layout);
-        Layout Delete(int id);
+        Task<List<LayoutArea>> GetLayoutAreas(int id);
+        Task Update(UpdateLayoutModel layout);
+        Task<Layout> Delete(int id);
         List<SortItem> GetSortItems(int? parent);
         Task SetOrders(List<SortItem> items);
         Task<bool> UrlIsValidForLayout(string urlSegment, int? id);

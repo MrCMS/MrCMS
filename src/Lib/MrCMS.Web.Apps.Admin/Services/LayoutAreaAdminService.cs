@@ -9,6 +9,8 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Website;
+using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -18,15 +20,18 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IRepository<Widget> _widgetRepository;
         private readonly IRepository<PageWidgetSort> _pageWidgetSortRepository;
+        private readonly IWidgetLoader _widgetLoader;
         private readonly IMapper _mapper;
 
         public LayoutAreaAdminService(IRepository<LayoutArea> layoutAreaRepository, IRepository<Webpage> webpageRepository, IRepository<Widget> widgetRepository, IRepository<PageWidgetSort> pageWidgetSortRepository,
+            IWidgetLoader widgetLoader,
             IMapper mapper)
         {
             _layoutAreaRepository = layoutAreaRepository;
             _webpageRepository = webpageRepository;
             _widgetRepository = widgetRepository;
             _pageWidgetSortRepository = pageWidgetSortRepository;
+            _widgetLoader = widgetLoader;
             _mapper = mapper;
         }
 
@@ -52,9 +57,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return GetArea(id)?.Layout;
         }
 
-        public IList<Widget> GetWidgets(int id)
+        public async Task<IList<Widget>> GetWidgets(int id)
         {
-            return GetArea(id)?.GetWidgets();
+            return await _widgetLoader.GetWidgets(GetArea(id), null);
         }
 
         private static void EnsureLayoutAreaIsSet(LayoutArea layoutArea)
@@ -126,12 +131,6 @@ namespace MrCMS.Web.Apps.Admin.Services
                         Widget = widget
                     };
                 widgetSort.Order = model.Order;
-                if (!layoutArea.PageWidgetSorts.Contains(widgetSort))
-                    layoutArea.PageWidgetSorts.Add(widgetSort);
-                if (!webpage.PageWidgetSorts.Contains(widgetSort))
-                    webpage.PageWidgetSorts.Add(widgetSort);
-                if (!widget.PageWidgetSorts.Contains(widgetSort))
-                    widget.PageWidgetSorts.Add(widgetSort);
                 if (isNew)
                     await _pageWidgetSortRepository.Add(widgetSort);
                 else
@@ -143,16 +142,15 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task ResetSorting(int id, int pageId)
         {
-            var webpage = _webpageRepository.LoadSync(pageId, x => x.PageWidgetSorts);
-            var list = webpage.PageWidgetSorts.Where(sort => sort.LayoutArea?.Id == id).ToList();
+            var list = await _pageWidgetSortRepository.Query().Where(sort => sort.LayoutAreaId == id && sort.WebpageId == pageId).ToListAsync();
 
             await _pageWidgetSortRepository.DeleteRange(list);
         }
 
-        public PageWidgetSortModel GetSortModel(LayoutArea area, int pageId)
+        public async Task<PageWidgetSortModel> GetSortModel(LayoutArea area, int? pageId)
         {
-            var webpage = _webpageRepository.LoadSync(pageId);
-            return new PageWidgetSortModel(area.GetWidgets(webpage), area, webpage);
+            var webpage = pageId.HasValue ? await _webpageRepository.Load(pageId.Value) : null;
+            return new PageWidgetSortModel(await _widgetLoader.GetWidgets(area, webpage), area, webpage);
         }
 
     }

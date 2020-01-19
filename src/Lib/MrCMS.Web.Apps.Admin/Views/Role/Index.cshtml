@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Entities.People
-@model System.Collections.Generic.IEnumerable<UserRole>
+@model System.Collections.Generic.IEnumerable<Role>
 @{
     ViewBag.Title = "Roles";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -18,7 +18,7 @@
         </th>
         <th></th>
     </tr>
-    @foreach (UserRole role in Model)
+    @foreach (Role role in Model)
     {
         if (role.IsAdmin)
         {

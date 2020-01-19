@@ -8,8 +8,8 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IMoveWebpageAdminService
     {
-        IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
-        MoveWebpageResult Validate(MoveWebpageModel moveWebpageModel);
+        Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage);
+        Task<MoveWebpageResult> Validate(MoveWebpageModel moveWebpageModel);
         Task<MoveWebpageConfirmationModel> GetConfirmationModel(MoveWebpageModel model);
         Task<MoveWebpageResult> Confirm(MoveWebpageModel model);
         MoveWebpageModel GetModel(Webpage webpage);

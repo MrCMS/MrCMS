@@ -16,18 +16,18 @@ namespace MrCMS.Tests.Services
     public class RoleServiceTests : MrCMSTest
     {
         private RoleService _roleService;
-        private IGlobalRepository<UserRole> _repository;
+        private IGlobalRepository<Role> _repository;
 
         public RoleServiceTests()
         {
-            _repository = A.Fake<IGlobalRepository<UserRole>>();
+            _repository = A.Fake<IGlobalRepository<Role>>();
             _roleService = new RoleService(_repository);
         }
 
         [Fact]
         public void RoleService_GetAllRoles_ReturnsAllRolesSavedToSession()
         {
-            var roles = Enumerable.Range(1, 10).Select(i => new UserRole { Name = "Role " + i });
+            var roles = Enumerable.Range(1, 10).Select(i => new Role { Name = "Role " + i });
             A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(roles.ToArray());
 
             _roleService.GetAllRoles().Should().HaveCount(10);
@@ -36,7 +36,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void RoleService_GetAllRoles_ReturnsTheRolesThatWereSavedInOrder()
         {
-            var roles = Enumerable.Range(1, 10).Select(i => new UserRole { Name = "Role " + i });
+            var roles = Enumerable.Range(1, 10).Select(i => new Role { Name = "Role " + i });
             A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(roles.ToArray());
 
             _roleService.GetAllRoles().Should().OnlyContain(role => roles.Contains(role));
@@ -45,7 +45,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task RoleService_AddRole_PersistsRoleToTheSession()
         {
-            var userRole = new UserRole();
+            var userRole = new Role();
 
             await _roleService.AddRole(userRole);
 
@@ -55,7 +55,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task RoleService_UpdateRole_PersistsRoleToTheSession()
         {
-            var userRole = new UserRole();
+            var userRole = new Role();
 
             await _roleService.UpdateRole(userRole);
 
@@ -65,7 +65,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void RoleService_GetRoleByName_ShouldReturnTheRoleWithTHeMatchingName()
         {
-            var userRoles = Enumerable.Range(1, 10).Select(i => new UserRole { Name = "Role " + i }).ToList();
+            var userRoles = Enumerable.Range(1, 10).Select(i => new Role { Name = "Role " + i }).ToList();
             A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(userRoles.ToArray());
 
             var roleByName = _roleService.GetRoleByName("Role 3");
@@ -76,7 +76,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task RoleService_DeleteRole_ShouldDeleteAStandardRole()
         {
-            var userRole = new UserRole { Name = "Standard Role" };
+            var userRole = new Role { Name = "Standard Role" };
 
             await _roleService.DeleteRole(userRole);
 
@@ -86,7 +86,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task RoleService_DeleteRole_ShouldNotDeleteAdminRole()
         {
-            var userRole = new UserRole { Name = "Administrator" };
+            var userRole = new Role { Name = "Administrator" };
 
             await _roleService.DeleteRole(userRole);
 
@@ -98,8 +98,8 @@ namespace MrCMS.Tests.Services
         {
             var admin = new User { IsActive = true };
             var userToRoles = new List<UserToRole>();
-            var userRole = new UserRole { Name = "Administrator", UserToRoles = userToRoles };
-            userToRoles.Add(new UserToRole { User = admin, Role = userRole });
+            var userRole = new Role { Name = "Administrator", UserRoles = userToRoles };
+            userToRoles.Add(new UserToRole { User = admin, UserRole = userRole });
             A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(userRole);
 
             var isOnlyAdmin = _roleService.IsOnlyAdmin(admin);
@@ -113,9 +113,9 @@ namespace MrCMS.Tests.Services
             var admin1 = new User { IsActive = true };
             var admin2 = new User { IsActive = true };
             var userToRoles = new List<UserToRole>();
-            var userRole = new UserRole { Name = "Administrator", UserToRoles = userToRoles };
-            userToRoles.Add(new UserToRole { User = admin1, Role = userRole });
-            userToRoles.Add(new UserToRole { User = admin2, Role = userRole });
+            var userRole = new Role { Name = "Administrator", UserRoles = userToRoles };
+            userToRoles.Add(new UserToRole { User = admin1, UserRole = userRole });
+            userToRoles.Add(new UserToRole { User = admin2, UserRole = userRole });
             A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(userRole);
 
             var isOnlyAdmin = _roleService.IsOnlyAdmin(admin1);
@@ -126,7 +126,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void RoleService_Search_ShouldReturnAllRolesIfNoTermIsSet()
         {
-            var roles = Enumerable.Range(1, 9).Select(i => new UserRole { Name = "Role " + i });
+            var roles = Enumerable.Range(1, 9).Select(i => new Role { Name = "Role " + i });
 
             A.CallTo(() => _repository.Readonly()).ReturnsAsAsyncQueryable(roles.ToArray());
 
@@ -136,7 +136,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void RoleService_Search_ShouldFilterByTermPassedIn()
         {
-            var roles = Enumerable.Range(1, 9).Select(i => new UserRole { Name = "Role " + i });
+            var roles = Enumerable.Range(1, 9).Select(i => new Role { Name = "Role " + i });
 
             A.CallTo(() => _repository.Readonly()).ReturnsAsAsyncQueryable(roles.ToArray());
 
@@ -146,7 +146,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void RoleService_Search_ShouldFilterByTermPassedCaseInsensitive()
         {
-            var roles = Enumerable.Range(1, 9).Select(i => new UserRole { Name = "Role " + i });
+            var roles = Enumerable.Range(1, 9).Select(i => new Role { Name = "Role " + i });
 
             A.CallTo(() => _repository.Readonly()).ReturnsAsAsyncQueryable(roles.ToArray());
 

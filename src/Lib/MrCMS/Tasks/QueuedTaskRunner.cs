@@ -8,6 +8,7 @@ using MrCMS.Data;
 using MrCMS.Entities.Settings;
 using MrCMS.Events;
 using MrCMS.Helpers;
+using MrCMS.Services.CloneSite;
 using MrCMS.Settings;
 
 namespace MrCMS.Tasks
@@ -38,7 +39,7 @@ namespace MrCMS.Tasks
             var sites = await _taskQueuer.GetPendingQueuedTaskSites();
             _triggerUrls.Trigger(sites.Select(site =>
             {
-                var siteSettings = new SqlConfigurationProvider(_repository, site, new NullEventContext()).GetSiteSettings<SiteSettings>();
+                var siteSettings = new SqlConfigurationProvider(_repository, SiteId.GetForSite(site), new NullEventContext()).GetSiteSettings<SiteSettings>();
 
                 return _urlHelper.AbsoluteAction("ExecuteQueuedTasks", "TaskExecution",
                     new RouteValueDictionary { [siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword }, site);

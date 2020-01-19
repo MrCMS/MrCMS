@@ -5,7 +5,7 @@
     ViewBag.Title = Html.Resource("Security Options");
     var authRoleSettings = ViewData["auth-role-settings"] as AuthRoleSettings;
     var securitySettings = ViewData["security-settings"] as SecuritySettings;
-    var roles = ViewData["roles"] as List<UserRole>;
+    var roles = ViewData["roles"] as List<Role>;
 }
 
 <h1>@Html.Resource("Security Options")</h1>

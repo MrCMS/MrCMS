@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MrCMS.Data
 {
-    public class QueryableRepository<T> where T : class
+    public class QueryableRepository<T> : IQueryableRepository<T> where T : class
     {
         protected readonly DbContext Context;
 
@@ -31,7 +28,8 @@ namespace MrCMS.Data
         {
             return Readonly().OfType<TSubtype>();
         }
-        protected QueryableRepository(IServiceProvider provider)
+
+        public QueryableRepository(IServiceProvider provider)
             : this(provider.GetRequiredService<IMrCmsContextResolver>().Resolve())
         {
         }

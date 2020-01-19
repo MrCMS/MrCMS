@@ -9,7 +9,7 @@
     ViewBag.Title = "Edit | " + Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
-    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+    var userRoles = ViewData["AvailableRoles"] as IEnumerable<Role>;
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var tabs = EditTabsService.GetEditTabs(Html, Model);
 }

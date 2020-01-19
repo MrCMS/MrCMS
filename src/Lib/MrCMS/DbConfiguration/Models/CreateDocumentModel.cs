@@ -25,12 +25,16 @@ namespace MrCMS.DbConfiguration.Models
 
                 document.HasMany(x => x.DocumentTags);
             });
-            builder.Entity<Webpage>(webpage => { webpage.Ignore(x => x.ActivePages); });
+            //builder.Entity<Webpage>(webpage => { webpage.Ignore(x => x.ActivePages); });
+            builder.Entity<PageWidgetSort>();
+            builder.Entity<HiddenWidget>(hiddenWidget => hiddenWidget.ToTable("HiddenWidgets"));
+            builder.Entity<ShownWidget>(shownWidget => shownWidget.ToTable("ShownWidgets"));
 
             builder.Entity<DocumentTag>(documentTag => documentTag.HasKey(x => new { x.DocumentId, x.TagId }));
             builder.Entity<FrontEndAllowedRole>(frontEndAllowedRole =>
             {
-                frontEndAllowedRole.HasKey(x => new {x.UserRoleId, x.WebpageId});
+                frontEndAllowedRole.HasKey(x => new { x.RoleId, x.WebpageId });
+                frontEndAllowedRole.Property(x => x.RoleId).HasColumnName("UserRoleId");
                 frontEndAllowedRole.HasOne(x => x.Webpage).WithMany(x => x.FrontEndAllowedRoles);
             });
 

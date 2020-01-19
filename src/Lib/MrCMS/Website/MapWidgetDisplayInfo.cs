@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
@@ -10,10 +13,14 @@ namespace MrCMS.Website
     public class MapWidgetDisplayInfo : IMapWidgetDisplayInfo
     {
         private readonly IMapWidgetData _mapWidgetData;
+        private readonly IRepository<PageWidgetSort> _pageWidgetSortRepository;
+        private readonly IWidgetLoader _widgetLoader;
 
-        public MapWidgetDisplayInfo(IMapWidgetData mapWidgetData)
+        public MapWidgetDisplayInfo(IMapWidgetData mapWidgetData, IRepository<PageWidgetSort> pageWidgetSortRepository, IWidgetLoader widgetLoader)
         {
             _mapWidgetData = mapWidgetData;
+            _pageWidgetSortRepository = pageWidgetSortRepository;
+            _widgetLoader = widgetLoader;
         }
 
         public IDictionary<string, WidgetDisplayInfo> MapInfo(IDictionary<LayoutArea, IList<Widget>> widgetData)
@@ -33,19 +40,25 @@ namespace MrCMS.Website
 
         }
 
-        public IDictionary<string, WidgetDisplayInfo> MapInfo(IEnumerable<LayoutArea> layoutAreas, Webpage webpage)
+        public async Task<IDictionary<string, WidgetDisplayInfo>> MapInfo(IEnumerable<LayoutArea> layoutAreas,
+            Webpage webpage)
         {
-            return layoutAreas.ToDictionary(area => area.AreaName,
-                area =>
-                {
-                    return new WidgetDisplayInfo
+            var pageWidgetSorts = await _pageWidgetSortRepository.Readonly().Where(x => x.WebpageId == webpage.Id).ToListAsync();
+            var dictionary = new Dictionary<string, WidgetDisplayInfo>();
+
+            foreach (var area in layoutAreas)
+            {
+                dictionary[area.AreaName] = 
+                     new WidgetDisplayInfo
                     {
                         Id = area.Id,
                         Name = area.AreaName,
-                        HasCustomSort = webpage.PageWidgetSorts?.Any(x => x.LayoutArea?.Id == area.Id) == true,
-                        Widgets = _mapWidgetData.MapData(area.GetWidgets(webpage))
+                        HasCustomSort = pageWidgetSorts?.Any(x => x.LayoutAreaId == area.Id) == true,
+                        Widgets = _mapWidgetData.MapData(await _widgetLoader.GetWidgets(area,webpage))
                     };
-                });
+            }
+
+            return dictionary;
         }
     }
 }

@@ -5,7 +5,7 @@
     ViewBag.Title = Html.Resource("Security Options");
     var authRoleSettings = ViewData["auth-role-settings"] as AuthRoleSettings;
     var securitySettings = ViewData["security-settings"] as SecuritySettings;
-    var roles = ViewData["roles"] as List<UserRole>;
+    var roles = ViewData["roles"] as List<Role>;
 }
 
 <form asp-controller="SecurityOptions" asp-action="Index" method="post">

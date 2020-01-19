@@ -64,7 +64,7 @@ namespace MrCMS.Entities.People
 
         public virtual bool IsAdmin
         {
-            get { return UserToRoles != null && UserToRoles.Any(role => role.Role.Name == UserRole.Administrator); }
+            get { return UserToRoles != null && UserToRoles.Any(role => role.UserRole.Name == Role.Administrator); }
         }
 
         public static HashSet<Type> OwnedObjectTypes

@@ -31,14 +31,14 @@ namespace MrCMS.Installation.Services
 
             await _userManagementService.AddUser(user);
 
-            var adminUserRole = new UserRole
+            var adminUserRole = new Role
             {
-                Name = UserRole.Administrator
+                Name = Role.Administrator
             };
 
-            var userToRole = new UserToRole { Role = adminUserRole, User = user };
+            var userToRole = new UserToRole { UserRole = adminUserRole, User = user };
             user.UserToRoles = new List<UserToRole> { userToRole };
-            adminUserRole.UserToRoles = new List<UserToRole> { userToRole };
+            adminUserRole.UserRoles = new List<UserToRole> { userToRole };
 
             await _roleService.AddRole(adminUserRole);
         }

@@ -49,7 +49,7 @@
                                 @foreach (var role in rule.Roles)
                                 {
                                     var key = string.Format("{0}-{1}", role.Id, rule.Key);
-                                    if (role.Name != UserRole.Administrator)
+                                    if (role.Name != Role.Administrator)
                                     {
                                         <td>
 

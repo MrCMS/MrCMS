@@ -10,6 +10,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -19,18 +20,21 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IStringResourceProvider _resourceProvider;
         private readonly IWebpageUrlService _webpageUrlService;
         private readonly ICreateUpdateUrlBatch _createUpdateUrlBatch;
+        private readonly IActivePagesLoader _activePagesLoader;
 
-        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch)
+        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch, 
+            IActivePagesLoader activePagesLoader)
         {
             _webpageRepository = webpageRepository;
             _resourceProvider = resourceProvider;
             _webpageUrlService = webpageUrlService;
             _createUpdateUrlBatch = createUpdateUrlBatch;
+            _activePagesLoader = activePagesLoader;
         }
 
-        public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
+        public async Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage)
         {
-            var webpages = GetValidParentWebpages(webpage);
+            var webpages =await GetValidParentWebpages(webpage);
             List<SelectListItem> result = webpages
                 .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
                     page => page.Id.ToString(),
@@ -44,7 +48,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return result;
         }
 
-        private IOrderedEnumerable<Webpage> GetValidParentWebpages(Webpage webpage)
+        private async Task<IOrderedEnumerable<Webpage>> GetValidParentWebpages(Webpage webpage)
         {
             List<DocumentMetadata> validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
 
@@ -55,10 +59,14 @@ namespace MrCMS.Web.Apps.Admin.Services
                     .Where(page => validParentTypeNames.Contains(page.DocumentClrType))
                     .ToList();
 
-            var webpages = potentialParents.Distinct()
-                .Where(page => !page.ActivePages.Contains(webpage))
-                .OrderBy(x => x.Name);
-            return webpages;
+            var validParentWebpages = new List<Webpage>();
+            foreach (var potentialParent in potentialParents)
+            {
+                var activePages = await _activePagesLoader.GetActivePages(potentialParent);
+                if (activePages.Any(x => x.Id == potentialParent.Id))
+                    validParentWebpages.Add(potentialParent);
+            }
+            return validParentWebpages.OrderBy(x => x.Name);
         }
 
         private bool SetParent(Webpage webpage, Webpage parent)
@@ -74,7 +82,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return true;
         }
 
-        public MoveWebpageResult Validate(MoveWebpageModel moveWebpageModel)
+        public async Task<MoveWebpageResult> Validate(MoveWebpageModel moveWebpageModel)
         {
             var webpage = GetWebpage(moveWebpageModel);
             var parent = GetParent(moveWebpageModel);
@@ -88,7 +96,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 };
             }
 
-            var validParentWebpages = GetValidParentWebpages(webpage);
+            var validParentWebpages =await GetValidParentWebpages(webpage);
             var valid = parent == null ? IsRootAllowed(webpage) : validParentWebpages.Contains(parent);
 
             return new MoveWebpageResult
@@ -133,11 +141,13 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
 
-            var parentActivePages = (parent?.ActivePages.Reverse() ?? Enumerable.Empty<Webpage>()).ToList();
+            var parentActivePages = (await _activePagesLoader.GetActivePages(parent)) ?? new List<Webpage>();
+            parentActivePages.Reverse();
+
             List<MoveWebpageChangedPageModel> models = new List<MoveWebpageChangedPageModel>();
             foreach (var page in webpageHierarchy)
             {
-                var activePages = page.ActivePages.ToList();
+                var activePages = await _activePagesLoader.GetActivePages(page);
                 var indexOf = activePages.IndexOf(webpage);
                 var childActivePages = activePages.Take(indexOf + 1).ToList();
                 activePages.Reverse();

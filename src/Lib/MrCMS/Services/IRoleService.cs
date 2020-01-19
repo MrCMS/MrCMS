@@ -8,13 +8,13 @@ namespace MrCMS.Services
 {
     public interface IRoleService
     {
-        Task AddRole(UserRole role);
-        Task UpdateRole(UserRole role);
-        IEnumerable<UserRole> GetAllRoles();
-        UserRole GetRoleByName(string name);
-        Task DeleteRole(UserRole role);
+        Task AddRole(Role role);
+        Task UpdateRole(Role role);
+        IEnumerable<Role> GetAllRoles();
+        Role GetRoleByName(string name);
+        Task DeleteRole(Role role);
         bool IsOnlyAdmin(User user);
         IEnumerable<AutoCompleteResult> Search(string term);
-        UserRole GetRole(int id);
+        Role GetRole(int id);
     }
 }

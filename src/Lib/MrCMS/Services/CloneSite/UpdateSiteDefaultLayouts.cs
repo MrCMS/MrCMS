@@ -21,7 +21,7 @@ namespace MrCMS.Services.CloneSite
 
         public Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var toProvider = new SqlConfigurationProvider(_repository, @to, new NullEventContext());
+            var toProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@to), new NullEventContext());
             var pageDefaultsSettings = toProvider.GetSiteSettings<PageDefaultsSettings>();
 
             var keys = pageDefaultsSettings.Layouts.Keys.ToList();

@@ -28,8 +28,8 @@ namespace MrCMS.DbConfiguration
     //            b.Property(r => r.ConcurrencyStamp).IsConcurrencyToken();
     //            b.Property(u => u.Name).HasMaxLength(256);
     //            b.Property(u => u.NormalizedName).HasMaxLength(256);
-    //            b.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
-    //            b.HasMany<RoleClaim>().WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
+    //            b.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.UserRoleId).IsRequired();
+    //            b.HasMany<RoleClaim>().WithOne().HasForeignKey(rc => rc.UserRoleId).IsRequired();
     //        });
     //        builder.Entity<UserClaim>(b =>
     //        {
@@ -44,7 +44,7 @@ namespace MrCMS.DbConfiguration
     //            b.HasKey(r => new
     //            {
     //                r.UserId,
-    //                r.RoleId
+    //                r.UserRoleId
     //            });
     //        });
     //        builder.Entity<UserLogin>(b =>

@@ -28,7 +28,7 @@ namespace MrCMS.Data
 
         public override IQueryable<T> Query()
         {
-            return base.Query().Where(x => x.SiteId == _getSiteId.GetId());
+            return base.Query().Where(x => x.SiteId == _getSiteId.GetId()).Include(x => x.Site);
         }
 
         protected override void BeforeAdd(T entity)

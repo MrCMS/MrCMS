@@ -38,9 +38,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddLayoutModel model)
+        public async Task<RedirectToActionResult> Add(AddLayoutModel model)
         {
-            var layout = _layoutAdminService.Add(model);
+            var layout = await _layoutAdminService.Add(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", model.Name));
             return RedirectToAction("Edit", new { id = layout.Id });
         }
@@ -48,10 +48,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(LayoutsACL), LayoutsACL.Edit)]
-        public ViewResult Edit_Get(int id)
+        public async Task<ViewResult> Edit_Get(int id)
         {
             var layout = _layoutAdminService.GetEditModel(id);
-            ViewData["layout-areas"] = _layoutAdminService.GetLayoutAreas(id);
+            ViewData["layout-areas"] = await _layoutAdminService.GetLayoutAreas(id);
             return View(layout);
         }
 
@@ -72,9 +72,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var layout = _layoutAdminService.Delete(id);
+            var layout =await _layoutAdminService.Delete(id);
             TempData.InfoMessages().Add(string.Format("{0} deleted", layout.Name));
             return RedirectToAction("Index");
         }

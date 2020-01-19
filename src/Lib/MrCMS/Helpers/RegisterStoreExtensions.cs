@@ -10,7 +10,7 @@ namespace MrCMS.Helpers
         public static IdentityBuilder AddMrCMSStores(this IdentityBuilder builder)
         {
             builder.Services.AddScoped<IUserStore<User>, UserStore>();
-            builder.Services.AddScoped<IRoleStore<UserRole>, RoleStore>();
+            builder.Services.AddScoped<IRoleStore<Role>, RoleStore>();
             return builder;
         }
     }

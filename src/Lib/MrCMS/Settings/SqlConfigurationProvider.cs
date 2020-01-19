@@ -8,6 +8,7 @@ using MrCMS.Entities.Settings;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings.Events;
+using MrCMS.Website;
 using Newtonsoft.Json;
 
 namespace MrCMS.Settings
@@ -15,18 +16,19 @@ namespace MrCMS.Settings
     public class SqlConfigurationProvider : IConfigurationProvider
     {
         private readonly IGlobalRepository<Setting> _repository;
-        private readonly Site _site;
+        private readonly IGetSiteId _getSiteId;
         private readonly IEventContext _eventContext;
 
         /// <summary>
         ///     Ctor
         /// </summary>
         /// <param name="repository"></param>
-        /// <param name="site">Current site</param>
-        public SqlConfigurationProvider(IGlobalRepository<Setting> repository, Site site, IEventContext eventContext)
+        /// <param name="getSiteId"></param>
+        /// <param name="eventContext"></param>
+        public SqlConfigurationProvider(IGlobalRepository<Setting> repository, IGetSiteId getSiteId, IEventContext eventContext)
         {
             _repository = repository;
-            _site = site;
+            _getSiteId = getSiteId;
             _eventContext = eventContext;
         }
 
@@ -132,8 +134,9 @@ namespace MrCMS.Settings
             //using (MiniProfiler.Current.Step($"Get from db: {typeof(TSettings).FullName}"))
             {
                 var typeName = typeof(TSettings).FullName.ToLower();
+                var siteId = _getSiteId.GetId();
                 var settings = _repository.Query()
-                    .Where(x => x.SettingType == typeName && x.Site.Id == _site.Id)
+                    .Where(x => x.SettingType == typeName && x.SiteId == siteId)
                     .ToList();
                 return settings.GroupBy(setting => setting.PropertyName)
                     .ToDictionary(x => x.Key, x => x.Select(y => y).First());
@@ -150,7 +153,7 @@ namespace MrCMS.Settings
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            setting.Site = _site;
+            setting.SiteId = _getSiteId.GetId();
             await _repository.Add(setting);
         }
 
@@ -228,7 +231,7 @@ namespace MrCMS.Settings
                     SettingType = typeName,
                     PropertyName = propertyName,
                     Value = valueStr,
-                    Site = _site,
+                    SiteId= _getSiteId.GetId(),
                     CreatedOn = DateTime.UtcNow,
                     UpdatedOn = DateTime.UtcNow
                 };

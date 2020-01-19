@@ -6,13 +6,13 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.People
 {
-    public class UserRole : SystemEntity
+    public class Role : SystemEntity
     {
-        public UserRole()
+        public Role()
         {
             FrontEndAllowedRoles = new List<FrontEndAllowedRole>();
             ACLRoles = new List<ACLRole>();
-            UserToRoles = new List<UserToRole>();
+            UserRoles = new List<UserToRole>();
         }
         public const string Administrator = "Administrator";
 
@@ -20,7 +20,7 @@ namespace MrCMS.Entities.People
         [DisplayName("Role Name")]
         public virtual string Name { get; set; }
 
-        public virtual IList<UserToRole> UserToRoles { get; set; }
+        public virtual IList<UserToRole> UserRoles { get; set; }
 
         public virtual bool IsAdmin { get { return Name == Administrator; } }
 

@@ -2,12 +2,14 @@
 @using MrCMS.Entities.Documents.Layout
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Website
 @model MrCMS.Web.Apps.Admin.Models.UpdateLayoutModel
 @{
     ViewBag.Title = Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var layoutAreas = ViewData["layout-areas"] as List<LayoutArea>;
 }
+@inject IWidgetLoader WidgetLoader
 
 <form asp-controller="Layout" asp-action="Edit" id="edit-document" method="post">
 
@@ -22,7 +24,7 @@
                         <a href="@Url.Action("Delete", "Layout", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
                     }
 
-                    @Html.ActionLink(Html.Resource("Move"), "Set", "Layout", new {id = Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})
+                    @Html.ActionLink(Html.Resource("Move"), "Set", "Layout", new { id = Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-secondary" })
                     <button class="btn btn-primary" id="save-edit">@Html.Resource("Save")</button>
                 </span>
             </admin-header-actions>
@@ -45,21 +47,21 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         @Html.LabelFor(x => x.Name)
-                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
                     </div>
                     @Html.EditorFor(x => x.UrlSegment)
 
                     @Html.EditorFor(x => x.Hidden)
                 </div>
             </div>
-            
+
         </card-body>
     </card>
-    
+
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-layout-areas", "Layout Areas")"/>
+            <admin-header-title title="@Html.Resource("admin-layout-areas", "Layout Areas")" />
 
             <admin-header-actions>
                 <span class="btn-group">
@@ -68,7 +70,7 @@
             </admin-header-actions>
         </row>
     </admin-header>
-    
+
     <card>
         <card-body>
             <h4 class="light mt-3"></h4>
@@ -77,21 +79,21 @@
                 {
                     <table class="table table-condensed table-striped">
                         <tbody>
-                        @foreach (LayoutArea area in layoutAreas)
-                        {
-                            <tr>
-                                <td>
-                                    @area.AreaName
-                                    (@area.GetWidgets().Count())
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        @Html.ActionLink("Edit", "Edit", "LayoutArea", new {id = area.Id}, new {@class = "btn btn-secondary btn-sm"})
-                                        <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
+                            @foreach (LayoutArea area in layoutAreas)
+                            {
+                                <tr>
+                                    <td>
+                                        @area.AreaName
+                                        (@((await WidgetLoader.GetWidgets(area, null)).Count))
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-secondary btn-sm" })
+                                            <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 }
@@ -100,7 +102,7 @@
                     @Html.Resource("admin-layout-add-info", "Click Add layout area to add the first area to this layout")
                 }
             }
-            
+
 
         </card-body>
     </card>

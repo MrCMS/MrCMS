@@ -73,25 +73,19 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual DateTime? PublishOn { get; set; }
 
-        public virtual IList<ShownWidget> ShownWidgets { get; set; }
-        public virtual IList<HiddenWidget> HiddenWidgets { get; set; }
+        //public virtual IList<ShownWidget> ShownWidgets { get; set; }
+        //public virtual IList<HiddenWidget> HiddenWidgets { get; set; }
         public virtual IList<Widget.Widget> Widgets { get; set; }
-        public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
+        //public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
         public virtual string BodyContent { get; set; }
 
-        public virtual IEnumerable<Webpage> ActivePages
-        {
-            get
-            {
-                Webpage page = this;
-                while (page != null)
-                {
-                    yield return page;
-                    page = page.Parent as Webpage;
-                }
-            }
-        }
+        //public virtual IEnumerable<Webpage> ActivePages
+        //{
+        //    get
+        //    {
+        //    }
+        //}
 
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
@@ -109,7 +103,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Roles")]
         public virtual string FrontEndRoles
         {
-            get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.UserRole.Name)); }
+            get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.Role.Name)); }
         }
 
         public virtual IList<UrlHistory> Urls { get; set; }

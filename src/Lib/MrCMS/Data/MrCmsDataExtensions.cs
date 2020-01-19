@@ -36,7 +36,6 @@ namespace MrCMS.Data
             {
                 var databaseProvider = provider.GetRequiredService<IDatabaseProvider>();
                 databaseProvider.SetupAction(provider, builder);
-                builder.UseLazyLoadingProxies();
                 if (optionsAction == null)
                     return;
                 optionsAction(provider, builder);
@@ -44,7 +43,9 @@ namespace MrCMS.Data
 
             serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             serviceCollection.AddScoped(typeof(IGlobalRepository<>), typeof(GlobalRepository<>));
+
             serviceCollection.AddScoped(typeof(IQueryableRepository<>), typeof(QueryableRepository<>));
+
             serviceCollection.AddScoped(typeof(IJoinTableRepository<>), typeof(JoinTableRepository<>));
 
             return serviceCollection;

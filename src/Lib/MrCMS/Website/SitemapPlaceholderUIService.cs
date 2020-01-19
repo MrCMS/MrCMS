@@ -21,7 +21,7 @@ namespace MrCMS.Website
         public RedirectResult Redirect(SitemapPlaceholder page)
         {
             if (page == null)
-                return new RedirectResult("~");
+                return new RedirectResult("~/");
 
             var child =
                 _repository.Query().Where(webpage => webpage.ParentId == page.Id && webpage.Published)
@@ -29,13 +29,13 @@ namespace MrCMS.Website
                     .FirstOrDefault();
 
             if (child == null)
-                return new RedirectResult("~");
+                return new RedirectResult("~/");
             if (child.GetType().FullName != typeof(SitemapPlaceholder).FullName)
                 return new RedirectResult($"~/{_getLiveUrl.GetUrlSegment(child)}");
             var lastRedirectChildUrl = GetTheLastRedirectChildLink(child);
             return !string.IsNullOrWhiteSpace(lastRedirectChildUrl)
                 ? new RedirectResult($"~/{lastRedirectChildUrl}")
-                : new RedirectResult("~");
+                : new RedirectResult("~/");
         }
 
         private string GetTheLastRedirectChildLink(Webpage sitemapPlaceholder)

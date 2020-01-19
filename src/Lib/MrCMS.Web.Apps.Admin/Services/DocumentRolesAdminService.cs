@@ -11,9 +11,9 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public class DocumentRolesAdminService : IDocumentRolesAdminService
     {
-        private readonly IGlobalRepository<UserRole> _repository;
+        private readonly IGlobalRepository<Role> _repository;
 
-        public DocumentRolesAdminService(IGlobalRepository<UserRole> repository)
+        public DocumentRolesAdminService(IGlobalRepository<Role> repository)
         {
             _repository = repository;
         }
@@ -36,10 +36,10 @@ namespace MrCMS.Web.Apps.Admin.Services
                     x => !string.IsNullOrWhiteSpace(x));
 
             return roleNames.Select(GetRole).Where(x => x != null)
-                .Select(userRole => new FrontEndAllowedRole {Webpage = webpage, UserRole = userRole}).ToList();
+                .Select(userRole => new FrontEndAllowedRole {Webpage = webpage, Role = userRole}).ToList();
         }
 
-        private UserRole GetRole(string name)
+        private Role GetRole(string name)
         {
             return _repository.Query().SingleOrDefault(role => EF.Functions.Like(role.Name, name));
         }

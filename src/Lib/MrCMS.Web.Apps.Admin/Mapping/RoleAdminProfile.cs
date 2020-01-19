@@ -8,8 +8,8 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public RoleAdminProfile()
         {
-            CreateMap<UserRole, AddRoleModel>().ReverseMap();
-            CreateMap<UserRole, UpdateRoleModel>().ReverseMap();
+            CreateMap<Role, AddRoleModel>().ReverseMap();
+            CreateMap<Role, UpdateRoleModel>().ReverseMap();
         }
     }
 }

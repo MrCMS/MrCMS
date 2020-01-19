@@ -24,7 +24,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var serviceProvider = bindingContext.HttpContext.RequestServices;
             var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             bindingContext.ModelMetadata = metadataProvider.GetMetadataForType(type);
-            //var instance = SystemEntityBinderProvider.GetModelBinder(bindingContext.ModelMetadata, serviceProvider);
+            //var instance = SystemEntityModelBinderProvider.GetModelBinder(bindingContext.ModelMetadata, serviceProvider);
 
             //await instance.BindModelAsync(bindingContext);
 

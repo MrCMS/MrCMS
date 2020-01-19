@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using Lucene.Net.Index;
 using MrCMS.Events;
+using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
@@ -54,6 +55,11 @@ namespace MrCMS.Helpers
                     container.AddScoped(type);
             }
         }
+        public static void RegisterCurrentSite(this IServiceCollection container)
+        {
+            container.AddScoped<IGetSiteId, GetSiteId>();
+        }
+
         public static void RegisterSettings(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())

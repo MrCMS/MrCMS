@@ -9,5 +9,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Stubs
         {
             Versions = versions;
         }
+
+        public override string UrlSegment { get; set; }
     }
 }

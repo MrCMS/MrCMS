@@ -19,8 +19,15 @@ namespace MrCMS.DbConfiguration.Models
             {
                 user.HasMany(x => x.UserToRoles);
             });
-            builder.Entity<UserToRole>(userToRole => userToRole.HasKey(x => new { x.RoleId, x.UserId }));
-            builder.Entity<UserRole>(role => { role.HasMany(x => x.UserToRoles).WithOne(x => x.Role); });
+            builder.Entity<UserToRole>(userToRole =>
+            {
+                userToRole.ToTable("UsersToRoles");
+                userToRole.HasKey(x => new { x.UserRoleId, x.UserId });
+            });
+            builder.Entity<Role>(role =>
+            {
+                role.ToTable("UserRole");
+            });
             builder.Entity<UserClaim>();
             builder.Entity<UserLogin>();
             builder.Entity<UserProfileData>(profileData =>

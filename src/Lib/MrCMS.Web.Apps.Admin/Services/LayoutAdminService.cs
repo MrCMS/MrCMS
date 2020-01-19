@@ -9,6 +9,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -17,14 +18,17 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IRepository<Layout> _layoutRepository;
         private readonly IGetDocumentsByParent<Layout> _getDocumentsByParent;
         private readonly IUrlValidationService _urlValidationService;
+        private readonly ILayoutAreaLoader _layoutAreaLoader;
         private readonly IMapper _mapper;
 
         public LayoutAdminService(IRepository<Layout> layoutRepository, IGetDocumentsByParent<Layout> getDocumentsByParent, IUrlValidationService urlValidationService,
+            ILayoutAreaLoader layoutAreaLoader,
             IMapper mapper)
         {
             _layoutRepository = layoutRepository;
             _getDocumentsByParent = getDocumentsByParent;
             _urlValidationService = urlValidationService;
+            _layoutAreaLoader = layoutAreaLoader;
             _mapper = mapper;
         }
 
@@ -38,10 +42,10 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public Layout GetLayout(int? id) => id.HasValue ? _layoutRepository.LoadSync(id.Value) : null;
 
-        public Layout Add(AddLayoutModel model)
+        public async Task<Layout> Add(AddLayoutModel model)
         {
             var layout = _mapper.Map<Layout>(model);
-            _layoutRepository.Add(layout);
+            await _layoutRepository.Add(layout);
             return layout;
         }
 
@@ -51,22 +55,22 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _mapper.Map<UpdateLayoutModel>(layout);
         }
 
-        public List<LayoutArea> GetLayoutAreas(int id)
+        public async Task<List<LayoutArea>> GetLayoutAreas(int id)
         {
-            return GetLayout(id).GetLayoutAreas().Distinct().ToList();
+            return (await _layoutAreaLoader.GetLayoutAreas(id)).Distinct().ToList();
         }
 
-        public void Update(UpdateLayoutModel model)
+        public async Task Update(UpdateLayoutModel model)
         {
             var layout = GetLayout(model.Id);
             _mapper.Map(model, layout);
-            _layoutRepository.Update(layout);
+            await _layoutRepository.Update(layout);
         }
 
-        public Layout Delete(int id)
+        public async Task<Layout> Delete(int id)
         {
             var layout = GetLayout(id);
-            _layoutRepository.Delete(layout);
+            await _layoutRepository.Delete(layout);
             return layout;
         }
 

@@ -141,7 +141,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
             if (user == null)
             {
-                return Redirect("~");
+                return Redirect("~/");
             }
 
             ViewData["ResetPasswordViewModel"] = new ResetPasswordViewModel(id.Value, user);

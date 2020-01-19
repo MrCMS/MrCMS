@@ -11,7 +11,7 @@ namespace MrCMS.Helpers
     {
         public static IServiceCollection AddMrCMSIdentity(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<User, UserRole>(options =>
+            services.AddIdentity<User, Role>(options =>
             {
                 // lockout
                 if (int.TryParse(configuration["Auth:Lockout:MaxFailedAccessAttempts"],

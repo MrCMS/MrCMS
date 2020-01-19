@@ -10,6 +10,6 @@ namespace MrCMS.Web.Apps.Admin.Models
         }
         public string Name { get; set; }
 
-        internal UserRole Role { get; set; }
+        internal Role Role { get; set; }
     }
 }

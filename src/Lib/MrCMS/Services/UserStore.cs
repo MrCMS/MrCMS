@@ -27,14 +27,14 @@ namespace MrCMS.Services
         private readonly IGlobalRepository<User> _repository;
         private readonly IGlobalRepository<UserClaim> _userClaimRepository;
         private readonly IGlobalRepository<UserLogin> _userLoginRepository;
-        private readonly IGlobalRepository<UserRole> _roleRepository;
+        private readonly IGlobalRepository<Role> _roleRepository;
         private readonly IQueryableRepository<UserToRole> _userToRoleRepository;
 
         public UserStore(
             IGlobalRepository<User> repository,
             IGlobalRepository<UserClaim> userClaimRepository,
             IGlobalRepository<UserLogin> userLoginRepository,
-            IGlobalRepository<UserRole> roleRepository,
+            IGlobalRepository<Role> roleRepository,
             IQueryableRepository<UserToRole> userToRoleRepository
             )
         {
@@ -244,8 +244,8 @@ namespace MrCMS.Services
             var role = await GetRoleByName(roleName, cancellationToken);
             if (role != null)
             {
-                var userToRole = new UserToRole { RoleId = role.Id, UserId = user.Id };
-                if (user.UserToRoles.All(x => x.RoleId != role.Id))
+                var userToRole = new UserToRole { UserRoleId = role.Id, UserId = user.Id };
+                if (user.UserToRoles.All(x => x.UserRoleId != role.Id))
                 {
                     user.UserToRoles.Add(userToRole);
                 }
@@ -255,7 +255,7 @@ namespace MrCMS.Services
             }
         }
 
-        private async Task<UserRole> GetRoleByName(string roleName, CancellationToken cancellationToken)
+        private async Task<Role> GetRoleByName(string roleName, CancellationToken cancellationToken)
         {
             if (roleName == null)
                 return null;
@@ -268,11 +268,11 @@ namespace MrCMS.Services
             var role = await GetRoleByName(roleName, cancellationToken);
             if (role != null)
             {
-                var existingRoleMapping = user.UserToRoles.FirstOrDefault(x => x.RoleId == role.Id);
+                var existingRoleMapping = user.UserToRoles.FirstOrDefault(x => x.UserRoleId == role.Id);
                 if (existingRoleMapping != null)
                 {
                     user.UserToRoles.Remove(existingRoleMapping);
-                    role.UserToRoles.Remove(existingRoleMapping);
+                    role.UserRoles.Remove(existingRoleMapping);
                 }
 
                 await _repository.Transact(async (repo, token) =>
@@ -287,7 +287,7 @@ namespace MrCMS.Services
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
-            return await _userToRoleRepository.Readonly().Where(x => x.UserId == user.Id).Select(x => x.Role.Name)
+            return await _userToRoleRepository.Readonly().Where(x => x.UserId == user.Id).Select(x => x.UserRole.Name)
                 .ToListAsync(cancellationToken);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -295,12 +295,12 @@ namespace MrCMS.Services
         public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
             return await _userToRoleRepository.Readonly()
-                .AnyAsync(x => x.UserId == user.Id && x.Role.Name == roleName, cancellationToken);
+                .AnyAsync(x => x.UserId == user.Id && x.UserRole.Name == roleName, cancellationToken);
         }
 
         public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            return await _userToRoleRepository.Query().Where(x => x.Role.Name == roleName).Select(x => x.User)
+            return await _userToRoleRepository.Query().Where(x => x.UserRole.Name == roleName).Select(x => x.User)
                            .ToListAsync(cancellationToken);
         }
 

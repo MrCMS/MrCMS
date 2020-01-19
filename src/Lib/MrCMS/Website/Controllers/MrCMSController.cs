@@ -34,7 +34,7 @@ namespace MrCMS.Website.Controllers
 
         protected virtual RedirectResult AuthenticationFailureRedirect()
         {
-            return Redirect("~");
+            return Redirect("~/");
         }
     }
 }

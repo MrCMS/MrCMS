@@ -5,10 +5,10 @@ using MrCMS.Entities.People;
 
 namespace MrCMS.Services
 {
-    public class RoleManager : RoleManager<UserRole>, IRoleManager
+    public class RoleManager : RoleManager<Role>, IRoleManager
     {
-        public RoleManager(IRoleStore<UserRole> store, IEnumerable<IRoleValidator<UserRole>> roleValidators,
-            ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, ILogger<RoleManager<UserRole>> logger) : base(
+        public RoleManager(IRoleStore<Role> store, IEnumerable<IRoleValidator<Role>> roleValidators,
+            ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, ILogger<RoleManager<Role>> logger) : base(
             store, roleValidators, keyNormalizer, errors, logger)
         {
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Models;
@@ -68,11 +69,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult SortWidgets(int id, string returnUrl = null)
+        public async Task<ViewResult> SortWidgets(int id, string returnUrl = null)
         {
             var area = _layoutAreaAdminService.GetArea(id);
             ViewData["returnUrl"] = returnUrl;
-            return View(new PageWidgetSortModel(area.GetWidgets(), area, null));
+            return View(await _layoutAreaAdminService.GetSortModel(area, null));
         }
 
         [HttpPost]
@@ -86,11 +87,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult SortWidgetsForPage(int id, int pageId, string returnUrl = null)
+        public async Task<ViewResult> SortWidgetsForPage(int id, int pageId, string returnUrl = null)
         {
             var area = _layoutAreaAdminService.GetArea(id);
             ViewData["returnUrl"] = returnUrl;
-            return View(_layoutAreaAdminService.GetSortModel(area, pageId));
+            return View(await _layoutAreaAdminService.GetSortModel(area, pageId));
         }
 
         [HttpPost]

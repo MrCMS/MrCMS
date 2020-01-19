@@ -4,6 +4,9 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 using MrCMS.Website.Filters;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using MrCMS.Data;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Services;
 
 namespace MrCMS.Shortcodes.Forms
@@ -11,16 +14,20 @@ namespace MrCMS.Shortcodes.Forms
     public class DefaultFormRenderer : IDefaultFormRenderer
     {
         private readonly IElementRendererManager _elementRendererManager;
+        private readonly IRepository<FormProperty> _formPropertyRepository;
         private readonly ILabelRenderer _labelRenderer;
         private readonly SiteSettings _siteSettings;
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
         private readonly IValidationMessaageRenderer _validationMessageRenderer;
 
-        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer,
+        public DefaultFormRenderer(IElementRendererManager elementRendererManager, 
+            IRepository<FormProperty> formPropertyRepository,
+            ILabelRenderer labelRenderer,
             IValidationMessaageRenderer validationMessageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
             SiteSettings siteSettings)
         {
             _elementRendererManager = elementRendererManager;
+            _formPropertyRepository = formPropertyRepository;
             _labelRenderer = labelRenderer;
             _validationMessageRenderer = validationMessageRenderer;
             _submittedMessageRenderer = submittedMessageRenderer;
@@ -34,7 +41,7 @@ namespace MrCMS.Shortcodes.Forms
                 return HtmlString.Empty;
             }
 
-            var formProperties = formEntity.FormProperties.OrderBy(x => x.DisplayOrder);
+            var formProperties = _formPropertyRepository.Query().Where(x=>x.FormId == formEntity.Id).OrderBy(x => x.DisplayOrder).ToList();
             if (!formProperties.Any())
             {
                 return HtmlString.Empty;
