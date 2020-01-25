@@ -179,9 +179,16 @@ namespace MrCMS.Data
 
         private async Task<ContextChangeData> SaveChanges(CancellationToken token)
         {
-            var changes = _getChangesFromContext.GetChanges<T>(Context);
-            await Context.SaveChangesAsync(token);
-            return changes;
+            try
+            {
+                var changes = _getChangesFromContext.GetChanges<T>(Context);
+                await Context.SaveChangesAsync(token);
+                return changes;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private bool IsInTransaction()

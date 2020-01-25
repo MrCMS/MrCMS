@@ -14,5 +14,6 @@ namespace MrCMS.Services
         Task<IdentityResult> AssignRoles(User user, IList<string> roles);
         Task<IList<string>> GetRolesAsync(User user);
         Task<bool> IsInRoleAsync(User user, string role);
+        Task<bool> IsAdmin(User user);
     }
 }

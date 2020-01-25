@@ -5,6 +5,6 @@ namespace MrCMS.Services.Auth
 {
     public interface ILoginService
     {
-        LoginResult AuthenticateUser(LoginModel loginModel);
+        Task<LoginResult> AuthenticateUser(LoginModel loginModel);
     }
 }

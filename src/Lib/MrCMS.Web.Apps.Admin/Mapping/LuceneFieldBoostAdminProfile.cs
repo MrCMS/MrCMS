@@ -8,8 +8,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public LuceneFieldBoostAdminProfile()
         {
-            CreateMap<LuceneFieldBoost, UpdateLuceneFieldBoostModel>().ReverseMap()
-                .MapEntityLookup(x => x.SiteId, x => x.Site);
+            CreateMap<LuceneFieldBoost, UpdateLuceneFieldBoostModel>().ReverseMap();
         }
     }
 }

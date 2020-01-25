@@ -22,17 +22,14 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class InPageAdminService : IInPageAdminService
     {
         private readonly IStringResourceProvider _stringResourceProvider;
-        private readonly IDataReader _dataReader;
         private readonly IRepositoryResolver _repositoryResolver;
         private readonly ILogger<InPageAdminService> _logger;
 
         public InPageAdminService(
             IStringResourceProvider stringResourceProvider,
-            IDataReader dataReader,
             IRepositoryResolver repositoryResolver, ILogger<InPageAdminService> logger)
         {
             _stringResourceProvider = stringResourceProvider;
-            _dataReader = dataReader;
             _repositoryResolver = repositoryResolver;
             _logger = logger;
         }
@@ -43,7 +40,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             Type entityType = types.FirstOrDefault(t => t.Name == updatePropertyData.Type);
             if (entityType == null)
                 return new SaveResult(false, string.Format(_stringResourceProvider.GetValue("Admin Inline Editing Save Entity Not Found", "Could not find entity type '{0}'"), updatePropertyData.Type));
-            object entity = await _dataReader.GlobalGet(entityType, updatePropertyData.Id);
+            var entity = await GetEntity(entityType, updatePropertyData.Id);
             if (entity == null)
                 return new SaveResult(false,
                     string.Format(_stringResourceProvider.GetValue("Admin InlineEditing Save Not Found", "Could not find entity of type '{0}' with id {1}"), updatePropertyData.Type,
@@ -73,9 +70,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             try
             {
                 propertyInfo.SetValue(entity, updatePropertyData.Content, null);
-                var globalMethod = typeof(InPageAdminService).GetMethodExt(nameof(UpdateEntity));
+                var globalMethod = typeof(InPageAdminService).GetMethod(nameof(UpdateEntity));
 
-                await (Task) globalMethod.MakeGenericMethod(entityType).Invoke(this, new[] {entity});
+                await (Task)globalMethod.MakeGenericMethod(entityType).Invoke(this, new[] { entity });
             }
             catch (Exception exception)
             {
@@ -87,7 +84,17 @@ namespace MrCMS.Web.Apps.Admin.Services
             return new SaveResult();
         }
 
-        private async Task UpdateEntity<T>(T entity) where T : class, IHaveId
+        private Task<object> GetEntity(Type entityType, int id)
+        {
+            var globalMethod = typeof(InPageAdminService).GetMethod(nameof(GetEntityObject), new[] { typeof(int) });
+
+            return globalMethod.MakeGenericMethod(entityType).InvokeAsync(this, id);
+        }
+        public async Task<T> GetEntityObject<T>(int id) where T : class, IHaveId
+        {
+            return await _repositoryResolver.GetGlobalRepository<T>().Load(id);
+        }
+        public async Task UpdateEntity<T>(T entity) where T : class, IHaveId
         {
             await _repositoryResolver.GetGlobalRepository<T>().Update(entity);
         }
@@ -98,7 +105,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             Type entityType = types.FirstOrDefault(t => t.Name == getPropertyData.Type);
             if (entityType == null)
                 return new ContentInfo();
-            object entity =await _dataReader.GlobalGet(entityType, getPropertyData.Id);
+            var entity = await GetEntity(entityType, getPropertyData.Id);
             if (entity == null)
                 return new ContentInfo();
             PropertyInfo propertyInfo =

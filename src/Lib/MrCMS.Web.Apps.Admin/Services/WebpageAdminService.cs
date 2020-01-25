@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MrCMS.Common;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -80,18 +81,17 @@ namespace MrCMS.Web.Apps.Admin.Services
             return instance;
         }
 
-        public async Task<Webpage> Update(UpdateWebpageViewModel viewModel)
+        public async Task<IResult<Webpage>> Update(UpdateWebpageViewModel viewModel)
         {
             var webpage = GetWebpage(viewModel.Id);
 
             _mapper.Map(viewModel, webpage);
 
             foreach (var model in viewModel.Models)
-                _mapper.Map(model, webpage);
+                _mapper.Map(model, webpage, options => { });
 
-            await _webpageRepository.Update(webpage);
+            return await _webpageRepository.Update(webpage);
 
-            return webpage;
         }
 
         public async Task<Webpage> Delete(int id)

@@ -10,7 +10,6 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         {
             CreateMap<StringResource, UpdateStringResourceModel>().ReverseMap();
             CreateMap<StringResource, AddStringResourceModel>().ReverseMap()
-                .MapEntityLookup(x => x.SiteId, x => x.Site)
                 ;
         }
     }

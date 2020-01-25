@@ -8,8 +8,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public ContentBlockAdminProfile()
         {
-            CreateMap<ContentBlock, AddContentBlockViewModel>().ReverseMap()
-                .MapEntityLookup(model => model.WebpageId, block => block.Webpage);
+            CreateMap<ContentBlock, AddContentBlockViewModel>().ReverseMap();
             CreateMap<ContentBlock, UpdateContentBlockViewModel>().ReverseMap();
         }
     }

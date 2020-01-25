@@ -7,19 +7,21 @@ namespace MrCMS.Website.CMS
     public class CanPreviewWebpage : ICanPreviewWebpage
     {
         private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IUserRoleManager _userRoleManager;
 
-        public CanPreviewWebpage(IGetCurrentUser getCurrentUser)
+        public CanPreviewWebpage(IGetCurrentUser getCurrentUser, IUserRoleManager userRoleManager)
         {
             _getCurrentUser = getCurrentUser;
+            _userRoleManager = userRoleManager;
         }
 
-        public bool CanPreview(Webpage webpage)
+        public async Task<bool> CanPreview(Webpage webpage)
         {
             var user = _getCurrentUser.Get();
             if (user == null)
                 return false;
 
-            return user.IsAdmin;
+            return await _userRoleManager.IsAdmin(user);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace MrCMS.Website.CMS
 {
     public interface ICanPreviewWebpage
     {
-        bool CanPreview(Webpage webpage);
+        Task<bool> CanPreview(Webpage webpage);
     }
 }

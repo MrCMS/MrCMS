@@ -96,8 +96,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
             else
             {
-                query = query.Where(x => x.Parent == null);
-                query = query.OrderByDescending(x => x.DisplayOrder);
+                query = query.Where(x => x.ParentId == null);
+                query = query.OrderBy(x => x.DisplayOrder);
             }
             return query;
         }

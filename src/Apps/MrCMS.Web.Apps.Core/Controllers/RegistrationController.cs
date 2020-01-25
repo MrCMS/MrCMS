@@ -16,23 +16,26 @@ namespace MrCMS.Web.Apps.Core.Controllers
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IUniquePageService _uniquePageService;
         private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IUserRoleManager _userRoleManager;
 
         public RegistrationController(IRegistrationService registrationService,
             IStringResourceProvider stringResourceProvider,
             IUniquePageService uniquePageService,
-            IGetCurrentUser getCurrentUser)
+            IGetCurrentUser getCurrentUser,
+            IUserRoleManager userRoleManager)
         {
             _registrationService = registrationService;
             _stringResourceProvider = stringResourceProvider;
             _uniquePageService = uniquePageService;
             _getCurrentUser = getCurrentUser;
+            _userRoleManager = userRoleManager;
         }
 
         [CanonicalLinks]
-        public ActionResult Show(RegisterPage page)
+        public async Task<ActionResult> Show(RegisterPage page)
         {
             var user = _getCurrentUser.Get();
-            if (user != null && !user.IsAdmin)
+            if (user != null && !await _userRoleManager.IsAdmin(user))
                 return Redirect("~/");
             return View(page);
         }

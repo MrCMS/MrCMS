@@ -51,7 +51,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var webpageTreeNavListing = GetListing(id);
             //using (MiniProfiler.Current.Step(string.Format("Get Tree - {0} ({1})", webpageTreeNavListing.GetType().Name, id)))
-                return webpageTreeNavListing.GetTree(id);
+            return webpageTreeNavListing.GetTree(id);
         }
 
         public bool WebpageHasChildren(int id)
@@ -77,7 +77,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             //using (MiniProfiler.Current.Step("Get Listing"))
             {
-                var parent = id.HasValue ? _repository.GetDataSync<Document,Webpage>(id.Value) : null;
+                var parent = id.HasValue ? _repository.GetDataSync<Document, Webpage>(id.Value) : null;
                 IWebpageTreeNavListing listing = null;
                 if (parent != null && TreeNavListings.ContainsKey(parent.GetType().FullName))
                 {

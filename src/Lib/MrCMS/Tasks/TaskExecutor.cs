@@ -18,6 +18,9 @@ namespace MrCMS.Tasks
 
         public async Task<BatchExecutionResult> Execute(IList<AdHocTask> tasksToExecute, CancellationToken token)
         {
+            if (!tasksToExecute.Any())
+                return new BatchExecutionResult();
+
             var results = new List<TaskExecutionResult>();
             foreach (var handler in GetHandlers())
             {

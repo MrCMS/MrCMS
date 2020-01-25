@@ -12,21 +12,18 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         public WebpageAdminProfile()
         {
             CreateMap<Webpage, AddWebpageModel>().ReverseMap()
-                .MapEntityLookup(x => x.ParentId, x => x.Parent)
-                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
                 ;
             CreateMap<Webpage, UpdateWebpageViewModel>().ReverseMap();
             CreateMap<Webpage, LayoutTabViewModel>().ReverseMap()
-                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
                 ;
             CreateMap<Webpage, PermissionsTabViewModel>()
                 .ReverseMap()
-                .ForMember(webpage => webpage.FrontEndAllowedRoles,
-                    expression => expression.MapFrom<FrontEndAllowedRoleMapper>())
                 .BeforeMap((model, webpage, context) =>
                 {
                     context.Items["password-is-same"] = model.Password == webpage.Password;
                 })
+                .ForMember(webpage => webpage.FrontEndAllowedRoles,
+                    expression => expression.MapFrom<FrontEndAllowedRoleMapper>())
                 .ForMember(webpage => webpage.PasswordAccessToken,
                     expression => expression.MapFrom((model, webpage, destMember, context) =>
                     {

@@ -54,17 +54,19 @@ namespace MrCMS.Tasks
 
         public async Task<IList<QueuedTask>> GetPendingLuceneTasks()
         {
+            var queuedAt = DateTime.UtcNow;
+            var queuedTasks = await
+                _repository.Query()
+                    .Where(task => task.Status == TaskExecutionStatus.Pending)
+                    .Where(task => EF.Functions.Like(task.Type, $"{typeof(InsertIndicesTask<>).FullName}%") ||
+                                   EF.Functions.Like(task.Type, $"{typeof(UpdateIndicesTask<>).FullName}%") ||
+                                   EF.Functions.Like(task.Type, $"{typeof(DeleteIndicesTask<>).FullName}%"))
+                    .ToListAsync();
+
+            if (!queuedTasks.Any())
+                return queuedTasks;
             return await _repository.Transact(async (repo, ct) =>
             {
-                var queuedAt = DateTime.UtcNow;
-                var queuedTasks = await
-                    repo.Query()
-                        .Where(task => task.Status == TaskExecutionStatus.Pending)
-                        .Where(task => EF.Functions.Like(task.Type, $"{typeof(InsertIndicesTask<>).FullName}%") ||
-                                       EF.Functions.Like(task.Type, $"{typeof(UpdateIndicesTask<>).FullName}%") ||
-                                       EF.Functions.Like(task.Type, $"{typeof(DeleteIndicesTask<>).FullName}%"))
-                        .ToListAsync(ct);
-
                 foreach (var task in queuedTasks)
                 {
                     task.Status = TaskExecutionStatus.AwaitingExecution;

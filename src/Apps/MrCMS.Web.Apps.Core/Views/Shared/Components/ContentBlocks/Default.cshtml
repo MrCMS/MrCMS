@@ -1,0 +1,7 @@
+﻿@using MrCMS.ViewComponents
+@model List<MrCMS.Entities.Documents.ContentBlock>
+
+@foreach (var block in Model)
+{
+    @(await Component.InvokeAsync<ContentBlockViewComponent>(block))
+}

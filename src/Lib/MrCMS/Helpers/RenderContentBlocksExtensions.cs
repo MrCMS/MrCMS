@@ -12,12 +12,7 @@ namespace MrCMS.Helpers
     {
         public static async Task<IHtmlContent> RenderContentBlocks(this IViewComponentHelper helper, Webpage page)
         {
-            var blocks = page.ContentBlocks.OrderBy(x => x.DisplayOrder);
-            IHtmlContentBuilder builder = new HtmlContentBuilder();
-            foreach (var block in blocks)
-                builder = builder.AppendHtml(await helper.InvokeAsync<ContentBlockViewComponent>(new {block}));
-
-            return builder;
+            return await helper.InvokeAsync<ContentBlocksViewComponent>(new {page.Id});
         }
     }
 }

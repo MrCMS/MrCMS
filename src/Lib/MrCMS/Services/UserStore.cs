@@ -284,23 +284,21 @@ namespace MrCMS.Services
 
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
             return await _userToRoleRepository.Readonly().Where(x => x.UserId == user.Id).Select(x => x.UserRole.Name)
                 .ToListAsync(cancellationToken);
         }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
             return await _userToRoleRepository.Readonly()
-                .AnyAsync(x => x.UserId == user.Id && x.UserRole.Name == roleName, cancellationToken);
+                .AnyAsync(x => x.UserId == user.Id && x.UserRole.Name.ToUpper() == roleName.ToUpper(), cancellationToken);
         }
 
         public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            return await _userToRoleRepository.Query().Where(x => x.UserRole.Name == roleName).Select(x => x.User)
+            return await _userToRoleRepository.Query().Where(x => x.UserRole.Name.ToUpper() == roleName.ToUpper()).Select(x => x.User)
                            .ToListAsync(cancellationToken);
         }
 

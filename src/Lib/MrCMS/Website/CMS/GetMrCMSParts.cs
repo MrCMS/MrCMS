@@ -68,8 +68,16 @@ namespace MrCMS.Website.CMS
                 new RegistrationInfo
                 {
                     Registration = builder => builder.UseWhen(
-                        context => context.RequestServices.GetRequiredService<IGetCurrentUser>().Get()?.IsAdmin == true
-                                   && context.RequestServices.GetRequiredService<SiteSettings>().SSLAdmin,
+                        context =>
+                        {
+                            var user = context.RequestServices.GetRequiredService<IGetCurrentUser>().Get();
+                            if (user == null)
+                                return false;
+                            var userRoleManager = context.RequestServices.GetRequiredService<IUserRoleManager>();
+                            if (!userRoleManager.IsAdmin(user).GetAwaiter().GetResult())
+                                return false;
+                            return context.RequestServices.GetRequiredService<SiteSettings>().SSLAdmin;
+                        },
                         app => app.UseHttpsRedirection()),
                     Order = 1040
                 },

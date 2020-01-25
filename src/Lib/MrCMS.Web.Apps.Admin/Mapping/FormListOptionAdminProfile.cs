@@ -9,8 +9,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         public FormListOptionAdminProfile()
         {
             CreateMap<FormListOption, AddFormListOptionModel>()
-                .ReverseMap()
-                .MapEntityLookup(model => model.FormPropertyId, property => property.FormProperty);
+                .ReverseMap();
 
             CreateMap<FormListOption, UpdateFormListOptionModel>()
                 .ReverseMap();

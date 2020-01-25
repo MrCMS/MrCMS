@@ -9,12 +9,9 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
     {
         public ArticlesWidgetAdminMappingProfile()
         {
-            CreateMap<ArticleArchive, UpdateArticleArchiveModel>().ReverseMap()
-                .MapEntityLookup(x => x.ArticleListId, x => x.ArticleList);
-            CreateMap<ArticleCategories, UpdateArticleCategoriesModel>().ReverseMap()
-                .MapEntityLookup(x => x.ArticleListId, x => x.ArticleList);
-            CreateMap<LatestXArticles, UpdateLatestXArticlesModel>().ReverseMap()
-                .MapEntityLookup(x => x.RelatedNewsListId, x => x.RelatedNewsList);
+            CreateMap<ArticleArchive, UpdateArticleArchiveModel>().ReverseMap();
+            CreateMap<ArticleCategories, UpdateArticleCategoriesModel>().ReverseMap();
+            CreateMap<LatestXArticles, UpdateLatestXArticlesModel>().ReverseMap();
         }
     }
 }

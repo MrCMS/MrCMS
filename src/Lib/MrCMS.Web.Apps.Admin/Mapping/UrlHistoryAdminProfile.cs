@@ -8,8 +8,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public UrlHistoryAdminProfile()
         {
-            CreateMap<UrlHistory, AddUrlHistoryModel>().ReverseMap()
-                .MapEntityLookup(x => x.WebpageId, x => x.Webpage);
+            CreateMap<UrlHistory, AddUrlHistoryModel>().ReverseMap();
         }
     }
 }

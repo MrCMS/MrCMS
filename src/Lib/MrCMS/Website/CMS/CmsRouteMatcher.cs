@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Services;
 
 namespace MrCMS.Website.CMS
@@ -13,15 +14,15 @@ namespace MrCMS.Website.CMS
             _userUIPermissionsService = userUIPermissionsService;
         }
 
-        public CmsMatchData TryMatch(string path, string method)
+        public async Task<CmsMatchData> TryMatch(string path, string method)
         {
-            var pageData = _getPageData.GetData(path, method);
+            var pageData = await _getPageData.GetData(path, method);
             if (pageData == null)
             {
                 return new CmsMatchData { MatchType = CmsRouteMatchType.NoMatch };
             }
 
-            var isCurrentUserAllowed = _userUIPermissionsService.IsCurrentUserAllowed(pageData.Webpage);
+            var isCurrentUserAllowed = await _userUIPermissionsService.IsCurrentUserAllowed(pageData.Webpage);
 
             return new CmsMatchData
             {

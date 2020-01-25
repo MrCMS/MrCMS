@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
@@ -7,7 +8,7 @@ using MrCMS.Web.Apps.Core.Services;
 
 namespace MrCMS.Web.Apps.Core.Filters
 {
-    public class PasswordAuthFilter : IActionFilter
+    public class PasswordAuthFilter : IAsyncActionFilter
     {
         private readonly IPasswordProtectedPageChecker _checker;
         private readonly IUniquePageService _uniquePageService;
@@ -20,24 +21,30 @@ namespace MrCMS.Web.Apps.Core.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var webpage = context.ActionArguments.Values.OfType<Webpage>().FirstOrDefault();
-
-            if (webpage == null)
-            {
-                return;
-            }
-
-            var canAccess = _checker.CanAccessPage(webpage, context.HttpContext.Request.Cookies);
-            if (canAccess)
-            {
-                return;
-            }
-
-            context.Result = _uniquePageService.RedirectTo<WebpagePasswordPage>(new {lockedPage = webpage.Id});
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
+        }
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            var webpage = context.ActionArguments.Values.OfType<Webpage>().FirstOrDefault();
+
+            if (webpage == null)
+            {
+                await next();
+                return;
+            }
+
+            var canAccess = await _checker.CanAccessPage(webpage, context.HttpContext.Request.Cookies);
+            if (canAccess)
+            {
+                await next();
+                return;
+            }
+
+            context.Result = _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = webpage.Id });
         }
     }
 }

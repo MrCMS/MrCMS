@@ -9,10 +9,8 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         public PageTemplateAdminProfile()
         {
             CreateMap<PageTemplate, AddPageTemplateModel>().ReverseMap()
-                .MapEntityLookup(x => x.LayoutId, x => x.Layout)
                 ;
             CreateMap<PageTemplate, UpdatePageTemplateModel>().ReverseMap()
-                .MapEntityLookup(x => x.LayoutId, x => x.Layout)
                 ;
         }
     }

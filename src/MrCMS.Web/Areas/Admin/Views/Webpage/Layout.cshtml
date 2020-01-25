@@ -37,7 +37,7 @@
                         <div class="card-header">
                             <h4 class="card-title">
                                 <a data-toggle="collapse" data-parent="#accordion-layout-areas" href="#collapse-@layoutArea.Id.ToString()">
-                                    @layoutArea.AreaName (@await WidgetVisibilityChecker.CountVisible(widgets, webpage)) @Html.Resource("Admin Webpage Layout Shown Widgets", "Shown Widgets"), @await WidgetVisibilityChecker.CountHidden(widgets, webpage) @Html.Resource("Admin Webpage Layout Hidden Widgets", "Hidden Widgets"))
+                                    @layoutArea.AreaName (@await WidgetVisibilityChecker.CountVisible(widgets, webpage) @Html.Resource("Admin Webpage Layout Shown Widgets", "Shown Widgets"), @await WidgetVisibilityChecker.CountHidden(widgets, webpage) @Html.Resource("Admin Webpage Layout Hidden Widgets", "Hidden Widgets"))
                                 </a>
                             </h4>
                         </div>

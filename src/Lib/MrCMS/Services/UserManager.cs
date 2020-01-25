@@ -39,6 +39,11 @@ namespace MrCMS.Services
             return IdentityResult.Success;
         }
 
+        public Task<bool> IsAdmin(User user)
+        {
+            return IsInRoleAsync(user, Role.Administrator);
+        }
+
         public async Task<IdentityResult> SetPassword(User user, string password)
         {
             var result = await RemovePasswordAsync(user);

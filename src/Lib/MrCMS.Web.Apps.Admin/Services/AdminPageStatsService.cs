@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -19,9 +20,9 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IList<WebpageStats> GetSummary()
         {
-            var allByType = _repository.Readonly().GroupBy(x => x.DocumentClrType)
+            var allByType = _repository.Readonly().GroupBy(x => EF.Property<string>(x, "DocumentType"))
                 .Select(x => new { type = x.Key, count = x.Count() }).ToList();
-            var publishedByType = _repository.Readonly().Where(x => x.Published).GroupBy(x => x.DocumentClrType)
+            var publishedByType = _repository.Readonly().Where(x => x.Published).GroupBy(x => EF.Property<string>(x, "DocumentType"))
                 .Select(x => new { type = x.Key, count = x.Count() }).ToDictionary(x => x.type, x => x.count);
 
             return allByType.Select(x => new WebpageStats

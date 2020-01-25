@@ -5,11 +5,18 @@
 @using MrCMS.Entities.Widget
 @using MrCMS.Helpers
 @using MrCMS.Services
+@using MrCMS.Website
 @model MrCMS.Web.Apps.Admin.Models.WebpageEdit.LayoutTabViewModel
 @{
     var webpage = ViewData["webpage"] as Webpage;
 }
 @inject IGetCurrentLayout GetCurrentLayout
+@inject ILayoutAreaLoader LayoutAreaLoader
+@inject IWidgetLoader WidgetLoader
+@inject IWidgetVisibilityChecker WidgetVisibilityChecker
+@inject IWidgetSortedChecker WidgetSortedChecker
+
+
 <div class="form-group">
     @Html.LabelFor(model => model.PageTemplateId, Html.Resource("Page Template"))
     @Html.DropDownListFor(model => model.PageTemplateId, ViewData["template-options"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
@@ -20,71 +27,84 @@
     <div class="panel-group" id="accordion-layout-areas">
         @{
             var currentLayout = GetCurrentLayout.Get(webpage);
-            if (currentLayout.GetLayoutAreas().Any())
+            var layoutAreas = (await LayoutAreaLoader.GetLayoutAreas(currentLayout)).ToList();
+            if (layoutAreas.Any())
             {
-                foreach (LayoutArea layoutArea in currentLayout.GetLayoutAreas())
+                foreach (LayoutArea layoutArea in layoutAreas)
                 {
-                    IList<Widget> widgets = layoutArea.GetWidgets(webpage, true);
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
+                    IList<Widget> widgets = await WidgetLoader.GetWidgets(layoutArea, webpage, true);
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
                                 <a data-toggle="collapse" data-parent="#accordion-layout-areas" href="#collapse-@layoutArea.Id.ToString()">
-                                    @layoutArea.AreaName (@widgets.Count(widget => !webpage.IsHidden(widget)) @Html.Resource("Admin Webpage Layout Shown Widgets", "Shown Widgets"), @widgets.Count(widget => webpage.IsHidden(widget)) @Html.Resource("Admin Webpage Layout Hidden Widgets", "Hidden Widgets"))
+                                    @layoutArea.AreaName (@await WidgetVisibilityChecker.CountVisible(widgets, webpage) @Html.Resource("Admin Webpage Layout Shown Widgets", "Shown Widgets"), @await WidgetVisibilityChecker.CountHidden(widgets, webpage) @Html.Resource("Admin Webpage Layout Hidden Widgets", "Hidden Widgets"))
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapse-@layoutArea.Id.ToString()" class="panel-collapse collapse @(Context.Request.Query["layoutAreaId"] == layoutArea.Id.ToString() ? "in" : "")">
-                            <div class="panel-body">
-
+                        <div id="collapse-@layoutArea.Id.ToString()" class="collapse @(Context.Request.Query["layoutAreaId"] == layoutArea.Id.ToString() ? "show" : "")">
+                            <div class="card-body flex-row">
+                                <div class="d-inline-block w-100 mb-3">
+                                    <div class="btn-group pull-right">
+                                        @if (widgets.Any())
+                                        {
+                                            @Html.ActionLink(Html.Resource("Sort"), "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
+                                            if (await WidgetSortedChecker.IsSorted(webpage, layoutArea))
+                                            {
+                                                @Html.FormLink(Html.Resource("Reset Sort"), "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-sm" })
+                                            }
+                                        }
+                                        <a href="@Url.Action("Add", "Widget", new {pageId = Model.Id, id = layoutArea.Id})" class="btn btn-sm btn-primary" data-toggle="fb-modal">
+                                            @Html.Resource("Admin Webpage Layout Add widget to area", "Add widget to area")
+                                        </a>
+                                    </div>
+                                </div>
                                 @if (widgets.Any())
                                 {
-                                    <table class="table table-striped table-condensed">
-                                        <tbody>
-                                            @foreach (Widget widget in widgets)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group">
+                                    <div class="card-deck row">
+                                        @foreach (var item in widgets.Select((value, i) => new { i, value }))
+                                        {
+                                            var widget = item.value;
+                                            var index = item.i + 1;
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">
+                                                            @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
+                                                        </h5>
+
+                                                        <div class="btn-group mt-2">
                                                             @if (widget.Webpage != webpage)
                                                             {
-                                                                if (!webpage.IsHidden(widget))
+                                                                if (!await WidgetVisibilityChecker.IsHidden(webpage, widget))
                                                                 {
-                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Hide Widget", "Hide Widget"), "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-sm" })
+                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Hide Widget", "Hide Widget"), "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                                                                 }
                                                                 else
                                                                 {
-                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Show Widget", "Show Widget"), "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-sm" })
+                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Show Widget", "Show Widget"), "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-outline-warning btn-sm" })
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-sm btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+                                                                <a href="@Url.Action("Delete", "Widget", new {id = widget.Id, layoutAreaId = layoutArea.Id})" class="btn btn-sm btn-outline-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
                                                             }
-
-                                                            @Html.ActionLink(Html.Resource("Admin Webpage Layout Edit Widget", "Edit Widget"), "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
+                                                            @Html.ActionLink(Html.Resource("Admin Webpage Layout Edit Widget", "Edit Widget"), "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-outline-primary btn-sm", @data_toggle = "fb-modal" })
                                                         </div>
-                                                    </td>
-                                                </tr>
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <small class="text-muted">Last updated @widget.UpdatedOn</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            if (index % 2 == 0)
+                                            {
+                                                <div class="w-100"></div>
                                             }
-                                        </tbody>
-                                    </table>
-                                }
-                                <div class="btn-group">
-                                    <a href="@Url.Action("Add", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-sm btn-primary" data-toggle="fb-modal">
-                                        @Html.Resource("Admin Webpage Layout Add widget to area", "Add widget to area")
-                                    </a>
-                                    @if (widgets.Any())
-                                    {
-                                        @Html.ActionLink(Html.Resource("Sort"), "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
-                                        if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == webpage))
-                                        {
-                                            @Html.FormLink(Html.Resource("Reset Sort"), "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-secondary btn-sm" })
                                         }
-                                    }
-                                </div>
+                                    </div>
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -97,4 +117,3 @@
         }
     </div>
 </div>
-

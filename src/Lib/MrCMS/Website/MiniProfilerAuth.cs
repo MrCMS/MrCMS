@@ -20,7 +20,10 @@ namespace MrCMS.Website
             }
 
             User currentUser = userService.GetCurrentUser(request.HttpContext);
-            return currentUser != null && currentUser.IsAdmin;
+            if (currentUser == null) return false;
+
+            var userRoleManager = request.HttpContext.RequestServices.GetRequiredService<IUserRoleManager>();
+            return userRoleManager.IsAdmin(currentUser).GetAwaiter().GetResult();
         }
 
         public static bool ShouldStartFor(HttpRequest request)

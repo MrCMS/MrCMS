@@ -10,8 +10,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         public FormPropertyAdminProfile()
         {
             CreateMap<FormProperty, AddFormPropertyModel>()
-                .ReverseMap()
-                .MapEntityLookup(model => model.FormId, property => property.Form);
+                .ReverseMap() ;
 
             CreateMap<FormProperty, UpdateFormPropertyModel>()
                 .ForMember(model => model.ShowPlaceholder,

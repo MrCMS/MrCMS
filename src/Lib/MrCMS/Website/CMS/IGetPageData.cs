@@ -4,6 +4,6 @@ namespace MrCMS.Website.CMS
 {
     public interface IGetPageData
     {
-        PageData GetData(string url, string method);
+        Task<PageData> GetData(string url, string method);
     }
 }

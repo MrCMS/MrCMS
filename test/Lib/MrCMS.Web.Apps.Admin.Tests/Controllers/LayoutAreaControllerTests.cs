@@ -58,22 +58,22 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void LayoutAreaController_EditGet_IfIdIsValidShouldReturnViewResult()
+        public async Task LayoutAreaController_EditGet_IfIdIsValidShouldReturnViewResult()
         {
             var model = new UpdateLayoutAreaModel();
             A.CallTo(() => _layoutAreaAdminService.GetEditModel(123)).Returns(model);
 
-            ActionResult actionResult = _layoutAreaController.Edit_Get(123);
+            ActionResult actionResult = await _layoutAreaController.Edit_Get(123);
 
             actionResult.Should().BeOfType<ViewResult>();
             actionResult.As<ViewResult>().Model.Should().Be(model);
         }
 
         [Fact]
-        public void LayoutAreaController_EditGet_IfIdIsInvalidRedirectToLayoutIndex()
+        public async Task LayoutAreaController_EditGet_IfIdIsInvalidRedirectToLayoutIndex()
         {
             A.CallTo(() => _layoutAreaAdminService.GetEditModel(123)).Returns(null);
-            ActionResult actionResult = _layoutAreaController.Edit_Get(123);
+            ActionResult actionResult = await _layoutAreaController.Edit_Get(123);
 
             actionResult.Should().BeOfType<RedirectToActionResult>();
             actionResult.As<RedirectToActionResult>().ActionName.Should().Be("Index");

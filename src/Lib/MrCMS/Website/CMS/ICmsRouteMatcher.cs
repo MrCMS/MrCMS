@@ -4,6 +4,6 @@ namespace MrCMS.Website.CMS
 {
     public interface ICmsRouteMatcher
     {
-        CmsMatchData TryMatch(string path, string method);
+        Task<CmsMatchData> TryMatch(string path, string method);
     }
 }

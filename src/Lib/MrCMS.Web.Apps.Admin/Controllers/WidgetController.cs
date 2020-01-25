@@ -82,9 +82,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             var widget = await _widgetService.UpdateWidget(model, additionalPropertyModel);
 
             return string.IsNullOrWhiteSpace(returnUrl)
-                ? widget.Webpage != null
-                    ? RedirectToAction("Edit", "Webpage", new { id = widget.Webpage.Id })
-                    : (ActionResult)RedirectToAction("Edit", "LayoutArea", new { id = widget.LayoutArea.Id })
+                ? widget.WebpageId != null
+                    ? RedirectToAction("Edit", "Webpage", new { id = widget.WebpageId })
+                    : (ActionResult)RedirectToAction("Edit", "LayoutArea", new { id = widget.LayoutAreaId })
                 : Redirect(returnUrl);
         }
 

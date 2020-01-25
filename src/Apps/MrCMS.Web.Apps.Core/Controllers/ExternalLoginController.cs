@@ -63,10 +63,10 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 //_logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
                 return this.RedirectToLocal(returnUrl);
             }
-        
+
             var user = await _externalLoginService.GetUserToLogin(result.LoginInfo);
 
-            var loginResult = _getVerifiedUserResult.GetResult(user, returnUrl);
+            var loginResult = await _getVerifiedUserResult.GetResult(user, returnUrl);
             switch (loginResult.Status)
             {
                 case LoginStatus.Success:
@@ -89,7 +89,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     break;
             }
 
-            TempData.Set(new LoginModel {Message = loginResult.Message});
+            TempData.Set(new LoginModel { Message = loginResult.Message });
             return _uniquePageService.RedirectTo<LoginPage>();
         }
 

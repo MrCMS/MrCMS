@@ -33,14 +33,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Edit")]
-        public ActionResult Edit_Get(int id)
+        public async Task<ActionResult> Edit_Get(int id)
         {
             var model = _layoutAreaAdminService.GetEditModel(id);
             if (model == null)
                 return RedirectToAction("Index", "Layout");
 
             ViewData["layout"] = _layoutAreaAdminService.GetLayout(id);
-            ViewData["widgets"] = _layoutAreaAdminService.GetWidgets(id);
+            ViewData["widgets"] = await _layoutAreaAdminService.GetWidgets(id);
             return View(model);
         }
 

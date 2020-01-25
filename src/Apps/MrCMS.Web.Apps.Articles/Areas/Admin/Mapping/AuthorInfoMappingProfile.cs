@@ -10,8 +10,7 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
     {
         public AuthorInfoMappingProfile()
         {
-            CreateMap<AuthorInfo, AddAuthorInfoModel>().ReverseMap()
-                .MapEntityLookup(x => x.UserId, info => info.User);
+            CreateMap<AuthorInfo, AddAuthorInfoModel>().ReverseMap();
             CreateMap<AuthorInfo, EditAuthorInfoModel>().ReverseMap();
         }
     }

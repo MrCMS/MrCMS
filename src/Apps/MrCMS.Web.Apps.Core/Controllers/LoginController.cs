@@ -57,7 +57,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             if (loginModel != null && ModelState.IsValid)
             {
-                var result = _loginService.AuthenticateUser(loginModel);
+                var result = await _loginService.AuthenticateUser(loginModel);
                 switch (result.Status)
                 {
                     case LoginStatus.Success:

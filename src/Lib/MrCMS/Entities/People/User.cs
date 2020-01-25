@@ -62,15 +62,15 @@ namespace MrCMS.Entities.People
         public virtual IList<UserToRole> UserToRoles { get; set; }
         public virtual IList<UserProfileData> UserProfileData { get; set; }
 
-        public virtual bool IsAdmin
-        {
-            get { return UserToRoles != null && UserToRoles.Any(role => role.UserRole.Name == Role.Administrator); }
-        }
+        //public virtual bool IsAdmin
+        //{
+        //    get { return UserToRoles != null && UserToRoles.Any(role => role.UserRole.Name == Role.Administrator); }
+        //}
 
-        public static HashSet<Type> OwnedObjectTypes
-        {
-            get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
-        }
+        //public static HashSet<Type> OwnedObjectTypes
+        //{
+        //    get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
+        //}
 
         public virtual bool DisableNotifications { get; set; }
         public virtual DateTime? LastNotificationReadDate { get; set; }

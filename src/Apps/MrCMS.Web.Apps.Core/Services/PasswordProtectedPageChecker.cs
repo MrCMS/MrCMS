@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
@@ -8,19 +9,22 @@ namespace MrCMS.Web.Apps.Core.Services
     public class PasswordProtectedPageChecker : IPasswordProtectedPageChecker
     {
         private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IUserRoleManager _userRoleManager;
 
-        public PasswordProtectedPageChecker(IGetCurrentUser getCurrentUser)
+        public PasswordProtectedPageChecker(IGetCurrentUser getCurrentUser, IUserRoleManager userRoleManager)
         {
             _getCurrentUser = getCurrentUser;
+            _userRoleManager = userRoleManager;
         }
 
         private string GetCookieKey(Webpage webpage)
         {
             return $"MrCMS.PasswordProtectedPage.{webpage.Id}";
         }
-        public bool CanAccessPage(Webpage webpage, IRequestCookieCollection cookies)
+        public async Task<bool> CanAccessPage(Webpage webpage, IRequestCookieCollection cookies)
         {
-            if (_getCurrentUser.Get()?.IsAdmin == true)
+            var user = _getCurrentUser.Get();
+            if (user != null && await _userRoleManager.IsAdmin(user))
                 return true;
             if (webpage == null)
                 return false;

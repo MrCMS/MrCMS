@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Apps.Admin.Services.Dashboard;
 using MrCMS.Website.Controllers;
@@ -14,9 +15,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public JsonResult Process(string typeName)
+        public async Task<JsonResult> Process(string typeName)
         {
-            return Json(_service.CheckType(typeName));
+            return Json(await _service.CheckType(typeName));
         }
     }
 }

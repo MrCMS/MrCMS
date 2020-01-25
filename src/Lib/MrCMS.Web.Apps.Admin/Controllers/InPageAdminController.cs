@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Models;
@@ -25,21 +26,21 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         //[ValidateInput(false)]
-        public JsonResult SaveContent(UpdatePropertyData updatePropertyData)
+        public async Task<JsonResult> SaveContent(UpdatePropertyData updatePropertyData)
         {
-            return Json(_inPageAdminService.SaveContent(updatePropertyData));
+            return Json(await _inPageAdminService.SaveContent(updatePropertyData));
         }
 
         //[ValidateInput(false)]
-        public PartialViewResult GetUnformattedContent(GetPropertyData getPropertyData)
+        public async Task<PartialViewResult> GetUnformattedContent(GetPropertyData getPropertyData)
         {
-            return PartialView(_inPageAdminService.GetContent(getPropertyData));
+            return PartialView(await _inPageAdminService.GetContent(getPropertyData));
         }
 
         //[ValidateInput(false)]
-        public PartialViewResult GetFormattedContent(GetPropertyData getPropertyData)
+        public async Task<PartialViewResult> GetFormattedContent(GetPropertyData getPropertyData)
         {
-            return PartialView(_inPageAdminService.GetContent(getPropertyData));
+            return PartialView(await _inPageAdminService.GetContent(getPropertyData));
         }
     }
 }

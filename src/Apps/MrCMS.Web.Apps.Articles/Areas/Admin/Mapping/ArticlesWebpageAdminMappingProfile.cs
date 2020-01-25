@@ -16,7 +16,6 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
                 ;
             CreateMap<Article, ArticleViewModel>()
                 .ReverseMap()
-                .MapEntityLookup(x => x.UserId, x => x.User)
                 .ForMember(document => document.DocumentTags,
                     expression => expression.MapFrom<DocumentTagsMapper>());
         }

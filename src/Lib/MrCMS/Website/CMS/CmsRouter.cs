@@ -39,7 +39,7 @@ namespace MrCMS.Website.CMS
             // we want to look at the whole path with the leading '/' stripped
             var url = context.HttpContext.Request.Path.ToUriComponent()?.TrimStart('/');
 
-            var matchResult = serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url, method);
+            var matchResult = await serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url, method);
             switch (matchResult.MatchType)
             {
                 case CmsRouteMatchType.NoMatch:

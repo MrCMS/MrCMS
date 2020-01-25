@@ -27,8 +27,16 @@ namespace MrCMS.DbConfiguration.Models
             });
             //builder.Entity<Webpage>(webpage => { webpage.Ignore(x => x.ActivePages); });
             builder.Entity<PageWidgetSort>();
-            builder.Entity<HiddenWidget>(hiddenWidget => hiddenWidget.ToTable("HiddenWidgets"));
-            builder.Entity<ShownWidget>(shownWidget => shownWidget.ToTable("ShownWidgets"));
+            builder.Entity<HiddenWidget>(hiddenWidget =>
+            {
+                hiddenWidget.ToTable("HiddenWidgets");
+                hiddenWidget.HasKey(x => new {x.WidgetId, x.WebpageId});
+            });
+            builder.Entity<ShownWidget>(shownWidget =>
+            {
+                shownWidget.ToTable("ShownWidgets");
+                shownWidget.HasKey(x => new {x.WidgetId, x.WebpageId});
+            });
 
             builder.Entity<DocumentTag>(documentTag => documentTag.HasKey(x => new { x.DocumentId, x.TagId }));
             builder.Entity<FrontEndAllowedRole>(frontEndAllowedRole =>
@@ -46,8 +54,6 @@ namespace MrCMS.DbConfiguration.Models
                 foreach (var type in _reflectionHelper.GetAllConcreteImplementationsOf<Widget>())
                     discriminatorBuilder.HasValue(type, type.FullName);
             });
-            builder.Entity<HiddenWidget>(hiddenWidget => hiddenWidget.HasKey(x => new { x.WidgetId, x.WebpageId }));
-            builder.Entity<ShownWidget>(shownWidget => shownWidget.HasKey(x => new { x.WidgetId, x.WebpageId }));
 
             builder.Entity<ContentBlock>(contentBlock =>
             {
@@ -56,6 +62,7 @@ namespace MrCMS.DbConfiguration.Models
                     discriminatorBuilder.HasValue(type, type.FullName);
             });
 
+            builder.Entity<DocumentVersion>();
         }
     }
 }

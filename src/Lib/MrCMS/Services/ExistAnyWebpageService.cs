@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -28,7 +29,7 @@ namespace MrCMS.Services
         {
             var webpageCounts =
                 _repository.Readonly()
-                    .GroupBy(x => x.DocumentClrType).Select(g => new
+                    .GroupBy(x => EF.Property<string>(x, "DocumentType")).Select(g => new
                     {
                         Type = g.Key,
                         Count = g.Count()

@@ -9,6 +9,7 @@ namespace MrCMS.DbConfiguration.Models
         {
             builder.Entity<SystemSetting>();
             builder.Entity<Setting>();
+
         }
     }
 }

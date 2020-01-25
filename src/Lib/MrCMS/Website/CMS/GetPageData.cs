@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -17,7 +18,7 @@ namespace MrCMS.Website.CMS
             _canPreview = canPreview;
         }
 
-        public PageData GetData(string url, string method)
+        public async Task<PageData> GetData(string url, string method)
         {
             Webpage webpage = _getWebpageForPath.GetWebpage(url);
             if (webpage == null)
@@ -26,7 +27,7 @@ namespace MrCMS.Website.CMS
             }
 
             var isPreview = !webpage.Published;
-            if (isPreview && !_canPreview.CanPreview(webpage))
+            if (isPreview && !await _canPreview.CanPreview(webpage))
             {
                 return null;
             }

@@ -11,26 +11,30 @@ namespace MrCMS.Web.Apps.Admin.Hubs
         public const string UsersGroup = "Users";
         public const string AdminGroup = "Admins";
         private readonly IUserLookup _userLookup;
+        private readonly IUserRoleManager _userRoleManager;
 
-        public NotificationHub(IUserLookup userLookup)
+        public NotificationHub(IUserLookup userLookup, IUserRoleManager userRoleManager)
         {
             _userLookup = userLookup;
+            _userRoleManager = userRoleManager;
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
             User user = _userLookup.GetCurrentUser(Context.User);
-            return user == null || !user.IsAdmin
-                ? Groups.AddToGroupAsync(Context.ConnectionId, UsersGroup)
-                : Groups.AddToGroupAsync(Context.ConnectionId, AdminGroup);
+            if (user == null || !await _userRoleManager.IsAdmin(user))
+                await Groups.AddToGroupAsync(Context.ConnectionId, UsersGroup);
+            else
+                await Groups.AddToGroupAsync(Context.ConnectionId, AdminGroup);
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
             User user = _userLookup.GetCurrentUser(Context.User);
-            return user == null || !user.IsAdmin
-                ? Groups.RemoveFromGroupAsync(Context.ConnectionId, UsersGroup)
-                : Groups.RemoveFromGroupAsync(Context.ConnectionId, AdminGroup);
+            if (user == null || !await _userRoleManager.IsAdmin(user))
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, UsersGroup);
+            else
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, AdminGroup);
         }
     }
 }

@@ -91,8 +91,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public async Task<RedirectToActionResult> Edit(UpdateWebpageViewModel model)
         {
             var result = await _webpageAdminService.Update(model);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Name));
-            return RedirectToAction("Edit", new { id = result.Id });
+            if (result.Success)
+                TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Model.Name));
+            else
+                TempData.ErrorMessages().Add("An error occurred: " + string.Join(", ", result.Messages));
+            return RedirectToAction("Edit", new { id = model.Id });
         }
 
         [HttpGet]

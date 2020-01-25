@@ -7,7 +7,7 @@ namespace MrCMS.Logging
     {
         public static ILoggingBuilder AddMrCMSLogger(this ILoggingBuilder builder)
         {
-            builder.Services.AddSingleton<ILoggerProvider, MrCMSDatabaseLoggerProvider>();
+            //builder.Services.AddSingleton<ILoggerProvider, MrCMSDatabaseLoggerProvider>();
             return builder;
         }
     }

@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using MrCMS.Data;
 using MrCMS.Entities.Notifications;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
 using MrCMS.Web.Apps.Admin.Controllers;
@@ -28,7 +30,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IPagedList<Notification> Search(NotificationSearchQuery searchQuery)
         {
-            var queryOver = _repository.Query();
+            IQueryable<Notification> queryOver = _repository.Query().Include(x => x.User);
 
             if (!string.IsNullOrWhiteSpace(searchQuery.Message))
             {

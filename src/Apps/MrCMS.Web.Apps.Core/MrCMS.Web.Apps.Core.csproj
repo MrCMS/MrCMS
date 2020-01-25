@@ -16,6 +16,7 @@
     <None Remove="Views\Login\LinkedIn.cshtml" />
     <None Remove="Views\Login\Providers.cshtml" />
     <None Remove="Views\Pages\WebpagePasswordPage.cshtml" />
+    <None Remove="Views\Shared\Components\ContentBlocks\Default.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -18,7 +18,7 @@ namespace MrCMS.Services.Auth
             _getVerifiedUserResult = getVerifiedUserResult;
         }
 
-        public LoginResult AuthenticateUser(LoginModel loginModel)
+        public async Task<LoginResult> AuthenticateUser(LoginModel loginModel)
         {
             if (string.IsNullOrWhiteSpace(loginModel.ReturnUrl))
                 loginModel.ReturnUrl = null;
@@ -26,7 +26,7 @@ namespace MrCMS.Services.Auth
             var user = _userLookup.GetUserByEmail(loginModel.Email);
 
             if (user != null && _passwordManagementService.ValidateUser(user, loginModel.Password))
-                return _getVerifiedUserResult.GetResult(user, loginModel.ReturnUrl);
+                return await _getVerifiedUserResult.GetResult(user, loginModel.ReturnUrl);
 
             return new LoginResult
             {

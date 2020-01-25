@@ -91,10 +91,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
 
             block.DisplayOrder = GetDisplayOrder(block.Webpage?.Id ?? 0);
-            block.Webpage?.ContentBlocks.Add(block);
             _repository.Add(block);
 
-            return block.Webpage?.Id;
+            return block.WebpageId;
         }
 
         public UpdateContentBlockViewModel GetUpdateModel(int id)
