@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Models;
@@ -10,5 +11,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task Add(AddUrlHistoryModel urlHistory);
         UrlHistory GetByUrlSegment(string url);
         AddUrlHistoryModel GetUrlHistoryToAdd(int webpageId);
+        Task<List<UrlHistory>> GetByWebpageId(int webpageId);
     }
 }

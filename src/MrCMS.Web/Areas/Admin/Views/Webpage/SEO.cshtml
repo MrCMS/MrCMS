@@ -1,10 +1,13 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Services
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Admin.Models.WebpageEdit.SEOTabViewModel
+@inject IUrlHistoryAdminService UrlHistoryAdminService
 @{
     var webpage = ViewData["webpage"] as Webpage;
+    var urls = await UrlHistoryAdminService.GetByWebpageId(Model.Id);
 }
 <div class="tab-pane content-item" id="#edit-seo">
     <div class="d-inline">
@@ -22,11 +25,11 @@
 
             @Html.ActionLink(Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-sm btn-success", data_toggle = "fb-modal" })
         </div>
-        @if (webpage.Urls.Any())
+        @if (urls.Any())
         {
             <table class="table table-striped table-condensed mt-3">
                 <tbody>
-                    @foreach (var url in webpage.Urls.OrderByDescending(history => history.CreatedOn))
+                    @foreach (var url in urls.OrderByDescending(history => history.CreatedOn))
                     {
                         <tr>
                             <td>
@@ -72,7 +75,7 @@
     <h4>@Html.Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
     @Html.LabelFor(model => model.SEOTargetPhrase)
     <div class="input-group">
-        @Html.TextBoxFor(model => model.SEOTargetPhrase, new {@class = "form-control"})
+        @Html.TextBoxFor(model => model.SEOTargetPhrase, new { @class = "form-control" })
         <span class="input-group-append">
             <button data-seo-analyze="true" class="btn btn-secondary">@Html.Resource("Admin Webpage Seo Analyze", "Analyze")</button>
         </span>

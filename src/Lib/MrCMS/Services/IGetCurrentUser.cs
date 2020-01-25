@@ -5,5 +5,6 @@ namespace MrCMS.Services
     public interface IGetCurrentUser
     {
         User Get();
+        int? GetId();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -24,39 +25,27 @@ namespace MrCMS.Data
             var changeInfos = new List<ChangeInfo>();
             foreach (var entry in entityEntries)
             {
-                var properties = new List<PropertyData>();
-                var originalValues = entry.OriginalValues;
-                var currentValues = entry.CurrentValues;
 
-                foreach (var property in currentValues.Properties)
-                {
-                    var originalValue = originalValues[property];
-                    var currentValue = currentValues[property];
-
-                    if (!Equals(originalValue, currentValue))
-                    {
-                        properties.Add(new PropertyData
-                        {
-                            Name = property.Name,
-                            OriginalValue = originalValue,
-                            CurrentValue = currentValue
-                        });
-                    }
-                }
-
-                if (!properties.Any())
-                    continue;
-
-                changeInfos.Add(new ChangeInfo
+                var changeInfo = new ChangeInfo
                 {
                     Type = entry.Metadata.ClrType,
                     Entity = () => entry.Entity,
                     EntityType = GetTypeName(entry),
-                    PropertiesUpdated = properties,
-                    Properties = entry.CurrentValues
-                });
+                    OriginalValues = GetValueDictionary(entry.OriginalValues),
+                    Properties = GetValueDictionary(entry.CurrentValues)
+                };
+                // nothing changed then we don't raise data
+                if (!changeInfo.PropertiesUpdated.Any())
+                    continue;
+
+                changeInfos.Add(changeInfo);
             }
             return changeInfos;
+        }
+
+        private IImmutableDictionary<string, object> GetValueDictionary(PropertyValues propertyValues)
+        {
+            return propertyValues.Properties.ToImmutableDictionary(x => x.Name, x => propertyValues[x]);
         }
 
         private ICollection<EntityData> GetSimpleEntries<T>(List<EntityEntry<T>> entityEntries) where T : class
@@ -66,7 +55,7 @@ namespace MrCMS.Data
                 Type = entry.Metadata.ClrType,
                 EntityType = GetTypeName(entry),
                 Entity = () => entry.Entity,
-                Properties = entry.CurrentValues
+                Properties = GetValueDictionary(entry.CurrentValues)
             }).ToList();
         }
 

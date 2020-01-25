@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -52,6 +53,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 WebpageId = webpageId
             };
+        }
+
+        public Task<List<UrlHistory>> GetByWebpageId(int webpageId)
+        {
+            return _repository.Readonly().Where(x => x.WebpageId == webpageId).ToListAsync();
         }
     }
 }

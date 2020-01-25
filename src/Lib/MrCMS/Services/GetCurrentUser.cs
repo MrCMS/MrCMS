@@ -20,5 +20,10 @@ namespace MrCMS.Services
         {
             return _userLookup.GetCurrentUser(_contextAccessor.HttpContext);
         }
+
+        public int? GetId()
+        {
+            return Get()?.Id;
+        }
     }
 }

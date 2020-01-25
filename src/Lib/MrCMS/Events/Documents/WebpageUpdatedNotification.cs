@@ -33,7 +33,7 @@ namespace MrCMS.Events.Documents
             }
 
             string message = string.Format("<a href=\"/Admin/Webpage/Edit/{1}\">{0}</a> has been {2}{3}.",
-                data.Properties.GetValue<string>(nameof(Webpage.Name)),
+                data.Properties[nameof(Webpage.Name)],
                 data.EntityId, action, _documentModifiedUser.GetInfo());
             await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
 

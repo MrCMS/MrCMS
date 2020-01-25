@@ -34,6 +34,7 @@ namespace MrCMS.Data
 
         protected override void BeforeAdd(T entity)
         {
+            base.BeforeAdd(entity);
             entity.SiteId = _getSiteId.GetId();
         }
 

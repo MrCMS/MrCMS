@@ -35,7 +35,7 @@ namespace MrCMS.Data
             ITryGetResult @try,
             ICheckInTransaction checkInTransaction,
             IGetChangesFromContext getChangesFromContext,
-            IHandleDataChanges handleDataChanges, 
+            IHandleDataChanges handleDataChanges,
             ICheckAllValidators<T> checkAllValidators,
             IApplyPrePersistence<T> applyPrePersistence) : base(context)
         {
@@ -50,6 +50,26 @@ namespace MrCMS.Data
 
         protected virtual void BeforeAdd(T entity)
         {
+            if (entity is IHaveSystemDates dates)
+            {
+                var now = DateTime.UtcNow;
+
+                if (dates.CreatedOn == DateTime.MinValue)
+                    dates.CreatedOn = now;
+
+                if (dates.UpdatedOn == DateTime.MinValue)
+                    dates.UpdatedOn = now;
+            }
+        }
+        protected virtual void BeforeUpdate(T entity)
+        {
+            if (entity is IHaveSystemDates dates)
+            {
+                var now = DateTime.UtcNow;
+
+                if (dates.UpdatedOn == DateTime.MinValue)
+                    dates.UpdatedOn = now;
+            }
         }
 
         public async Task<IResult<TSubtype>> Add<TSubtype>(TSubtype entity, CancellationToken token) where TSubtype : class, T
@@ -98,6 +118,8 @@ namespace MrCMS.Data
         public async Task<IResult<TSubtype>> Update<TSubtype>(TSubtype entity, CancellationToken token)
             where TSubtype : class, T
         {
+            BeforeUpdate(entity);
+
             var result = await _applyPrePersistence.OnUpdating(entity, Context);
             if (!result.Success)
                 return result;
@@ -117,6 +139,9 @@ namespace MrCMS.Data
         public async Task<IResult<ICollection<TSubtype>>> UpdateRange<TSubtype>(ICollection<TSubtype> entities, CancellationToken token)
             where TSubtype : class, T
         {
+            foreach (var entity in entities)
+                BeforeUpdate(entity);
+
             var validationResult = await _applyPrePersistence.OnUpdating(entities, Context);
             if (!validationResult.Success)
                 return validationResult;
@@ -185,7 +210,7 @@ namespace MrCMS.Data
                 await Context.SaveChangesAsync(token);
                 return changes;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

@@ -29,33 +29,45 @@ namespace MrCMS.Data
                 {
                     foreach (var entityData in data.Added)
                     {
-                        var genericAdded = typeof(OnDataAdded<>).MakeGenericType(entityData.Type);
-                        if (!handlerType.IsImplementationOf(genericAdded)) continue;
+                        foreach (var type in entityData.TypeHierarchy)
+                        {
+                            var genericAdded = typeof(OnDataAdded<>).MakeGenericType(type);
+                            if (!handlerType.IsImplementationOf(genericAdded)) continue;
 
-                        MethodInfo methodInfo = handlerType.GetMethod("Execute", new[] { typeof(EntityData) });
-                        await (Task)methodInfo.Invoke(handler, new[] { entityData });
+                            MethodInfo methodInfo = handlerType.GetMethod("Execute", new[] { typeof(EntityData) });
+                            await (Task)methodInfo.Invoke(handler, new[] { entityData });
+                            break;
+                        }
                     }
                 }
                 else if (handlerType.IsImplementationOf(typeof(OnDataUpdated<>)))
                 {
                     foreach (var changeInfo in data.Updated)
                     {
-                        var genericUpdated = typeof(OnDataUpdated<>).MakeGenericType(changeInfo.Type);
-                        if (!handlerType.IsImplementationOf(genericUpdated)) continue;
+                        foreach (var type in changeInfo.TypeHierarchy)
+                        {
+                            var genericUpdated = typeof(OnDataUpdated<>).MakeGenericType(type);
+                            if (!handlerType.IsImplementationOf(genericUpdated)) continue;
 
-                        MethodInfo methodInfo = handlerType.GetMethod("Execute", new[] { typeof(ChangeInfo) });
-                        await (Task)methodInfo.Invoke(handler, new[] { changeInfo });
+                            MethodInfo methodInfo = handlerType.GetMethod("Execute", new[] {typeof(ChangeInfo)});
+                            await (Task) methodInfo.Invoke(handler, new[] {changeInfo});
+                            break;
+                        }
                     }
                 }
                 else if (handlerType.IsImplementationOf(typeof(OnDataDeleted<>)))
                 {
                     foreach (var entityData in data.Deleted)
                     {
-                        var genericDeleted = typeof(OnDataDeleted<>).MakeGenericType(entityData.Type);
-                        if (!handlerType.IsImplementationOf(genericDeleted)) continue;
+                        foreach (var type in entityData.TypeHierarchy)
+                        {
+                            var genericDeleted = typeof(OnDataDeleted<>).MakeGenericType(type);
+                            if (!handlerType.IsImplementationOf(genericDeleted)) continue;
 
-                        MethodInfo methodInfo = handlerType.GetMethod("Execute", new[] { typeof(EntityData) });
-                        await (Task)methodInfo.Invoke(handler, new[] { entityData });
+                            MethodInfo methodInfo = handlerType.GetMethod("Execute", new[] {typeof(EntityData)});
+                            await (Task) methodInfo.Invoke(handler, new[] {entityData});
+                            break;
+                        }
                     }
                 }
             }

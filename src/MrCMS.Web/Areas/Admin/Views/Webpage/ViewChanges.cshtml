@@ -1,12 +1,14 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Helpers
+@using MrCMS.Web.Apps.Admin.Services
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @model MrCMS.Entities.Documents.DocumentVersion
+@inject  IDocumentVersionsAdminService AdminService
 <fieldset>
     <legend>
         @Html.Resource("Admin Webpage Version", "Version") @Model.Id
-        @if (Model.AnyDifferencesFromCurrent())
+        @if (await AdminService.AnyDifferencesFromCurrent(Model))
         {
             using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post))
             {
@@ -32,9 +34,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var change in Model.GetComparisonToCurrent())
+            @foreach (var change in await AdminService.GetComparisonToCurrent(Model))
             {
-                <tr class="@(change.AnyChange ? "changed" : "unchanged")">
+                <tr class="table-@(change.AnyChange ? "danger" : "success")">
                     <td>
                         @change.Property
                     </td>

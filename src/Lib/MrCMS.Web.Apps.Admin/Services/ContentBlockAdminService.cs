@@ -90,7 +90,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 _mapper.Map(additionalPropertyModel, block);
             }
 
-            block.DisplayOrder = GetDisplayOrder(block.Webpage?.Id ?? 0);
+            block.DisplayOrder = GetDisplayOrder(block.WebpageId);
             _repository.Add(block);
 
             return block.WebpageId;
@@ -131,7 +131,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 return null;
             }
 
-            var webpageId = block.Webpage?.Id;
+            var webpageId = block.WebpageId;
             block.Webpage?.ContentBlocks.Remove(block);
             _repository.Delete(block);
             return webpageId;

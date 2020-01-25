@@ -4,7 +4,7 @@ using MrCMS.Entities;
 
 namespace MrCMS.Data
 {
-    public abstract class OnDataUpdated<T> : OnDataSaved where T : IHaveId
+    public abstract class OnDataUpdated<T> : OnDataSaved 
     {
         public abstract Task Execute(ChangeInfo data);
     }

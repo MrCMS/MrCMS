@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MrCMS.Common;
@@ -12,11 +13,11 @@ namespace MrCMS.Events
     {
         public override Task<IResult> OnDeleting(Layout entity, DbContext dbContext)
         {
-            foreach (var pageTemplate in entity.PageTemplates)
+            foreach (var pageTemplate in dbContext.Set<PageTemplate>().Where(x => x.LayoutId == entity.Id))
             {
-                pageTemplate.Layout = null;
+                pageTemplate.LayoutId = null;
+                dbContext.Update(pageTemplate);
             }
-            entity.PageTemplates.Clear();
             return Success;
         }
     }

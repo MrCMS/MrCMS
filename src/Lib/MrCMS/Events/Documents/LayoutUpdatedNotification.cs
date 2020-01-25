@@ -21,7 +21,7 @@ namespace MrCMS.Events.Documents
         public override async Task Execute(ChangeInfo data)
         {
             string message = string.Format("<a href=\"/Admin/Layout/Edit/{1}\">{0}</a> has been updated{2}.",
-                data.Properties.GetValue<string>(nameof(Layout.Name)),
+                data.Properties[nameof(Layout.Name)],
                 data.EntityId, _documentModifiedUser.GetInfo());
             await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }

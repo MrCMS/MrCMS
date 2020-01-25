@@ -23,13 +23,13 @@ namespace MrCMS.Events.Media
 
         public override Task Execute(ChangeInfo data)
         {
-            if (!MediaFileExtensions.IsImageExtension(data.Properties.GetValue<string>(nameof(MediaFile.FileExtension))))
+            if (!MediaFileExtensions.IsImageExtension(data.Properties[nameof(MediaFile.FileExtension)].ToString()))
                 return Task.CompletedTask;
 
-            if (!data.PropertiesUpdated.Any(x=>x.Name == nameof(MediaFile.Title) || x.Name == nameof(MediaFile.Description) ))
+            if (!data.PropertiesUpdated.Any(x => x.Name == nameof(MediaFile.Title) || x.Name == nameof(MediaFile.Description)))
                 return Task.CompletedTask;
 
-            var fileUrl = data.Properties.GetValue<string>(nameof(MediaFile.FileUrl));
+            var fileUrl = data.Properties[nameof(MediaFile.FileUrl)].ToString();
             var tagPrefix = $"{MediaSettingExtensions.RenderTagPrefix}{GetUrlWithoutExtension(fileUrl)}";
             var urlPrefix = $"{MediaSettingExtensions.RenderUrlPrefix}{GetUrlWithoutExtension(fileUrl)}";
 

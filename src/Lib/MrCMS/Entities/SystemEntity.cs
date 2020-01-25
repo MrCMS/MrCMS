@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace MrCMS.Entities
 {
-    public abstract class SystemEntity : IHaveId
+    public abstract class SystemEntity : IHaveId, IHaveSystemDates
     {
         protected SystemEntity()
         {

@@ -31,7 +31,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var history = await _urlHistoryAdminService.Delete(id);
 
-            return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
+            return RedirectToAction("Edit", "Webpage", new { id = history.WebpageId });
         }
 
         [HttpGet]
