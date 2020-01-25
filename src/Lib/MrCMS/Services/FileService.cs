@@ -11,32 +11,33 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
+using MrCMS.Website;
 using X.PagedList;
 
 namespace MrCMS.Services
 {
     public class FileService : IFileService
     {
-        private readonly Site _currentSite;
         private readonly IRepository<MediaFile> _repository;
         private readonly IRepository<ResizedImage> _resizedImageRepository;
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
+        private readonly IGetSiteId _getSiteId;
         private readonly SiteSettings _siteSettings;
 
         public FileService(
             IRepository<MediaFile> repository,
             IRepository<ResizedImage> resizedImageRepository,
             IFileSystem fileSystem, IImageProcessor imageProcessor,
-            MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
+            MediaSettings mediaSettings, IGetSiteId getSiteId, SiteSettings siteSettings)
         {
             _repository = repository;
             _resizedImageRepository = resizedImageRepository;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
-            _currentSite = currentSite;
+            _getSiteId = getSiteId;
             _siteSettings = siteSettings;
         }
 
@@ -121,10 +122,10 @@ namespace MrCMS.Services
 
         public async Task<FilesPagedResult> GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
         {
-            var queryOver = _repository.Query().Where(file => file.Site == _currentSite);
+            var queryOver = _repository.Query();
 
             if (categoryId.HasValue)
-                queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
+                queryOver = queryOver.Where(file => file.MediaCategoryId == categoryId);
 
             if (imagesOnly)
                 queryOver = queryOver.Where(file => MediaFileExtensions.ImageExtensions.Contains(file.FileExtension));
@@ -171,7 +172,7 @@ namespace MrCMS.Services
 
         public void RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
+            string folderLocation = string.Format("{0}/{1}/", _getSiteId.GetId(),
                 mediaCategory.UrlSegment);
 
             _fileSystem.Delete(folderLocation);
@@ -179,7 +180,7 @@ namespace MrCMS.Services
 
         public void CreateFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
+            string folderLocation = string.Format("{0}/{1}/", _getSiteId.GetId(),
                 mediaCategory.UrlSegment);
 
             _fileSystem.CreateDirectory(folderLocation);
@@ -195,8 +196,6 @@ namespace MrCMS.Services
 
         public async Task DeleteFileSoft(MediaFile mediaFile)
         {
-            if (mediaFile.MediaCategory != null)
-                mediaFile.MediaCategory.Files.Remove(mediaFile);
             await _repository.Delete(mediaFile);
         }
 
@@ -208,7 +207,7 @@ namespace MrCMS.Services
             if (mediaCategory != null)
                 urlSegment = mediaCategory.UrlSegment;
 
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id, urlSegment);
+            string folderLocation = string.Format("{0}/{1}/", _getSiteId.GetId(), urlSegment);
 
             //check for duplicates
             int i = 1;
@@ -218,7 +217,7 @@ namespace MrCMS.Services
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Id, urlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}", _getSiteId.GetId(), urlSegment, fileName);
             return fileLocation;
         }
 
@@ -323,14 +322,12 @@ namespace MrCMS.Services
         private async Task CacheResizedImage(MediaFile file, string requestedImageFileUrl)
         {
             var resizedImage = new ResizedImage { Url = requestedImageFileUrl, MediaFile = file };
-            file.ResizedImages.Add(resizedImage);
             await _resizedImageRepository.Add(resizedImage);
         }
 
         private async Task CacheResizedImage(Crop crop, string requestedImageFileUrl)
         {
             var resizedImage = new ResizedImage { Url = requestedImageFileUrl, Crop = crop };
-            crop.ResizedImages.Add(resizedImage);
             await _resizedImageRepository.Add(resizedImage);
         }
     }

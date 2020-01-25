@@ -20,7 +20,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
         List<ImageSortItem> GetFilesToSort(MediaCategory category = null);
         Task SetOrders(List<SortItem> items);
-        IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel);
+        Task<List<MediaCategory>> GetSubFolders(MediaCategorySearchModel searchModel);
 
         Task<string> MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null);
         Task MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null);

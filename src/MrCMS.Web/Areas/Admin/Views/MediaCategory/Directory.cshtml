@@ -12,7 +12,7 @@
 @inject IFileAdminService FileAdminService
 @{
     var files = FileAdminService.GetFilesForFolder(Model);
-    var folders = FileAdminService.GetSubFolders(Model);
+    var folders = await FileAdminService.GetSubFolders(Model);
 }
 <div data-update-media-folder="@Url.Action("Directory", "MediaCategory", Model)">
     <div id="folder-container">
@@ -51,7 +51,7 @@
                     </div>
                 }
                 <div class="clearfix"> </div>
-                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new {page, Model.SearchText, Model.SortBy, Model.Id}), MrCmsPagedListRenderOptions.Bootstrap4)
+                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new { page, Model.SearchText, Model.SortBy, Model.Id }), MrCmsPagedListRenderOptions.Bootstrap4)
             }
             else
             {

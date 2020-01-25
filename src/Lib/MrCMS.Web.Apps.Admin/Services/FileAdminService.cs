@@ -115,13 +115,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             await _mediaFileRepository.UpdateRange(mediaFiles.ToList());
         }
 
-        public IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel)
+        public Task<List<MediaCategory>> GetSubFolders(MediaCategorySearchModel searchModel)
         {
             var queryOver =
                 _mediaCategoryRepository.Query().Where(x => !x.HideInAdminNav);
             queryOver = searchModel.Id.HasValue
-                ? queryOver.Where(x => x.Parent.Id == searchModel.Id)
-                : queryOver.Where(x => x.Parent == null);
+                ? queryOver.Where(x => x.ParentId == searchModel.Id)
+                : queryOver.Where(x => x.ParentId == null);
             if (!string.IsNullOrWhiteSpace(searchModel.SearchText))
             {
                 queryOver =
@@ -131,7 +131,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             queryOver = queryOver.OrderBy(searchModel.SortBy);
 
-            return queryOver.ToList();
+            return queryOver.ToListAsync();
         }
 
         public async Task<string> MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null)
