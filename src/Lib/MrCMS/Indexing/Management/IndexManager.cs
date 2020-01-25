@@ -13,6 +13,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Search;
+using MrCMS.Website;
 
 namespace MrCMS.Indexing.Management
 {
@@ -22,19 +23,19 @@ namespace MrCMS.Indexing.Management
     {
         private readonly IGetLuceneIndexWriter _getLuceneIndexWriter;
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
-        private readonly Site _site;
+        private readonly IGetSiteId _getSiteId;
         private readonly TDefinition _definition;
         private readonly IRepositoryResolver _repositoryResolver;
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly IGetIndexResult _getIndexResult;
 
         public IndexManager(IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            Site site, TDefinition definition, IRepositoryResolver repositoryResolver, IGetLuceneDirectory getLuceneDirectory,
+            IGetSiteId getSiteId, TDefinition definition, IRepositoryResolver repositoryResolver, IGetLuceneDirectory getLuceneDirectory,
             IGetIndexResult getIndexResult)
         {
             _getLuceneIndexWriter = getLuceneIndexWriter;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
-            _site = site;
+            _getSiteId = getSiteId;
             _definition = definition;
             _repositoryResolver = repositoryResolver;
             _getLuceneDirectory = getLuceneDirectory;
@@ -53,7 +54,7 @@ namespace MrCMS.Indexing.Management
 
         public bool IndexExists
         {
-            get { return DirectoryReader.IndexExists(GetDirectory(_site)); }
+            get { return DirectoryReader.IndexExists(GetDirectory(_getSiteId.GetId())); }
         }
 
         public int? NumberOfDocs
@@ -63,7 +64,7 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                using (var indexReader = DirectoryReader.Open(GetDirectory(_site)))
+                using (var indexReader = DirectoryReader.Open(GetDirectory(_getSiteId.GetId())))
                 {
                     return indexReader.NumDocs;
                 }
@@ -79,7 +80,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexCreationResult CreateIndex()
         {
-            Directory fsDirectory = GetDirectory(_site);
+            Directory fsDirectory = GetDirectory(_getSiteId.GetId());
             bool indexExists = DirectoryReader.IndexExists(fsDirectory);
             if (indexExists)
                 return IndexCreationResult.AlreadyExists;
@@ -209,18 +210,17 @@ namespace MrCMS.Indexing.Management
 
         public async Task<IndexResult> ReIndex()
         {
-            var siteMethod = TypeHelper.GetMethodExt(typeof(IndexManager<,>), nameof(LoadAllOfType));
-            var globalMethod = TypeHelper.GetMethodExt(typeof(IndexManager<,>), nameof(GlobalLoadAllOfType));
-            var type = typeof(TEntity);
+            var thisType = typeof(IndexManager<,>);
             var entities = new List<TEntity>();
-            if (typeof(SiteEntity).IsAssignableFrom(type))
-                entities.AddRange(
-                    await (Task<List<TEntity>>)siteMethod.MakeGenericMethod(type).Invoke(this, null)
-                );
+            if (typeof(SiteEntity).IsAssignableFrom(typeof(TEntity)))
+            {
+                entities.AddRange(await LoadAllOfType());
+            }
             else
-                entities.AddRange(
-                    await (Task<List<TEntity>>)globalMethod.MakeGenericMethod(type).Invoke(this, null)
-                );
+            {
+                entities.AddRange(await GlobalLoadAllOfType());
+            }
+
             return _getIndexResult.GetResult(() => Write(writer =>
             {
                 foreach (Document document in Definition.ConvertAll(entities))
@@ -228,13 +228,16 @@ namespace MrCMS.Indexing.Management
             }, true));
         }
 
-        private Task<List<T>> LoadAllOfType<T>() where T : class, IHaveId, IHaveSite
+        public Task<List<TEntity>> LoadAllOfType()
         {
-            return _repositoryResolver.GetRepository<T>().Readonly().ToListAsync();
+            var siteId = _getSiteId.GetId();
+            return _repositoryResolver.GetGlobalRepository<TEntity>().Readonly()
+                .Where(x => EF.Property<int>(x, nameof(IHaveSite.SiteId)) == siteId)
+                .ToListAsync();
         }
-        private Task<List<T>> GlobalLoadAllOfType<T>() where T : class, IHaveId
+        public Task<List<TEntity>> GlobalLoadAllOfType()
         {
-            return _repositoryResolver.GetGlobalRepository<T>().Readonly().ToListAsync();
+            return _repositoryResolver.GetGlobalRepository<TEntity>().Readonly().ToListAsync();
         }
 
         public Document GetDocument(object entity)
@@ -242,9 +245,9 @@ namespace MrCMS.Indexing.Management
             return Definition.Convert(entity as TEntity);
         }
 
-        private Directory GetDirectory(Site site)
+        private Directory GetDirectory(int siteId)
         {
-            return _getLuceneDirectory.Get(site, IndexFolderName);
+            return _getLuceneDirectory.Get(siteId, IndexFolderName);
         }
 
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex)

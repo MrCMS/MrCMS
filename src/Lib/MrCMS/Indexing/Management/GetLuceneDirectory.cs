@@ -21,28 +21,27 @@ namespace MrCMS.Indexing.Management
 
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public GetLuceneDirectory(
-            IWebHostEnvironment hostingEnvironment
+        public GetLuceneDirectory(IWebHostEnvironment hostingEnvironment
             )
         {
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public Directory Get(Site site, string folderName)
+        public Directory Get(int siteId, string folderName)
         {
-            return GetSiteRAMCache(site)
-                .GetOrAdd(folderName, s => GetDirectory(site, s));
+            return GetSiteRAMCache(siteId)
+                .GetOrAdd(folderName, s => GetDirectory(siteId, s));
         }
 
-        private static ConcurrentDictionary<string, Directory> GetSiteRAMCache(Site site)
+        private static ConcurrentDictionary<string, Directory> GetSiteRAMCache(int siteId)
         {
-            return DirectoryCache.GetOrAdd(site.Id, i => new ConcurrentDictionary<string, Directory>());
+            return DirectoryCache.GetOrAdd(siteId, i => new ConcurrentDictionary<string, Directory>());
         }
 
-        private Directory GetDirectory(Site site, string folderName)
+        private Directory GetDirectory(int siteId, string folderName)
         {
             string mapPath = Path.Combine(_hostingEnvironment.ContentRootPath, "App_Data", "Indexes",
-                site.Id.ToString(), folderName);
+                siteId.ToString(), folderName);
             return new NRTCachingDirectory(FSDirectory.Open(new DirectoryInfo(mapPath)), 5, 60);
         }
     }

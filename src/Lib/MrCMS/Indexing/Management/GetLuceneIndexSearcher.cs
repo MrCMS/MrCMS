@@ -3,6 +3,7 @@ using System.Linq;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using MrCMS.Entities.Multisite;
+using MrCMS.Website;
 
 namespace MrCMS.Indexing.Management
 {
@@ -12,17 +13,17 @@ namespace MrCMS.Indexing.Management
             new Dictionary<int, Dictionary<string, IndexSearcher>>();
 
         private readonly IGetLuceneDirectory _getLuceneDirectory;
-        private readonly Site _site;
+        private readonly IGetSiteId _getSiteId;
 
-        public GetLuceneIndexSearcher(IGetLuceneDirectory getLuceneDirectory, Site site)
+        public GetLuceneIndexSearcher(IGetLuceneDirectory getLuceneDirectory, IGetSiteId getSiteId)
         {
             _getLuceneDirectory = getLuceneDirectory;
-            _site = site;
+            _getSiteId = getSiteId;
         }
 
         private int SiteId
         {
-            get { return _site.Id; }
+            get { return _getSiteId.GetId(); }
         }
 
         public IndexSearcher Get(IndexDefinition definition)
@@ -59,7 +60,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexSearcher GetInternal(string folderName)
         {
-            return new IndexSearcher(DirectoryReader.Open(_getLuceneDirectory.Get(_site, folderName)));
+            return new IndexSearcher(DirectoryReader.Open(_getLuceneDirectory.Get(SiteId, folderName)));
         }
     }
 }

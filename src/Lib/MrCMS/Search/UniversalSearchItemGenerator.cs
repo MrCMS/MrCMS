@@ -123,8 +123,8 @@ namespace MrCMS.Search
 
         public async Task<IEnumerable<Document>> GetAllItems()
         {
-            var siteMethod = TypeHelper.GetMethodExt(typeof(UniversalSearchItemGenerator), nameof(LoadAllOfType));
-            var globalMethod = TypeHelper.GetMethodExt(typeof(UniversalSearchItemGenerator), nameof(GlobalLoadAllOfType));
+            var siteMethod = typeof(UniversalSearchItemGenerator).GetMethod(nameof(LoadAllOfType));
+            var globalMethod = typeof(UniversalSearchItemGenerator).GetMethod( nameof(GlobalLoadAllOfType));
             var docs = new List<Document>();
             foreach (var universalSearchItemType in GetUniversalSearchItemTypes.Keys.OrderByDescending(type =>
                 type.FullName))
@@ -135,15 +135,20 @@ namespace MrCMS.Search
                 {
                     var type = universalSearchItemType;
                     if (typeof(SiteEntity).IsAssignableFrom(type))
+                    {
+                        var enumerable =
+                            (await siteMethod.MakeGenericMethod(universalSearchItemType).InvokeAsync(this));
                         objects.AddRange(
-                            (await (Task<IEnumerable>)siteMethod.MakeGenericMethod(universalSearchItemType).Invoke(this, null))
-                            .Cast<object>()
+                            (enumerable as IEnumerable).Cast<object>()
                         );
+                    }
                     else
+                    {
+                        var enumerable = await globalMethod.MakeGenericMethod(universalSearchItemType).InvokeAsync(this);
                         objects.AddRange(
-                            (await (Task<IEnumerable>)globalMethod.MakeGenericMethod(universalSearchItemType).Invoke(this, null))
-                            .Cast<object>()
+                            (enumerable as IEnumerable).Cast<object>()
                         );
+                    }
                 }
 
                 docs.AddRange(GenerateDocuments(objects.OfType<SystemEntity>().ToHashSet(), universalSearchItemType));
@@ -152,11 +157,11 @@ namespace MrCMS.Search
             return docs;
         }
 
-        private async Task<IEnumerable<T>> LoadAllOfType<T>() where T : class, IHaveId, IHaveSite
+        public async Task<IEnumerable<T>> LoadAllOfType<T>() where T : class, IHaveId, IHaveSite
         {
             return await _repositoryResolver.GetRepository<T>().Readonly().ToListAsync();
         }
-        private async Task<IEnumerable<T>> GlobalLoadAllOfType<T>() where T : class, IHaveId
+        public async Task<IEnumerable<T>> GlobalLoadAllOfType<T>() where T : class, IHaveId
         {
             return await _repositoryResolver.GetGlobalRepository<T>().Readonly().ToListAsync();
         }

@@ -6,6 +6,6 @@ namespace MrCMS.Indexing.Management
 {
     public interface IGetLuceneDirectory
     {
-        Directory Get(Site site, string folderName);
+        Directory Get(int siteId, string folderName);
     }
 }

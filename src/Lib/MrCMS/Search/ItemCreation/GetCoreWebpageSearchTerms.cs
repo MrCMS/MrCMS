@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
@@ -46,7 +47,7 @@ namespace MrCMS.Search.ItemCreation
                 return new Dictionary<Webpage, HashSet<string>>();
             string typeName = webpages.First().DocumentClrType;
             Dictionary<int, IEnumerable<string>> tagInfoDictionary = _tagRepository.Query()
-                .Where(documentTag => documentTag.Document.DocumentClrType == typeName)
+                .Where(documentTag => EF.Property<string>(documentTag.Document, "DocumentType") == typeName)
                 .Select(documentTag =>
                     new TagInfo
                     {

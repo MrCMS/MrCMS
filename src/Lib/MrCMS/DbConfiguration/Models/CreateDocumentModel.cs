@@ -39,7 +39,11 @@ namespace MrCMS.DbConfiguration.Models
                 shownWidget.HasKey(x => new { x.WidgetId, x.WebpageId });
             });
 
-            builder.Entity<DocumentTag>(documentTag => documentTag.HasKey(x => new { x.DocumentId, x.TagId }));
+            builder.Entity<DocumentTag>(documentTag =>
+            {
+                documentTag.ToTable("DocumentTags");
+                documentTag.HasKey(x => new {x.DocumentId, x.TagId});
+            });
             builder.Entity<FrontEndAllowedRole>(frontEndAllowedRole =>
             {
                 frontEndAllowedRole.HasKey(x => new { x.RoleId, x.WebpageId });

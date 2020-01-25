@@ -4,18 +4,19 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Index;
 using Lucene.Net.Util;
 using MrCMS.Entities.Multisite;
+using MrCMS.Website;
 
 namespace MrCMS.Indexing.Management
 {
     public class GetLuceneIndexWriter : IGetLuceneIndexWriter
     {
         private readonly IGetLuceneDirectory _getLuceneDirectory;
-        private readonly Site _site;
+        private readonly IGetSiteId _getSiteId;
 
-        public GetLuceneIndexWriter(IGetLuceneDirectory getLuceneDirectory, Site site)
+        public GetLuceneIndexWriter(IGetLuceneDirectory getLuceneDirectory, IGetSiteId getSiteId)
         {
             _getLuceneDirectory = getLuceneDirectory;
-            _site = site;
+            _getSiteId = getSiteId;
         }
 
         public IndexWriter Get(IndexDefinition definition)
@@ -40,7 +41,7 @@ namespace MrCMS.Indexing.Management
 
         private IndexWriter GetNewIndexWriter(string definitionName, Analyzer analyzer, bool recreateIndex)
         {
-            var writer = new IndexWriter(_getLuceneDirectory.Get(_site, definitionName), new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer));
+            var writer = new IndexWriter(_getLuceneDirectory.Get(_getSiteId.GetId(), definitionName), new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer));
             if (recreateIndex)
             {
                 writer.DeleteAll();

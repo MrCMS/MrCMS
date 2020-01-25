@@ -23,23 +23,23 @@ namespace MrCMS.Search
         private readonly IEndRequestTaskManager _endRequestTaskManager;
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
         private readonly IGetLuceneIndexWriter _getLuceneIndexWriter;
-        private readonly Site _site;
         private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
+        private readonly IGetSiteId _getSiteId;
         protected Analyzer Analyser;
 
-        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
+        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, IGetSiteId getSiteId,
             IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,
             IGetLuceneDirectory getLuceneDirectory, IEndRequestTaskManager endRequestTaskManager)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
-            _site = site;
+            _getSiteId = getSiteId;
             _getLuceneIndexWriter = getLuceneIndexWriter;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
             _getLuceneDirectory = getLuceneDirectory;
             _endRequestTaskManager = endRequestTaskManager;
         }
 
-        private bool IndexExists => DirectoryReader.IndexExists(GetDirectory(_site));
+        private bool IndexExists => DirectoryReader.IndexExists(GetDirectory(_getSiteId.GetId()));
 
         public void Insert(SystemEntity entity)
         {
@@ -179,7 +179,7 @@ namespace MrCMS.Search
                 return null;
             }
 
-            using (IndexReader indexReader = DirectoryReader.Open(GetDirectory(_site)))
+            using (IndexReader indexReader = DirectoryReader.Open(GetDirectory(_getSiteId.GetId())))
             {
                 return indexReader.NumDocs;
             }
@@ -195,9 +195,9 @@ namespace MrCMS.Search
             return Analyser ?? (Analyser = new StandardAnalyzer(LuceneVersion.LUCENE_48));
         }
 
-        private Directory GetDirectory(Site site)
+        private Directory GetDirectory(int siteId)
         {
-            return _getLuceneDirectory.Get(site, FolderName);
+            return _getLuceneDirectory.Get(siteId, FolderName);
         }
     }
 }
