@@ -39,7 +39,7 @@
                         <td>
                             @Html.ActionLink(role.Name, "Edit", new {id = role.Id}, new {@class = "", data_toggle = "fb-modal"})
                         </td>
-                        <td>@Html.ActionLink(Html.Resource("Delete"), "Delete", new {id = role.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})</td>
+                        <td class="text-right">@Html.ActionLink(Html.Resource("Delete"), "Delete", new {id = role.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})</td>
                     </tr>
                 }
             }

@@ -28,9 +28,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             _getSiteId = getSiteId;
         }
 
-        public List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails()
+        public async Task<List<MessageTemplateInfo>> GetAllMessageTemplateTypesWithDetails()
         {
-            List<MessageTemplate> templates = _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId());
+            List<MessageTemplate> templates = await _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId());
             IList<string> legacyMessageTemplateTypes =
                 _repository.Query()
                     .Where(template => !template.Imported)
@@ -66,22 +66,22 @@ namespace MrCMS.Web.Apps.Admin.Services
             await _messageTemplateProvider.SaveSiteOverride(messageTemplate, siteId);
         }
 
-        public MessageTemplate GetOverride(string type)
+        public async Task<MessageTemplate> GetOverride(string type)
         {
-            MessageTemplate messageTemplateBase = GetTemplate(type);
-            if (messageTemplateBase != null && messageTemplateBase.SiteId.HasValue)
+            MessageTemplate messageTemplateBase = await GetTemplate(type);
+            if (messageTemplateBase?.SiteId != null)
                 return messageTemplateBase;
             return null;
         }
 
 
-        public void DeleteOverride(string type)
+        public async Task DeleteOverride(string type)
         {
-            var messageTemplate = GetOverride(type);
+            var messageTemplate = await GetOverride(type);
             if (messageTemplate == null)
                 return;
             var siteId = _getSiteId.GetId();
-            _messageTemplateProvider.DeleteSiteOverride(messageTemplate, siteId);
+            await _messageTemplateProvider.DeleteSiteOverride(messageTemplate, siteId);
         }
 
         public async Task ImportLegacyTemplate(string type)
@@ -92,11 +92,11 @@ namespace MrCMS.Web.Apps.Admin.Services
                 .SingleOrDefault();
             if (legacyMessageTemplate == null)
                 return;
-            var messageTemplate = GetOverride(type);
+            var messageTemplate = await GetOverride(type);
             if (messageTemplate == null)
             {
                 messageTemplate = GetNewOverride(type);
-                Save(messageTemplate);
+                await Save(messageTemplate);
             }
 
             messageTemplate.Bcc = legacyMessageTemplate.Bcc;
@@ -108,24 +108,25 @@ namespace MrCMS.Web.Apps.Admin.Services
             messageTemplate.Subject = legacyMessageTemplate.Subject;
             messageTemplate.ToAddress = legacyMessageTemplate.ToAddress;
             messageTemplate.ToName = legacyMessageTemplate.ToName;
-            Save(messageTemplate);
+            await Save(messageTemplate);
             legacyMessageTemplate.Imported = true;
             await _repository.Update(legacyMessageTemplate);
         }
 
-        public MessageTemplate GetTemplate(string type)
+        public async Task<MessageTemplate> GetTemplate(string type)
         {
+            var allMessageTemplates = await _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId());
             return
-                _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId())
+                allMessageTemplates
                     .FirstOrDefault(@base => @base.GetType().FullName == type);
         }
 
-        public void Save(MessageTemplate messageTemplate)
+        public async Task Save(MessageTemplate messageTemplate)
         {
             if (messageTemplate.SiteId.HasValue)
-                _messageTemplateProvider.SaveSiteOverride(messageTemplate, _getSiteId.GetId());
+                await _messageTemplateProvider.SaveSiteOverride(messageTemplate, _getSiteId.GetId());
             else
-                _messageTemplateProvider.SaveTemplate(messageTemplate);
+                await _messageTemplateProvider.SaveTemplate(messageTemplate);
         }
 
         private bool CanPreview(MessageTemplate template)

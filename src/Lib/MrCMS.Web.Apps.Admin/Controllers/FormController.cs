@@ -88,14 +88,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Sort(Form form)
+        public async Task<ActionResult> Sort(int id)
         {
-            var sortItems = form.FormProperties.OrderBy(x => x.DisplayOrder)
-                                .Select(
-                                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                                .ToList();
 
-            return View(sortItems);
+            return View(await _formAdminService.GetSortItems(id));
         }
 
         [HttpPost]

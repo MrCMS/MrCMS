@@ -6,7 +6,7 @@ using MrCMS.Entities;
 namespace MrCMS.Data
 {
     public class GlobalRepository<T> : RepositoryBase<T, IGlobalRepository<T>>, IGlobalRepository<T>
-        where T : class, IHaveId
+        where T : class
     {
         public GlobalRepository(IServiceProvider provider) : base(provider)
         {

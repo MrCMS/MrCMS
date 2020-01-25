@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MrCMS.Common;
+using MrCMS.Entities.ACL;
 using MrCMS.Entities.People;
 
 namespace MrCMS.DbConfiguration.Models
@@ -35,6 +36,11 @@ namespace MrCMS.DbConfiguration.Models
                 var discriminatorBuilder = profileData.HasDiscriminator<string>("ProfileInfoType");
                 foreach (var type in _reflectionHelper.GetAllConcreteImplementationsOf<UserProfileData>())
                     discriminatorBuilder.HasValue(type, type.FullName);
+            });
+
+            builder.Entity<ACLRole>(aclRole =>
+            {
+                aclRole.Property(x => x.UserRoleId).HasColumnName("UserRoleId"); 
 
             });
         }

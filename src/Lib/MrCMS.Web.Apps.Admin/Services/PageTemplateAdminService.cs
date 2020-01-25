@@ -91,9 +91,14 @@ namespace MrCMS.Web.Apps.Admin.Services
                 emptyItemText: "Please select...");
         }
 
-        public List<SelectListItem> GetUrlGeneratorOptions(string typeName)
+        public async Task<List<SelectListItem>> GetUrlGeneratorOptions(int templateId)
         {
-            var type = TypeHelper.GetTypeByName(typeName);
+            var template = await GetTemplate(templateId);
+            return GetUrlGeneratorOptions(template?.PageType);
+        }
+        public List<SelectListItem> GetUrlGeneratorOptions(string pageType)
+        {
+            var type = TypeHelper.GetTypeByName(pageType);
             List<SelectListItem> urlGeneratorOptions = _getUrlGeneratorOptions.Get(type);
             urlGeneratorOptions.Insert(0, new SelectListItem { Text = "Please select...", Value = "" });
             return urlGeneratorOptions;

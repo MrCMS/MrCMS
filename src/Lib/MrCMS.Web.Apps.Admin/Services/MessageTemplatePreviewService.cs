@@ -28,21 +28,22 @@ namespace MrCMS.Web.Apps.Admin.Services
             _serviceProvider = serviceProvider;
         }
 
-        public MessageTemplate GetTemplate(string type)
+        public async Task<MessageTemplate> GetTemplate(string type)
         {
-            return _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId()).FirstOrDefault(x => x.GetType().FullName == type);
+            var templates = await _messageTemplateProvider.GetAllMessageTemplates(_getSiteId.GetId());
+            return templates.FirstOrDefault(x => x.GetType().FullName == type);
         }
 
         public async Task<QueuedMessage> GetPreview(string type, int id)
         {
             Type templateType = TypeHelper.GetTypeByName(type);
-            var messageTemplateBase = GetTemplate(type);
-            if (messageTemplateBase == null) 
+            var messageTemplateBase = await GetTemplate(type);
+            if (messageTemplateBase == null)
                 return null;
             var modelType = messageTemplateBase.ModelType;
             if (modelType != null)
             {
-                var o =await _dataReader.GlobalGet(modelType, id);
+                var o = await _dataReader.GlobalGet(modelType, id);
                 if (o == null)
                     return null;
                 var parserType = typeof(IMessageParser<,>).MakeGenericType(templateType, modelType);

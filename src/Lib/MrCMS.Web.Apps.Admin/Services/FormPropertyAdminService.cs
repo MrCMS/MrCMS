@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -26,20 +27,17 @@ namespace MrCMS.Web.Apps.Admin.Services
         public async Task Add(AddFormPropertyModel model)
         {
             var type = TypeHelper.GetTypeByName(model.PropertyType);
-            var property = Activator.CreateInstance(type) as FormProperty;
-            if (property == null)
+            if (!(Activator.CreateInstance(type) is FormProperty property))
             {
                 return;
             }
 
             _mapper.Map(model, property);
 
-            property.Form?.FormProperties.Add(property);
 
-            if (property.Form.FormProperties != null)
-            {
-                property.DisplayOrder = property.Form.FormProperties.Count;
-            }
+            property.DisplayOrder = await _repository.Readonly().AnyAsync(x => x.FormId == model.FormId)
+                ? await _repository.Readonly().Where(x => x.FormId == model.FormId).MaxAsync(x => x.DisplayOrder) + 1
+                : 0;
 
             await _repository.Add(property);
         }

@@ -51,14 +51,14 @@ namespace MrCMS.Services
         /// <param name="email"></param>
         /// <param name="id">The id of user to exclude from check. Has to be string because of AdditionFields on Remote property</param>
         /// <returns></returns>
-        public Task<bool> IsUniqueEmail(string email, int? id = null)
+        public async Task<bool> IsUniqueEmail(string email, int? id = null)
         {
             if (id.HasValue)
             {
-                return _repository.Query().AnyAsync(u => u.Email == email && u.Id != id.Value);
+                return !await _repository.Query().AnyAsync(u => u.Email == email && u.Id != id.Value);
             }
 
-            return _repository.Query().AnyAsync(u => u.Email == email);
+            return !await _repository.Query().AnyAsync(u => u.Email == email);
         }
 
         public Task<IPagedList<User>> GetAllUsersPaged(int page)

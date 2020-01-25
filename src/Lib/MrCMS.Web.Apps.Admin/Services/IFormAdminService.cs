@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Models;
 using X.PagedList;
@@ -13,6 +14,8 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task<Form> AddForm(AddFormModel model);
         Form GetForm(int id);
         UpdateFormModel GetUpdateModel(int id);
+        Task<List<FormProperty>> GetProperties(int formId);
+        Task<List<SortItem>> GetSortItems(int formId);
         Task Update(UpdateFormModel model);
         Task Delete(int id);
 

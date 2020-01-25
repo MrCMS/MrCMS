@@ -2,9 +2,11 @@
 @using MrCMS.ACL.Rules
 @using MrCMS.Entities.People
 @using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Apps.Admin.Services
 @model MrCMS.Web.Apps.Admin.Models.UpdateUserModel
 @inject IGetEditTabsService EditTabsService
+@inject IUserRoleManager UserRoleManager
 @{
     var user = ViewData["user"] as User;
     ViewBag.Title = "Edit | " + user.Name;
@@ -63,7 +65,8 @@
                             <h3 class="profile-username">@Model.Name</h3>
 
                             <div class="btn-group my-3">
-                                <a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@Html.Resource("admin-logout", "Logout")</a>
+                                @* TODO: Look at logout button, only apply when valid *@
+                                @*<a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@Html.Resource("admin-logout", "Logout")</a>*@
                                 <a class="text-center btn btn-sm btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
                             </div>
 
@@ -105,7 +108,7 @@
                                 for (var index = 0; index < userRoles.Count; index++)
                                 {
                                     var role = userRoles[index];
-                                    bool isChecked = user.UserToRoles.Any(x => x.UserRoleId == role.Id);
+                                    bool isChecked = await UserRoleManager.IsInRoleAsync(user, role.Name);
 
                                     @Html.CheckBox("Role-" + role.Id, isChecked, new { })
                                     <text>&nbsp;

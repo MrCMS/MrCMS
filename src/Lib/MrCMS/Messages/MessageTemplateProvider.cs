@@ -64,12 +64,20 @@ namespace MrCMS.Messages
                 await _repository.Delete(templateData);
         }
 
-        public List<MessageTemplate> GetAllMessageTemplates(int siteId)
+        public async Task<List<MessageTemplate>> GetAllMessageTemplates(int siteId)
         {
             var types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>();
 
-            return types.Select(type => GetMessageTemplateMethod.MakeGenericMethod(type)
-                .Invoke(this, new object[] { siteId }) as MessageTemplate).ToList();
+            var templates = new List<MessageTemplate>();
+            foreach (var type in types)
+            {
+                var o = await GetMessageTemplateMethod.MakeGenericMethod(type)
+                    .InvokeAsync(this, new object[] { siteId });
+
+                if (o is MessageTemplate template)
+                    templates.Add(template);
+            }
+            return templates;
         }
 
         public async Task<T> GetMessageTemplate<T>(int siteId) where T : MessageTemplate, new()
@@ -82,7 +90,9 @@ namespace MrCMS.Messages
 
             templateData = await GetExistingTemplateData(fullName, null);
             if (templateData != null)
+            {
                 return JsonConvert.DeserializeObject<T>(templateData.Data);
+            }
 
             var template = GetNewMessageTemplate<T>();
             await SaveTemplate(template);

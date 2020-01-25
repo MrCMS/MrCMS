@@ -76,5 +76,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             _passwordManagementService.SetPassword(user, password, password);
             await _service.SaveUser(user);
         }
+
+        public async Task<IList<string>> GetUserRoles(User user)
+        {
+            return await _userRoleManager.GetRolesAsync(user);
+        }
     }
 }

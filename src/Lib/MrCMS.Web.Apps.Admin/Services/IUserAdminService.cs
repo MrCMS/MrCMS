@@ -14,5 +14,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task<User> GetUser(int id);
         Task<bool> IsUniqueEmail(string email, int? id);
         Task SetPassword(int id, string password);
+        Task<IList<string>> GetUserRoles(User user);
     }
 }

@@ -3,6 +3,10 @@
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Services
 @model Form
+@inject IFormAdminService AdminService
+@{
+    var properties = await AdminService.GetProperties(Model.Id);
+}
 
 <div id="form-properties-data" data-reload-url="@Url.Action("FormProperties","Form",new{Model.Id})">
     @Html.InfoBlock("Heads up!", "Start by adding fields to your form using the Add Field button. Once all fields are added, use [form id=\"" + Model.Id + "\"] in the page body content to embded the form where you would like it.")
@@ -21,9 +25,9 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    @if (Model.FormProperties.Any())
+                    @if (properties.Any())
                     {
-                        foreach (var property in Model.FormProperties.OrderBy(x => x.DisplayOrder))
+                        foreach (var property in properties.OrderBy(x => x.DisplayOrder))
                         {
                             <partial name="FormProperty" model="property" />
                         }

@@ -17,6 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         List<SelectListItem> GetPageTypeOptions();
         List<SelectListItem> GetLayoutOptions();
-        List<SelectListItem> GetUrlGeneratorOptions(string typeName);
+        Task<List<SelectListItem>> GetUrlGeneratorOptions(int templateId);
+        List<SelectListItem> GetUrlGeneratorOptions(string pageType);
     }
 }

@@ -130,6 +130,20 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _mapper.Map<UpdateFormModel>(form);
         }
 
+        public Task<List<FormProperty>> GetProperties(int formId)
+        {
+            return _formPropertyRepository.Query().Where(x => x.FormId == formId).OrderBy(x => x.DisplayOrder)
+                .ToListAsync();
+        }
+
+        public async Task<List<SortItem>> GetSortItems(int formId)
+        {
+            return (await GetProperties(formId)).Select(x => new SortItem
+            {
+                Name = x.Name, Id = x.Id, Order = x.DisplayOrder
+            }).ToList();
+        }
+
         public async Task Update(UpdateFormModel model)
         {
             var form = GetForm(model.Id);

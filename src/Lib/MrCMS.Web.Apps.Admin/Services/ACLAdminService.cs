@@ -41,7 +41,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                     {
                         Id = role.Id,
                         Name = role.Name,
-                        Allowed = aclRoles.Any(x => x.Role?.Id == role.Id && x.Name == info.Key)
+                        Allowed = aclRoles.Any(x => x.UserRole?.Id == role.Id && x.Name == info.Key)
                     })
                     .ToList();
 
@@ -56,13 +56,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             var aclRoles = _aclRoleRepository.Query().ToList();
 
             var toAdd = records.Where(
-                x => !aclRoles.Any(aclRole => aclRole.Role?.Id == x.RoleId && aclRole.Name == x.Key));
+                x => !aclRoles.Any(aclRole => aclRole.UserRole?.Id == x.RoleId && aclRole.Name == x.Key));
             var toRemove =
-                aclRoles.Where(x => !records.Any(record => record.RoleId == x.Role?.Id && record.Key == x.Name));
+                aclRoles.Where(x => !records.Any(record => record.RoleId == x.UserRole?.Id && record.Key == x.Name));
 
             await _aclRoleRepository.Transact(async (repo, ct) =>
              {
-                 await repo.AddRange(toAdd.Select(record => new ACLRole { Name = record.Key, RoleId = record.RoleId }).ToList(), ct);
+                 await repo.AddRange(toAdd.Select(record => new ACLRole { Name = record.Key, UserRoleId = record.RoleId }).ToList(), ct);
 
                  await repo.DeleteRange(toRemove.ToList(), ct);
              });

@@ -28,14 +28,14 @@ namespace MrCMS.Services
         private readonly IGlobalRepository<UserClaim> _userClaimRepository;
         private readonly IGlobalRepository<UserLogin> _userLoginRepository;
         private readonly IGlobalRepository<Role> _roleRepository;
-        private readonly IQueryableRepository<UserToRole> _userToRoleRepository;
+        private readonly IGlobalRepository<UserToRole> _userToRoleRepository;
 
         public UserStore(
             IGlobalRepository<User> repository,
             IGlobalRepository<UserClaim> userClaimRepository,
             IGlobalRepository<UserLogin> userLoginRepository,
             IGlobalRepository<Role> roleRepository,
-            IQueryableRepository<UserToRole> userToRoleRepository
+            IGlobalRepository<UserToRole> userToRoleRepository
             )
         {
             _repository = repository;
@@ -245,13 +245,8 @@ namespace MrCMS.Services
             if (role != null)
             {
                 var userToRole = new UserToRole { UserRoleId = role.Id, UserId = user.Id };
-                if (user.UserToRoles.All(x => x.UserRoleId != role.Id))
-                {
-                    user.UserToRoles.Add(userToRole);
-                }
 
-
-                await _repository.Update(user, cancellationToken);
+                await _userToRoleRepository.Add(userToRole);
             }
         }
 
@@ -265,21 +260,17 @@ namespace MrCMS.Services
 
         public async Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
+            if (user == null)
+                return;
             var role = await GetRoleByName(roleName, cancellationToken);
             if (role != null)
             {
-                var existingRoleMapping = user.UserToRoles.FirstOrDefault(x => x.UserRoleId == role.Id);
+                var existingRoleMapping = await _userToRoleRepository.Query()
+                    .FirstOrDefaultAsync(x => x.UserId == user.Id && x.UserRoleId == role.Id, cancellationToken);
                 if (existingRoleMapping != null)
                 {
-                    user.UserToRoles.Remove(existingRoleMapping);
-                    role.UserRoles.Remove(existingRoleMapping);
+                    await _userToRoleRepository.Delete(existingRoleMapping, cancellationToken);
                 }
-
-                await _repository.Transact(async (repo, token) =>
-                {
-                    await repo.Update(user, token);
-                    await repo.Update(user, token);
-                }, cancellationToken);
             }
 
         }

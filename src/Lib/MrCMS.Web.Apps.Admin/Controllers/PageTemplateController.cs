@@ -46,7 +46,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var model = await _service.GetEditModel(id);
             ViewData["layout-options"] = _service.GetLayoutOptions();
-            ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(model.PageType);
+            ViewData["url-generator-options"] = await _service.GetUrlGeneratorOptions(id);
             return PartialView(model);
         }
 

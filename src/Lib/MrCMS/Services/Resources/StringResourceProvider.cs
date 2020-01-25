@@ -8,6 +8,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
+using MrCMS.Website;
 
 namespace MrCMS.Services.Resources
 {
@@ -23,13 +24,13 @@ namespace MrCMS.Services.Resources
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
         private readonly ILogger<StringResourceProvider> _logger;
         private readonly IGlobalRepository<StringResource> _repository;
-        private readonly Site _site;
+        private readonly IGetSiteId _getSiteId;
         private bool _retryingAllResources;
 
-        public StringResourceProvider(IGlobalRepository<StringResource> repository, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo, ILogger<StringResourceProvider> logger)
+        public StringResourceProvider(IGlobalRepository<StringResource> repository, IGetSiteId getSiteId, IGetCurrentUserCultureInfo getCurrentUserCultureInfo, ILogger<StringResourceProvider> logger)
         {
             _repository = repository;
-            _site = site;
+            _getSiteId = getSiteId;
             _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
             _logger = logger;
         }
@@ -77,15 +78,16 @@ namespace MrCMS.Services.Resources
         {
             get
             {
+                var siteId = _getSiteId.GetId();
                 return
-                    _resourcesBySite.ContainsKey(_site.Id)
-                        ? _resourcesBySite[_site.Id]
-                        : _resourcesBySite[_site.Id] =
+                    _resourcesBySite.ContainsKey(siteId)
+                        ? _resourcesBySite[siteId]
+                        : _resourcesBySite[siteId] =
                             AllResources.Keys.ToDictionary(s => s,
                                 s =>
                                     new HashSet<StringResource>(AllResources[s].Where(
-                                            resource => resource.Site == null || resource.Site.Id == _site.Id)
-                                        .OrderByDescending(resource => resource.Site != null ? 1 : 0)),
+                                            resource => resource.SiteId == null || resource.SiteId == siteId)
+                                        .OrderByDescending(resource => resource.SiteId != null ? 1 : 0)),
                                 StringComparer.OrdinalIgnoreCase);
             }
         }
@@ -160,8 +162,8 @@ namespace MrCMS.Services.Resources
             {
                 var stringResources = ResourcesForSite[key];
                 stringResources = siteId == null
-                    ? stringResources.FindAll(resource => resource.Site == null)
-                    : stringResources.FindAll(resource => resource.Site != null && resource.Site.Id == siteId);
+                    ? stringResources.FindAll(resource => resource.SiteId == null)
+                    : stringResources.FindAll(resource => resource.SiteId != null && resource.SiteId == siteId);
                 return stringResources
                     .Select(resource => resource.UICulture)
                     .Where(s => !string.IsNullOrWhiteSpace(s));
@@ -183,7 +185,7 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                if (resource.UICulture == null && resource.Site == null)
+                if (resource.UICulture == null && resource.SiteId == null)
                     return;
                 _repository.Add(resource).GetAwaiter().GetResult();
                 ResetResourceCache();

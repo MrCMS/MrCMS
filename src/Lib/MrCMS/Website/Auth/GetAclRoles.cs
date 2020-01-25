@@ -23,7 +23,7 @@ namespace MrCMS.Website.Auth
                 .Select(x => x.Id)
                 .ToList();
 
-            return _repository.Query().Where(role => roleIds.Contains(role.Role.Id) && keys.Contains(role.Name))
+            return _repository.Query().Where(role => roleIds.Contains(role.UserRole.Id) && keys.Contains(role.Name))
                 .ToList();
         }
     }

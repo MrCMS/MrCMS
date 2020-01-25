@@ -14,8 +14,8 @@ namespace MrCMS.Web.Apps.Admin.Models
         [DisplayName("Page View Name (e.g. TextPage)")]
         public string PageTemplateName { get; set; }
 
-        [Required]
-        public string PageType { get; set; }
+        //[Required]
+        //public string PageType { get; set; }
 
         public int? LayoutId { get; set; }
 
