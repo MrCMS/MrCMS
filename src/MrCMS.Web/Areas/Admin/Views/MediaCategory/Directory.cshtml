@@ -37,7 +37,7 @@
                             <a title="@file.FileName">
                                 @if (file.IsImage())
                                 {
-                                    @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                                    @await Html.RenderImage(file.FileUrl, new Size(100, 100))
                                 }
                                 else
                                 {

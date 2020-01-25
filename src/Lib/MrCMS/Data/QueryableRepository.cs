@@ -2,6 +2,8 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Entities;
+using MrCMS.Helpers;
 
 namespace MrCMS.Data
 {
@@ -11,7 +13,14 @@ namespace MrCMS.Data
 
         public virtual IQueryable<T> Query()
         {
-            return Context.Set<T>();
+            IQueryable<T> dbSet = Context.Set<T>();
+
+            if (typeof(T).IsImplementationOf(typeof(ICanSoftDelete)))
+            {
+                dbSet = dbSet.Where(x => EF.Property<bool>(x, nameof(ICanSoftDelete.IsDeleted)) == false);
+            }
+
+            return dbSet;
         }
 
         public IQueryable<TSubtype> Query<TSubtype>() where TSubtype : class, T

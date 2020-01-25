@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Common;
 using MrCMS.Entities;
+using MrCMS.Helpers;
 
 namespace MrCMS.Data
 {
@@ -170,9 +171,20 @@ namespace MrCMS.Data
 
             return await _try.GetResultAsync(async () =>
             {
-                Context.Remove(entity);
+                HandleDelete(entity);
                 await TrySave(token);
             });
+        }
+
+        private void HandleDelete(T entity)
+        {
+            if (entity is ICanSoftDelete softDelete)
+            {
+                softDelete.IsDeleted = true;
+                Context.Update(entity);
+            }
+            else
+                Context.Remove(entity);
         }
 
         public async Task<IResult> DeleteRange(ICollection<T> entities, CancellationToken token)
@@ -187,7 +199,7 @@ namespace MrCMS.Data
 
             return await _try.GetResultAsync(async () =>
             {
-                Context.RemoveRange(entities);
+                entities.ForEach(HandleDelete);
                 await TrySave(token);
             });
         }

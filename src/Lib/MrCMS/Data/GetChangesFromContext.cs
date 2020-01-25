@@ -14,28 +14,26 @@ namespace MrCMS.Data
             var entityEntries = context.ChangeTracker.Entries<T>().ToList();
             return new ContextChangeData
             {
-                Added = GetSimpleEntries(entityEntries.FindAll(x => x.State == EntityState.Added)),
-                Updated = GetChangeInfo(entityEntries.FindAll(x => x.State == EntityState.Modified)),
-                Deleted = GetSimpleEntries(entityEntries.FindAll(x => x.State == EntityState.Deleted))
+                Added = GetAdded(entityEntries),
+                Updated = GetUpdated(entityEntries),
+                Deleted = GetDeleted(entityEntries)
             };
         }
 
-        private ICollection<ChangeInfo> GetChangeInfo<T>(List<EntityEntry<T>> entityEntries) where T : class
+
+        private ICollection<ChangeInfo> GetUpdated<T>(List<EntityEntry<T>> entityEntries) where T : class
         {
             var changeInfos = new List<ChangeInfo>();
-            foreach (var entry in entityEntries)
+            foreach (var entry in entityEntries.Where(x => x.State == EntityState.Modified))
             {
 
-                var changeInfo = new ChangeInfo
-                {
-                    Type = entry.Metadata.ClrType,
-                    Entity = () => entry.Entity,
-                    EntityType = GetTypeName(entry),
-                    OriginalValues = GetValueDictionary(entry.OriginalValues),
-                    Properties = GetValueDictionary(entry.CurrentValues)
-                };
+                var changeInfo = GetChangeInfo(entry);
                 // nothing changed then we don't raise data
                 if (!changeInfo.PropertiesUpdated.Any())
+                    continue;
+                // if it's soft deleted also leave it
+                var deletedChange = changeInfo.PropertiesUpdated.FirstOrDefault(x => x.Name == nameof(ICanSoftDelete.IsDeleted));
+                if (deletedChange?.CurrentValue as bool? == true)
                     continue;
 
                 changeInfos.Add(changeInfo);
@@ -43,14 +41,51 @@ namespace MrCMS.Data
             return changeInfos;
         }
 
+        private ChangeInfo GetChangeInfo<T>(EntityEntry<T> entry) where T : class
+        {
+            var changeInfo = new ChangeInfo
+            {
+                Type = entry.Metadata.ClrType,
+                Entity = () => entry.Entity,
+                EntityType = GetTypeName(entry),
+                OriginalValues = GetValueDictionary(entry.OriginalValues),
+                Properties = GetValueDictionary(entry.CurrentValues)
+            };
+            return changeInfo;
+        }
+
         private IImmutableDictionary<string, object> GetValueDictionary(PropertyValues propertyValues)
         {
             return propertyValues.Properties.ToImmutableDictionary(x => x.Name, x => propertyValues[x]);
         }
 
-        private ICollection<EntityData> GetSimpleEntries<T>(List<EntityEntry<T>> entityEntries) where T : class
+        private ICollection<EntityData> GetDeleted<T>(List<EntityEntry<T>> entityEntries) where T : class
         {
-            return entityEntries.Select(entry => new EntityData
+            var entityDatas = new List<EntityData>();
+            entityDatas.AddRange( entityEntries.Where(x => x.State == EntityState.Deleted).Select(entry => new EntityData
+            {
+                Type = entry.Metadata.ClrType,
+                EntityType = GetTypeName(entry),
+                Entity = () => entry.Entity,
+                Properties = GetValueDictionary(entry.CurrentValues)
+            }));
+            foreach (var entry in entityEntries.Where(x => x.State == EntityState.Modified))
+            {
+                var changeInfo = GetChangeInfo(entry);
+
+                // soft deleted only
+                var deletedChange = changeInfo.PropertiesUpdated.FirstOrDefault(x => x.Name == nameof(ICanSoftDelete.IsDeleted));
+                if (deletedChange?.CurrentValue as bool? != true)
+                    continue;
+
+                entityDatas.Add(changeInfo);
+            }
+            return entityDatas;
+        }
+
+        private ICollection<EntityData> GetAdded<T>(List<EntityEntry<T>> entityEntries) where T : class
+        {
+            return entityEntries.Where(x => x.State == EntityState.Added).Select(entry => new EntityData
             {
                 Type = entry.Metadata.ClrType,
                 EntityType = GetTypeName(entry),

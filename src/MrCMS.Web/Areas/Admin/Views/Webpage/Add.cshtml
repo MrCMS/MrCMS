@@ -18,11 +18,9 @@
 }
 
 <form asp-controller="Webpage" asp-action="Add" method="post">
-
     <admin-header>
         <row>
             <admin-header-title title="@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))" />
-            
             <admin-header-actions>
                 <input type="submit" class="btn-primary btn hide-until-document-selected " value="@Html.Resource("Save")" style="display: none;"/>
             </admin-header-actions>
@@ -37,7 +35,7 @@
                     {
                         var inputId = documentType.DocumentType + documentType.TemplateId;
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="DocumentClrType" id="dt-@inputId" value="@documentType.DocumentType" data-page-template-id="@documentType.TemplateId" >
+                            <input class="form-check-input" type="radio" name="DocumentType" id="dt-@inputId" value="@documentType.DocumentType" data-page-template-id="@documentType.TemplateId" >
                             <label class="form-check-label" for="dt-@inputId">
                                 <i class="@documentType.Type.IconClass"></i>
                                 @documentType.DisplayName

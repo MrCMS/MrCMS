@@ -2,6 +2,7 @@
 using MrCMS.Common;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 
@@ -30,12 +31,12 @@ namespace MrCMS.DbConfiguration.Models
             builder.Entity<HiddenWidget>(hiddenWidget =>
             {
                 hiddenWidget.ToTable("HiddenWidgets");
-                hiddenWidget.HasKey(x => new {x.WidgetId, x.WebpageId});
+                hiddenWidget.HasKey(x => new { x.WidgetId, x.WebpageId });
             });
             builder.Entity<ShownWidget>(shownWidget =>
             {
                 shownWidget.ToTable("ShownWidgets");
-                shownWidget.HasKey(x => new {x.WidgetId, x.WebpageId});
+                shownWidget.HasKey(x => new { x.WidgetId, x.WebpageId });
             });
 
             builder.Entity<DocumentTag>(documentTag => documentTag.HasKey(x => new { x.DocumentId, x.TagId }));
@@ -63,6 +64,12 @@ namespace MrCMS.DbConfiguration.Models
             });
 
             builder.Entity<DocumentVersion>();
+            builder.Entity<MediaFile>(file =>
+            {
+                // this is here for compatibility
+                var discriminatorBuilder = file.HasDiscriminator<string>("MediaFileType");
+                discriminatorBuilder.HasValue(typeof(MediaFile), typeof(MediaFile).FullName);
+            });
         }
     }
 }

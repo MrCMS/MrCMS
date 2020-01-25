@@ -87,8 +87,9 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             {
                 id = arguments.Values.OfType<IHaveId>().First().Id;
             }
-
-            return id;
+            if (id > 0)
+                return id;
+            return null;
         }
 
         protected static IDictionary<string, object> CreateIdArguments(int? id, object additionalData = null)

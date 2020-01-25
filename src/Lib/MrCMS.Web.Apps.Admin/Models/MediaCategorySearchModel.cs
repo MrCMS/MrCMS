@@ -1,9 +1,10 @@
 using System.ComponentModel;
+using MrCMS.Entities;
 using MrCMS.Models;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
-    public class MediaCategorySearchModel
+    public class MediaCategorySearchModel : IHaveId
     {
         public MediaCategorySearchModel()
         {
@@ -17,5 +18,7 @@ namespace MrCMS.Web.Apps.Admin.Models
         public string SearchText { get; set; }
 
         public MediaCategorySortMethod SortBy { get; set; }
+
+        int IHaveId.Id => Id.GetValueOrDefault(-1);
     }
 }

@@ -22,7 +22,7 @@ namespace MrCMS.Web.Apps.Admin.Breadcrumbs.Media
                 return;
             var item = await Repository.GetData(Id.Value);
             Name = GetName(item);
-            ParentActionArguments = CreateIdArguments(item.Parent?.Id);
+            ParentActionArguments = CreateIdArguments(item.ParentId);
         }
     }
 }
