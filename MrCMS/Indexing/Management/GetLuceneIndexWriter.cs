@@ -45,7 +45,7 @@ namespace MrCMS.Indexing.Management
 
         private IndexWriter GetNewIndexWriter(string definitionName, Analyzer analyzer, bool recreateIndex)
         {
-            return new IndexWriter(_getLuceneDirectory.Get(_site, definitionName), analyzer, recreateIndex, IndexWriter.MaxFieldLength.UNLIMITED);
+            return new IndexWriter(_getLuceneDirectory.GetStandardDictionary(_site, definitionName), analyzer, recreateIndex, IndexWriter.MaxFieldLength.UNLIMITED);
         }
 
         public void ClearCache()

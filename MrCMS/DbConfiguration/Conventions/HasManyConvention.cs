@@ -21,11 +21,4 @@ namespace MrCMS.DbConfiguration.Conventions
             instance.Where("(IsDeleted = 'False' or IsDeleted = 0 or IsDeleted is null)");
         }
     }
-    //public class HasManyToManyConvention : IHasManyToManyConvention
-    //{
-    //    public void Apply(IManyToManyCollectionInstance instance)
-    //    {
-    //        instance.AsSet();
-    //    }
-    //}
 }

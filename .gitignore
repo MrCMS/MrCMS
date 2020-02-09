@@ -2,6 +2,8 @@
 [Tt]humbs.db
 *.DS_Store
 
+*.idea/
+
 #Visual Studio files
 *.[Oo]bj
 *.user
@@ -30,6 +32,8 @@ obj/
 [Dd]ebug*/
 [Rr]elease*/
 Ankh.NoLoad
+.vs/*
+.idea/*
 
 #MonoDevelop
 *.pidb
@@ -93,7 +97,6 @@ MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.stackdump
 *.psess
 *.vsp
-.vs/config/applicationhost.config
 *.pubxml
 *sitemap.xml
-.vs/*
+

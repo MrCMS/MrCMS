@@ -11,13 +11,13 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public class SendLoginAttemptNotificationEmails : IOnAdded<LoginAttempt>
     {
-        private readonly AuthSettings _settings;
+        private readonly SecuritySettings _settings;
         private readonly AuthRoleSettings _roleSettings;
         private readonly IMessageParser<SuccessfulLoginAttemptMessageTemplate, LoginAttempt> _successParser;
         private readonly IMessageParser<FailedLoginAttemptMessageTemplate, LoginAttempt> _failureParser;
 
         public SendLoginAttemptNotificationEmails(
-            AuthSettings settings,
+            SecuritySettings settings,
             AuthRoleSettings roleSettings,
             IMessageParser<SuccessfulLoginAttemptMessageTemplate, LoginAttempt> successParser,
             IMessageParser<FailedLoginAttemptMessageTemplate, LoginAttempt> failureParser

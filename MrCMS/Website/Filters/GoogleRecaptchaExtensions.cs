@@ -9,7 +9,7 @@ namespace MrCMS.Website.Filters
         public static MvcHtmlString RenderRecaptcha(this IHtmlHelper helper, string id = null, string errorClass = null,
             string errorMessage = null)
         {
-            var settings = new GoogleRecaptchaSettings();
+            var settings = MrCMSApplication.Get<GoogleRecaptchaSettings>();
 
             return RenderDiv(id, errorClass, errorMessage, settings);
         }
@@ -17,7 +17,7 @@ namespace MrCMS.Website.Filters
         public static MvcHtmlString RenderRecaptcha(this HtmlHelper helper, string id = null, string errorClass = null,
             string errorMessage = null)
         {
-            var settings = new GoogleRecaptchaSettings();
+            var settings = MrCMSApplication.Get<GoogleRecaptchaSettings>();
 
             return RenderDiv(id, errorClass, errorMessage, settings);
         }
@@ -29,7 +29,7 @@ namespace MrCMS.Website.Filters
                 return MvcHtmlString.Empty;
             var recaptchaDiv = new TagBuilder("div");
             recaptchaDiv.AddCssClass("g-recaptcha");
-            recaptchaDiv.AddCssClass("margin-bottom-10");
+            recaptchaDiv.AddCssClass("mb-3");
             recaptchaDiv.Attributes["data-recaptcha-holder"] = "true";
             recaptchaDiv.Attributes["data-sitekey"] = settings.SiteKey;
             id = id ?? Guid.NewGuid().ToString();

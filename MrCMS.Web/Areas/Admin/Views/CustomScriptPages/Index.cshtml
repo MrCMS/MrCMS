@@ -2,7 +2,6 @@
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @model MrCMS.Web.Areas.Admin.Models.CustomScriptPagesSearchModel
-
 @{
     ViewBag.Title = "Custom Script Pages";
     var webpages = ViewData["results"] as IPagedList<Webpage>;
@@ -10,9 +9,10 @@
 <fieldset>
     <legend>
         @Resource("Admin User Custom Script Pages", "Custom Script Pages")
-
     </legend>
-
+    <div class="alert alert-info">
+        <p>@Resource("This page shows all CMS pages with header or footer scripts set.")</p>
+    </div>
     @if (webpages.Any())
     {
         <table class="table table-striped table-condensed">

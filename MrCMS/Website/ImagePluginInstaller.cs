@@ -10,7 +10,6 @@ namespace MrCMS.Website
         public static void Install()
         {
             // currently we will just enable all plugins, but possibly make it configurable in the future
-            new AutoRotate().Install(ImageResizer.Configuration.Config.Current);
             new AnimatedGifs().Install(ImageResizer.Configuration.Config.Current);
             new PrettyGifs().Install(ImageResizer.Configuration.Config.Current);
             var sizeLimiting = ImageResizer.Configuration.Config.Current.Plugins.Get<SizeLimiting>();

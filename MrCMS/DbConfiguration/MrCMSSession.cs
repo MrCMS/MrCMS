@@ -11,6 +11,7 @@ using MrCMS.Events;
 using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Persister.Entity;
+using NHibernate.Proxy;
 using NHibernate.Stat;
 using NHibernate.Type;
 
@@ -157,7 +158,7 @@ namespace MrCMS.DbConfiguration
 
         public object Save(object obj)
         {
-            var systemEntity = obj as SystemEntity;
+            var systemEntity = Unproxy(obj) as SystemEntity;
             if (systemEntity != null)
             {
                 AddAddEvent(systemEntity);
@@ -199,10 +200,18 @@ namespace MrCMS.DbConfiguration
         {
             _session.SaveOrUpdate(entityName, obj, id);
         }
+        private object Unproxy(object obj)
+        {
+            var proxy = obj as INHibernateProxy;
+            if (proxy != null)
+                return proxy.HibernateLazyInitializer.GetImplementation();
+
+            return obj;
+        }
 
         public void Update(object obj)
         {
-            var systemEntity = obj as SystemEntity;
+            var systemEntity = Unproxy(obj) as SystemEntity;
             if (systemEntity != null)
             {
                 AddUpdateEvent(systemEntity);
@@ -257,7 +266,7 @@ namespace MrCMS.DbConfiguration
 
         public void Delete(object obj)
         {
-            var entity = obj as SystemEntity;
+            var entity = Unproxy(obj) as SystemEntity;
             if (entity != null)
             {
                 AddDeletedEvent(entity);

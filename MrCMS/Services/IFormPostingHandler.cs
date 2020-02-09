@@ -6,6 +6,7 @@ namespace MrCMS.Services
 {
     public interface IFormPostingHandler
     {
+        Webpage GetWebpage(int id);
         List<string> SaveFormData(Webpage webpage, HttpRequestBase request);
     }
 }

@@ -5,9 +5,9 @@ namespace MrCMS.HealthChecks
 {
     public class TwoFactorAuthEnabled : HealthCheck
     {
-        private readonly AuthSettings _settings;
+        private readonly SecuritySettings _settings;
 
-        public TwoFactorAuthEnabled(AuthSettings settings)
+        public TwoFactorAuthEnabled(SecuritySettings settings)
         {
             _settings = settings;
         }

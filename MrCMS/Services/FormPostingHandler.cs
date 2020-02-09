@@ -28,6 +28,11 @@ namespace MrCMS.Services
             _mailSettings = mailSettings;
         }
 
+        public Webpage GetWebpage(int id)
+        {
+            return _session.Get<Webpage>(id);
+        }
+
         public List<string> SaveFormData(Webpage webpage, HttpRequestBase request)
         {
             var formProperties = webpage.FormProperties;

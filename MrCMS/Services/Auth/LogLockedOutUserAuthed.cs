@@ -9,17 +9,17 @@ namespace MrCMS.Services.Auth
 {
     public class LogLockedOutUserAuthed : IOnLockedOutUserAuthed
     {
-        private readonly AuthSettings _authSettings;
+        private readonly SecuritySettings _securitySettings;
         private readonly ISession _session;
 
-        public LogLockedOutUserAuthed(AuthSettings authSettings, ISession session)
+        public LogLockedOutUserAuthed(SecuritySettings securitySettings, ISession session)
         {
-            _authSettings = authSettings;
+            _securitySettings = securitySettings;
             _session = session;
         }
         public void Execute(UserLockedOutEventArgs args)
         {
-            if (!_authSettings.LogLoginAttempts)
+            if (!_securitySettings.LogLoginAttempts)
                 return;
             var request = CurrentRequestData.CurrentContext.Request;
             var loginAttempt = new LoginAttempt

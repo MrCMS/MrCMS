@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using MrCMS.Batching;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Events.Documents;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Search;
 using MrCMS.Services.Notifications;
 using NHibernate;
@@ -19,20 +19,27 @@ namespace MrCMS.Services.ImportExport.BatchJobs
         private readonly ISession _session;
         private readonly IUpdateTagsService _updateTagsService;
         private readonly IUpdateUrlHistoryService _updateUrlHistoryService;
+        private readonly IWebpageUrlService _webpageUrlService;
 
         public ImportDocumentBatchJobExecutor(ISession session,
-            ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus, IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService)
+            ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus, IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService, IWebpageUrlService webpageUrlService)
             : base(setBatchJobJobExecutionStatus)
         {
             _session = session;
             _updateTagsService = updateTagsService;
             _updateUrlHistoryService = updateUrlHistoryService;
+            _webpageUrlService = webpageUrlService;
         }
 
         protected override BatchJobExecutionResult OnExecute(ImportDocumentBatchJob batchJob)
         {
+            using (EventContext.Instance.Disable<IOnTransientNotificationPublished>())
+            using (EventContext.Instance.Disable<IOnPersistentNotificationPublished>())
             using (EventContext.Instance.Disable<UpdateIndicesListener>())
             using (EventContext.Instance.Disable<UpdateUniversalSearch>())
+            using (EventContext.Instance.Disable<WebpageUpdatedNotification>())
+            using (EventContext.Instance.Disable<DocumentAddedNotification>())
+            using (EventContext.Instance.Disable<MediaCategoryUpdatedNotification>())
             {
                 var documentImportDto = batchJob.DocumentImportDto;
                 var webpage =
@@ -48,8 +55,15 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                     var parent = GetWebpageByUrl(documentImportDto.ParentUrl);
                     webpage.Parent = parent;
                 }
-                if (documentImportDto.UrlSegment != null)
-                    webpage.UrlSegment = documentImportDto.UrlSegment;
+
+                if (!string.IsNullOrWhiteSpace(documentImportDto.UrlSegment) && isNew)
+                {
+                    webpage.UrlSegment = _webpageUrlService.Suggest(null, new SuggestParams
+                    {
+                        DocumentType = documentImportDto.DocumentType,
+                        PageName = documentImportDto.Name
+                    });
+                }
                 webpage.Name = documentImportDto.Name;
                 webpage.BodyContent = documentImportDto.BodyContent;
                 webpage.MetaTitle = documentImportDto.MetaTitle;
@@ -70,8 +84,6 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                     else
                         session.Update(webpage);
                 });
-
-                Thread.Sleep(2000);
 
                 return BatchJobExecutionResult.Success();
             }

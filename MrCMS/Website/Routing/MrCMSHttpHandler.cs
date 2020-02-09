@@ -65,7 +65,7 @@ namespace MrCMS.Website.Routing
 
         private void SetCustomHeaders(RequestContext context)
         {
-            context.HttpContext.Response.AppendHeader("X-Built-With", "Mr CMS - http://www.mrcms.com");
+            context.HttpContext.Response.AppendHeader("X-Built-With", "Mr CMS - https://www.mrcms.com");
         }
 
         public bool IsReusable

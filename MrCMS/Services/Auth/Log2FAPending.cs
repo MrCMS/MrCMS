@@ -9,17 +9,17 @@ namespace MrCMS.Services.Auth
 {
     public class Log2FAPending : IVerifiedPending2FA
     {
-        private readonly AuthSettings _authSettings;
+        private readonly SecuritySettings _securitySettings;
         private readonly ISession _session;
 
-        public Log2FAPending(AuthSettings authSettings, ISession session)
+        public Log2FAPending(SecuritySettings securitySettings, ISession session)
         {
-            _authSettings = authSettings;
+            _securitySettings = securitySettings;
             _session = session;
         }
         public void Execute(VerifiedPending2FAEventArgs args)
         {
-            if (!_authSettings.LogLoginAttempts)
+            if (!_securitySettings.LogLoginAttempts)
                 return;
             var request = CurrentRequestData.CurrentContext.Request;
             var loginAttempt = new LoginAttempt

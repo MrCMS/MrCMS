@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -14,8 +15,8 @@ namespace MrCMS.Services.Sitemaps
 {
     public class SitemapService : ISitemapService
     {
-        public static readonly XNamespace RootNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
-        public static readonly XNamespace ImageNameSpace = "http://www.google.com/schemas/sitemap-image/1.1";
+        public static readonly XNamespace RootNamespace = "https://www.sitemaps.org/schemas/sitemap/0.9";
+        public static readonly XNamespace ImageNameSpace = "https://www.google.com/schemas/sitemap-image/1.1";
         private readonly IEnumerable<ISitemapDataSource> _additionalSources;
         private readonly IGetSitemapPath _getSitemapPath;
         private readonly IStatelessSession _session;
@@ -74,7 +75,7 @@ namespace MrCMS.Services.Sitemaps
 
             AppendChildren(list, urlset, xmlDocument);
 
-            File.WriteAllText(sitemapPath, xmlDocument.ToString(SaveOptions.DisableFormatting));
+            File.WriteAllText(sitemapPath, xmlDocument.ToString(SaveOptions.DisableFormatting), Encoding.UTF8);
         }
 
         private IEnumerable<Type> GetTypesToRemove()
