@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +15,16 @@ namespace MrCMS.Data
         public static IServiceCollection AddMrCMSData(this IServiceCollection serviceCollection,
             IReflectionHelper reflectionHelper,
             IConfiguration configSection,
+            Assembly migrationsAssembly,
             Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = null,
             ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
         {
-            serviceCollection.Configure<DatabaseSettings>(configSection.GetSection("Database"));
+            serviceCollection.Configure<DatabaseSettings>(settings =>
+            {
+                settings.ConnectionString = configSection.GetConnectionString("mrcms");
+                settings.DatabaseProviderType = configSection.GetSection("Database")
+                    .GetValue<string>(nameof(DatabaseSettings.DatabaseProviderType));
+            });
             serviceCollection.AddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<DatabaseSettings>>();
@@ -35,7 +42,7 @@ namespace MrCMS.Data
             serviceCollection.AddDbContext<WebsiteContext>((provider, builder) =>
             {
                 var databaseProvider = provider.GetRequiredService<IDatabaseProvider>();
-                databaseProvider.SetupAction(provider, builder);
+                databaseProvider.SetupAction(provider, builder, migrationsAssembly);
                 if (optionsAction == null)
                     return;
                 optionsAction(provider, builder);

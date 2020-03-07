@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using MrCMS.DbConfiguration;
 
 namespace MrCMS.Services.Resources
 {
@@ -35,18 +37,47 @@ namespace MrCMS.Services.Resources
 
         private IStringLocalizer CreateLocalizer()
         {
-            var requestServices = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext
-                .RequestServices;
-            var localizationManager = requestServices.GetRequiredService<ILocalizationManager>();
-            var currentCulture = requestServices.GetRequiredService<IGetCurrentUserCultureInfo>();
-            var currentSiteLocator = requestServices.GetRequiredService<ICurrentSiteLocator>();
-            var records = localizationManager.GetLocalizations();
+            //var requestServices = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext
+            //    .RequestServices;
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                ICheckInstallationStatus checkInstallationStatus =
+                    scope.ServiceProvider.GetRequiredService<ICheckInstallationStatus>();
+                if (!checkInstallationStatus.IsInstalled())
+                {
+                    return new DefaultLocalizer();
+                }
 
-            return new StringLocalizer(records,
-                currentCulture.Get(),
-                currentSiteLocator.GetCurrentSite().GetAwaiter().GetResult(),
-                info => _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext.RequestServices
-                    .GetRequiredService<ILocalizationManager>().HandleMissingLocalization(info));
+                var requestServices = scope.ServiceProvider;
+                var localizationManager = requestServices.GetRequiredService<ILocalizationManager>();
+                var currentCulture = requestServices.GetRequiredService<IGetCurrentUserCultureInfo>();
+                var currentSiteLocator = requestServices.GetRequiredService<ICurrentSiteLocator>();
+                var records = localizationManager.GetLocalizations();
+
+                return new StringLocalizer(records,
+                    currentCulture.Get(),
+                    currentSiteLocator.GetCurrentSite().GetAwaiter().GetResult(),
+                    info => requestServices.GetRequiredService<ILocalizationManager>().HandleMissingLocalization(info));
+            }
+        }
+
+        private class DefaultLocalizer : IStringLocalizer
+        {
+            private readonly List<LocalizedString> _strings = new List<LocalizedString>();
+
+            public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
+            {
+                return _strings;
+            }
+
+            public IStringLocalizer WithCulture(CultureInfo culture)
+            {
+                return this;
+            }
+
+            public LocalizedString this[string name] => new LocalizedString(name, name);
+
+            public LocalizedString this[string name, params object[] arguments] => new LocalizedString(name, name);
         }
     }
 }

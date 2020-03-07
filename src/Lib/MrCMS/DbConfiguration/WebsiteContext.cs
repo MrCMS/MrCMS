@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
@@ -33,7 +35,18 @@ namespace MrCMS.DbConfiguration
                 foreach (var property in entity.GetProperties())
                     property.SetColumnName(property.Name);
             }
+
+            // prevent cascade deletes
+
+            var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+                .SelectMany(t => t.GetForeignKeys())
+                .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+            foreach (var fk in cascadeFKs)
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
         }
+
+        public bool IsMrCMSInstalled => Set<Site>().Any();
     }
 
     //public class WebpageConfiguration : IEntityTypeConfiguration<Webpage>

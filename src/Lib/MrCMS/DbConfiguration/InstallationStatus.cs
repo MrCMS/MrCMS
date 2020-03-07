@@ -2,8 +2,9 @@ namespace MrCMS.DbConfiguration
 {
     public enum InstallationStatus
     {
-        NeedsConnectionString,
-        RequiresInstall,
+        RequiresDatabaseSettings,
+        RequiresMigrations,
+        RequiresInstallation,
         Installed
     }
 }

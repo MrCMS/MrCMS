@@ -16,7 +16,7 @@ namespace MrCMS.Installation
 
         public IFileInfo GetFileInfo(string subpath)
         {
-            subpath = _prefix + subpath;
+            //subpath = _prefix + subpath;
             var fileInfo = _internalProvider.GetFileInfo(subpath);
             //if (fileInfo is NotFoundFileInfo // isn't found
             //    && !string.IsNullOrWhiteSpace(_prefix) // and has prefix
@@ -29,7 +29,7 @@ namespace MrCMS.Installation
 
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
-            subpath = _prefix + subpath;
+            //subpath = _prefix + subpath;
 
             var directoryContents = _internalProvider.GetDirectoryContents(subpath);
             //if (directoryContents is NotFoundDirectoryContents // isn't found

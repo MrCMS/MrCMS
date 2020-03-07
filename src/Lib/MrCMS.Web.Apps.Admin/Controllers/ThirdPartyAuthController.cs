@@ -6,28 +6,28 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
-    public class ThirdPartyAuthController : MrCMSAdminController
-    {
-        private readonly IThirdPartyAuthSettingsAdminService _thirdPartyAuthSettingsAdminService;
+    //public class ThirdPartyAuthController : MrCMSAdminController
+    //{
+    //    private readonly IThirdPartyAuthSettingsAdminService _thirdPartyAuthSettingsAdminService;
 
-        public ThirdPartyAuthController(IThirdPartyAuthSettingsAdminService thirdPartyAuthSettingsAdminService)
-        {
-            _thirdPartyAuthSettingsAdminService = thirdPartyAuthSettingsAdminService;
-        }
+    //    public ThirdPartyAuthController(IThirdPartyAuthSettingsAdminService thirdPartyAuthSettingsAdminService)
+    //    {
+    //        _thirdPartyAuthSettingsAdminService = thirdPartyAuthSettingsAdminService;
+    //    }
 
-        [HttpGet]
-        public ActionResult Index()
-        {
-            return View(_thirdPartyAuthSettingsAdminService.GetSettings());
-        }
+    //    [HttpGet]
+    //    public ActionResult Index()
+    //    {
+    //        return View(_thirdPartyAuthSettingsAdminService.GetSettings());
+    //    }
 
-        [HttpPost]
-        public RedirectToActionResult Index(
-            [ModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))]
-            ThirdPartyAuthSettings thirdPartyAuthSettings) 
-        {
-            _thirdPartyAuthSettingsAdminService.SaveSettings(thirdPartyAuthSettings);
-            return RedirectToAction("Index");
-        }
-    }
+    //    [HttpPost]
+    //    public RedirectToActionResult Index(
+    //        [ModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))]
+    //        ThirdPartyAuthSettings thirdPartyAuthSettings) 
+    //    {
+    //        _thirdPartyAuthSettingsAdminService.SaveSettings(thirdPartyAuthSettings);
+    //        return RedirectToAction("Index");
+    //    }
+    //}
 }

@@ -35,27 +35,27 @@ namespace MrCMS.Installation.Models
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
 
-        [DisplayName("Database Connection String")]
-        public string DatabaseConnectionString { get; set; }
+        //[DisplayName("Database Connection String")]
+        //public string DatabaseConnectionString { get; set; }
 
-        [DisplayName("Database Provider")] public string DatabaseProvider { get; set; }
+        //[DisplayName("Database Provider")] public string DatabaseProvider { get; set; }
 
-        //SQL Server properties
-        [DisplayName("SQL Connection Info")] public SqlConnectionInfo SqlConnectionInfo { get; set; }
+        ////SQL Server properties
+        //[DisplayName("SQL Connection Info")] public SqlConnectionInfo SqlConnectionInfo { get; set; }
 
-        [DisplayName("SQL Server Name/IP")] public string SqlServerName { get; set; }
+        //[DisplayName("SQL Server Name/IP")] public string SqlServerName { get; set; }
 
-        [DisplayName("SQL Database Name")] public string SqlDatabaseName { get; set; }
+        //[DisplayName("SQL Database Name")] public string SqlDatabaseName { get; set; }
 
-        [DisplayName("SQL Server Username")] public string SqlServerUsername { get; set; }
+        //[DisplayName("SQL Server Username")] public string SqlServerUsername { get; set; }
 
-        [DisplayName("SQL Server Password")] public string SqlServerPassword { get; set; }
+        //[DisplayName("SQL Server Password")] public string SqlServerPassword { get; set; }
 
-        [DisplayName("SQL Authentication Type")]
-        public SqlAuthenticationType SqlAuthenticationType { get; set; }
+        //[DisplayName("SQL Authentication Type")]
+        //public SqlAuthenticationType SqlAuthenticationType { get; set; }
 
-        [DisplayName("SQL Server Create Database")]
-        public bool SqlServerCreateDatabase { get; set; }
+        //[DisplayName("SQL Server Create Database")]
+        //public bool SqlServerCreateDatabase { get; set; }
 
         [Required] [DisplayName("Site Name")] public string SiteName { get; set; }
 

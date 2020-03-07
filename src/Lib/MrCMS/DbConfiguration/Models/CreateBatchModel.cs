@@ -16,7 +16,10 @@ namespace MrCMS.DbConfiguration.Models
                     discriminatorBuilder.HasValue(type, type.FullName);
             });
             builder.Entity<BatchRun>();
-            builder.Entity<BatchRunResult>();
+            builder.Entity<BatchRunResult>(result =>
+            {
+                //result.Property(x=>x.MillisecondsTaken).HasColumnType()
+            });
         }
     }
 }

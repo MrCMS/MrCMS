@@ -72,8 +72,7 @@ namespace MrCMS.Search
             if (!GetUniversalSearchItemTypes.ContainsKey(type))
                 return null;
 
-            var getUniversalSearchItem = _serviceProvider.GetService(GetUniversalSearchItemTypes[type]) as GetUniversalSearchItemBase;
-            if (getUniversalSearchItem == null)
+            if (!(_serviceProvider.GetService(GetUniversalSearchItemTypes[type]) is GetUniversalSearchItemBase getUniversalSearchItem))
                 return null;
 
             return getUniversalSearchItem.GetSearchItem(entity);
@@ -102,9 +101,7 @@ namespace MrCMS.Search
                 }
                 else
                 {
-                    var getUniversalSearchItem =
-                        _serviceProvider.GetService(GetUniversalSearchItemTypes[key]) as GetUniversalSearchItemBase;
-                    if (getUniversalSearchItem == null)
+                    if (!(_serviceProvider.GetService(GetUniversalSearchItemTypes[key]) is GetUniversalSearchItemBase getUniversalSearchItem))
                         items = new Dictionary<int, UniversalSearchItem>();
                     else
                         items = getUniversalSearchItem.GetSearchItems(dictionary[key])
@@ -176,9 +173,7 @@ namespace MrCMS.Search
                 if (!GetUniversalSearchItemTypes.ContainsKey(type))
                     return new HashSet<Document>();
 
-                var getUniversalSearchItem =
-                    _serviceProvider.GetService(GetUniversalSearchItemTypes[type]) as GetUniversalSearchItemBase;
-                if (getUniversalSearchItem == null)
+                if (!(_serviceProvider.GetService(GetUniversalSearchItemTypes[type]) is GetUniversalSearchItemBase getUniversalSearchItem))
                     return new HashSet<Document>();
 
                 var searchItems = getUniversalSearchItem.GetSearchItems(entities);

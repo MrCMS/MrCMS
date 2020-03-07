@@ -33,6 +33,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using MrCMS.Common;
 using MrCMS.Data;
@@ -62,7 +63,7 @@ namespace MrCMS.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var isInstalled = IsInstalled();
+            //var isInstalled = IsInstalled();
             var allMrCmsAssemblies = TypeHelper.GetAllMrCMSAssemblies();
             allMrCmsAssemblies.Add(typeof(SqliteProvider).Assembly);
 
@@ -111,25 +112,26 @@ namespace MrCMS.Web
 
             services.AddSignalR();
 
+            var currentAssembly = GetType().Assembly;
             services.AddAutoMapper(expression =>
             {
                 expression.AllowNullDestinationValues = true;
                 appContext.ConfigureAutomapper(expression);
-            }, GetType().Assembly);
+            }, currentAssembly);
 
 
             // if the system is not installed we just want MrCMS to show the installation screen
-            if (!isInstalled)
-            {
-                services.AddInstallationServices();
-                return;
-            }
+            //if (!isInstalled)
+            //{
+            //    services.AddInstallationServices();
+            //    return;
+            //}
 
             // Live services
 
-            var fileProvider = services.AddFileProvider(Environment, appContext);
+            var fileProvider = services.AddViewFileProvider(Environment, appContext);
 
-            services.AddMrCMSData(reflectionHelper, Configuration);
+            services.AddMrCMSData(reflectionHelper, Configuration, currentAssembly);
             services.RegisterCurrentSite();
             services.RegisterSettings();
             services.RegisterFormRenderers();
@@ -196,8 +198,8 @@ namespace MrCMS.Web
                 .Create(null, null));
 
             var authenticationBuilder = services.AddAuthentication();
-            var serviceProvider = services.BuildServiceProvider();
-            var thirdPartyAuthSettings = serviceProvider.GetRequiredService<ThirdPartyAuthSettings>();
+            //var serviceProvider = services.BuildServiceProvider();
+            var thirdPartyAuthSettings = Configuration.GetSection("ThirdPartyAuthSettings").Get<ThirdPartyAuthSettings>() ?? new ThirdPartyAuthSettings();
 
             if (thirdPartyAuthSettings.GoogleEnabled)
             {
@@ -231,11 +233,11 @@ namespace MrCMS.Web
             });
         }
 
-        private bool IsInstalled()
-        {
-            var dbSection = Configuration.GetSection(Database);
-            return dbSection.Exists();
-        }
+        //private bool IsInstalled()
+        //{
+        //    var dbSection = Configuration.GetSection(Database);
+        //    return dbSection.Exists();
+        //}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MrCMSAppContext appContext)
@@ -246,11 +248,33 @@ namespace MrCMS.Web
             }
 
             app.UseSession();
-
-            if (!IsInstalled())
+            using (var scope = app.ApplicationServices.CreateScope())
             {
-                app.ShowInstallation();
-                return;
+                var checkStatus = scope.ServiceProvider.GetRequiredService<ICheckInstallationStatus>();
+                var status = checkStatus.GetStatus();
+                if (status == InstallationStatus.RequiresDatabaseSettings)
+                {
+                    app.Use(async (context, func) =>
+                        await context.Response.WriteAsync("Set up the connection string and provider"));
+                    return;
+                }
+                if (status == InstallationStatus.RequiresMigrations)
+                {
+                    app.Use(async (context, func) =>
+                        await context.Response.WriteAsync("Create initial migrations"));
+                    return;
+
+                }
+
+                var context = scope.ServiceProvider.GetRequiredService<IMrCmsContextResolver>().Resolve();
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
+
+                if (status == InstallationStatus.RequiresInstallation)
+                {
+                    app.ShowInstallation();
+                    return;
+                }
             }
 
 

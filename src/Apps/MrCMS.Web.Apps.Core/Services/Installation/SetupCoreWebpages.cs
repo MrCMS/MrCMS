@@ -40,11 +40,11 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             ErrorPages errorPages = GetErrorPages();
             await _repository.Transact(async (repo, ct) =>
              {
-                 await repo.AddRange(GetBasicPages().ToList());
+                 await repo.AddRange(GetBasicPages().ToList(), ct);
 
-                 await repo.Add(errorPages.Error403);
-                 await repo.Add(errorPages.Error404);
-                 await repo.Add(errorPages.Error500);
+                 await repo.Add(errorPages.Error403, ct);
+                 await repo.Add(errorPages.Error404, ct);
+                 await repo.Add(errorPages.Error500, ct);
              });
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();

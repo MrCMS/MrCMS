@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.18" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.21" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.1" />
   </ItemGroup>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using MrCMS.Installation;
 using MrCMS.Services.Resources;
 using MrCMS.Website;
 using MrCMS.Website.Filters;
@@ -71,14 +72,14 @@ namespace MrCMS.Apps
                 .AddMrCMSDataAnnotations()
                 .AddDataAnnotationsLocalization()
                 .AddAppMvcConfig(appContext);
-        } 
+        }
 
-        public static IFileProvider AddFileProvider(this IServiceCollection services,
+        public static IFileProvider AddViewFileProvider(this IServiceCollection services,
             IWebHostEnvironment environment, MrCMSAppContext appContext)
         {
             var physicalProvider = environment.ContentRootFileProvider;
             var compositeFileProvider =
-                new CompositeFileProvider(new[] { physicalProvider }.Concat(appContext.ViewFileProviders));
+                new CompositeFileProvider(new[] { physicalProvider, new InstallationViewFileProvider() }.Concat(appContext.ViewFileProviders));
 
             services.AddSingleton<IFileProvider>(compositeFileProvider);
 

@@ -35,16 +35,16 @@ namespace MrCMS.Installation.Controllers
                 {
                     SiteUrl = Request.Host.ToString(),
                     AdminEmail = "admin@yoursite.com",
-                    DatabaseConnectionString = "",
-                    //DatabaseProvider = typeof(SqlServer2012Provider).FullName,
-                    SqlAuthenticationType = SqlAuthenticationType.SQL,
-                    SqlConnectionInfo = SqlConnectionInfo.Values,
-                    SqlServerCreateDatabase = false,
+                    //DatabaseConnectionString = "",
+                    ////DatabaseProvider = typeof(SqlServer2012Provider).FullName,
+                    //SqlAuthenticationType = SqlAuthenticationType.SQL,
+                    //SqlConnectionInfo = SqlConnectionInfo.Values,
+                    //SqlServerCreateDatabase = false,
                 };
             }
 
             ViewData["provider-types"] = _installationService.GetProviderTypes();
-            return View(installModel);
+            return View("Installation/Views/Install/Setup.cshtml", installModel);
         }
 
         [HttpPost]
@@ -60,7 +60,7 @@ namespace MrCMS.Installation.Controllers
             }
 
             _applicationLifetime.StopApplication();
-            return View("Success");
+            return View("Installation/Views/Install/Success.cshtml");
         }
 
         public IActionResult Redirect()

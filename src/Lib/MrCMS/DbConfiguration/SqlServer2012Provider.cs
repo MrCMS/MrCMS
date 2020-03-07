@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrCMS.Settings;
@@ -19,9 +20,12 @@ namespace MrCMS.DbConfiguration
         {
             get { return GetType().FullName; }
         }
-        public void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
+        public void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder, Assembly migrationsAssembly)
         {
-            builder.UseSqlServer(_databaseSettings.Value.ConnectionString);
+            builder.UseSqlServer(_databaseSettings.Value.ConnectionString, optionsBuilder =>
+                {
+                    optionsBuilder.MigrationsAssembly(migrationsAssembly.FullName);
+                });
         }
     }
 }

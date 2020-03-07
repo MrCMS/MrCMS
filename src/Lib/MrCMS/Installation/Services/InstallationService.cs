@@ -16,31 +16,33 @@ namespace MrCMS.Installation.Services
 {
     public class InstallationService : IInstallationService
     {
-        private readonly IDatabaseCreationService _databaseCreationService;
-        private readonly IServiceCollection _serviceCollection;
+        //private readonly IDatabaseCreationService _databaseCreationService;
+        //private readonly IServiceCollection _serviceCollection;
         private readonly IFileSystemAccessService _fileSystemAccessService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceCollection serviceCollection)
+        public InstallationService(IFileSystemAccessService fileSystemAccessService, IServiceProvider serviceProvider)//, IDatabaseCreationService databaseCreationService, IServiceCollection serviceCollection)
         {
             _fileSystemAccessService = fileSystemAccessService;
-            _databaseCreationService = databaseCreationService;
-            _serviceCollection = serviceCollection;
+            _serviceProvider = serviceProvider;
+            //_databaseCreationService = databaseCreationService;
+            //_serviceCollection = serviceCollection;
         }
 
         public async Task<InstallationResult> Install(InstallModel model)
         {
-            if (model.DatabaseConnectionString != null)
-            {
-                model.DatabaseConnectionString = model.DatabaseConnectionString.Trim();
-            }
+            //if (model.DatabaseConnectionString != null)
+            //{
+            //    model.DatabaseConnectionString = model.DatabaseConnectionString.Trim();
+            //}
 
-            InstallationResult result = _databaseCreationService.ValidateConnectionString(model);
-            if (!result.Success)
-            {
-                return result;
-            }
+            //InstallationResult result = _databaseCreationService.ValidateConnectionString(model);
+            //if (!result.Success)
+            //{
+            //    return result;
+            //}
 
-            result = _fileSystemAccessService.EnsureAccessToFileSystem();
+            var result = _fileSystemAccessService.EnsureAccessToFileSystem();
             if (!result.Success)
             {
                 return result;
@@ -50,10 +52,10 @@ namespace MrCMS.Installation.Services
 
             try
             {
-                IDatabaseProvider provider = _databaseCreationService.CreateDatabase(model);
+                //IDatabaseProvider provider = _databaseCreationService.CreateDatabase(model);
 
                 //save settings
-             await   SetUpInitialData(model, provider);
+                await SetUpInitialData(model);
             }
             catch (Exception exception)
             {
@@ -72,21 +74,18 @@ namespace MrCMS.Installation.Services
 
         public bool DatabaseIsInstalled()
         {
-            return _databaseCreationService.IsDatabaseInstalled();
+            try
+            {
+                return _serviceProvider.GetRequiredService<IGlobalRepository<Site>>().Readonly().Any();
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        private async Task SetUpInitialData(InstallModel model, IDatabaseProvider provider)
+        private async Task SetUpInitialData(InstallModel model)
         {
-            _serviceCollection.AddDbContext<WebsiteContext>(provider.SetupAction);
-            var serviceProvider = _serviceCollection.BuildServiceProvider();
-
-            //ISessionFactory sessionFactory = configurator.CreateSessionFactory();
-            //ISession session = sessionFactory.OpenFilteredSession(serviceProvider);
-            //IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
-            var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-            var context = contextAccessor.HttpContext;
-            //context.Items["override-nh-session"] = session;
-            //context.Items["override-nh-stateless-session"] = statelessSession;
             var site = new Site
             {
                 Name = model.SiteName,
@@ -94,24 +93,43 @@ namespace MrCMS.Installation.Services
                 CreatedOn = DateTime.UtcNow,
                 UpdatedOn = DateTime.UtcNow
             };
-            var repository = serviceProvider.GetRequiredService<IGlobalRepository<Site>>();
-            var setSiteId = serviceProvider.GetRequiredService<ISetSiteId>();
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
 
-            var result = await repository.Add(site);
-            
+                //_serviceCollection.AddDbContext<WebsiteContext>(provider.SetupAction);
+                //var serviceProvider = _serviceCollection.BuildServiceProvider();
+
+                //ISessionFactory sessionFactory = configurator.CreateSessionFactory();
+                //ISession session = sessionFactory.OpenFilteredSession(serviceProvider);
+                //IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
+                //context.Items["override-nh-session"] = session;
+                //context.Items["override-nh-stateless-session"] = statelessSession;
+                var repository = serviceProvider.GetRequiredService<IGlobalRepository<Site>>();
+                var setSiteId = serviceProvider.GetRequiredService<ISetSiteId>();
+
+                var result = await repository.Add(site);
+            }
+
             //using (ITransaction transaction = statelessSession.BeginTransaction())
             //{
             //    statelessSession.Insert(site);
             //    transaction.Commit();
             //}
-            context.Items["override-site"] = site;
-            //CurrentRequestData.CurrentSite = site;
+            using (var dataScope = _serviceProvider.CreateScope())
+            {
+                var serviceProvider = dataScope.ServiceProvider;
+                var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                var context = contextAccessor.HttpContext;
+                context.Items["override-site"] = site;
+                //CurrentRequestData.CurrentSite = site;
 
-            serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
-            await serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
-            serviceProvider.GetServices<IOnInstallation>()
-                .OrderBy(installation => installation.Priority)
-                .ForEach(installation => installation.Install(model));
+                serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
+                await serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
+                serviceProvider.GetServices<IOnInstallation>()
+                    .OrderBy(installation => installation.Priority)
+                    .ForEach(installation => installation.Install(model));
+            }
         }
     }
 }

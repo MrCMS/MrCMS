@@ -15,7 +15,9 @@ namespace MrCMS.Entities.Documents.Media
         [DisplayName("Path")]
         public override string UrlSegment { get; set; }
 
+        [StringLength(250)]
         public virtual string MetaTitle { get; set; }
+        [StringLength(250)]
         public virtual string MetaDescription { get; set; }
 
         [DisplayName("Allow use as gallery")]

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrCMS.DbConfiguration;
@@ -33,9 +34,10 @@ namespace MrCMS.Data.Sqlite
             get { return GetType().FullName; }
         }
 
-        public void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
+        public void SetupAction(IServiceProvider serviceProvider, DbContextOptionsBuilder builder, Assembly assembly)
         {
-            builder.UseSqlite(_databaseSettings.Value.ConnectionString);
+            builder.UseSqlite(_databaseSettings.Value.ConnectionString,
+                optionsBuilder => optionsBuilder.MigrationsAssembly(assembly.FullName));
         }
     }
 
