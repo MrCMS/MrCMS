@@ -73,6 +73,7 @@ namespace MrCMS.Web
             services.SelfRegisterAllConcreteTypes();
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ICheckInstallationStatus, CheckInstallationStatus>();
 
             var reflectionHelper = new ReflectionHelper(allMrCmsAssemblies.ToArray());
             services.AddSingleton<IReflectionHelper>(reflectionHelper);
@@ -248,47 +249,49 @@ namespace MrCMS.Web
             }
 
             app.UseSession();
-            using (var scope = app.ApplicationServices.CreateScope())
+            using var scope = app.ApplicationServices.CreateScope();
+            var checkStatus = scope.ServiceProvider.GetRequiredService<ICheckInstallationStatus>();
+            var status = checkStatus.GetStatus();
+
+            if (status == InstallationStatus.RequiresDatabaseSettings || status == InstallationStatus.RequiresMigrations)
             {
-                var checkStatus = scope.ServiceProvider.GetRequiredService<ICheckInstallationStatus>();
-                var status = checkStatus.GetStatus();
-                if (status == InstallationStatus.RequiresDatabaseSettings)
-                {
-                    app.Use(async (context, func) =>
-                        await context.Response.WriteAsync("Set up the connection string and provider"));
-                    return;
-                }
-                if (status == InstallationStatus.RequiresMigrations)
-                {
-                    app.Use(async (context, func) =>
-                        await context.Response.WriteAsync("Create initial migrations"));
-                    return;
-
-                }
-
-                var context = scope.ServiceProvider.GetRequiredService<IMrCmsContextResolver>().Resolve();
-                if (context.Database.GetPendingMigrations().Any())
-                    context.Database.Migrate();
-
-                if (status == InstallationStatus.RequiresInstallation)
-                {
-                    app.ShowInstallation();
-                    return;
-                }
+                app.ShowInstallation(status);
+                return;
             }
 
+            var context = scope.ServiceProvider.GetRequiredService<IMrCmsContextResolver>().Resolve();
+            if (context.Database.GetPendingMigrations().Any())
+                context.Database.Migrate();
 
-            app.UseMrCMS(builder =>
-            {
-                app.UseRequestLocalization();
-                builder.UseStaticFiles(new StaticFileOptions
+            app.MapWhen(
+                httpContext => httpContext.RequestServices.GetRequiredService<ICheckInstallationStatus>().IsInstalled(),
+                builder =>
                 {
-                    FileProvider = new CompositeFileProvider(
-                        new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                    builder.UseMrCMS(a =>
+                    {
+                        a.UseRequestLocalization();
+                        a.UseStaticFiles(new StaticFileOptions
+                        {
+                            FileProvider = new CompositeFileProvider(
+                                new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                        });
+                        a.UseAuthentication();
+                        a.UseMiniProfiler();
+                    });
                 });
-                builder.UseAuthentication();
-                builder.UseMiniProfiler();
-            });
+            app.MapWhen(
+                httpContext =>
+                    !httpContext.RequestServices.GetRequiredService<ICheckInstallationStatus>().IsInstalled(),
+                builder =>
+                {
+                    if (status == InstallationStatus.RequiresInstallation)
+                    {
+                        app.ShowInstallation(status);
+                        return;
+                    }
+                });
+
+
         }
     }
 }

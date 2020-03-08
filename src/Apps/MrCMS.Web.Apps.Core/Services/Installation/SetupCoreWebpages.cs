@@ -33,40 +33,37 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             public Webpage Error403 { get; set; }
             public Webpage Error404 { get; set; }
             public Webpage Error500 { get; set; }
+
+            public IEnumerable<Webpage> GetAll()
+            {
+                yield return Error403;
+                yield return Error404;
+                yield return Error500;
+            }
         }
 
         public async Task Setup()
         {
+            var pages = GetBasicPages().ToList();
             ErrorPages errorPages = GetErrorPages();
-            await _repository.Transact(async (repo, ct) =>
-             {
-                 await repo.AddRange(GetBasicPages().ToList(), ct);
+            pages.AddRange(errorPages.GetAll());
+            pages.AddRange(GetAccountPages().ToList());
 
-                 await repo.Add(errorPages.Error403, ct);
-                 await repo.Add(errorPages.Error404, ct);
-                 await repo.Add(errorPages.Error500, ct);
-             });
+            pages.Add(GetSearchPage());
+            var publishOn = DateTime.UtcNow;
+            for (var i = 0; i < pages.Count; i++)
+            {
+                pages[i].DisplayOrder = i;
+                pages[i].PublishOn = publishOn;
+            }
+
+            await _repository.AddRange(pages);
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
             siteSettings.Error403PageId = errorPages.Error403.Id;
             siteSettings.Error404PageId = errorPages.Error404.Id;
             siteSettings.Error500PageId = errorPages.Error500.Id;
             await _configurationProvider.SaveSettings(siteSettings);
-
-            await _repository.Transact(async (repo, ct) =>
-            {
-                await repo.AddRange(GetAccountPages().ToList(), ct);
-
-                await repo.Add(GetSearchPage(), ct);
-
-                var webpages = repo.Query().ToList();
-                var publishOn = DateTime.UtcNow;
-                webpages.ForEach(webpage =>
-                {
-                    webpage.PublishOn = publishOn;
-                });
-                await repo.UpdateRange(webpages, ct);
-            });
         }
 
         private ErrorPages GetErrorPages()
@@ -204,7 +201,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Name = "Name",
                 LabelText = "Your Name",
                 Required = true,
-                FormId = form.Id,
+                Form = form,
                 DisplayOrder = 0
             };
 
@@ -213,7 +210,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Name = "Email",
                 LabelText = "Your Email",
                 Required = true,
-                FormId = form.Id,
+                Form = form,
                 DisplayOrder = 1
             };
             await _formPropertyRepository.AddRange(new List<TextBox>

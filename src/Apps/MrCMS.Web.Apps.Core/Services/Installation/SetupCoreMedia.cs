@@ -6,6 +6,7 @@ using Microsoft.Extensions.FileProviders;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
+using MrCMS.Installation;
 using MrCMS.Services;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
@@ -14,9 +15,9 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
     {
         private readonly IRepository<MediaCategory> _repository;
         private readonly IFileService _fileService;
-        private readonly IFileProvider _fileProvider;
+        private readonly InstallationContentFileProvider _fileProvider;
 
-        public SetupCoreMedia(IFileService fileService, IFileProvider fileProvider, IRepository<MediaCategory> repository)
+        public SetupCoreMedia(IFileService fileService, InstallationContentFileProvider fileProvider, IRepository<MediaCategory> repository)
         {
             _fileService = fileService;
             _fileProvider = fileProvider;

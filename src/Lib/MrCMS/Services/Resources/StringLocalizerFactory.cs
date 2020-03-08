@@ -57,7 +57,7 @@ namespace MrCMS.Services.Resources
                 return new StringLocalizer(records,
                     currentCulture.Get(),
                     currentSiteLocator.GetCurrentSite().GetAwaiter().GetResult(),
-                    info => requestServices.GetRequiredService<ILocalizationManager>().HandleMissingLocalization(info));
+                    info => localizationManager.HandleMissingLocalization(info));
             }
         }
 

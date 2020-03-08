@@ -20,7 +20,7 @@ namespace MrCMS.Services
         public override Task<IResult> OnAdding(T entity, DbContext context)
         {
             // if the document isn't set or it's not top level (i.e. has a parent) we don't want to deal with it here
-            if (entity == null || entity.Parent != null)
+            if (entity == null || entity.ParentId != null)
                 return Success;
 
             // if it's not 0 it means it's been set, so we'll not update it

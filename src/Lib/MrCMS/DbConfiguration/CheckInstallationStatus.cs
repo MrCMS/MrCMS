@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MrCMS.Settings;
 
@@ -9,12 +10,12 @@ namespace MrCMS.DbConfiguration
     public class CheckInstallationStatus : ICheckInstallationStatus
     {
         private readonly IOptionsMonitor<DatabaseSettings> _monitor;
-        private readonly ISystemDatabase _systemDatabase;
+        private readonly IServiceProvider _serviceProvider;
         private static bool _installed;
-        public CheckInstallationStatus(IOptionsMonitor<DatabaseSettings> monitor, ISystemDatabase systemDatabase)
+        public CheckInstallationStatus(IOptionsMonitor<DatabaseSettings> monitor, IServiceProvider serviceProvider)
         {
             _monitor = monitor;
-            _systemDatabase = systemDatabase;
+            _serviceProvider = serviceProvider;
         }
         public InstallationStatus GetStatus()
         {
@@ -26,12 +27,17 @@ namespace MrCMS.DbConfiguration
                 if (!settings.AreSet())
                     return InstallationStatus.RequiresDatabaseSettings;
 
-                var migrations = _systemDatabase.Database.GetMigrations();
-                if (!migrations.Any())
-                    return InstallationStatus.RequiresMigrations;
-                if(!_systemDatabase.Database.GetAppliedMigrations().Any() || !_systemDatabase.IsMrCMSInstalled)
-                    return InstallationStatus.RequiresInstallation;
-                _installed = true;
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var systemDatabase = scope.ServiceProvider.GetRequiredService<ISystemDatabase>();
+                    var migrations = systemDatabase.Database.GetMigrations();
+                    if (!migrations.Any())
+                        return InstallationStatus.RequiresMigrations;
+                    if (!systemDatabase.Database.GetAppliedMigrations().Any() || !systemDatabase.IsMrCMSInstalled)
+                        return InstallationStatus.RequiresInstallation;
+                    _installed = true;
+                }
+
                 return InstallationStatus.Installed;
             }
             catch

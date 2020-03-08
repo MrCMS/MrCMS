@@ -3,8 +3,11 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using MrCMS.Helpers;
 using MrCMS.Installation;
 using MrCMS.Services.Resources;
 using MrCMS.Website;
@@ -39,8 +42,48 @@ namespace MrCMS.Apps
             return builder;
         }
 
+        private static void MakeFiltersInstallationAware(this MvcOptions options)
+        {
+            var copy = options.Filters.ToList();
+            options.Filters.Clear();
+
+            foreach (var metadata in copy)
+            {
+                // if it's a type we'll wrap it
+                if (metadata is TypeFilterAttribute factory)
+                {
+                    var filterType = factory.ImplementationType;
+                    if (filterType.IsImplementationOf(typeof(IActionFilter)))
+                        options.Filters.Add(typeof(InstallationAwareActionFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IAsyncActionFilter)))
+                        options.Filters.Add(typeof(InstallationAwareAsyncActionFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IAuthorizationFilter)))
+                        options.Filters.Add(typeof(InstallationAwareAuthorizationFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IAsyncAuthorizationFilter)))
+                        options.Filters.Add(typeof(InstallationAwareAsyncAuthorizationFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IResourceFilter)))
+                        options.Filters.Add(typeof(InstallationAwareResourceFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IAsyncResourceFilter)))
+                        options.Filters.Add(typeof(InstallationAwareAsyncResourceFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IResultFilter)))
+                        options.Filters.Add(typeof(InstallationAwareResultFilter<>).MakeGenericType(filterType));
+                    else if (filterType.IsImplementationOf(typeof(IAsyncResultFilter)))
+                        options.Filters.Add(typeof(InstallationAwareAsyncResultFilter<>).MakeGenericType(filterType));
+                    else
+                    {
+                        throw new Exception($"Cannot make filter '{filterType.FullName}' installation aware");
+                    }
+                }
+                else
+                {
+                    // otherwise we'll just keep it as-is
+                    options.Filters.Add(metadata);
+                }
+            }
+        }
+
         public static IMvcBuilder AddMvcForMrCMS(this IServiceCollection services, MrCMSAppContext appContext,
-            IFileProvider fileProvider)
+            IFileProvider viewFileProvider)
         {
             return services.AddMvc(options =>
                 {
@@ -56,11 +99,12 @@ namespace MrCMS.Apps
                     options.Filters.Add<ProfilingActionFilter>();
                     options.EnableEndpointRouting = false;
                     appContext.SetupMvcOptions(options);
+                    options.MakeFiltersInstallationAware();
                 })
                 .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions)))
                 .AddRazorRuntimeCompilation(options =>
                 {
-                    options.FileProviders.Add(fileProvider);
+                    options.FileProviders.Add(viewFileProvider);
                 })
                 .AddRazorOptions(options =>
                 {
@@ -86,4 +130,5 @@ namespace MrCMS.Apps
             return compositeFileProvider;
         }
     }
+
 }

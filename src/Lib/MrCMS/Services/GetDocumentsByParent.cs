@@ -14,11 +14,11 @@ namespace MrCMS.Services
             _repository = repository;
         }
 
-        public IEnumerable<T> GetDocuments(T parent) 
+        public IEnumerable<T> GetDocuments(T parent)
         {
             var queryable = _repository.Query();
             queryable = parent != null
-                ? queryable .Where(arg => arg.Parent.Id == parent.Id)
+                ? queryable.Where(arg => arg.ParentId == parent.Id)
                 : queryable
                     .Where(arg => arg.Parent == null);
             return queryable.OrderBy(arg => arg.DisplayOrder)

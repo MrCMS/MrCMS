@@ -12,12 +12,20 @@ namespace MrCMS.Installation.Controllers
     public class InstallController : Controller
     {
         private readonly IInstallationService _installationService;
-        private readonly IHostApplicationLifetime _applicationLifetime;
 
-        public InstallController(IInstallationService installationService, IHostApplicationLifetime applicationLifetime)
+        public InstallController(IInstallationService installationService)
         {
             _installationService = installationService;
-            _applicationLifetime = applicationLifetime;
+        }
+
+        public ViewResult RequiresSettings()
+        {
+            return View("Installation/Views/Install/RequiresSettings.cshtml");
+        }
+
+        public ViewResult RequiresMigrations()
+        {
+            return View("Installation/Views/Install/RequiresMigrations.cshtml");
         }
 
         public IActionResult Setup()
@@ -50,7 +58,7 @@ namespace MrCMS.Installation.Controllers
         [HttpPost]
         public async Task<IActionResult> Setup(InstallModel installModel)
         {
-            var installationResult =await _installationService.Install(installModel);
+            var installationResult = await _installationService.Install(installModel);
 
             if (!installationResult.Success)
             {
@@ -59,7 +67,7 @@ namespace MrCMS.Installation.Controllers
                 return RedirectToAction("Setup");
             }
 
-            _applicationLifetime.StopApplication();
+            //_applicationLifetime.StopApplication();
             return View("Installation/Views/Install/Success.cshtml");
         }
 

@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing.Patterns;
+using MrCMS.DbConfiguration;
+using MrCMS.Installation.Controllers;
 
 namespace MrCMS.Installation
 {
@@ -16,14 +18,14 @@ namespace MrCMS.Installation
 
             services.AddMvc(options => { }).AddApplicationPart(Assembly.GetAssembly(typeof(InstallationExtensions))).AddRazorRuntimeCompilation(options =>
                 {
-                    var fileProvider = new InstallationViewFileProvider();
+                    var fileProvider = new InstallationContentFileProvider();
                     options.FileProviders.Insert(0, fileProvider);
                 });
 
             return services;
         }
 
-        public static void ShowInstallation(this IApplicationBuilder app)
+        public static void ShowInstallation(this IApplicationBuilder app, InstallationStatus status)
         {
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -33,9 +35,19 @@ namespace MrCMS.Installation
             app.UseEndpoints(builder =>
             {
                 builder.MapControllerRoute("Installation", "",
-                    new { controller = "Install", action = "Setup" });
+                    new { controller = "Install", action = GetAction(status) });
                 builder.MapFallbackToController("Redirect", "Install"); //.Routes.Add(new InstallationRedirectRouter());
             });
+        }
+
+        private static string GetAction(InstallationStatus status)
+        {
+            return status switch
+            {
+                InstallationStatus.RequiresDatabaseSettings => nameof(InstallController.RequiresSettings),
+                InstallationStatus.RequiresMigrations => nameof(InstallController.RequiresMigrations),
+                _ => nameof(InstallController.Setup)
+            };
         }
 
         private class InstallationRedirectRouter : IRouter

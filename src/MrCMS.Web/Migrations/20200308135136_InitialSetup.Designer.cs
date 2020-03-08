@@ -10,7 +10,7 @@ using MrCMS.DbConfiguration;
 namespace MrCMS.Web.Migrations
 {
     [DbContext(typeof(WebsiteContext))]
-    [Migration("20200307153841_InitialSetup")]
+    [Migration("20200308135136_InitialSetup")]
     partial class InitialSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

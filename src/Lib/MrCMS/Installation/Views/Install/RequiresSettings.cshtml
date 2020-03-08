@@ -1,0 +1,28 @@
+﻿@using MrCMS.Installation.Models
+@model InstallModel
+@{
+    ViewBag.Title = "MrCMS Installation - Requires settings";
+    Layout = "~/Installation/Views/Install/_Layout.cshtml";
+}
+
+<h1>Requires settings</h1>
+
+
+<p>
+    You add a connection string and a valid sql provider to your config to proceed.
+</p>
+<p>
+    e.g.
+</p>
+<pre>
+<code>
+    {
+        "ConnectionStrings": {
+            "mrcms": "[YourConnectionString]"
+        },
+        "Database": {
+            "DatabaseProviderType": "MrCMS.DbConfiguration.SqlServer2012Provider"
+        }
+    }
+</code>
+</pre>

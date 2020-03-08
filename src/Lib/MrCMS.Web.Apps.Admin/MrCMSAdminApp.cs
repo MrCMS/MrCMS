@@ -47,8 +47,8 @@ namespace MrCMS.Web.Apps.Admin
         public override void SetupMvcOptions(MvcOptions options)
         {
             options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
-            options.Filters.AddService<ProfilingAuthorizationFilter<AdminAuthFilter>>();
-            options.Filters.AddService<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
+            options.Filters.Add<ProfilingAuthorizationFilter<AdminAuthFilter>>();
+            options.Filters.Add<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
         }
 
         public override IDictionary<Type, string> SignalRHubs { get; } = new Dictionary<Type, string>

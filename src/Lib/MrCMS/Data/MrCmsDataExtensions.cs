@@ -33,6 +33,7 @@ namespace MrCMS.Data
                 var type = reflectionHelper.GetTypeByFullName(options.Value.DatabaseProviderType);
                 return (IDatabaseProvider)provider.GetRequiredService(type);
             });
+
             foreach (var type in reflectionHelper.GetAllConcreteImplementationsOf<IDatabaseProvider>())
             {
                 serviceCollection.AddSingleton(type);

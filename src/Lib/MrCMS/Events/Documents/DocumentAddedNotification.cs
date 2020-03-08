@@ -22,17 +22,17 @@ namespace MrCMS.Events.Documents
             _documentModifiedUser = documentModifiedUser;
         }
 
-        public void PublishMessage(Document document)
+        public async Task PublishMessage(Document document)
         {
             var message = string.Format("<a href=\"/Admin/{2}/Edit/{1}\">{0}</a> has been added{3}.", document.Name,
                 document.Id, document.GetAdminController(), _documentModifiedUser.GetInfo());
-            _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
+            await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
 
         public override async Task Execute(EntityData data)
         {
             var document = await _documentRepository.GetData(data.EntityId);
-            PublishMessage(document);
+            await PublishMessage(document);
         }
     }
 }

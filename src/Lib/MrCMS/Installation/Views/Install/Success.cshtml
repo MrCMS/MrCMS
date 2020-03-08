@@ -2,9 +2,6 @@
 @using MrCMS.Installation.Models
 @model MrCMS.Installation.Models.InstallModel
 @{
-    ViewBag.Title = "Install MrCMS";
-    var installationResult = TempData.Get<InstallationResult>();
-    var providerTypes = ViewData["provider-types"] as List<DatabaseProviderInfo> ?? new List<DatabaseProviderInfo>();
 }
 
 <!DOCTYPE html>

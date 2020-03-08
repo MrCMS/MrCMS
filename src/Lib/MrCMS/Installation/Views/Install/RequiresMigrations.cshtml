@@ -1,0 +1,15 @@
+﻿@using MrCMS.Installation.Models
+@model InstallModel
+@{
+    ViewBag.Title = "MrCMS Installation - Requires migrations";
+    Layout = "~/Installation/Views/Install/_Layout.cshtml";
+}
+
+<h1>Requires migrations</h1>
+
+<p>
+    You need to generate an initial set of migrations based on the apps you have installed. You can do this using the EF Core CLI in the MrCMS.Web project folder.
+</p>
+<p>
+    To do this, execute the following command: <code>dotnet ef migrations add InitialSetup</code>
+</p>

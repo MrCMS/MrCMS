@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.DbConfiguration;
 using MrCMS.Settings;
 
 namespace MrCMS.Website
@@ -11,6 +12,9 @@ namespace MrCMS.Website
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {
+            if (!context.ActionContext.HttpContext.RequestServices.GetRequiredService<ICheckInstallationStatus>()
+                .IsInstalled())
+                return;
             var siteSettings = context.ActionContext.HttpContext.RequestServices.GetRequiredService<SiteSettings>();
 
             if (!string.IsNullOrWhiteSpace(siteSettings?.ThemeName))

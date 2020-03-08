@@ -1,4 +1,5 @@
-﻿using MrCMS.Data;
+﻿using System.Threading.Tasks;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Installation.Models;
 using MrCMS.Services;
@@ -20,9 +21,9 @@ namespace MrCMS.Installation.Services
             _taskSettingManager = taskSettingManager;
         }
 
-        public void Initialize(InstallModel model)
+        public async Task Initialize(InstallModel model)
         {
-            SetupTasks();
+            await SetupTasks();
             var siteSettings = new SiteSettings
             {
                 TimeZone = model.TimeZone,
@@ -49,21 +50,21 @@ namespace MrCMS.Installation.Services
             {
                 StorageType = typeof(FileSystem).FullName
             };
-            var mailSettings = new MailSettings {SystemEmailAddress = model.AdminEmail};
+            var mailSettings = new MailSettings { SystemEmailAddress = model.AdminEmail };
 
-            _configurationProvider.SaveSettings(siteSettings);
-            _configurationProvider.SaveSettings(mediaSettings);
-            _configurationProvider.SaveSettings(fileSystemSettings);
-            _systemConfigurationProvider.SaveSettings(mailSettings);
+            await _configurationProvider.SaveSettings(siteSettings);
+            await _configurationProvider.SaveSettings(mediaSettings);
+            await _configurationProvider.SaveSettings(fileSystemSettings);
+            await _systemConfigurationProvider.SaveSettings(mailSettings);
 
         }
-        private void SetupTasks()
+        private async Task SetupTasks()
         {
-            _taskSettingManager.Update(typeof(DeleteExpiredLogsTask), true, 600);
+            await _taskSettingManager.Update(typeof(DeleteExpiredLogsTask), true, 600);
             //_taskSettingManager.Update(typeof(DeleteOldQueuedTasks), true, 600);
-            _taskSettingManager.Update(typeof(SendQueuedMessagesTask), false, 30);
-            _taskSettingManager.Update(typeof(PublishScheduledWebpagesTask), true, 10);
-            _taskSettingManager.Update(typeof(UpdateSitemap), true, 600);
+            await _taskSettingManager.Update(typeof(SendQueuedMessagesTask), false, 30);
+            await _taskSettingManager.Update(typeof(PublishScheduledWebpagesTask), true, 10);
+            await _taskSettingManager.Update(typeof(UpdateSitemap), true, 600);
         }
     }
 }

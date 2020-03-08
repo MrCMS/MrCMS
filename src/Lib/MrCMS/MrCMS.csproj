@@ -9,6 +9,12 @@
     <EmbeddedResource Include="Installation\Content\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Installation\Views\Install\RequiresMigrations.cshtml" />
+    <None Remove="Installation\Views\Install\RequiresSettings.cshtml" />
+    <None Remove="Installation\Views\Install\_Layout.cshtml" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />

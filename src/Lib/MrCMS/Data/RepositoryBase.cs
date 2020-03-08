@@ -237,6 +237,10 @@ namespace MrCMS.Data
 
         public async Task<TResult> Transact<TResult>(Func<TRepo, CancellationToken, Task<TResult>> func, CancellationToken token)
         {
+            if (IsInTransaction())
+            {
+                return await func(RepoInstance, token);
+            }
             await using var transaction = await Context.Database.BeginTransactionAsync(token);
             try
             {

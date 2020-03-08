@@ -14,6 +14,6 @@ namespace MrCMS.Data
         {
             _serviceProvider = serviceProvider;
         }
-        public DbContext Resolve() => _serviceProvider.GetService<WebsiteContext>();
+        public DbContext Resolve() => _serviceProvider.GetRequiredService<WebsiteContext>();
     }
 }

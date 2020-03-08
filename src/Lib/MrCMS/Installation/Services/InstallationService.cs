@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Installation.Models;
 using MrCMS.Website;
@@ -96,39 +97,46 @@ namespace MrCMS.Installation.Services
             using (var scope = _serviceProvider.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;
+                try
+                {
 
-                //_serviceCollection.AddDbContext<WebsiteContext>(provider.SetupAction);
-                //var serviceProvider = _serviceCollection.BuildServiceProvider();
 
-                //ISessionFactory sessionFactory = configurator.CreateSessionFactory();
-                //ISession session = sessionFactory.OpenFilteredSession(serviceProvider);
-                //IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
-                //context.Items["override-nh-session"] = session;
-                //context.Items["override-nh-stateless-session"] = statelessSession;
-                var repository = serviceProvider.GetRequiredService<IGlobalRepository<Site>>();
-                var setSiteId = serviceProvider.GetRequiredService<ISetSiteId>();
+                    //_serviceCollection.AddDbContext<WebsiteContext>(provider.SetupAction);
+                    //var serviceProvider = _serviceCollection.BuildServiceProvider();
 
-                var result = await repository.Add(site);
-            }
+                    //ISessionFactory sessionFactory = configurator.CreateSessionFactory();
+                    //ISession session = sessionFactory.OpenFilteredSession(serviceProvider);
+                    //IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
+                    //context.Items["override-nh-session"] = session;
+                    //context.Items["override-nh-stateless-session"] = statelessSession;
 
-            //using (ITransaction transaction = statelessSession.BeginTransaction())
-            //{
-            //    statelessSession.Insert(site);
-            //    transaction.Commit();
-            //}
-            using (var dataScope = _serviceProvider.CreateScope())
-            {
-                var serviceProvider = dataScope.ServiceProvider;
-                var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-                var context = contextAccessor.HttpContext;
-                context.Items["override-site"] = site;
-                //CurrentRequestData.CurrentSite = site;
+                    var repository = serviceProvider.GetRequiredService<IGlobalRepository<Site>>();
 
-                serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
-                await serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
-                serviceProvider.GetServices<IOnInstallation>()
-                    .OrderBy(installation => installation.Priority)
-                    .ForEach(installation => installation.Install(model));
+                    var setSiteId = serviceProvider.GetRequiredService<ISetSiteId>();
+
+                    await repository.Add(site);
+                    var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                    var context = contextAccessor.HttpContext;
+                    setSiteId.SetId(context);
+
+
+                    await serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
+                    await serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
+                    var onInstallations = serviceProvider.GetServices<IOnInstallation>()
+                        .OrderBy(installation => installation.Priority).ToList();
+                    foreach (var onInstallation in onInstallations)
+                    {
+                        await onInstallation.Install(model);
+                    }
+                }
+                catch
+                {
+                    var databaseFacade = serviceProvider.GetService<ISystemDatabase>().Database;
+                    databaseFacade.EnsureDeleted();
+                    databaseFacade.Migrate();
+
+                    throw;
+                }
             }
         }
     }
