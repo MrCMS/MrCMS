@@ -13,7 +13,7 @@ namespace MrCMS.Indexing.Definitions
         {
         }
 
-        protected override IEnumerable<int> GetValues(Webpage obj)
+        protected override async IAsyncEnumerable<int> GetValues(Webpage obj)
         {
             yield return obj.DisplayOrder;
         }

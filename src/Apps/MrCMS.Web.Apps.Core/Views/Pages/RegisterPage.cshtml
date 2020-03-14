@@ -6,13 +6,13 @@
     var registrationModel = TempData["register-model"] as RegisterModel ?? new RegisterModel();
 }
 
-<h1>@Html.Editable(page => page.Name) </h1>
+<h1>@await Html.Editable(page => page.Name) </h1>
 <hr />
 @if (!string.IsNullOrWhiteSpace(Model.FeatureImage))
 {
-    @Html.RenderImage(Model.FeatureImage, attributes: new { @class = "pull-right" })
+    @await Html.RenderImage(Model.FeatureImage, attributes: new { @class = "pull-right" })
 }
-@Html.Editable(page => page.BodyContent, true)
+@await Html.Editable(page => page.BodyContent, true)
 
 
 <partial name="RegistrationDetails" model="registrationModel" />

@@ -46,7 +46,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar-main">
-            @(await Component.RenderZone("Main Navigation"))
+            @await Component.RenderZone("Main Navigation")
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="dd-search" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -58,7 +58,7 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    @(await Component.RenderZone("Header Right"))
+                    @await Component.RenderZone("Header Right")
                 </li>
             </ul>
         </div>
@@ -66,16 +66,16 @@
 </nav>
 
 <div class="container py-3">
-    @(await Component.RenderZone("Before Content"))
+    @await Component.RenderZone("Before Content")
     @RenderBody()
-    @(await Component.RenderZone("After Content"))
+    @await Component.RenderZone("After Content")
 </div>
 
 <hr/>
 
 <div class="container">
     <footer>
-        @(await Component.RenderZone("Footer"))
+        @await Component.RenderZone("Footer")
     </footer>
 </div>
 

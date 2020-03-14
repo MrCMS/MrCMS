@@ -15,7 +15,7 @@
     }
     @if (!string.IsNullOrWhiteSpace(adminLogo))
     {
-        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new {@class = "brand-image"})
+        @await Html.RenderImage(adminLogo, new Size(0, 45), attributes: new {@class = "brand-image"})
     }
     else
     {

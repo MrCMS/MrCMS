@@ -41,28 +41,26 @@ namespace MrCMS.Settings
         public virtual async Task<TSettings> GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
             //using (MiniProfiler.Current.Step($"Get site settings: {typeof(TSettings).FullName}"))
+            var settings = Activator.CreateInstance<TSettings>();
+
+            var dbSettings = await GetDbSettings<TSettings>();
+
+            foreach (var prop in typeof(TSettings).GetProperties())
             {
-                var settings = Activator.CreateInstance<TSettings>();
+                // get properties we can read and write to
+                if (!prop.CanRead || !prop.CanWrite)
+                    continue;
 
-                var dbSettings = await GetDbSettings<TSettings>();
-
-                foreach (var prop in typeof(TSettings).GetProperties())
-                {
-                    // get properties we can read and write to
-                    if (!prop.CanRead || !prop.CanWrite)
-                        continue;
-
-                    var value = GetSettingByKey(dbSettings, prop.Name, prop.PropertyType);
-                    if (value == null)
-                        continue;
+                var value = GetSettingByKey(dbSettings, prop.Name, prop.PropertyType);
+                if (value == null)
+                    continue;
 
 
-                    //set property
-                    prop.SetValue(settings, value, null);
-                }
-
-                return settings;
+                //set property
+                prop.SetValue(settings, value, null);
             }
+
+            return settings;
         }
 
         public Task SaveSettings(SiteSettingsBase settings)
@@ -72,13 +70,24 @@ namespace MrCMS.Settings
             return (Task)genericMethod.Invoke(this, new object[] { settings });
         }
 
-        public List<SiteSettingsBase> GetAllSiteSettings()
+        public async Task<List<SiteSettingsBase>> GetAllSiteSettings()
         {
             var methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
-            return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
-                .OfType<SiteSettingsBase>().ToList();
+            var list = new List<SiteSettingsBase>();
+
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>())
+            {
+                var loaded = await methodInfo.MakeGenericMethod(type).InvokeAsync(this);
+                if (loaded is SiteSettingsBase settings)
+                    list.Add(settings);
+            }
+
+            return list;
+
+            //return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
+            //    .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
+            //    .OfType<SiteSettingsBase>().ToList();
         }
 
         /// <summary>

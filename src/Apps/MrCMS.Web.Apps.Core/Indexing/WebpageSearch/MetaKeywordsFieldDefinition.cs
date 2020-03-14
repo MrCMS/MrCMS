@@ -11,7 +11,7 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
         {
         }
 
-        protected override IEnumerable<string> GetValues(Webpage obj)
+        protected override async IAsyncEnumerable<string> GetValues(Webpage obj)
         {
             if (obj.MetaKeywords != null) yield return obj.MetaKeywords;
         }

@@ -15,7 +15,8 @@
             <p>
                 @foreach (var p in schemes)
                 {
-                    Html.RenderPartial(p.Name, p);
+                    //Html.RenderPartial(p.Name, p);
+                    <partial name="@p.Name" model="@p" />
                 }
             </p>
         </div>

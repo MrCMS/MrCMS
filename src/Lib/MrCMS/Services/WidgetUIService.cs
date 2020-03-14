@@ -25,16 +25,20 @@ namespace MrCMS.Services
             _repository = repository;
         }
 
-        public Task<IHtmlContent> GetContent(IViewComponentHelper helper, int id,
+        public async Task<IHtmlContent> GetContent(IViewComponentHelper helper, int id,
             Func<IViewComponentHelper, Task<IHtmlContent>> func)
         {
-            return _htmlCacheService.GetContent(helper, _getWidgetCachingInfo.Get(id), func);
+            return await _htmlCacheService.GetContent(helper, _getWidgetCachingInfo.Get(id), func);
         }
 
-        public async Task<(Widget Widget, object Model)> GetModel(int id)
+        public Task<object> GetModel(Widget widget)
         {
-            var widget = _repository.GetDataSync(id);
-            return (widget, await _widgetModelService.GetModel(widget));
+            return _widgetModelService.GetModel(widget);
+        }
+
+        public Task<Widget> GetWidget(int id)
+        {
+            return _repository.GetData(id);
         }
     }
 }

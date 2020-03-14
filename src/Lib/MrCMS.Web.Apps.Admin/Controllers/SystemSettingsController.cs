@@ -28,9 +28,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.View)]
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
-            var settings = _configurationProvider.GetAllSystemSettings().FindAll(arg => arg.RenderInSettings);
+            var allSystemSettings = await _configurationProvider.GetAllSystemSettings();
+            var settings = allSystemSettings.FindAll(arg => arg.RenderInSettings);
             return View(settings);
         }
 
@@ -48,9 +49,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.View)]
-        public ViewResult Mail()
+        public async Task<ViewResult> Mail()
         {
-            var mailSettings = _configurationProvider.GetSystemSettings<MailSettings>();
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
             return View(mailSettings);
         }
 

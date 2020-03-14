@@ -73,8 +73,8 @@ namespace MrCMS.Website.Optimization
 
         public async Task GetCss(ViewContext viewContext)
         {
-         await   viewContext.WriteCssToResponse(GetStyleData(viewContext.HttpContext).Values.SelectMany(x => x)
-                .Select(x => x.Url).Distinct());
+            await viewContext.WriteCssToResponse(GetStyleData(viewContext.HttpContext).Values.SelectMany(x => x)
+                   .Select(x => x.Url).Distinct());
         }
     }
 }

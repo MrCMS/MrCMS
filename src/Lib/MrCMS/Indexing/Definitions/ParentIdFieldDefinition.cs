@@ -13,7 +13,7 @@ namespace MrCMS.Indexing.Definitions
         {
         }
 
-        protected override IEnumerable<string> GetValues(Webpage obj)
+        protected override async IAsyncEnumerable<string> GetValues(Webpage obj)
         {
             yield return obj.ParentId.ToString();
         }

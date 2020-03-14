@@ -3,7 +3,7 @@
 @using MrCMS.Web.Apps.Core.Pages
 @inject IUniquePageService UniquePageService
 @{
-    var url = UniquePageService.GetUrl<SearchPage>();
+    var url = await UniquePageService.GetUrl<SearchPage>();
 }
 <form role="search" method="GET" action="@url">
     <div class="input-group">

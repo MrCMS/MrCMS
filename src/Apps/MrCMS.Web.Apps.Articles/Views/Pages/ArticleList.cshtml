@@ -51,5 +51,5 @@
 
 @if (Model.AllowPaging)
 {
-    @Html.PagedListPager(results, page => GetCurrentPageUrl.GetUrl(new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCmsPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => GetCurrentPageUrl.GetUrl(new { page, searchModel.Category, searchModel.Month, searchModel.Year }).ExecuteSync(), MrCmsPagedListRenderOptions.Bootstrap4)
 }

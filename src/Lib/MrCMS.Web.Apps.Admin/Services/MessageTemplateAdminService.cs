@@ -51,10 +51,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             }).ToList();
         }
 
-        public MessageTemplate GetNewOverride(string type)
+        public async Task<MessageTemplate> GetNewOverride(string type)
         {
             Type typeByName = TypeHelper.GetTypeByName(type);
-            MessageTemplate messageTemplateBase = _messageTemplateProvider.GetNewMessageTemplate(typeByName);
+
+            MessageTemplate messageTemplateBase = await _messageTemplateProvider.GetNewMessageTemplate(typeByName);
             if (messageTemplateBase == null) return null;
             messageTemplateBase.SiteId = _getSiteId.GetId();
             return messageTemplateBase;
@@ -95,7 +96,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             var messageTemplate = await GetOverride(type);
             if (messageTemplate == null)
             {
-                messageTemplate = GetNewOverride(type);
+                messageTemplate = await GetNewOverride(type);
                 await Save(messageTemplate);
             }
 

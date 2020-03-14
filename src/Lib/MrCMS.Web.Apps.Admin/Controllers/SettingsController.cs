@@ -25,9 +25,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [Acl(typeof(SiteSettingsACL), SiteSettingsACL.View)]
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
-            var settings = _configurationProvider.GetAllSiteSettings().FindAll(arg => arg.RenderInSettings);
+            var allSiteSettings = await _configurationProvider.GetAllSiteSettings();
+            var settings = allSiteSettings.FindAll(arg => arg.RenderInSettings);
             settings.ForEach(@base => @base.SetViewData(_serviceProvider, ViewData));
             return View(settings);
         }

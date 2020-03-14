@@ -15,6 +15,7 @@ namespace MrCMS.Website
             if (!context.ActionContext.HttpContext.RequestServices.GetRequiredService<ICheckInstallationStatus>()
                 .IsInstalled())
                 return;
+            // todo - fix
             var siteSettings = context.ActionContext.HttpContext.RequestServices.GetRequiredService<SiteSettings>();
 
             if (!string.IsNullOrWhiteSpace(siteSettings?.ThemeName))

@@ -33,18 +33,23 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             var navigationRecords = new List<NavigationRecord>();
             foreach (var webpage in webpages)
             {
-                navigationRecords.Add(new NavigationRecord
+                var item = new NavigationRecord
                 {
                     Text = new HtmlString(webpage.Name),
-                    Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage, true)),
-                    Children = (await GetPublishedChildWebpages(webpage.Id))
-                        .Select(child =>
-                            new NavigationRecord
-                            {
-                                Text = new HtmlString(child.Name),
-                                Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
-                            }).ToList()
-                });
+                    Url = new HtmlString(await _getLiveUrl.GetUrlSegment(webpage, true))
+                };
+                var children = new List<NavigationRecord>();
+                foreach (var child in (await GetPublishedChildWebpages(webpage.Id)))
+                {
+                    children.Add(new NavigationRecord
+                    {
+                        Text = new HtmlString(child.Name),
+                        Url = new HtmlString(await _getLiveUrl.GetUrlSegment(child, true))
+                    });
+                }
+
+                item.Children = children;
+                navigationRecords.Add(item);
             }
 
             return new CurrentPageSubNavigationModel

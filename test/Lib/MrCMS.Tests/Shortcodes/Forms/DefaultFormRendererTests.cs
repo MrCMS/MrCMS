@@ -11,6 +11,7 @@ using MrCMS.Tests.Stubs;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using Xunit;
 
@@ -46,19 +47,19 @@ namespace MrCMS.Tests.Shortcodes.Forms
         }
 
         [Fact]
-        public void DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfThereAreNoProperties()
+        public async Task DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfThereAreNoProperties()
         {
             var form = new Form();
 
-            var @default = _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, null));
+            var @default = await _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, null));
 
             @default.Should().Be(HtmlString.Empty);
         }
 
         [Fact]
-        public void DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfFormIsNull()
+        public async Task DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfFormIsNull()
         {
-            var @default = _defaultFormRenderer.GetDefault(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
+            var @default = await _defaultFormRenderer.GetDefault(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
 
             @default.Should().Be(HtmlString.Empty);
         }

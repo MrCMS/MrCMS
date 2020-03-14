@@ -25,9 +25,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddSiteOverride(string type)
+        public async Task<ActionResult> AddSiteOverride(string type)
         {
-            return View(_messageTemplateAdminService.GetNewOverride(type));
+            return View(await _messageTemplateAdminService.GetNewOverride(type));
         }
 
         [HttpPost]

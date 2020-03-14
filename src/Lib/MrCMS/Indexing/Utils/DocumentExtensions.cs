@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Helpers;
@@ -31,11 +32,11 @@ namespace MrCMS.Indexing.Utils
             return document;
         }
 
-        public static Document AddField<T>(this Document document, FieldDefinition<T> definition, T obj)
+        public static async Task<Document> AddField<T>(this Document document, FieldDefinition<T> definition, T obj)
         {
             if (document != null)
             {
-                var fields = definition.GetFields(obj);
+                var fields = await definition.GetFields(obj);
                 fields.ForEach(document.Add);
             }
             return document;

@@ -128,7 +128,7 @@ namespace MrCMS.Website.PushNotifications
         {
             var payload = await GetPayload(body, url, title, icon, badge);
 
-            var pushNotification = CreatePushNotificationEntity(payload);
+            var pushNotification = await CreatePushNotificationEntity(payload);
 
             var jobs = subscriptions.Select(subscription => new SendPushNotificationBatchJob
             {

@@ -37,12 +37,12 @@ namespace MrCMS.Services
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<object> GetModel(Widget widget)
+        public Task<object> GetModel(Widget widget)
         {
             GetWidgetModelBase retriever = GetRetriever(widget);
-            return await retriever.GetModel(widget);
+            return retriever.GetModel(widget);
         }
-        
+
         private GetWidgetModelBase GetRetriever(Widget widget)
         {
             //using (MiniProfiler.Current.Step("Get Retriever"))

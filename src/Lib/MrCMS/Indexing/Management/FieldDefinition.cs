@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -34,8 +35,8 @@ namespace MrCMS.Indexing.Management
 
     public abstract class FieldDefinition<T> : FieldDefinition
     {
-        public abstract List<IIndexableField> GetFields(T obj);
-        public abstract Dictionary<T, List<IIndexableField>> GetFields(List<T> obj);
+        public abstract Task<List<IIndexableField>> GetFields(T obj);
+        public abstract Task<Dictionary<T, List<IIndexableField>>> GetFields(List<T> obj);
     }
 
     public abstract class FieldDefinition<T1, T2> : IFieldDefinition<T1, T2>

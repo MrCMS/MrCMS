@@ -12,6 +12,7 @@ namespace MrCMS.Messages
         Task DeleteSiteOverride(MessageTemplate messageTemplate, int siteId);
         Task<List<MessageTemplate>> GetAllMessageTemplates(int siteId);
         Task<T> GetMessageTemplate<T>(int siteId) where T : MessageTemplate, new();
-        MessageTemplate GetNewMessageTemplate(Type type);
+        Task<T> GetNewMessageTemplate<T>() where T : MessageTemplate, new();
+        Task<MessageTemplate> GetNewMessageTemplate(Type type);
     }
 }

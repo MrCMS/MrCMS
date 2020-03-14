@@ -221,9 +221,10 @@ namespace MrCMS.Indexing.Management
                 entities.AddRange(await GlobalLoadAllOfType());
             }
 
+            var convertAll = await Definition.ConvertAll(entities);
             return _getIndexResult.GetResult(() => Write(writer =>
             {
-                foreach (Document document in Definition.ConvertAll(entities))
+                foreach (Document document in convertAll)
                     writer.AddDocument(document);
             }, true));
         }

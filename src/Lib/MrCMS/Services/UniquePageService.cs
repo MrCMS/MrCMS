@@ -28,7 +28,7 @@ namespace MrCMS.Services
         public async Task<string> GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage
         {
             var page = await GetUniquePage<T>();
-            var url = _getLiveUrl.GetUrlSegment(page, true);
+            var url = await _getLiveUrl.GetUrlSegment(page, true);
             if (queryString != null)
             {
                 url += string.Format("?{0}",

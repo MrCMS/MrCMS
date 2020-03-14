@@ -18,7 +18,7 @@ namespace MrCMS.Website.CMS
 
         public async Task<PageData> GetData(string url, string method)
         {
-            Webpage webpage =await _getWebpageForPath.GetWebpage(url);
+            Webpage webpage = await _getWebpageForPath.GetWebpage(url);
             if (webpage == null)
             {
                 return null;

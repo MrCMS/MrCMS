@@ -18,16 +18,16 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _service = service;
         }
 
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
-            return View(_service.GetAll());
+            return View(await _service.GetAll());
         }
 
         [HttpGet]
         public async Task<PartialViewResult> Set(string type)
         {
             var webpageType = TypeHelper.GetTypeByName(type);
-            ViewData["url-generator-options"] =await _service.GetUrlGeneratorOptions(webpageType);
+            ViewData["url-generator-options"] = await _service.GetUrlGeneratorOptions(webpageType);
             ViewData["layout-options"] = await _service.GetLayoutOptions();
             return PartialView(await _service.GetInfo(webpageType));
         }

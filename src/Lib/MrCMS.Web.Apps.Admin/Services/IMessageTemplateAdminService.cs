@@ -9,7 +9,7 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         Task<List<MessageTemplateInfo>> GetAllMessageTemplateTypesWithDetails();
 
-        MessageTemplate GetNewOverride(string type);
+        Task<MessageTemplate> GetNewOverride(string type);
         Task<MessageTemplate> GetOverride(string type);
         Task<MessageTemplate> GetTemplate(string type);
 

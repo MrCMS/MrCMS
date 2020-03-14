@@ -20,12 +20,12 @@ namespace MrCMS.Website
         public async Task<Webpage> GetWebpage(string path)
         {
             var url = path?.TrimStart('/');
-            //return await _cacheInHttpContext.GetForRequest($"webpage-for-path|{url}", () => string.IsNullOrWhiteSpace(url)
-            //        ? _getHomePage.Get()
-            //        : _getWebpageByUrl.GetByUrl(url));
-            return string.IsNullOrWhiteSpace(url)
-                ? await _getHomePage.Get()
-                : await _getWebpageByUrl.GetByUrl(url);
+            return await _cacheInHttpContext.GetForRequest($"webpage-for-path|{url}", () => string.IsNullOrWhiteSpace(url)
+                    ? _getHomePage.Get()
+                    : _getWebpageByUrl.GetByUrl(url));
+            //return string.IsNullOrWhiteSpace(url)
+            //    ? await _getHomePage.Get()
+            //    : await _getWebpageByUrl.GetByUrl(url);
         }
     }
 }

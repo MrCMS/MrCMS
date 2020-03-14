@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Website;
 
@@ -6,14 +7,14 @@ namespace MrCMS.Messages.Helpers
 {
     public static class MessageTemplateExtensions
     {
-        public static bool IsTemplateDefault<T>(this IHtmlHelper htmlHelper, T template) where T : MessageTemplate
+        public static async Task<bool> IsTemplateDefault<T>(this IHtmlHelper htmlHelper, T template) where T : MessageTemplate, new()
         {
             if (template.SiteId.HasValue)
                 return false;
 
             var provider = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService<IMessageTemplateProvider>();
 
-            var messageTemplate = provider.GetNewMessageTemplate(typeof(T));
+            var messageTemplate = await provider.GetNewMessageTemplate<T>();
 
             return template.IsHtml == messageTemplate.IsHtml &&
                    template.Bcc == messageTemplate.Bcc &&

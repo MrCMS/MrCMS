@@ -5,7 +5,7 @@ namespace MrCMS.Services
 {
     public interface IGetLiveUrl
     {
-        string GetUrlSegment(Webpage webpage, bool addLeadingSlash = false);
+        Task<string> GetUrlSegment(Webpage webpage, bool addLeadingSlash = false);
         Task<string> GetAbsoluteUrl(Webpage webpage);
     }
 }

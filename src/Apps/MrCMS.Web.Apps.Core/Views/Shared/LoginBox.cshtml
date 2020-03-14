@@ -30,7 +30,7 @@
                 <button type="submit" value="@Html.Resource("Login")" class="btn btn-primary">
                     <span class="fa fa-user"></span> @Html.Resource("Login")</button>
 
-                <a href="@(UniquePageService.GetUrl<ForgottenPasswordPage>())" class="btn btn-secondary">
+                <a href="@(await UniquePageService.GetUrl<ForgottenPasswordPage>())" class="btn btn-secondary">
                     <span class="glyphicon fa fa-question-circle"></span>
                     @Html.Resource("Forgotten password")?
                 </a>
@@ -46,5 +46,5 @@
 
         </div>
     </div>
-    @Html.Honeypot()
+    @await Html.Honeypot()
 }

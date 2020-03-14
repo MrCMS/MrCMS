@@ -43,7 +43,7 @@ namespace MrCMS.Shortcodes.Forms
                 return HtmlString.Empty;
             }
 
-            var formProperties = _formPropertyRepository.Query().Where(x => x.FormId == formEntity.Id).OrderBy(x => x.DisplayOrder).ToList();
+            var formProperties = await _formPropertyRepository.Query().Where(x => x.FormId == formEntity.Id).OrderBy(x => x.DisplayOrder).ToListAsync();
             if (!formProperties.Any())
             {
                 return HtmlString.Empty;

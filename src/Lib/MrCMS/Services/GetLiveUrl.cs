@@ -16,10 +16,10 @@ namespace MrCMS.Services
             _getHomePage = getHomePage;
             _configurationProvider = configurationProvider;
         }
-        public string GetUrlSegment(Webpage webpage, bool addLeadingSlash)
+        public async Task<string> GetUrlSegment(Webpage webpage, bool addLeadingSlash = false)
         {
             var builder = new StringBuilder(addLeadingSlash ? "/" : string.Empty);
-            builder.Append(GetSegment(webpage));
+            builder.Append(await GetSegment(webpage));
             return builder.ToString();
         }
 
@@ -38,14 +38,14 @@ namespace MrCMS.Services
             return string.Format("{0}{1}/{2}", scheme, authority, GetSegment(webpage));
         }
 
-        private string GetSegment(Webpage webpage)
+        private async Task<string> GetSegment(Webpage webpage)
         {
             if (webpage == null)
             {
                 return string.Empty;
             }
 
-            var homepage = _getHomePage.Get();
+            var homepage =await _getHomePage.Get();
             return webpage.Id == homepage?.Id ? string.Empty : webpage.UrlSegment;
         }
     }

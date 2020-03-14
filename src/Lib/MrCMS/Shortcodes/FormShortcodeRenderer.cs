@@ -36,7 +36,7 @@ namespace MrCMS.Shortcodes
                 return HtmlString.Empty;
             }
 
-            var form = _repository.GetDataSync(id);
+            var form = await _repository.GetData(id);
             if (form == null)
             {
                 return HtmlString.Empty;

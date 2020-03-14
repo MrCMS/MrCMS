@@ -29,22 +29,35 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
         {
             var rootPages =await GetPages(null);
             var childPages = widget.IncludeChildren ? await GetPages(rootPages) : new List<Webpage>();
-            var navigationRecords =
-                rootPages.Where(webpage => webpage.Published).OrderBy(webpage => webpage.DisplayOrder)
-                       .Select(webpage => new NavigationRecord
-                       {
-                           Text = new HtmlString(webpage.Name),
-                           Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage, true)),
-                           Children = childPages.Where(webpage1 => webpage1.ParentId == webpage.Id)
-                                            .Select(child =>
-                                                    new NavigationRecord
-                                                    {
-                                                        Text = new HtmlString(child.Name),
-                                                        Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
-                                                    }).ToList()
-                       }).ToList();
 
-            return new NavigationList(navigationRecords.ToList());
+            var rootRecords = new List<NavigationRecord>();
+
+            foreach (var webpage in rootPages.Where(webpage => webpage.Published).OrderBy(webpage => webpage.DisplayOrder)
+                )
+            {
+                var item = new NavigationRecord
+                {
+                    Text = new HtmlString(webpage.Name),
+                    Url = new HtmlString(await _getLiveUrl.GetUrlSegment(webpage, true))
+                };
+                var children = new List<NavigationRecord>();
+                foreach (var child in 
+                   childPages.Where(webpage1 => webpage1.ParentId == webpage.Id)
+ )
+                {
+                    children.Add(new NavigationRecord
+                        {
+                            Text = new HtmlString(child.Name),
+                            Url = new HtmlString(await _getLiveUrl.GetUrlSegment(child, true))
+                        });
+                }
+
+                item.Children = children;
+
+                rootRecords.Add(item);
+            }
+
+            return new NavigationList(rootRecords);
         }
 
         private Task<List<Webpage>> GetPages(IList<Webpage> parents)

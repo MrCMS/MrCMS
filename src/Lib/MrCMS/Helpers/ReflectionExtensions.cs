@@ -9,7 +9,7 @@ namespace MrCMS.Helpers
         {
             dynamic awaitable = @this.Invoke(obj, parameters);
             await awaitable;
-            return awaitable.GetAwaiter().GetResult();
+            return awaitable.ConfigureAwait(false).GetAwaiter().GetResult();
         }
     }
 }

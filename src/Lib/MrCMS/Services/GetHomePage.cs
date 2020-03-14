@@ -20,14 +20,14 @@ namespace MrCMS.Services
 
         public async Task<Webpage> Get()
         {
-            //return await _cacheInHttpContext.GetForRequest("current.home-page", () => _repository
-            //    .Query()
-            //    .OrderBy(webpage => webpage.DisplayOrder)
-            //    .FirstOrDefaultAsync(document => document.ParentId == null && document.Published));
-            return await _repository
+            return await _cacheInHttpContext.GetForRequest("current.home-page", () => _repository
                 .Query()
                 .OrderBy(webpage => webpage.DisplayOrder)
-                .FirstOrDefaultAsync(document => document.ParentId == null && document.Published);
+                .FirstOrDefaultAsync(document => document.ParentId == null && document.Published));
+            //return await _repository
+            //    .Query()
+            //    .OrderBy(webpage => webpage.DisplayOrder)
+            //    .FirstOrDefaultAsync(document => document.ParentId == null && document.Published);
         }
     }
 }

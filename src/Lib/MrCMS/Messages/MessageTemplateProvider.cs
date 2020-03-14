@@ -94,14 +94,9 @@ namespace MrCMS.Messages
                 return JsonConvert.DeserializeObject<T>(templateData.Data);
             }
 
-            var template = GetNewMessageTemplate<T>();
+            var template = await GetNewMessageTemplate<T>();
             await SaveTemplate(template);
             return template;
-        }
-
-        public MessageTemplate GetNewMessageTemplate(Type type)
-        {
-            return GetNewMessageTemplateMethod.MakeGenericMethod(type).Invoke(this, new object[0]) as MessageTemplate;
         }
 
         private async Task Save(MessageTemplate messageTemplate, int? siteId)
@@ -130,16 +125,28 @@ namespace MrCMS.Messages
                 .FirstOrDefaultAsync(x => x.Type == type && x.SiteId == siteId);
         }
 
-        public T GetNewMessageTemplate<T>() where T : MessageTemplate, new()
+        public async Task<T> GetNewMessageTemplate<T>() where T : MessageTemplate, new()
         {
             T template = null;
             var templateType = typeof(T);
             if (DefaultTemplateProviders.ContainsKey(templateType))
             {
                 if (_serviceProvider.GetService(DefaultTemplateProviders[templateType]) is IGetDefaultMessageTemplate getDefaultMessageTemplate)
-                    template = getDefaultMessageTemplate.Get() as T;
+                    template = await getDefaultMessageTemplate.Get() as T;
             }
             return template ?? new T();
+        }
+
+        public async Task<MessageTemplate> GetNewMessageTemplate(Type type)
+        {
+            MessageTemplate template = null;
+            if (DefaultTemplateProviders.ContainsKey(type))
+            {
+                if (_serviceProvider.GetService(DefaultTemplateProviders[type]) is IGetDefaultMessageTemplate
+                    getDefaultMessageTemplate)
+                    template = await getDefaultMessageTemplate.Get();
+            }
+            return template ?? Activator.CreateInstance(type) as MessageTemplate;
         }
     }
 }

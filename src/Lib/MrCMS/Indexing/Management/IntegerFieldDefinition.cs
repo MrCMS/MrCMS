@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
@@ -22,18 +23,18 @@ namespace MrCMS.Indexing.Management
             get { return new IntegerFieldDefinition<T2>(Name, GetValues, GetValues, Store, Boost); }
         }
 
-        protected abstract IEnumerable<int> GetValues(T2 obj);
+        protected abstract IAsyncEnumerable<int> GetValues(T2 obj);
 
-        protected virtual Dictionary<T2, IEnumerable<int>> GetValues(List<T2> objs)
+        protected virtual Dictionary<T2, IAsyncEnumerable<int>> GetValues(List<T2> objs)
         {
             return objs.ToDictionary(arg => arg, GetValues);
         }
     }
     public class IntegerFieldDefinition<T> : FieldDefinition<T>
     {
-        public Func<T, IEnumerable<int>> GetValues { get; set; }
-        public Func<List<T>, Dictionary<T, IEnumerable<int>>> GetAllValues { get; set; }
-        public IntegerFieldDefinition(string fieldName, Func<T, IEnumerable<int>> getValues, Func<List<T>, Dictionary<T, IEnumerable<int>>> getAllValues, Field.Store store, float boost = 1)
+        public Func<T, IAsyncEnumerable<int>> GetValues { get; set; }
+        public Func<List<T>, Dictionary<T, IAsyncEnumerable<int>>> GetAllValues { get; set; }
+        public IntegerFieldDefinition(string fieldName, Func<T, IAsyncEnumerable<int>> getValues, Func<List<T>, Dictionary<T, IAsyncEnumerable<int>>> getAllValues, Field.Store store, float boost = 1)
         {
             FieldName = fieldName;
             GetValues = getValues;
@@ -43,24 +44,34 @@ namespace MrCMS.Indexing.Management
         }
 
 
-        public override List<IIndexableField> GetFields(T obj)
+        public override async Task<List<IIndexableField>> GetFields(T obj)
         {
-            return GetFields(GetValues(obj));
+            return await GetFields(GetValues(obj));
         }
 
-        public override Dictionary<T, List<IIndexableField>> GetFields(List<T> obj)
+        public override async Task<Dictionary<T, List<IIndexableField>>> GetFields(List<T> obj)
         {
-            var values = GetAllValues(obj);
-            return values.ToDictionary(pair => pair.Key,
-                pair => GetFields(pair.Value));
+            var pairs = GetAllValues(obj).ToList();
+
+            var dictionary = new Dictionary<T, List<IIndexableField>>();
+            foreach (var pair in pairs)
+            {
+                dictionary.Add(pair.Key, await GetFields(pair.Value));
+            }
+            return dictionary;
         }
 
 
-        private List<IIndexableField> GetFields(IEnumerable<int> values)
+        private async Task<List<IIndexableField>> GetFields(IAsyncEnumerable<int> values)
         {
-            return values.Select(value => new Int32Field(FieldName,value, Store) { Boost = Boost })
-                .Cast<IIndexableField>()
-                .ToList();
+
+            var list = new List<IIndexableField>();
+            await foreach (var value in values)
+            {
+                list.Add(new Int32Field(FieldName, (value), Store) { Boost = Boost });
+            }
+
+            return list;
         }
     }
 }

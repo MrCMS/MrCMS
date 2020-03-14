@@ -9,6 +9,6 @@ namespace MrCMS.Settings
         Task SaveSettings(SiteSettingsBase settings);
         Task SaveSettings<T>(T settings) where T : SiteSettingsBase, new();
         Task DeleteSettings<T>(T settings) where T : SiteSettingsBase, new();
-        List<SiteSettingsBase> GetAllSiteSettings();
+        Task<List<SiteSettingsBase>> GetAllSiteSettings();
     }
 }

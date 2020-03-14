@@ -23,10 +23,10 @@ namespace MrCMS.ViewComponents
                 return Content(string.Empty);
             }
 
-            if (await _frontEndEditingChecker.IsAllowed() && allowFrontEndEditing)
-            {
-                return View("Editable", info);
-            }
+            //if (await _frontEndEditingChecker.IsAllowed() && allowFrontEndEditing)
+            //{
+            //    return View("Editable", info);
+            //}
 
             return View(info);
         }

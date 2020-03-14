@@ -28,9 +28,9 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
             _getLiveUrl = getLiveUrl;
         }
 
-        protected override IEnumerable<string> GetValues(Webpage obj)
+        protected override async IAsyncEnumerable<string> GetValues(Webpage obj)
         {
-            yield return _getLiveUrl.GetUrlSegment(obj);
+            yield return await _getLiveUrl.GetUrlSegment(obj);
             foreach (var urlHistory in obj.Urls)
             {
                 yield return urlHistory.UrlSegment;
@@ -56,7 +56,7 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
             public int WebpageId { get; set; }
             public string Url { get; set; }
         }
-        protected override Dictionary<Webpage, IEnumerable<string>> GetValues(List<Webpage> objs)
+        protected override Dictionary<Webpage, IAsyncEnumerable<string>> GetValues(List<Webpage> objs)
         {
             var urlHistoryDatas =
                 _repository.Readonly().Select(history => new MrCMS.Indexing.Definitions.UrlSegmentFieldDefinition.UrlHistoryData
@@ -73,7 +73,7 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
                 .ToDictionary(datas => datas.Key, datas => datas.Select(data => data.Url).ToHashSet());
 
             return objs.ToDictionary(webpage => webpage,
-                webpage => dictionary.ContainsKey(webpage.Id) ? dictionary[webpage.Id] : Enumerable.Empty<string>());
+                webpage => (dictionary.ContainsKey(webpage.Id) ? dictionary[webpage.Id] : Enumerable.Empty<string>()).ToAsyncEnumerable());
         }
 
         public override Dictionary<Type, Func<SystemEntity, IEnumerable<LuceneAction>>> GetRelatedEntities()

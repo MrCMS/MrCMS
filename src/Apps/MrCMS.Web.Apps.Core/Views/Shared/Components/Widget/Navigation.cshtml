@@ -8,7 +8,11 @@
 @{
     var currentPage = GetCurrentPage.GetPage();
     var hierarchy = await ActivePagesLoader.GetActivePages(currentPage);
-    var activePages = hierarchy.Select(webpage => GetLiveUrl.GetUrlSegment(webpage, true)).ToList();
+    var activePages = new List<string>();
+    foreach (var webpage in hierarchy)
+    {
+        activePages.Add(await GetLiveUrl.GetUrlSegment(webpage, true));
+    }
 }
 <ul class="navbar-nav mr-auto">
     @foreach (var item in Model)

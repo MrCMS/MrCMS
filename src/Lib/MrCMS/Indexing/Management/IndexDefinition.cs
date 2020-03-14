@@ -78,7 +78,7 @@ namespace MrCMS.Indexing.Management
 
     public abstract class IndexDefinition<T> : IndexDefinition where T : SystemEntity
     {
-        private static IEnumerable<string> GetEntityTypes(T entity)
+        private static async IAsyncEnumerable<string> GetEntityTypes(T entity)
         {
             if (entity == null)
             {
@@ -103,8 +103,8 @@ namespace MrCMS.Indexing.Management
             _serviceProvider = serviceProvider;
         }
 
-        public static FieldDefinition<T> Id { get; } = new StringFieldDefinition<T>("id", entity => new List<string> { entity.Id.ToString() },
-            entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.AsEnumerable()),
+        public static FieldDefinition<T> Id { get; } = new StringFieldDefinition<T>("id", entity => new List<string> { entity.Id.ToString() }.ToAsyncEnumerable(),
+            entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.ToAsyncEnumerable()),
             Field.Store.YES);
 
         public static FieldDefinition<T> EntityType { get; } = new StringFieldDefinition<T>("entityType", GetEntityTypes,
@@ -139,7 +139,7 @@ namespace MrCMS.Indexing.Management
             return new List<FieldDefinition<T>> { Id, EntityType };
         }
 
-        public List<Document> ConvertAll(List<T> entities)
+        public async Task<List<Document>> ConvertAll(List<T> entities)
         {
             var fieldDefinitions = GetNewDefinitionList();
             fieldDefinitions.AddRange(Definitions);
@@ -149,8 +149,9 @@ namespace MrCMS.Indexing.Management
             foreach (var entity in entities)
             {
                 var document = new Document();
-                foreach (var fieldInfo in list)
+                foreach (var task in list)
                 {
+                    var fieldInfo = await task;
                     List<IIndexableField> abstractFields = fieldInfo[entity];
                     abstractFields.ForEach(document.Add);
                 }

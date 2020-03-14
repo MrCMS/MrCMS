@@ -16,9 +16,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _messageQueueAdminService = messageQueueAdminService;
         }
 
-        public ViewResult Index(MessageQueueQuery searchQuery)
+        public async Task<ViewResult> Index(MessageQueueQuery searchQuery)
         {
-            ViewData["data"] = _messageQueueAdminService.GetMessages(searchQuery);
+            ViewData["data"] = await _messageQueueAdminService.GetMessages(searchQuery);
             return View(searchQuery);
         }
 

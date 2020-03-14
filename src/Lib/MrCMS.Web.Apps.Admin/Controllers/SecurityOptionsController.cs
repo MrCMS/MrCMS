@@ -18,11 +18,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _roleAdminService = roleAdminService;
         }
 
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
             ViewData["roles"] = _roleAdminService.GetAllRoles().ToList();
-            ViewData["auth-role-settings"] = _configurationProvider.GetSystemSettings<AuthRoleSettings>();
-            ViewData["security-settings"] = _configurationProvider.GetSystemSettings<SecuritySettings>();
+            ViewData["auth-role-settings"] = await _configurationProvider.GetSystemSettings<AuthRoleSettings>();
+            ViewData["security-settings"] = await _configurationProvider.GetSystemSettings<SecuritySettings>();
 
             return View();
         }

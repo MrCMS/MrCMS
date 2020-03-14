@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Web.Apps.Admin.Models;
@@ -16,9 +17,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _stringResourceAdminService = stringResourceAdminService;
         }
 
-        public ViewResult Index(StringResourceSearchQuery searchQuery)
+        public async Task<ViewResult> Index(StringResourceSearchQuery searchQuery)
         {
-            ViewData["results"] = _stringResourceAdminService.Search(searchQuery);
+            ViewData["results"] =await _stringResourceAdminService.Search(searchQuery);
             ViewData["language-options"] = _stringResourceAdminService.SearchLanguageOptions();
             ViewData["site-options"] = _stringResourceAdminService.SearchSiteOptions();
             return View(searchQuery);
@@ -32,10 +33,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult Add(string key, int? id, bool language = false)
+        public async Task<ViewResult> Add(string key, int? id, bool language = false)
         {
             if (language)
-                ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key, id);
+                ViewData["language-options"] =await  _stringResourceAdminService.GetLanguageOptions(key, id);
 
             return View(_stringResourceAdminService.GetNewResource(key, id));
         }

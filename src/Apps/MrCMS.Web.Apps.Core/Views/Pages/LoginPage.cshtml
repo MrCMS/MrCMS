@@ -9,7 +9,7 @@
 @{
     var loginModel = ViewData["login-model"] as LoginModel;
 }
-@Html.Editable(page => page.BodyContent, true)
+@await Html.Editable(page => page.BodyContent, true)
 
 <div class="row">
     <div class="col-md-4 col-sm-6">
@@ -26,7 +26,7 @@
     <div class="col-md-8 col-sm-6">
         <h2 class="not-registered">@Html.Resource("Not registered")?</h2>
         <hr />
-        <a href="@(UniquePageService.GetUrl<RegisterPage>())" class="btn btn-secondary">
+        <a href="@(await UniquePageService.GetUrl<RegisterPage>())" class="btn btn-secondary">
             <span class="fa fa-ok-sign"></span> @Html.Resource("Click here to register")
         </a>
     </div>

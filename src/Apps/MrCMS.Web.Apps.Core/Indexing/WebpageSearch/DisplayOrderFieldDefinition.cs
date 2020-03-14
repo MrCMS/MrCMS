@@ -12,7 +12,7 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
         {
         }
 
-        protected override IEnumerable<int> GetValues(Webpage obj)
+        protected override async IAsyncEnumerable<int> GetValues(Webpage obj)
         {
             yield return obj.DisplayOrder;
         }

@@ -39,8 +39,7 @@ namespace MrCMS.Web.Apps.Admin.Filters
             }
 
             var controller = _getControllerFromFilterContext.GetController(executedContext);
-            controller.ViewData[BreadcrumbAttribute.Breadcrumbs] =
-                _getBreadcrumbs.Get(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName,
+            controller.ViewData[BreadcrumbAttribute.Breadcrumbs] = await _getBreadcrumbs.Get(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName,
                     context.ActionArguments);
         }
     }

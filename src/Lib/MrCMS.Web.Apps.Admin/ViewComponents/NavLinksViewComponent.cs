@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs;
 using MrCMS.Web.Apps.Admin.Services;
 
@@ -12,9 +13,9 @@ namespace MrCMS.Web.Apps.Admin.ViewComponents
         {
             _getNavigation = getNavigation;
         }
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(_getNavigation.GetNavigation());
+            return View(await _getNavigation.GetNavigation());
         }
     }
 }

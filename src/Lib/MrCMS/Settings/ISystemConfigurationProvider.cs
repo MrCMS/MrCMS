@@ -9,6 +9,6 @@ namespace MrCMS.Settings
         Task<TSettings> GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new();
         void SaveSettings(SystemSettingsBase settings);
         Task SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new();
-        List<SystemSettingsBase> GetAllSystemSettings();
+        Task<List<SystemSettingsBase>> GetAllSystemSettings();
     }
 }

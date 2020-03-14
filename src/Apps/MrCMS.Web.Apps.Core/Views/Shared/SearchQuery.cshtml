@@ -5,7 +5,7 @@
 @model WebpageSearchQuery
 @inject IUniquePageService UniquePageService
 @{
-    var url = UniquePageService.GetUrl<SearchPage>();
+    var url = await UniquePageService.GetUrl<SearchPage>();
 }
 
 <form action="@url" method="GET">

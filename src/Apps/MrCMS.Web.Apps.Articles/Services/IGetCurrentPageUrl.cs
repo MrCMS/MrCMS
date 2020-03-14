@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Services;
 
@@ -7,7 +8,7 @@ namespace MrCMS.Web.Apps.Articles.Services
 {
     public interface IGetCurrentPageUrl
     {
-        string GetUrl(object queryString = null);
+        Task<string> GetUrl(object queryString = null);
     }
 
     public class GetCurrentPageUrl : IGetCurrentPageUrl
@@ -21,10 +22,10 @@ namespace MrCMS.Web.Apps.Articles.Services
             _getLiveUrl = getLiveUrl;
         }
 
-        public string GetUrl(object queryString = null)
+        public async Task<string> GetUrl(object queryString = null)
         {
             var page = _getCurrentPage.GetPage();
-            var url = _getLiveUrl.GetUrlSegment(page, true);
+            var url = await _getLiveUrl.GetUrlSegment(page, true);
 
             if (queryString != null)
             {

@@ -14,18 +14,21 @@ namespace MrCMS.Website.CMS
             _getCurrentPage = getCurrentPage;
             _getHomePage = getHomePage;
         }
-        public Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (context.Request.Path == "/")
-                return next(context);
+            {
+                await next(context);
+                return;
+            }
             var webpage = _getCurrentPage.GetPage();
-            var homepage = _getHomePage.Get();
+            var homepage = await _getHomePage.Get();
             if (webpage != null && homepage != null && webpage.Id == homepage.Id)
             {
                 context.Response.Redirect("/", true);
             }
 
-            return next(context);
+            await next(context);
         }
     }
 }

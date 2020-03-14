@@ -135,13 +135,20 @@ namespace MrCMS.Settings
                            new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
         }
 
-        public List<SystemSettingsBase> GetAllSystemSettings()
+        public async Task<List<SystemSettingsBase>> GetAllSystemSettings()
         {
             var methodInfo = GetType().GetMethodExt(nameof(GetSystemSettings));
 
-            return TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
-                .OfType<SystemSettingsBase>().ToList();
+            var list = new List<SystemSettingsBase>();
+
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())
+            {
+                var loaded = await methodInfo.MakeGenericMethod(type).InvokeAsync(this);
+                if (loaded is SystemSettingsBase settings)
+                    list.Add(settings);
+            }
+
+            return list;
         }
 
         protected virtual async Task SetSetting<T>(IDictionary<string, SystemSetting> existingSettings, string typeName,

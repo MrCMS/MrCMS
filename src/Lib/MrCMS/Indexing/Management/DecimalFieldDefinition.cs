@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
@@ -22,9 +23,9 @@ namespace MrCMS.Indexing.Management
             get { return new DecimalFieldDefinition<T2>(Name, GetValues, GetValues, Store, Boost); }
         }
 
-        protected abstract IEnumerable<decimal> GetValues(T2 obj);
+        protected abstract IAsyncEnumerable<decimal> GetValues(T2 obj);
 
-        protected virtual Dictionary<T2, IEnumerable<decimal>> GetValues(List<T2> objs)
+        protected virtual Dictionary<T2, IAsyncEnumerable<decimal>> GetValues(List<T2> objs)
         {
             return objs.ToDictionary(arg => arg, GetValues);
         }
@@ -32,8 +33,8 @@ namespace MrCMS.Indexing.Management
 
     public class DecimalFieldDefinition<T> : FieldDefinition<T>
     {
-        public DecimalFieldDefinition(string fieldName, Func<T, IEnumerable<decimal>> getValues,
-            Func<List<T>, Dictionary<T, IEnumerable<decimal>>> getAllValues, Field.Store store, 
+        public DecimalFieldDefinition(string fieldName, Func<T, IAsyncEnumerable<decimal>> getValues,
+            Func<List<T>, Dictionary<T, IAsyncEnumerable<decimal>>> getAllValues, Field.Store store, 
             float boost = 1)
         {
             GetAllValues = getAllValues;
@@ -43,26 +44,35 @@ namespace MrCMS.Indexing.Management
             Boost = boost;
         }
 
-        public Func<List<T>, Dictionary<T, IEnumerable<decimal>>> GetAllValues { get; set; }
-        public Func<T, IEnumerable<decimal>> GetValues { get; set; }
+        public Func<T, IAsyncEnumerable<decimal>> GetValues { get; set; }
+        public Func<List<T>, Dictionary<T, IAsyncEnumerable<decimal>>> GetAllValues { get; set; }
 
-        public override List<IIndexableField> GetFields(T obj)
+        public override async Task<List<IIndexableField>> GetFields(T obj)
         {
-            return GetFields(GetValues(obj));
+            return await GetFields(GetValues(obj));
         }
 
-        public override Dictionary<T, List<IIndexableField>> GetFields(List<T> obj)
+        public override async Task<Dictionary<T, List<IIndexableField>>> GetFields(List<T> obj)
         {
-            Dictionary<T, IEnumerable<decimal>> values = GetAllValues(obj);
-            return values.ToDictionary(pair => pair.Key,
-                pair => GetFields(pair.Value));
+            var pairs = GetAllValues(obj).ToList();
+
+            var dictionary = new Dictionary<T, List<IIndexableField>>();
+            foreach (var pair in pairs)
+            {
+                dictionary.Add(pair.Key, await GetFields(pair.Value));
+            }
+            return dictionary;
         }
 
-        private List<IIndexableField> GetFields(IEnumerable<decimal> values)
+        private async Task<List<IIndexableField>> GetFields(IAsyncEnumerable<decimal> values)
         {
-            return values.Select(
-                value =>
-                    new DoubleField(FieldName, Convert.ToDouble(value), Store) { Boost = Boost }).Cast<IIndexableField>().ToList();
+            var list = new List<IIndexableField>();
+            await foreach (var value in values)
+            {
+                list.Add(new DoubleField(FieldName, Convert.ToDouble(value), Store) {Boost = Boost});
+            }
+
+            return list;
         }
     }
 }

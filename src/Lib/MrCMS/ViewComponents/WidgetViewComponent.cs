@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Entities.Widget;
 using MrCMS.Services;
 
 namespace MrCMS.ViewComponents
@@ -15,15 +16,16 @@ namespace MrCMS.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int id, bool editable = false)
         {
-            var (widget, model) = await _widgetUIService.GetModel(id);
+            var widget = await _widgetUIService.GetWidget(id);
             if (widget == null)
             {
                 return Content(string.Empty);
             }
-            if (editable)
-            {
-                return View("Editable", widget);
-            }
+            var model = await _widgetUIService.GetModel(widget);
+            //if (editable)
+            //{
+            //    return View("Editable", widget);
+            //}
 
             return View(widget.GetType().Name, model);
         }
