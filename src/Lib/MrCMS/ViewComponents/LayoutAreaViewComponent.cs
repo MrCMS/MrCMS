@@ -2,6 +2,7 @@
 using MrCMS.Website;
 using MrCMS.Website.Auth;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.ViewComponents
 {
@@ -14,7 +15,7 @@ namespace MrCMS.ViewComponents
             _frontEndEditingChecker = frontEndEditingChecker;
         }
 
-        public IViewComponentResult Invoke(string name, bool allowFrontEndEditing = true)
+        public async Task<IViewComponentResult> InvokeAsync(string name, bool allowFrontEndEditing = true)
         {
             var info = GetInfo(name);
             if (info == null)
@@ -22,7 +23,7 @@ namespace MrCMS.ViewComponents
                 return Content(string.Empty);
             }
 
-            if (_frontEndEditingChecker.IsAllowed() && allowFrontEndEditing)
+            if (await _frontEndEditingChecker.IsAllowed() && allowFrontEndEditing)
             {
                 return View("Editable", info);
             }

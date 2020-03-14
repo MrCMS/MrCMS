@@ -33,8 +33,11 @@ namespace MrCMS.Tasks
         public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
             await _taskStatusUpdater.BeginExecution(list);
-            var actions = (await Task.WhenAll(list.Select(task => task as ILuceneIndexTask)
-                .Select(task => task.GetActions(token)))).SelectMany(x => x);
+            //var actions = (await Task.WhenAll(list.Select(task => task as ILuceneIndexTask)
+            //    .Select(task => task.GetActions(token)))).SelectMany(x => x);
+            var actions = new List<LuceneAction>();
+            foreach (var task in list.OfType<ILuceneIndexTask>()) actions.AddRange(await task.GetActions(token));
+
             List<LuceneAction> luceneActions = actions
                 .Distinct(LuceneActionComparison.Comparer)
                 .ToList();

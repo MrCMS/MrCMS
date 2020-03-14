@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Website.Controllers
@@ -12,7 +13,7 @@ namespace MrCMS.Website.Controllers
             _sitemapPlaceholderUIService = sitemapPlaceholderUIService;
         }
 
-        public RedirectResult Show(SitemapPlaceholder page)
+        public Task<RedirectResult> Show(SitemapPlaceholder page)
         {
             return _sitemapPlaceholderUIService.Redirect(page);
         }

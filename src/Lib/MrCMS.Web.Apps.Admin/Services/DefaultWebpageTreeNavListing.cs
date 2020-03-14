@@ -35,7 +35,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 RootContoller = "Webpage",
                 IsRootRequest = parent == null
             };
-            int maxChildNodes = parent == null ? 1000 : parent.GetMetadata().MaxChildNodes;
+            int maxChildNodes = parent?.GetMetadata().MaxChildNodes ?? 1000;
             var query = GetQuery(parent);
 
             int rowCount = GetRowCount(query);
@@ -105,31 +105,17 @@ namespace MrCMS.Web.Apps.Admin.Services
         private static IQueryable<Webpage> ApplySort(DocumentMetadata metaData,
             IQueryable<Webpage> query)
         {
-            switch (metaData.SortBy)
+            query = metaData.SortBy switch
             {
-                case SortBy.DisplayOrder:
-                    query = query.OrderBy(webpage => webpage.DisplayOrder);
-                    break;
-                case SortBy.DisplayOrderDesc:
-                    query = query.OrderByDescending(webpage => webpage.DisplayOrder);
-                    break;
-                case SortBy.PublishedOn:
-                    query =
-                        query.OrderByDescending(x => x.Published).ThenBy(webpage => webpage.PublishOn);
-                    break;
-                case SortBy.PublishedOnDesc:
-                    query =
-                        query.OrderByDescending(x => x.Published).ThenByDescending(webpage => webpage.PublishOn);
-                    break;
-                case SortBy.CreatedOn:
-                    query = query.OrderBy(webpage => webpage.CreatedOn);
-                    break;
-                case SortBy.CreatedOnDesc:
-                    query = query.OrderByDescending(webpage => webpage.CreatedOn);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                SortBy.DisplayOrder => query.OrderBy(webpage => webpage.DisplayOrder),
+                SortBy.DisplayOrderDesc => query.OrderByDescending(webpage => webpage.DisplayOrder),
+                SortBy.PublishedOn => query.OrderByDescending(x => x.Published).ThenBy(webpage => webpage.PublishOn),
+                SortBy.PublishedOnDesc => query.OrderByDescending(x => x.Published)
+                    .ThenByDescending(webpage => webpage.PublishOn),
+                SortBy.CreatedOn => query.OrderBy(webpage => webpage.CreatedOn),
+                SortBy.CreatedOnDesc => query.OrderByDescending(webpage => webpage.CreatedOn),
+                _ => throw new ArgumentOutOfRangeException()
+            };
             return query;
         }
     }

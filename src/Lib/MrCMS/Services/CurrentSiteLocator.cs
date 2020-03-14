@@ -26,15 +26,14 @@ namespace MrCMS.Services
 
         public async Task<Site> GetCurrentSite()
         {
-            return _currentSite ?? (_currentSite = await GetSiteFromSettingForDebugging() ?? GetSiteFromRequest());
+            return _currentSite ??= await GetSiteFromSettingForDebugging() ?? GetSiteFromRequest();
         }
 
         private async Task<Site> GetSiteFromSettingForDebugging()
         {
             var appSetting = _configuration["debugSiteId"];
 
-            int id;
-            return int.TryParse(appSetting, out id) ? await _siteRepository.GetData(id) : null;
+            return int.TryParse(appSetting, out var id) ? await _siteRepository.GetData(id) : null;
         }
 
         private Site GetSiteFromRequest()

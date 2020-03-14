@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -22,23 +24,23 @@ namespace MrCMS.Services.Sitemaps
         private readonly IRepository<Webpage> _repository;
         private readonly Site _site;
         private readonly ISitemapElementAppender _sitemapElementAppender;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
 
         public SitemapService(IRepository<Webpage> repository, Site site, ISitemapElementAppender sitemapElementAppender,
-            SiteSettings siteSettings, IEnumerable<ISitemapDataSource> additionalSources, IGetSitemapPath getSitemapPath,
+            IConfigurationProvider configurationProvider, IEnumerable<ISitemapDataSource> additionalSources, IGetSitemapPath getSitemapPath,
             IGetHomePage getHomePage)
         {
             _repository = repository;
             _site = site;
             _sitemapElementAppender = sitemapElementAppender;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
             _additionalSources = additionalSources;
             _getSitemapPath = getSitemapPath;
             _getHomePage = getHomePage;
         }
 
-        public void WriteSitemap()
+        public async Task WriteSitemap()
         {
             var sitemapPath = _getSitemapPath.GetAbsolutePath(_site);
 
@@ -49,22 +51,30 @@ namespace MrCMS.Services.Sitemaps
             queryOver = GetTypesToRemove()
                 .Aggregate(queryOver, (current, type) => current.Where(x => x.GetType() != type));
 
-            var list = queryOver
+            var list = await queryOver
                 .OrderBy(x => x.PublishOn)
                 .Select(page => new SitemapData
                 {
                     PublishOn = page.PublishOn,
                     RequiresSSL = page.RequiresSSL,
                     Url = page.UrlSegment
-                }).ToList();
+                }).ToListAsync();
 
-            list.AddRange(_additionalSources.SelectMany(x => x.GetAdditionalData()));
-            var homepage = _getHomePage.Get();
+            foreach (var source in _additionalSources)
+            {
+                list.AddRange(await source.GetAdditionalData());
+            }
+            //var sitemapDatas = _additionalSources.SelectMany(x => x.GetAdditionalData());
+            //list.AddRange(sitemapDatas);
+            var homepage = await _getHomePage.Get();
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             list.ForEach(
                 sitemapData =>
-                    sitemapData.SetAbsoluteUrl(_siteSettings, _site, 
+                {
+                    sitemapData.SetAbsoluteUrl(siteSettings, _site,
                         homepage.UrlSegment
-                        ));
+                    );
+                });
             var xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", null));
             var urlset = new XElement(RootNamespace + "urlset",
                 new XAttribute(XNamespace.Xmlns + "image", ImageNameSpace.NamespaceName)
@@ -73,7 +83,7 @@ namespace MrCMS.Services.Sitemaps
 
             AppendChildren(list, urlset, xmlDocument);
 
-            File.WriteAllText(sitemapPath, xmlDocument.ToString(SaveOptions.DisableFormatting), Encoding.UTF8);
+            await File.WriteAllTextAsync(sitemapPath, xmlDocument.ToString(SaveOptions.DisableFormatting), Encoding.UTF8);
         }
 
         private IEnumerable<Type> GetTypesToRemove()

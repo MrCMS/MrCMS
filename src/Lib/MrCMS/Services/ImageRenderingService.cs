@@ -16,21 +16,21 @@ namespace MrCMS.Services
     {
         private readonly ICacheManager _cacheManager;
         private readonly IFileService _fileService;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IImageProcessor _imageProcessor;
-        private readonly MediaSettings _mediaSettings;
 
         public ImageRenderingService(IImageProcessor imageProcessor, IFileService fileService,
-            MediaSettings mediaSettings, ICacheManager cacheManager)
+            IConfigurationProvider configurationProvider, ICacheManager cacheManager)
         {
             _imageProcessor = imageProcessor;
             _fileService = fileService;
-            _mediaSettings = mediaSettings;
+            _configurationProvider = configurationProvider;
             _cacheManager = cacheManager;
         }
 
         public async Task<ImageInfo> GetImageInfo(string imageUrl, Size targetSize)
         {
-            var crop = _imageProcessor.GetCrop(imageUrl);
+            var crop = await _imageProcessor.GetCrop(imageUrl);
             if (crop != null)
                 return new ImageInfo
                 {
@@ -38,7 +38,7 @@ namespace MrCMS.Services
                     Description = crop.Description,
                     ImageUrl = await GetCropImageUrl(crop, targetSize)
                 };
-            var image = _imageProcessor.GetImage(imageUrl);
+            var image = await _imageProcessor.GetImage(imageUrl);
             if (image != null)
                 return new ImageInfo
                 {
@@ -52,18 +52,20 @@ namespace MrCMS.Services
 
         public async Task<string> GetImageUrl(string imageUrl, Size targetSize)
         {
-            var info = _mediaSettings.GetImageUrlCachingInfo(imageUrl, targetSize);
+            var mediaSettings = await _configurationProvider.GetSiteSettings<MediaSettings>();
+            var info = mediaSettings.GetImageUrlCachingInfo(imageUrl, targetSize);
             return await _cacheManager.GetOrCreate(info.CacheKey, async () => string.IsNullOrWhiteSpace(imageUrl)
                 ? null
                 : (await GetImageInfo(imageUrl, targetSize))?.ImageUrl, info.TimeToCache, info.ExpiryType);
         }
 
-        public Task<IHtmlContent> RenderImage(IHtmlHelper helper, string imageUrl, Size targetSize = default(Size),
+        public async Task<IHtmlContent> RenderImage(IHtmlHelper helper, string imageUrl, Size targetSize = default,
             string alt = null,
             string title = null, object attributes = null)
         {
-            var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, attributes);
-            return helper.GetCached(cachingInfo, async htmlHelper =>
+            var mediaSettings = await _configurationProvider.GetSiteSettings<MediaSettings>();
+            var cachingInfo = mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, attributes);
+            return await helper.GetCached(cachingInfo, async htmlHelper =>
             {
                 {
                     if (string.IsNullOrWhiteSpace(imageUrl))

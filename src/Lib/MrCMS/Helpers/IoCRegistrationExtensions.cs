@@ -60,31 +60,31 @@ namespace MrCMS.Helpers
             container.AddScoped<IGetSiteId, GetSiteId>();
         }
 
-        public static void RegisterSettings(this IServiceCollection container)
-        {
-            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())
-            {
-                container.AddScoped(type,
-                    provider =>
-                    {
-                        var configurationProvider = provider.GetRequiredService<ISystemConfigurationProvider>();
-                        var methodInfo = configurationProvider.GetType().GetMethodExt(nameof(ISystemConfigurationProvider.GetSystemSettings));
-                        return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
-                    });
-            }
+        //public static void RegisterSettings(this IServiceCollection container)
+        //{
+        //    foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())
+        //    {
+        //        container.AddScoped(type,
+        //            provider =>
+        //            {
+        //                var configurationProvider = provider.GetRequiredService<ISystemConfigurationProvider>();
+        //                var methodInfo = configurationProvider.GetType().GetMethodExt(nameof(ISystemConfigurationProvider.GetSystemSettings));
+        //                return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
+        //            });
+        //    }
 
-            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>())
-            {
-                container.AddScoped(type,
-                    provider =>
-                    {
-                        var configurationProvider = provider.GetRequiredService<IConfigurationProvider>();
-                        var methodInfo = configurationProvider.GetType()
-                            .GetMethodExt(nameof(IConfigurationProvider.GetSiteSettings));
-                        return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
-                    });
-            }
-        }
+        //    foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>())
+        //    {
+        //        container.AddScoped(type,
+        //            provider =>
+        //            {
+        //                var configurationProvider = provider.GetRequiredService<IConfigurationProvider>();
+        //                var methodInfo = configurationProvider.GetType()
+        //                    .GetMethodExt(nameof(IConfigurationProvider.GetSiteSettings));
+        //                return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
+        //            });
+        //    }
+        //}
         public static void RegisterFormRenderers(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>())

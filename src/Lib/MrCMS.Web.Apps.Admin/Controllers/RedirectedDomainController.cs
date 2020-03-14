@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Web.Apps.Admin.Services;
@@ -21,11 +22,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(string url, int siteId)
+        public async Task<RedirectToActionResult> Add(string url, int siteId)
         {
             var rd = new RedirectedDomain { SiteId = siteId, Url = url };
 
-            _redirectedDomainService.Save(rd);
+            await _redirectedDomainService.Save(rd);
             return RedirectToAction("Edit", "Sites", new { id = rd.Site.Id });
         }
 
@@ -36,9 +37,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public RedirectToActionResult Delete_POST(int id, int siteId)
+        public async Task<RedirectToActionResult> Delete_POST(int id, int siteId)
         {
-            _redirectedDomainService.Delete(id);
+            await _redirectedDomainService.Delete(id);
             return RedirectToAction("Edit", "Sites", new { id = siteId });
         }
     }

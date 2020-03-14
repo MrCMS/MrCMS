@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Messaging;
 using MrCMS.Models;
@@ -26,9 +27,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(queuedMessage);
         }
 
-        public ContentResult GetBody(int id)
+        public async Task<ContentResult> GetBody(int id)
         {
-            QueuedMessage queuedMessage = _messageQueueAdminService.GetMessageBody(id);
+            QueuedMessage queuedMessage = await _messageQueueAdminService.GetMessageBody(id);
             if (queuedMessage.IsHtml)
                 return Content(queuedMessage.Body, "text/html");
             return Content(queuedMessage.Body);

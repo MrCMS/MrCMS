@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface ILocalisedScripts
     {
-        IEnumerable<string> Files { get; }
+        Task<IEnumerable<string>> GetFiles();
     }
 }

@@ -26,10 +26,10 @@ namespace MrCMS.Data
 
         public virtual async Task<IResult> OnAdding(ICollection<T> entities, DbContext context)
         {
-            var tasks = entities.Select(e => OnAdding(e, context));
+            //var tasks = entities.Select(e => OnAdding(e, context));
             var results = new List<IResult>();
-            foreach (var task in tasks)
-                results.Add(await task);
+            foreach (var entity in entities)
+                results.Add(await OnAdding(entity, context));
             if (results.Any(x => !x.Success))
                 return new Failure(results.Where(x => !x.Success).SelectMany(x => x.Messages));
 

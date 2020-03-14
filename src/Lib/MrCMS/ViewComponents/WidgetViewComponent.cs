@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services;
 
 namespace MrCMS.ViewComponents
@@ -12,19 +13,19 @@ namespace MrCMS.ViewComponents
             _widgetUIService = widgetUIService;
         }
 
-        public IViewComponentResult Invoke(int id, bool editable = false)
+        public async Task<IViewComponentResult> InvokeAsync(int id, bool editable = false)
         {
-            var widget = _widgetUIService.GetModel(id);
-            if (widget.Widget == null)
+            var (widget, model) = await _widgetUIService.GetModel(id);
+            if (widget == null)
             {
                 return Content(string.Empty);
             }
             if (editable)
             {
-                return View("Editable", widget.Widget);
+                return View("Editable", widget);
             }
 
-            return View(widget.Widget.GetType().Name, widget.Model);
+            return View(widget.GetType().Name, model);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace MrCMS.Website.Filters
             var queryData = context.HttpContext.Request.Query;
 
             // if it's explicit, we always pass a non-caching CachingInfo instance to the service, so the page is rendered as per usual
-            var cachingInfo = doNotCache ? CachingInfo.DoNotCache : _getWebpageCachingInfo.Get(webpage, queryData);
+            var cachingInfo = doNotCache ? CachingInfo.DoNotCache : await _getWebpageCachingInfo.Get(webpage, queryData);
 
             if (!cachingInfo.ShouldCache)
             {

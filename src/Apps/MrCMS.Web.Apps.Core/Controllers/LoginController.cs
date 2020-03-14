@@ -71,8 +71,8 @@ namespace MrCMS.Web.Apps.Core.Controllers
                             return Redirect(result.ReturnUrl);
                         }
 
-                        _setVerifiedUserData.SetUserData(result.User);
-                        return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { result.ReturnUrl });
+                        await _setVerifiedUserData.SetUserData(result.User);
+                        return await _uniquePageService.RedirectTo<TwoFactorCodePage>(new { result.ReturnUrl });
                     case LoginStatus.Failure:
                         await _eventContext.Publish<IOnFailedLogin, UserFailedLoginEventArgs>(
                             new UserFailedLoginEventArgs(result.User, loginModel.Email));
@@ -90,7 +90,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
             TempData.Set(loginModel);
 
-            return _uniquePageService.RedirectTo<LoginPage>();
+            return await _uniquePageService.RedirectTo<LoginPage>();
         }
 
         [HttpGet]
@@ -101,20 +101,20 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public ActionResult ForgottenPassword(string email)
+        public async Task<ActionResult> ForgottenPassword(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
                 TempData["message"] = _stringResourceProvider.GetValue("Login Email Not Recognized",
                     "Email not recognized.");
-                return _uniquePageService.RedirectTo<ForgottenPasswordPage>();
+                return await _uniquePageService.RedirectTo<ForgottenPasswordPage>();
             }
 
             var user = _userLookup.GetUserByEmail(email);
 
             if (user != null)
             {
-                _resetPasswordService.SetResetPassword(user);
+                await _resetPasswordService.SetResetPassword(user);
                 TempData["message"] =
                     _stringResourceProvider.GetValue("Login Password Reset",
                         "We have sent password reset details to you. Please check your spam folder if this is not received shortly.");
@@ -125,7 +125,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     "Email not recognized.");
             }
 
-            return _uniquePageService.RedirectTo<ForgottenPasswordPage>();
+            return await _uniquePageService.RedirectTo<ForgottenPasswordPage>();
         }
 
 
@@ -150,17 +150,17 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public RedirectResult PasswordReset(ResetPasswordViewModel model)
+        public async Task<RedirectResult> PasswordReset(ResetPasswordViewModel model)
         {
             try
             {
-                _resetPasswordService.ResetPassword(model);
-                return _uniquePageService.RedirectTo<LoginPage>();
+                await _resetPasswordService.ResetPassword(model);
+                return await _uniquePageService.RedirectTo<LoginPage>();
             }
             catch (Exception exception)
             {
                 _logger.LogError(exception, "Error logging in");
-                return _uniquePageService.RedirectTo<LoginPage>();
+                return await _uniquePageService.RedirectTo<LoginPage>();
             }
         }
     }

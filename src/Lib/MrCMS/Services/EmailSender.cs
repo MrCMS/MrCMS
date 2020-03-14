@@ -12,42 +12,40 @@ using MrCMS.Settings;
 
 namespace MrCMS.Services
 {
-    public class EmailSender : IEmailSender, IDisposable
+    public class EmailSender : IEmailSender
     {
         //private readonly ErrorSignal _errorSignal;
         private readonly IRepository<QueuedMessage> _messageRepository;
         private readonly IRepository<QueuedMessageAttachment> _attachmentRepository;
         private readonly ILogger<EmailSender> _logger;
-        private readonly SmtpClient _smtpClient;
+        private readonly IGetSmtpClient _getSmtpClient;
 
         public EmailSender(IRepository<QueuedMessage> messageRepository,
-            IRepository<QueuedMessageAttachment> attachmentRepository, MailSettings mailSettings,
+            IRepository<QueuedMessageAttachment> attachmentRepository, 
             ILogger<EmailSender> logger, IGetSmtpClient getSmtpClient)
         {
             _messageRepository = messageRepository;
             _attachmentRepository = attachmentRepository;
             _logger = logger;
-            _smtpClient = getSmtpClient.GetClient(mailSettings);
+            _getSmtpClient = getSmtpClient;
         }
 
-        public void Dispose()
+
+        public async Task<bool> CanSend(QueuedMessage queuedMessage)
         {
-            _smtpClient.Dispose();
+            using var smtpClient = await _getSmtpClient.GetClient();
+            return !string.IsNullOrEmpty(queuedMessage.ToAddress) && smtpClient.Credentials != null &&
+                   !string.IsNullOrWhiteSpace(smtpClient.Host);
         }
 
-        public bool CanSend(QueuedMessage queuedMessage)
+        public async Task SendMailMessage(QueuedMessage queuedMessage)
         {
-            return !string.IsNullOrEmpty(queuedMessage.ToAddress) && _smtpClient.Credentials != null &&
-                   !string.IsNullOrWhiteSpace(_smtpClient.Host);
-        }
-
-        public void SendMailMessage(QueuedMessage queuedMessage)
-        {
+            using var smtpClient = await _getSmtpClient.GetClient();
             try
             {
                 var mailMessage = BuildMailMessage(queuedMessage);
 
-                _smtpClient.Send(mailMessage);
+                smtpClient.Send(mailMessage);
                 queuedMessage.SentOn = DateTime.UtcNow;
             }
             catch (Exception exception)
@@ -55,7 +53,7 @@ namespace MrCMS.Services
                 _logger.Log(LogLevel.Error, exception, exception.Message);
                 queuedMessage.Tries++;
             }
-            _messageRepository.Update(queuedMessage);
+            await _messageRepository.Update(queuedMessage);
         }
 
         public async Task AddToQueue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null)

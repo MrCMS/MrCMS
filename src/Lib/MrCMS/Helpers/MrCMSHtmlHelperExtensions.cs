@@ -284,7 +284,7 @@ namespace MrCMS.Helpers
                 labelHtmlAttributes["class"] = "form-check-label";
             }
 
-            text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
+            text ??= metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
             var builder = new HtmlContentBuilder().AppendHtml(checkbox).Append(text);
             return LabelHelper(htmlHelper, metadata,
                 htmlFieldName,
@@ -337,7 +337,7 @@ namespace MrCMS.Helpers
                     .Assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true)
                     .OfType<AssemblyFileVersionAttribute>()
                     .FirstOrDefault();
-            return fileVersion != null ? fileVersion.Version : null;
+            return fileVersion?.Version;
         }
 
 

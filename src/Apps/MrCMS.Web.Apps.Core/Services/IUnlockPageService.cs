@@ -11,6 +11,6 @@ namespace MrCMS.Web.Apps.Core.Services
         Task<Webpage> GetLockedPage(int id);
         Task<UnlockPageResult> TryUnlockPage(UnlockPageModel model, IResponseCookies cookies);
         Task<RedirectResult> RedirectToPage(int id);
-        RedirectResult RedirectBackToPage(UnlockPageModel model);
+        Task<RedirectResult> RedirectBackToPage(UnlockPageModel model);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
 {
@@ -18,7 +19,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             _serviceProvider = serviceProvider;
         }
 
-        public List<PageHeaderBreadcrumb> Get(Type type, IDictionary<string, object> actionArguments)
+        public async Task<List<PageHeaderBreadcrumb>> Get(Type type, IDictionary<string, object> actionArguments)
         {
             var siteMapNodes = new List<PageHeaderBreadcrumb>();
             if (type == null)
@@ -40,7 +41,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
                 }
 
 
-                breadcrumb.Populate();
+                await breadcrumb.Populate();
                 if (!breadcrumb.ShouldSkip)
                 {
                     siteMapNodes.Insert(0, _pageHeaderBreadcrumbBuilder.Build(breadcrumb));
@@ -59,11 +60,12 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             return siteMapNodes.ToList();
         }
 
-        public List<PageHeaderBreadcrumb> Get(string controllerName, string actionName, IDictionary<string, object> actionArguments)
+        public async Task<List<PageHeaderBreadcrumb>> Get(string controllerName, string actionName,
+            IDictionary<string, object> actionArguments)
         {
             var type = _getBreadcrumbTypes.FindBreadcrumbType(controllerName, actionName);
 
-            return Get(type, actionArguments);
+            return await Get(type, actionArguments);
         }
     }
 }

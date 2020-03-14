@@ -19,11 +19,11 @@ namespace MrCMS.Website.Controllers
 
 
         [HttpGet("sw.js")]
-        public IActionResult ServiceWorkerJavaScript()
+        public async Task<IActionResult> ServiceWorkerJavaScript()
         {
             if (Manager == null)
                 return BadRequest();
-            return Content(Manager.GetServiceWorkerJavaScript() ?? "", "text/javascript");
+            return Content(await Manager.GetServiceWorkerJavaScript() ?? "", "text/javascript");
         }
 
         [HttpPost("push-notifications")]

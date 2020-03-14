@@ -5,6 +5,6 @@ namespace MrCMS.Services.ImportExport.Rules
 {
     public interface IDocumentImportValidationRule
     {
-        IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems);
+        IAsyncEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems);
     }
 }

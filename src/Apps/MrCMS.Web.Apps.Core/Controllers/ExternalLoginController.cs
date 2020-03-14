@@ -81,8 +81,8 @@ namespace MrCMS.Web.Apps.Core.Controllers
                         await _externalLoginService.UpdateClaimsAsync(user, result.LoginInfo.Principal.Claims);
                         return Redirect(loginResult.ReturnUrl);
                     }
-                    _setVerifiedUserData.SetUserData(loginResult.User);
-                    return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { loginResult.ReturnUrl });
+                    await _setVerifiedUserData.SetUserData(loginResult.User);
+                    return await _uniquePageService.RedirectTo<TwoFactorCodePage>(new { loginResult.ReturnUrl });
                 case LoginStatus.LockedOut:
                     await _eventContext.Publish<IOnLockedOutUserAuthed, UserLockedOutEventArgs>(
                         new UserLockedOutEventArgs(loginResult.User));
@@ -90,10 +90,10 @@ namespace MrCMS.Web.Apps.Core.Controllers
             }
 
             TempData.Set(new LoginModel { Message = loginResult.Message });
-            return _uniquePageService.RedirectTo<LoginPage>();
+            return await _uniquePageService.RedirectTo<LoginPage>();
         }
 
-        private ActionResult ThirdPartyError()
+        private async Task<ActionResult> ThirdPartyError()
         {
             TempData.Set(new LoginModel
             {
@@ -101,7 +101,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     _stringResourceProvider.GetValue("3rd Party Auth Email Error",
                         "There was an error retrieving your email from the 3rd party provider")
             });
-            return _uniquePageService.RedirectTo<LoginPage>();
+            return await _uniquePageService.RedirectTo<LoginPage>();
         }
     }
 }

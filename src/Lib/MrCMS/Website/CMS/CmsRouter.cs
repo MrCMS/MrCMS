@@ -65,7 +65,7 @@ namespace MrCMS.Website.CMS
 
             var code = currentUser != null ? 403 : 401;
             context.HttpContext.Response.StatusCode = code;
-            var webpage = getErrorPage.GetPage(code);
+            var webpage = await getErrorPage.GetPage(code);
             if (webpage == null)
             {
                 await context.HttpContext.Response.WriteAsync(code.ToString());

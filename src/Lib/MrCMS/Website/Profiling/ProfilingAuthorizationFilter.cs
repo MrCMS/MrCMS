@@ -21,4 +21,4 @@ namespace MrCMS.Website.Profiling
                 filter.OnAuthorization(context);
         }
     }
-}
+   }

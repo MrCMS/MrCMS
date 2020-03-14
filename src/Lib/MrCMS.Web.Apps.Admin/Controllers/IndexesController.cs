@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Indexing.Management;
@@ -29,17 +30,17 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(IndexACL), IndexACL.Reindex)]
-        public RedirectToActionResult Reindex(string type)
+        public async Task<RedirectToActionResult> Reindex(string type)
         {
-            _indexAdminService.Reindex(type);
+            await _indexAdminService.Reindex(type);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Acl(typeof(IndexACL), IndexACL.Create)]
-        public RedirectToActionResult Create(string type)
+        public async Task<RedirectToActionResult> Create(string type)
         {
-            _indexAdminService.Reindex(type);
+            await _indexAdminService.Reindex(type);
             return RedirectToAction("Index");
         }
 
@@ -52,17 +53,17 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(IndexACL), IndexACL.SetBoosts)]
-        public RedirectToActionResult Boosts(List<UpdateLuceneFieldBoostModel> boosts)
+        public async Task<RedirectToActionResult> Boosts(List<UpdateLuceneFieldBoostModel> boosts)
         {
-            _indexAdminService.SaveBoosts(boosts);
+            await _indexAdminService.SaveBoosts(boosts);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Acl(typeof(IndexACL), IndexACL.Reindex)]
-        public RedirectToActionResult ReindexUniversalSearch()
+        public async Task<RedirectToActionResult> ReindexUniversalSearch()
         {
-            _indexAdminService.ReindexUniversalSearch();
+            await _indexAdminService.ReindexUniversalSearch();
             TempData.SuccessMessages().Add("Univeral Search reindexed");
             return RedirectToAction("Index");
         }

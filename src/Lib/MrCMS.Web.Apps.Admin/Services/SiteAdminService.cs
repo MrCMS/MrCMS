@@ -44,7 +44,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             await _repository.Add(site);
 
-            _cloneSiteService.CloneData(site, options);
+            await _cloneSiteService.CloneData(site, options);
         }
 
         public UpdateSiteModel GetEditModel(int id)

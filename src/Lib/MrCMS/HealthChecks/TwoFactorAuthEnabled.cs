@@ -6,19 +6,20 @@ namespace MrCMS.HealthChecks
 {
     public class TwoFactorAuthEnabled : HealthCheck
     {
-        private readonly SecuritySettings _settings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public TwoFactorAuthEnabled(SecuritySettings settings)
+        public TwoFactorAuthEnabled(ISystemConfigurationProvider configurationProvider)
         {
-            _settings = settings;
+            _configurationProvider = configurationProvider;
         }
 
         public override string DisplayName => "2FA Enabled";
 
-        public override Task<HealthCheckResult> PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
+            SecuritySettings settings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
 
-            return Task.FromResult(_settings.TwoFactorAuthEnabled
+            return settings.TwoFactorAuthEnabled
                 ? HealthCheckResult.Success
                 : new HealthCheckResult
                 {
@@ -27,7 +28,7 @@ namespace MrCMS.HealthChecks
                     {
                         "2FA has not been enabled for this site."
                     }
-                });
+                };
         }
     }
 }

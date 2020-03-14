@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
 using MrCMS.Helpers;
 using MrCMS.Models.Auth;
@@ -24,7 +25,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [CanonicalLinks]
-        public ActionResult Show(TwoFactorCodePage page, TwoFactorAuthModel model)
+        public async Task<ActionResult> Show(TwoFactorCodePage page, TwoFactorAuthModel model)
         {
             ModelState.Clear();
             var status = _confirmationService.GetStatus();
@@ -35,23 +36,23 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     return View(page);
                 case TwoFactorStatus.Expired:
                     TempData.Set(new LoginModel {Message = "Two-factor token expired, please try again."});
-                    return _uniquePageService.RedirectTo<LoginPage>();
+                    return await _uniquePageService.RedirectTo<LoginPage>();
                 default:
-                    return _uniquePageService.RedirectTo<LoginPage>();
+                    return await _uniquePageService.RedirectTo<LoginPage>();
             }
         }
 
         [HttpPost]
-        public ActionResult Post(TwoFactorAuthModel model)
+        public async Task<ActionResult> Post(TwoFactorAuthModel model)
         {
-            var result = _confirmationService.TryAndConfirmCode(model);
+            var result = await _confirmationService.TryAndConfirmCode(model);
             if (result.Success)
             {
                 _logUserIn.Login(result.User, false).ExecuteSync(); 
                 return Redirect(result.ReturnUrl);
             }
 
-            return _uniquePageService.RedirectTo<TwoFactorCodePage>(new {result.ReturnUrl});
+            return await _uniquePageService.RedirectTo<TwoFactorCodePage>(new {result.ReturnUrl});
         }
     }
 }

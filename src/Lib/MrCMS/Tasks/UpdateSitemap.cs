@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,12 +42,16 @@ namespace MrCMS.Tasks
             var sites = await _repositoryResolver.GetGlobalRepository<Site>().Query().Where(x => !x.IsDeleted)
                 .ToListAsync(token);
 
-            _triggerUrls.Trigger(sites.Select(site =>
+            var urls = new List<string>();
+            foreach (var site in sites)
             {
-                var siteSettings = new SqlConfigurationProvider(_repositoryResolver.GetGlobalRepository<Setting>(), SiteId.GetForSite(site), new NullEventContext()).GetSiteSettings<SiteSettings>();
-                return _urlHelper.AbsoluteAction("Update", "Sitemap",
-                    new RouteValueDictionary { [siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword }, site);
-            }));
+
+                var siteSettings = await new SqlConfigurationProvider(_repositoryResolver.GetGlobalRepository<Setting>(), SiteId.GetForSite(site), new NullEventContext()).GetSiteSettings<SiteSettings>();
+                urls.Add(_urlHelper.AbsoluteAction("Update", "Sitemap",
+                    new RouteValueDictionary
+                    { [siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword }, site));
+            }
+            _triggerUrls.Trigger(urls);
         }
     }
 }

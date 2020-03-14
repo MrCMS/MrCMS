@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.ModelBinders;
@@ -23,32 +24,32 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Set(string type)
+        public async Task<PartialViewResult> Set(string type)
         {
             var webpageType = TypeHelper.GetTypeByName(type);
-            ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(webpageType);
-            ViewData["layout-options"] = _service.GetLayoutOptions();
-            return PartialView(_service.GetInfo(webpageType));
+            ViewData["url-generator-options"] =await _service.GetUrlGeneratorOptions(webpageType);
+            ViewData["layout-options"] = await _service.GetLayoutOptions();
+            return PartialView(await _service.GetInfo(webpageType));
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(DefaultsInfo info)
+        public async Task<RedirectToActionResult> Set(DefaultsInfo info)
         {
-            _service.SetDefaults(info);
+            await _service.SetDefaults(info);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public RedirectToActionResult EnableCache(string typeName)
+        public async Task<RedirectToActionResult> EnableCache(string typeName)
         {
-            _service.EnableCache(typeName);
+            await _service.EnableCache(typeName);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public RedirectToActionResult DisableCache(string typeName)
+        public async Task<RedirectToActionResult> DisableCache(string typeName)
         {
-            _service.DisableCache(typeName);
+            await _service.DisableCache(typeName);
             return RedirectToAction("Index");
         }
     }

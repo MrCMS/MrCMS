@@ -1,22 +1,25 @@
-﻿using MrCMS.Settings;
+﻿using System.Threading.Tasks;
+using MrCMS.Settings;
 
 namespace MrCMS.Messages.Security
 {
     public class GetDefaultHeaderScriptChangeMessageTemplate : GetDefaultTemplate<HeaderScriptChangeMessageTemplate>
     {
-        private readonly MailSettings _mailSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public GetDefaultHeaderScriptChangeMessageTemplate(MailSettings mailSettings)
+        public GetDefaultHeaderScriptChangeMessageTemplate(ISystemConfigurationProvider configurationProvider)
         {
-            _mailSettings = mailSettings;
+            _configurationProvider = configurationProvider;
         }
-        public override HeaderScriptChangeMessageTemplate Get()
+
+        public override async Task<HeaderScriptChangeMessageTemplate> Get()
         {
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
             return new HeaderScriptChangeMessageTemplate
             {
                 Subject = "Header Script Change - {Status}",
-                FromAddress = _mailSettings.SystemEmailAddress,
-                ToAddress = _mailSettings.SystemEmailAddress,
+                FromAddress = mailSettings.SystemEmailAddress,
+                ToAddress = mailSettings.SystemEmailAddress,
                 Body = "The page {Name} ({Url}) has been modified."
             };
         }

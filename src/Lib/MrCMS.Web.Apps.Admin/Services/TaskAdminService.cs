@@ -44,21 +44,21 @@ namespace MrCMS.Web.Apps.Admin.Services
                 };
         }
 
-        public IPagedList<QueuedTask> GetQueuedTasks(QueuedTaskSearchQuery searchQuery)
+        public Task<IPagedList<QueuedTask>> GetQueuedTasks(QueuedTaskSearchQuery searchQuery)
         {
             return _repository.Query()
                 .OrderByDescending(task => task.CreatedOn)
-                .ToPagedList(searchQuery.Page);
+                .ToPagedListAsync(searchQuery.Page, 10);
         }
 
-        public void Update(TaskUpdateData info)
+        public async Task Update(TaskUpdateData info)
         {
-            _taskSettingManager.Update(info.Type, info.Enabled, info.FrequencyInSeconds);
+            await _taskSettingManager.Update(info.Type, info.Enabled, info.FrequencyInSeconds);
         }
 
-        public void Reset(TaskUpdateData info)
+        public async Task Reset(TaskUpdateData info)
         {
-            _taskSettingManager.Reset(info.Type, true);
+            await _taskSettingManager.Reset(info.Type, true);
         }
     }
 }

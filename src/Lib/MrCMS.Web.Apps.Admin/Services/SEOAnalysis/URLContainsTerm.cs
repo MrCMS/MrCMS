@@ -17,7 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
         }
         public override async IAsyncEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
-            string url = _getLiveUrl.GetAbsoluteUrl(webpage);
+            string url = await _getLiveUrl.GetAbsoluteUrl(webpage);
             yield return
                 url.Replace("-", " ").Contains(analysisTerm, StringComparison.OrdinalIgnoreCase)
                     ? await GetFacet("URL contains term", SEOAnalysisStatus.Success, "The URL contains '" + analysisTerm + "'")

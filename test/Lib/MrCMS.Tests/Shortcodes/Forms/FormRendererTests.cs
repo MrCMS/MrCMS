@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -39,10 +40,10 @@ namespace MrCMS.Tests.Shortcodes.Forms
         }
 
         [Fact]
-        public void FormRenderer_RenderForm_IfFormIsNullReturnsEmptyString()
+        public async Task FormRenderer_RenderForm_IfFormIsNullReturnsEmptyString()
         {
             var renderForm =
-                _formRenderingManager.RenderForm(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
+             await   _formRenderingManager.RenderForm(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
 
             renderForm.AsAString().Should().Be("");
         }

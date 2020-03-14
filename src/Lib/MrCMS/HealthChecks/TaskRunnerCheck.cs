@@ -24,7 +24,7 @@ namespace MrCMS.HealthChecks
 
         public override async Task<HealthCheckResult> PerformCheck()
         {
-            var nowForSite = _getDateTimeNow.LocalNow;
+            var nowForSite = await _getDateTimeNow.GetLocalNow();
             var info =await _taskSettingManager.GetInfo();
             var tasks = info
                         .ToList()

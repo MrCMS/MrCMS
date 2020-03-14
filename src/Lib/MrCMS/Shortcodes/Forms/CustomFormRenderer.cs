@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
@@ -18,20 +19,20 @@ namespace MrCMS.Shortcodes.Forms
         private readonly ILabelRenderer _labelRenderer;
         private readonly IValidationMessaageRenderer _validationMessaageRenderer;
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public CustomFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer,
                                   IValidationMessaageRenderer validationMessaageRenderer,
-                                  ISubmittedMessageRenderer submittedMessageRenderer, SiteSettings siteSettings)
+                                  ISubmittedMessageRenderer submittedMessageRenderer, IConfigurationProvider configurationProvider)
         {
             _elementRendererManager = elementRendererManager;
             _labelRenderer = labelRenderer;
             _validationMessaageRenderer = validationMessaageRenderer;
             _submittedMessageRenderer = submittedMessageRenderer;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public IHtmlContent GetForm(IHtmlHelper helper, Form form1, FormSubmittedStatus submittedStatus)
+        public async Task<IHtmlContent> GetForm(IHtmlHelper helper, Form form1, FormSubmittedStatus submittedStatus)
         {
             if (form1 == null)
                 return HtmlString.Empty;
@@ -42,18 +43,19 @@ namespace MrCMS.Shortcodes.Forms
 
             var form = GetForm(form1);
 
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             var formDesign = form1.FormDesign;
             formDesign = Regex.Replace(formDesign, "{label:([^}]+)}", AddLabel(formProperties));
-            formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties, submittedStatus));
+            formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties, submittedStatus, siteSettings));
             formDesign = Regex.Replace(formDesign, "{validation:([^}]+)}", AddValidation(formProperties));
             formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(form1, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{recaptcha}", helper.RenderRecaptcha().GetString());
-            formDesign = Regex.Replace(formDesign, "{gdpr}", DefaultFormRenderer.GetGDPRCheckbox(_siteSettings.FormRendererType, _siteSettings.GDPRFairProcessingText).GetString());
+            formDesign = Regex.Replace(formDesign, "{gdpr}", DefaultFormRenderer.GetGDPRCheckbox(siteSettings.FormRendererType, siteSettings.GDPRFairProcessingText).GetString());
             form.InnerHtml.AppendHtml(formDesign);
 
-            if (_siteSettings.HasHoneyPot)
-                form.InnerHtml.AppendHtml(_siteSettings.GetHoneypot());
-  
+            if (siteSettings.HasHoneyPot)
+                form.InnerHtml.AppendHtml(siteSettings.GetHoneypot());
+
             return form;
         }
 
@@ -90,7 +92,7 @@ namespace MrCMS.Shortcodes.Forms
                                : _labelRenderer.AppendLabel(formProperty).GetString();
                        };
         }
-        private MatchEvaluator AddElement(IList<FormProperty> formProperties, FormSubmittedStatus submittedStatus)
+        private MatchEvaluator AddElement(IList<FormProperty> formProperties, FormSubmittedStatus submittedStatus, SiteSettings siteSettings)
         {
             return match =>
                        {
@@ -104,7 +106,7 @@ namespace MrCMS.Shortcodes.Forms
 
                            var renderer = _elementRendererManager.GetPropertyRenderer(formProperty);
 
-                           var element = renderer.AppendElement(formProperty, existingValue, _siteSettings.FormRendererType);
+                           var element = renderer.AppendElement(formProperty, existingValue, siteSettings.FormRendererType);
                            element.TagRenderMode = renderer.IsSelfClosing
                                ? TagRenderMode.SelfClosing
                                : TagRenderMode.Normal;
@@ -120,6 +122,6 @@ namespace MrCMS.Shortcodes.Forms
             tagBuilder.Attributes["action"] = $"/save-form/{form.Id}";
 
             return tagBuilder;
-        } 
+        }
     }
 }

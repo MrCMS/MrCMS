@@ -32,13 +32,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [CanonicalLinks]
-        public ActionResult Show(UserAccountPage page)
+        public async Task<ActionResult> Show(UserAccountPage page)
         {
             ViewData["message"] = TempData["message"];
 
             var user = _getCurrentUser.Get();
             if (user == null)
-                return _uniquePageService.RedirectTo<LoginPage>();
+                return await _uniquePageService.RedirectTo<LoginPage>();
 
             ViewData["user"] = user;
             return View(page);
@@ -46,7 +46,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpGet]
-        public ActionResult UserAccountDetails(UserAccountModel model)
+        public async Task<ActionResult> UserAccountDetails(UserAccountModel model)
         {
             var user = _getCurrentUser.Get();
             if (user != null)
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 return View(model);
             }
 
-            return _uniquePageService.RedirectTo<LoginPage>();
+            return await _uniquePageService.RedirectTo<LoginPage>();
         }
 
         [HttpPost]
@@ -76,11 +76,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     await _userManagementService.SaveUser(user);
                     await _authorisationService.SetAuthCookie(user, false);
 
-                    return _uniquePageService.RedirectTo<UserAccountPage>();
+                    return await _uniquePageService.RedirectTo<UserAccountPage>();
                 }
             }
 
-            return _uniquePageService.RedirectTo<UserAccountPage>();
+            return await _uniquePageService.RedirectTo<UserAccountPage>();
         }
 
         public async Task<JsonResult> IsUniqueEmail(string email)
@@ -115,7 +115,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     "Please ensure both fields are filled out and valid");
             }
 
-            return _uniquePageService.RedirectTo<UserAccountPage>();
+            return await _uniquePageService.RedirectTo<UserAccountPage>();
         }
     }
 }

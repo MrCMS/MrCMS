@@ -15,14 +15,12 @@ namespace MrCMS.Services.Canonical
     {
         public sealed override string GetPrev(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
         {
-            var typed = webpage as T;
-            return typed == null ? null : GetPrev(typed, metadata, viewData);
+            return !(webpage is T typed) ? null : GetPrev(typed, metadata, viewData);
         }
 
         public sealed override string GetNext(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
         {
-            var typed = webpage as T;
-            return typed == null ? null : GetNext(typed, metadata, viewData);
+            return !(webpage is T typed) ? null : GetNext(typed, metadata, viewData);
         }
 
         public abstract string GetPrev(T webpage, PagedListMetaData metadata, ViewDataDictionary viewData);

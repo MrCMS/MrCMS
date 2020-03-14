@@ -11,7 +11,6 @@ namespace MrCMS.Services.Resources
     public class StringLocalizer : IStringLocalizer
     {
         private readonly IList<LocalizationInfo> _allRecords;
-        private readonly CultureInfo _culture;
         private readonly Site _site;
         private readonly Func<MissingLocalisationInfo, MissingLocalisationResult> _missingLocalisation;
 
@@ -21,10 +20,9 @@ namespace MrCMS.Services.Resources
             Func<MissingLocalisationInfo, MissingLocalisationResult> missingLocalisation)
         {
             _allRecords = allRecords;
-            _culture = culture;
             _site = site;
             _missingLocalisation = missingLocalisation;
-            _cultureRecords = allRecords.Where(x => x.Culture == culture.Name || !x.Culture.HasValue())
+            _cultureRecords = allRecords.Where(x => culture.IsNeutralCulture ? !x.Culture.HasValue() : x.Culture == culture.Name || !x.Culture.HasValue())
                 .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key,
                     // if there's one for the passed site, use that, otherwise use the first one you find
@@ -69,7 +67,9 @@ namespace MrCMS.Services.Resources
             resourceNotFound = true;
             if (!_cultureRecords.ContainsKey(key))
             {
-                var result = _missingLocalisation(new MissingLocalisationInfo { Key = key,
+                var result = _missingLocalisation(new MissingLocalisationInfo
+                {
+                    Key = key,
                     //Culture = _culture
                 });
                 if (result.Localization != null)

@@ -43,13 +43,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public ViewResult Add_Get(int? id)
+        public async Task<ViewResult> Add_Get(int? id)
         {
             //Build list 
             var model = _webpageAdminService.GetAddModel(id);
 
-            Webpage parent = _webpageAdminService.GetWebpage(id);
-            _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
+            Webpage parent = await _webpageAdminService.GetWebpage(id);
+            await _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
 
             return View(model);
         }
@@ -60,7 +60,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             if (!await _urlValidationService.UrlIsValidForWebpage(model.UrlSegment, null))
             {
-                Webpage parent = _webpageAdminService.GetWebpage(model.ParentId);
+                Webpage parent = await _webpageAdminService.GetWebpage(model.ParentId);
                 await _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
                 return View(model);
             }
@@ -71,7 +71,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
-            var webpage = _webpageAdminService.Add(model, additionalPropertyModel);
+            var webpage = await _webpageAdminService.Add(model, additionalPropertyModel);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", webpage.Name));
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
@@ -80,7 +80,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ActionName("Edit")]
         public async Task<ViewResult> Edit_Get(int id)
         {
-            var webpage = _webpageAdminService.GetWebpage(id);
+            var webpage = await _webpageAdminService.GetWebpage(id);
             await _webpageBaseViewDataService.SetEditPageViewData(ViewData, webpage);
             await _setWebpageAdminViewData.SetViewData(ViewData, webpage);
             return View(webpage);
@@ -100,9 +100,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(int id)
+        public async Task<ActionResult> Delete_Get(int id)
         {
-            return PartialView(_webpageAdminService.GetWebpage(id));
+            return PartialView(await _webpageAdminService.GetWebpage(id));
         }
 
         [HttpPost]
@@ -115,9 +115,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Sort(int? id)
+        public async Task<ActionResult> Sort(int? id)
         {
-            var sortItems = _webpageAdminService.GetSortItems(id);
+            var sortItems = await _webpageAdminService.GetSortItems(id);
 
             return View(sortItems);
         }
@@ -182,18 +182,18 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         ///     Returns server date used for publishing (can't use JS date as can be out compared to server date)
         /// </summary>
         /// <returns>Date</returns>
-        public string GetServerDate()
+        public Task<string> GetServerDate()
         {
             return _webpageAdminService.GetServerDate();
         }
 
         [HttpGet]
-        public ActionResult AddProperties(string type)
+        public async Task<ActionResult> AddProperties(string type)
         {
             var model = _webpageAdminService.GetAdditionalPropertyModel(type);
             if (model != null)
             {
-                _setWebpageAdminViewData.SetViewDataForAdd(ViewData, type);
+                await _setWebpageAdminViewData.SetViewDataForAdd(ViewData, type);
                 ViewData["type"] = TypeHelper.GetTypeByName(type);
                 return PartialView(model);
             }

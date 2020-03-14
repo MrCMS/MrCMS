@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,8 +28,9 @@ namespace MrCMS.Attributes
             Order = 1;
         }
 
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            var filterContext = await next();
             if (!(filterContext.Result is ViewResult viewResult))
             {
                 return;
@@ -43,7 +45,7 @@ namespace MrCMS.Attributes
             var serviceProvider = filterContext.HttpContext.RequestServices;
             if (string.IsNullOrWhiteSpace(_pagedDataKey))
             {
-                SetCanonicalUrl(serviceProvider.GetRequiredService<IGetLiveUrl>(), viewData, webpage);
+                await SetCanonicalUrl(serviceProvider.GetRequiredService<IGetLiveUrl>(), viewData, webpage);
             }
             else
             {
@@ -52,14 +54,13 @@ namespace MrCMS.Attributes
                     return;
                 }
 
-                var pagedListMetaData = viewData[_pagedDataKey] as PagedListMetaData;
-                if (pagedListMetaData == null)
+                if (!(viewData[_pagedDataKey] is PagedListMetaData pagedListMetaData))
                 {
                     return;
                 }
 
                 IGetPrevAndNextRelTags getTags = serviceProvider.GetRequiredService<IGetPrevAndNextRelTags>();
-                SetPrevAndNext(viewData, webpage, pagedListMetaData, getTags);
+                await SetPrevAndNext(viewData, webpage, pagedListMetaData, getTags);
 
                 if (_setPageInfo != PageInfoMethod.DoNothing && pagedListMetaData.PageNumber > 1)
                 {
@@ -98,9 +99,9 @@ namespace MrCMS.Attributes
             }
         }
 
-        private void SetCanonicalUrl(IGetLiveUrl getLiveUrl, ViewDataDictionary viewData, Webpage webpage)
+        private async Task SetCanonicalUrl(IGetLiveUrl getLiveUrl, ViewDataDictionary viewData, Webpage webpage)
         {
-            var canonicalLink = getLiveUrl.GetAbsoluteUrl(webpage);
+            var canonicalLink = await getLiveUrl.GetAbsoluteUrl(webpage);
             if (!string.IsNullOrWhiteSpace(webpage.ExplicitCanonicalLink))
             {
                 canonicalLink = webpage.ExplicitCanonicalLink;
@@ -109,15 +110,15 @@ namespace MrCMS.Attributes
             viewData.LinkTags().Add(LinkTag.Canonical, canonicalLink);
         }
 
-        private void SetPrevAndNext(ViewDataDictionary viewData, Webpage webpage, PagedListMetaData metadata, IGetPrevAndNextRelTags getTags)
+        private async Task SetPrevAndNext(ViewDataDictionary viewData, Webpage webpage, PagedListMetaData metadata, IGetPrevAndNextRelTags getTags)
         {
-            var prev = getTags.GetPrev(webpage, metadata, viewData);
+            var prev = await getTags.GetPrev(webpage, metadata, viewData);
             if (!string.IsNullOrWhiteSpace(prev))
             {
                 viewData.LinkTags().Add(LinkTag.Prev, prev);
             }
 
-            var next = getTags.GetNext(webpage, metadata, viewData);
+            var next = await getTags.GetNext(webpage, metadata, viewData);
             if (!string.IsNullOrWhiteSpace(next))
             {
                 viewData.LinkTags().Add(LinkTag.Next, next);

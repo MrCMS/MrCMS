@@ -17,7 +17,7 @@ namespace MrCMS.Website
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var webpage = _getWebpageForPath.GetWebpage(context.Request.Path);
+            var webpage = await _getWebpageForPath.GetWebpage(context.Request.Path);
 
             if (webpage != null)
             {

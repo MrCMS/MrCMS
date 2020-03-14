@@ -19,16 +19,16 @@ namespace MrCMS.Events
         }
 
 
-        public override Task<IResult> OnDeleting(MediaCategory entity, DbContext dbContext)
+        public override async Task<IResult> OnDeleting(MediaCategory entity, DbContext dbContext)
         {
             List<MediaFile> mediaFiles = entity.Files.ToList();
 
             foreach (MediaFile mediaFile in mediaFiles)
             {
-                _fileService.DeleteFile(mediaFile);
+                await _fileService.DeleteFile(mediaFile);
             }
-            _fileService.RemoveFolder(entity);
-            return Success; 
+            await _fileService.RemoveFolder(entity);
+            return await Success;
         }
     }
 }

@@ -59,9 +59,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Edit)]
-        public RedirectToActionResult Edit(UpdateRoleModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateRoleModel model)
         {
-            _roleAdminService.SaveRole(model);
+            await _roleAdminService.SaveRole(model);
 
             return RedirectToAction("Index");
         }
@@ -80,9 +80,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Delete)]
-        public RedirectToActionResult Delete(int id)
+        public async Task<RedirectToActionResult> Delete(int id)
         {
-            _roleAdminService.DeleteRole(id);
+            await _roleAdminService.DeleteRole(id);
             return RedirectToAction("Index");
         }
 

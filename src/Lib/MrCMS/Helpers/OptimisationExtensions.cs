@@ -4,6 +4,7 @@ using MrCMS.Services;
 using MrCMS.Website.Optimization;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Helpers
 {
@@ -15,36 +16,36 @@ namespace MrCMS.Helpers
                 .AddScript(helper, url);
         }
 
-        public static void RenderScripts(this IHtmlHelper helper)
+        public static async Task RenderScripts(this IHtmlHelper helper)
         {
-            helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IResourceBundler>()
+            await helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IResourceBundler>()
                 .GetScripts(helper.ViewContext);
         }
 
-        public static void WriteScriptsToResponse(this IHtmlHelper helper, IEnumerable<string> urls)
+        public static async Task WriteScriptsToResponse(this IHtmlHelper helper, IEnumerable<string> urls)
         {
-            helper.ViewContext.WriteScriptsToResponse(urls);
+            await helper.ViewContext.WriteScriptsToResponse(urls);
         }
 
-        internal static void WriteScriptsToResponse(this ViewContext viewContext, IEnumerable<string> urls)
+        internal static async Task WriteScriptsToResponse(this ViewContext viewContext, IEnumerable<string> urls)
         {
             foreach (string path in urls)
             {
-                viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                    path.StartsWith("~") ? path.Substring(1) : path);
+                await viewContext.Writer.WriteAsync(
+                    $"<script src=\"{(path.StartsWith("~") ? path.Substring(1) : path)}\" type=\"text/javascript\"></script>");
             }
         }
 
-        public static void WriteCssToResponse(this IHtmlHelper helper, IEnumerable<string> urls)
+        public static async Task WriteCssToResponse(this IHtmlHelper helper, IEnumerable<string> urls)
         {
-            helper.ViewContext.WriteCssToResponse(urls);
+            await helper.ViewContext.WriteCssToResponse(urls);
         }
-        internal static void WriteCssToResponse(this ViewContext viewContext, IEnumerable<string> urls)
+        internal static async Task WriteCssToResponse(this ViewContext viewContext, IEnumerable<string> urls)
         {
             foreach (string path in urls)
             {
-                viewContext.Writer.Write("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                    path.StartsWith("~") ? path.Substring(1) : path);
+                await viewContext.Writer.WriteAsync(
+                                   $"<link href=\"{(path.StartsWith("~") ? path.Substring(1) : path)}\" rel=\"stylesheet\" type=\"text/css\" />");
             }
         }
 
@@ -53,9 +54,9 @@ namespace MrCMS.Helpers
             helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IResourceBundler>().AddCss(helper, url);
         }
 
-        public static void RenderCss(this IHtmlHelper helper)
+        public static async Task RenderCss(this IHtmlHelper helper)
         {
-            helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IResourceBundler>()
+            await helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IResourceBundler>()
                 .GetCss(helper.ViewContext);
             //MrCMSApplication.Get<IResourceBundler>().GetCss(helper.ViewContext);
         }

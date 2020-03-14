@@ -18,7 +18,7 @@ namespace MrCMS.Tasks
 
         public async Task<List<TaskInfo>> GetTasks()
         {
-            var startTime = _getDateTimeNow.LocalNow;
+            var startTime = await _getDateTimeNow.GetLocalNow();
             var info = await _taskSettingManager.GetInfo();
             var scheduledTasks =
                 info

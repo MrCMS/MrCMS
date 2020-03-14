@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
@@ -18,7 +19,7 @@ namespace MrCMS.Services.CloneSite
             _repository = repository;
         }
 
-        public void CloneData(Site site, List<SiteCopyOption> options)
+        public async Task CloneData(Site site, List<SiteCopyOption> options)
         {
             var siteCopyOptionInfos =
                 options.Select(option => GetSiteCopyOptionInfo(option, _kernel))
@@ -30,7 +31,7 @@ namespace MrCMS.Services.CloneSite
                 var @from = _repository.LoadSync(info.SiteId);
                 if (@from == null)
                     continue;
-                info.CloneSiteParts.Clone(@from, site, siteCloneContext);
+                await info.CloneSiteParts.Clone(@from, site, siteCloneContext);
             }
         }
 

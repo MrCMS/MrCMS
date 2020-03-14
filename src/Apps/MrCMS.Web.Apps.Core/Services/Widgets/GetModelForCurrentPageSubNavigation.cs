@@ -7,6 +7,8 @@ using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
@@ -24,25 +26,26 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             _getLiveUrl = getLiveUrl;
         }
 
-        public override object GetModel(CurrentPageSubNavigation widget)
+        public override async Task<object> GetModel(CurrentPageSubNavigation widget)
         {
             var currentPage = _getCurrentPage.GetPage();
-            var webpages =
-                GetPublishedChildWebpages(currentPage.Id);
-            var navigationRecords =
-                webpages
-                    .Select(webpage => new NavigationRecord
-                    {
-                        Text = new HtmlString(webpage.Name),
-                        Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage, true)),
-                        Children = GetPublishedChildWebpages(webpage.Id)
-                            .Select(child =>
-                                new NavigationRecord
-                                {
-                                    Text = new HtmlString(child.Name),
-                                    Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
-                                }).ToList()
-                    }).ToList();
+            var webpages = await GetPublishedChildWebpages(currentPage.Id);
+            var navigationRecords = new List<NavigationRecord>();
+            foreach (var webpage in webpages)
+            {
+                navigationRecords.Add(new NavigationRecord
+                {
+                    Text = new HtmlString(webpage.Name),
+                    Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage, true)),
+                    Children = (await GetPublishedChildWebpages(webpage.Id))
+                        .Select(child =>
+                            new NavigationRecord
+                            {
+                                Text = new HtmlString(child.Name),
+                                Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
+                            }).ToList()
+                });
+            }
 
             return new CurrentPageSubNavigationModel
             {
@@ -51,15 +54,15 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             };
         }
 
-        private IEnumerable<Webpage> GetPublishedChildWebpages(int parentId)
+        private Task<List<Webpage>> GetPublishedChildWebpages(int parentId)
         {
             return _repository.Readonly()
                 .Where(
                     webpage =>
-                        webpage.Parent.Id == parentId && webpage.RevealInNavigation)
+                        webpage.ParentId == parentId && webpage.RevealInNavigation)
+                .Where(webpage => webpage.Published)
                 .OrderBy(webpage => webpage.DisplayOrder)
-                .ToList()
-                .Where(webpage => webpage.Published);
+                .ToListAsync();
         }
     }
 }

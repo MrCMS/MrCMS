@@ -13,22 +13,19 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public class SendLoginAttemptNotificationEmails : OnDataAdded<LoginAttempt>
     {
-        private readonly SecuritySettings _settings;
-        private readonly AuthRoleSettings _roleSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IMessageParser<SuccessfulLoginAttemptMessageTemplate, LoginAttempt> _successParser;
         private readonly IMessageParser<FailedLoginAttemptMessageTemplate, LoginAttempt> _failureParser;
         private readonly IJoinTableRepository<UserToRole> _userToRoleRepository;
 
         public SendLoginAttemptNotificationEmails(
-            SecuritySettings settings,
-            AuthRoleSettings roleSettings,
+            ISystemConfigurationProvider configurationProvider,
             IMessageParser<SuccessfulLoginAttemptMessageTemplate, LoginAttempt> successParser,
             IMessageParser<FailedLoginAttemptMessageTemplate, LoginAttempt> failureParser,
             IJoinTableRepository<UserToRole> userToRoleRepository
         )
         {
-            _settings = settings;
-            _roleSettings = roleSettings;
+            _configurationProvider = configurationProvider;
             _successParser = successParser;
             _failureParser = failureParser;
             _userToRoleRepository = userToRoleRepository;
@@ -36,12 +33,15 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public override async Task Execute(EntityData data)
         {
-            if (!_settings.SendLoginNotificationEmails)
+            var settings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            if (!settings.SendLoginNotificationEmails)
                 return;
 
             var loginAttempt = data.Entity() as LoginAttempt;
 
-            if (!_userToRoleRepository.Readonly().Any(x => x.UserId == loginAttempt.UserId && _roleSettings.SendNotificationEmailRoles.Contains(x.UserRoleId)))
+            var roleSettings = await _configurationProvider.GetSystemSettings<AuthRoleSettings>();
+            if (!_userToRoleRepository.Readonly().Any(x => x.UserId == loginAttempt.UserId &&
+                                                           roleSettings.SendNotificationEmailRoles.Contains(x.UserRoleId)))
                 return;
 
             QueuedMessage message;

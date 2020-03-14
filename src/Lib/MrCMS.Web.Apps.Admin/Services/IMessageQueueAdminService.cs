@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Models;
 using X.PagedList;
@@ -6,7 +7,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IMessageQueueAdminService
     {
-        IPagedList<QueuedMessage> GetMessages(MessageQueueQuery searchQuery);
-        QueuedMessage GetMessageBody(int id);
+        Task<IPagedList<QueuedMessage>> GetMessages(MessageQueueQuery searchQuery);
+        Task<QueuedMessage> GetMessageBody(int id);
     }
 }

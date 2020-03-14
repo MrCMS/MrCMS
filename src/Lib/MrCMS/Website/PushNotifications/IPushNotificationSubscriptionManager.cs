@@ -6,6 +6,6 @@ namespace MrCMS.Website.PushNotifications
     {
         Task<WebPushResult> CreateSubscription(PushNotificationSubscription subscription);
         Task<WebPushResult> RemoveSubscription(string endpoint);
-        string GetServiceWorkerJavaScript();
+        Task<string> GetServiceWorkerJavaScript();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -64,11 +65,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ExportDocumentsToEmail(ExportDocumentsModel model)
+        public async Task<ActionResult> ExportDocumentsToEmail(ExportDocumentsModel model)
         {
             try
             {
-                _importExportManager.ExportDocumentsToEmail(model);
+                await _importExportManager.ExportDocumentsToEmail(model);
                 TempData["export-status"] = "Documents successfully exported.";
             }
             catch 

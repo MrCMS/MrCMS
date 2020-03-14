@@ -6,6 +6,7 @@ using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
 using System;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Apps.Core.Auth
 {
@@ -22,9 +23,9 @@ namespace MrCMS.Web.Apps.Core.Auth
         }
 
         public PathString AccessDeniedPath
-            => PageService?.GetUrl<LoginPage>();
+            => PageService?.GetUrl<LoginPage>().ExecuteSync();
         public PathString LoginPath
-            => PageService?.GetUrl<LoginPage>();
+            => PageService?.GetUrl<LoginPage>().ExecuteSync();
 
         public PathString LogoutPath => $"/{LogoutController.RouteUrl}";
         public void PostConfigure(string name, CookieAuthenticationOptions options)

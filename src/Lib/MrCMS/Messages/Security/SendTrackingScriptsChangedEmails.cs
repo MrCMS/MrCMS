@@ -8,17 +8,19 @@ namespace MrCMS.Messages.Security
 {
     public class SendTrackingScriptsChangedEmails : IOnTrackingScriptsChanged
     {
-        private readonly SecuritySettings _settings;
-        private readonly IMessageParser<TrackingScriptsChangeMessageTemplate, SettingScriptChangeModel> _parser;
+        private readonly ISystemConfigurationProvider _configurationProvider;
+        private readonly IMessageParser<TrackingScriptsBodyChangeMessageTemplate, SettingScriptChangeModel> _parser;
 
-        public SendTrackingScriptsChangedEmails(SecuritySettings settings, IMessageParser<TrackingScriptsChangeMessageTemplate, SettingScriptChangeModel> parser)
+        public SendTrackingScriptsChangedEmails(ISystemConfigurationProvider configurationProvider, IMessageParser<TrackingScriptsBodyChangeMessageTemplate, SettingScriptChangeModel> parser)
         {
-            _settings = settings;
+            _configurationProvider = configurationProvider;
             _parser = parser;
         }
+
         public async Task Execute(ScriptChangedEventArgs<SEOSettings> args)
         {
-            if (!_settings.SendScriptChangeNotificationEmails)
+            var settings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            if (!settings.SendScriptChangeNotificationEmails)
                 return;
             var message = await _parser.GetMessage(new SettingScriptChangeModel
             {

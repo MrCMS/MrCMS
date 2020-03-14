@@ -12,7 +12,7 @@
         {
             int index = item.Nodes.IndexOf(item);
             ViewData["submenu"] = item.Name;
-            indexOf = indexOf + index;
+            indexOf += index;
             ViewData["indexOf"] = indexOf;
             ViewData["item"] = item.Name;
 

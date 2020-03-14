@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace MrCMS.Website
@@ -11,17 +12,17 @@ namespace MrCMS.Website
         {
             _contextAccessor = contextAccessor;
         }
-        public T GetForRequest<T>(string key, Func<T> getFunc)
+        public async Task<T> GetForRequest<T>(string key, Func<Task<T>> getFunc)
         {
             var context = _contextAccessor.HttpContext;
             if (context == null)
-                return getFunc();
+                return await getFunc();
             if (context.Items.ContainsKey(key))
             {
-                return (T) context.Items[key];
+                return (T)context.Items[key];
             }
 
-            var result = getFunc();
+            var result = await getFunc();
             context.Items[key] = result;
             return result;
         }

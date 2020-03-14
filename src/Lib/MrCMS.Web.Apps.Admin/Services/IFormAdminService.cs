@@ -23,7 +23,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         PostingsModel GetFormPostings(Form form, int page, string search);
         Task SetOrders(List<SortItem> items);
         Task ClearFormData(Form form);
-        byte[] ExportFormData(Form form);
+        Task<byte[]> ExportFormData(Form form);
         Task<FormPosting> DeletePosting(int id);
     }
 }

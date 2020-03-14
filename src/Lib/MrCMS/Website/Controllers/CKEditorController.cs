@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Settings;
 
@@ -5,16 +6,17 @@ namespace MrCMS.Website.Controllers
 {
     public class CKEditorController : MrCMSUIController
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public CKEditorController(SiteSettings siteSettings)
+        public CKEditorController(IConfigurationProvider configurationProvider)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public ContentResult Config()
+        public async Task<ContentResult> Config()
         {
-            return Content(_siteSettings.CKEditorConfig, "application/javascript");
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            return Content(siteSettings.CKEditorConfig, "application/javascript");
         }
     }
 }

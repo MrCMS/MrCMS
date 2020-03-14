@@ -20,13 +20,13 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName => "Stalled Queued Tasks";
 
-        public override Task<HealthCheckResult> PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
-            var checkDate = _getDateTimeNow.LocalNow.AddMinutes(-30);
+            var checkDate = (await _getDateTimeNow.GetLocalNow()).AddMinutes(-30);
             var any = _repository.Readonly()
                 .Any(task => task.Status == TaskExecutionStatus.Pending &&
                              task.CreatedOn <= checkDate);
-            return Task.FromResult( any
+            return any
                 ? new HealthCheckResult
                 {
                     Messages = new List<string>
@@ -35,7 +35,7 @@ namespace MrCMS.HealthChecks
                         "Please check that your scheduler is still configured correctly."
                     }
                 }
-                : HealthCheckResult.Success);
+                : HealthCheckResult.Success;
         }
     }
 }

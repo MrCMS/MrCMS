@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 
@@ -7,32 +8,34 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
 {
     public class SiteTokenProvider : ITokenProvider
     {
-        private readonly Site _site;
+        private readonly IGetCurrentSite _getCurrentSite;
 
-        public SiteTokenProvider(Site site)
+        public SiteTokenProvider(IGetCurrentSite getCurrentSite)
         {
-            _site = site;
+            _getCurrentSite = getCurrentSite;
         }
 
-        private IDictionary<string, Func<string>> _tokens;
+        private IDictionary<string, Func<Task<string>>> _tokens;
 
-        public IDictionary<string, Func<string>> Tokens
+        public IDictionary<string, Func<Task<string>>> Tokens
         {
-            get { return _tokens = _tokens ?? GetTokens(); }
+            get { return _tokens ??= GetTokens(); }
 
         }
 
-        private IDictionary<string, Func<string>> GetTokens()
+        private IDictionary<string, Func<Task<string>>> GetTokens()
         {
-            return new Dictionary<string, Func<string>>
+            return new Dictionary<string, Func<Task<string>>>
             {
-                {"SiteName", () => _site != null ? _site.Name : null},
+                {"SiteName", async () => (await _getCurrentSite.GetSite())?.Name},
                 {
-                    "SiteUrl",
-                    () =>
-                        _site != null
-                            ? string.Format("http://{0}", _site.BaseUrl)
-                            : null
+                    "SiteUrl", async () =>
+                    {
+                        var site =await _getCurrentSite.GetSite();
+                        return (site != null
+                            ? $"https://{site.BaseUrl}"
+                            : null);
+                    }
                 },
             };
         }

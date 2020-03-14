@@ -8,6 +8,7 @@
 @using X.PagedList.Mvc
 @using X.PagedList.Mvc.Common
 @using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Core.Common
 @model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
@@ -28,7 +29,7 @@
             }
             <div class="clearfix"></div>
         }
-        <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
+        <div id="file-list" data-file-list="true" data-category-id="@Model?.Id">
             @if (files != null && files.Any())
             {
                 foreach (var file in files)

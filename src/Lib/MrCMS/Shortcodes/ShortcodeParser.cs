@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using MrCMS.Helpers;
 
 namespace MrCMS.Shortcodes
 {
@@ -38,16 +40,14 @@ namespace MrCMS.Shortcodes
                     return string.Empty;
                 }
 
-                var matches = AttributeMatcher.Matches(HttpUtility.HtmlDecode( match.Groups[2].Value));
+                var matches = AttributeMatcher.Matches(HttpUtility.HtmlDecode(match.Groups[2].Value));
 
                 var attributes = matches.ToDictionary(m => m.Groups[1].Value, m => m.Groups[2].Value);
 
-                using (var writer = new StringWriter())
-                {
-                    var content = _renderShortcode.Render(htmlHelper, tagName, attributes);
-                    content.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
-                    return writer.ToString();
-                }
+                using var writer = new StringWriter();
+                var content = _renderShortcode.Render(htmlHelper, tagName, attributes).ExecuteSync();
+                content.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
+                return writer.ToString();
             });
 
             return new HtmlString(current);

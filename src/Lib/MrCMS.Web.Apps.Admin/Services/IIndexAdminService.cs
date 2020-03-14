@@ -12,9 +12,9 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task SaveBoosts(List<UpdateLuceneFieldBoostModel> boosts);
 
         List<MrCMSIndex> GetIndexes();
-        void Reindex(string typeName);
+        Task Reindex(string typeName);
 
         MrCMSIndex GetUniversalSearchIndexInfo();
-        void ReindexUniversalSearch();
+        Task ReindexUniversalSearch();
     }
 }

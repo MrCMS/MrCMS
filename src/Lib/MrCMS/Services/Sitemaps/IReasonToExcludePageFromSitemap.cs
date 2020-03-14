@@ -1,9 +1,10 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Services.Sitemaps
 {
     public interface IReasonToExcludePageFromSitemap
     {
-        bool ShouldExclude(Webpage webpage);
+        Task<bool> ShouldExclude(Webpage webpage);
     }
 }

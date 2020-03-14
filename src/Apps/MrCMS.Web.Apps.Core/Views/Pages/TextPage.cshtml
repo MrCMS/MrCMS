@@ -1,10 +1,14 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Settings
 @using MrCMS.Website
 @using MrCMS.Website.PushNotifications
 @model MrCMS.Web.Apps.Core.Pages.TextPage
-@inject WebPushSettings WebPushSettings
+@inject IConfigurationProvider ConfigurationProvider
+@{
+    var webPushSettings = await ConfigurationProvider.GetSiteSettings<WebPushSettings>();
+}
 @await Html.RenderImage(Model.FeatureImage)
-<button data-push-notification-btn data-public-key="@WebPushSettings.VapidPublicKey" class="btn btn-default"></button>
+<button data-push-notification-btn data-public-key="@webPushSettings.VapidPublicKey" class="btn btn-default"></button>
 
 @Html.Editable(page => page.BodyContent, true)
 @await Component.RenderContentBlocks(Model)

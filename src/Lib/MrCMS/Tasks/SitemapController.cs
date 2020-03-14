@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services.Sitemaps;
 using MrCMS.Website.Controllers;
@@ -24,9 +25,9 @@ namespace MrCMS.Tasks
 
         [TaskExecutionKeyPasswordAuth]
         [Route(WriteSitemapUrl)]
-        public ContentResult Update()
+        public async Task<ContentResult> Update()
         {
-            _sitemapService.WriteSitemap();
+            await _sitemapService.WriteSitemap();
             return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 

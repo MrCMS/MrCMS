@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Documents.Web;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Services.ImportExport.DTOs;
 
 namespace MrCMS.Services.ImportExport
@@ -12,10 +13,10 @@ namespace MrCMS.Services.ImportExport
             _documentTagsUpdateService = documentTagsUpdateService;
         }
 
-        public void SetTags(DocumentImportDTO documentDto, Webpage webpage)
+        public async Task SetTags(DocumentImportDTO documentDto, Webpage webpage)
         {
             var tags = documentDto.Tags;
-            _documentTagsUpdateService.SetTags(tags, webpage);
+            await _documentTagsUpdateService.SetTags(tags, webpage);
         }
     }
 }

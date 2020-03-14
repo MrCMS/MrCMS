@@ -12,6 +12,7 @@ using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Apps.Admin.Models;
+using IConfigurationProvider = MrCMS.Settings.IConfigurationProvider;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -20,23 +21,23 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IMapper _mapper;
         private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
             IMapper mapper,
             IGetDocumentsByParent<Webpage> getDocumentsByParent,
-            SiteSettings siteSettings)
+            IConfigurationProvider configurationProvider)
         {
             _webpageRepository = webpageRepository;
             _mapper = mapper;
             _getDocumentsByParent = getDocumentsByParent;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
 
-        public Webpage GetWebpage(int? id)
+        public async Task<Webpage> GetWebpage(int? id)
         {
-            return id.HasValue ? _webpageRepository.LoadSync(id.Value) : null;
+            return id.HasValue ? await _webpageRepository.Load(id.Value) : null;
         }
 
         public AddWebpageModel GetAddModel(int? id)
@@ -62,7 +63,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         }
 
 
-        public Webpage Add(AddWebpageModel model, object additionalPropertyModel)
+        public async Task<Webpage> Add(AddWebpageModel model, object additionalPropertyModel)
         {
             var type = TypeHelper.GetTypeByName(model.DocumentType);
             var instance = Activator.CreateInstance(type) as Webpage;
@@ -76,14 +77,14 @@ namespace MrCMS.Web.Apps.Admin.Services
             if (additionalPropertyModel != null)
                 _mapper.Map(additionalPropertyModel, instance);
 
-            _webpageRepository.Add(instance);
+            await _webpageRepository.Add(instance);
 
             return instance;
         }
 
         public async Task<IResult<Webpage>> Update(UpdateWebpageViewModel viewModel)
         {
-            var webpage = GetWebpage(viewModel.Id);
+            var webpage = await GetWebpage(viewModel.Id);
 
             _mapper.Map(viewModel, webpage);
 
@@ -96,15 +97,15 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task<Webpage> Delete(int id)
         {
-            var webpage = GetWebpage(id);
+            var webpage = await GetWebpage(id);
             await _webpageRepository.Delete(webpage);
             return webpage;
         }
 
-        public List<SortItem> GetSortItems(int? id)
+        public async Task<List<SortItem>> GetSortItems(int? id)
         {
-            var parent = GetWebpage(id);
-            return _getDocumentsByParent.GetDocuments(parent)
+            var parent = await GetWebpage(id);
+            return (await _getDocumentsByParent.GetDocuments(parent))
                 .Select(
                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                 .OrderBy(x => x.Order)
@@ -139,7 +140,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task Unpublish(int id)
         {
-            var webpage = GetWebpage(id);
+            var webpage = await GetWebpage(id);
             if (webpage == null)
                 return;
             webpage.Published = false;
@@ -147,10 +148,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             await _webpageRepository.Update(webpage);
         }
 
-        public string GetServerDate()
+        public async Task<string> GetServerDate()
         {
             var now = DateTime.UtcNow;
-            return now.Add(_siteSettings.TimeZoneInfo.GetUtcOffset(now)).ToString();
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            return now.Add(siteSettings.TimeZoneInfo.GetUtcOffset(now)).ToString();
         }
     }
 }

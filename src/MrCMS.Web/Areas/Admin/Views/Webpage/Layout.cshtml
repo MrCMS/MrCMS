@@ -26,7 +26,7 @@
     <label>@Html.Resource("Admin Webpage Layout Layout Areas", "Layout Areas")</label>
     <div class="panel-group" id="accordion-layout-areas">
         @{
-            var currentLayout = GetCurrentLayout.Get(webpage);
+            var currentLayout = await GetCurrentLayout.Get(webpage);
             var layoutAreas = (await LayoutAreaLoader.GetLayoutAreas(currentLayout)).ToList();
             if (layoutAreas.Any())
             {

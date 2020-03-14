@@ -1,28 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Filters
 {
-    public class HoneypotFilter : IActionFilter
+    public class HoneypotFilter : IAsyncActionFilter
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public HoneypotFilter(SiteSettings siteSettings)
+        public HoneypotFilter(IConfigurationProvider configurationProvider)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
-        public void OnActionExecuting(ActionExecutingContext filterContext)
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (filterContext.HttpContext.Request.HasFormContentType &&
-                !string.IsNullOrWhiteSpace( filterContext.HttpContext.Request.Form[_siteSettings.HoneypotFieldName]))
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            if (context.HttpContext.Request.HasFormContentType &&
+                !string.IsNullOrWhiteSpace( context.HttpContext.Request.Form[siteSettings.HoneypotFieldName]))
             {
-                filterContext.Result = new EmptyResult();
+                context.Result = new EmptyResult();
+                return;
             }
-        }
 
-        public void OnActionExecuted(ActionExecutedContext filterContext)
-        {
+            await next();
         }
     }
 }

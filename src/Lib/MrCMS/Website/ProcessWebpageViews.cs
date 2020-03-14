@@ -34,7 +34,7 @@ namespace MrCMS.Website
 
             if (string.IsNullOrWhiteSpace(result.ViewData[LayoutFile]?.ToString()))
             {
-                Layout layout = _getCurrentLayout.Get(webpage);
+                Layout layout = await _getCurrentLayout.Get(webpage);
                 if (layout != null)
                 {
                     result.ViewData[LayoutFile] = layout.GetLayoutName();

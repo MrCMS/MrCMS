@@ -29,7 +29,7 @@ namespace MrCMS.Services
         {
             var mediaCategory = await _repository.GetData(data.EntityId);
 
-            _fileService.CreateFolder(mediaCategory);
+            await _fileService.CreateFolder(mediaCategory);
         }
     }
 }

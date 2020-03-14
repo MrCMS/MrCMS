@@ -47,7 +47,7 @@ namespace MrCMS.Web.Apps.Admin
         public override void SetupMvcOptions(MvcOptions options)
         {
             options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
-            options.Filters.Add<ProfilingAuthorizationFilter<AdminAuthFilter>>();
+            options.Filters.Add<ProfilingAsyncAuthorizationFilter<AdminAuthFilter>>();
             options.Filters.Add<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
         }
 

@@ -31,10 +31,10 @@ namespace MrCMS.Services
             return _htmlCacheService.GetContent(helper, _getWidgetCachingInfo.Get(id), func);
         }
 
-        public (Widget Widget, object Model) GetModel(int id)
+        public async Task<(Widget Widget, object Model)> GetModel(int id)
         {
             var widget = _repository.GetDataSync(id);
-            return (widget, _widgetModelService.GetModel(widget));
+            return (widget, await _widgetModelService.GetModel(widget));
         }
     }
 }

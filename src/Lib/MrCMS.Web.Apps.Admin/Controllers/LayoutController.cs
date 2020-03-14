@@ -56,9 +56,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateLayoutModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateLayoutModel model)
         {
-            _layoutAdminService.Update(model);
+            await _layoutAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", model.Name));
             return RedirectToAction("Edit", new { id = model.Id });
         }
@@ -81,19 +81,19 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         [Acl(typeof(LayoutsACL), LayoutsACL.Sort)]
-        public ViewResult Sort(int? id)
+        public async Task<ViewResult> Sort(int? id)
         {
-            var sortItems = _layoutAdminService.GetSortItems(id);
+            var sortItems = await _layoutAdminService.GetSortItems(id);
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort(
+        public async Task<ActionResult> Sort(
             int? id,
             List<SortItem> items)
         {
-            _layoutAdminService.SetOrders(items);
+            await _layoutAdminService.SetOrders(items);
             return RedirectToAction("Sort", id);
         }
 
@@ -118,9 +118,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(int id, int? parentVal)
+        public async Task<RedirectToActionResult> Set(int id, int? parentVal)
         {
-            _layoutAdminService.SetParent(id, parentVal);
+            await _layoutAdminService.SetParent(id, parentVal);
 
             return RedirectToAction("Edit", "Layout", new { id });
         }

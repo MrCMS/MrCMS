@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -43,23 +44,23 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void SitesController_AddPost_CallsSiteServiceSaveSiteWithPassedModel()
+        public async Task SitesController_AddPost_CallsSiteServiceSaveSiteWithPassedModel()
         {
             var model = new AddSiteModel();
             var options = new List<SiteCopyOption>();
 
-            _sitesController.Add(model, options);
+            await _sitesController.Add(model, options);
 
             A.CallTo(() => _siteAdminService.AddSite(model, options)).MustHaveHappened();
         }
 
         [Fact]
-        public void SitesController_AddPost_RedirectsToIndex()
+        public async Task SitesController_AddPost_RedirectsToIndex()
         {
             var model = new AddSiteModel();
             var options = new List<SiteCopyOption>(); 
 
-            var result = _sitesController.Add(model, options);
+            var result = await _sitesController.Add(model, options);
 
             result.ActionName.Should().Be("Index");
         }
@@ -77,21 +78,21 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void SitesController_EditPost_CallsSaveSiteWithPassedModel()
+        public async Task SitesController_EditPost_CallsSaveSiteWithPassedModel()
         {
             var model = new UpdateSiteModel();
 
-            _sitesController.Edit(model);
+            await _sitesController.Edit(model);
 
             A.CallTo(() => _siteAdminService.SaveSite(model)).MustHaveHappened();
         }
 
         [Fact]
-        public void SitesController_EditPost_RedirectsToIndex()
+        public async Task SitesController_EditPost_RedirectsToIndex()
         {
             var model = new UpdateSiteModel();
 
-            var result = _sitesController.Edit(model);
+            var result = await _sitesController.Edit(model);
 
             result.ActionName.Should().Be("Index");
         }
@@ -109,17 +110,17 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void SitesController_DeletePost_CallsDeleteSiteOnSiteService()
+        public async Task SitesController_DeletePost_CallsDeleteSiteOnSiteService()
         {
-            _sitesController.Delete(123);
+            await _sitesController.Delete(123);
 
             A.CallTo(() => _siteAdminService.DeleteSite(123)).MustHaveHappened();
         }
 
         [Fact]
-        public void SitesController_DeletePost_RedirectsToIndex()
+        public async Task SitesController_DeletePost_RedirectsToIndex()
         {
-            var result = _sitesController.Delete(123);
+            var result = await _sitesController.Delete(123);
 
             result.ActionName.Should().Be("Index");
         }

@@ -9,6 +9,10 @@
     <EmbeddedResource Include="Views\**" />
     <EmbeddedResource Include="wwwroot\**" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.2.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />

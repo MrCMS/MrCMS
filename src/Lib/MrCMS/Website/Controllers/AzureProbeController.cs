@@ -10,19 +10,20 @@ namespace MrCMS.Website.Controllers
 {
     public class AzureProbeController : MrCMSUIController
     {
-        private readonly AzureProbeSettings _azureProbeSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IGlobalRepository<Site> _repository;
 
-        public AzureProbeController(AzureProbeSettings azureProbeSettings, IGlobalRepository<Site> repository)
+        public AzureProbeController(ISystemConfigurationProvider configurationProvider, IGlobalRepository<Site> repository)
         {
-            _azureProbeSettings = azureProbeSettings;
+            _configurationProvider = configurationProvider;
             _repository = repository;
         }
 
         public async Task<ActionResult> KeepAlive()
         {
-            var item = HttpContext.Request.Query[_azureProbeSettings.Key].ToString();
-            if (string.IsNullOrWhiteSpace(item) || item != _azureProbeSettings.Password)
+            var azureProbeSettings = await _configurationProvider.GetSystemSettings<AzureProbeSettings>();
+            var item = HttpContext.Request.Query[azureProbeSettings.Key].ToString();
+            if (string.IsNullOrWhiteSpace(item) || item != azureProbeSettings.Password)
                 return new StatusCodeResult(403);
 
             return new StatusCodeResult(!await _repository.Query().AnyAsync() ? 500 : 200);

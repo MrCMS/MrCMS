@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Attributes;
@@ -47,11 +48,11 @@ namespace MrCMS.Services.Canonical
             _getLiveUrl = getLiveUrl;
         }
 
-        public string GetPrev(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
+        public async Task<string> GetPrev(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
         {
             if (webpage == null)
                 return null;
-            var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
+            var baseUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
             if (GetRelTypes.ContainsKey(type))
@@ -67,11 +68,11 @@ namespace MrCMS.Services.Canonical
             return $"{baseUrl}?Page={metadata.PageNumber - 1}";
         }
 
-        public string GetNext(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
+        public async Task<string> GetNext(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
         {
             if (webpage == null)
                 return null;
-            var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
+            var baseUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
             if (GetRelTypes.ContainsKey(type))

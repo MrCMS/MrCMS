@@ -6,6 +6,7 @@ using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
 {
@@ -23,14 +24,14 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             _getCurrentUser = getCurrentUser;
         }
 
-        public override object GetModel(UserLinks widget)
+        public override async Task<object> GetModel(UserLinks widget)
         {
             var navigationRecords = new List<NavigationRecord>();
 
             var loggedIn = _getCurrentUser.Get() != null;
             if (loggedIn)
             {
-                var userAccountPage = _uniquePageService.GetUrl<UserAccountPage>();
+                var userAccountPage = await _uniquePageService.GetUrl<UserAccountPage>();
                 if (!string.IsNullOrWhiteSpace(userAccountPage))
                 {
                     navigationRecords.Add(new NavigationRecord
@@ -50,7 +51,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             }
             else
             {
-                var loginPageUrl = _uniquePageService.GetUrl<LoginPage>();
+                var loginPageUrl = await _uniquePageService.GetUrl<LoginPage>();
                 if (loginPageUrl != null)
                 {
                     navigationRecords.Add(new NavigationRecord
@@ -58,7 +59,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                         Text = new HtmlString(_stringResourceProvider.GetValue("Login")),
                         Url = new HtmlString(loginPageUrl)
                     });
-                    var registerPageUrl = _uniquePageService.GetUrl<RegisterPage>();
+                    var registerPageUrl = await _uniquePageService.GetUrl<RegisterPage>();
                     if (registerPageUrl != null)
                     {
                         navigationRecords.Add(new NavigationRecord

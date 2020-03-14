@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Services.Sitemaps
 {
     public interface ISitemapDataSource
     {
-        IEnumerable<SitemapData> GetAdditionalData();
+        Task<IEnumerable<SitemapData>> GetAdditionalData();
         IEnumerable<Type> TypesToRemove { get; }
     }
 }

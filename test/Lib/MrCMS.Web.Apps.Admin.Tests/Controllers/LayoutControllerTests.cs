@@ -70,21 +70,21 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void LayoutController_EditPost_ShouldCallUpdate()
+        public async Task LayoutController_EditPost_ShouldCallUpdate()
         {
             var model = new UpdateLayoutModel { Id = 1 };
 
-            _layoutController.Edit(model);
+            await _layoutController.Edit(model);
 
             A.CallTo(() => _layoutAdminService.Update(model)).MustHaveHappened();
         }
 
         [Fact]
-        public void LayoutController_EditPost_ShouldRedirectToEdit()
+        public async Task LayoutController_EditPost_ShouldRedirectToEdit()
         {
             var model = new UpdateLayoutModel { Id = 1 };
 
-            var result = _layoutController.Edit(model);
+            var result = await _layoutController.Edit(model);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(1);
@@ -92,12 +92,12 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 
 
         [Fact]
-        public void LayoutController_Sort_ShouldBeAListOfSortItems()
+        public async Task LayoutController_Sort_ShouldBeAListOfSortItems()
         {
             var sortItems = new List<SortItem> { };
             A.CallTo(() => _layoutAdminService.GetSortItems(123)).Returns(sortItems);
 
-            var viewResult = _layoutController.Sort(123);
+            var viewResult =await  _layoutController.Sort(123);
 
             viewResult.Model.Should().Be(sortItems);
         }

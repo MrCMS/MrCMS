@@ -18,7 +18,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IMapper _mapper;
 
         public MediaCategoryAdminService(IRepository<MediaCategory> mediaCategoryRepository,
-            IGetDocumentsByParent<MediaCategory> getDocumentsByParent, 
+            IGetDocumentsByParent<MediaCategory> getDocumentsByParent,
             IUrlValidationService urlValidationService,
             IMapper mapper)
         {
@@ -58,15 +58,15 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task<MediaCategory> Delete(int id)
         {
-            var mediaCategory =await _mediaCategoryRepository.Load(id);
- await           _mediaCategoryRepository.Delete(mediaCategory);
+            var mediaCategory = await _mediaCategoryRepository.Load(id);
+            await _mediaCategoryRepository.Delete(mediaCategory);
             return mediaCategory;
         }
 
-        public List<SortItem> GetSortItems(int id)
+        public async Task<List<SortItem>> GetSortItems(int id)
         {
             return
-                _getDocumentsByParent.GetDocuments(GetCategory(id))
+                (await _getDocumentsByParent.GetDocuments(GetCategory(id)))
                     .Select(
                         arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                     .OrderBy(x => x.Order)
@@ -76,12 +76,12 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task SetOrders(List<SortItem> items)
         {
-            var folders =  items.Select(item =>
-            {
-                var mediaFile = _mediaCategoryRepository.LoadSync(item.Id);
-                mediaFile.DisplayOrder = item.Order;
-                return mediaFile;
-            }).ToList();
+            var folders = items.Select(item =>
+           {
+               var mediaFile = _mediaCategoryRepository.LoadSync(item.Id);
+               mediaFile.DisplayOrder = item.Order;
+               return mediaFile;
+           }).ToList();
 
             await _mediaCategoryRepository.UpdateRange(folders);
         }

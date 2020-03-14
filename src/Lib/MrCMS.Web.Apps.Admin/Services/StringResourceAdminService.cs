@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
@@ -12,6 +13,7 @@ using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
 
 using X.PagedList;
+using IConfigurationProvider = MrCMS.Settings.IConfigurationProvider;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -19,25 +21,25 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private const string DefaultLanguage = "Default";
         private readonly IStringResourceProvider _provider;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IMapper _mapper;
-        private readonly SiteSettings _siteSettings;
         private readonly IGlobalRepository<StringResource> _repository;
         private readonly IGlobalRepository<Site> _siteRepository;
 
-        public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
+        public StringResourceAdminService(IStringResourceProvider provider, IConfigurationProvider configurationProvider,
             IGlobalRepository<StringResource> repository,
             IGlobalRepository<Site> siteRepository, // todo - refactor this out
-            
+
             IMapper mapper)
         {
             _provider = provider;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
             _repository = repository;
             _siteRepository = siteRepository;
             _mapper = mapper;
         }
 
-        public IPagedList<StringResource> Search(StringResourceSearchQuery searchQuery)
+        public async Task<IPagedList<StringResource>> Search(StringResourceSearchQuery searchQuery)
         {
             IEnumerable<StringResource> resources =
                 _provider.AllResources.GetResourcesByKeyAndValue(searchQuery);
@@ -63,8 +65,9 @@ namespace MrCMS.Web.Apps.Admin.Services
                 }
             }
 
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             return new PagedList<StringResource>(resources.OrderBy(resource => StringResourceExtensions.GetDisplayKey(resource.Key)), searchQuery.Page,
-                _siteSettings.DefaultPageSize);
+                siteSettings.DefaultPageSize);
         }
 
         public void Add(AddStringResourceModel model)
@@ -96,14 +99,15 @@ namespace MrCMS.Web.Apps.Admin.Services
             _provider.Delete(resource);
         }
 
-        public List<SelectListItem> GetLanguageOptions(string key, int? siteId)
+        public async Task<List<SelectListItem>> GetLanguageOptions(string key, int? siteId)
         {
             List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
             IEnumerable<string> languages = _provider.GetOverriddenLanguages(key, siteId);
             cultureInfos.RemoveAll(info => languages.Contains(info.Name));
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             return cultureInfos.OrderBy(info => info.DisplayName)
                 .BuildSelectItemList(info => info.DisplayName, info => info.Name,
-                    info => info.Name == _siteSettings.UICulture,
+                    info => info.Name == siteSettings.UICulture,
                     SelectListItemHelper.EmptyItem("Select a culture..."));
         }
 

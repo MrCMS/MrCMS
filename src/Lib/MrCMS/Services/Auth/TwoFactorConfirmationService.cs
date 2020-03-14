@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Models.Auth;
@@ -12,7 +13,7 @@ namespace MrCMS.Services.Auth
         private readonly IUserLookup _userLookup;
         private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public TwoFactorConfirmationService(IHttpContextAccessor contextAccessor, IUserLookup userLookup,IGetDateTimeNow getDateTimeNow)
+        public TwoFactorConfirmationService(IHttpContextAccessor contextAccessor, IUserLookup userLookup, IGetDateTimeNow getDateTimeNow)
         {
             _contextAccessor = contextAccessor;
             _userLookup = userLookup;
@@ -34,7 +35,7 @@ namespace MrCMS.Services.Auth
                 : TwoFactorStatus.Expired;
         }
 
-        public Confirm2FAResult TryAndConfirmCode(TwoFactorAuthModel model)
+        public async Task<Confirm2FAResult> TryAndConfirmCode(TwoFactorAuthModel model)
         {
             var result = new Confirm2FAResult { ReturnUrl = model.ReturnUrl };
             var sessionState = _contextAccessor.HttpContext.Session;
@@ -45,7 +46,8 @@ namespace MrCMS.Services.Auth
             if (user == null)
                 return result;
 
-            if (user.TwoFactorCodeExpiry == null || user.TwoFactorCodeExpiry < _getDateTimeNow.LocalNow)
+            var now = await _getDateTimeNow.GetLocalNow();
+            if (user.TwoFactorCodeExpiry == null || user.TwoFactorCodeExpiry < now)
                 return result;
 
             var code = model.Code?.Trim();

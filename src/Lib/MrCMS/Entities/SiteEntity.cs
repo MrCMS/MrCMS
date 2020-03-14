@@ -7,9 +7,6 @@ namespace MrCMS.Entities
         public int SiteId { get; set; }
         public virtual Site Site { get; set; }
 
-        public virtual string SiteName
-        {
-            get { return Site != null ? Site.DisplayName : null; }
-        }
+        public virtual string SiteName => Site?.DisplayName;
     }
 }

@@ -11,7 +11,7 @@ namespace MrCMS.Tasks
         private LuceneActionComparison(LuceneAction action)
             : this()
         {
-            EntityId = action.Entity == null ? (int?)null : action.Entity.Id;
+            EntityId = action.Entity?.Id;
             Operation = action.Operation;
             Type = action.Type;
             DefinitionName = action.IndexDefinition.SystemName;

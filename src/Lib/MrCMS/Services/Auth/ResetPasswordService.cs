@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
@@ -29,17 +30,17 @@ namespace MrCMS.Services.Auth
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public void SetResetPassword(User user)
+        public async Task SetResetPassword(User user)
         {
             user.ResetPasswordExpiry = DateTime.UtcNow.AddDays(1);
             user.ResetPasswordGuid = Guid.NewGuid();
-            _userManagementService.SaveUser(user);
+            await _userManagementService.SaveUser(user);
 
-            _eventContext.Publish<IOnUserResetPasswordSet, ResetPasswordEventArgs>(
+            await _eventContext.Publish<IOnUserResetPasswordSet, ResetPasswordEventArgs>(
                 new ResetPasswordEventArgs(user));
         }
 
-        public void ResetPassword(ResetPasswordViewModel model)
+        public async Task ResetPassword(ResetPasswordViewModel model)
         {
             try
             {
@@ -54,7 +55,7 @@ namespace MrCMS.Services.Auth
                     user.ResetPasswordExpiry = null;
                     user.ResetPasswordGuid = null;
 
-                    _userManagementService.SaveUser(user);
+                    await _userManagementService.SaveUser(user);
                 }
                 else
                     throw new InvalidOperationException("Unable to reset password, resend forgotten password email");

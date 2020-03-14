@@ -10,14 +10,12 @@ namespace MrCMS.Services.Auth
 {
     public class GetVerifiedUserResult : IGetVerifiedUserResult
     {
-        private readonly SecuritySettings _securitySettings;
-        private readonly AuthRoleSettings _roleSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IUserRoleManager _userRoleManager;
 
-        public GetVerifiedUserResult(SecuritySettings securitySettings, AuthRoleSettings roleSettings, IUserRoleManager userRoleManager)
+        public GetVerifiedUserResult(ISystemConfigurationProvider configurationProvider, IUserRoleManager userRoleManager)
         {
-            _securitySettings = securitySettings;
-            _roleSettings = roleSettings;
+            _configurationProvider = configurationProvider;
             _userRoleManager = userRoleManager;
         }
 
@@ -31,10 +29,12 @@ namespace MrCMS.Services.Auth
             {
                 loginModelReturnUrl = null;
             }
-            
+
             var redirectUrl = loginModelReturnUrl ?? (await _userRoleManager.IsAdmin(user) ? "~/admin" : "/");
 
-            if (_securitySettings.TwoFactorAuthEnabled && user.UserToRoles.Any(role => _roleSettings.TwoFactorAuthRoles.Contains(role.UserRoleId)))
+            var securitySettings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            var roleSettings = await _configurationProvider.GetSystemSettings<AuthRoleSettings>();
+            if (securitySettings.TwoFactorAuthEnabled && user.UserToRoles.Any(role => roleSettings.TwoFactorAuthRoles.Contains(role.UserRoleId)))
                 return new LoginResult
                 {
                     User = user,
@@ -49,7 +49,7 @@ namespace MrCMS.Services.Auth
                 ReturnUrl = redirectUrl
             };
         }
-        
+
         private bool IsRelativeRedirect(string url)
         {
             if (string.IsNullOrWhiteSpace(url))

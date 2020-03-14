@@ -25,7 +25,7 @@ namespace MrCMS.Data
 
         public async Task Audit(ContextChangeData data)
         {
-            var auditSettings = _configurationProvider.GetSiteSettings<AuditSettings>();
+            var auditSettings = await _configurationProvider.GetSiteSettings<AuditSettings>();
             var auditLevel = auditSettings.AuditLevel;
 
             if (auditLevel == AuditLevel.None)

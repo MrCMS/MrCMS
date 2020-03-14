@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 
@@ -8,12 +9,12 @@ namespace MrCMS.Services
     public class GetLiveUrl : IGetLiveUrl
     {
         private readonly IGetHomePage _getHomePage;
-        private readonly SiteSettings _settings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public GetLiveUrl(IGetHomePage getHomePage, SiteSettings settings)
+        public GetLiveUrl(IGetHomePage getHomePage, IConfigurationProvider configurationProvider)
         {
             _getHomePage = getHomePage;
-            _settings = settings;
+            _configurationProvider = configurationProvider;
         }
         public string GetUrlSegment(Webpage webpage, bool addLeadingSlash)
         {
@@ -22,11 +23,12 @@ namespace MrCMS.Services
             return builder.ToString();
         }
 
-        public string GetAbsoluteUrl(Webpage webpage)
+        public async Task<string> GetAbsoluteUrl(Webpage webpage)
         {
             if (webpage == null)
                 return null;
-            string scheme = (webpage.RequiresSSL|| _settings.SSLEverywhere)
+            var settings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            string scheme = (webpage.RequiresSSL|| settings.SSLEverywhere)
                 ? "https://"
                 : "http://";
             string authority = webpage.Site.BaseUrl;

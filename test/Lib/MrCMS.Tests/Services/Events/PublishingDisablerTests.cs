@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -24,51 +25,51 @@ namespace MrCMS.Tests.Services.Events
             TestEventImplementation2.Reset();
         }
 
-        private EventContext _eventContext;
+        private readonly EventContext _eventContext;
 
         [Fact]
-        public void EnsureTheTestEventIsBehavingProperly()
+        public async Task EnsureTheTestEventIsBehavingProperly()
         {
-            _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+            await _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
 
             TestEventImplementation.ExecutionCount.Should().Be(1);
         }
 
         [Fact]
-        public void EnsureTheTestEventIsBehavingProperlyForMany()
+        public async Task EnsureTheTestEventIsBehavingProperlyForMany()
         {
-            _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
-            _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+            await _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+            await _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
 
             TestEventImplementation.ExecutionCount.Should().Be(2);
         }
 
         [Fact]
-        public void DisablingTheEventShouldPreventItBeingExecuted()
+        public async Task DisablingTheEventShouldPreventItBeingExecuted()
         {
             using (_eventContext.Disable<ITestEvent>())
             {
-                _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+                await _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
             }
             TestEventImplementation.ExecutionCount.Should().Be(0);
         }
 
         [Fact]
-        public void NonGenericDisablingTheEventShouldPreventItBeingExecuted()
+        public async Task NonGenericDisablingTheEventShouldPreventItBeingExecuted()
         {
             using (_eventContext.Disable(typeof(ITestEvent)))
             {
-                _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+                await _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
             }
             TestEventImplementation.ExecutionCount.Should().Be(0);
         }
 
         [Fact]
-        public void DisablingAnImplementationShouldOnlyDisableThatImplementation()
+        public async Task DisablingAnImplementationShouldOnlyDisableThatImplementation()
         {
             using (_eventContext.Disable<TestEventImplementation>())
             {
-                _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+                await _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
             }
             TestEventImplementation.ExecutionCount.Should().Be(0);
             TestEventImplementation2.ExecutionCount.Should().Be(1);

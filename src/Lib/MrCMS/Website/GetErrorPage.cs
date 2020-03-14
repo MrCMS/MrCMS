@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
@@ -7,25 +8,26 @@ namespace MrCMS.Website
     public class GetErrorPage : IGetErrorPage
     {
         private readonly IRepository<Webpage> _webpageRepository;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public GetErrorPage(IRepository<Webpage> webpageRepository, SiteSettings siteSettings)
+        public GetErrorPage(IRepository<Webpage> webpageRepository, IConfigurationProvider configurationProvider)
         {
             _webpageRepository = webpageRepository;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public Webpage GetPage(int code)
+        public async Task<Webpage> GetPage(int code)
         {
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             switch (code)
             {
                 case 404:
-                    return _webpageRepository.LoadSync(_siteSettings.Error404PageId);
+                    return await _webpageRepository.Load(siteSettings.Error404PageId);
                 case 401:
                 case 403:
-                    return _webpageRepository.LoadSync(_siteSettings.Error403PageId);
+                    return await _webpageRepository.Load(siteSettings.Error403PageId);
                 case 500:
-                    return _webpageRepository.LoadSync(_siteSettings.Error500PageId);
+                    return await _webpageRepository.Load(siteSettings.Error500PageId);
                 default:
                     return null;
             }

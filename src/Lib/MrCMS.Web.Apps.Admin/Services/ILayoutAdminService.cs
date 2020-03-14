@@ -16,7 +16,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task<List<LayoutArea>> GetLayoutAreas(int id);
         Task Update(UpdateLayoutModel layout);
         Task<Layout> Delete(int id);
-        List<SortItem> GetSortItems(int? parent);
+        Task<List<SortItem>> GetSortItems(int? parent);
         Task SetOrders(List<SortItem> items);
         Task<bool> UrlIsValidForLayout(string urlSegment, int? id);
         Task SetParent(int id, int? parentId);

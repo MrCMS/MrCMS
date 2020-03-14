@@ -15,43 +15,43 @@
     @Html.RenderStyleBundle("~/admin/stylesheets/mrcms")
     @Html.RenderStyleBundle("~/admin/stylesheets/apps")
 
-    @{ Html.RenderCss(); }
-    
+    @{ await Html.RenderCss(); }
+
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
 </head>
 <body class="hold-transition sidebar-mini">
 
-@RenderBody() 
+    @RenderBody()
 
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script> 
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script>
 
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
-<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
-<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
-@Html.RenderScriptBundle("~/admin/scripts/lib")
-@Html.RenderScriptBundle("~/admin/scripts/mrcms")
-@Html.RenderScriptBundle("~/admin/scripts/apps")
-<script type="text/javascript" src="/Areas/Admin/lib/jquery/ui/i18n/jquery.ui.datepicker-@(CultureInfo.CurrentCulture.Name).js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
+    @Html.RenderScriptBundle("~/admin/scripts/lib")
+    @Html.RenderScriptBundle("~/admin/scripts/mrcms")
+    @Html.RenderScriptBundle("~/admin/scripts/apps")
+    <script type="text/javascript" src="/Areas/Admin/lib/jquery/ui/i18n/jquery.ui.datepicker-@(CultureInfo.CurrentCulture.Name).js"></script>
 
 
-@if (GetCurrentUser.Get()?.DisableNotifications == false)
-{
-    Html.IncludeScript("~/Areas/Admin/scripts/transient-notifications.js");
-    Html.IncludeScript("~/Areas/Admin/scripts/persistent-notifications.js");
-}
+    @if (GetCurrentUser.Get()?.DisableNotifications == false)
+    {
+        Html.IncludeScript("~/Areas/Admin/scripts/transient-notifications.js");
+        Html.IncludeScript("~/Areas/Admin/scripts/persistent-notifications.js");
+    }
 
-@{ Html.RenderLocalisedScripts(); }
-@{ Html.RenderScripts(); }
+    @{ await Html.RenderLocalisedScripts(); }
+    @{ await Html.RenderScripts(); }
 
-@Html.Hidden("CurrentUICulture", CultureInfo.CurrentCulture.Name)
+    @Html.Hidden("CurrentUICulture", CultureInfo.CurrentCulture.Name)
 
-@if (IsSectionDefined("JavaScriptBlock"))
-{
-    @RenderSection("JavaScriptBlock")
-}
-@*    @MiniProfiler.Current.RenderIncludes(Context)*@
-<mini-profiler />
+    @if (IsSectionDefined("JavaScriptBlock"))
+    {
+        @RenderSection("JavaScriptBlock")
+    }
+    @*    @MiniProfiler.Current.RenderIncludes(Context)*@
+    <mini-profiler />
 </body>
 </html>

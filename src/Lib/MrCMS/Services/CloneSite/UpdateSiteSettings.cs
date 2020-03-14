@@ -19,13 +19,13 @@ namespace MrCMS.Services.CloneSite
             _repository = repository;
         }
 
-        public Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             var nullEventContext = new NullEventContext();
             var fromProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@from), nullEventContext);
-            var fromSiteSettings = fromProvider.GetSiteSettings<SiteSettings>();
+            var fromSiteSettings = await fromProvider.GetSiteSettings<SiteSettings>();
             var toProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@to), nullEventContext);
-            var toSiteSettings = toProvider.GetSiteSettings<SiteSettings>();
+            var toSiteSettings = await toProvider.GetSiteSettings<SiteSettings>();
 
             var error403 = siteCloneContext.FindNew<Webpage>(fromSiteSettings.Error403PageId);
             if (error403 != null) toSiteSettings.Error403PageId = error403.Id;
@@ -39,7 +39,7 @@ namespace MrCMS.Services.CloneSite
             var layout = siteCloneContext.FindNew<Layout>(fromSiteSettings.DefaultLayoutId);
             if (layout != null) toSiteSettings.DefaultLayoutId = layout.Id;
 
-            return toProvider.SaveSettings(toSiteSettings);
+            await toProvider.SaveSettings(toSiteSettings);
         }
     }
 }

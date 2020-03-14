@@ -1,22 +1,25 @@
-﻿using MrCMS.Settings;
+﻿using System.Threading.Tasks;
+using MrCMS.Settings;
 
 namespace MrCMS.Messages.Security
 {
     public class GetDefaultTrackingBodyScriptsChangeMessageTemplate : GetDefaultTemplate<TrackingScriptsBodyChangeMessageTemplate>
     {
-        private readonly MailSettings _mailSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public GetDefaultTrackingBodyScriptsChangeMessageTemplate(MailSettings mailSettings)
+        public GetDefaultTrackingBodyScriptsChangeMessageTemplate(ISystemConfigurationProvider configurationProvider)
         {
-            _mailSettings = mailSettings;
+            _configurationProvider = configurationProvider;
         }
-        public override TrackingScriptsBodyChangeMessageTemplate Get()
+
+        public override async Task<TrackingScriptsBodyChangeMessageTemplate> Get()
         {
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
             return new TrackingScriptsBodyChangeMessageTemplate
             {
                 Subject = "Tracking Body Script Change - {Status}",
-                FromAddress = _mailSettings.SystemEmailAddress,
-                ToAddress = _mailSettings.SystemEmailAddress,
+                FromAddress = mailSettings.SystemEmailAddress,
+                ToAddress = mailSettings.SystemEmailAddress,
                 Body = "The body tracking script has been modified."
             };
         }

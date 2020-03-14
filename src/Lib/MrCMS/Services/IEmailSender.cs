@@ -7,8 +7,8 @@ namespace MrCMS.Services
 {
     public interface IEmailSender
     {
-        bool CanSend(QueuedMessage queuedMessage);
-        void SendMailMessage(QueuedMessage queuedMessage);
+        Task<bool> CanSend(QueuedMessage queuedMessage);
+        Task SendMailMessage(QueuedMessage queuedMessage);
         Task AddToQueue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null);
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
     public interface IGetDateTimeNow
     {
-        DateTime LocalNow { get; }
+        Task<DateTime> GetLocalNow();
         DateTime UtcNow { get; }
     }
 }

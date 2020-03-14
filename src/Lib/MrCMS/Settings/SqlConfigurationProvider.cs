@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
@@ -37,13 +38,13 @@ namespace MrCMS.Settings
         /// </summary>
         /// <typeparam name="TSettings"></typeparam>
         /// <returns></returns>
-        public virtual TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
+        public virtual async Task<TSettings> GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
             //using (MiniProfiler.Current.Step($"Get site settings: {typeof(TSettings).FullName}"))
             {
                 var settings = Activator.CreateInstance<TSettings>();
 
-                var dbSettings = GetDbSettings<TSettings>();
+                var dbSettings = await GetDbSettings<TSettings>();
 
                 foreach (var prop in typeof(TSettings).GetProperties())
                 {
@@ -87,8 +88,8 @@ namespace MrCMS.Settings
         /// <param name="settings">Setting instance</param>
         public virtual async Task SaveSettings<TSettings>(TSettings settings) where TSettings : SiteSettingsBase, new()
         {
-            var existing = GetSiteSettings<TSettings>();
-            var existingInDb = GetDbSettings<TSettings>();
+            var existing = await GetSiteSettings<TSettings>();
+            var existingInDb = await GetDbSettings<TSettings>();
             await _repository.Transact(async (repo, ct) =>
             {
                 /* We do not clear cache after each setting update.
@@ -115,7 +116,8 @@ namespace MrCMS.Settings
         /// <typeparam name="TSettings">Type</typeparam>
         public virtual async Task DeleteSettings<TSettings>(TSettings settings) where TSettings : SiteSettingsBase, new()
         {
-            var allSettings = GetDbSettings<TSettings>().Values;
+            var dbSettings = await GetDbSettings<TSettings>();
+            var allSettings = dbSettings.Values;
 
             foreach (var setting in allSettings)
                 await DeleteSetting(setting);
@@ -129,15 +131,15 @@ namespace MrCMS.Settings
         }
 
 
-        private IDictionary<string, Setting> GetDbSettings<TSettings>() where TSettings : SiteSettingsBase, new()
+        private async Task<IDictionary<string, Setting>> GetDbSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
             //using (MiniProfiler.Current.Step($"Get from db: {typeof(TSettings).FullName}"))
             {
                 var typeName = typeof(TSettings).FullName.ToLower();
                 var siteId = _getSiteId.GetId();
-                var settings = _repository.Query()
+                var settings = await _repository.Query()
                     .Where(x => x.SettingType == typeName && x.SiteId == siteId)
-                    .ToList();
+                    .ToListAsync();
                 return settings.GroupBy(setting => setting.PropertyName)
                     .ToDictionary(x => x.Key, x => x.Select(y => y).First());
             }
@@ -231,7 +233,7 @@ namespace MrCMS.Settings
                     SettingType = typeName,
                     PropertyName = propertyName,
                     Value = valueStr,
-                    SiteId= _getSiteId.GetId(),
+                    SiteId = _getSiteId.GetId(),
                     CreatedOn = DateTime.UtcNow,
                     UpdatedOn = DateTime.UtcNow
                 };

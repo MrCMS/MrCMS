@@ -21,7 +21,7 @@ namespace MrCMS.Services
                 await _emailSender.AddToQueue(queuedMessage, attachments);
                 if (trySendImmediately)
                 {
-                    _emailSender.SendMailMessage(queuedMessage);
+                    await _emailSender.SendMailMessage(queuedMessage);
                 }
             }
         }

@@ -136,7 +136,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         private string ReadData(string value)
         {
-            value = value ?? string.Empty;
+            value ??= string.Empty;
 
             value = value.Trim('"');
             value = value.Replace("\"\"", "\"");

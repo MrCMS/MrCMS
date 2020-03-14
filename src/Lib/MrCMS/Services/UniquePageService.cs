@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Entities.Documents.Web;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 
 namespace MrCMS.Services
@@ -17,15 +19,15 @@ namespace MrCMS.Services
             _getLiveUrl = getLiveUrl;
         }
 
-        public T GetUniquePage<T>()
+        public Task<T> GetUniquePage<T>()
             where T : Webpage, IUniquePage
         {
-            return _repository.Query<T>().FirstOrDefault();
+            return _repository.Query<T>().FirstOrDefaultAsync();
         }
 
-        public string GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage
+        public async Task<string> GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage
         {
-            var page = GetUniquePage<T>();
+            var page = await GetUniquePage<T>();
             var url = _getLiveUrl.GetUrlSegment(page, true);
             if (queryString != null)
             {
@@ -39,19 +41,19 @@ namespace MrCMS.Services
 
         }
 
-        public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        public async Task<RedirectResult> RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
         {
-            return GetRedirectResult<T>(routeValues, false);
+            return await GetRedirectResult<T>(routeValues, false);
         }
 
-        public RedirectResult PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        public async Task<RedirectResult> PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
         {
-            return GetRedirectResult<T>(routeValues, false);
+            return await GetRedirectResult<T>(routeValues, false);
         }
 
-        private RedirectResult GetRedirectResult<T>(object routeValues, bool isPermanent) where T : Webpage, IUniquePage
+        private async Task<RedirectResult> GetRedirectResult<T>(object routeValues, bool isPermanent) where T : Webpage, IUniquePage
         {
-            return new RedirectResult(GetUrl<T>(routeValues), isPermanent);
+            return new RedirectResult(await GetUrl<T>(routeValues), isPermanent);
         }
     }
 }

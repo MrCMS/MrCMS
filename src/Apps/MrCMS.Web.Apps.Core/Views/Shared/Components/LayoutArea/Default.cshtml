@@ -4,6 +4,6 @@
 
 @foreach (var widget in Model.Widgets)
 {
-    @await UIService.GetContent(Component, widget.Id, helper => helper.InvokeAsync("Widget", new { widget.Id }))
-
+    var content = UIService.GetContent(Component, widget.Id, async helper => await helper.InvokeAsync("Widget", new { widget.Id }));
+    @await content
 }

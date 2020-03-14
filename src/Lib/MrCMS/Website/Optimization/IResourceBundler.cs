@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MrCMS.Website.Optimization
 {
@@ -6,7 +7,7 @@ namespace MrCMS.Website.Optimization
     {
         void AddScript(IHtmlHelper helper, string url);
         void AddCss(IHtmlHelper helper, string url);
-        void GetScripts(ViewContext viewContext);
-        void GetCss(ViewContext viewContext);
+        Task GetScripts(ViewContext viewContext);
+        Task GetCss(ViewContext viewContext);
     }
 }

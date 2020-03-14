@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
@@ -23,13 +24,13 @@ namespace MrCMS.Services.Auth
             _eventContext = eventContext;
         }
 
-        public void SetUserData(User user)
+        public async Task SetUserData(User user)
         {
             _contextAccessor.HttpContext.Session.SetString(CurrentUserKey, user.Guid.ToString());
             user.TwoFactorCode = _generate2FACode.GenerateCode();
             user.TwoFactorCodeExpiry = DateTime.UtcNow.AddMinutes(15);
-            _userManagementService.SaveUser(user);
-            _eventContext.Publish<IVerifiedPending2FA, VerifiedPending2FAEventArgs>(new VerifiedPending2FAEventArgs(user));
+            await _userManagementService.SaveUser(user);
+            await _eventContext.Publish<IVerifiedPending2FA, VerifiedPending2FAEventArgs>(new VerifiedPending2FAEventArgs(user));
         }
     }
 }

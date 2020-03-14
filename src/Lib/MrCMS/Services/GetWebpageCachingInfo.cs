@@ -7,6 +7,7 @@ using MrCMS.Website.CMS;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace MrCMS.Services
 {
@@ -14,17 +15,17 @@ namespace MrCMS.Services
     {
         private readonly IQuerySerializer _querySerializer;
         private readonly IGetCurrentUser _getCurrentUser;
-        private readonly PageDefaultsSettings _settings;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public GetWebpageCachingInfo(IQuerySerializer querySerializer, IGetCurrentUser getCurrentUser,
-            PageDefaultsSettings settings)
+            IConfigurationProvider configurationProvider)
         {
             _querySerializer = querySerializer;
             _getCurrentUser = getCurrentUser;
-            _settings = settings;
+            _configurationProvider = configurationProvider;
         }
 
-        public CachingInfo Get(Webpage webpage, IQueryCollection queryData)
+        public async Task<CachingInfo> Get(Webpage webpage, IQueryCollection queryData)
         {
             var type = webpage?.GetType();
             var attribute = type?.GetCustomAttribute<WebpageOutputCacheableAttribute>(inherit: false);
@@ -35,8 +36,9 @@ namespace MrCMS.Services
 
             var hasPermissions = webpage.HasCustomPermissions &&
                                  webpage.PermissionType == WebpagePermissionType.PasswordBased;
+            var settings = await _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
             var shouldCache = !webpage.DoNotCache && _getCurrentUser.Get() == null &&
-                              !_settings.CacheDisabled(type) && !hasPermissions;
+                              !settings.CacheDisabled(type) && !hasPermissions;
 
             return new CachingInfo(shouldCache, GetCacheKey(webpage, queryData),
                 TimeSpan.FromSeconds(attribute.Length),

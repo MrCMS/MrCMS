@@ -3,7 +3,7 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Services
 {
-    public class GetCurrentPage : IGetCurrentPage,ISetCurrentPage
+    public class GetCurrentPage : IGetCurrentPage, ISetCurrentPage
     {
         private readonly IHttpContextAccessor _contextAccessor;
 

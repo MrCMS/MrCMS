@@ -33,14 +33,14 @@ namespace MrCMS.Services
 
             return new QueuedMessage
             {
-                FromAddress = _messageTemplateParser.Parse(fromAddress ?? template.FromAddress),
-                FromName = _messageTemplateParser.Parse(fromName ?? template.FromName),
-                ToAddress = _messageTemplateParser.Parse(toAddress ?? template.ToAddress),
-                ToName = _messageTemplateParser.Parse(toName ?? template.ToName),
-                Cc = _messageTemplateParser.Parse(cc ?? template.Cc),
-                Bcc = _messageTemplateParser.Parse(bcc ?? template.Bcc),
-                Subject = _messageTemplateParser.Parse(template.Subject),
-                Body = _messageTemplateParser.Parse(template.Body),
+                FromAddress = await _messageTemplateParser.Parse(fromAddress ?? template.FromAddress),
+                FromName = await _messageTemplateParser.Parse(fromName ?? template.FromName),
+                ToAddress = await _messageTemplateParser.Parse(toAddress ?? template.ToAddress),
+                ToName = await _messageTemplateParser.Parse(toName ?? template.ToName),
+                Cc = await _messageTemplateParser.Parse(cc ?? template.Cc),
+                Bcc = await _messageTemplateParser.Parse(bcc ?? template.Bcc),
+                Subject = await _messageTemplateParser.Parse(template.Subject),
+                Body = await _messageTemplateParser.Parse(template.Body),
                 IsHtml = template.IsHtml
             };
         }
@@ -77,14 +77,14 @@ namespace MrCMS.Services
 
             return new QueuedMessage
             {
-                FromAddress = _messageTemplateParser.Parse(fromAddress ?? template.FromAddress, obj),
-                FromName = _messageTemplateParser.Parse(fromName ?? template.FromName, obj),
-                ToAddress = _messageTemplateParser.Parse(toAddress ?? template.ToAddress, obj),
-                ToName = _messageTemplateParser.Parse(toName ?? template.ToName, obj),
-                Cc = _messageTemplateParser.Parse(cc ?? template.Cc, obj),
-                Bcc = _messageTemplateParser.Parse(bcc ?? template.Bcc, obj),
-                Subject = _messageTemplateParser.Parse(template.Subject, obj),
-                Body = _messageTemplateParser.Parse(template.Body, obj),
+                FromAddress = await _messageTemplateParser.Parse(fromAddress ?? template.FromAddress, obj),
+                FromName = await _messageTemplateParser.Parse(fromName ?? template.FromName, obj),
+                ToAddress = await _messageTemplateParser.Parse(toAddress ?? template.ToAddress, obj),
+                ToName = await _messageTemplateParser.Parse(toName ?? template.ToName, obj),
+                Cc = await _messageTemplateParser.Parse(cc ?? template.Cc, obj),
+                Bcc = await _messageTemplateParser.Parse(bcc ?? template.Bcc, obj),
+                Subject = await _messageTemplateParser.Parse(template.Subject, obj),
+                Body = await _messageTemplateParser.Parse(template.Body, obj),
                 IsHtml = template.IsHtml
             };
         }

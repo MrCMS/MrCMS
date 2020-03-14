@@ -6,11 +6,11 @@ namespace MrCMS.HealthChecks
 {
     public class SiteIsLive : HealthCheck
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public SiteIsLive(SiteSettings siteSettings)
+        public SiteIsLive(IConfigurationProvider configurationProvider)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
         public override string DisplayName
@@ -18,19 +18,19 @@ namespace MrCMS.HealthChecks
             get { return "Site in live mode"; }
         }
 
-        public override Task<HealthCheckResult> PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
-           
-            if (!_siteSettings.SiteIsLive)
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            if (!siteSettings.SiteIsLive)
             {
-                return Task.FromResult( new HealthCheckResult
+                return new HealthCheckResult
                 {
                     Messages = new List<string> { "The current site is not set to live, please change this in site settings." },
                     Status = HealthCheckStatus.Failure
-                });
+                };
             }
 
-            return Task.FromResult(HealthCheckResult.Success);
+            return HealthCheckResult.Success;
         }
     }
 }

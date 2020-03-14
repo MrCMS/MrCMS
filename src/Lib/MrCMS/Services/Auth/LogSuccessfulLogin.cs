@@ -9,19 +9,20 @@ namespace MrCMS.Services.Auth
 {
     public class LogSuccessfulLogin : IOnUserLoggedIn
     {
-        private readonly SecuritySettings _securitySettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IRepository<LoginAttempt> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LogSuccessfulLogin(SecuritySettings securitySettings, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
+        public LogSuccessfulLogin(ISystemConfigurationProvider configurationProvider, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
         {
-            _securitySettings = securitySettings;
+            _configurationProvider = configurationProvider;
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
         }
-        public  async Task Execute(UserLoggedInEventArgs args)
+        public async Task Execute(UserLoggedInEventArgs args)
         {
-            if (!_securitySettings.LogLoginAttempts)
+            var securitySettings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            if (!securitySettings.LogLoginAttempts)
                 return;
             var request = _httpContextAccessor.HttpContext.Request;
             var loginAttempt = new LoginAttempt

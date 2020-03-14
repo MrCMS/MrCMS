@@ -31,7 +31,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
 
         public async Task Setup()
         {
-            var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             var baseLayout = new Layout
             {
                 Name = "Base Layout",

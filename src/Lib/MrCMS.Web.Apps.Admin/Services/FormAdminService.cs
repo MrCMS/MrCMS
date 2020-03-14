@@ -54,7 +54,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             //});
         }
 
-        public byte[] ExportFormData(Form form)
+        public async Task<byte[]> ExportFormData(Form form)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 var headers = GetHeadersForExport(form).ToList();
                 stringBuilder.AppendLine(string.Join(",", headers.Select(FormatField)));
 
-                var formDataForExport = GetFormDataForExport(form);
+                var formDataForExport =await GetFormDataForExport(form);
                 foreach (var data in formDataForExport)
                 {
                     stringBuilder.AppendLine(string.Join(",", data.Value.Select(FormatField)));
@@ -196,10 +196,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             return headers.Distinct().ToList();
         }
 
-        private Dictionary<int, List<string>> GetFormDataForExport(Form form)
+        private async Task<Dictionary<int, List<string>>> GetFormDataForExport(Form form)
         {
             var items = new Dictionary<int, List<string>>();
-            var formatProvider = _getCurrentUserCultureInfo.Get();
+            var formatProvider = await _getCurrentUserCultureInfo.Get();
             for (int i = 0; i < form.FormPostings.Count; i++)
             {
                 FormPosting posting = form.FormPostings[i];

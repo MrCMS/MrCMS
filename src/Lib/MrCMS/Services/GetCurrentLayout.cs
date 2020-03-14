@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
@@ -10,34 +11,33 @@ namespace MrCMS.Services
 {
     public class GetCurrentLayout : IGetCurrentLayout
     {
-        private readonly PageDefaultsSettings _pageDefaultsSettings;
         private readonly IRepository<Layout> _repository;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public GetCurrentLayout(IRepository<Layout> repository, SiteSettings siteSettings, PageDefaultsSettings pageDefaultsSettings)
+        public GetCurrentLayout(IRepository<Layout> repository, IConfigurationProvider configurationProvider)
         {
             _repository = repository;
-            _siteSettings = siteSettings;
-            _pageDefaultsSettings = pageDefaultsSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public Layout Get(Webpage webpage)
+        public async Task<Layout> Get(Webpage webpage)
         {
             if (webpage != null)
             {
                 var layout = GetPageTemplateLayout(webpage);
                 if (layout != null) return layout;
-                layout = GetTypeDefaultLayout(webpage);
+                layout = await GetTypeDefaultLayout(webpage);
                 if (layout != null) return layout;
             }
 
-            return GetSiteDefault();
+            return await GetSiteDefault();
         }
 
-        private Layout GetTypeDefaultLayout(Webpage webpage)
+        private async Task<Layout> GetTypeDefaultLayout(Webpage webpage)
         {
             var documentMetadata = webpage.GetMetadata();
-            var layoutId = _pageDefaultsSettings.GetLayoutId(documentMetadata.Type);
+            var pageDefaultsSettings = await _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+            var layoutId = pageDefaultsSettings.GetLayoutId(documentMetadata.Type);
             if (layoutId.HasValue)
             {
                 var layout = _repository.GetDataSync(layoutId.Value);
@@ -49,13 +49,14 @@ namespace MrCMS.Services
 
         private static Layout GetPageTemplateLayout(Webpage webpage)
         {
-            if (webpage.PageTemplate != null && webpage.PageTemplate.Layout != null) return webpage.PageTemplate.Layout;
-            return null;
+            // todo - I think this will need data access setting up as these properties won't be lazy-loaded
+            return webpage.PageTemplate?.Layout;
         }
 
-        private Layout GetSiteDefault()
+        private async Task<Layout> GetSiteDefault()
         {
-            var settingValue = _siteSettings.DefaultLayoutId;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            var settingValue = siteSettings.DefaultLayoutId;
 
             return _repository.GetDataSync<Layout>(settingValue) ??
                    _repository.Readonly().FirstOrDefault();

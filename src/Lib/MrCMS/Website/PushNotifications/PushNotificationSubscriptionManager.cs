@@ -12,14 +12,14 @@ namespace MrCMS.Website.PushNotifications
     {
         private readonly IRepository<PushSubscription> _repository;
         private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetWebPushSettings _getSettings;
         private readonly ISendPushNotification _sendPushNotification;
-        private readonly WebPushSettings _settings;
 
         public PushNotificationSubscriptionManager(IRepository<PushSubscription> repository, IGetCurrentUser getCurrentUser, IGetWebPushSettings getSettings, ISendPushNotification sendPushNotification)
         {
             _repository = repository;
             _getCurrentUser = getCurrentUser;
-            _settings = getSettings.GetSettings();
+            _getSettings = getSettings;
             _sendPushNotification = sendPushNotification;
         }
 
@@ -35,7 +35,8 @@ namespace MrCMS.Website.PushNotifications
 
             await _repository.Add(pushSubscription);
 
-            return await _sendPushNotification.SendNotification(pushSubscription, _settings.SubscriptionConfirmationMessage);
+            var settings = await _getSettings.GetSettings();
+            return await _sendPushNotification.SendNotification(pushSubscription, settings.SubscriptionConfirmationMessage);
         }
 
 
@@ -47,8 +48,9 @@ namespace MrCMS.Website.PushNotifications
             return new WebPushResult();
         }
 
-        public string GetServiceWorkerJavaScript()
+        public async Task<string> GetServiceWorkerJavaScript()
         {
+            var settings = await _getSettings.GetSettings();
             return @"
 'use strict';
 
@@ -117,7 +119,7 @@ self.addEventListener('pushsubscriptionchange', function(event)
     console.log('[Service Worker] New subscription: ', newSubscription);
     })
   );
-});".Replace("PUBLIC_KEY", _settings.VapidPublicKey);
+});".Replace("PUBLIC_KEY", settings.VapidPublicKey);
         }
     }
 }

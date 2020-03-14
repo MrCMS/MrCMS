@@ -1,35 +1,39 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
+using MrCMS.Services;
 using MrCMS.Settings;
 
 namespace MrCMS.Web.Apps.Core.MessageTemplates
 {
     public class GetDefaultResetPasswordMessageTemplate : GetDefaultTemplate<ResetPasswordMessageTemplate>
     {
-        private readonly Site _site;
-        private readonly MailSettings _mailSettings;
+        private readonly IGetCurrentSite _getCurrentSite;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public GetDefaultResetPasswordMessageTemplate(Site site, MailSettings mailSettings)
+        public GetDefaultResetPasswordMessageTemplate(IGetCurrentSite getCurrentSite, ISystemConfigurationProvider configurationProvider)
         {
-            _site = site;
-            _mailSettings = mailSettings;
+            _getCurrentSite = getCurrentSite;
+            _configurationProvider = configurationProvider;
         }
 
-        public override ResetPasswordMessageTemplate Get()
+        public override async Task<ResetPasswordMessageTemplate> Get()
         {
-            var fromAddress = !string.IsNullOrWhiteSpace(_mailSettings.SystemEmailAddress)
-                ? _mailSettings.SystemEmailAddress
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
+            var site = await _getCurrentSite.GetSite();
+            var fromAddress = !string.IsNullOrWhiteSpace(mailSettings.SystemEmailAddress)
+                ? mailSettings.SystemEmailAddress
                 : "test@example.com";
             return new ResetPasswordMessageTemplate
             {
                 FromAddress = fromAddress,
-                FromName = _site.Name,
+                FromName = site.Name,
                 ToAddress = "{Email}",
                 ToName = "{Name}",
                 Bcc = String.Empty,
                 Cc = String.Empty,
-                Subject = String.Format("{0} - Password Reset Request", _site.Name),
+                Subject = String.Format("{0} - Password Reset Request", site.Name),
                 Body = string.Format("To reset your password please click <a href=\"{0}\">here</a>", "{ResetPasswordUrl}"),
                 IsHtml = true,
             };

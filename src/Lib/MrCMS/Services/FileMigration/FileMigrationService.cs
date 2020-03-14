@@ -18,12 +18,12 @@ namespace MrCMS.Services.FileMigration
     {
         private readonly Dictionary<string, IFileSystem> _allFileSystems;
         private readonly ICreateBatch _createBatch;
-        private readonly FileSystemSettings _fileSystemSettings;
         private readonly IRepository<MediaFile> _mediaFileRepository;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IUrlHelper _urlHelper;
 
-        public FileMigrationService(IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings, IRepository<MediaFile> mediaFileRepository,
+        public FileMigrationService(IServiceProvider serviceProvider, IConfigurationProvider configurationProvider, IRepository<MediaFile> mediaFileRepository,
             ICreateBatch createBatch, IUrlHelper urlHelper)
         {
             IEnumerable<IFileSystem> fileSystems = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>()
@@ -31,31 +31,28 @@ namespace MrCMS.Services.FileMigration
             _allFileSystems =
                 fileSystems
                     .ToDictionary(system => system.GetType().FullName);
-            _fileSystemSettings = fileSystemSettings;
             _mediaFileRepository = mediaFileRepository;
             _createBatch = createBatch;
             _serviceProvider = serviceProvider;
+            _configurationProvider = configurationProvider;
             _urlHelper = urlHelper;
         }
 
-        public IFileSystem CurrentFileSystem
+        public async Task<IFileSystem> GetCurrentFileSystem()
         {
-            get
-            {
-                string storageType = _fileSystemSettings.StorageType;
-                return _allFileSystems[storageType];
-            }
+            var _fileSystemSettings = await _configurationProvider.GetSiteSettings<FileSystemSettings>();
+            string storageType = _fileSystemSettings.StorageType;
+            return _allFileSystems[storageType];
         }
 
         public async Task<FileMigrationResult> MigrateFiles()
         {
             IList<MediaFile> mediaFiles = await _mediaFileRepository.Readonly().ToListAsync();
-
+            var currentFileSystem = await GetCurrentFileSystem();
             List<Guid> guids =
                 mediaFiles.Where(
-                    mediaFile =>
-                        MediaFileExtensions.GetFileSystem(mediaFile, _allFileSystems.Values) !=
-                        CurrentFileSystem)
+                    mediaFile => MediaFileExtensions.GetFileSystem(mediaFile, _allFileSystems.Values) !=
+                                 currentFileSystem)
                     .Select(file => file.Guid).ToList();
 
             if (!guids.Any())

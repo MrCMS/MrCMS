@@ -103,7 +103,7 @@
 
                         <h4>@Html.Resource("Admin User Roles", "Roles")</h4>
                         <div>
-                            @if (userRoles.Any() && Html.CanAccess<UserACL>(UserACL.Roles))
+                            @if (userRoles.Any() && await Html.CanAccess<UserACL>(UserACL.Roles))
                             {
                                 for (var index = 0; index < userRoles.Count; index++)
                                 {

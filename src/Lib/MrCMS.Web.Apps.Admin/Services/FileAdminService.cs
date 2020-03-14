@@ -22,20 +22,20 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly IFileService _fileService;
         private readonly IRepository<MediaFile> _mediaFileRepository;
-        private readonly MediaSettings _mediaSettings;
         private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public FileAdminService(IFileService fileService, IRepository<MediaFile> mediaFileRepository,
             IStringResourceProvider stringResourceProvider, IRepository<MediaCategory> mediaCategoryRepository,
-            MediaSettings mediaSettings, IGetDocumentsByParent<MediaCategory> getDocumentsByParent)
+            IConfigurationProvider configurationProvider, IGetDocumentsByParent<MediaCategory> getDocumentsByParent)
         {
             _fileService = fileService;
             _mediaFileRepository = mediaFileRepository;
             _stringResourceProvider = stringResourceProvider;
             _mediaCategoryRepository = mediaCategoryRepository;
-            _mediaSettings = mediaSettings;
+            _configurationProvider = configurationProvider;
             _getDocumentsByParent = getDocumentsByParent;
         }
 
@@ -62,7 +62,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _fileService.IsValidFileType(fileName);
         }
 
-        public IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel)
+        public async Task<IPagedList<MediaFile>> GetFilesForFolder(MediaCategorySearchModel searchModel)
         {
             var query = _mediaFileRepository.Readonly();
             query = searchModel.Id.HasValue
@@ -80,7 +80,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
             query = query.OrderBy(searchModel.SortBy);
 
-            return PagedListExtensions.ToPagedList(query, searchModel.Page, _mediaSettings.MediaPageSize);
+            var mediaSettings = await _configurationProvider.GetSiteSettings<MediaSettings>();
+            return await query.ToPagedListAsync(searchModel.Page, mediaSettings.MediaPageSize);
         }
 
         public List<ImageSortItem> GetFilesToSort(MediaCategory category = null)
@@ -176,10 +177,10 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             if (folders != null)
             {
-                IEnumerable<MediaCategory> foldersRecursive = GetFoldersRecursive(folders);
+                var foldersRecursive = GetFoldersRecursive(folders);
                 await _mediaCategoryRepository.Transact(async (repo, ct) =>
                  {
-                     foreach (MediaCategory f in foldersRecursive)
+                     await foreach (MediaCategory f in foldersRecursive.WithCancellation(ct))
                      {
                          var folder = repo.LoadSync(f.Id);
                          List<MediaFile> files = folder.Files.ToList();
@@ -227,11 +228,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
         }
 
-        private IEnumerable<MediaCategory> GetFoldersRecursive(IEnumerable<MediaCategory> categories)
+        private async IAsyncEnumerable<MediaCategory> GetFoldersRecursive(IEnumerable<MediaCategory> categories)
         {
             foreach (MediaCategory category in categories)
             {
-                foreach (MediaCategory child in GetFoldersRecursive(_getDocumentsByParent.GetDocuments(category)))
+                await foreach (MediaCategory child in GetFoldersRecursive(await _getDocumentsByParent.GetDocuments(category)))
                 {
                     yield return child;
                 }

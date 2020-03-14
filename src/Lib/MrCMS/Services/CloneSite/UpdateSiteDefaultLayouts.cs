@@ -19,10 +19,10 @@ namespace MrCMS.Services.CloneSite
             _repository = repository;
         }
 
-        public Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             var toProvider = new SqlConfigurationProvider(_repository, SiteId.GetForSite(@to), new NullEventContext());
-            var pageDefaultsSettings = toProvider.GetSiteSettings<PageDefaultsSettings>();
+            var pageDefaultsSettings = await toProvider.GetSiteSettings<PageDefaultsSettings>();
 
             var keys = pageDefaultsSettings.Layouts.Keys.ToList();
             foreach (var key in keys.Where(key => pageDefaultsSettings.Layouts[key].HasValue))
@@ -32,7 +32,7 @@ namespace MrCMS.Services.CloneSite
                     pageDefaultsSettings.Layouts[key] = layout.Id;
             }
 
-            return toProvider.SaveSettings(pageDefaultsSettings);
+            await toProvider.SaveSettings(pageDefaultsSettings);
         }
     }
 }

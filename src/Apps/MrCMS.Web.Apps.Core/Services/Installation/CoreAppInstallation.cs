@@ -27,8 +27,8 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
         {
             //settings
             await _setupCoreLayouts.Setup();
-            await _setupCoreWebpages.Setup();
             await _setupCoreMedia.Setup();
+            await _setupCoreWebpages.Setup();
         }
     }
 

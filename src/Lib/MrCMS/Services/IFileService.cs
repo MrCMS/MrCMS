@@ -18,8 +18,8 @@ namespace MrCMS.Services
         Task<MediaFile> GetFileByUrl(string url);
         Task<MediaFile> GetFile(string value);
         Task<string> GetFileUrl(MediaFile file, string value);
-        void RemoveFolder(MediaCategory mediaCategory);
-        void CreateFolder(MediaCategory mediaCategory);
+        Task RemoveFolder(MediaCategory mediaCategory);
+        Task CreateFolder(MediaCategory mediaCategory);
         bool IsValidFileType(string fileName);
         Task DeleteFileSoft(MediaFile mediaFile);
     }

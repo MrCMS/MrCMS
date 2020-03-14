@@ -1,28 +1,32 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Controllers
 {
     public class SEOController : MrCMSUIController
     {
-        private readonly SEOSettings _seoSettings;
-        private readonly Site _site;
+        private readonly IGetCurrentSite _getCurrentSite;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public SEOController(SEOSettings seoSettings, Site site)
+        public SEOController(IGetCurrentSite getCurrentSite, IConfigurationProvider configurationProvider)
         {
-            _seoSettings = seoSettings;
-            _site = site;
+            _getCurrentSite = getCurrentSite;
+            _configurationProvider = configurationProvider;
         }
 
-        public ActionResult Robots()
+        public async Task<ActionResult> Robots()
         {
+            var site = await _getCurrentSite.GetSite();
+            var seoSettings = await _configurationProvider.GetSiteSettings<SEOSettings>();
             return Content(
-                Request.Host.Host.Equals(_site.StagingUrl, StringComparison.InvariantCultureIgnoreCase)
-                    ? _seoSettings.RobotsTextStaging
-                    : _seoSettings.RobotsText, "text/plain", Encoding.UTF8);
+                Request.Host.Host.Equals(site.StagingUrl, StringComparison.InvariantCultureIgnoreCase)
+                    ? seoSettings.RobotsTextStaging
+                    : seoSettings.RobotsText, "text/plain", Encoding.UTF8);
         }
     }
 }

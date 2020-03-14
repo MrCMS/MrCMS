@@ -16,7 +16,7 @@ namespace MrCMS.Website
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            context.Items[Key] = _configurationProvider.GetSiteSettings<SiteSettings>();
+            context.Items[Key] = await _configurationProvider.GetSiteSettings<SiteSettings>();
             await next(context);
         }
     }

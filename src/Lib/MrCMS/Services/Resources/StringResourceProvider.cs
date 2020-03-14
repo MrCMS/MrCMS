@@ -94,7 +94,7 @@ namespace MrCMS.Services.Resources
 
         public string GetValue(string key, string defaultValue = null)
         {
-            return GetValueForCulture(key, _getCurrentUserCultureInfo.Get(), defaultValue);
+            return GetValueForCulture(key, CultureInfo.InvariantCulture, defaultValue);
         }
 
         public string GetValueForCulture(string key, CultureInfo cultureInfo, string defaultValue = null)

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 
@@ -16,13 +17,15 @@ namespace MrCMS.Website
             _cacheInHttpContext = cacheInHttpContext;
         }
 
-        public Webpage GetWebpage(string path)
+        public async Task<Webpage> GetWebpage(string path)
         {
             var url = path?.TrimStart('/');
-            return _cacheInHttpContext.GetForRequest($"webpage-for-path|{url}",
-                () => string.IsNullOrWhiteSpace(url)
-                    ? _getHomePage.Get()
-                    : _getWebpageByUrl.GetByUrl(url));
+            //return await _cacheInHttpContext.GetForRequest($"webpage-for-path|{url}", () => string.IsNullOrWhiteSpace(url)
+            //        ? _getHomePage.Get()
+            //        : _getWebpageByUrl.GetByUrl(url));
+            return string.IsNullOrWhiteSpace(url)
+                ? await _getHomePage.Get()
+                : await _getWebpageByUrl.GetByUrl(url);
         }
     }
 }

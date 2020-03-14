@@ -17,9 +17,9 @@ namespace MrCMS.Tests.Services
     {
         private readonly IUrlValidationService _urlValidationService;
         private readonly WebpageUrlService _webpageUrlService;
-        private readonly PageDefaultsSettings _pageDefaultsSettings;
-        private IRepository<Webpage> _webpageRepository;
-        private IRepository<PageTemplate> _pageTemplateRepository;
+        private readonly IRepository<Webpage> _webpageRepository;
+        private readonly IRepository<PageTemplate> _pageTemplateRepository;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public WebpageUrlGeneratorTests()
         {
@@ -27,8 +27,8 @@ namespace MrCMS.Tests.Services
             _webpageRepository = A.Fake<IRepository<Webpage>>();
             _pageTemplateRepository = A.Fake<IRepository<PageTemplate>>();
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(A<string>.Ignored, A<int?>.Ignored)).Returns(true);
-            _pageDefaultsSettings = new PageDefaultsSettings();
-            _webpageUrlService = new WebpageUrlService(_webpageRepository, _pageTemplateRepository, _urlValidationService, ServiceProvider, _pageDefaultsSettings);
+            _configurationProvider = A.Fake<IConfigurationProvider>();
+            _webpageUrlService = new WebpageUrlService(_webpageRepository, _pageTemplateRepository, _urlValidationService, ServiceProvider, _configurationProvider);
         }
 
         [Fact]

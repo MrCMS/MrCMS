@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
@@ -51,45 +52,45 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void PasswordManagementService_ValidateUser_WithCorrectPasswordShouldReturnTrue()
+        public async Task PasswordManagementService_ValidateUser_WithCorrectPasswordShouldReturnTrue()
         {
             var user = new User();
             A.CallTo(() => _passwordEncryptionManager.ValidateUser(user, "password")).Returns(true);
 
-            var result = _passwordManagementService.ValidateUser(user, "password");
+            var result = await _passwordManagementService.ValidateUser(user, "password");
 
             result.Should().BeTrue();
         }
 
         [Fact]
-        public void PasswordManagementService_ValidateUser_WithIncorrectPasswordShouldReturnTrue()
+        public async Task PasswordManagementService_ValidateUser_WithIncorrectPasswordShouldReturnTrue()
         {
             var user = new User();
             A.CallTo(() => _passwordEncryptionManager.ValidateUser(user, "password")).Returns(false);
 
-            var result = _passwordManagementService.ValidateUser(user, "password");
+            var result =await _passwordManagementService.ValidateUser(user, "password");
 
             result.Should().BeFalse();
         }
 
         [Fact]
-        public void PasswordManagementService_ValidateUser_ShouldCallUpdateEncryptionIfItIsSetAgainstTheUserAndItIsValidated()
+        public async Task PasswordManagementService_ValidateUser_ShouldCallUpdateEncryptionIfItIsSetAgainstTheUserAndItIsValidated()
         {
             var user = new User { CurrentEncryption = "SHA1" };
             A.CallTo(() => _passwordEncryptionManager.ValidateUser(user, "password")).Returns(true);
 
-            _passwordManagementService.ValidateUser(user, "password");
+            await _passwordManagementService.ValidateUser(user, "password");
 
             A.CallTo(() => _passwordEncryptionManager.UpdateEncryption(user, "password")).MustHaveHappened();
         }
 
         [Fact]
-        public void PasswordManagementService_ValidateUser_ShouldNotCallUpdateEncryptionIfItIsSetAgainstTheUserAndItIsNotValidated()
+        public async Task PasswordManagementService_ValidateUser_ShouldNotCallUpdateEncryptionIfItIsSetAgainstTheUserAndItIsNotValidated()
         {
             var user = new User { CurrentEncryption = "SHA1" };
             A.CallTo(() => _passwordEncryptionManager.ValidateUser(user, "password")).Returns(false);
 
-            _passwordManagementService.ValidateUser(user, "password");
+            await _passwordManagementService.ValidateUser(user, "password");
 
             A.CallTo(() => _passwordEncryptionManager.UpdateEncryption(user, "password")).MustNotHaveHappened();
         }

@@ -36,8 +36,8 @@ namespace MrCMS.Tasks
                             message => message.SentOn == null && message.Tries < MAX_TRIES)
                         .ToListAsync(ct))
                 {
-                    if (_emailSender.CanSend(queuedMessage))
-                        _emailSender.SendMailMessage(queuedMessage);
+                    if (await _emailSender.CanSend(queuedMessage))
+                        await _emailSender.SendMailMessage(queuedMessage);
                     else
                         queuedMessage.SentOn = DateTime.UtcNow;
                     await repo.Update(queuedMessage, ct);

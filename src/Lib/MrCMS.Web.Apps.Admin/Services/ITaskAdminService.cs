@@ -10,8 +10,8 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         Task<List<TaskInfo>> GetAllScheduledTasks();
         Task<TaskUpdateData> GetTaskUpdateData(string type);
-        IPagedList<QueuedTask> GetQueuedTasks(QueuedTaskSearchQuery searchQuery);
-        void Update(TaskUpdateData info);
-        void Reset(TaskUpdateData info);
+        Task<IPagedList<QueuedTask>> GetQueuedTasks(QueuedTaskSearchQuery searchQuery);
+        Task Update(TaskUpdateData info);
+        Task Reset(TaskUpdateData info);
     }
 }

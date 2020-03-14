@@ -7,7 +7,7 @@ namespace MrCMS.Services.ImportExport
 {
     public interface IImportDocumentsValidationService
     {
-        Dictionary<string, List<string>> ValidateBusinessLogic(IEnumerable<DocumentImportDTO> items);
+        Task<Dictionary<string, List<string>>> ValidateBusinessLogic(IEnumerable<DocumentImportDTO> items);
 
         Task<(List<DocumentImportDTO>, Dictionary<string, List<string>>)> ValidateAndImportDocuments(
             ExcelPackage spreadsheet);

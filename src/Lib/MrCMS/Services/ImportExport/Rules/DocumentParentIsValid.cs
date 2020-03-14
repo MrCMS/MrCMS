@@ -14,7 +14,7 @@ namespace MrCMS.Services.ImportExport.Rules
             _getWebpageByUrl = getWebpageByUrl;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
+        public async IAsyncEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
         {
             if (!string.IsNullOrWhiteSpace(item.ParentUrl) && _getWebpageByUrl.GetByUrl(item.ParentUrl) == null && !allItems.Any(x => x.UrlSegment == item.ParentUrl))
                 yield return "The parent url specified is not present within the system.";

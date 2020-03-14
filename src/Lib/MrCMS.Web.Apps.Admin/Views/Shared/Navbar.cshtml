@@ -5,78 +5,79 @@
 @using MrCMS.Settings
 @using MrCMS.Web.Apps.Admin.Helpers
 @using MrCMS.Website
-@inject SiteSettings Settings
+@inject IConfigurationProvider ConfigurationProvider
 @inject IGetCurrentUser GetCurrentUser
 @{
     var typeOptions = UniversalSearchHelper.GetOptions();
     var currentUser = GetCurrentUser.Get();
+    var siteSettings = await ConfigurationProvider.GetSiteSettings<SiteSettings>();
 }
 
 <p>navbar</p>
 
 @*<nav class="navbar navbar-default no-border-radius mb-0 navbar-fixed-top nav" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <span class="d-inline">
-                <a href="/Admin" tabindex="3">
-                    @{
-                        var adminLogo = Settings.AdminLogo;
-                    }
-                    @if (!string.IsNullOrWhiteSpace(adminLogo))
-                    {
-                        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new { @class = "logo" })
-                    }
-                    else
-                    {
-                        <img src="/Areas/Admin/img/logo.png" class="logo" />
-                    }
-                </a>
-            </span>
-            <button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target="#right-hand-navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="btn navbar-toggle" data-toggle="collapse" data-target="#search-collapse" style="padding-top:6px; padding-bottom: 6px;"><i class="fa fa-search"></i></a>
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <span class="d-inline">
+                    <a href="/Admin" tabindex="3">
+                        @{
+                            var adminLogo = Settings.AdminLogo;
+                        }
+                        @if (!string.IsNullOrWhiteSpace(adminLogo))
+                        {
+                            @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new { @class = "logo" })
+                        }
+                        else
+                        {
+                            <img src="/Areas/Admin/img/logo.png" class="logo" />
+                        }
+                    </a>
+                </span>
+                <button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target="#right-hand-navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="btn navbar-toggle" data-toggle="collapse" data-target="#search-collapse" style="padding-top:6px; padding-bottom: 6px;"><i class="fa fa-search"></i></a>
 
-        </div>
-        <div class="collapse navbar-collapse pull-left" id="search-collapse">
-            <form class="navbar-form navbar-left site-search form-inline" role="search" action="@Url.Action("Index", "Search")" method="GET">
-                <div class="form-group">
-                    @Html.TextBox("term", "", new { @class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        @Html.DropDownList("type", typeOptions, new { @class = "form-control search-type-dropdown", data_search_item_type = true })
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-secondary" tabindex="2">@Html.Resource("Go")</button>
-                        </span>
+            </div>
+            <div class="collapse navbar-collapse pull-left" id="search-collapse">
+                <form class="navbar-form navbar-left site-search form-inline" role="search" action="@Url.Action("Index", "Search")" method="GET">
+                    <div class="form-group">
+                        @Html.TextBox("term", "", new { @class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
                     </div>
-                </div>
-            </form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.DropDownList("type", typeOptions, new { @class = "form-control search-type-dropdown", data_search_item_type = true })
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-secondary" tabindex="2">@Html.Resource("Go")</button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="collapse navbar-collapse" id="right-hand-navbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/" target="new"><i class="fa fa-home"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Home</span></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Your Account</span><span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/logout">Logout</a></li>
+                            <li><a href="@Url.Action("Edit", "User", new { Id = currentUser.Id })">@Html.Resource("Your Account")</a></li>
+                        </ul>
+                    </li>
+                    @if (!currentUser.DisableNotifications)
+                    {
+                        <partial name="PersistentNotificationNav" />
+                    }
+                    <li class="dropdown right-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Sites</span><span class="caret"></span></a>
+                        <partial name="SiteListNav" />
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="collapse navbar-collapse" id="right-hand-navbar">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="/" target="new"><i class="fa fa-home"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Home</span></a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Your Account</span><span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="/logout">Logout</a></li>
-                        <li><a href="@Url.Action("Edit", "User", new { Id = currentUser.Id })">@Html.Resource("Your Account")</a></li>
-                    </ul>
-                </li>
-                @if (!currentUser.DisableNotifications)
-                {
-                    <partial name="PersistentNotificationNav" />
-                }
-                <li class="dropdown right-dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Sites</span><span class="caret"></span></a>
-                    <partial name="SiteListNav" />
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>*@
+    </nav>*@

@@ -51,8 +51,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 return new SaveResult(false,
                     string.Format(_stringResourceProvider.GetValue("Admin InlineEditing Save NotFound", "Could not find entity of type '{0}' with id {1}"), updatePropertyData.Type,
                         updatePropertyData.Id));
-            var stringLengthAttribute = propertyInfo.GetCustomAttributes(true).FirstOrDefault(x => x.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
-            if (stringLengthAttribute != null && updatePropertyData.Content.Length > stringLengthAttribute.MaximumLength)
+            if (propertyInfo.GetCustomAttributes(true).FirstOrDefault(x => x.GetType() == typeof(StringLengthAttribute)) is StringLengthAttribute stringLengthAttribute && updatePropertyData.Content.Length > stringLengthAttribute.MaximumLength)
             {
                 return new SaveResult
                 {

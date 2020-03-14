@@ -18,11 +18,11 @@ namespace MrCMS.Website.PushNotifications
 {
     public class SendPushNotification : ISendPushNotification
     {
-        private readonly WebPushSettings _settings;
         private readonly IRepository<PushSubscription> _pushSubscriptionRepository;
         private readonly IRepository<PushNotification> _pushNotificationRepository;
         private readonly IRepository<PushNotificationLog> _pushNotificationLogRepository;
         private readonly IUrlHelper _urlHelper;
+        private readonly IGetWebPushSettings _getSettings;
         private readonly ICreateBatch _createBatch;
         private readonly IControlBatchRun _controlBatchRun;
 
@@ -36,26 +36,27 @@ namespace MrCMS.Website.PushNotifications
             _pushNotificationRepository = pushNotificationRepository;
             _pushNotificationLogRepository = pushNotificationLogRepository;
             _urlHelper = urlHelper;
+            _getSettings = getSettings;
             _createBatch = createBatch;
             _controlBatchRun = controlBatchRun;
-            _settings = getSettings.GetSettings();
         }
 
         public async Task<WebPushResult> SendNotification(PushSubscription subscription, PushNotification notification)
         {
-            var vapidDetails = new VapidDetails(_settings.VapidSubject, _settings.VapidPublicKey,
-                _settings.VapidPrivateKey);
+            WebPushSettings settings = await _getSettings.GetSettings();
+            var vapidDetails = new VapidDetails(settings.VapidSubject, settings.VapidPublicKey,
+                settings.VapidPrivateKey);
 
             var webPushClient = new WebPushClient();
-            webPushClient.SetVapidDetails(_settings.VapidSubject, _settings.VapidPublicKey,
-                _settings.VapidPrivateKey);
+            webPushClient.SetVapidDetails(settings.VapidSubject, settings.VapidPublicKey,
+                settings.VapidPrivateKey);
 
             try
             {
                 webPushClient.SendNotification(ToWebPushNotification(subscription),
                     JsonConvert.SerializeObject(GetPayload(notification)), vapidDetails);
 
-                if (_settings.LogNotifications)
+                if (settings.LogNotifications)
                 {
                     await _pushNotificationLogRepository.Add(new PushNotificationLog
                     {
@@ -90,7 +91,7 @@ namespace MrCMS.Website.PushNotifications
             string url = null, string title = null,
             string icon = null, string badge = null)
         {
-            var payload = GetPayload(body, url, title, icon, badge);
+            var payload = await GetPayload(body, url, title, icon, badge);
 
             var notification = await CreatePushNotificationEntity(payload);
 
@@ -115,9 +116,9 @@ namespace MrCMS.Website.PushNotifications
                 Title = payload.Title
             };
         }
-        private PushNotificationPayload GetPayload(PushNotification notification)
+        private async Task<PushNotificationPayload> GetPayload(PushNotification notification)
         {
-            return GetPayload(notification.Body, notification.ActionUrl, notification.Title, notification.Icon,
+            return await GetPayload(notification.Body, notification.ActionUrl, notification.Title, notification.Icon,
                 notification.Badge);
         }
 
@@ -125,7 +126,7 @@ namespace MrCMS.Website.PushNotifications
             string url = null, string title = null,
             string icon = null, string badge = null)
         {
-            var payload = GetPayload(body, url, title, icon, badge);
+            var payload = await GetPayload(body, url, title, icon, badge);
 
             var pushNotification = CreatePushNotificationEntity(payload);
 
@@ -149,15 +150,16 @@ namespace MrCMS.Website.PushNotifications
             return await SendNotificationToSelection(await _pushSubscriptionRepository.Query<PushSubscription>().ToListAsync(), body, url, title, icon, badge);
         }
 
-        private PushNotificationPayload GetPayload(string body, string url, string title, string icon, string badge)
+        private async Task<PushNotificationPayload> GetPayload(string body, string url, string title, string icon, string badge)
         {
+            WebPushSettings settings = await _getSettings.GetSettings();
             return new PushNotificationPayload
             {
                 Body = body,
-                Title = title ?? _settings.DefaultNotificationTitle,
+                Title = title ?? settings.DefaultNotificationTitle,
                 ActionUrl = url,
-                Icon = EnsureAbsolute(icon ?? _settings.DefaultNotificationIcon),
-                Badge = EnsureAbsolute(badge ?? _settings.DefaultNotificationBadge)
+                Icon = EnsureAbsolute(icon ?? settings.DefaultNotificationIcon),
+                Badge = EnsureAbsolute(badge ?? settings.DefaultNotificationBadge)
             };
         }
 

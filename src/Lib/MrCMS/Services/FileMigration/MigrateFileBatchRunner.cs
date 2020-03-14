@@ -18,12 +18,12 @@ namespace MrCMS.Services.FileMigration
         private readonly IEnumerable<IFileSystem> _fileSystems;
         private readonly IRepository<MediaFile> _mediaFileRepository;
         private readonly IRepository<ResizedImage> _resizedImageRepository;
-        private readonly FileSystemSettings _fileSystemSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public MigrateFileBatchRunner(
             IRepository<MediaFile> mediaFileRepository,
             IRepository<ResizedImage> resizedImageRepository,
-            IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings)
+            IServiceProvider serviceProvider, IConfigurationProvider configurationProvider)
         {
             _fileSystems =
                 TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
@@ -32,16 +32,14 @@ namespace MrCMS.Services.FileMigration
             ;
             _mediaFileRepository = mediaFileRepository;
             _resizedImageRepository = resizedImageRepository;
-            _fileSystemSettings = fileSystemSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public IFileSystem CurrentFileSystem
+        public async Task<IFileSystem> GetCurrentFileSystem()
         {
-            get
-            {
-                var storageType = _fileSystemSettings.StorageType;
-                return _fileSystems.FirstOrDefault(system => system.GetType().FullName == storageType);
-            }
+            var fileSystemSettings = await _configurationProvider.GetSiteSettings<FileSystemSettings>();
+            var storageType = fileSystemSettings.StorageType;
+            return _fileSystems.FirstOrDefault(system => system.GetType().FullName == storageType);
         }
 
         private string GetNewFilePath(MediaFile file)
@@ -62,8 +60,8 @@ namespace MrCMS.Services.FileMigration
 
             foreach (var mediaFile in mediaFiles)
             {
-                var from = MediaFileExtensions.GetFileSystem(mediaFile, _fileSystems);
-                var to = CurrentFileSystem;
+                var from = await MediaFileExtensions.GetFileSystem(mediaFile, _fileSystems);
+                var to = await GetCurrentFileSystem();
                 if (from.GetType() == to.GetType())
                     continue;
 
@@ -76,19 +74,19 @@ namespace MrCMS.Services.FileMigration
                          // do not delete from disc yet in that case, or else it will cause an error when copying
                          if (resizedImage.Url != mediaFile.FileUrl)
                          {
-                             from.Delete(resizedImage.Url);
+                             await from.Delete(resizedImage.Url);
                          }
                          mediaFile.ResizedImages.Remove(resizedImage);
                          await _resizedImageRepository.Delete(resizedImage, ct);
                      }
 
                      var existingUrl = mediaFile.FileUrl;
-                     using (var readStream = @from.GetReadStream(existingUrl))
+                     using (var readStream = await @from.GetReadStream(existingUrl))
                      {
-                         mediaFile.FileUrl = to.SaveFile(readStream, GetNewFilePath(mediaFile),
+                         mediaFile.FileUrl = await to.SaveFile(readStream, GetNewFilePath(mediaFile),
                              mediaFile.ContentType);
                      }
-                     from.Delete(existingUrl);
+                     await from.Delete(existingUrl);
 
                      await repo.Update(mediaFile, ct);
                  }, token);

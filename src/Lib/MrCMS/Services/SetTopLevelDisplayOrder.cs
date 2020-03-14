@@ -17,23 +17,23 @@ namespace MrCMS.Services
             _getDocumentsByParent = getDocumentsByParent;
         }
 
-        public override Task<IResult> OnAdding(T entity, DbContext context)
+        public override async Task<IResult> OnAdding(T entity, DbContext context)
         {
             // if the document isn't set or it's not top level (i.e. has a parent) we don't want to deal with it here
             if (entity == null || entity.ParentId != null)
-                return Success;
+                return await Success;
 
             // if it's not 0 it means it's been set, so we'll not update it
             if (entity.DisplayOrder != 0)
-                return Success;
+                return await Success;
 
-            var documentsByParent = _getDocumentsByParent.GetDocuments(null)
+            var documentsByParent = (await _getDocumentsByParent.GetDocuments(null))
                 .Where(doc => doc != entity).ToList();
 
             entity.DisplayOrder = documentsByParent.Any()
                 ? documentsByParent.Max(category => category.DisplayOrder) + 1
                 : 0;
-            return Success;
+            return await Success;
         }
     }
 }

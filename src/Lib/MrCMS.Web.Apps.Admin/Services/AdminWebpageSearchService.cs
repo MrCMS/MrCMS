@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -41,20 +42,27 @@ namespace MrCMS.Web.Apps.Admin.Services
             _getLiveUrl = getLiveUrl;
         }
 
-        public IPagedList<Webpage> Search(AdminWebpageSearchQuery model)
+        public async Task<IPagedList<Webpage>> Search(AdminWebpageSearchQuery model)
         {
-            return _documentSearcher.Search(GetQuery(model), model.Page);
+            return await _documentSearcher.Search(GetQuery(model), model.Page);
         }
 
-        public IEnumerable<QuickSearchResult> QuickSearch(AdminWebpageSearchQuery model)
+        public async Task<IEnumerable<QuickSearchResult>> QuickSearch(AdminWebpageSearchQuery model)
         {
-            return Enumerable.Select(_documentSearcher.Search(GetQuery(model), model.Page, 10), x =>
-                new QuickSearchResult
-                {
-                    id = x.Id,
-                    value = x.Name,
-                    url = _getLiveUrl.GetAbsoluteUrl(x)
-                });
+            var search = await _documentSearcher.Search(GetQuery(model), model.Page, 10);
+            var quickSearchResults = new List<QuickSearchResult>();
+            foreach (var webpage in search)
+            {
+                quickSearchResults.Add(
+                    new QuickSearchResult
+                    {
+                        id = webpage.Id,
+                        value = webpage.Name,
+                        url = await _getLiveUrl.GetAbsoluteUrl(webpage)
+                    });
+            }
+
+            return quickSearchResults;
         }
 
 

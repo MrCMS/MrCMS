@@ -19,6 +19,7 @@ namespace MrCMS.Tasks
                 try
                 {
                     // we're basically firing and forgetting a request here
+#pragma warning disable
                     new HttpClient().GetAsync(url);
                 }
                 catch

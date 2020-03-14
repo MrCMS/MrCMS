@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             _accessChecker = accessChecker;
         }
 
-        public bool CanAccess(Breadcrumb breadcrumb)
+        public async Task<bool> CanAccess(Breadcrumb breadcrumb)
         {
             if (breadcrumb == null)
                 return false;
@@ -23,7 +23,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Breadcrumbs
             if (descriptor == null)
                 return false;
 
-            return _accessChecker.CanAccess(descriptor);
+            return await _accessChecker.CanAccess(descriptor);
         }
     }
 }

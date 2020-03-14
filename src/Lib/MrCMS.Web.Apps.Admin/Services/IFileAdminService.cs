@@ -17,7 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task DeleteFile(MediaFile mediaFile);
         Task UpdateFile(MediaFile mediaFile);
         bool IsValidFileType(string fileName);
-        IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
+        Task<IPagedList<MediaFile>> GetFilesForFolder(MediaCategorySearchModel searchModel);
         List<ImageSortItem> GetFilesToSort(MediaCategory category = null);
         Task SetOrders(List<SortItem> items);
         Task<List<MediaCategory>> GetSubFolders(MediaCategorySearchModel searchModel);

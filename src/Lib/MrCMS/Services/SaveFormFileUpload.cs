@@ -23,8 +23,8 @@ namespace MrCMS.Services
 
         public async Task<string> SaveFile(Form form, FormPosting formPosting, IFormFile file)
         {
-            var mediaCategory = _mediaCategoryLoader.GetByUrl("file-uploads") ??
-                                CreateFileUploadMediaCategory();
+            var mediaCategory = await _mediaCategoryLoader.GetByUrl("file-uploads") ??
+                                await CreateFileUploadMediaCategory();
 
             var result = await _fileService.AddFile(file.OpenReadStream(), form.Id + "-" + formPosting.Id + "-" + file.FileName,
                 file.ContentType, file.Length, mediaCategory);
@@ -32,10 +32,10 @@ namespace MrCMS.Services
             return result.FileUrl;
         }
 
-        private MediaCategory CreateFileUploadMediaCategory()
+        private async Task<MediaCategory> CreateFileUploadMediaCategory()
         {
             var mediaCategory = new MediaCategory { UrlSegment = "file-uploads", Name = "File Uploads" };
-            _mediaCategoryRepository.Add(mediaCategory);
+            await _mediaCategoryRepository.Add(mediaCategory);
             return mediaCategory;
         }
     }

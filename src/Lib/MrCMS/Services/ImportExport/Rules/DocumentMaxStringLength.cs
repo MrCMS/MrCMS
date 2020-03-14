@@ -17,7 +17,7 @@ namespace MrCMS.Services.ImportExport.Rules
             Length = length;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
+        public async IAsyncEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
         {
             var value = Selector(item);
             if (!String.IsNullOrWhiteSpace(value))

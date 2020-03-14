@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Widget;
 
 namespace MrCMS.Services
@@ -9,6 +10,6 @@ namespace MrCMS.Services
         /// </summary>
         /// <param name="widget"></param>
         /// <returns></returns>
-        object GetModel(Widget widget);
+        Task<object> GetModel(Widget widget);
     }
 }

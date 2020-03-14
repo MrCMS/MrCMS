@@ -1,22 +1,24 @@
-﻿using MrCMS.Settings;
+﻿using System.Threading.Tasks;
+using MrCMS.Settings;
 
 namespace MrCMS.Messages.Security
 {
     public class GetDefaultFooterScriptChangeMessageTemplate: GetDefaultTemplate<FooterScriptChangeMessageTemplate>
     {
-        private readonly MailSettings _mailSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public GetDefaultFooterScriptChangeMessageTemplate(MailSettings mailSettings)
+        public GetDefaultFooterScriptChangeMessageTemplate(ISystemConfigurationProvider configurationProvider)
         {
-            _mailSettings = mailSettings;
+            _configurationProvider = configurationProvider;
         }
-        public override FooterScriptChangeMessageTemplate Get()
+        public override async Task<FooterScriptChangeMessageTemplate> Get()
         {
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
             return new FooterScriptChangeMessageTemplate
             {
                 Subject = "Footer Script Change - {Status}",
-                FromAddress = _mailSettings.SystemEmailAddress,
-                ToAddress = _mailSettings.SystemEmailAddress,
+                FromAddress = mailSettings.SystemEmailAddress,
+                ToAddress = mailSettings.SystemEmailAddress,
                 Body = "The page {Name} ({Url}) has been modified."
             };
         }

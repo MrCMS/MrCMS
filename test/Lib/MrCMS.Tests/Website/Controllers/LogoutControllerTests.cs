@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Services;
@@ -9,22 +10,22 @@ namespace MrCMS.Tests.Website.Controllers
     public class LogoutControllerTests
     {
         [Fact]
-        public void Logout_CallsAuthorisationServiceLogout()
+        public async Task Logout_CallsAuthorisationServiceLogout()
         {
             var authorisationService = A.Fake<IAuthorisationService>();
             var logoutController = new LogoutControllerBuilder().WithAuthorisationService(authorisationService).Build();
 
-            logoutController.Logout();
+            await logoutController.Logout();
 
             A.CallTo(() => authorisationService.Logout()).MustHaveHappened();
         }
 
         [Fact]
-        public void Logout_RedirectsToRoute()
+        public async Task Logout_RedirectsToRoute()
         {
             var logoutController = new LogoutControllerBuilder().Build();
 
-            var result = logoutController.Logout();
+            var result = await logoutController.Logout();
 
             result.Url.Should().Be("~/");
         }

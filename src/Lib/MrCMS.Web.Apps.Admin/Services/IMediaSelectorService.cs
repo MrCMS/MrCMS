@@ -12,8 +12,8 @@ namespace MrCMS.Web.Apps.Admin.Services
         IPagedList<MediaFile> Search(MediaSelectorSearchQuery searchQuery);
         List<SelectListItem> GetCategories();
         Task<SelectedItemInfo> GetFileInfo(string value);
-        string GetAlt(string url);
-        string GetDescription(string url);
+        Task<string> GetAlt(string url);
+        Task<string> GetDescription(string url);
         Task<bool> UpdateAlt(UpdateMediaParams updateMediaParams);
         Task<bool> UpdateDescription(UpdateMediaParams updateMediaParams);
     }

@@ -15,13 +15,13 @@ namespace MrCMS.Tasks
 {
     public class DeleteExpiredLogsTask : SchedulableTask
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IRepository<Log> _repository;
         private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public DeleteExpiredLogsTask(SiteSettings siteSettings, IRepository<Log> repository, IGetDateTimeNow getDateTimeNow)
+        public DeleteExpiredLogsTask(IConfigurationProvider configurationProvider, IRepository<Log> repository, IGetDateTimeNow getDateTimeNow)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
             _repository = repository;
             _getDateTimeNow = getDateTimeNow;
         }
@@ -40,12 +40,13 @@ namespace MrCMS.Tasks
             }
         }
 
-        private Task<List<Log>> GetLogs(CancellationToken token)
+        private async Task<List<Log>> GetLogs(CancellationToken token)
         {
-            var now = _getDateTimeNow.LocalNow;
-            return
+            var now = await _getDateTimeNow.GetLocalNow();
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            return await
                 _repository.Query()
-                    .Where(data => data.CreatedOn <= now.AddDays(-_siteSettings.DaysToKeepLogs))
+                    .Where(data => data.CreatedOn <= now.AddDays(-siteSettings.DaysToKeepLogs))
                     .Take(1000)
                     .ToListAsync(token);
         }

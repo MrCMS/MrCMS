@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
@@ -22,9 +23,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(int id, int? parentVal)
+        public async Task<RedirectToActionResult> Set(int id, int? parentVal)
         {
-            _webpageParentAdminService.Set(id, parentVal);
+            await _webpageParentAdminService.Set(id, parentVal);
 
             return RedirectToAction("Edit", "Webpage", new { id });
         }

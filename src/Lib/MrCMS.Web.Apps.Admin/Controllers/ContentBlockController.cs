@@ -36,7 +36,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
 
-            var id = _contentBlockAdminService.Add(addModel, additionalPropertyModel);
+            var id = _contentBlockAdminService.AddAsync(addModel, additionalPropertyModel);
 
             if (id != null)
             {
@@ -102,9 +102,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Sort(IList<SortItem> sortItems, int webpageId)
+        public async Task<ActionResult> Sort(IList<SortItem> sortItems, int webpageId)
         {
-            _contentBlockAdminService.Sort(sortItems);
+            await _contentBlockAdminService.Sort(sortItems);
 
             return RedirectToAction("Edit", "Webpage", new { id = webpageId });
         }

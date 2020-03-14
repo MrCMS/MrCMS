@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 
@@ -13,12 +15,11 @@ namespace MrCMS.Services
             _repository = repository;
         }
 
-        public T GetByUrl(string url)
+        public Task<T> GetByUrl(string url)
         {
-            var firstOrDefault = _repository
+            return _repository
                 .Query()
-                .FirstOrDefault(doc => doc.UrlSegment == url);
-            return firstOrDefault;
+                .FirstOrDefaultAsync(doc => doc.UrlSegment == url);
         }
     }
 }

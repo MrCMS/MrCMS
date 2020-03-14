@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageWidgetController_Hide_CallsServiceHideWithPassedArguments()
+        public async Task WebpageWidgetController_Hide_CallsServiceHideWithPassedArguments()
         {
-            _webpageWidgetController.Hide(123, 2, 3);
+            await _webpageWidgetController.Hide(123, 2, 3);
 
             A.CallTo(() => _webpageWidgetAdminService.Hide(123, 2)).MustHaveHappened();
         }
@@ -34,10 +35,10 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageWidgetController_Hide_SetsRouteValuesForIdAndLayoutAreaId()
+        public async Task WebpageWidgetController_Hide_SetsRouteValuesForIdAndLayoutAreaId()
         {
 
-            var result = _webpageWidgetController.Hide(123, 2, 3);
+            var result = await _webpageWidgetController.Hide(123, 2, 3);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(123);
@@ -45,9 +46,9 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageWidgetController_Show_CallsServiceShowWithPassedArguments()
+        public async Task WebpageWidgetController_Show_CallsServiceShowWithPassedArguments()
         {
-            _webpageWidgetController.Show(123, 2, 3);
+            await _webpageWidgetController.Show(123, 2, 3);
 
             A.CallTo(() => _webpageWidgetAdminService.Show(123, 2)).MustHaveHappened();
         }

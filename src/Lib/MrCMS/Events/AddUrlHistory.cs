@@ -18,8 +18,7 @@ namespace MrCMS.Events
 
         public override async Task Execute(ChangeInfo data)
         {
-            var webpage = data.Entity() as Webpage;
-            if (webpage == null)
+            if (!(data.Entity() is Webpage webpage))
                 return;
             var updated = data.PropertiesUpdated.Any(x => x.Name == nameof(Webpage.UrlSegment));
             if (!updated)

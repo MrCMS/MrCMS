@@ -1,4 +1,5 @@
-﻿using MrCMS.Services.Widgets;
+﻿using System.Threading.Tasks;
+using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Widgets;
 
@@ -13,11 +14,11 @@ namespace MrCMS.Web.Apps.Articles.Services.Widgets
             _articleArchiveService = articleArchiveService;
         }
 
-        public override object GetModel(ArticleArchive widget)
+        public override async Task<object> GetModel(ArticleArchive widget)
         {
             var model = new ArticleArchiveModel
             {
-                ArticleYearsAndMonths = _articleArchiveService.GetMonthsAndYears(widget.ArticleList),
+                ArticleYearsAndMonths = await _articleArchiveService.GetMonthsAndYears(widget.ArticleList),
                 ArticleList = widget.ArticleList,
                 ArticleArchive = widget
             };

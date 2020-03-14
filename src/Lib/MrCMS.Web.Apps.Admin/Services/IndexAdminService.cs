@@ -78,9 +78,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _universalSearchIndexManager.GetUniversalIndexInfo();
         }
 
-        public void ReindexUniversalSearch()
+        public async Task ReindexUniversalSearch()
         {
-            _universalSearchIndexManager.ReindexAll();
+         await   _universalSearchIndexManager.ReindexAll();
         }
 
 
@@ -89,9 +89,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _indexService.GetIndexes();
         }
 
-        public void Reindex(string typeName)
+        public async Task Reindex(string typeName)
         {
-            _indexService.Reindex(typeName);
+            await _indexService.Reindex(typeName);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.ACL;
@@ -10,16 +11,16 @@ namespace MrCMS.Helpers
 {
     public static class ACLHelper
     {
-        public static bool CanAccess<T>(this IHtmlHelper html, string operation) where T : ACLRule, new()
+        public static async Task<bool> CanAccess<T>(this IHtmlHelper html, string operation) where T : ACLRule, new()
         {
             var currentUser = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>().Get();
-            return html.CanAccess<T>(currentUser, operation);
+            return await html.CanAccess<T>(currentUser, operation);
         }
 
-        public static bool CanAccess<T>(this IHtmlHelper html, User user, string operation) where T : ACLRule, new()
+        public static async Task<bool> CanAccess<T>(this IHtmlHelper html, User user, string operation) where T : ACLRule, new()
         {
             var accessChecker = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IAccessChecker>();
-            return user != null && accessChecker.CanAccess<T>(operation, user);
+            return user != null && await accessChecker.CanAccess<T>(operation, user);
         }
     }
 

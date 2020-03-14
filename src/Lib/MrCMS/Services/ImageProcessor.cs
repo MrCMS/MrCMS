@@ -2,7 +2,9 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ImageMagick;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Settings;
@@ -15,49 +17,50 @@ namespace MrCMS.Services
         private readonly IRepository<Crop> _cropRepository;
         private readonly IFileSystem _fileSystem;
 
-        public ImageProcessor(IRepository<MediaFile>  mediaFileRepository, IRepository<Crop> cropRepository, IFileSystem fileSystem)
+        public ImageProcessor(IRepository<MediaFile> mediaFileRepository, IRepository<Crop> cropRepository, IFileSystem fileSystem)
         {
             _mediaFileRepository = mediaFileRepository;
             _cropRepository = cropRepository;
             _fileSystem = fileSystem;
         }
 
-        public MediaFile GetImage(string imageUrl)
+        public async Task<MediaFile> GetImage(string imageUrl)
         {
             string originalImageUrl = GetOriginalImageUrl(imageUrl);
             MediaFile fileByLocation =
-                _mediaFileRepository
+                await _mediaFileRepository
                     .Readonly()
-                    .FirstOrDefault(file => file.FileUrl == originalImageUrl);
+                    .FirstOrDefaultAsync(file => file.FileUrl == originalImageUrl);
 
             if (fileByLocation != null)
                 return fileByLocation;
 
-            var crop = GetCrop(imageUrl);
+            var crop = await GetCrop(imageUrl);
             if (crop == null)
                 return null;
 
             return crop.MediaFile;
         }
 
-        public Crop GetCrop(string imageUrl)
+        public async Task<Crop> GetCrop(string imageUrl)
         {
             string originalImageUrl = GetOriginalImageUrl(imageUrl);
 
-            return _cropRepository
+            return await _cropRepository
                 .Readonly()
-                .FirstOrDefault(file => file.Url == originalImageUrl);
+                .FirstOrDefaultAsync(file => file.Url == originalImageUrl);
         }
 
-        public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)
+        public async Task SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)
         {
             Size newSize = CalculateDimensions(file.Size, size);
-            SaveFile(fileBytes, fileUrl, newSize, file.ContentType);
+            await SaveFile(fileBytes, fileUrl, newSize, file.ContentType);
         }
 
-        public void SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes, string fileUrl)
+        public async Task SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes,
+            string fileUrl)
         {
-            SaveFile(fileBytes, fileUrl, cropType.Size, file.ContentType, cropInfo);
+            await SaveFile(fileBytes, fileUrl, cropType.Size, file.ContentType, cropInfo);
         }
 
         public void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings)
@@ -100,45 +103,42 @@ namespace MrCMS.Services
         }
 
 
-        private void SaveFile(byte[] fileBytes, string fileUrl, Size newSize, string contentType,
+        private async Task SaveFile(byte[] fileBytes, string fileUrl, Size newSize, string contentType,
             Rectangle? cropRectangle = null)
         {
-            using (var inputStream = new MemoryStream())
-            using (var outputStream = new MemoryStream())
+            await using var inputStream = new MemoryStream();
+            await using var outputStream = new MemoryStream();
+            inputStream.Write(fileBytes, 0, fileBytes.Length);
+            inputStream.Position = 0;
+            using var collection = new MagickImageCollection(inputStream);
+            collection.Coalesce();
+            foreach (var image in collection)
             {
-                inputStream.Write(fileBytes, 0, fileBytes.Length);
-                inputStream.Position = 0;
-                using (var collection = new MagickImageCollection(inputStream))
+                MagickGeometry geometry = new MagickGeometry
                 {
-                    collection.Coalesce();
-                    foreach (var image in collection)
-                    {
-                        MagickGeometry geometry = new MagickGeometry
+                    Width = newSize.Width,
+                    Height = newSize.Height
+                };
+                image.Resize(geometry);
+                if (cropRectangle.HasValue)
+                {
+                    Rectangle rectangle = cropRectangle.Value;
+                    image.Crop(
+                        new MagickGeometry
                         {
-                            Width = newSize.Width,
-                            Height = newSize.Height
-                        };
-                        image.Resize(geometry);
-                        if (cropRectangle.HasValue)
-                        {
-                            Rectangle rectangle = cropRectangle.Value;
-                            image.Crop(
-                                new MagickGeometry
-                                {
-                                    X = rectangle.X,
-                                    Y = rectangle.Y,
-                                    Width = rectangle.Width,
-                                    Height = rectangle.Height
-                                });
-                        }
-                        image.Strip();
-                    }
-                    collection.OptimizePlus();
-                    collection.Write(outputStream);
-                    outputStream.Position = 0;
-                    _fileSystem.SaveFile(outputStream, fileUrl, contentType);
+                            X = rectangle.X,
+                            Y = rectangle.Y,
+                            Width = rectangle.Width,
+                            Height = rectangle.Height
+                        });
                 }
+                image.Strip();
             }
+            collection.OptimizePlus();
+            collection.Write(outputStream);
+            outputStream.Position = 0;
+            await _fileSystem.SaveFile(outputStream, fileUrl, contentType);
+
             //{
             //    inputStream.Write(fileBytes, 0, fileBytes.Length);
             //    inputStream.Position = 0;
@@ -158,10 +158,10 @@ namespace MrCMS.Services
             //}
         }
 
-        public void SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl)
+        public async Task SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl)
         {
             Size newSize = CalculateDimensions(crop.Size, size);
-            SaveFile(fileBytes, fileUrl, newSize, crop.ContentType);
+            await SaveFile(fileBytes, fileUrl, newSize, crop.ContentType);
         }
 
         private string GetOriginalImageUrl(string imageUrl)
@@ -217,16 +217,15 @@ namespace MrCMS.Services
                 return originalSize;
             }
 
-            double ratio = 0;
 
             // What ratio should we resize it by
             double? widthRatio = targetSize.Width == 0 ? (double?)null : originalSize.Width / (double)targetSize.Width;
             double? heightRatio = targetSize.Height == 0
                 ? (double?)null
                 : originalSize.Height / (double)targetSize.Height;
-            ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
-                ? originalSize.Width / (double)targetSize.Width
-                : originalSize.Height / (double)targetSize.Height;
+            var ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
+                           ? originalSize.Width / (double)targetSize.Width
+                           : originalSize.Height / (double)targetSize.Height;
 
             double width = Math.Ceiling(originalSize.Width / ratio);
             width = targetSize.Width != 0 && width > targetSize.Width ? targetSize.Width : width;

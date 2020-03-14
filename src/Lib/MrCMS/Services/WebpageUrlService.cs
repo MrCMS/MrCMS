@@ -11,7 +11,7 @@ namespace MrCMS.Services
     public class WebpageUrlService : IWebpageUrlService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly PageDefaultsSettings _settings;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IRepository<Webpage> _repository;
         private readonly IRepository<PageTemplate> _pageTemplateRepository;
         private readonly IUrlValidationService _urlValidationService;
@@ -20,13 +20,13 @@ namespace MrCMS.Services
             IRepository<Webpage> repository,
             IRepository<PageTemplate> pageTemplateRepository,
             IUrlValidationService urlValidationService, IServiceProvider serviceProvider,
-            PageDefaultsSettings settings)
+            IConfigurationProvider configurationProvider)
         {
             _repository = repository;
             _pageTemplateRepository = pageTemplateRepository;
             _urlValidationService = urlValidationService;
             _serviceProvider = serviceProvider;
-            _settings = settings;
+            _configurationProvider = configurationProvider;
         }
 
         public async Task<string> Suggest(SuggestParams suggestParams)
@@ -39,7 +39,7 @@ namespace MrCMS.Services
                 suggestParams.Template = int.TryParse(parts[1], out var id) ? id : (int?)null;
             }
 
-            IWebpageUrlGenerator generator = GetGenerator(suggestParams.DocumentType, suggestParams.Template);
+            IWebpageUrlGenerator generator = await GetGenerator(suggestParams.DocumentType, suggestParams.Template);
             var parent = suggestParams.ParentId.HasValue ? _repository.GetDataSync(suggestParams.ParentId.Value) : null;
 
             string url = generator.GetUrl(suggestParams.PageName, parent, suggestParams.UseHierarchy);
@@ -58,7 +58,7 @@ namespace MrCMS.Services
             return url;
         }
 
-        private IWebpageUrlGenerator GetGenerator(string documentType, int? template)
+        private async Task<IWebpageUrlGenerator> GetGenerator(string documentType, int? template)
         {
             IWebpageUrlGenerator generator = null;
             int id = template.GetValueOrDefault(0);
@@ -73,7 +73,8 @@ namespace MrCMS.Services
             }
             if (generator == null && documentType != null)
             {
-                generator = _serviceProvider.GetService(_settings.GetGeneratorType(documentType)) as IWebpageUrlGenerator;
+                var settings = await _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+                generator = _serviceProvider.GetService(settings.GetGeneratorType(documentType)) as IWebpageUrlGenerator;
             }
             return generator ?? new DefaultWebpageUrlGenerator();
         }

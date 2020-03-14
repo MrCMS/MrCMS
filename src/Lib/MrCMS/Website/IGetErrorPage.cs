@@ -1,9 +1,10 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Website
 {
     public interface IGetErrorPage
     {
-        Webpage GetPage(int code);
+        Task<Webpage> GetPage(int code);
     }
 }

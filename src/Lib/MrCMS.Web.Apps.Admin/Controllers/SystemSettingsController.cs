@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Models;
@@ -55,18 +56,18 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
-        public RedirectToActionResult Mail(MailSettings settings)
+        public async Task<RedirectToActionResult> Mail(MailSettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
+            await _configurationProvider.SaveSettings(settings);
             TempData.SuccessMessages().Add("Mail settings saved.");
             return RedirectToAction("Mail");
         }
 
         [HttpPost]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
-        public RedirectToActionResult TestMailSettings(TestEmailInfo info)
+        public async Task<RedirectToActionResult> TestMailSettings(TestEmailInfo info)
         {
-            var result = _testSmtpSettings.TestSettings(_configurationProvider.GetSystemSettings<MailSettings>(), info);
+            var result = _testSmtpSettings.TestSettings(await _configurationProvider.GetSystemSettings<MailSettings>(), info);
             if (result)
                 TempData.SuccessMessages().Add(_resourceProvider.GetValue("Admin - Test email - Success", "Email sent."));
             else

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
@@ -15,25 +16,19 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
         {
             _uniquePageService = uniquePageService;
             _getLiveUrl = getLiveUrl;
-            _tokens = GetTokens();
+            Tokens = GetTokens();
         }
 
-        private readonly IDictionary<string, Func<User, string>> _tokens;
+        public IDictionary<string, Func<User, Task<string>>> Tokens { get; }
 
-        public IDictionary<string, Func<User, string>> Tokens
+        private IDictionary<string, Func<User, Task<string>>> GetTokens()
         {
-            get { return _tokens; }
-        }
-
-        private IDictionary<string, Func<User, string>> GetTokens()
-        {
-            return new Dictionary<string, Func<User, string>>
-                       {
+            return new Dictionary<string, Func<User, Task<string>>>
+            {
                            {
-                               "ResetPasswordUrl",
-                               user =>
+                               "ResetPasswordUrl", async user =>
                                    {
-                                       var resetPasswordPage = _uniquePageService.GetUniquePage<ResetPasswordPage>();
+                                       var resetPasswordPage = await _uniquePageService.GetUniquePage<ResetPasswordPage>();
 
                                        string resetUrl = resetPasswordPage != null
                                                              ? string.Format("{0}?id={1}", _getLiveUrl.GetAbsoluteUrl(resetPasswordPage), user.ResetPasswordGuid)

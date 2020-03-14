@@ -34,11 +34,11 @@ namespace MrCMS.Services
 
 
             var filePath = file.FileUrl;
-            if (!_fileSystem.Exists(filePath))
+            if (!await _fileSystem.Exists(filePath))
                 throw new Exception(string.Format("Cannot find {0} on filesystem", filePath));
-            var bytes = _fileSystem.ReadAllBytes(filePath);
+            var bytes = await _fileSystem.ReadAllBytes(filePath);
             var cropUrl = ImageProcessor.RequestedCropUrl(file, cropType);
-            _imageProcessor.SaveCrop(file, cropType, details, bytes, cropUrl);
+            await _imageProcessor.SaveCrop(file, cropType, details, bytes, cropUrl);
             var crop = new Crop
             {
                 MediaFile = file,

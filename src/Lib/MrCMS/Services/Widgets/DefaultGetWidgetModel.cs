@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Widget;
 
 namespace MrCMS.Services.Widgets
@@ -15,9 +16,9 @@ namespace MrCMS.Services.Widgets
         }
 
         public readonly static DefaultGetWidgetModel Instance;
-        public override object GetModel(Widget widget)
+        public override Task<object> GetModel(Widget widget)
         {
-            return widget;
+            return Task.FromResult<object>(widget);
         }
     }
 }

@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Settings;
 
 namespace MrCMS.Website
 {
     public class GetDateTimeNow : IGetDateTimeNow
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public GetDateTimeNow(SiteSettings siteSettings)
+        public GetDateTimeNow(IConfigurationProvider configurationProvider)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public DateTime LocalNow => TimeZoneInfo.ConvertTime(DateTime.UtcNow, _siteSettings.TimeZoneInfo);
+
+        public async Task<DateTime> GetLocalNow()
+        {
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            return TimeZoneInfo.ConvertTime(DateTime.UtcNow, siteSettings.TimeZoneInfo);
+        }
+
         public DateTime UtcNow => DateTime.UtcNow;
     }
 }

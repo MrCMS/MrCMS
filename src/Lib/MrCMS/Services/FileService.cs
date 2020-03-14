@@ -22,23 +22,21 @@ namespace MrCMS.Services
         private readonly IRepository<ResizedImage> _resizedImageRepository;
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
-        private readonly MediaSettings _mediaSettings;
         private readonly IGetSiteId _getSiteId;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public FileService(
             IRepository<MediaFile> repository,
             IRepository<ResizedImage> resizedImageRepository,
             IFileSystem fileSystem, IImageProcessor imageProcessor,
-            MediaSettings mediaSettings, IGetSiteId getSiteId, SiteSettings siteSettings)
+            IGetSiteId getSiteId, IConfigurationProvider configurationProvider)
         {
             _repository = repository;
             _resizedImageRepository = resizedImageRepository;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
-            _mediaSettings = mediaSettings;
             _getSiteId = getSiteId;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
         public async Task<MediaFile> AddFile(Stream stream, string fileName, string contentType, long contentLength,
@@ -67,12 +65,13 @@ namespace MrCMS.Services
 
             if (mediaFile.IsImage())
             {
-                _imageProcessor.EnforceMaxSize(ref stream, mediaFile, _mediaSettings);
+                var mediaSettings = await _configurationProvider.GetSiteSettings<MediaSettings>();
+                _imageProcessor.EnforceMaxSize(ref stream, mediaFile, mediaSettings);
             }
 
-            string fileLocation = GetFileLocation(fileName, mediaCategory);
+            string fileLocation = await GetFileLocation(fileName, mediaCategory);
 
-            mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
+            mediaFile.FileUrl = await _fileSystem.SaveFile(stream, fileLocation, contentType);
 
 
             await _repository.Transact(async (repo, ct) =>
@@ -90,13 +89,17 @@ namespace MrCMS.Services
             // remove file from the file list for its category, to prevent missing item exception
             mediaFile.MediaCategory?.Files.Remove(mediaFile);
 
-            foreach (ResizedImage resizedImage in
-                mediaFile.ResizedImages
-                    .Where(path => _fileSystem.Exists(path.Url)))
+            var toDelete = new List<ResizedImage>();
+            foreach (var image in mediaFile.ResizedImages)
             {
-                _fileSystem.Delete(resizedImage.Url);
+                if (await _fileSystem.Exists(image.Url))
+                    toDelete.Add(image);
             }
-            _fileSystem.Delete(mediaFile.FileUrl);
+            foreach (ResizedImage resizedImage in toDelete)
+            {
+                await _fileSystem.Delete(resizedImage.Url);
+            }
+            await _fileSystem.Delete(mediaFile.FileUrl);
 
             await _repository.Delete(mediaFile);
         }
@@ -130,8 +133,9 @@ namespace MrCMS.Services
             if (imagesOnly)
                 queryOver = queryOver.Where(file => MediaFileExtensions.ImageExtensions.Contains(file.FileExtension));
 
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             IPagedList<MediaFile> mediaFiles = await queryOver.OrderByDescending(file => file.CreatedOn)
-                .ToPagedListAsync(page, _siteSettings.DefaultPageSize);
+                .ToPagedListAsync(page, siteSettings.DefaultPageSize);
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 
@@ -164,26 +168,24 @@ namespace MrCMS.Services
             string[] split = value.Split('-');
             int id = Convert.ToInt32(split[0]);
             var file = _repository.GetDataSync(id);
-            ImageSize imageSize =
-                file.GetSizes(_mediaSettings)
+            var mediaSettings = await _configurationProvider.GetSiteSettings<MediaSettings>();
+            ImageSize imageSize = file.GetSizes(mediaSettings)
                     .FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
             return await GetFileLocation(file, imageSize.Size, false);
         }
 
-        public void RemoveFolder(MediaCategory mediaCategory)
+        public async Task RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _getSiteId.GetId(),
-                mediaCategory.UrlSegment);
+            string folderLocation = $"{_getSiteId.GetId()}/{mediaCategory.UrlSegment}/";
 
-            _fileSystem.Delete(folderLocation);
+            await _fileSystem.Delete(folderLocation);
         }
 
-        public void CreateFolder(MediaCategory mediaCategory)
+        public async Task CreateFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _getSiteId.GetId(),
-                mediaCategory.UrlSegment);
+            string folderLocation = $"{_getSiteId.GetId()}/{mediaCategory.UrlSegment}/";
 
-            _fileSystem.CreateDirectory(folderLocation);
+            await _fileSystem.CreateDirectory(folderLocation);
         }
 
         public bool IsValidFileType(string fileName)
@@ -199,7 +201,7 @@ namespace MrCMS.Services
             await _repository.Delete(mediaFile);
         }
 
-        private string GetFileLocation(string fileName, MediaCategory mediaCategory = null)
+        private async Task<string> GetFileLocation(string fileName, MediaCategory mediaCategory = null)
         {
             string fileNameOriginal = fileName.GetTidyFileName();
 
@@ -207,25 +209,25 @@ namespace MrCMS.Services
             if (mediaCategory != null)
                 urlSegment = mediaCategory.UrlSegment;
 
-            string folderLocation = string.Format("{0}/{1}/", _getSiteId.GetId(), urlSegment);
+            string folderLocation = $"{_getSiteId.GetId()}/{urlSegment}/";
 
             //check for duplicates
             int i = 1;
-            while (_fileSystem.Exists(folderLocation + fileName))
+            while (await _fileSystem.Exists(folderLocation + fileName))
             {
                 fileName = fileNameOriginal.Replace(Path.GetExtension(fileName), "") + i + Path.GetExtension(fileName);
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", _getSiteId.GetId(), urlSegment, fileName);
+            string fileLocation = $"{_getSiteId.GetId()}/{urlSegment}/{fileName}";
             return fileLocation;
         }
 
-        protected virtual byte[] LoadFile(string filePath)
+        protected virtual async Task<byte[]> LoadFile(string filePath)
         {
-            if (!_fileSystem.Exists(filePath))
+            if (!await _fileSystem.Exists(filePath))
                 return new byte[0];
-            return _fileSystem.ReadAllBytes(filePath);
+            return await _fileSystem.ReadAllBytes(filePath);
         }
 
         public virtual async Task<string> GetUrl(MediaFile file, Size size, bool getCdnUrl)
@@ -248,18 +250,18 @@ namespace MrCMS.Services
                     return requestedImageFileUrl;
 
                 // if it exists but isn't cached, we should add it to the cache
-                if (_fileSystem.Exists(requestedImageFileUrl))
+                if (await _fileSystem.Exists(requestedImageFileUrl))
                 {
                     await CacheResizedImage(file, requestedImageFileUrl);
                     return requestedImageFileUrl;
                 }
 
                 //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
-                byte[] fileBytes = LoadFile(file.FileUrl);
+                byte[] fileBytes = await LoadFile(file.FileUrl);
                 if (fileBytes.Length == 0)
                     return "";
 
-                _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedImageFileUrl);
+                await _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedImageFileUrl);
 
                 // we also need to cache the resized image, to save making a request to find it
                 await CacheResizedImage(file, requestedImageFileUrl);
@@ -271,7 +273,7 @@ namespace MrCMS.Services
         private async Task<string> GetCdnUrl(Func<Task<string>> func, bool getUrl)
         {
             var url = await func();
-            var cdnInfo = _fileSystem.CdnInfo;
+            var cdnInfo = await _fileSystem.GetCdnInfo();
             if (!getUrl || cdnInfo == null)
                 return url;
 
@@ -299,18 +301,18 @@ namespace MrCMS.Services
                     return requestedImageFileUrl;
 
                 // if it exists but isn't cached, we should add it to the cache
-                if (_fileSystem.Exists(requestedImageFileUrl))
+                if (await _fileSystem.Exists(requestedImageFileUrl))
                 {
                     await CacheResizedImage(crop, requestedImageFileUrl);
                     return requestedImageFileUrl;
                 }
 
                 //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
-                byte[] fileBytes = LoadFile(crop.Url);
+                byte[] fileBytes = await LoadFile(crop.Url);
                 if (fileBytes.Length == 0)
                     return "";
 
-                _imageProcessor.SaveResizedCrop(crop, size, fileBytes, requestedImageFileUrl);
+                await _imageProcessor.SaveResizedCrop(crop, size, fileBytes, requestedImageFileUrl);
 
                 // we also need to cache the resized image, to save making a request to find it
                 await CacheResizedImage(crop, requestedImageFileUrl);

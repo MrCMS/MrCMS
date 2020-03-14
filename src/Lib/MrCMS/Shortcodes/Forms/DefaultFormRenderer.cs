@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 using MrCMS.Website.Filters;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -16,39 +17,41 @@ namespace MrCMS.Shortcodes.Forms
         private readonly IElementRendererManager _elementRendererManager;
         private readonly IRepository<FormProperty> _formPropertyRepository;
         private readonly ILabelRenderer _labelRenderer;
-        private readonly SiteSettings _siteSettings;
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IValidationMessaageRenderer _validationMessageRenderer;
 
-        public DefaultFormRenderer(IElementRendererManager elementRendererManager, 
+        public DefaultFormRenderer(IElementRendererManager elementRendererManager,
             IRepository<FormProperty> formPropertyRepository,
             ILabelRenderer labelRenderer,
             IValidationMessaageRenderer validationMessageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
-            SiteSettings siteSettings)
+            IConfigurationProvider configurationProvider)
         {
             _elementRendererManager = elementRendererManager;
             _formPropertyRepository = formPropertyRepository;
             _labelRenderer = labelRenderer;
             _validationMessageRenderer = validationMessageRenderer;
             _submittedMessageRenderer = submittedMessageRenderer;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public IHtmlContent GetDefault(IHtmlHelper helper, Form formEntity, FormSubmittedStatus submittedStatus)
+        public async Task<IHtmlContent> GetDefault(IHtmlHelper helper, Form formEntity,
+            FormSubmittedStatus submittedStatus)
         {
             if (formEntity == null)
             {
                 return HtmlString.Empty;
             }
 
-            var formProperties = _formPropertyRepository.Query().Where(x=>x.FormId == formEntity.Id).OrderBy(x => x.DisplayOrder).ToList();
+            var formProperties = _formPropertyRepository.Query().Where(x => x.FormId == formEntity.Id).OrderBy(x => x.DisplayOrder).ToList();
             if (!formProperties.Any())
             {
                 return HtmlString.Empty;
             }
 
             var form = GetForm(formEntity);
-            var renderingType = _siteSettings.FormRendererType;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            var renderingType = siteSettings.FormRendererType;
             foreach (var property in formProperties)
             {
                 IHtmlContentBuilder elementHtml = new HtmlContentBuilder();
@@ -75,7 +78,7 @@ namespace MrCMS.Shortcodes.Forms
 
             if (formEntity.ShowGDPRConsentBox)
             {
-                form.InnerHtml.AppendHtml(GetGDPRCheckbox(renderingType, _siteSettings.GDPRFairProcessingText));
+                form.InnerHtml.AppendHtml(GetGDPRCheckbox(renderingType, siteSettings.GDPRFairProcessingText));
             }
 
             form.InnerHtml.AppendHtml(helper.RenderRecaptcha());
@@ -90,9 +93,9 @@ namespace MrCMS.Shortcodes.Forms
                 form.InnerHtml.AppendHtml(_submittedMessageRenderer.AppendSubmittedMessage(formEntity, submittedStatus));
             }
 
-            if (_siteSettings.HasHoneyPot)
+            if (siteSettings.HasHoneyPot)
             {
-                form.InnerHtml.AppendHtml(_siteSettings.GetHoneypot());
+                form.InnerHtml.AppendHtml(siteSettings.GetHoneypot());
             }
 
             return form;

@@ -59,9 +59,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return queryOver.OrderByDescending(notification => notification.CreatedOn).ToPagedList(searchQuery.Page);
         }
 
-        public void PushNotification(NotificationModel model)
+        public async Task PushNotification(NotificationModel model)
         {
-            _notificationPublisher.PublishNotification(model.Message, model.PublishType, model.NotificationType);
+            await _notificationPublisher.PublishNotification(model.Message, model.PublishType, model.NotificationType);
         }
 
         public List<SelectListItem> GetPublishTypeOptions()

@@ -1,6 +1,8 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 
 namespace MrCMS.Services
@@ -16,12 +18,16 @@ namespace MrCMS.Services
             _cacheInHttpContext = cacheInHttpContext;
         }
 
-        public Webpage Get()
+        public async Task<Webpage> Get()
         {
-            return _cacheInHttpContext.GetForRequest("current.home-page", () => _repository
+            //return await _cacheInHttpContext.GetForRequest("current.home-page", () => _repository
+            //    .Query()
+            //    .OrderBy(webpage => webpage.DisplayOrder)
+            //    .FirstOrDefaultAsync(document => document.ParentId == null && document.Published));
+            return await _repository
                 .Query()
                 .OrderBy(webpage => webpage.DisplayOrder)
-                .FirstOrDefault(document => document.ParentId == null && document.Published));
+                .FirstOrDefaultAsync(document => document.ParentId == null && document.Published);
         }
     }
 }

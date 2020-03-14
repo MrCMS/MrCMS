@@ -15,8 +15,8 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 {
     public class LayoutAreaControllerTests
     {
-        private ILayoutAreaAdminService _layoutAreaAdminService;
-        private LayoutAreaController _layoutAreaController;
+        private readonly ILayoutAreaAdminService _layoutAreaAdminService;
+        private readonly LayoutAreaController _layoutAreaController;
 
         public LayoutAreaControllerTests()
         {
@@ -36,21 +36,21 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void LayoutAreaController_AddPost_ShouldCallSaveArea()
+        public async Task LayoutAreaController_AddPost_ShouldCallSaveArea()
         {
             var layoutAreaModel = new AddLayoutAreaModel();
 
-            _layoutAreaController.Add(layoutAreaModel);
+            await _layoutAreaController.Add(layoutAreaModel);
 
             A.CallTo(() => _layoutAreaAdminService.Add(layoutAreaModel)).MustHaveHappened();
         }
 
         [Fact]
-        public void LayoutAreaController_AddPost_ShouldRedirectToEditLayout()
+        public async Task LayoutAreaController_AddPost_ShouldRedirectToEditLayout()
         {
             var layoutAreaModel = new AddLayoutAreaModel { LayoutId = 123 };
 
-            var actionResult = _layoutAreaController.Add(layoutAreaModel);
+            var actionResult =await  _layoutAreaController.Add(layoutAreaModel);
 
             actionResult.ActionName.Should().Be("Edit");
             actionResult.ControllerName.Should().Be("Layout");
@@ -81,17 +81,17 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void LayoutAreaController_EditPost_ShouldCallLayoutServicesSaveArea()
+        public async Task LayoutAreaController_EditPost_ShouldCallLayoutServicesSaveArea()
         {
             var model = new UpdateLayoutAreaModel();
 
-            _layoutAreaController.Edit(model);
+            await _layoutAreaController.Edit(model);
 
             A.CallTo(() => _layoutAreaAdminService.Update(model)).MustHaveHappened();
         }
 
         [Fact]
-        public void LayoutAreaController_EditPost_ShouldRedirectBackToTheLayoutOnceDone()
+        public async Task LayoutAreaController_EditPost_ShouldRedirectBackToTheLayoutOnceDone()
         {
             var model = new UpdateLayoutAreaModel();
             var layoutArea = new LayoutArea();
@@ -99,7 +99,7 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
             layoutArea.Layout = layout;
             A.CallTo(() => _layoutAreaAdminService.Update(model)).Returns(layoutArea);
 
-            var actionResult = _layoutAreaController.Edit(model);
+            var actionResult =await _layoutAreaController.Edit(model);
 
             actionResult.ActionName.Should().Be("Edit");
             actionResult.ControllerName.Should().Be("Layout");
@@ -125,18 +125,18 @@ namespace MrCMS.Web.Apps.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void LayoutAreaController_DeletePost_ShouldCallDeleteAreaForThePassedArea()
+        public async Task LayoutAreaController_DeletePost_ShouldCallDeleteAreaForThePassedArea()
         {
 
-            _layoutAreaController.Delete(123);
+            await _layoutAreaController.Delete(123);
 
             A.CallTo(() => _layoutAreaAdminService.DeleteArea(123)).MustHaveHappened();
         }
 
         [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_ReturnsViewResult()
+        public async Task LayoutAreaController_SortWidgetsForPage_ReturnsViewResult()
         {
-            _layoutAreaController.SortWidgetsForPage(123, 2).Should().BeOfType<ViewResult>();
+            (await _layoutAreaController.SortWidgetsForPage(123, 2)).Should().BeOfType<ViewResult>();
         }
 
         [Fact]

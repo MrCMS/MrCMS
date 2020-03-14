@@ -5,8 +5,9 @@
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.CKEditorMediaSelectorSearchQuery
-@inject MediaSettings MediaSettings
+@inject IConfigurationProvider ConfigurationProvider
 @{
+    var mediaSettings = await ConfigurationProvider.GetSiteSettings<MediaSettings>();
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var categories = ViewData["categories"] as List<SelectListItem> ?? new List<SelectListItem>();
     var results = ViewData["results"] as IPagedList<MediaFile>;
@@ -48,7 +49,7 @@
 
 
         <input type="hidden" id="allowedFileTypes" value="@FileTypeUploadSettings.AllowedFileTypes" />
-        <input type="hidden" id="maxFileSizeUpload" value="@MediaSettings.MaxFileSizeUpload" />
+        <input type="hidden" id="maxFileSizeUpload" value="@mediaSettings.MaxFileSizeUpload" />
 
         @if (results.Any())
         {

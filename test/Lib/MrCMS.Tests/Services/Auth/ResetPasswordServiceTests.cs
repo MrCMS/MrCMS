@@ -7,6 +7,7 @@ using MrCMS.Services;
 using MrCMS.Services.Auth;
 using MrCMS.Website;
 using System;
+using System.Threading.Tasks;
 using MrCMS.TestSupport;
 using Xunit;
 
@@ -38,28 +39,28 @@ namespace MrCMS.Tests.Services.Auth
         }
 
         [Fact]
-        public void ResetPasswordService_SetResetPassword_SetsTheResetPasswordGuid()
+        public async Task ResetPasswordService_SetResetPassword_SetsTheResetPasswordGuid()
         {
             var user = new User();
 
-            _resetPasswordService.SetResetPassword(user);
+            await _resetPasswordService.SetResetPassword(user);
 
             user.ResetPasswordGuid.Should().HaveValue();
         }
 
         [Fact]
-        public void ResetPasswordService_SetResetPassword_SetsTheResetPasswordExpiry()
+        public async Task ResetPasswordService_SetResetPassword_SetsTheResetPasswordExpiry()
         {
             var user = new User();
 
-            _resetPasswordService.SetResetPassword(user);
+            await _resetPasswordService.SetResetPassword(user);
 
             user.ResetPasswordExpiry.Should().HaveValue();
         }
 
 
         [Fact]
-        public void ResetPasswordService_ResetPassword_WhenValidCallsSetPasswordOnTheAuthorisationService()
+        public async Task ResetPasswordService_ResetPassword_WhenValidCallsSetPasswordOnTheAuthorisationService()
         {
             var guid = Guid.NewGuid();
             var user = new User
@@ -73,7 +74,7 @@ namespace MrCMS.Tests.Services.Auth
             const string password = "password";
 
             A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
-            _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
+            await _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
             {
                 Password = password,
                 ConfirmPassword = password,
@@ -84,7 +85,7 @@ namespace MrCMS.Tests.Services.Auth
         }
 
         [Fact]
-        public void ResetPasswordService_ResetPassword_ResetsThePasswordGuid()
+        public async Task ResetPasswordService_ResetPassword_ResetsThePasswordGuid()
         {
             var guid = Guid.NewGuid();
             var user = new User
@@ -97,7 +98,7 @@ namespace MrCMS.Tests.Services.Auth
             const string password = "password";
 
             A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
-            _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
+            await _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
             {
                 Password = password,
                 ConfirmPassword = password,
@@ -108,7 +109,7 @@ namespace MrCMS.Tests.Services.Auth
         }
 
         [Fact]
-        public void ResetPasswordService_ResetPassword_ResetsThePasswordExpiry()
+        public async Task ResetPasswordService_ResetPassword_ResetsThePasswordExpiry()
         {
             var guid = Guid.NewGuid();
             var user = new User
@@ -121,7 +122,7 @@ namespace MrCMS.Tests.Services.Auth
             const string password = "password";
 
             A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
-            _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
+            await _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
             {
                 Password = password,
                 ConfirmPassword = password,
@@ -145,11 +146,11 @@ namespace MrCMS.Tests.Services.Auth
             _resetPasswordService.Invoking(service =>
                 service.ResetPassword(new ResetPasswordViewModel
                     (guid, user)
-                    {
-                        Password = password,
-                        ConfirmPassword = password,
-                        Email = "test@example.com"
-                    })).Should().Throw<InvalidOperationException>();
+                {
+                    Password = password,
+                    ConfirmPassword = password,
+                    Email = "test@example.com"
+                })).Should().Throw<InvalidOperationException>();
         }
     }
 }

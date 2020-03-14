@@ -44,7 +44,8 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
 
         public async Task Setup()
         {
-            var pages = GetBasicPages().ToList();
+            var form = await AddContactUsForm();
+            var pages = GetBasicPages(form).ToList();
             ErrorPages errorPages = GetErrorPages();
             pages.AddRange(errorPages.GetAll());
             pages.AddRange(GetAccountPages().ToList());
@@ -59,7 +60,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
 
             await _repository.AddRange(pages);
 
-            var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
             siteSettings.Error403PageId = errorPages.Error403.Id;
             siteSettings.Error404PageId = errorPages.Error404.Id;
             siteSettings.Error500PageId = errorPages.Error500.Id;
@@ -160,7 +161,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
         }
 
 
-        private IEnumerable<Webpage> GetBasicPages()
+        private IEnumerable<Webpage> GetBasicPages(Form form)
         {
             var homePage = new TextPage
             {
@@ -180,7 +181,6 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 RevealInNavigation = true,
             };
             //contact us
-            var form = AddContactUsForm();
             var contactUs = new TextPage
             {
                 Name = "Contact us",

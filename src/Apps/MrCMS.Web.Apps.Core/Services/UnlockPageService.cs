@@ -60,9 +60,9 @@ namespace MrCMS.Web.Apps.Core.Services
 
         }
 
-        public RedirectResult RedirectBackToPage(UnlockPageModel model)
+        public async Task<RedirectResult> RedirectBackToPage(UnlockPageModel model)
         {
-            return _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = model.LockedPage });
+            return await _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = model.LockedPage });
         }
     }
 }

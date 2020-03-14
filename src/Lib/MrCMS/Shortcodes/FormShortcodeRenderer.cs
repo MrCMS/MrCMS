@@ -5,6 +5,7 @@ using MrCMS.Services;
 using MrCMS.Shortcodes.Forms;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Helpers;
 
@@ -14,18 +15,16 @@ namespace MrCMS.Shortcodes
     {
         private readonly IRepository<Form> _repository;
         private readonly IFormRenderer _formRenderer;
-        private readonly IGetCurrentPage _getCurrentPage;
 
-        public FormShortcodeRenderer(IRepository<Form> repository, IFormRenderer formRenderer, IGetCurrentPage getCurrentPage)
+        public FormShortcodeRenderer(IRepository<Form> repository, IFormRenderer formRenderer)
         {
             _repository = repository;
             _formRenderer = formRenderer;
-            _getCurrentPage = getCurrentPage;
         }
 
         public string TagName => "form";
 
-        public IHtmlContent Render(IHtmlHelper helper, Dictionary<string, string> attributes)
+        public async Task<IHtmlContent> Render(IHtmlHelper helper, Dictionary<string, string> attributes)
         {
             if (!attributes.ContainsKey("id"))
             {
@@ -44,7 +43,7 @@ namespace MrCMS.Shortcodes
             }
 
             var status = GetStatus(helper.ViewContext);
-            return _formRenderer.RenderForm(helper, form, status);
+            return await _formRenderer.RenderForm(helper, form, status);
         }
 
         private static FormSubmittedStatus GetStatus(ViewContext viewContext)

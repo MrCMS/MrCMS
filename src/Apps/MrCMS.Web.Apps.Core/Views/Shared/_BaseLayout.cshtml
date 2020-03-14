@@ -7,8 +7,11 @@
 @using MrCMS.Website.Auth
 @using MrCMS.Website.Optimization
 @model MrCMS.Entities.Documents.Web.Webpage
-@inject SEOSettings SeoSettings
+@inject IConfigurationProvider ConfigurationProvider
 @inject IFrontEndEditingChecker FrontEndEditingChecker
+@{
+    var seoSettings = await ConfigurationProvider.GetSiteSettings<SEOSettings>();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,13 +28,13 @@
         Html.IncludeCss("~/Apps/Core/styles/style.css");
     }
     @*@Styles.Render(AppStylesheetBundle.VirtualUrl)*@
-    @{ Html.RenderCss(); }
-    @Html.Raw(SeoSettings.TrackingScripts)
+    @{await Html.RenderCss(); }
+    @Html.Raw(seoSettings.TrackingScripts)
     @Html.Raw(Model.CustomHeaderScripts)
     @ViewData.LinkTags().Render()
 </head>
 <body>
-@Html.Raw(SeoSettings.TrackingScriptsBody)
+@Html.Raw(seoSettings.TrackingScriptsBody)
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
@@ -87,7 +90,7 @@
     Html.IncludeScript("~/Apps/Core/lib/jquery/validate/unobtrusive-bootstrap.js");
     Html.IncludeScript("~/Apps/Core/Scripts/recaptcha.js");
 }
-@if (FrontEndEditingChecker.IsAllowed())
+@if (await FrontEndEditingChecker.IsAllowed())
 {
     <partial name="~/Views/Shared/InPageEditor.cshtml" model="Model"/>
 }
@@ -97,7 +100,7 @@
 }
 @Html.Raw(Model.CustomFooterScripts)
 @*@Scripts.Render(AppScriptBundle.VirtualUrl)*@
-@{ Html.RenderScripts(); }
+@{ await Html.RenderScripts(); }
 <mini-profiler/>
 </body>
 </html>

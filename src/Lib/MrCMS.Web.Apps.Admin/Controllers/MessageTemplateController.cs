@@ -94,9 +94,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost, ActionName("ImportLegacyTemplate")]
-        public ActionResult ImportLegacyTemplate_POST(string type)
+        public async Task<ActionResult> ImportLegacyTemplate_POST(string type)
         {
-            _messageTemplateAdminService.ImportLegacyTemplate(type);
+            await _messageTemplateAdminService.ImportLegacyTemplate(type);
             return RedirectToAction("Index");
         }
     }

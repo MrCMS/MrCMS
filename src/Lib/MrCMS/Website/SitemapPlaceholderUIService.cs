@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
@@ -18,7 +19,7 @@ namespace MrCMS.Website
             _getLiveUrl = getLiveUrl;
         }
 
-        public RedirectResult Redirect(SitemapPlaceholder page)
+        public async Task<RedirectResult> Redirect(SitemapPlaceholder page)
         {
             if (page == null)
                 return new RedirectResult("~/");
@@ -32,13 +33,13 @@ namespace MrCMS.Website
                 return new RedirectResult("~/");
             if (child.GetType().FullName != typeof(SitemapPlaceholder).FullName)
                 return new RedirectResult($"~/{_getLiveUrl.GetUrlSegment(child)}");
-            var lastRedirectChildUrl = GetTheLastRedirectChildLink(child);
+            var lastRedirectChildUrl = await GetTheLastRedirectChildLink(child);
             return !string.IsNullOrWhiteSpace(lastRedirectChildUrl)
                 ? new RedirectResult($"~/{lastRedirectChildUrl}")
                 : new RedirectResult("~/");
         }
 
-        private string GetTheLastRedirectChildLink(Webpage sitemapPlaceholder)
+        private async Task<string> GetTheLastRedirectChildLink(Webpage sitemapPlaceholder)
         {
             var child =
                 _repository.Query()
@@ -50,9 +51,9 @@ namespace MrCMS.Website
                 return string.Empty;
 
             if (child.DocumentClrType == typeof(SitemapPlaceholder).FullName)
-                GetTheLastRedirectChildLink(child);
+                return await GetTheLastRedirectChildLink(child);
 
-            return _getLiveUrl.GetAbsoluteUrl(child);
+            return await _getLiveUrl.GetAbsoluteUrl(child);
         }
     }
 }

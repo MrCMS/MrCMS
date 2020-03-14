@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
@@ -36,10 +37,10 @@ namespace MrCMS.Services
             _serviceProvider = serviceProvider;
         }
 
-        public object GetModel(Widget widget)
+        public async Task<object> GetModel(Widget widget)
         {
             GetWidgetModelBase retriever = GetRetriever(widget);
-            return retriever.GetModel(widget);
+            return await retriever.GetModel(widget);
         }
         
         private GetWidgetModelBase GetRetriever(Widget widget)

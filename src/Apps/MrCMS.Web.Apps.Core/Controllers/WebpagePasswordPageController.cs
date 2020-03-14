@@ -40,7 +40,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             }
 
             TempData["error"] = true;
-            return _unlockPageService.RedirectBackToPage(model);
+            return await _unlockPageService.RedirectBackToPage(model);
         }
 
     }

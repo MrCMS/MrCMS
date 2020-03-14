@@ -2,12 +2,15 @@
 @using MrCMS.Settings
 @using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
-@inject SiteSettings SiteSettings
+@inject IConfigurationProvider ConfigurationProvider
+@{
+    var siteSettings = await ConfigurationProvider.GetSiteSettings<SiteSettings>();
+}
 <link href="@Url.Content("~/Areas/Admin/styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css"/>
 <link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css"/>
 <link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css"/>
 @{
-    var canEditPage = Html.CanAccess("Webpage","Edit");
+    var canEditPage = await Html.CanAccess("Webpage","Edit");
 }
 <div class="mrcms-admin-nav-bar">
     <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
@@ -30,12 +33,12 @@
 
     @Html.ActionLink("Add page", "Add", "Webpage", new {id = Model.Parent?.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary"})
 
-    @if (Html.CanAccess<InlineEditingACL>("Allowed"))
+    @if (await Html.CanAccess<InlineEditingACL>("Allowed"))
     {
         <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline Editing: On</a>
     }
     <a href="/logout" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary" style="float: right;">Logout</a>
-    @if (SiteSettings.SiteIsLive)
+    @if (siteSettings.SiteIsLive)
     {
         <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-success" style="float: right;">Site is set live</a>
     }

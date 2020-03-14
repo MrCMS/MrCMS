@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Tasks;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
@@ -15,39 +16,39 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _taskAdminService = taskAdminService;
         }
 
-        public ViewResult Index(QueuedTaskSearchQuery searchQuery)
+        public async Task<ViewResult> Index(QueuedTaskSearchQuery searchQuery)
         {
-            ViewData["scheduled-tasks"] = _taskAdminService.GetAllScheduledTasks();
-            ViewData["tasks"] = _taskAdminService.GetQueuedTasks(searchQuery);
+            ViewData["scheduled-tasks"] =await _taskAdminService.GetAllScheduledTasks();
+            ViewData["tasks"] = await _taskAdminService.GetQueuedTasks(searchQuery);
             return View(searchQuery);
         }
 
         [HttpGet]
-        public PartialViewResult Edit(string type)
+        public async Task<PartialViewResult> Edit(string type)
         {
-            var taskInfo = _taskAdminService.GetTaskUpdateData(type);
+            var taskInfo = await _taskAdminService.GetTaskUpdateData(type);
             return PartialView(taskInfo);
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(TaskUpdateData taskInfo)
+        public async Task<RedirectToActionResult> Edit(TaskUpdateData taskInfo)
         {
-            _taskAdminService.Update(taskInfo);
+            await _taskAdminService.Update(taskInfo);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public PartialViewResult Reset(string type)
+        public async Task<PartialViewResult> Reset(string type)
         {
-            var taskInfo = _taskAdminService.GetTaskUpdateData(type);
+            var taskInfo = await _taskAdminService.GetTaskUpdateData(type);
             return PartialView(taskInfo);
         }
 
         [HttpPost]
-        public RedirectToActionResult Reset(TaskUpdateData taskInfo)
+        public async Task<RedirectToActionResult> Reset(TaskUpdateData taskInfo)
         {
-            _taskAdminService.Reset(taskInfo);
+            await _taskAdminService.Reset(taskInfo);
 
             return RedirectToAction("Index");
         }

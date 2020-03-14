@@ -74,9 +74,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return layout;
         }
 
-        public List<SortItem> GetSortItems(int? parent)
+        public async Task<List<SortItem>> GetSortItems(int? parent)
         {
-            return _getDocumentsByParent.GetDocuments(GetLayout(parent))
+            return (await _getDocumentsByParent.GetDocuments(GetLayout(parent)))
                 .Select(
                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                 .OrderBy(x => x.Order)

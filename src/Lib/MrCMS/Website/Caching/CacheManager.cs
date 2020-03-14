@@ -36,14 +36,14 @@ namespace MrCMS.Website.Caching
             return _cache.Set(key, obj, options);
         }
 
-        public Task<T> GetOrCreate<T>(string key, Func<Task<T>> func, TimeSpan time, CacheExpiryType cacheExpiryType)
+        public async Task<T> GetOrCreate<T>(string key, Func<Task<T>> func, TimeSpan time, CacheExpiryType cacheExpiryType)
         {
             if (time <= TimeSpan.Zero)
             {
-                return func();
+                return await func();
             }
 
-            return _cache.GetOrCreate(key, async entry =>
+            return await _cache.GetOrCreate(key, async entry =>
             {
                 if (cacheExpiryType == CacheExpiryType.Sliding)
                 {

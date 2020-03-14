@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Messaging;
@@ -13,15 +14,15 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class MessageQueueAdminService : IMessageQueueAdminService
     {
         private readonly IRepository<QueuedMessage> _repository;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public MessageQueueAdminService(IRepository<QueuedMessage> repository, SiteSettings siteSettings)
+        public MessageQueueAdminService(IRepository<QueuedMessage> repository, IConfigurationProvider configurationProvider)
         {
             _repository = repository;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public IPagedList<QueuedMessage> GetMessages(MessageQueueQuery searchQuery)
+        public async Task<IPagedList<QueuedMessage>> GetMessages(MessageQueueQuery searchQuery)
         {
             var queryOver = _repository.Readonly();
             if (searchQuery.From.HasValue)
@@ -42,12 +43,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             if (!string.IsNullOrWhiteSpace(searchQuery.Subject))
                 queryOver = queryOver.Where(message => EF.Functions.Like(message.Subject, $"%{searchQuery.Subject}%"));
 
-            return queryOver.OrderByDescending(message => message.CreatedOn).ToPagedList(searchQuery.Page, _siteSettings.DefaultPageSize);
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            return await queryOver.OrderByDescending(message => message.CreatedOn).ToPagedListAsync(searchQuery.Page, siteSettings.DefaultPageSize);
         }
 
-        public QueuedMessage GetMessageBody(int id)
+        public Task<QueuedMessage> GetMessageBody(int id)
         {
-            return _repository.GetDataSync(id);
+            return _repository.GetData(id);
         }
     }
 }

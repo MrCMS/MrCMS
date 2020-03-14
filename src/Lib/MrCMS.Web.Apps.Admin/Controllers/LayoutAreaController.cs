@@ -24,9 +24,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddLayoutAreaModel layoutArea)
+        public async Task<RedirectToActionResult> Add(AddLayoutAreaModel layoutArea)
         {
-            _layoutAreaAdminService.Add(layoutArea);
+            await _layoutAreaAdminService.Add(layoutArea);
 
             return RedirectToAction("Edit", "Layout", new { id = layoutArea.LayoutId });
         }
@@ -45,9 +45,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateLayoutAreaModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateLayoutAreaModel model)
         {
-            var area = _layoutAreaAdminService.Update(model);
+            var area = await _layoutAreaAdminService.Update(model);
 
             return RedirectToAction("Edit", "Layout", new { id = area.Layout.Id });
         }
@@ -61,11 +61,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var layoutArea = _layoutAreaAdminService.DeleteArea(id);
+            var layoutArea = await _layoutAreaAdminService.DeleteArea(id);
 
-            return RedirectToAction("Edit", "Layout", new { id = layoutArea.Layout.Id });
+            return RedirectToAction("Edit", "Layout", new { id = layoutArea.LayoutId });
         }
 
         [HttpGet]
@@ -77,9 +77,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectResult SortWidgetsAction(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
+        public async Task<RedirectResult> SortWidgetsAction(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
         {
-            _layoutAreaAdminService.SetWidgetOrders(pageWidgetSortModel);
+            await _layoutAreaAdminService.SetWidgetOrders(pageWidgetSortModel);
 
             return Redirect(!string.IsNullOrEmpty(returnUrl)
                 ? returnUrl
@@ -95,9 +95,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult SortWidgetsForPage(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
+        public async Task<ActionResult> SortWidgetsForPage(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
         {
-            _layoutAreaAdminService.SetWidgetForPageOrders(pageWidgetSortModel);
+            await _layoutAreaAdminService.SetWidgetForPageOrders(pageWidgetSortModel);
 
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
@@ -106,9 +106,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ResetSorting(int id, int pageId, string returnUrl = null)
+        public async Task<ActionResult> ResetSorting(int id, int pageId, string returnUrl = null)
         {
-            _layoutAreaAdminService.ResetSorting(id, pageId);
+            await _layoutAreaAdminService.ResetSorting(id, pageId);
 
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);

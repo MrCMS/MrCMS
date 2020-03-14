@@ -12,11 +12,11 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         object GetAdditionalPropertyModel(string blockType);
         object GetAdditionalPropertyModel(int id);
-        int? Add(AddContentBlockViewModel addModel, object additionalPropertyModel);
+        Task<int?> AddAsync(AddContentBlockViewModel addModel, object additionalPropertyModel);
         UpdateContentBlockViewModel GetUpdateModel(int id);
         ContentBlock GetEntity(int id);
-        int? Update(UpdateContentBlockViewModel updateModel, object additionalPropertyModel);
-        int? Delete(int id);
+        Task<int?> Update(UpdateContentBlockViewModel updateModel, object additionalPropertyModel);
+        Task<int?> Delete(int id);
 
         IList<ContentBlock> GetBlocks(int webpageId);
 

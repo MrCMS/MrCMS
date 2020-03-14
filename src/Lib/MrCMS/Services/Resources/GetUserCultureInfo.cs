@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Settings;
 
@@ -6,16 +7,17 @@ namespace MrCMS.Services.Resources
 {
     public class GetUserCultureInfo : IGetUserCultureInfo
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public GetUserCultureInfo(SiteSettings siteSettings)
+        public GetUserCultureInfo(IConfigurationProvider configurationProvider)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public CultureInfo Get(User user)
+        public async Task<CultureInfo> Get(User user)
         {
-            var defaultCultureInfo = _siteSettings.CultureInfo;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            var defaultCultureInfo = siteSettings.CultureInfo;
             if (user == null || string.IsNullOrWhiteSpace(user.UICulture))
                 return defaultCultureInfo;
             try
@@ -28,9 +30,9 @@ namespace MrCMS.Services.Resources
             }
         }
 
-        public string GetInfoString(User user)
+        public async Task<string> GetInfoString(User user)
         {
-            return Get(user).Name;
+            return (await Get(user)).Name;
         }
     }
 }

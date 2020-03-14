@@ -27,6 +27,7 @@ namespace MrCMS.Batching
         public void ExecuteRequestForNextTask(Guid guid)
         {
             var run = _repository.Query().FirstOrDefault(x => x.Guid == guid);
+#pragma warning disable 
             _executeRequestForNextTask.Execute(run);
         }
 

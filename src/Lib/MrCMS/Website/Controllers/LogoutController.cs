@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services;
 
@@ -15,9 +16,9 @@ namespace MrCMS.Website.Controllers
 
 
         [Route(RouteUrl)]
-        public RedirectResult Logout()
+        public async Task<RedirectResult> Logout()
         {
-            _authorisationService.Logout();
+            await _authorisationService.Logout();
             return Redirect("~/");
         }
     }

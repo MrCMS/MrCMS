@@ -28,7 +28,7 @@ namespace MrCMS.Tasks
 
         private async Task ResetScheduledTasks()
         {
-            var now = _getDateTimeNow.LocalNow;
+            var now = await _getDateTimeNow.GetLocalNow();
             var info = await _taskSettingManager.GetInfo();
             var hungScheduledTasks = info
                 .Where(
@@ -46,7 +46,7 @@ namespace MrCMS.Tasks
 
         private async Task ResetQueuedTasks()
         {
-            var now = _getDateTimeNow.LocalNow;
+            var now = await _getDateTimeNow.GetLocalNow();
             var hungTasks = await _repository.Query()
                 .Where(
                     task =>

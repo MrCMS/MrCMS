@@ -5,12 +5,13 @@
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model MrCMS.Tasks.QueuedTaskSearchQuery
-@inject SiteSettings SiteSettings
+@inject IConfigurationProvider ConfigurationProvider
 @{
     ViewBag.Title = "Scheduled Tasks";
     var scheduledTasks = ViewData["scheduled-tasks"] as List<TaskInfo> ?? new List<TaskInfo>();
     var tasks = ViewData["tasks"] as IPagedList<QueuedTask>;
-    var executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary { { "area", "" }, { SiteSettings.TaskExecutorKey, SiteSettings.TaskExecutorPassword } }, Context.Request.Scheme);
+    var siteSettings = await ConfigurationProvider.GetSiteSettings<SiteSettings>();
+    var executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary { { "area", "" }, { siteSettings.TaskExecutorKey, siteSettings.TaskExecutorPassword } }, Context.Request.Scheme);
 }
 
 @Html.InfoBlock(Html.Resource("Heads up") + "!", string.Format(Html.Resource("Admin - Tasks info", "In order to execute tasks, you must poll the following url: <a href='{0}'>{1}</a> <br />"), executionUrl, executionUrl))

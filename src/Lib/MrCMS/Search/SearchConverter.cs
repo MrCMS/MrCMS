@@ -33,14 +33,27 @@ namespace MrCMS.Search
 
         public Document Convert(UniversalSearchItem item)
         {
-            var document = new Document();
-
-            document.Add(new StringField(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES));
             var searchGuid = item.SearchGuid.ToString();
-            document.Add(new StringField(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES));
-
             var systemType = item.SystemType ?? string.Empty;
-            document.Add(new StringField(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES));
+            FieldType boostableStringType = new FieldType(StringField.TYPE_STORED) { OmitNorms = false, IsStored = true };
+            var document = new Document
+            {
+                new StringField(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES),
+                new StringField(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES),
+                new StringField(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES),
+                new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName ?? string.Empty, boostableStringType)
+                {
+                    Boost = 5
+                },
+                new StringField(UniversalSearchFieldNames.ActionUrl, item.ActionUrl ?? string.Empty, Field.Store.YES),
+                new StringField(UniversalSearchFieldNames.CreatedOn,
+                    DateTools.DateToString(item.CreatedOn, DateTools.Resolution.SECOND), Field.Store.YES)
+            };
+
+
+            //Start with a copy of the standard field type
+
+
             if (_entityTypes.ContainsKey(systemType))
             {
                 foreach (var entityType in _entityTypes[systemType])
@@ -49,14 +62,6 @@ namespace MrCMS.Search
                 }
             }
 
-            //Start with a copy of the standard field type
-            FieldType boostableStringType = new FieldType(StringField.TYPE_STORED) { OmitNorms = false, IsStored = true };
-            document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName ?? string.Empty, boostableStringType) { Boost = 5 });
-
-            document.Add(new StringField(UniversalSearchFieldNames.ActionUrl, item.ActionUrl ?? string.Empty, Field.Store.YES));
-
-            document.Add(new StringField(UniversalSearchFieldNames.CreatedOn,
-                DateTools.DateToString(item.CreatedOn, DateTools.Resolution.SECOND), Field.Store.YES));
 
             FieldType termStringType = new FieldType(StringField.TYPE_STORED) { OmitNorms = false, IsStored = true };
             foreach (var searchTerm in (item.PrimarySearchTerms ?? Enumerable.Empty<string>()).Where(s =>

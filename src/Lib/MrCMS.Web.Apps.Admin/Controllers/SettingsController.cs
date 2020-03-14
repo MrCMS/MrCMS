@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Helpers;
@@ -44,15 +45,15 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult FileSystem()
+        public async Task<ViewResult> FileSystem()
         {
-            return View(_configurationProvider.GetSiteSettings<FileSystemSettings>());
+            return View(await _configurationProvider.GetSiteSettings<FileSystemSettings>());
         }
 
         [HttpPost]
-        public RedirectToActionResult FileSystem(FileSystemSettings settings) 
+        public async Task<RedirectToActionResult> FileSystem(FileSystemSettings settings) 
         {
-            _configurationProvider.SaveSettings(settings);
+            await _configurationProvider.SaveSettings(settings);
             TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext));
             return RedirectToAction("FileSystem");
         }

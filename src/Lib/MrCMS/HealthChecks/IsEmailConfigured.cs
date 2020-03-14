@@ -7,11 +7,11 @@ namespace MrCMS.HealthChecks
 {
     public class IsEmailConfigured : HealthCheck
     {
-        private readonly MailSettings _mailSettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public IsEmailConfigured(MailSettings mailSettings)
+        public IsEmailConfigured(ISystemConfigurationProvider configurationProvider)
         {
-            _mailSettings = mailSettings;
+            _configurationProvider = configurationProvider;
         }
 
         public override string DisplayName
@@ -19,19 +19,20 @@ namespace MrCMS.HealthChecks
             get { return "Email settings check"; }
         }
 
-        public override Task<HealthCheckResult> PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
             var unsetFacets = new List<string>();
-            if (string.IsNullOrWhiteSpace(_mailSettings.SystemEmailAddress))
+            if (string.IsNullOrWhiteSpace(mailSettings.SystemEmailAddress))
                 unsetFacets.Add("System email address is not set");
-            if (string.IsNullOrWhiteSpace(_mailSettings.Host))
+            if (string.IsNullOrWhiteSpace(mailSettings.Host))
                 unsetFacets.Add("Host is not set");
-            if (_mailSettings.Port <= 0)
+            if (mailSettings.Port <= 0)
                 unsetFacets.Add("Port is not set");
 
-            return Task.FromResult( !unsetFacets.Any()
+            return !unsetFacets.Any()
                 ? HealthCheckResult.Success
-                : new HealthCheckResult { Messages = unsetFacets });
+                : new HealthCheckResult {Messages = unsetFacets};
         }
     }
 }

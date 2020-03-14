@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using MrCMS.Helpers;
@@ -12,38 +13,32 @@ namespace MrCMS.Services
 {
     public class AzureFileSystem : IFileSystem, IAzureFileSystem
     {
-        private readonly FileSystemSettings _fileSystemSettings;
+        private readonly IConfigurationProvider _configurationProvider;
         private CloudBlobContainer _container;
         private CloudStorageAccount _storageAccount;
-        private bool initialized;
+        private bool _initialized;
 
-        public AzureFileSystem(FileSystemSettings fileSystemSettings)
+        public AzureFileSystem(IConfigurationProvider configurationProvider)
         {
-            _fileSystemSettings = fileSystemSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public CloudBlobContainer Container
+        public async Task<CloudBlobContainer> GetContainer()
         {
-            get
-            {
-                EnsureInitialized();
-                return _container;
-            }
+            await EnsureInitialized();
+            return _container;
         }
 
-        public CloudStorageAccount StorageAccount
+        public async Task<CloudStorageAccount> GetStorageAccount()
         {
-            get
-            {
-                EnsureInitialized();
-                return _storageAccount;
-            }
+            await EnsureInitialized();
+            return _storageAccount;
         }
 
-        public string SaveFile(Stream stream, string filePath, string contentType)
+        public async Task<string> SaveFile(Stream stream, string filePath, string contentType)
         {
-            EnsureInitialized();
-            CloudBlockBlob blob = GetBlockBlobReference(filePath);
+            await EnsureInitialized();
+            CloudBlockBlob blob = await GetBlockBlobReference(filePath);
             blob.Properties.ContentType = contentType;
             blob.Properties.CacheControl = "public, max-age=31536000";
             if (stream.CanSeek)
@@ -51,73 +46,72 @@ namespace MrCMS.Services
                 stream.Position = 0;
             }
 
-            blob.UploadFromStreamAsync(stream).ExecuteSync();
+            await blob.UploadFromStreamAsync(stream);
 
             return blob.Uri.ToString();
         }
 
-        public void CreateDirectory(string filePath)
+        public Task CreateDirectory(string filePath)
         {
+            return Task.CompletedTask;
         }
 
-        public void Delete(string filePath)
+        public async Task Delete(string filePath)
         {
-            EnsureInitialized();
-            CloudBlockBlob blob = GetBlockBlobReference(filePath);
+            await EnsureInitialized();
+            CloudBlockBlob blob = await GetBlockBlobReference(filePath);
             try
             {
-                blob.DeleteAsync().ExecuteSync();
+                await blob.DeleteAsync();
             }
             catch
             {
             }
         }
 
-        public bool Exists(string filePath)
+        public async Task<bool> Exists(string filePath)
         {
-            EnsureInitialized();
+            await EnsureInitialized();
             if (string.IsNullOrWhiteSpace(filePath))
                 return false;
-            CloudBlockBlob blob = GetBlockBlobReference(filePath);
+            CloudBlockBlob blob = await GetBlockBlobReference(filePath);
 
-            return blob.ExistsAsync().ExecuteSync();
+            return await blob.ExistsAsync();
         }
 
-        public byte[] ReadAllBytes(string filePath)
+        public async Task<byte[]> ReadAllBytes(string filePath)
         {
-            EnsureInitialized();
-            CloudBlockBlob blob = GetBlockBlobReference(filePath);
-            using (var memoryStream = new MemoryStream())
-            {
-                blob.DownloadToStreamAsync(memoryStream).ExecuteSync();
-                return memoryStream.GetBuffer();
-            }
+            await EnsureInitialized();
+            CloudBlockBlob blob = await GetBlockBlobReference(filePath);
+            await using var memoryStream = new MemoryStream();
+            await blob.DownloadToStreamAsync(memoryStream);
+            return memoryStream.GetBuffer();
         }
 
-        public Stream GetReadStream(string filePath)
+        public async Task<Stream> GetReadStream(string filePath)
         {
-            EnsureInitialized();
-            var blob = GetBlockBlobReference(filePath);
-            return blob.OpenReadAsync()
-                .ExecuteSync();
+            await EnsureInitialized();
+            var blob = await GetBlockBlobReference(filePath);
+            return await blob.OpenReadAsync();
         }
 
-        public void WriteToStream(string filePath, Stream stream)
+        public async Task WriteToStream(string filePath, Stream stream)
         {
-            EnsureInitialized();
-            var blob = GetBlockBlobReference(filePath);
-            blob.DownloadToStreamAsync(stream).ExecuteSync();
+            await EnsureInitialized();
+            var blob = await GetBlockBlobReference(filePath);
+            await blob.DownloadToStreamAsync(stream);
         }
 
-        public IEnumerable<string> GetFiles(string filePath)
+        public async Task<IEnumerable<string>> GetFiles(string filePath)
         {
-            EnsureInitialized();
-            var cloudBlobDirectory = Container.GetDirectoryReference(filePath);
+            await EnsureInitialized();
+            var container = await GetContainer();
+            var cloudBlobDirectory = container.GetDirectoryReference(filePath);
 
             var blobResultSegment = cloudBlobDirectory
                 .ListBlobsSegmentedAsync(true, BlobListingDetails.None, 500, null, null, null).ExecuteSync();
 
-            List<string> files =new List<string>();
+            List<string> files = new List<string>();
             var continuationToken = blobResultSegment.ContinuationToken;
             files.AddRange(blobResultSegment.Results.Select(item => item.Uri.ToString()));
 
@@ -130,38 +124,37 @@ namespace MrCMS.Services
             return files;
         }
 
-        public CdnInfo CdnInfo
+        public async Task<CdnInfo> GetCdnInfo()
         {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(_fileSystemSettings.AzureCdnDomain))
-                    return new CdnInfo
-                    {
-                        Scheme = "https",
-                        Host = _fileSystemSettings.AzureCdnDomain
-                    };
-                return null;
-            }
+            var fileSystemSettings = await _configurationProvider.GetSiteSettings<FileSystemSettings>();
+            if (!string.IsNullOrWhiteSpace(fileSystemSettings.AzureCdnDomain))
+                return new CdnInfo
+                {
+                    Scheme = "https",
+                    Host = fileSystemSettings.AzureCdnDomain
+                };
+            return null;
         }
 
-        private void EnsureInitialized()
+        private async Task EnsureInitialized()
         {
-            if (initialized)
+            if (_initialized)
             {
                 return;
             }
-            string connectionString = _fileSystemSettings.AzureUsingEmulator
+            var fileSystemSettings = await _configurationProvider.GetSiteSettings<FileSystemSettings>();
+            string connectionString = fileSystemSettings.AzureUsingEmulator
                 ? string.Format("UseDevelopmentStorage=true;")
                 : string.Format(
                     "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
-                    _fileSystemSettings.AzureAccountName, _fileSystemSettings.AzureAccountKey);
+                    fileSystemSettings.AzureAccountName, fileSystemSettings.AzureAccountKey);
             if (CloudStorageAccount.TryParse(connectionString, out _storageAccount))
             {
                 CloudBlobClient cloudBlobClient = _storageAccount.CreateCloudBlobClient();
                 _container =
                     cloudBlobClient.GetContainerReference(
                         SeoHelper.TidyUrl(
-                            _fileSystemSettings.AzureContainerName.RemoveInvalidUrlCharacters()));
+                            fileSystemSettings.AzureContainerName.RemoveInvalidUrlCharacters()));
                 if (_container.CreateIfNotExistsAsync().ExecuteSync())
                 {
                     _container.SetPermissionsAsync(new BlobContainerPermissions
@@ -170,15 +163,16 @@ namespace MrCMS.Services
                             BlobContainerPublicAccessType.Blob
                     }).ExecuteSync();
                 }
-                initialized = true;
+                _initialized = true;
             }
         }
 
-        private CloudBlockBlob GetBlockBlobReference(string filePath)
+        private async Task<CloudBlockBlob> GetBlockBlobReference(string filePath)
         {
-            var uri = Container.Uri;
+            var container = await GetContainer();
+            var uri = container.Uri;
             filePath = filePath.Replace(uri + "/", "");
-            return Container.GetBlockBlobReference(filePath);
+            return container.GetBlockBlobReference(filePath);
         }
     }
 }

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using MrCMS.Models;
 
@@ -15,7 +17,7 @@ namespace MrCMS.Services
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public string SaveFile(Stream stream, string filePath, string contentType)
+        public async Task<string> SaveFile(Stream stream, string filePath, string contentType)
         {
             var path = GetPath(filePath);
 
@@ -33,7 +35,7 @@ namespace MrCMS.Services
                 {
                     stream.Position = 0;
                 }
-                stream.CopyTo(file);
+                await stream.CopyToAsync(file);
             }
             stream.Close();
             stream.Dispose();
@@ -57,16 +59,18 @@ namespace MrCMS.Services
             return relativeFilePath;
         }
 
-        public void CreateDirectory(string filePath)
+        public Task CreateDirectory(string filePath)
         {
             var path = GetPath(filePath);
 
             var directoryInfo = new DirectoryInfo(path);
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
+
+            return Task.CompletedTask;
         }
 
-        public void Delete(string filePath)
+        public Task Delete(string filePath)
         {
             var path = GetPath(filePath);
 
@@ -74,36 +78,39 @@ namespace MrCMS.Services
                 Directory.Delete(path, true);
             else
                 File.Delete(path);
+
+            return Task.CompletedTask;
         }
 
-        public bool Exists(string filePath) => File.Exists(GetPath(filePath));
+        public Task<bool> Exists(string filePath) => Task.FromResult(File.Exists(GetPath(filePath)));
 
         public string ApplicationPath => _hostingEnvironment.WebRootPath;
 
-        public byte[] ReadAllBytes(string filePath) => File.ReadAllBytes(GetPath(filePath));
+        public Task<byte[]> ReadAllBytes(string filePath) => File.ReadAllBytesAsync(GetPath(filePath));
 
-        public Stream GetReadStream(string filePath) => File.OpenRead(GetPath(filePath));
+        public Task<Stream> GetReadStream(string filePath) => Task.FromResult<Stream>(File.OpenRead(GetPath(filePath)));
 
-        public void WriteToStream(string filePath, Stream stream)
+        public Task WriteToStream(string filePath, Stream stream)
         {
             var path = GetPath(filePath);
-            using (var fileStream = File.OpenRead(path))
-            {
-                fileStream.CopyTo(stream);
-            }
+            using var fileStream = File.OpenRead(path);
+            return fileStream.CopyToAsync(stream);
         }
 
-        public IEnumerable<string> GetFiles(string filePath)
+        public Task<IEnumerable<string>> GetFiles(string filePath)
         {
             var path = GetPath(filePath);
 
+            var result = new List<string>();
             if (Directory.Exists(path))
             {
                 foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
-                    yield return "/" + file.Remove(0, ApplicationPath.Length).Replace('\\', '/');
+                    result.Add("/" + file.Remove(0, ApplicationPath.Length).Replace('\\', '/'));
             }
+
+            return Task.FromResult<IEnumerable<string>>(result);
         }
 
-        public CdnInfo CdnInfo => null;
+        public Task<CdnInfo> GetCdnInfo() => Task.FromResult<CdnInfo>(null);
     }
 }

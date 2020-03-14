@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
 using WebPush;
@@ -17,19 +18,19 @@ namespace MrCMS.Website.PushNotifications
             _site = site;
         }
 
-        public WebPushSettings GetSettings()
+        public async Task<WebPushSettings> GetSettings()
         {
-            var settings = _configurationProvider.GetSiteSettings<WebPushSettings>();
+            var settings = await _configurationProvider.GetSiteSettings<WebPushSettings>();
 
             if (string.IsNullOrWhiteSpace(settings.VapidPrivateKey))
             {
-                var mailSettings = _systemConfigurationProvider.GetSystemSettings<MailSettings>();
+                var mailSettings = await _systemConfigurationProvider.GetSystemSettings<MailSettings>();
                 var keys = VapidHelper.GenerateVapidKeys();
                 settings.VapidPrivateKey = keys.PrivateKey;
                 settings.VapidPublicKey = keys.PublicKey;
                 settings.VapidSubject = $"mailto:{mailSettings.SystemEmailAddress}";
                 settings.DefaultNotificationTitle = _site.Name;
-                _configurationProvider.SaveSettings(settings);
+                await _configurationProvider.SaveSettings(settings);
             }
             return settings;
         }

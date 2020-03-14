@@ -25,7 +25,7 @@ namespace MrCMS.Services.Auth
 
             var user = _userLookup.GetUserByEmail(loginModel.Email);
 
-            if (user != null && _passwordManagementService.ValidateUser(user, loginModel.Password))
+            if (user != null && await _passwordManagementService.ValidateUser(user, loginModel.Password))
                 return await _getVerifiedUserResult.GetResult(user, loginModel.ReturnUrl);
 
             return new LoginResult

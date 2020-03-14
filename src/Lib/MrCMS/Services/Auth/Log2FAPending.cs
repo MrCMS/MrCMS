@@ -11,19 +11,20 @@ namespace MrCMS.Services.Auth
 {
     public class Log2FAPending : IVerifiedPending2FA
     {
-        private readonly SecuritySettings _securitySettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IRepository<LoginAttempt> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public Log2FAPending(SecuritySettings securitySettings, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
+        public Log2FAPending(ISystemConfigurationProvider configurationProvider, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
         {
-            _securitySettings = securitySettings;
+            _configurationProvider = configurationProvider;
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
         }
         public async Task Execute(VerifiedPending2FAEventArgs args)
         {
-            if (!_securitySettings.LogLoginAttempts)
+            var securitySettings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            if (!securitySettings.LogLoginAttempts)
                 return;
             var request = _httpContextAccessor.HttpContext.Request;
             var loginAttempt = new LoginAttempt

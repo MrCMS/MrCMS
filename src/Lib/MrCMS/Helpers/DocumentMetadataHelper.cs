@@ -69,7 +69,7 @@ namespace MrCMS.Helpers
                 DocumentMetadatas.FirstOrDefault(
                     x => document.GetType().Name.Equals(x.TypeName, StringComparison.OrdinalIgnoreCase));
 
-            return documentTypeDefinition != null ? documentTypeDefinition.IconClass : null;
+            return documentTypeDefinition?.IconClass;
         }
 
         public static DocumentMetadata GetMetadata(this Type getType)

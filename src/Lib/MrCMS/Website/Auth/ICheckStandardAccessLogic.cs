@@ -5,7 +5,7 @@ namespace MrCMS.Website.Auth
 {
     public interface ICheckStandardAccessLogic
     {
-        StandardLogicCheckResult Check();
-        StandardLogicCheckResult Check(User user);
+        Task<StandardLogicCheckResult> Check();
+        Task<StandardLogicCheckResult> Check(User user);
     }
 }

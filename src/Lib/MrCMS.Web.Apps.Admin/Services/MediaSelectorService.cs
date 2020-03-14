@@ -72,26 +72,26 @@ namespace MrCMS.Web.Apps.Admin.Services
             };
         }
 
-        public string GetAlt(string url)
+        public async Task<string> GetAlt(string url)
         {
-            var mediaFile = GetImage(url);
+            var mediaFile = await GetImage(url);
             return mediaFile != null ? mediaFile.Title : string.Empty;
         }
 
-        public string GetDescription(string url)
+        public async Task<string> GetDescription(string url)
         {
-            var mediaFile = GetImage(url);
+            var mediaFile = await GetImage(url);
             return mediaFile != null ? mediaFile.Description : string.Empty;
         }
 
-        private MediaFile GetImage(string url)
+        private async Task<MediaFile> GetImage(string url)
         {
-            return _imageProcessor.GetImage(url);
+            return await _imageProcessor.GetImage(url);
         }
 
         public async Task<bool> UpdateAlt(UpdateMediaParams updateMediaParams)
         {
-            var mediaFile = GetImage(updateMediaParams.Url);
+            var mediaFile = await GetImage(updateMediaParams.Url);
             if (mediaFile == null)
                 return false;
             mediaFile.Title = updateMediaParams.Value;
@@ -101,7 +101,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task<bool> UpdateDescription(UpdateMediaParams updateMediaParams)
         {
-            var mediaFile = GetImage(updateMediaParams.Url);
+            var mediaFile = await GetImage(updateMediaParams.Url);
             if (mediaFile == null)
                 return false;
             mediaFile.Description = updateMediaParams.Value;

@@ -17,11 +17,11 @@ namespace MrCMS.Services.ImportExport.Rules
             _urlHistoryService = urlHistoryService;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
+        public async IAsyncEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
         {
             if (item.UrlHistory.Count <= 0) yield break;
 
-            var document = _getWebpageByUrl.GetByUrl(item.UrlSegment);
+            var document = await _getWebpageByUrl.GetByUrl(item.UrlSegment);
 
             if (document == null) yield break;
 

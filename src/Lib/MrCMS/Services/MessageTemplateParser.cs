@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
 using MrCMS.Messages;
@@ -21,42 +22,42 @@ namespace MrCMS.Services
             _serviceProvider = serviceProvider;
         }
 
-        public string Parse<T>(string template, T instance)
+        public async Task<string> Parse<T>(string template, T instance)
         {
             var stringBuilder = new StringBuilder(template);
 
-            ApplyTypeSpecificTokens(instance, stringBuilder);
+            await ApplyTypeSpecificTokens(instance, stringBuilder);
 
-            ApplySystemWideTokens(stringBuilder);
+            await ApplySystemWideTokens(stringBuilder);
 
             return stringBuilder.ToString();
         }
 
-        public string Parse(string template)
+        public async Task<string> Parse(string template)
         {
             var stringBuilder = new StringBuilder(template);
 
-            ApplySystemWideTokens(stringBuilder);
+            await ApplySystemWideTokens(stringBuilder);
 
             return stringBuilder.ToString();
         }
 
-        private void ApplySystemWideTokens(StringBuilder stringBuilder)
+        private async Task ApplySystemWideTokens(StringBuilder stringBuilder)
         {
             var providers = _serviceProvider.GetServices<ITokenProvider>();
             foreach (var token in providers.SelectMany(provider => provider.Tokens))
             {
-                stringBuilder.Replace("{" + token.Key + "}", token.Value());
+                stringBuilder.Replace("{" + token.Key + "}", await token.Value());
             }
         }
 
-        private void ApplyTypeSpecificTokens<T>(T instance, StringBuilder stringBuilder)
+        private async Task ApplyTypeSpecificTokens<T>(T instance, StringBuilder stringBuilder)
         {
             IEnumerable<ITokenProvider<T>> tokenProviders = _serviceProvider.GetServices<ITokenProvider<T>>();
 
             foreach (var token in tokenProviders.SelectMany(tokenProvider => tokenProvider.Tokens))
             {
-                stringBuilder.Replace("{" + token.Key + "}", token.Value(instance));
+                stringBuilder.Replace("{" + token.Key + "}", await token.Value(instance));
             }
         }
 

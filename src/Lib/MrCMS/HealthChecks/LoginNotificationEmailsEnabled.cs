@@ -6,19 +6,19 @@ namespace MrCMS.HealthChecks
 {
     public class LoginNotificationEmailsEnabled : HealthCheck
     {
-        private readonly SecuritySettings _settings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public LoginNotificationEmailsEnabled(SecuritySettings settings)
+        public LoginNotificationEmailsEnabled(ISystemConfigurationProvider configurationProvider)
         {
-            _settings = settings;
+            _configurationProvider = configurationProvider;
         }
 
         public override string DisplayName => "Login Notification Emails Enabled";
 
-        public override Task<HealthCheckResult> PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
-
-            return Task.FromResult( _settings.SendLoginNotificationEmails
+            SecuritySettings settings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            return settings.SendLoginNotificationEmails
                 ? HealthCheckResult.Success
                 : new HealthCheckResult
                 {
@@ -27,7 +27,7 @@ namespace MrCMS.HealthChecks
                     {
                         "Login notification emails have not been enabled for this site."
                     }
-                });
+                };
         }
     }
 }

@@ -140,8 +140,7 @@ namespace MrCMS.Settings
                 string[] ips = AllowedAdminIPs.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string ip in ips)
                 {
-                    IPAddress address;
-                    if (IPAddress.TryParse(ip, out address))
+                    if (IPAddress.TryParse(ip, out _))
                         yield return ip;
                 }
             }

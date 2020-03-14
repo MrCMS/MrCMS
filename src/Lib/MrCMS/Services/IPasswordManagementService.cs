@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Services
@@ -6,6 +7,6 @@ namespace MrCMS.Services
     {
         bool ValidatePassword(string password, string confirmation);
         void SetPassword(User user, string password, string confirmation);
-        bool ValidateUser(User user, string password);
+        Task<bool> ValidateUser(User user, string password);
     }
 }

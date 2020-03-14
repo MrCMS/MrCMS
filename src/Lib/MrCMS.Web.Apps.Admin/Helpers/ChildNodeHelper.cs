@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Helpers
         {
             var thisNode = node.ChildNodesRecursive().FirstOrDefault(htmlNode => htmlNode.Name == nodeType);
 
-            return thisNode != null ? thisNode.InnerText : null;
+            return thisNode?.InnerText;
         }
 
         public static string GetAllText(this HtmlNode node)

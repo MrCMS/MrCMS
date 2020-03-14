@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Notifications;
 using MrCMS.Web.Apps.Admin.ACL;
 using MrCMS.Web.Apps.Admin.Models;
@@ -33,9 +34,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Push(NotificationModel model)
+        public async Task<RedirectToActionResult> Push(NotificationModel model)
         {
-            _service.PushNotification(model);
+            await _service.PushNotification(model);
             return RedirectToAction("Index");
         }
 
@@ -49,9 +50,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [Acl(typeof(NotificationACL), NotificationACL.Delete)]
-        public RedirectToActionResult Delete_POST(Notification notification)
+        public async Task<RedirectToActionResult> Delete_POST(Notification notification)
         {
-            _service.Delete(notification);
+            await _service.Delete(notification);
             return RedirectToAction("Index");
         }
     }

@@ -70,7 +70,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return GetAdditionalPropertyModel(block.GetType());
         }
 
-        public int? Add(AddContentBlockViewModel addModel, object additionalPropertyModel)
+        public async Task<int?> AddAsync(AddContentBlockViewModel addModel, object additionalPropertyModel)
         {
             var type = TypeHelper.GetTypeByName(addModel.BlockType);
             if (type == null)
@@ -78,8 +78,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 return null;
             }
 
-            var block = Activator.CreateInstance(type) as ContentBlock;
-            if (block == null)
+            if (!(Activator.CreateInstance(type) is ContentBlock block))
             {
                 return null;
             }
@@ -91,7 +90,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
 
             block.DisplayOrder = GetDisplayOrder(block.WebpageId);
-            _repository.Add(block);
+            await _repository.Add(block);
 
             return block.WebpageId;
         }
@@ -104,7 +103,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         }
 
 
-        public int? Update(UpdateContentBlockViewModel updateModel, object additionalPropertyModel)
+        public async Task<int?> Update(UpdateContentBlockViewModel updateModel, object additionalPropertyModel)
         {
             var block = GetEntity(updateModel.Id);
             if (block == null)
@@ -118,12 +117,12 @@ namespace MrCMS.Web.Apps.Admin.Services
                 _mapper.Map(additionalPropertyModel, block);
             }
 
-            _repository.Update(block);
+            await _repository.Update(block);
 
             return block.Webpage?.Id;
         }
 
-        public int? Delete(int id)
+        public async Task<int?> Delete(int id)
         {
             var block = GetEntity(id);
             if (block == null)
@@ -133,7 +132,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             var webpageId = block.WebpageId;
             block.Webpage?.ContentBlocks.Remove(block);
-            _repository.Delete(block);
+            await _repository.Delete(block);
             return webpageId;
         }
 

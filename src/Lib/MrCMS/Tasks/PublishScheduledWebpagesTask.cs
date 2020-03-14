@@ -34,7 +34,7 @@ namespace MrCMS.Tasks
         {
             using (_notificationDisabler.Disable())
             {
-                var now = _getDateTimeNow.LocalNow;
+                var now = await _getDateTimeNow.GetLocalNow();
                 var due = await _repository.Query().Where(x => !x.Published && x.PublishOn <= now).ToListAsync(token);
                 if (!due.Any())
                     return;

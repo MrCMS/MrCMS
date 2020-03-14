@@ -58,7 +58,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             {
                 TempData["already-logged-in"] = _stringResourceProvider.GetValue("Register Already Logged in",
                     "You are already logged in. Please logout to create a new account.");
-                return _uniquePageService.RedirectTo<RegisterPage>();
+                return await _uniquePageService.RedirectTo<RegisterPage>();
             }
 
             if (model != null && ModelState.IsValid && _registrationService.CheckEmailIsNotRegistered(model.Email))
@@ -70,14 +70,14 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     : Redirect("~/");
             }
 
-            model = model ?? new RegisterModel();
+            model ??= new RegisterModel();
 
             model.Password = null;
             model.ConfirmPassword = null;
 
             TempData["register-model"] = model;
 
-            return _uniquePageService.RedirectTo<RegisterPage>();
+            return await _uniquePageService.RedirectTo<RegisterPage>();
         }
 
         public JsonResult CheckEmailIsNotRegistered(string email)

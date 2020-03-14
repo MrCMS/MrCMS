@@ -37,9 +37,10 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             viewData["parent"] = parent;
 
+            var canAccess = await _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"), _getCurrentUser.Get());
             IOrderedEnumerable<DocumentMetadata> validWebpageDocumentTypes = _validWebpageChildrenService
                 .GetValidWebpageDocumentTypes(parent,
-                    metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"), _getCurrentUser.Get()))
+                    metadata => canAccess)
                 .OrderBy(metadata => metadata.DisplayOrder);
 
             var templates = await _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);

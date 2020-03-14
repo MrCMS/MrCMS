@@ -40,11 +40,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             return new AddLayoutAreaModel { LayoutId = id };
         }
 
-        public void Add(AddLayoutAreaModel model)
+        public async Task Add(AddLayoutAreaModel model)
         {
             var layoutArea = _mapper.Map<LayoutArea>(model);
             EnsureLayoutAreaIsSet(layoutArea);
-            _layoutAreaRepository.Add(layoutArea);
+            await _layoutAreaRepository.Add(layoutArea);
         }
 
         public UpdateLayoutAreaModel GetEditModel(int id)
@@ -68,13 +68,13 @@ namespace MrCMS.Web.Apps.Admin.Services
                 layoutArea.Layout.LayoutAreas.Add(layoutArea);
         }
 
-        public LayoutArea Update(UpdateLayoutAreaModel model)
+        public async Task<LayoutArea> Update(UpdateLayoutAreaModel model)
         {
             var layoutArea = GetArea(model.Id);
             _mapper.Map(model, layoutArea);
 
             EnsureLayoutAreaIsSet(layoutArea);
-            _layoutAreaRepository.Update(layoutArea);
+            await _layoutAreaRepository.Update(layoutArea);
             return layoutArea;
         }
 
@@ -83,13 +83,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _layoutAreaRepository.LoadSync(layoutAreaId, x => x.Layout);
         }
 
-        public LayoutArea DeleteArea(int id)
+        public async Task<LayoutArea> DeleteArea(int id)
         {
             var area = GetArea(id);
 
             if (area.Layout?.LayoutAreas.Contains(area) == true)
                 area.Layout.LayoutAreas.Remove(area);
-            _layoutAreaRepository.Delete(area);
+            await _layoutAreaRepository.Delete(area);
 
             return area;
         }

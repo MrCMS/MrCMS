@@ -11,7 +11,7 @@
 @model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
-    var files = FileAdminService.GetFilesForFolder(Model);
+    var files = await FileAdminService.GetFilesForFolder(Model);
     var folders = await FileAdminService.GetSubFolders(Model);
 }
 <div data-update-media-folder="@Url.Action("Directory", "MediaCategory", Model)">
@@ -27,7 +27,7 @@
             }
             <div class="clearfix"></div>
         }
-        <div id="file-list" data-file-list="true" data-category-id="@(Model == null ? (int?) null : Model.Id)">
+        <div id="file-list" data-file-list="true" data-category-id="@Model?.Id">
             @if (files != null && files.Any())
             {
                 foreach (var file in files)

@@ -104,7 +104,7 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @if (Html.CanAccess<NotificationACL>(NotificationACL.Delete))
+                                @if (await Html.CanAccess<NotificationACL>(NotificationACL.Delete))
                                 {
                                     @Html.ActionLink("Delete", "Delete", "Notification", new {id = notification.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
                                 }

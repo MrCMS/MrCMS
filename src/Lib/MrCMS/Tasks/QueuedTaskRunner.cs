@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -37,13 +38,16 @@ namespace MrCMS.Tasks
         public async Task TriggerPendingTasks()
         {
             var sites = await _taskQueuer.GetPendingQueuedTaskSites();
-            _triggerUrls.Trigger(sites.Select(site =>
+            var urls = new List<string>();
+            foreach (var site in sites)
             {
-                var siteSettings = new SqlConfigurationProvider(_repository, SiteId.GetForSite(site), new NullEventContext()).GetSiteSettings<SiteSettings>();
 
-                return _urlHelper.AbsoluteAction("ExecuteQueuedTasks", "TaskExecution",
-                    new RouteValueDictionary { [siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword }, site);
-            }));
+                var siteSettings = await new SqlConfigurationProvider(_repository, SiteId.GetForSite(site), new NullEventContext()).GetSiteSettings<SiteSettings>();
+                urls.Add(_urlHelper.AbsoluteAction("ExecuteQueuedTasks", "TaskExecution",
+                    new RouteValueDictionary
+                        {[siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword}, site));
+            }
+            _triggerUrls.Trigger(urls);
         }
 
         public async Task<BatchExecutionResult> ExecutePendingTasks(CancellationToken token)
@@ -52,7 +56,7 @@ namespace MrCMS.Tasks
 
             var tasksToExecute = await _taskBuilder.GetTasksToExecute(pendingQueuedTasks);
 
-            return await _taskExecutor.Execute(tasksToExecute,token);
+            return await _taskExecutor.Execute(tasksToExecute, token);
         }
 
         public async Task<BatchExecutionResult> ExecuteLuceneTasks(CancellationToken token)

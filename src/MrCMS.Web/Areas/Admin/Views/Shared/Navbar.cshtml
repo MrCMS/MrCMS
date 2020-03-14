@@ -1,11 +1,7 @@
-﻿@using System.Drawing
-@using MrCMS.Helpers
-@using MrCMS.Services
-@using MrCMS.Services.Resources
+﻿@using MrCMS.Services
 @using MrCMS.Settings
 @using MrCMS.Web.Apps.Admin.Helpers
-@using MrCMS.Website
-@inject SiteSettings Settings
+@inject IConfigurationProvider ConfigurationProvider
 @inject IGetCurrentUser GetCurrentUser
 @{
     var typeOptions = UniversalSearchHelper.GetOptions();

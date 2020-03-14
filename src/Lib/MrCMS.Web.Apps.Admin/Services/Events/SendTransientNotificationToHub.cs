@@ -23,7 +23,7 @@ namespace MrCMS.Web.Apps.Admin.Services.Events
         public async Task Execute(OnTransientNotificationPublishedEventArgs args)
         {
             var notification = args.Notification;
-            var model = new NotificationModel { Message = notification.Message, DateValue = _getDateTimeNow.LocalNow };
+            var model = new NotificationModel { Message = notification.Message, DateValue = await _getDateTimeNow.GetLocalNow() };
             switch (notification.NotificationType)
             {
                 case NotificationType.AdminOnly:

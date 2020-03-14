@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Settings;
@@ -11,19 +13,19 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class GetLayoutOptions : IGetLayoutOptions
     {
         private readonly IRepository<Layout> _layoutRepository;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public GetLayoutOptions(IRepository<Layout> layoutRepository, SiteSettings siteSettings)
+        public GetLayoutOptions(IRepository<Layout> layoutRepository, IConfigurationProvider configurationProvider)
         {
             _layoutRepository = layoutRepository;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public List<SelectListItem> Get()
+        public async Task<List<SelectListItem>> Get()
         {
-            var layouts =
-                _layoutRepository.Readonly().OrderBy(layout => layout.DisplayOrder).ToList();
-            var systemDefaultLayout = _layoutRepository.GetDataSync(_siteSettings.DefaultLayoutId);
+            var layouts = await _layoutRepository.Readonly().OrderBy(layout => layout.DisplayOrder).ToListAsync();
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            var systemDefaultLayout = await _layoutRepository.GetData(siteSettings.DefaultLayoutId);
             var selectListItems = new List<SelectListItem>
             {
                 new SelectListItem {Text = string.Format("System Default ({0})", systemDefaultLayout.Name), Value = ""}

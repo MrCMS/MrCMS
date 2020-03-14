@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.ModelBinders;
@@ -33,11 +34,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddSiteModel model,
+        public async Task<RedirectToActionResult> Add(AddSiteModel model,
             [ModelBinder(typeof(GetSiteCopyOptionsModelBinder))]
             List<SiteCopyOption> options)
         {
-            _siteAdminService.AddSite(model, options);
+            await _siteAdminService.AddSite(model, options);
             return RedirectToAction("Index");
         }
 
@@ -49,9 +50,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateSiteModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateSiteModel model)
         {
-            _siteAdminService.SaveSite(model);
+            await _siteAdminService.SaveSite(model);
             return RedirectToAction("Index");
         }
 
@@ -63,9 +64,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Delete(int id)
+        public async Task<RedirectToActionResult> Delete(int id)
         {
-            _siteAdminService.DeleteSite(id);
+            await _siteAdminService.DeleteSite(id);
             return RedirectToAction("Index");
         }
     }

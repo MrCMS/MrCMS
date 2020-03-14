@@ -134,7 +134,7 @@ namespace MrCMS.Web
 
             services.AddMrCMSData(reflectionHelper, Configuration, currentAssembly);
             services.RegisterCurrentSite();
-            services.RegisterSettings();
+            //services.RegisterSettings();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
             services.RegisterTasks();
@@ -222,12 +222,12 @@ namespace MrCMS.Web
                 });
             }
 
-            services.TryAddEnumerable(ServiceDescriptor
-                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
-                >());
-            services
-                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
-                >();
+            //services.TryAddEnumerable(ServiceDescriptor
+            //    .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
+            //    >());
+            //services
+            //    .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
+            //    >();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("admin", builder => builder.RequireRole(Role.Administrator));

@@ -42,7 +42,7 @@ namespace MrCMS.Services.ImportExport
             var (items, parseErrors) = await GetDocumentsFromSpreadSheet(spreadsheet);
             if (parseErrors.Any())
                 return ImportDocumentsResult.Failure(parseErrors);
-            var businessLogicErrors = _importDocumentsValidationService.ValidateBusinessLogic(items);
+            var businessLogicErrors = await _importDocumentsValidationService.ValidateBusinessLogic(items);
             if (businessLogicErrors.Any())
                 return ImportDocumentsResult.Failure(businessLogicErrors);
             var batch = await _importDocumentService.CreateBatch(items, autoStart);

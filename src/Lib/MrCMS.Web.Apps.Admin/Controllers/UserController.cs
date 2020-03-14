@@ -80,7 +80,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var user = await _userAdminService.SaveUser(model, roles);
             TempData.SuccessMessages().Add($"{user.Name} successfully saved");
-            return RedirectToAction("Edit", "User", new { Id = user.Id });
+            return RedirectToAction("Edit", "User", new {user.Id });
         }
 
         [HttpGet]

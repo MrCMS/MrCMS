@@ -11,6 +11,6 @@ namespace MrCMS.Services
     {
         Task<IHtmlContent> GetContent(IViewComponentHelper helper, int id,
             Func<IViewComponentHelper, Task<IHtmlContent>> func);
-        (Widget Widget, object Model) GetModel(int id);
+        Task<(Widget Widget, object Model)> GetModel(int id);
     }
 }

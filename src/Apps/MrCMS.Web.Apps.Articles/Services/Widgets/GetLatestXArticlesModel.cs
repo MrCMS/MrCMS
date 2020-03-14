@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Articles.Models;
@@ -18,19 +20,19 @@ namespace MrCMS.Web.Apps.Articles.Services.Widgets
             _repository = repository;
         }
 
-        public override object GetModel(LatestXArticles widget)
+        public override async Task<object> GetModel(LatestXArticles widget)
         {
             if (widget.RelatedNewsList == null)
                 return null;
 
             return new LatestXArticlesViewModel
             {
-                Articles = _repository.Readonly()
+                Articles = await _repository.Readonly()
                     .Where(article => article.ParentId == widget.RelatedNewsList.Id
                                       && article.PublishOn != null && article.PublishOn <= DateTime.UtcNow)
                     .OrderByDescending(x => x.PublishOn)
                     .Take(widget.NumberOfArticles)
-                    .ToList(),
+                    .ToListAsync(),
                 Title = widget.Name
             };
         }

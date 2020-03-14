@@ -10,20 +10,18 @@ namespace MrCMS.Events.Documents
     {
         private readonly IGetDateTimeNow _getDateTimeNow;
 
-        public CheckPublishedStatus(IGetDateTimeNow getDateTimeNow, IRepository<Webpage> repository)
+        public CheckPublishedStatus(IGetDateTimeNow getDateTimeNow)
         {
             _getDateTimeNow = getDateTimeNow;
         }
-        public Task Check(Webpage webpage)
+        public async Task Check(Webpage webpage)
         {
-            var now = _getDateTimeNow.LocalNow;
+            var now = await _getDateTimeNow.GetLocalNow();
 
             if (webpage.PublishOn.HasValue && webpage.PublishOn <= now && webpage.Published == false)
             {
                 webpage.Published = true;
             }
-
-            return Task.CompletedTask;
         }
     }
 }

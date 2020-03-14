@@ -27,12 +27,12 @@ namespace MrCMS.Website.Auth
             _siteConfigurationProvider = siteConfigurationProvider;
         }
 
-        public StandardLogicCheckResult Check()
+        public async Task<StandardLogicCheckResult> Check()
         {
-            return Check(_getCurrentUser.Get());
+            return await Check(_getCurrentUser.Get());
         }
 
-        public StandardLogicCheckResult Check(User user)
+        public async Task<StandardLogicCheckResult> Check(User user)
         {
             // must be logged in
             if (user == null)
@@ -40,19 +40,19 @@ namespace MrCMS.Website.Auth
 
             if (_cachedResults.ContainsKey(user.Id))
                 return _cachedResults[user.Id];
-            var result = GetResult(user);
+            var result = await GetResult(user);
             _cachedResults[user.Id] = result;
             return result;
         }
 
-        private StandardLogicCheckResult GetResult(User user)
+        private async Task<StandardLogicCheckResult> GetResult(User user)
         {
             // if they're an admin they're always allowed
             if (_userRoleManager.IsInRoleAsync(user, Role.Administrator).ExecuteSync()) 
                 return new StandardLogicCheckResult { CanAccess = true };
 
             // if ACL isn't on, they're not allowed because they're not an admin
-            var aclSettings = _siteConfigurationProvider.GetSiteSettings<ACLSettings>();
+            var aclSettings = await _siteConfigurationProvider.GetSiteSettings<ACLSettings>();
             if (!aclSettings.ACLEnabled)
                 return new StandardLogicCheckResult { CanAccess = false };
 

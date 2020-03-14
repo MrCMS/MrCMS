@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,7 @@ namespace MrCMS.Website
 {
     public static class PageHtmlHelperExtensions
     {
-        public static IHtmlContent Editable<T>(this IHtmlHelper<T> helper, Expression<Func<T, string>> method, bool isHtml = false) where T : SystemEntity
+        public static async Task<IHtmlContent> Editable<T>(this IHtmlHelper<T> helper, Expression<Func<T, string>> method, bool isHtml = false) where T : SystemEntity
         {
             var model = helper.ViewData.Model;
             if (model == null)
@@ -26,7 +27,7 @@ namespace MrCMS.Website
 
             var typeName = model.GetType().Name;
 
-            if (helper.EditingEnabled() && propertyInfo != null)
+            if (await helper.EditingEnabled() && propertyInfo != null)
             {
                 var tagBuilder = new TagBuilder(isHtml ? "div" : "span");
                 tagBuilder.AddCssClass("editable");
@@ -41,12 +42,12 @@ namespace MrCMS.Website
 
             return value;
         }
-        public static bool EditingEnabled(this IHtmlHelper helper)
+        public static async Task<bool> EditingEnabled(this IHtmlHelper helper)
         {
             var serviceProvider = helper.ViewContext.HttpContext.RequestServices;
             var currentUser = serviceProvider.GetRequiredService<IGetCurrentUser>() .Get();
             var accessChecker = serviceProvider.GetRequiredService<IAccessChecker>();
-            return currentUser != null && accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show) &&
+            return currentUser != null && await accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show) &&
                    serviceProvider.GetRequiredService<SiteSettings>().EnableInlineEditing;
         }
 

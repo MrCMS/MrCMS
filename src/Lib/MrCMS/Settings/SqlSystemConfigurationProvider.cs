@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 
 namespace MrCMS.Settings
@@ -22,13 +23,13 @@ namespace MrCMS.Settings
             _eventContext = eventContext;
         }
 
-        public TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new()
+        public async Task<TSettings> GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new()
         {
             //using (MiniProfiler.Current.Step($"Get {typeof(TSettings).FullName}"))
             {
                 var settings = Activator.CreateInstance<TSettings>();
 
-                var dbSettings = GetDbSettings<TSettings>();
+                var dbSettings = await GetDbSettings<TSettings>();
 
                 foreach (var prop in typeof(TSettings).GetProperties())
                 {
@@ -52,15 +53,14 @@ namespace MrCMS.Settings
                 return settings;
             }
         }
-        private IDictionary<string, SystemSetting> GetDbSettings<TSettings>() where TSettings : SystemSettingsBase, new()
+        private async Task<IDictionary<string, SystemSetting>> GetDbSettings<TSettings>() where TSettings : SystemSettingsBase, new()
         {
             //using (MiniProfiler.Current.Step($"Get from db: {typeof(TSettings).FullName}"))
             {
                 var typeName = typeof(TSettings).FullName.ToLower();
-                var settings =
-                        _repository.Query()
+                var settings = await _repository.Query()
                             .Where(x => x.SettingType == typeName)
-                            .ToList();
+                            .ToListAsync();
                 return settings.GroupBy(setting => setting.PropertyName)
                     .ToDictionary(x => x.Key, x => x.Select(y => y).First());
             }
@@ -110,8 +110,8 @@ namespace MrCMS.Settings
 
         public async Task SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
         {
-            var existing = GetSystemSettings<TSettings>();
-            var existingInDb = GetDbSettings<TSettings>();
+            var existing = await GetSystemSettings<TSettings>();
+            var existingInDb = await GetDbSettings<TSettings>();
             await _repository.Transact(async (repo, token) =>
              {
                  /* We do not clear cache after each setting update.

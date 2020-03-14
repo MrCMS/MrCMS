@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
@@ -68,7 +69,7 @@ namespace MrCMS.Tests.Shortcodes
 
             public string TagName { get; }
 
-            public IHtmlContent Render(IHtmlHelper helper, Dictionary<string, string> attributes) => _renderResult;
+            public Task<IHtmlContent> Render(IHtmlHelper helper, Dictionary<string, string> attributes) => Task.FromResult(_renderResult);
         }
     }
 }

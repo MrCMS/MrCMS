@@ -14,6 +14,7 @@ using MrCMS.Website;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using X.PagedList;
 using Document = MrCMS.Entities.Documents.Document;
 
@@ -34,23 +35,23 @@ namespace MrCMS.Web.Apps.Core.Services.Search
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public IPagedList<Webpage> Search(WebpageSearchQuery model)
+        public async Task<IPagedList<Webpage>> Search(WebpageSearchQuery model)
         {
-            return _documentSearcher.Search(GetQuery(model), model.Page);
+            return await _documentSearcher.Search(await GetQuery(model), model.Page);
         }
 
         public IEnumerable<Document> GetBreadCrumb(int? parentId)
         {
             return _getBreadcrumbs.Get(parentId).Reverse();
         }
-        public Query GetQuery(WebpageSearchQuery model)
+        public async Task<Query> GetQuery(WebpageSearchQuery model)
         {
             var booleanQuery = new BooleanQuery
             {
                 {
                     new TermRangeQuery(
                         _documentSearcher.Definition.GetFieldDefinition<PublishedOnFieldDefinition>().Name, null,
-                        new BytesRef( DateTools.DateToString(_getDateTimeNow.LocalNow, DateTools.Resolution.SECOND)), false, true),
+                        new BytesRef( DateTools.DateToString(await _getDateTimeNow.GetLocalNow(), DateTools.Resolution.SECOND)), false, true),
                     Occur.MUST
                 }
             };

@@ -13,7 +13,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         Task<MediaCategory> Add(AddMediaCategoryModel model);
         Task<MediaCategory> Update(UpdateMediaCategoryModel model);
         Task<MediaCategory> Delete(int id);
-        List<SortItem> GetSortItems(int id);
+        Task<List<SortItem>> GetSortItems(int id);
         Task SetOrders(List<SortItem> items);
         Task<bool> UrlIsValidForMediaCategory(string urlSegment, int? id);
         UpdateMediaCategoryModel GetEditModel(int id);

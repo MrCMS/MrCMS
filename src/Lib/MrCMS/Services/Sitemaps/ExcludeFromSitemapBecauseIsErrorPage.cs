@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 
@@ -5,20 +6,21 @@ namespace MrCMS.Services.Sitemaps
 {
     public class ExcludeFromSitemapBecauseIsErrorPage : IReasonToExcludePageFromSitemap
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        public ExcludeFromSitemapBecauseIsErrorPage(SiteSettings siteSettings)
+        public ExcludeFromSitemapBecauseIsErrorPage(IConfigurationProvider configurationProvider)
         {
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
-        public bool ShouldExclude(Webpage webpage)
+        public async Task<bool> ShouldExclude(Webpage webpage)
         {
             if (webpage == null)
                 return true;
-            return _siteSettings.Error403PageId == webpage.Id
-                   || _siteSettings.Error404PageId == webpage.Id
-                   || _siteSettings.Error500PageId == webpage.Id;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            return siteSettings.Error403PageId == webpage.Id
+                   || siteSettings.Error404PageId == webpage.Id
+                   || siteSettings.Error500PageId == webpage.Id;
         }
     }
 }

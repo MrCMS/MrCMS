@@ -9,6 +9,6 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         Webpage GetWebpage(int id);
         Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage);
-        void Set(int webpage, int? parentId);
+        Task Set(int webpage, int? parentId);
     }
 }

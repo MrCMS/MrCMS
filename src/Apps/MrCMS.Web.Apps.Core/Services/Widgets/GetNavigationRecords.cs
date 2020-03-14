@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -8,6 +10,7 @@ using MrCMS.Services;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
+using X.PagedList;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
 {
@@ -22,10 +25,10 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             _getLiveUrl = getLiveUrl;
         }
 
-        public override object GetModel(Navigation widget)
+        public override async Task<object> GetModel(Navigation widget)
         {
-            var rootPages = GetPages(null);
-            var childPages = widget.IncludeChildren ? GetPages(rootPages) : new List<Webpage>();
+            var rootPages =await GetPages(null);
+            var childPages = widget.IncludeChildren ? await GetPages(rootPages) : new List<Webpage>();
             var navigationRecords =
                 rootPages.Where(webpage => webpage.Published).OrderBy(webpage => webpage.DisplayOrder)
                        .Select(webpage => new NavigationRecord
@@ -44,7 +47,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             return new NavigationList(navigationRecords.ToList());
         }
 
-        private IList<Webpage> GetPages(IList<Webpage> parents)
+        private Task<List<Webpage>> GetPages(IList<Webpage> parents)
         {
             var queryOver = _repository.Query();
             if (parents == null)
@@ -60,7 +63,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 queryOver.Where(webpage => webpage.RevealInNavigation && webpage.Published)
                     .OrderBy(webpage => webpage.DisplayOrder)
                     //.Cacheable()
-                    .ToList();
+                    .ToListAsync();
 
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -34,9 +35,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult MarkAllAsRead()
+        public async Task<JsonResult> MarkAllAsRead()
         {
-            _service.MarkAllAsRead();
+            await _service.MarkAllAsRead();
             return Json(true);
         }
     }

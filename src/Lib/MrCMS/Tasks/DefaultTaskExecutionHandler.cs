@@ -29,7 +29,12 @@ namespace MrCMS.Tasks
         public async Task<List<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list, CancellationToken token)
         {
             await _taskStatusUpdater.BeginExecution(list);
-            var results = await Task.WhenAll(list.Select(task => Execute(task, token)));
+            //var results = await Task.WhenAll(list.Select(task => Execute(task, token)));
+            var results = new List<TaskExecutionResult>();
+            foreach (var task in list)
+            {
+                results.Add(await Execute(task, token));
+            }
 
             // we are batching these to increase performance (no need for 1 transaction per update)
             await _taskStatusUpdater.CompleteExecution(results);

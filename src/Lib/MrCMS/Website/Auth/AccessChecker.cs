@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using MrCMS.ACL;
 using MrCMS.Entities.People;
 
@@ -19,31 +20,31 @@ namespace MrCMS.Website.Auth
             _performAclCheck = performAclCheck;
         }
 
-        public bool CanAccess(ControllerActionDescriptor descriptor)
+        public async Task<bool> CanAccess(ControllerActionDescriptor descriptor)
         {
-            var result = _checkStandardAccessLogic.Check();
+            var result =await _checkStandardAccessLogic.Check();
             var keys = _getAclKeys.GetKeys(descriptor);
             return _performAclCheck.CanAccessLogic(result, keys);
         }
 
-        public bool CanAccess(ControllerActionDescriptor descriptor, User user)
+        public async Task<bool> CanAccess(ControllerActionDescriptor descriptor, User user)
         {
-            var result = _checkStandardAccessLogic.Check(user);
+            var result = await _checkStandardAccessLogic.Check(user);
             var keys = _getAclKeys.GetKeys(descriptor);
             return _performAclCheck.CanAccessLogic(result, keys);
         }
 
 
-        public bool CanAccess<TAclRule>(string operation) where TAclRule : ACLRule
+        public async Task<bool> CanAccess<TAclRule>(string operation) where TAclRule : ACLRule
         {
-            var result = _checkStandardAccessLogic.Check();
+            var result = await _checkStandardAccessLogic.Check();
             var keys = _getAclKeys.GetKeys<TAclRule>(operation);
             return _performAclCheck.CanAccessLogic(result, keys);
         }
 
-        public bool CanAccess<TAclRule>(string operation, User user) where TAclRule : ACLRule
+        public async Task<bool> CanAccess<TAclRule>(string operation, User user) where TAclRule : ACLRule
         {
-            var result = _checkStandardAccessLogic.Check(user);
+            var result = await _checkStandardAccessLogic.Check(user);
             var keys = _getAclKeys.GetKeys<TAclRule>(operation);
             return _performAclCheck.CanAccessLogic(result, keys);
         }

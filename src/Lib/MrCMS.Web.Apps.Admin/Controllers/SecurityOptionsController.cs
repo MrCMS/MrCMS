@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Services;
@@ -27,17 +28,17 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Index(AuthRoleSettings settings)
+        public async Task<RedirectToActionResult> Index(AuthRoleSettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
+            await _configurationProvider.SaveSettings(settings);
             return RedirectToAction("Index");
         }
 
 
         [HttpPost]
-        public ActionResult Settings(SecuritySettings settings)
+        public async Task<ActionResult> Settings(SecuritySettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
+            await _configurationProvider.SaveSettings(settings);
             return RedirectToAction("Index");
         }
     }

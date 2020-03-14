@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Logging;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
@@ -35,9 +36,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete()
+        public async Task<ActionResult> Delete()
         {
-            _adminService.DeleteAllLogs();
+            await _adminService.DeleteAllLogs();
 
             return RedirectToAction("Index");
         }
@@ -50,9 +51,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteLog(int id)
+        public async Task<ActionResult> DeleteLog(int id)
         {
-            _adminService.DeleteLog(id);
+            await _adminService.DeleteLog(id);
 
             return RedirectToAction("Index");
         }

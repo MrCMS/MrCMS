@@ -22,7 +22,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly ICreateUpdateUrlBatch _createUpdateUrlBatch;
         private readonly IActivePagesLoader _activePagesLoader;
 
-        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch, 
+        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch,
             IActivePagesLoader activePagesLoader)
         {
             _webpageRepository = webpageRepository;
@@ -34,7 +34,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage)
         {
-            var webpages =await GetValidParentWebpages(webpage);
+            var webpages = await GetValidParentWebpages(webpage);
             List<SelectListItem> result = webpages
                 .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
                     page => page.Id.ToString(),
@@ -69,7 +69,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return validParentWebpages.OrderBy(x => x.Name);
         }
 
-        private bool SetParent(Webpage webpage, Webpage parent)
+        private async Task<bool> SetParent(Webpage webpage, Webpage parent)
         {
             if (webpage == null)
             {
@@ -78,7 +78,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             webpage.Parent = parent;
 
-            _webpageRepository.Update(webpage);
+            await _webpageRepository.Update(webpage);
             return true;
         }
 
@@ -96,7 +96,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 };
             }
 
-            var validParentWebpages =await GetValidParentWebpages(webpage);
+            var validParentWebpages = await GetValidParentWebpages(webpage);
             var valid = parent == null ? IsRootAllowed(webpage) : validParentWebpages.Contains(parent);
 
             return new MoveWebpageResult
@@ -223,7 +223,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var confirmationModel = await GetConfirmationModel(model);
 
-            var success = SetParent(confirmationModel.Webpage, confirmationModel.Parent);
+            var success = await SetParent(confirmationModel.Webpage, confirmationModel.Parent);
             if (!success)
             {
                 return new MoveWebpageResult

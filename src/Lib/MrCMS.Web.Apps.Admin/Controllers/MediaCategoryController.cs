@@ -71,9 +71,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Sort(int id)
+        public async Task<ActionResult> Sort(int id)
         {
-            List<SortItem> sortItems = _mediaCategoryAdminService.GetSortItems(id);
+            List<SortItem> sortItems =await _mediaCategoryAdminService.GetSortItems(id);
 
             return View(sortItems);
         }

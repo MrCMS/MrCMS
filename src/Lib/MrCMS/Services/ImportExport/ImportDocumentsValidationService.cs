@@ -28,7 +28,7 @@ namespace MrCMS.Services.ImportExport
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public Dictionary<string, List<string>> ValidateBusinessLogic(IEnumerable<DocumentImportDTO> items)
+        public async Task<Dictionary<string, List<string>>> ValidateBusinessLogic(IEnumerable<DocumentImportDTO> items)
         {
             var errors = new Dictionary<string, List<string>>();
             var itemRules = _serviceProvider.GetServices<IDocumentImportValidationRule>();
@@ -36,7 +36,13 @@ namespace MrCMS.Services.ImportExport
             var documentImportDataTransferObjects = items as IList<DocumentImportDTO> ?? items.ToList();
             foreach (var item in documentImportDataTransferObjects)
             {
-                var validationErrors = itemRules.SelectMany(rule => rule.GetErrors(item, documentImportDataTransferObjects)).ToList();
+                var validationErrors = new List<string>();
+                foreach (var rule in itemRules)
+                {
+                    await foreach (var error in rule.GetErrors(item, documentImportDataTransferObjects))
+                        validationErrors.Add(error);
+                }
+                //var validationErrors = itemRules.SelectMany(rule =>.ToList();
                 if (validationErrors.Any())
                     errors.Add(item.UrlSegment, validationErrors);
             }

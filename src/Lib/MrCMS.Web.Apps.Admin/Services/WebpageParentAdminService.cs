@@ -57,7 +57,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return result;
         }
 
-        public void Set(int id, int? parentVal)
+        public async Task Set(int id, int? parentVal)
         {
             var webpage = GetWebpage(id);
 
@@ -68,7 +68,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
             webpage.Parent = parent;
 
-            _webpageRepository.Update(webpage);
+            await _webpageRepository.Update(webpage);
         }
     }
 }

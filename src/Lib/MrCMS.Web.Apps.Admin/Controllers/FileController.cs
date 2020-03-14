@@ -43,14 +43,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ActionName("Delete")]
         //public ActionResult Delete_POST(MediaFile file)
-        public ActionResult Delete_POST(int id)
+        public async Task<ActionResult> Delete_POST(int id)
         {
             var file = _fileService.GetFile(id);
             if (file == null)
                 return RedirectToAction("Index", "MediaCategory");
             
             int categoryId = file.MediaCategory.Id;
-            _fileService.DeleteFile(file);
+            await _fileService.DeleteFile(file);
             return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });
         }
 
@@ -61,13 +61,13 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public string UpdateSEO(MediaFile mediaFile, string title, string description)
+        public async Task<string> UpdateSEO(MediaFile mediaFile, string title, string description)
         {
             try
             {
                 mediaFile.Title = title;
                 mediaFile.Description = description;
-                _fileService.UpdateFile(mediaFile);
+            await    _fileService.UpdateFile(mediaFile);
 
                 return "Changes saved";
             }
@@ -84,9 +84,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST(MediaFile file)
+        public async Task<ActionResult> Edit_POST(MediaFile file)
         {
-            _fileService.UpdateFile(file);
+            await _fileService.UpdateFile(file);
 
             return file.MediaCategory != null
                 ? RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id})

@@ -1,34 +1,39 @@
-﻿using MrCMS.Entities.Multisite;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
+using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.MessageTemplates
 {
     public class GetDefaultFailedLoginAttemptMessageTemplate : GetDefaultTemplate<FailedLoginAttemptMessageTemplate>
     {
-        private readonly MailSettings _mailSettings;
-        private readonly Site _site;
+        private readonly IGetCurrentSite _getCurrentSite;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public GetDefaultFailedLoginAttemptMessageTemplate(Site site, MailSettings mailSettings)
+        public GetDefaultFailedLoginAttemptMessageTemplate(IGetCurrentSite getCurrentSite, ISystemConfigurationProvider configurationProvider)
         {
-            _site = site;
-            _mailSettings = mailSettings;
+            _getCurrentSite = getCurrentSite;
+            _configurationProvider = configurationProvider;
         }
 
-        public override FailedLoginAttemptMessageTemplate Get()
+        public override async Task<FailedLoginAttemptMessageTemplate> Get()
         {
-            var fromAddress = !string.IsNullOrWhiteSpace(_mailSettings.SystemEmailAddress)
-                ? _mailSettings.SystemEmailAddress
+            var mailSettings = await _configurationProvider.GetSystemSettings<MailSettings>();
+            var site = await _getCurrentSite.GetSite();
+            var fromAddress = !string.IsNullOrWhiteSpace(mailSettings.SystemEmailAddress)
+                ? mailSettings.SystemEmailAddress
                 : "test@example.com";
             return new FailedLoginAttemptMessageTemplate
             {
                 FromAddress = fromAddress,
-                FromName = _site.Name,
+                FromName = site.Name,
                 ToAddress = "{Email}",
                 ToName = "",
                 Bcc = string.Empty,
                 Cc = string.Empty,
-                Subject = $"{_site.Name} - Failed Login Attempt",
+                Subject = $"{site.Name} - Failed Login Attempt",
                 Body =
                     "<p>There has been a failed login attempt on {SiteName}.<p>" +
                     "<p>IP: {IpAddress}</p>" +

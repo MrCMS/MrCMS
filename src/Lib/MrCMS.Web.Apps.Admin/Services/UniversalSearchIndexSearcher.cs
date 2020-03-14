@@ -24,16 +24,16 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly ISearchConverter _searchConverter;
         private readonly IDataReader _dataReader;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
         private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
         public UniversalSearchIndexSearcher(IUniversalSearchIndexManager universalSearchIndexManager,
-            ISearchConverter searchConverter, IDataReader dataReader, SiteSettings siteSettings)
+            ISearchConverter searchConverter, IDataReader dataReader, IConfigurationProvider configurationProvider)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
             _dataReader = dataReader;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
         }
 
         public async Task<List<UniversalSearchItemQuickSearch>> QuickSearch(QuickSearchParams searchParams)
@@ -57,10 +57,11 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public async Task<IPagedList<AdminSearchResult>> Search(AdminSearchQuery searchQuery)
         {
-            int pageSize = _siteSettings.DefaultPageSize;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            int pageSize = siteSettings.DefaultPageSize;
             //using (MiniProfiler.Current.Step("Search for results"))
             {
-                IndexSearcher searcher =await _universalSearchIndexManager.GetSearcher();
+                IndexSearcher searcher = await _universalSearchIndexManager.GetSearcher();
                 var query = new BooleanQuery();
                 AddFilter(query, searchQuery.Term);
                 if (!string.IsNullOrWhiteSpace(searchQuery.Type))

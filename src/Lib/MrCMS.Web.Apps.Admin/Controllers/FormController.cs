@@ -115,12 +115,12 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportFormData(Form form)
+        public async Task<ActionResult> ExportFormData(Form form)
         {
             try
             {
                 var file = _formAdminService.ExportFormData(form);
-                return File(file, "text/csv", "MrCMS-FormData-[" + form.Name + "]-" + DateTime.UtcNow + ".csv");
+                return File(await file, "text/csv", "MrCMS-FormData-[" + form.Name + "]-" + DateTime.UtcNow + ".csv");
             }
             catch
             {

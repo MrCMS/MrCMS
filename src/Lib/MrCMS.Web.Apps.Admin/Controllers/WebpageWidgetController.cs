@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Services;
@@ -15,16 +16,16 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Hide(int id, int widgetId, int layoutAreaId)
+        public async Task<RedirectToActionResult> Hide(int id, int widgetId, int layoutAreaId)
         {
-            _webpageWidgetAdminService.Hide(id, widgetId);
+            await _webpageWidgetAdminService.Hide(id, widgetId);
             return RedirectToAction("Edit", "Webpage", new { id, layoutAreaId });
         }
 
         [HttpPost]
-        public RedirectToActionResult Show(int id, int widgetId, int layoutAreaId)
+        public async Task<RedirectToActionResult> Show(int id, int widgetId, int layoutAreaId)
         {
-            _webpageWidgetAdminService.Show(id, widgetId);
+            await _webpageWidgetAdminService.Show(id, widgetId);
             return RedirectToAction("Edit", "Webpage", new { id, layoutAreaId });
         }
     }

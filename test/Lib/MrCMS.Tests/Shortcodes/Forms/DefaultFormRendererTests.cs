@@ -25,9 +25,9 @@ namespace MrCMS.Tests.Shortcodes.Forms
         private readonly string _existingValue = null;
         private readonly NameValueCollection _formCollection;
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
-        private readonly SiteSettings _siteSettings;
         private readonly IHtmlHelper _htmlHelper;
-        private IRepository<FormProperty> _repository;
+        private readonly IRepository<FormProperty> _repository;
+        private IConfigurationProvider _configurationProvider;
 
         public DefaultFormRendererTests()
         {
@@ -38,11 +38,11 @@ namespace MrCMS.Tests.Shortcodes.Forms
             _validationMessageRenderer = A.Fake<IValidationMessaageRenderer>();
             _submittedMessageRenderer = A.Fake<ISubmittedMessageRenderer>();
             _htmlHelper = A.Fake<IHtmlHelper>();
-            _siteSettings = new SiteSettings();
+            _configurationProvider = A.Fake<IConfigurationProvider>();
             _defaultFormRenderer = new DefaultFormRenderer(_elementRendererManager,
                 _repository,
                 _labelRenderer,
-                                                           _validationMessageRenderer, _submittedMessageRenderer, _siteSettings);
+                                                           _validationMessageRenderer, _submittedMessageRenderer, _configurationProvider);
         }
 
         [Fact]
@@ -63,106 +63,106 @@ namespace MrCMS.Tests.Shortcodes.Forms
             @default.Should().Be(HtmlString.Empty);
         }
 
-        [Fact(Skip = "Refactor with injectable recaptcha")]
-        public void DefaultFormRenderer_GetDefault_ShouldCallGetElementRendererOnEachProperty()
-        {
-            var textBox = new TextBox { Name = "test-1" };
-            var form = new Form
-            {
-                FormProperties = new List<FormProperty> { textBox }
-            };
-            var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
-             .Returns(formElementRenderer);
-            A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
-            //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Throws<Exception>();
+        //[Fact(Skip = "Refactor with injectable recaptcha")]
+        //public void DefaultFormRenderer_GetDefault_ShouldCallGetElementRendererOnEachProperty()
+        //{
+        //    var textBox = new TextBox { Name = "test-1" };
+        //    var form = new Form
+        //    {
+        //        FormProperties = new List<FormProperty> { textBox }
+        //    };
+        //    var formElementRenderer = A.Fake<IFormElementRenderer>();
+        //    A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
+        //     .Returns(formElementRenderer);
+        //    A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
+        //    //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Throws<Exception>();
 
-            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
+        //    _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
-            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox)).MustHaveHappened();
-        }
-
-
-        [Fact(Skip = "Refactor with injectable recaptcha")]
-        public void DefaultFormRenderer_GetDefault_ShouldCallAppendLabelOnLabelRendererForEachProperty()
-        {
-            var textBox = new TextBox { Name = "test-1" };
-            var form = new Form
-            {
-                FormProperties = new List<FormProperty> { textBox }
-            };
-            var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
-             .Returns(formElementRenderer);
-            A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
-
-            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
-
-            A.CallTo(() => _labelRenderer.AppendLabel(textBox)).MustHaveHappened();
-        }
-
-        [Fact(Skip = "Refactor with injectable recaptcha")]
-        public void DefaultFormRenderer_GetDefault_ShouldCallAppendControlOnElementRenderer()
-        {
-            var textBox = new TextBox { Name = "test-1" };
-            var form = new Form
-            {
-                FormProperties = new List<FormProperty> { textBox }
-            };
-            var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
-             .Returns(formElementRenderer);
-            A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
-
-            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
-
-            A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).MustHaveHappened();
-        }
-
-        [Fact(Skip = "Refactor with injectable recaptcha")]
-        public void DefaultFormRenderer_GetDefault_ShouldCallRenderLabelThenRenderElementForEachProperty()
-        {
-            var textBox1 = new TextBox { Name = "test-1" };
-            var textBox2 = new TextBox { Name = "test-2" };
-
-            var form = new Form
-            {
-                FormProperties = new List<FormProperty> { textBox1, textBox2 }
-            };
-            var formElementRenderer = A.Fake<IFormElementRenderer>();
-            A.CallTo(() => formElementRenderer.AppendElement(textBox1, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
-            A.CallTo(() => formElementRenderer.AppendElement(textBox2, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
-            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox1))
-             .Returns(formElementRenderer);
-            A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox2))
-             .Returns(formElementRenderer);
-
-            _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
-
-            List<ICompletedFakeObjectCall> elementRendererCalls = Fake.GetCalls(formElementRenderer).ToList();
-            List<ICompletedFakeObjectCall> labelRendererCalls = Fake.GetCalls(_labelRenderer).ToList();
-
-            labelRendererCalls.Where(x => x.Method.Name == "AppendLabel").Should().HaveCount(2);
-            elementRendererCalls.Where(x => x.Method.Name == "AppendElement").Should().HaveCount(2);
-        }
+        //    A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox)).MustHaveHappened();
+        //}
 
 
-        [Fact(Skip = "Refactor with injectable recaptcha")]
-        public void DefaultFormRenderer_GetDefault_ReturnsFormRenderIfItRenders()
-        {
-            var textBox1 = new TextBox { Name = "test-1" };
-            var textBox2 = new TextBox { Name = "test-2" };
+        //[Fact(Skip = "Refactor with injectable recaptcha")]
+        //public void DefaultFormRenderer_GetDefault_ShouldCallAppendLabelOnLabelRendererForEachProperty()
+        //{
+        //    var textBox = new TextBox { Name = "test-1" };
+        //    var form = new Form
+        //    {
+        //        FormProperties = new List<FormProperty> { textBox }
+        //    };
+        //    var formElementRenderer = A.Fake<IFormElementRenderer>();
+        //    A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
+        //     .Returns(formElementRenderer);
+        //    A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
 
-            var form = new Form
-            {
-                FormProperties = new List<FormProperty> { textBox1, textBox2 }
-            };
-            //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Returns(MvcHtmlString.Create("rendered"));
+        //    _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
 
-            var result = _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
+        //    A.CallTo(() => _labelRenderer.AppendLabel(textBox)).MustHaveHappened();
+        //}
 
-            result.ToString().Should().Be("rendered");
-        }
+        //[Fact(Skip = "Refactor with injectable recaptcha")]
+        //public void DefaultFormRenderer_GetDefault_ShouldCallAppendControlOnElementRenderer()
+        //{
+        //    var textBox = new TextBox { Name = "test-1" };
+        //    var form = new Form
+        //    {
+        //        FormProperties = new List<FormProperty> { textBox }
+        //    };
+        //    var formElementRenderer = A.Fake<IFormElementRenderer>();
+        //    A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox))
+        //     .Returns(formElementRenderer);
+        //    A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
+
+        //    _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
+
+        //    A.CallTo(() => formElementRenderer.AppendElement(textBox, _existingValue, _siteSettings.FormRendererType)).MustHaveHappened();
+        //}
+
+        //[Fact(Skip = "Refactor with injectable recaptcha")]
+        //public void DefaultFormRenderer_GetDefault_ShouldCallRenderLabelThenRenderElementForEachProperty()
+        //{
+        //    var textBox1 = new TextBox { Name = "test-1" };
+        //    var textBox2 = new TextBox { Name = "test-2" };
+
+        //    var form = new Form
+        //    {
+        //        FormProperties = new List<FormProperty> { textBox1, textBox2 }
+        //    };
+        //    var formElementRenderer = A.Fake<IFormElementRenderer>();
+        //    A.CallTo(() => formElementRenderer.AppendElement(textBox1, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
+        //    A.CallTo(() => formElementRenderer.AppendElement(textBox2, _existingValue, _siteSettings.FormRendererType)).Returns(new TagBuilder("input"));
+        //    A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox1))
+        //     .Returns(formElementRenderer);
+        //    A.CallTo(() => _elementRendererManager.GetPropertyRenderer<FormProperty>(textBox2))
+        //     .Returns(formElementRenderer);
+
+        //    _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
+
+        //    List<ICompletedFakeObjectCall> elementRendererCalls = Fake.GetCalls(formElementRenderer).ToList();
+        //    List<ICompletedFakeObjectCall> labelRendererCalls = Fake.GetCalls(_labelRenderer).ToList();
+
+        //    labelRendererCalls.Where(x => x.Method.Name == "AppendLabel").Should().HaveCount(2);
+        //    elementRendererCalls.Where(x => x.Method.Name == "AppendElement").Should().HaveCount(2);
+        //}
+
+
+        //[Fact(Skip = "Refactor with injectable recaptcha")]
+        //public void DefaultFormRenderer_GetDefault_ReturnsFormRenderIfItRenders()
+        //{
+        //    var textBox1 = new TextBox { Name = "test-1" };
+        //    var textBox2 = new TextBox { Name = "test-2" };
+
+        //    var form = new Form
+        //    {
+        //        FormProperties = new List<FormProperty> { textBox1, textBox2 }
+        //    };
+        //    //A.CallTo(() => _htmlHelper.Action("Render", "Form", A<object>._)).Returns(MvcHtmlString.Create("rendered"));
+
+        //    var result = _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, _formCollection));
+
+        //    result.ToString().Should().Be("rendered");
+        //}
 
         [Fact]
         public void DefaultFormRenderer_GetForm_ShouldHaveTagTypeOfForm()

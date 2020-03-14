@@ -19,14 +19,6 @@ namespace MrCMS.Web.Apps.Core.Filters
             _uniquePageService = uniquePageService;
         }
 
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
-        }
-
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
-        }
-
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var webpage = context.ActionArguments.Values.OfType<Webpage>().FirstOrDefault();
@@ -44,7 +36,7 @@ namespace MrCMS.Web.Apps.Core.Filters
                 return;
             }
 
-            context.Result = _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = webpage.Id });
+            context.Result = await _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = webpage.Id });
         }
     }
 }

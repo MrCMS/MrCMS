@@ -40,7 +40,7 @@ namespace MrCMS.DbConfiguration
 
                 return InstallationStatus.Installed;
             }
-            catch
+            catch (Exception exception)
             {
                 return InstallationStatus.RequiresDatabaseSettings;
             }

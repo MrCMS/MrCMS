@@ -11,19 +11,20 @@ namespace MrCMS.Services.Auth
 {
     public class LogLockedOutUserAuthed : IOnLockedOutUserAuthed
     {
-        private readonly SecuritySettings _securitySettings;
+        private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IRepository<LoginAttempt> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LogLockedOutUserAuthed(SecuritySettings securitySettings, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
+        public LogLockedOutUserAuthed(ISystemConfigurationProvider configurationProvider, IRepository<LoginAttempt> repository, IHttpContextAccessor httpContextAccessor)
         {
-            _securitySettings = securitySettings;
+            _configurationProvider = configurationProvider;
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
         }
         public async Task Execute(UserLockedOutEventArgs args)
         {
-            if (!_securitySettings.LogLoginAttempts)
+            var securitySettings = await _configurationProvider.GetSystemSettings<SecuritySettings>();
+            if (!securitySettings.LogLoginAttempts)
                 return;
             var request = _httpContextAccessor.HttpContext.Request;
             var loginAttempt = new LoginAttempt

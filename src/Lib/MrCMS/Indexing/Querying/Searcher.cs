@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using MrCMS.Entities;
@@ -15,29 +16,31 @@ namespace MrCMS.Indexing.Querying
         where TDefinition : IndexDefinition<TEntity>
     {
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
-        private readonly SiteSettings _siteSettings;
+        private readonly IConfigurationProvider _configurationProvider;
         private bool _disposed;
 
         public Searcher(TDefinition definition, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            SiteSettings siteSettings, IIndexManager<TEntity,TDefinition> manager)
+            IConfigurationProvider configurationProvider, IIndexManager<TEntity, TDefinition> manager)
         {
             Definition = definition;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
-            _siteSettings = siteSettings;
+            _configurationProvider = configurationProvider;
             if (!manager.IndexExists)
                 manager.CreateIndex();
         }
 
         public TDefinition Definition { get; }
 
-        public IPagedList<TEntity> Search(Query query, int pageNumber, int? pageSize = null, Filter filter = null,
+        public async Task<IPagedList<TEntity>> Search(Query query, int pageNumber, int? pageSize = null,
+            Filter filter = null,
             Sort sort = null)
         {
-            var size = pageSize ?? _siteSettings.DefaultPageSize;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            var size = pageSize ?? siteSettings.DefaultPageSize;
 
             var topDocs = IndexSearcher.Search(query, filter, pageNumber * size, sort ?? Sort.RELEVANCE);
 
-            var entities =
+            var entities = await
                 Definition.Convert(topDocs.ScoreDocs.Skip((pageNumber - 1) * size)
                     .Take(size)
                     .Select(doc => IndexSearcher.Doc(doc.Doc)));
@@ -45,16 +48,17 @@ namespace MrCMS.Indexing.Querying
             return new StaticPagedList<TEntity>(entities, pageNumber, size, topDocs.TotalHits);
         }
 
-        public IPagedList<TSubclass> Search<TSubclass>(Query query, int pageNumber, int? pageSize = null,
+        public async Task<IPagedList<TSubclass>> Search<TSubclass>(Query query, int pageNumber, int? pageSize = null,
             Filter filter = null, Sort sort = null) where TSubclass : TEntity
         {
-            var size = pageSize ?? _siteSettings.DefaultPageSize;
+            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
+            var size = pageSize ?? siteSettings.DefaultPageSize;
             var booleanQuery = UpdateQuery<TSubclass>(query);
 
             var topDocs = IndexSearcher.Search(booleanQuery ?? query, filter, pageNumber * size,
                 sort ?? Sort.RELEVANCE);
 
-            var entities =
+            var entities = await
                 Definition.Convert<TSubclass>(topDocs.ScoreDocs.Skip((pageNumber - 1) * size)
                     .Take(size)
                     .Select(doc => IndexSearcher.Doc(doc.Doc)));
@@ -78,24 +82,24 @@ namespace MrCMS.Indexing.Querying
             return topDocs.TotalHits;
         }
 
-        public IList<TEntity> GetAll(Query query = null, Filter filter = null, Sort sort = null)
+        public async Task<IList<TEntity>> GetAll(Query query = null, Filter filter = null, Sort sort = null)
         {
             var topDocs = IndexSearcher.Search(query ?? new MatchAllDocsQuery(), filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
-            var entities =
+            var entities = await
                 Definition.Convert(topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
 
             return entities.ToList();
         }
 
-        public IList<TSubclass> GetAll<TSubclass>(Query query = null, Filter filter = null, Sort sort = null)
+        public async Task<IList<TSubclass>> GetAll<TSubclass>(Query query = null, Filter filter = null, Sort sort = null)
             where TSubclass : TEntity
         {
             var booleanQuery = UpdateQuery<TSubclass>(query ?? new MatchAllDocsQuery());
 
             var topDocs = IndexSearcher.Search(booleanQuery, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
-            var entities =
+            var entities = await
                 Definition.Convert<TSubclass>(topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
 
             return entities.ToList();

@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using Version = Lucene.Net.Util.LuceneVersion;
 
@@ -216,36 +218,38 @@ namespace MrCMS.Indexing.Management
             return GetActionsDictionary(operation).Keys;
         }
 
-        public virtual T Convert(Document document)
+        public virtual Task<T> Convert(Document document)
         {
-            return Repository.GetData<T>(document.GetValue<int>(Id.FieldName)).GetAwaiter().GetResult();
+            return Repository.GetData(document.GetValue<int>(Id.FieldName));
         }
 
-        public virtual IEnumerable<T> Convert(IEnumerable<Document> documents)
+        public virtual async Task<IEnumerable<T>> Convert(IEnumerable<Document> documents)
         {
             List<int> ids = documents.Select(document => document.GetValue<int>("id")).ToList();
-            return
-                ids.Chunk(100)
-                    .SelectMany(
-                        ints =>
-                            Repository.Query<T>()
-                                .Where(arg => ints.Contains(arg.Id))
-                                //.Cacheable()
-                                .ToList()
-                                .OrderBy(arg => ids.IndexOf(arg.Id)));
+            var list = new List<T>();
+            foreach (IEnumerable<int> ints in ids.Chunk(100))
+            {
+                list.AddRange(await Repository.Query<T>()
+                    .Where(arg => ints.Contains(arg.Id))
+                    //.Cacheable()
+                    .ToListAsync());
+            }
+
+            return list.OrderBy(x => ids.IndexOf(x.Id)).ToList();
         }
-        public virtual IEnumerable<T2> Convert<T2>(IEnumerable<Document> documents) where T2 : T
+        public virtual async Task<IEnumerable<T2>> Convert<T2>(IEnumerable<Document> documents) where T2 : T
         {
             List<int> ids = documents.Select(document => document.GetValue<int>("id")).ToList();
-            return
-                ids.Chunk(100)
-                    .SelectMany(
-                        ints =>
-                            Repository.Query<T2>()
-                                .Where(arg => ints.Contains(arg.Id))
-                                //.Cacheable()
-                                .ToList()
-                                .OrderBy(arg => ids.IndexOf(arg.Id)));
+            var list = new List<T2>();
+            foreach (IEnumerable<int> ints in ids.Chunk(100))
+            {
+                list.AddRange(await Repository.Query<T2>()
+                    .Where(arg => ints.Contains(arg.Id))
+                    //.Cacheable()
+                    .ToListAsync());
+            }
+
+            return list.OrderBy(x => ids.IndexOf(x.Id)).ToList();
         }
 
         public sealed override Dictionary<Type, List<Func<SystemEntity, IEnumerable<LuceneAction>>>> GetActionsDictionary(LuceneOperation operation)

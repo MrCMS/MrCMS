@@ -4,6 +4,7 @@ using MrCMS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website.Optimization
 {
@@ -64,15 +65,15 @@ namespace MrCMS.Website.Optimization
             return context.Items[currentStylelist] as Dictionary<string, List<ResourceData>>;
         }
 
-        public void GetScripts(ViewContext viewContext)
+        public async Task GetScripts(ViewContext viewContext)
         {
-            viewContext.WriteScriptsToResponse(GetScriptData(viewContext.HttpContext).Values.SelectMany(x => x)
+            await viewContext.WriteScriptsToResponse(GetScriptData(viewContext.HttpContext).Values.SelectMany(x => x)
                 .Select(data => data.Url).Distinct());
         }
 
-        public void GetCss(ViewContext viewContext)
+        public async Task GetCss(ViewContext viewContext)
         {
-            viewContext.WriteCssToResponse(GetStyleData(viewContext.HttpContext).Values.SelectMany(x => x)
+         await   viewContext.WriteCssToResponse(GetStyleData(viewContext.HttpContext).Values.SelectMany(x => x)
                 .Select(x => x.Url).Distinct());
         }
     }

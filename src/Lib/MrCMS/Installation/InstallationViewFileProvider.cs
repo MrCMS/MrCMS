@@ -7,7 +7,7 @@ namespace MrCMS.Installation
 {
     public class InstallationViewFileProvider : IFileProvider
     {
-        private readonly string _prefix = "/Installation";
+        //private readonly string _prefix = "/Installation";
         private readonly CaseInsensitiveEmbeddedFileProvider _internalProvider;
         public InstallationViewFileProvider()
         {
