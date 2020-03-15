@@ -103,9 +103,7 @@ NDependOut/*
 *.pubxml
 *sitemap.xml
 
-
-appsettings.Development.json
-
+connectionstrings.json
 
 /src/MrCMS.Web/App_Data/Indexes/*
 /src/MrCMS.Web/wwwroot/content/upload/*

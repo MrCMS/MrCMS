@@ -5,24 +5,24 @@
     Layout = "~/Installation/Views/Install/_Layout.cshtml";
 }
 
-<h1>Requires settings</h1>
+<h1>Create Blank Database</h1>
 
 
 <p>
-    You add a connection string and a valid sql provider to your config to proceed.
+    Please create a blank database and add configuration as below in a file called connectionstrings.json.
 </p>
 <p>
-    e.g.
+    e.g. Create a file with the following and place it in MrCMS.Web/connectionstrings.json. Once done, please restart your application.
 </p>
 <pre>
 <code>
     {
-        "ConnectionStrings": {
-            "mrcms": "[YourConnectionString]"
-        },
-        "Database": {
-            "DatabaseProviderType": "MrCMS.DbConfiguration.SqlServer2012Provider"
-        }
+      "ConnectionStrings": {
+        "mrcms": "Data Source=localhost;Initial Catalog=mrcms;Integrated Security=True;Persist Security Info=False;MultipleActiveResultSets=True"
+      },
+      "Database": {
+        "DatabaseProviderType": "MrCMS.DbConfiguration.SqlServer2012Provider"
+      }
     }
 </code>
 </pre>

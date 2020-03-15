@@ -18,7 +18,11 @@ namespace MrCMS.Web
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            WebHost.CreateDefaultBuilder(args).ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddJsonFile(
+                        "connectionStrings.json", optional: true, reloadOnChange: true);
+                })
                 .UseStartup<Startup>();
     }
 }
