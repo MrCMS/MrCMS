@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using Version = Lucene.Net.Util.LuceneVersion;
+#pragma warning disable 1998
 
 namespace MrCMS.Indexing.Management
 {

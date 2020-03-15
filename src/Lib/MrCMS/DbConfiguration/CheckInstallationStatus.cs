@@ -40,7 +40,9 @@ namespace MrCMS.DbConfiguration
 
                 return InstallationStatus.Installed;
             }
+#pragma warning disable 168
             catch (Exception exception)
+#pragma warning restore 168
             {
                 return InstallationStatus.RequiresDatabaseSettings;
             }

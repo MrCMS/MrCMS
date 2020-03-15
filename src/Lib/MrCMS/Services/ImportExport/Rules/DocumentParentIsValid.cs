@@ -2,6 +2,7 @@
 using System.Linq;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Entities.Documents.Web;
+#pragma warning disable 1998
 
 namespace MrCMS.Services.ImportExport.Rules
 {

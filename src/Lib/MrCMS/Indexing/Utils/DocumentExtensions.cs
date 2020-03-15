@@ -5,6 +5,7 @@ using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
+#pragma warning disable 4014
 
 namespace MrCMS.Indexing.Utils
 {
@@ -15,7 +16,7 @@ namespace MrCMS.Indexing.Utils
     {
         public static Document SetFields<T>(this Document document, IEnumerable<FieldDefinition<T>> definitions, T obj)
         {
-            definitions.ForEach(definition => document.AddField(definition, obj));
+             definitions.ForEach(definition => document.AddField(definition, obj));
             return document;
         }
 

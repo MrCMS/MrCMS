@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+#pragma warning disable 1998
 
 namespace MrCMS.Helpers
 {

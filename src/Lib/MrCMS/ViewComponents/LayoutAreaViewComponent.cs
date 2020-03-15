@@ -3,6 +3,7 @@ using MrCMS.Website;
 using MrCMS.Website.Auth;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+#pragma warning disable 1998
 
 namespace MrCMS.ViewComponents
 {

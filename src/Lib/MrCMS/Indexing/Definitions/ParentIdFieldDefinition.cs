@@ -13,7 +13,9 @@ namespace MrCMS.Indexing.Definitions
         {
         }
 
+#pragma warning disable 1998
         protected override async IAsyncEnumerable<string> GetValues(Webpage obj)
+#pragma warning restore 1998
         {
             yield return obj.ParentId.ToString();
         }

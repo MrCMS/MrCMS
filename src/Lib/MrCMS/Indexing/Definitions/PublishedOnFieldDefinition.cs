@@ -4,6 +4,7 @@ using Lucene.Net.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
 using MrCMS.Indexing.Management;
+#pragma warning disable 1998
 
 namespace MrCMS.Indexing.Definitions
 {

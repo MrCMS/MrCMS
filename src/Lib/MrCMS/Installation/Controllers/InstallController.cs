@@ -6,6 +6,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Installation.Models;
 using MrCMS.Installation.Services;
+// ReSharper disable Mvc.ViewNotResolved - Views compiled in MrCMS.DLL
 
 namespace MrCMS.Installation.Controllers
 {

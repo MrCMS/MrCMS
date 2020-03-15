@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
+#pragma warning disable 1998
 
 namespace MrCMS.Services.ImportExport.Rules
 {
