@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
+using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Apps.Articles.Widgets;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models

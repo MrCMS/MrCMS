@@ -1,5 +1,5 @@
 ﻿using MrCMS.Entities.Documents.Web;
-using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
+using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 
 namespace MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages
 {

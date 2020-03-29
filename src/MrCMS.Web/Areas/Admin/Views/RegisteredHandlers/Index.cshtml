@@ -1,0 +1,28 @@
+﻿@*@model List<IMrCMSRouteHandler>
+
+<fieldset>
+    <legend>
+        Registered MrCMS Route Handlers
+    </legend>
+
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var handler in Model)
+            {
+                var type = handler.GetType();
+                <tr>
+                    <td>@type.Name.BreakUpString()</td>
+                    <td>@type.FullName</td>
+                    <td>@handler.Priority</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>*@

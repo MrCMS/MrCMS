@@ -1,9 +1,8 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Services
-@using MrCMS.Website
-@model MrCMS.Web.Apps.Admin.Models.WebpageEdit.SEOTabViewModel
+@using IUrlHistoryAdminService = MrCMS.Web.Areas.Admin.Services.IUrlHistoryAdminService
+@model MrCMS.Web.Areas.Admin.Models.WebpageEdit.SEOTabViewModel
 @inject IUrlHistoryAdminService UrlHistoryAdminService
 @{
     var webpage = ViewData["webpage"] as Webpage;

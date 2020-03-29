@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
-using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
+using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 using System;
 using System.Threading.Tasks;
 

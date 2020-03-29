@@ -1,6 +1,5 @@
-﻿@using MrCMS.Web.Apps.Admin.Models
-@using MrCMS.Web.Apps.Admin.Services
-@model AddSiteModel
+﻿@using ISiteCloneOptionsAdminService = MrCMS.Web.Areas.Admin.Services.ISiteCloneOptionsAdminService
+@model MrCMS.Web.Areas.Admin.Models.AddSiteModel
 @inject ISiteCloneOptionsAdminService AdminService
 @{
     var otherSites = AdminService.GetOtherSiteOptions();

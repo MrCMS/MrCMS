@@ -1,8 +1,7 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.Widget
+﻿@using MrCMS.Entities.Widget
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
-@model MrCMS.Web.Apps.Admin.Models.UpdateWidgetModel
+@using MrCMS.Web.Admin.Infrastructure.Helpers
+@model MrCMS.Web.Areas.Admin.Models.UpdateWidgetModel
 @{
     var widget = ViewData["widget"] as Widget;
     ViewBag.Title = "Edit | " + widget.WidgetClrType.BreakUpString();

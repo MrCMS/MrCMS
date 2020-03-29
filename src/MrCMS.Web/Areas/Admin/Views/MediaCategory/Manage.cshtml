@@ -1,9 +1,7 @@
-﻿@using System.Linq
-@using MrCMS.Helpers
-@using MrCMS.Services
-@using MrCMS.Web.Apps.Admin.ACL
-@using MrCMS.Web.Apps.Admin.Services
-@model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+﻿@using MrCMS.Helpers
+@using IFileAdminService = MrCMS.Web.Areas.Admin.Services.IFileAdminService
+@using MediaToolsACL = MrCMS.Web.Areas.Admin.ACL.MediaToolsACL
+@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
     Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");

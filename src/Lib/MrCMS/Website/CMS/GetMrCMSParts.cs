@@ -89,6 +89,7 @@ namespace MrCMS.Website.CMS
                     {
                         var methodInfo = typeof(HubRouteBuilder).GetMethod(nameof(HubRouteBuilder.MapHub),
                             new Type[] {typeof(PathString)});
+                        
                         var signalRRoutes = appContext.SignalRHubs;
                         foreach (var key in signalRRoutes.Keys)
                         {
@@ -103,12 +104,25 @@ namespace MrCMS.Website.CMS
                 {
                     Registration = app => app.UseMvc(builder =>
                     {
+                        
+                        
                         builder.MapMrCMS();
                         builder.MapMrCMSApps(appContext);
-
+                        
+                        builder.MapAreaRoute("Admin route",
+                            "Admin",
+                            "Admin/{controller}/{action}/{id?}",
+                            new { controller = "Home", action = "Index" }
+                        );
+                        
                         builder.MapRoute(
                             "default",
                             "{controller=Home}/{action=Index}/{id?}");
+                        
+                        builder.MapRoute("ckeditor Config", "Areas/Admin/lib/ckeditor/config.js",
+                            new { controller = "CKEditor", action = "Config" });
+
+                        
 
                         builder.Routes.Add(new FileNotFoundRouter(builder.DefaultHandler));
                     }),

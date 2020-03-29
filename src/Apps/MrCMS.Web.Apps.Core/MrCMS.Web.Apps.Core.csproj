@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Lib\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 

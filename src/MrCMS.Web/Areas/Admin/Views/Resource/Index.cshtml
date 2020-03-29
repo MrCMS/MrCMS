@@ -1,9 +1,9 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Resources
-@using MrCMS.Web.Apps.Admin.Services
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.StringResourceSearchQuery
+@using StringResourceExtensions = MrCMS.Web.Areas.Admin.Services.StringResourceExtensions
+@model MrCMS.Web.Areas.Admin.Models.StringResourceSearchQuery
 @{
     var resources = ViewData["results"] as IPagedList<StringResource>;
     var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();

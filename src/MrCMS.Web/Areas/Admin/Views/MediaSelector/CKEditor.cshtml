@@ -4,7 +4,7 @@
 @using MrCMS.Settings
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.CKEditorMediaSelectorSearchQuery
+@model MrCMS.Web.Areas.Admin.Models.CKEditorMediaSelectorSearchQuery
 @inject IConfigurationProvider ConfigurationProvider
 @{
     var mediaSettings = await ConfigurationProvider.GetSiteSettings<MediaSettings>();

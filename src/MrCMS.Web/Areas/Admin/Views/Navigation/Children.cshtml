@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Html
-@using MrCMS.Web.Apps.Admin.Models
-@model List<MrCMS.Web.Apps.Admin.Models.AdminTreeNode>
+@using AdminTreeNode = MrCMS.Web.Areas.Admin.Models.AdminTreeNode
+@model List<MrCMS.Web.Areas.Admin.Models.AdminTreeNode>
 
 <ul>
     @foreach (AdminTreeNode node in Model)

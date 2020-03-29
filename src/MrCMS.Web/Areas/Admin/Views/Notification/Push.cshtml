@@ -1,7 +1,5 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Controllers
-@model MrCMS.Web.Apps.Admin.Models.NotificationModel
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.NotificationModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var publishTypeOptions = ViewData["publish-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();

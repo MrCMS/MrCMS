@@ -3,8 +3,8 @@
 @using MrCMS.Entities.People
 @using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Web.Apps.Admin.Services
-@model MrCMS.Web.Apps.Admin.Models.UpdateUserModel
+@using IGetEditTabsService = MrCMS.Web.Areas.Admin.Services.IGetEditTabsService
+@model MrCMS.Web.Areas.Admin.Models.UpdateUserModel
 @inject IGetEditTabsService EditTabsService
 @inject IUserRoleManager UserRoleManager
 @{

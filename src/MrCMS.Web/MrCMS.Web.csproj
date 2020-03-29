@@ -18,11 +18,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
+    <ProjectReference Include="..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
-    <ProjectReference Include="..\Lib\MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj" />
     <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
     <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Articles\MrCMS.Web.Apps.Articles.csproj" />
     <ProjectReference Include="..\Lib\MrCMS\MrCMS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.21" />
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.9.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +38,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
   </ItemGroup>
   
 </Project>

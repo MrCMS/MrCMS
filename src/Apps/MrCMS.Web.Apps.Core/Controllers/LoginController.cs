@@ -130,14 +130,14 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
 
         [HttpGet]
-        public ActionResult PasswordReset(ResetPasswordPage page, [FromQuery] Guid? id)
+        public async Task<ActionResult> PasswordReset(ResetPasswordPage page, [FromQuery] Guid? id)
         {
             if (id == null)
             {
                 return Redirect("~/");
             }
 
-            var user = _userLookup.GetUserByResetGuid(id.Value);
+            var user = await _userLookup.GetUserByResetGuid(id.Value);
 
             if (user == null)
             {

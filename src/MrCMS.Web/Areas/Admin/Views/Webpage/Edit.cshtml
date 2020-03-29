@@ -1,9 +1,8 @@
-﻿@using System
-@using MrCMS.Entities.Documents.Web
+﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Web.Apps.Admin.Models
-@using MrCMS.Web.Apps.Admin.Services
+@using IGetEditTabsService = MrCMS.Web.Areas.Admin.Services.IGetEditTabsService
+@using AdminMessages = MrCMS.Web.Areas.Admin.Models.AdminMessages
 @model Webpage
 @inject IGetEditTabsService TabsService
 @inject IGetLiveUrl GetLiveUrl

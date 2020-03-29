@@ -1,10 +1,9 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Models
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.PageTemplateSearchQuery
+@model MrCMS.Web.Areas.Admin.Models.PageTemplateSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<PageTemplate>;
 }

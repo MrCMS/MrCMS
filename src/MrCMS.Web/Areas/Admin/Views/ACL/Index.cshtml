@@ -1,6 +1,5 @@
-﻿@using MrCMS.ACL
-@using MrCMS.Entities.People
-@using MrCMS.Web.Apps.Admin.Models
+﻿@using MrCMS.Entities.People
+@using AclInfo = MrCMS.Web.Areas.Admin.Models.AclInfo
 @model dynamic
 @{
     var rules = ViewData["acl-rules"] as List<AclInfo>;

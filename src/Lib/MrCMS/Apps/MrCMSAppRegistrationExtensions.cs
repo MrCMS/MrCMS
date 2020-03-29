@@ -97,7 +97,7 @@ namespace MrCMS.Apps
                     options.Filters.Add<HoneypotFilter>();
                     options.Filters.Add<DoNotCacheFilter>();
                     options.Filters.Add<ProfilingActionFilter>();
-                    options.EnableEndpointRouting = false;
+                    options.EnableEndpointRouting = false;                    
                     appContext.SetupMvcOptions(options);
                     options.MakeFiltersInstallationAware();
                 })

@@ -1,9 +1,9 @@
 ﻿@using MrCMS.Entities.Notifications
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.ACL
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.NotificationSearchQuery
+@using NotificationACL = MrCMS.Web.Areas.Admin.ACL.NotificationACL
+@model MrCMS.Web.Areas.Admin.Models.NotificationSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<Notification>;
     var notificationTypeOptions = ViewData["notification-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();

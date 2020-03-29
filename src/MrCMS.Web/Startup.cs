@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -25,9 +23,7 @@ using MrCMS.Logging;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Themes.Red;
-using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Core;
-using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
 using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
@@ -40,6 +36,11 @@ using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
+using MrCMS.Web.Areas.Admin.Filters;
+using MrCMS.Web.Areas.Admin.Helpers;
+using MrCMS.Web.Areas.Admin.Hubs;
+using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Website.Profiling;
 using StackExchange.Profiling.Storage;
 
 namespace MrCMS.Web
@@ -92,10 +93,8 @@ namespace MrCMS.Web
             var appContext = services.AddMrCMSApps(context =>
             {
                 context.RegisterApp<MrCMSCoreApp>();
-                context.RegisterApp<MrCMSAdminApp>();
                 context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
-                //context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
             // TODO: Look to removing Site for constructors and resolving like this
@@ -112,6 +111,7 @@ namespace MrCMS.Web
             services.AddMrCMSFileSystem();
 
             services.AddSignalR();
+            
 
             var currentAssembly = GetType().Assembly;
             services.AddAutoMapper(expression =>
@@ -134,14 +134,20 @@ namespace MrCMS.Web
 
             services.AddMrCMSData(reflectionHelper, Configuration, currentAssembly);
             services.RegisterCurrentSite();
-            //services.RegisterSettings();
+            services.RegisterBreadcrumbs();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
             services.RegisterTasks();
             services.RegisterEvents();
 
-            services.AddMvcForMrCMS(appContext, fileProvider);
-
+            var mvc = services.AddMvcForMrCMS(appContext, fileProvider);
+            mvc.AddMvcOptions(options =>
+            {
+                options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
+                options.Filters.Add<ProfilingAsyncAuthorizationFilter<AdminAuthFilter>>();
+                options.Filters.Add<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
+            });
+            
             services.AddLogging(builder => builder.AddMrCMSLogger());
 
             services.AddMrCMSIdentity(Configuration);
@@ -170,7 +176,7 @@ namespace MrCMS.Web
 
                 // (Optional) Control storage
                 // (default is 30 minutes in MemoryCacheStorage)
-                (options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+                ((MemoryCacheStorage) options.Storage).CacheDuration = TimeSpan.FromMinutes(60);
 
                 // (Optional) Control which SQL formatter to use, InlineFormatter is the default
                 options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
@@ -267,17 +273,27 @@ namespace MrCMS.Web
                 httpContext => httpContext.RequestServices.GetRequiredService<ICheckInstallationStatus>().IsInstalled(),
                 builder =>
                 {
+                    
                     builder.UseMrCMS(a =>
                     {
+                        a.UseRouting();
                         a.UseRequestLocalization();
                         a.UseStaticFiles(new StaticFileOptions
                         {
                             FileProvider = new CompositeFileProvider(
                                 new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
                         });
+                        
                         a.UseAuthentication();
                         a.UseMiniProfiler();
+                        a.UseEndpoints(endpoints =>
+                        {
+                            endpoints.MapHub<BatchProcessingHub>("/batchHub");
+                            endpoints.MapHub<NotificationHub>("/notificationsHub");
+                        });
                     });
+                    
+                    
                 });
             app.MapWhen(
                 httpContext =>
@@ -290,8 +306,9 @@ namespace MrCMS.Web
                         return;
                     }
                 });
-
-
+            
+            
+            
         }
     }
 }

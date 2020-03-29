@@ -92,7 +92,7 @@
 }
 @if (await FrontEndEditingChecker.IsAllowed())
 {
-    <partial name="~/Views/Shared/InPageEditor.cshtml" model="Model"/>
+    <partial name="~/Areas/Admin/Views/Shared/InPageEditor.cshtml" model="Model"/>
 }
 @if (IsSectionDefined("JavascriptBlockInclude"))
 {

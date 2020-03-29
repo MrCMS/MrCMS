@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Admin.Models.Forms.FormMessageTabViewModel
+@model MrCMS.Web.Areas.Admin.Models.Forms.FormMessageTabViewModel
 
 @Html.InfoBlock(Html.Resource("Heads up") + "!",
     string.Format(Html.Resource("Webpage - Form Tag Usage", "To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use [form-{0}]"), ViewContext.RouteData.Values["id"]))

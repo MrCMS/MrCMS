@@ -5,9 +5,10 @@
 @model MrCMS.Web.Apps.Core.Models.CurrentPageSubNavigationModel
 @inject IGetCurrentPage GetCurrentPage
 @inject IGetLiveUrl GetLiveUrl
+@inject IActivePagesLoader ActivePagesLoader
 @{
     var currentPage = GetCurrentPage.GetPage();
-    var activePages = currentPage?.ActivePages.Select(webpage => GetLiveUrl.GetUrlSegment(webpage, true)).ToList() ?? new List<string>();
+    var activePages = await ActivePagesLoader.GetActivePages(currentPage);
 }
 @if (Model.Model.ShowNameAsTitle)
 {
@@ -16,7 +17,7 @@
 <ul class="nav nav-pills nav-stacked">
     @foreach (var item in Model.NavigationList)
     {
-        <li class="@(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
+        <li class="@(activePages.Any(s => s.UrlSegment == item.Url.ToString()) ? "active" : "")">
             <a href="@item.Url">@item.Text</a>
         </li>
     }

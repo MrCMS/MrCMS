@@ -1,14 +1,9 @@
 ﻿@using System.Drawing
-@using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Helpers
-@using MrCMS.Web.Apps.Admin.Models
-@using MrCMS.Web.Apps.Admin.Services
-@using X.PagedList
-@using X.PagedList.Mvc
-@using X.PagedList.Mvc.Common
+@using MrCMS.Web.Areas.Admin.Helpers
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+@using IFileAdminService = MrCMS.Web.Areas.Admin.Services.IFileAdminService
+@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
     var files = await FileAdminService.GetFilesForFolder(Model);

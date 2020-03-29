@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Website;
@@ -40,11 +42,11 @@ namespace MrCMS.Services
             return null;
         }
 
-        public User GetUserByResetGuid(Guid resetGuid)
+        public async Task<User> GetUserByResetGuid(Guid resetGuid)
         {
-            return
-                _repository.Query()
-                    .FirstOrDefault(
+             return await 
+                _repository.Query<User>()
+                    .FirstOrDefaultAsync(
                         user =>
                             user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= _getDateTimeNow.UtcNow);
         }

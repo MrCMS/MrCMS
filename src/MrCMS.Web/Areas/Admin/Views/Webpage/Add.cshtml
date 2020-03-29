@@ -1,9 +1,7 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.Documents
-@using MrCMS.Entities.Documents.Web
+﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Models
-@model AddWebpageModel
+@using DocumentTypeToAdd = MrCMS.Web.Areas.Admin.Models.DocumentTypeToAdd
+@model MrCMS.Web.Areas.Admin.Models.AddWebpageModel
 @{
     ViewBag.Title = "Add Webpage";
     var parent = ViewData["parent"] as Webpage;
