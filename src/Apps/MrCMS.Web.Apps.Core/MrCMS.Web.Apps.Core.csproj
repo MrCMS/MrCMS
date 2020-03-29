@@ -9,16 +9,7 @@
     <EmbeddedResource Include="Views\**" />
     <EmbeddedResource Include="wwwroot\**" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Views\Login\Facebook.cshtml" />
-    <None Remove="Views\Login\Google.cshtml" />
-    <None Remove="Views\Login\LinkedIn.cshtml" />
-    <None Remove="Views\Login\Providers.cshtml" />
-    <None Remove="Views\Pages\WebpagePasswordPage.cshtml" />
-    <None Remove="Views\Shared\Components\ContentBlocks\Default.cshtml" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
