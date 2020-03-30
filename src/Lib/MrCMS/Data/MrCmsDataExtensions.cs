@@ -17,7 +17,7 @@ namespace MrCMS.Data
             IConfiguration configSection,
             Assembly migrationsAssembly,
             Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = null,
-            ServiceLifetime contextLifetime = ServiceLifetime.Transient)
+            ServiceLifetime contextLifetime = ServiceLifetime.Scoped) //todo: confirm service lifetime
         {
             serviceCollection.Configure<DatabaseSettings>(settings =>
             {

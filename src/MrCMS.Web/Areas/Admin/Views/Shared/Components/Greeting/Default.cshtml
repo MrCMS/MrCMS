@@ -2,11 +2,14 @@
 @using MrCMS.Services
 @model dynamic
 @inject IGetCurrentUser GetCurrentUser
-@inject Site Site
+@inject GetCurrentSite GetCurrentSite
 
 <div class="card">
     <div class="card-body">
-        @string.Format(Html.Resource("Admin Dashboard Greeting", "Hello {0}, you are currently administering web site {1}"), GetCurrentUser.Get().Name, Site.DisplayName).
+        @{
+            var site = await GetCurrentSite.GetSite();
+        }
+        @(string.Format(Html.Resource("Admin Dashboard Greeting", "Hello {0}, you are currently administering web site {1}"), GetCurrentUser.Get().Name, site.DisplayName)).
     </div>
 </div>
 

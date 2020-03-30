@@ -31,7 +31,7 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
                 {
                     "SiteUrl", async () =>
                     {
-                        var site =await _getCurrentSite.GetSite();
+                        var site = await _getCurrentSite.GetSite();
                         return (site != null
                             ? $"https://{site.BaseUrl}"
                             : null);

@@ -121,7 +121,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             }
             else
             {
-                TempData["message"] = _stringResourceProvider.GetValue("Login Email Not Recognized",
+                TempData["message"] =  _stringResourceProvider.GetValue("Login Email Not Recognized",
                     "Email not recognized.");
             }
 

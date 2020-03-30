@@ -4,8 +4,8 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Models.WebpageEdit;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Models.WebpageEdit;
 using Xunit;
 
 namespace MrCMS.Web.Integration.Tests

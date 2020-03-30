@@ -44,12 +44,18 @@ namespace MrCMS.Web.Areas.Admin.Services
 
             var currentVersion = await _documentRepository.Load(documentVersion.DocumentId);
             var previousVersion = await _documentVersionRepository.Load(documentVersion.Id);
+            var pv = JsonConvert.DeserializeObject(previousVersion.Data, currentVersion.GetType(), new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
 
             var versionProperties = currentVersion.GetType().GetVersionProperties();
             foreach (var versionProperty in versionProperties)
             {
-                versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
-            }
+                var value = versionProperty.GetValue(pv, null);
+                
+                versionProperty.SetValue(currentVersion, value, null);
+            }   
             await _documentRepository.Update(currentVersion);
             return documentVersion;
         }

@@ -31,7 +31,7 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
                                        var resetPasswordPage = await _uniquePageService.GetUniquePage<ResetPasswordPage>();
 
                                        string resetUrl = resetPasswordPage != null
-                                                             ? string.Format("{0}?id={1}", _getLiveUrl.GetAbsoluteUrl(resetPasswordPage), user.ResetPasswordGuid)
+                                                             ? $"{_getLiveUrl.GetAbsoluteUrl(resetPasswordPage)}?id={user.ResetPasswordGuid}"
                                                              : string.Empty;
 
                                        return resetUrl;

@@ -36,6 +36,9 @@ namespace MrCMS.DbConfiguration
                     property.SetColumnName(property.Name);
             }
 
+            //todo: is this better for ef as its the standard implementation by MS
+            //modelBuilder.Entity<SiteEntity>(x => x.HasQueryFilter(entity => entity.IsDeleted == false));
+
             // prevent cascade deletes
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()

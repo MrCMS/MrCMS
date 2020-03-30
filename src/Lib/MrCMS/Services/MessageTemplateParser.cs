@@ -44,7 +44,8 @@ namespace MrCMS.Services
 
         private async Task ApplySystemWideTokens(StringBuilder stringBuilder)
         {
-            var providers = _serviceProvider.GetServices<ITokenProvider>();
+            using var scope = _serviceProvider.CreateScope();
+            var providers = scope.ServiceProvider.GetServices<ITokenProvider>(); //todo: confirm use of scope.
             foreach (var token in providers.SelectMany(provider => provider.Tokens))
             {
                 stringBuilder.Replace("{" + token.Key + "}", await token.Value());
@@ -53,7 +54,8 @@ namespace MrCMS.Services
 
         private async Task ApplyTypeSpecificTokens<T>(T instance, StringBuilder stringBuilder)
         {
-            IEnumerable<ITokenProvider<T>> tokenProviders = _serviceProvider.GetServices<ITokenProvider<T>>();
+            using var scope = _serviceProvider.CreateScope();
+            IEnumerable<ITokenProvider<T>> tokenProviders = scope.ServiceProvider.GetServices<ITokenProvider<T>>();
 
             foreach (var token in tokenProviders.SelectMany(tokenProvider => tokenProvider.Tokens))
             {
@@ -63,7 +65,8 @@ namespace MrCMS.Services
 
         public List<string> GetAllTokens<T>()
         {
-            IEnumerable<ITokenProvider<T>> tokenProviders = _serviceProvider.GetServices<ITokenProvider<T>>();
+            using var scope = _serviceProvider.CreateScope();
+            IEnumerable<ITokenProvider<T>> tokenProviders = scope.ServiceProvider.GetServices<ITokenProvider<T>>();
             return tokenProviders.SelectMany(provider => provider.Tokens.Select(pair => pair.Key)).ToList();
         }
 
@@ -84,7 +87,8 @@ namespace MrCMS.Services
 
         public List<string> GetAllStandardTokens()
         {
-            IEnumerable<ITokenProvider> tokenProviders = _serviceProvider.GetServices<ITokenProvider>();
+            using var scope = _serviceProvider.CreateScope();
+            IEnumerable<ITokenProvider> tokenProviders = scope.ServiceProvider.GetServices<ITokenProvider>();
             return tokenProviders.SelectMany(provider => provider.Tokens.Select(pair => pair.Key)).ToList();
         }
     }

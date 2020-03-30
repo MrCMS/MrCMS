@@ -35,7 +35,7 @@ namespace MrCMS.Services
             if (authority.EndsWith("/"))
                 authority = authority.TrimEnd('/');
 
-            return string.Format("{0}{1}/{2}", scheme, authority, GetSegment(webpage));
+            return $"{scheme}{authority}/{GetSegment(webpage)}";
         }
 
         private async Task<string> GetSegment(Webpage webpage)
@@ -45,7 +45,7 @@ namespace MrCMS.Services
                 return string.Empty;
             }
 
-            var homepage =await _getHomePage.Get();
+            var homepage = await _getHomePage.Get();
             return webpage.Id == homepage?.Id ? string.Empty : webpage.UrlSegment;
         }
     }
