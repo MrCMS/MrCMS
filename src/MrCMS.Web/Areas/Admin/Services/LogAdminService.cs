@@ -89,9 +89,9 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
         }
 
-        public IList<Log> GetAllLogEntries()
+        public async Task<IList<Log>> GetAllLogEntries()
         {
-            return BaseQuery().ToList();
+            return await BaseQuery().ToListAsync();
         }
 
         private IQueryable<Log> BaseQuery()

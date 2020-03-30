@@ -1,15 +1,3 @@
-using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Media;
-using MrCMS.Models;
-using MrCMS.TestSupport;
-using MrCMS.Web.Apps.Admin.Controllers;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Services;
-using System.Collections.Generic;
-using Xunit;
-
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 {
     public class MediaCategoryControllerTests

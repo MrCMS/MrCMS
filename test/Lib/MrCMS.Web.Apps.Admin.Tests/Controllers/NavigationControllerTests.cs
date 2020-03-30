@@ -1,9 +1,9 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Web.Apps.Admin.Controllers;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Services;
+using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers

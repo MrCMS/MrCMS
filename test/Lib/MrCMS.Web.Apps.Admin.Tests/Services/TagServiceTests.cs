@@ -1,12 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
-using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
-using MrCMS.Models;
 using MrCMS.TestSupport;
-using MrCMS.Web.Apps.Admin.Services;
-using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {

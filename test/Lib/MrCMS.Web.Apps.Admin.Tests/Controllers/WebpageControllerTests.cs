@@ -1,18 +1,4 @@
-using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents;
-using MrCMS.Models;
-using MrCMS.Services;
 using MrCMS.TestSupport;
-using MrCMS.Web.Apps.Admin.Controllers;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Web.Apps.Core.Pages;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MrCMS.Web.Apps.Admin.Tests.Stubs;
-using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 {

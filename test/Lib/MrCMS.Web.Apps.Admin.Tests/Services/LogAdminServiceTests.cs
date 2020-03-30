@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.TestSupport;
-using MrCMS.Web.Apps.Admin.Services;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
@@ -25,12 +23,12 @@ namespace MrCMS.Web.Apps.Admin.Tests.Services
         }
 
         [Fact]
-        public void LogAdminService_GetAllLogEntries_ReturnsAllLogEntries()
+        public async void LogAdminService_GetAllLogEntries_ReturnsAllLogEntries()
         {
             List<Log> list = CreateLogList();
-            A.CallTo(() => _logRepository.Query()).ReturnsAsAsyncQueryable(list.ToArray());
+            A.CallTo(() => _logRepository.Readonly()).ReturnsAsAsyncQueryable(list.ToArray());
 
-            IList<Log> logs = _logService.GetAllLogEntries();
+            IList<Log> logs = await _logService.GetAllLogEntries();
 
             logs.Should().BeEquivalentTo(list);
         }

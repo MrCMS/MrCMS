@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
 using MrCMS.TestSupport;
-using MrCMS.Web.Apps.Admin.Controllers;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Services;
+using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers

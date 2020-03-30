@@ -34,25 +34,27 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void CurrentSiteLocator_GetCurrentSite_ReturnsFirstIfNoneMatch()
+        public async void CurrentSiteLocator_GetCurrentSite_ReturnsFirstIfNoneMatch()
         {
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "test2" };
             A.CallTo(() => _repository.Query()).Returns(new List<Site> {CurrentSite, site1, site2}.AsAsyncQueryable());
             A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
 
-            _currentSiteLocator.GetCurrentSite().Should().Be(CurrentSite);
+            var site = await _currentSiteLocator.GetCurrentSite();
+            site.Should().Be(CurrentSite);
         }
 
         [Fact]
-        public void CurrentSiteLocator_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()
+        public async void CurrentSiteLocator_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()
         {
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "www.example.com" };
             A.CallTo(() => _repository.Query()).Returns(new List<Site> {CurrentSite, site1, site2}.AsAsyncQueryable());
             A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
 
-            _currentSiteLocator.GetCurrentSite().Should().Be(site2);
+            var site = await _currentSiteLocator.GetCurrentSite();
+            site.Should().Be(site2);
         }
     }
 }

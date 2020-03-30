@@ -1,17 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
-using FakeItEasy;
-using FluentAssertions;
-using MrCMS.Entities.Multisite;
-using MrCMS.Entities.People;
-using MrCMS.Helpers;
-using MrCMS.Models;
-using MrCMS.Services.CloneSite;
 using MrCMS.TestSupport;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Services;
-using Xunit;
 
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {

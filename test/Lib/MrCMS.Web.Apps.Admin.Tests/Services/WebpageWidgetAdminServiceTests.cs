@@ -1,13 +1,3 @@
-using FakeItEasy;
-using FluentAssertions;
-using MrCMS.Data;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Widget;
-using MrCMS.Web.Apps.Admin.Services;
-using MrCMS.Web.Apps.Admin.Tests.Stubs;
-using System.Collections.Generic;
-using Xunit;
-
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {
     public class WebpageWidgetAdminServiceTests

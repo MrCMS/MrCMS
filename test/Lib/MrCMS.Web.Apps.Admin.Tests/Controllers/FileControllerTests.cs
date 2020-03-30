@@ -1,18 +1,3 @@
-using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using MrCMS.Entities.Documents.Media;
-using MrCMS.Web.Apps.Admin.Controllers;
-using MrCMS.Web.Apps.Admin.Services;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-
 namespace MrCMS.Web.Apps.Admin.Tests.Controllers
 {
     public class FileControllerTests

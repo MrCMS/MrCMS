@@ -1,14 +1,3 @@
-using AutoMapper;
-using FakeItEasy;
-using FluentAssertions;
-using MrCMS.Data;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Widget;
-using MrCMS.Web.Apps.Admin.Models;
-using MrCMS.Web.Apps.Admin.Services;
-using Xunit;
-
 namespace MrCMS.Web.Apps.Admin.Tests.Services
 {
     public class LayoutAreaAdminServiceTests
