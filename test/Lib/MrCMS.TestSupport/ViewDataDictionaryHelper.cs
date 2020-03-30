@@ -10,4 +10,5 @@ namespace MrCMS.TestSupport
             return new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
         }
     }
+    
 }

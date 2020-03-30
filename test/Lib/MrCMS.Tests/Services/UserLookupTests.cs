@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web;
 using FakeItEasy;
 using FluentAssertions;
@@ -70,7 +71,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_GetUserByResetGuid_ValidGuidAndExpiryInTheFutureReturnsUser()
+        public async Task UserService_GetUserByResetGuid_ValidGuidAndExpiryInTheFutureReturnsUser()
         {
             var resetPasswordGuid = Guid.NewGuid();
             var dateTime = DateTime.UtcNow;
@@ -85,7 +86,9 @@ namespace MrCMS.Tests.Services
             };
             A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(user);
 
-            _userService.GetUserByResetGuid(resetPasswordGuid).Should().Be(user);
+            var result = await _userService.GetUserByResetGuid(resetPasswordGuid);
+                
+                result.Should().Be(user);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -13,14 +14,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _messageTemplatePreviewService = messageTemplatePreviewService;
         }
 
-        public ViewResult Get(string type)
+        public async Task<ViewResult> Get(string type)
         {
-            return View(_messageTemplatePreviewService.GetTemplate(type));
+            return View(await _messageTemplatePreviewService.GetTemplate(type));
         }
 
-        public PartialViewResult Preview(string type, int id)
+        public async Task<PartialViewResult> Preview(string type, int id)
         {
-            return PartialView(_messageTemplatePreviewService.GetPreview(type, id));
+            return PartialView(await _messageTemplatePreviewService.GetPreview(type, id));
         }
     }
 }

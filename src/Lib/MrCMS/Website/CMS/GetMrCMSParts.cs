@@ -103,9 +103,7 @@ namespace MrCMS.Website.CMS
                 new RegistrationInfo
                 {
                     Registration = app => app.UseMvc(builder =>
-                    {
-                        
-                        
+                    {                       
                         builder.MapMrCMS();
                         builder.MapMrCMSApps(appContext);
                         
@@ -121,8 +119,6 @@ namespace MrCMS.Website.CMS
                         
                         builder.MapRoute("ckeditor Config", "Areas/Admin/lib/ckeditor/config.js",
                             new { controller = "CKEditor", action = "Config" });
-
-                        
 
                         builder.Routes.Add(new FileNotFoundRouter(builder.DefaultHandler));
                     }),

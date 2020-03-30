@@ -83,7 +83,7 @@ namespace MrCMS.Apps
         }
 
         public static IMvcBuilder AddMvcForMrCMS(this IServiceCollection services, MrCMSAppContext appContext,
-            IFileProvider viewFileProvider)
+            IFileProvider viewFileProvider, Action<MvcOptions> additionalConfig)
         {
             return services.AddMvc(options =>
                 {
@@ -100,6 +100,7 @@ namespace MrCMS.Apps
                     options.EnableEndpointRouting = false;                    
                     appContext.SetupMvcOptions(options);
                     options.MakeFiltersInstallationAware();
+                    additionalConfig(options);
                 })
                 .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions)))
                 .AddRazorRuntimeCompilation(options =>

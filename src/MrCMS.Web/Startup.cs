@@ -140,8 +140,7 @@ namespace MrCMS.Web
             services.RegisterTasks();
             services.RegisterEvents();
 
-            var mvc = services.AddMvcForMrCMS(appContext, fileProvider);
-            mvc.AddMvcOptions(options =>
+            services.AddMvcForMrCMS(appContext, fileProvider, options =>
             {
                 options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
                 options.Filters.Add<ProfilingAsyncAuthorizationFilter<AdminAuthFilter>>();
@@ -292,8 +291,6 @@ namespace MrCMS.Web
                             endpoints.MapHub<NotificationHub>("/notificationsHub");
                         });
                     });
-                    
-                    
                 });
             app.MapWhen(
                 httpContext =>
