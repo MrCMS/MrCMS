@@ -36,11 +36,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("Index")]
         [Acl(typeof(SiteSettingsACL), SiteSettingsACL.Save)]
-        public RedirectToActionResult Index_Post(
+        public async Task<RedirectToActionResult> Index_Post(
             [ModelBinder(typeof(SiteSettingsModelBinder))]
             List<SiteSettingsBase> settings) 
         {
-            settings.ForEach(s => _configurationProvider.SaveSettings(s));
+            foreach (var s in settings) await _configurationProvider.SaveSettings(s);
             TempData["settings-saved"] = true;
             return RedirectToAction("Index");
         }
