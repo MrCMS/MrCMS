@@ -36,10 +36,10 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
                                                   {
                                                       var methodInfo = GetGetSettingsMethod();
                                                       return
-                                                          methodInfo.MakeGenericMethod(type)
-                                                                    .Invoke(configurationProvider,
-                                                                            new object[]
-                                                                                {});
+                                                           methodInfo.MakeGenericMethod(type)
+                                                               .InvokeAsync(configurationProvider,
+                                                                   new object[]
+                                                                       {}).GetAwaiter().GetResult();
                                                   }).OfType<SiteSettingsBase>().Where(arg => arg.RenderInSettings).ToList();
 
             foreach (var settings in objects)

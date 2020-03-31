@@ -26,15 +26,15 @@ namespace MrCMS.Tests.Shortcodes.Forms
         private readonly IHtmlHelper _htmlHelper;
 
         [Fact]
-        public void FormRenderer_RenderForm_IfFormDesignHasValueReturnResultCustomRendererGetForm()
+        public async void FormRenderer_RenderForm_IfFormDesignHasValueReturnResultCustomRendererGetForm()
         {
-            var form = new Form { FormDesign = "form-design-data" };
+            var form = new Form {FormDesign = "form-design-data"};
             var formSubmittedStatus = new FormSubmittedStatus(false, null, null);
             var customForm = new HtmlString("custom-form");
             A.CallTo(() => _customFormRenderer.GetForm(_htmlHelper, form, formSubmittedStatus))
                 .Returns(customForm);
 
-            var renderForm = _formRenderingManager.RenderForm(_htmlHelper, form, formSubmittedStatus);
+            var renderForm = await _formRenderingManager.RenderForm(_htmlHelper, form, formSubmittedStatus);
 
             renderForm.Should().Be(customForm);
         }
@@ -43,13 +43,13 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public async Task FormRenderer_RenderForm_IfFormIsNullReturnsEmptyString()
         {
             var renderForm =
-             await   _formRenderingManager.RenderForm(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
+                await _formRenderingManager.RenderForm(_htmlHelper, null, new FormSubmittedStatus(false, null, null));
 
             renderForm.AsAString().Should().Be("");
         }
 
         [Fact]
-        public void FormRenderer_RenderForm_WhenFormDesignIsEmptyReturnsResultOfIDefaultFormRenderer()
+        public async void FormRenderer_RenderForm_WhenFormDesignIsEmptyReturnsResultOfIDefaultFormRenderer()
         {
             var form = new Form();
             var formSubmittedStatus = new FormSubmittedStatus(false, null, null);
@@ -57,7 +57,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
             A.CallTo(() => _defaultFormRenderer.GetDefault(_htmlHelper, form, formSubmittedStatus))
                 .Returns(value);
 
-            var renderForm = _formRenderingManager.RenderForm(_htmlHelper, form, formSubmittedStatus);
+            var renderForm = await _formRenderingManager.RenderForm(_htmlHelper, form, formSubmittedStatus);
 
             renderForm.Should().Be(value);
         }

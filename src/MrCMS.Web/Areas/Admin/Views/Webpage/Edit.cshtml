@@ -27,7 +27,7 @@
                     <div class="input-group-append">
                         @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
 
-                        <a href="@GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
+                        <a href="@(await GetLiveUrl.GetUrlSegment(Model, true))" class="btn btn-secondary">View</a>
 
                         @*@Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new {Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})*@
                         @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new { Model.Id }, new { @class = "btn btn-secondary" })

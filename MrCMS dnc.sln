@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Tests", "test\Lib\MrC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.TestSupport", "test\Lib\MrCMS.TestSupport\MrCMS.TestSupport.csproj", "{00A97EBA-A35B-4BCA-8719-3995E08F8E5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Admin.Tests", "test\Lib\MrCMS.Web.Apps.Admin.Tests\MrCMS.Web.Apps.Admin.Tests.csproj", "{C616A9A0-709A-4252-88AC-374648BFA4B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Admin.Tests", "test\Lib\MrCMS.Web.Admin.Tests\MrCMS.Web.Admin.Tests.csproj", "{C616A9A0-709A-4252-88AC-374648BFA4B4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Integration.Tests", "test\Lib\MrCMS.Web.Integration.Tests\MrCMS.Web.Integration.Tests.csproj", "{B1CB15CB-9E14-4C39-BBEF-3C979615C736}"
 EndProject

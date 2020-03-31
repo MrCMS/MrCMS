@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
 using MrCMS.Web.Apps.Articles.ModelBinders;
 using MrCMS.Web.Apps.Articles.Models;
@@ -18,13 +19,26 @@ namespace MrCMS.Web.Apps.Articles.Controllers
         }
 
         [CanonicalLinks("paged-articles")]
-        public ActionResult Show(ArticleList page, 
-            [ModelBinder(typeof(ArticleListModelBinder))] ArticleSearchModel model)
+        public ActionResult Show(ArticleList page, [FromQuery] ArticleSearchModel model)
         {
             ViewData["paged-articles"] = _articleListService.GetArticles(page, model);
             ViewData["article-search-model"] = model;
 
             return View(page);
+        }
+    }
+    
+    public class ArticleController : MrCMSAppUIController<MrCMSArticlesApp>
+    {
+        private readonly IArticleService _service;
+
+        public ArticleController(IArticleService service)
+        {
+            _service = service;
+        }
+        public async Task<ActionResult> Show(Article page)
+        {
+            return View(await _service.Get(page.Id));
         }
     }
 }

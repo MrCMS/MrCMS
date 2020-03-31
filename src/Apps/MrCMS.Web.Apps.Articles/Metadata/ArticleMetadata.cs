@@ -10,6 +10,8 @@ namespace MrCMS.Web.Apps.Articles.Metadata
     {
         public override ChildrenListType ChildrenListType => ChildrenListType.WhiteList;
 
+        public override string WebGetController => "Article";
+
         public override bool RequiresParent => true;
 
         public override bool AutoBlacklist => true;

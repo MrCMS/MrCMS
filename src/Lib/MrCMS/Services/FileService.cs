@@ -56,10 +56,7 @@ namespace MrCMS.Services
             if (mediaCategory != null)
             {
                 mediaFile.MediaCategory = mediaCategory;
-                int? max =
-                await _repository.Readonly()
-                        .Where(x => x.MediaCategory.Id == mediaFile.MediaCategory.Id)
-                        .MaxAsync(x => (int?)x.DisplayOrder);
+                int? max = await MaxDisplayOrder(mediaFile);
                 mediaFile.DisplayOrder = max + 1 ?? 1;
             }
 
@@ -82,6 +79,13 @@ namespace MrCMS.Services
 
             stream.Dispose();
             return mediaFile;
+        }
+
+        private async Task<int?> MaxDisplayOrder(MediaFile mediaFile)
+        {
+            return await _repository.Readonly()
+                .Where(x => x.MediaCategory.Id == mediaFile.MediaCategory.Id)
+                .MaxAsync(x => (int?)x.DisplayOrder);
         }
 
         public async Task DeleteFile(MediaFile mediaFile)

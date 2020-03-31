@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>MrCMS.Web.Apps.Admin.Tests</RootNamespace>
   </PropertyGroup>
 
 

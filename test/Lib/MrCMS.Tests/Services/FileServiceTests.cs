@@ -6,6 +6,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Settings;
+
 using Xunit;
 using MrCMS.Helpers;
 using System.Linq;
@@ -25,8 +26,7 @@ namespace MrCMS.Tests.Services
 
 
         [Theory, AutoFakeItEasyData]
-        public async Task FileService_AddFile_CreatesANewFileRecord([Frozen] IRepository<MediaFile> mediaFileRepository,
-            FileService sut)
+        public async Task FileService_AddFile_CreatesANewFileRecord([Frozen] IRepository<MediaFile> mediaFileRepository, FileService sut)
         {
             var mediaCategory = GetDefaultMediaCategory();
             var mediaFile = await sut.AddFile(GetDefaultStream(), "test.txt", "text/plain", 0, mediaCategory);
@@ -37,7 +37,7 @@ namespace MrCMS.Tests.Services
 
         private static MediaCategory GetDefaultMediaCategory()
         {
-            return new MediaCategory {Name = "test-category", UrlSegment = "test-category"};
+            return new MediaCategory { Name = "test-category", UrlSegment = "test-category" };
         }
 
         [Theory, AutoFakeItEasyData]
@@ -61,6 +61,7 @@ namespace MrCMS.Tests.Services
         [Theory, AutoFakeItEasyData]
         public async Task FileService_AddFile_FileShouldHaveSameContentLengthAsSet(FileService sut)
         {
+
             var mediaCategory = GetDefaultMediaCategory();
             var mediaFile = await sut.AddFile(GetDefaultStream(), "test.txt", "text/plain", 1234, mediaCategory);
 
@@ -82,9 +83,9 @@ namespace MrCMS.Tests.Services
         public async Task FileService_AddFile_ShouldSetFileLocation([Frozen] IFileSystem fileSystem, FileService sut)
         {
             var mediaCategory = GetDefaultMediaCategory();
-            Stream stream = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            Stream stream = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             A.CallTo(() => fileSystem.SaveFile(stream, "1/test-category/test.txt", "text/plain"))
-                .Returns("/content/upload/1/test-category/test.txt");
+             .Returns("/content/upload/1/test-category/test.txt");
 
             var mediaFile = await sut.AddFile(stream, "test.txt", "text/plain", 1234, mediaCategory);
 
@@ -103,17 +104,15 @@ namespace MrCMS.Tests.Services
 
         private static MemoryStream GetDefaultStream()
         {
-            return new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            return new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
 
         [Theory, AutoFakeItEasyData]
-        public async Task FileService_AddFile_CallsSaveToFileSystemOfIFileSystem([Frozen] IFileSystem fileSystem,
-            FileService sut)
+        public async Task FileService_AddFile_CallsSaveToFileSystemOfIFileSystem([Frozen] IFileSystem fileSystem, FileService sut)
         {
             var mediaCategory = GetDefaultMediaCategory();
 
             Stream stream = GetDefaultStream();
-
 
             await sut.AddFile(stream, "test.txt", "text/plain", 10, mediaCategory);
 
@@ -121,15 +120,14 @@ namespace MrCMS.Tests.Services
         }
 
         [Theory, AutoFakeItEasyData]
-        public async Task FileService_GetFileByLocation_ReturnsAMediaFileIfOneIsSavedWithAMatchingLocation(
-            [Frozen] IRepository<MediaFile> repository, FileService sut)
+        public async Task FileService_GetFileByLocation_ReturnsAMediaFileIfOneIsSavedWithAMatchingLocation([Frozen] IRepository<MediaFile> repository, FileService sut)
         {
             const string fileUrl = "location.jpg";
             var mediaFile = new MediaFile
             {
                 FileUrl = fileUrl
             };
-            // var mock = new List<MediaFile> {mediaFile}.AsQueryable().BuildMock();
+            
             A.CallTo(() => repository.Query()).ReturnsAsAsyncQueryable(mediaFile);
 
             var fileByLocation = await sut.GetFileByUrl(fileUrl);

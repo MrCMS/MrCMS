@@ -12,7 +12,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using MockQueryable.FakeItEasy;
 using MrCMS.Data;
+using MrCMS.TestSupport;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms
@@ -50,7 +52,9 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public async Task DefaultFormRenderer_GetDefault_ShouldReturnAnEmptyStringIfThereAreNoProperties()
         {
             var form = new Form();
+            //var list = new ;
 
+            A.CallTo(() => _repository.Query()).ReturnsAsAsyncQueryable(new FormProperty[] {});
             var @default = await _defaultFormRenderer.GetDefault(_htmlHelper, form, new FormSubmittedStatus(false, null, null));
 
             @default.Should().Be(HtmlString.Empty);

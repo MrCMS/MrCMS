@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col">
 
-            <h1 itemprop="name">@Html.Editable(page => page.Name, false)</h1>
+            <h1 itemprop="name">@await Html.Editable(page => page.Name, false)</h1>
 
             <a href="/@Model.Parent.UrlSegment" class="btn btn-secondary">Back</a>
 
@@ -22,7 +22,7 @@
             }
 
             <div itemprop="articleBody">
-                @Html.Editable(page => page.BodyContent, true)
+                @await Html.Editable(page => page.BodyContent, true)
             </div>
 
             @if (Model.User != null)
@@ -32,12 +32,12 @@
                 </div>
             }
 
-            @if (Model.Tags.Any())
+            @if (Model.DocumentTags.Any())
             {
                 <div>
-                    @foreach (var tagName in Model.Tags)
+                    @foreach (var tagName in Model.DocumentTags)
                     {
-                        <a href="#category=@tagName.Name" class="badge badge-primary">@tagName.Name</a>
+                        <a href="#category=@tagName.Tag.Name" class="badge badge-primary">@tagName.Tag.Name</a>
                     }
                 </div>
             }
