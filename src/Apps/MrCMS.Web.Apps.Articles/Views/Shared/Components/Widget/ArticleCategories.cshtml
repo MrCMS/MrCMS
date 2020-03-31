@@ -10,10 +10,10 @@
     }
 }
 <ul class="nav nav-pills nav-stacked">
-    @foreach (var category in Model.ArticleList.Tags)
+    @foreach (var category in Model.ArticleList.DocumentTags)
     {
-        <li class="@((!string.IsNullOrEmpty(Model.Category) && Model.Category == category.Name) ? "active" : "")">
-            <a href="/@Model.ArticleList.UrlSegment?category=@category.Name">@category.Name</a>
+        <li class="@((!string.IsNullOrEmpty(Model.Category) && Model.Category == category.Tag.Name) ? "active" : "")">
+            <a href="/@Model.ArticleList.UrlSegment?category=@category.Tag.Name">@category.Tag.Name</a>
         </li>
     }
 </ul>

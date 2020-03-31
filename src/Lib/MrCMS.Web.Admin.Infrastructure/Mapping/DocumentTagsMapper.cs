@@ -18,7 +18,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Mapping
 
         public IList<DocumentTag> Resolve(IHaveTagList source, Webpage destination, IList<DocumentTag> destMember, ResolutionContext context)
         {
-            return _getDocumentTagsService.GetDocumentTags(destination, source.TagList);
+            return _getDocumentTagsService.GetDocumentTags(destination, source.TagList).GetAwaiter().GetResult();
         }
     }
 }

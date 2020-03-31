@@ -44,11 +44,6 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
             var info = await _adminService.Update<AuthorInfo, EditAuthorInfoModel>(model);
             return RedirectToAction("Edit", "User", new { id = info?.User.Id });
         }
-
-        //public PartialViewResult Show(User user)
-        //{
-        //    return PartialView(user);
-        //}
     }
 
     public class EditAuthorInfoModel : IHaveId

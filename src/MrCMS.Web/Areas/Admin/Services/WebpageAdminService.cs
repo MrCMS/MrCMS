@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MrCMS.Common;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
@@ -37,7 +38,11 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public async Task<Webpage> GetWebpage(int? id)
         {
-            return id.HasValue ? await _webpageRepository.Load(id.Value) : null;
+            return id.HasValue ? await _webpageRepository.Query()
+                .Include(x=>x.DocumentTags)
+                .ThenInclude(x=>x.Tag)
+                .Where(x=>x.Id == id.Value)
+                .SingleOrDefaultAsync() : null;
         }
 
         public AddWebpageModel GetAddModel(int? id)
@@ -91,6 +96,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             foreach (var model in viewModel.Models)
                 _mapper.Map(model, webpage, options => { });
 
+            //if (webpage.DocumentTags.Any())
             return await _webpageRepository.Update(webpage);
 
         }

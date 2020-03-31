@@ -10,9 +10,9 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
     {
         private readonly IBelongToUserLookupService _belongToUserLookupService;
 
-        public ArticleController(IBelongToUserLookupService _belongToUserLookupService)
+        public ArticleController(IBelongToUserLookupService belongToUserLookupService)
         {
-            this._belongToUserLookupService = _belongToUserLookupService;
+            _belongToUserLookupService = belongToUserLookupService;
         }
 
         public PartialViewResult ForUser(User user)

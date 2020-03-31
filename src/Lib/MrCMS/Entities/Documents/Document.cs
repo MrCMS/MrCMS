@@ -30,7 +30,7 @@ namespace MrCMS.Entities.Documents
 
         public virtual string TagList
         {
-            get { return string.Join(",", DocumentTags.Select(x => x.Tag.Name)); }
+            get { return string.Join(",", DocumentTags.Select(x => x.Tag?.Name)); }
         }
 
         //public virtual int ParentId

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 
@@ -29,9 +30,13 @@ namespace MrCMS.Web.Admin.Infrastructure.Services
             return tagNames.Select(GetTag).Where(x => x != null).ToHashSet();
         }
 
-        public IList<DocumentTag> GetDocumentTags(Document document, string tagList)
+        public async Task<IList<DocumentTag>> GetDocumentTags(Document document, string tagList)
         {
             var tags = GetTags(tagList);
+            foreach (var tag in tags.Where(x=>x.Id ==0))
+            {
+                await _tagRepository.Add(tag);
+            }
             return tags.Select(x => new DocumentTag {Tag = x, Document = document}).ToList();
         }
 

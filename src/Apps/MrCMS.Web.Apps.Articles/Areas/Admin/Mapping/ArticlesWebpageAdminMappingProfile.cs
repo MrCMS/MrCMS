@@ -9,10 +9,11 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
     {
         public ArticlesWebpageAdminMappingProfile()
         {
+            
             CreateMap<ArticleList, ArticleListViewModel>()
                 .ReverseMap()
-                .ForMember(document => document.DocumentTags, expression => expression.MapFrom<DocumentTagsMapper>())
-                ;
+                .ForMember(document => document.DocumentTags, expression => expression.MapFrom<DocumentTagsMapper>());
+            
             CreateMap<Article, ArticleViewModel>()
                 .ReverseMap()
                 .ForMember(document => document.DocumentTags,

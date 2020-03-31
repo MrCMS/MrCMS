@@ -1,8 +1,14 @@
-﻿@using MrCMS.Helpers
+﻿@using Microsoft.EntityFrameworkCore
+@using MrCMS.Data
+@using MrCMS.Entities.People
+@using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Apps.Articles.Entities
 @model MrCMS.Entities.People.User
+@inject IGlobalRepository<User> Repository
 @{
-    var authorInfo = Model.Get<AuthorInfo>();
+    //todo refactor this
+    var authorInfo = (await Repository.Query().Include(x=>x.UserProfileData).Where(x=>x.Id == Model.Id).FirstOrDefaultAsync()).Get<AuthorInfo>();
 }
 <fieldset>
     <legend>

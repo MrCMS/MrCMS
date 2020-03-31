@@ -9,9 +9,9 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class TagAdminService : ITagAdminService
     {
-        private readonly IJoinTableRepository<DocumentTag> _documentTagRepository;
+        private readonly IRepository<Tag> _documentTagRepository;
 
-        public TagAdminService(IJoinTableRepository<DocumentTag> documentTagRepository)
+        public TagAdminService(IRepository<Tag> documentTagRepository)
         {
             _documentTagRepository = documentTagRepository;
         }
@@ -20,14 +20,15 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return
                 _documentTagRepository.Readonly()
-                    .Where(x => EF.Functions.Like(x.Tag.Name, $"{term}%"))
-                    .OrderBy(tag => tag.Tag.Name)
+                    .Where(x => EF.Functions.Like(x.Name, $"{term}%"))
+                    .OrderBy(tag => tag.Name)
+                    .Distinct()
                     .Select(dt =>
                         new AutoCompleteResult
                         {
-                            id = dt.TagId,
-                            label = dt.Tag.Name,
-                            value = dt.Tag.Name
+                            id = dt.Id,
+                            label = dt.Name,
+                            value = dt.Name
                         })
                     .ToList();
         }
