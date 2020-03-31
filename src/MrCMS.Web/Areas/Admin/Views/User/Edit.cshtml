@@ -65,8 +65,7 @@
                             <h3 class="profile-username">@Model.Name</h3>
 
                             <div class="btn-group my-3">
-                                @* TODO: Look at logout button, only apply when valid *@
-                                @*<a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@Html.Resource("admin-logout", "Logout")</a>*@
+                                <a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@Html.Resource("admin-logout", "Logout")</a>
                                 <a class="text-center btn btn-sm btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
                             </div>
 
