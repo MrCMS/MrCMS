@@ -53,7 +53,7 @@
                         @Html.ActionLink(Html.Resource("Sort"), "SortWidgets", "LayoutArea", new {id = Model.Id, returnUrl = Context.Request.GetEncodedUrl()}, new {@class = "btn btn-sm btn-secondary", @data_toggle = "fb-modal"})
                     }
                 }
-                <a href="@Url.Action(Html.Resource("admin-add", "Add"), "Widget", new {id = Model.Id, returnUrl = Context.Request.GetEncodedUrl()})" class="btn btn-sm btn-primary" data-toggle="fb-modal">@Html.Resource("Admin Layout Area Add Widget", "Add widget")</a>
+                <a href="@Url.Action(Html.Resource("admin-add", "Add"), "Widget", new {layoutAreaId = Model.Id, returnUrl = Context.Request.GetEncodedUrl()})" class="btn btn-sm btn-primary" data-toggle="fb-modal">@Html.Resource("Admin Layout Area Add Widget", "Add widget")</a>
             </div>
         </admin-header-actions>
     </row>

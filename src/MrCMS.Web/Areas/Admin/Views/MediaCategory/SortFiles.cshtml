@@ -60,7 +60,7 @@
                                     <div class="pull-right">
                                         @if (Model[i].IsImage)
                                         {
-                                            @Html.RenderImage(Model[i].ImageUrl, new Size(100, 100))
+                                            @await Html.RenderImage(Model[i].ImageUrl, new Size(100, 100))
                                         }
                                     </div>
                                 </div>

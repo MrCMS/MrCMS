@@ -45,7 +45,6 @@ namespace MrCMS.Web.Areas.Admin.Services
             if (additionalPropertyModel != null)
                 _mapper.Map(additionalPropertyModel, instance);
 
-            instance.LayoutArea.AddWidget(instance);
             await _repository.Add(instance);
 
             return instance;

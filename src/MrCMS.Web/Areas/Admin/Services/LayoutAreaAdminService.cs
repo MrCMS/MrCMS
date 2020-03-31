@@ -86,8 +86,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             var area = GetArea(id);
 
-            if (area.Layout?.LayoutAreas.Contains(area) == true)
-                area.Layout.LayoutAreas.Remove(area);
             await _layoutAreaRepository.Delete(area);
 
             return area;

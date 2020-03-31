@@ -23,12 +23,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Add(int id, int? pageId, string returnUrl = null)
+        public PartialViewResult Add(int layoutAreaId, int? pageId, string returnUrl = null)
         {
             TempData["returnUrl"] = returnUrl;
             var model = new AddWidgetModel
             {
-                LayoutAreaId = id,
+                LayoutAreaId = layoutAreaId,
                 WebpageId = pageId
             };
             return PartialView(model);
@@ -43,7 +43,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             {
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
             }
-
             var widget = await _widgetService.AddWidget(model, additionalPropertyModel);
 
             return Json(widget.Id);
