@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MrCMS.Common;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
@@ -13,6 +15,7 @@ using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Website;
 using IConfigurationProvider = MrCMS.Settings.IConfigurationProvider;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -23,16 +26,20 @@ namespace MrCMS.Web.Areas.Admin.Services
         private readonly IMapper _mapper;
         private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
         private readonly IConfigurationProvider _configurationProvider;
+        private readonly IOptions<SystemConfigurationSettings> _systemConfigurationSettings;
+        private readonly IGetDateTimeNow _getDateTimeNow;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
             IMapper mapper,
             IGetDocumentsByParent<Webpage> getDocumentsByParent,
-            IConfigurationProvider configurationProvider)
+            IConfigurationProvider configurationProvider, IOptions<SystemConfigurationSettings> systemConfigurationSettings, IGetDateTimeNow getDateTimeNow)
         {
             _webpageRepository = webpageRepository;
             _mapper = mapper;
             _getDocumentsByParent = getDocumentsByParent;
             _configurationProvider = configurationProvider;
+            _systemConfigurationSettings = systemConfigurationSettings;
+            _getDateTimeNow = getDateTimeNow;
         }
 
 
@@ -157,8 +164,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         public async Task<string> GetServerDate()
         {
             var now = DateTime.UtcNow;
-            var siteSettings = await _configurationProvider.GetSiteSettings<SiteSettings>();
-            return now.Add(siteSettings.TimeZoneInfo.GetUtcOffset(now)).ToString();
+            return await Task.FromResult(now.Add(_systemConfigurationSettings.Value.TimeZoneInfo.GetUtcOffset(now)).ToString(CultureInfo.CurrentUICulture));
         }
     }
 }

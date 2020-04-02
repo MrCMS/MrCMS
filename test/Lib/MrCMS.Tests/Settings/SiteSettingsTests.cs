@@ -107,20 +107,5 @@ namespace MrCMS.Tests.Settings
 
             _siteSettings.CultureInfo.Should().Be(CultureInfo.GetCultureInfo("de"));
         }
-
-        [Fact]
-        public void SiteSettings_TimeZoneInfo_IfTimeZoneIsNotSetShouldBeTimeZoneLocal()
-        {
-            _siteSettings.TimeZoneInfo.Should().Be(TimeZoneInfo.Local);
-        }
-
-        [Fact]
-        public void SiteSettings_TimeZoneInfo_GetsOffsetFromTimeZoneSerialized()
-        {
-            _siteSettings.TimeZone =
-                "GMT Standard Time;0;(UTC+00:00) Dublin, Edinburgh, Lisbon, London;GMT Standard Time;GMT Summer Time;[01:01:0001;12:31:9999;60;[0;01:00:00;3;5;0;];[0;02:00:00;10;5;0;];];";
-
-            _siteSettings.TimeZoneInfo.StandardName.Should().Be("GMT Standard Time");
-        }
     }
 }

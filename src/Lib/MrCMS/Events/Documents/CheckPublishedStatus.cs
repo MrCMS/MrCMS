@@ -20,7 +20,7 @@ namespace MrCMS.Events.Documents
 
             if (webpage.PublishOn.HasValue && webpage.PublishOn <= now && webpage.Published == false)
             {
-                webpage.Published = true;
+                webpage.Published = true; 
             }
         }
     }

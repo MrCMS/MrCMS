@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace MrCMS.Settings
@@ -9,5 +10,8 @@ namespace MrCMS.Settings
     {
         public List<string> SupportedCultures { get; set; }
         public string TimeZone { get; set; }
+        
+        public TimeZoneInfo TimeZoneInfo =>
+            !string.IsNullOrEmpty(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : TimeZoneInfo.Local;
     }
 }

@@ -76,8 +76,6 @@ namespace MrCMS.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICheckInstallationStatus, CheckInstallationStatus>();
             
-            var t = String.Join(",",TimeZoneInfo.GetSystemTimeZones().Select(x=>x.Id).OrderBy(x=>x).ToList());
-
             var reflectionHelper = new ReflectionHelper(allMrCmsAssemblies.ToArray());
             services.AddSingleton<IReflectionHelper>(reflectionHelper);
             services.AddSingleton(reflectionHelper);

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents;
@@ -92,7 +94,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             var result = await _webpageAdminService.Update(model);
             if (result.Success)
-                TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Model.Name));
+                TempData.SuccessMessages().Add($"{result.Model.Name} successfully saved");
             else
                 TempData.ErrorMessages().Add("An error occurred: " + string.Join(", ", result.Messages));
             return RedirectToAction("Edit", new { id = model.Id });

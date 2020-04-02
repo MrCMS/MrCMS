@@ -98,7 +98,8 @@ namespace MrCMS.Settings
         [DisplayName("Time zones"), DropDownSelection("TimeZones")]
         public string TimeZone { get; set; }
 
-        public TimeZoneInfo TimeZoneInfo
+        //Moved to config
+        /*public TimeZoneInfo TimeZoneInfo
         {
             get
             {
@@ -106,7 +107,7 @@ namespace MrCMS.Settings
                     ? TimeZoneInfo.FromSerializedString(TimeZone)
                     : TimeZoneInfo.Local;
             }
-        }
+        }*/
 
         [DisplayName("Honeypot Field Name")]
         public string HoneypotFieldName { get; set; }
