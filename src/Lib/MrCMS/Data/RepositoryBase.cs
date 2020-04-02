@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Common;
 using MrCMS.Entities;
 using MrCMS.Helpers;
+using MrCMS.Website;
 
 namespace MrCMS.Data
 {
@@ -67,9 +70,7 @@ namespace MrCMS.Data
             if (entity is IHaveSystemDates dates)
             {
                 var now = DateTime.UtcNow;
-
-                if (dates.UpdatedOn == DateTime.MinValue)
-                    dates.UpdatedOn = now;
+                dates.UpdatedOn = now;
             }
         }
 

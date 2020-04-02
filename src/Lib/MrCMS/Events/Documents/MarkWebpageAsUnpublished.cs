@@ -17,15 +17,15 @@ namespace MrCMS.Events.Documents
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public override Task<IResult> OnUpdating(Webpage entity, DbContext context)
+        public override async Task<IResult> OnUpdating(Webpage entity, DbContext context)
         {
-            var now = _getDateTimeNow.UtcNow;
-            if (entity.Published && (entity.PublishOn == null || entity.PublishOn.Value.ToUniversalTime() > now))
+            var now = await _getDateTimeNow.GetLocalNow();
+            if (entity.Published && (entity.PublishOn == null || entity.PublishOn.Value > now))
             {
                 entity.Published = false;
             }
 
-            return Success;
+            return await Success;
         }
     }
 }

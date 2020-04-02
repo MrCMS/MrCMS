@@ -182,9 +182,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         ///     Returns server date used for publishing (can't use JS date as can be out compared to server date)
         /// </summary>
         /// <returns>Date</returns>
-        public Task<string> GetServerDate()
+        public async Task<string> GetServerDate()
         {
-            return _webpageAdminService.GetServerDate();
+            return await _webpageAdminService.GetServerDate();
         }
 
         [HttpGet]
