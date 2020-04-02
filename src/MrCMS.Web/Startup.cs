@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,10 +65,9 @@ namespace MrCMS.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //var isInstalled = IsInstalled();
             var allMrCmsAssemblies = TypeHelper.GetAllMrCMSAssemblies();
             allMrCmsAssemblies.Add(typeof(SqliteProvider).Assembly);
-
+            services.Configure<SystemConfigurationSettings>(Configuration.GetSection("SystemConfigurationSettings"));
             // services always required
             services.RegisterAllSimplePairings();
             services.RegisterOpenGenerics();
@@ -75,16 +75,23 @@ namespace MrCMS.Web
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICheckInstallationStatus, CheckInstallationStatus>();
+            
+            var t = String.Join(",",TimeZoneInfo.GetSystemTimeZones().Select(x=>x.Id).OrderBy(x=>x).ToList());
 
             var reflectionHelper = new ReflectionHelper(allMrCmsAssemblies.ToArray());
             services.AddSingleton<IReflectionHelper>(reflectionHelper);
             services.AddSingleton(reflectionHelper);
 
-            var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
+            var settings = new SystemConfigurationSettings();
+            Configuration.GetSection("SystemConfigurationSettings").Bind(settings);
+            var settingsSupportedCultures = settings.SupportedCultures ?? new List<string>() {"en-GB"};
+            var supportedCultures = 
+                CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+                .Where(x=> settingsSupportedCultures.Contains(x.Name)).ToList();
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
                 options.RequestCultureProviders.Insert(0, new UserProfileRequestCultureProvider());
@@ -111,7 +118,7 @@ namespace MrCMS.Web
             services.AddMrCMSFileSystem();
 
             services.AddSignalR();
-            
+
 
             var currentAssembly = GetType().Assembly;
             services.AddAutoMapper(expression =>
@@ -120,19 +127,10 @@ namespace MrCMS.Web
                 appContext.ConfigureAutomapper(expression);
             }, currentAssembly);
 
-
-            // if the system is not installed we just want MrCMS to show the installation screen
-            //if (!isInstalled)
-            //{
-            //    services.AddInstallationServices();
-            //    return;
-            //}
-
-            // Live services
-
             var fileProvider = services.AddViewFileProvider(Environment, appContext);
 
             services.AddMrCMSData(reflectionHelper, Configuration, currentAssembly);
+
             services.RegisterCurrentSite();
             services.RegisterBreadcrumbs();
             services.RegisterFormRenderers();
@@ -142,11 +140,14 @@ namespace MrCMS.Web
 
             services.AddMvcForMrCMS(appContext, fileProvider, options =>
             {
-                options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
-                options.Filters.Add<ProfilingAsyncAuthorizationFilter<AdminAuthFilter>>();
-                options.Filters.Add<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
+                if (IsInstalled())
+                {
+                    options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
+                    options.Filters.Add<ProfilingAsyncAuthorizationFilter<AdminAuthFilter>>();
+                    options.Filters.Add<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
+                }
             });
-            
+
             services.AddLogging(builder => builder.AddMrCMSLogger());
 
             services.AddMrCMSIdentity(Configuration);
@@ -205,7 +206,9 @@ namespace MrCMS.Web
 
             var authenticationBuilder = services.AddAuthentication();
             //var serviceProvider = services.BuildServiceProvider();
-            var thirdPartyAuthSettings = Configuration.GetSection("ThirdPartyAuthSettings").Get<ThirdPartyAuthSettings>() ?? new ThirdPartyAuthSettings();
+            var thirdPartyAuthSettings =
+                Configuration.GetSection("ThirdPartyAuthSettings").Get<ThirdPartyAuthSettings>() ??
+                new ThirdPartyAuthSettings();
 
             if (thirdPartyAuthSettings.GoogleEnabled)
             {
@@ -239,11 +242,10 @@ namespace MrCMS.Web
             });
         }
 
-        //private bool IsInstalled()
-        //{
-        //    var dbSection = Configuration.GetSection(Database);
-        //    return dbSection.Exists();
-        //}
+        private bool IsInstalled()
+        {
+            return Configuration.GetSection(Database).Exists();
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MrCMSAppContext appContext)
@@ -258,7 +260,8 @@ namespace MrCMS.Web
             var checkStatus = scope.ServiceProvider.GetRequiredService<ICheckInstallationStatus>();
             var status = checkStatus.GetStatus();
 
-            if (status == InstallationStatus.RequiresDatabaseSettings || status == InstallationStatus.RequiresMigrations)
+            if (status == InstallationStatus.RequiresDatabaseSettings ||
+                status == InstallationStatus.RequiresMigrations)
             {
                 app.ShowInstallation(status);
                 return;
@@ -272,7 +275,6 @@ namespace MrCMS.Web
                 httpContext => httpContext.RequestServices.GetRequiredService<ICheckInstallationStatus>().IsInstalled(),
                 builder =>
                 {
-                    
                     builder.UseMrCMS(a =>
                     {
                         a.UseRouting();
@@ -280,9 +282,9 @@ namespace MrCMS.Web
                         a.UseStaticFiles(new StaticFileOptions
                         {
                             FileProvider = new CompositeFileProvider(
-                                new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                                new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
                         });
-                        
+
                         a.UseAuthentication();
                         a.UseMiniProfiler();
                         a.UseEndpoints(endpoints =>
@@ -303,9 +305,6 @@ namespace MrCMS.Web
                         return;
                     }
                 });
-            
-            
-            
         }
     }
 }

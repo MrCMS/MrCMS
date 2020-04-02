@@ -44,6 +44,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EB06600E-F8DF-4FA1-8D0D-98BAA2E761AE}"
 	ProjectSection(SolutionItems) = preProject
 		docs\README.md = docs\README.md
+		docs\TimeZonesInfo.md = docs\TimeZonesInfo.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Articles", "src\Apps\MrCMS.Web.Apps.Articles\MrCMS.Web.Apps.Articles.csproj", "{5BDC4F1E-0BAA-47E4-8E40-E65EA29932A3}"
