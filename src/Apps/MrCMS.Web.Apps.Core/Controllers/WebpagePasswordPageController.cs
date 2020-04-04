@@ -22,9 +22,9 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         [HttpGet]
         [CanonicalLinks]
-        public ViewResult Show(WebpagePasswordPage page, int lockedPage)
+        public async Task<ViewResult> Show(WebpagePasswordPage page, int lockedPage)
         {
-            ViewData["locked-page"] = _unlockPageService.GetLockedPage(lockedPage);
+            ViewData["locked-page"] = await _unlockPageService.GetLockedPage(lockedPage);
 
             return View(page);
         }

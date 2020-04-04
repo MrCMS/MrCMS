@@ -26,7 +26,6 @@ namespace MrCMS.Installation.Services
             await SetupTasks();
             var siteSettings = new SiteSettings
             {
-                TimeZone = model.TimeZone,
                 UICulture = model.UiCulture,
                 EnableInlineEditing = true,
                 SiteIsLive = true,

@@ -22,9 +22,9 @@ namespace MrCMS.Web.Apps.Core.Services
             _uniquePageService = uniquePageService;
             _checker = checker;
         }
-        public Task<Webpage> GetLockedPage(int id)
+        public async Task<Webpage> GetLockedPage(int id)
         {
-            return _repository.GetData(id);
+            return await _repository.GetData(id);
         }
 
         public async Task<UnlockPageResult> TryUnlockPage(UnlockPageModel model, IResponseCookies cookies)

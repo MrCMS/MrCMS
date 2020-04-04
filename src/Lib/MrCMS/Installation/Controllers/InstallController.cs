@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Installation.Models;
 using MrCMS.Installation.Services;
+using MrCMS.Services.Resources;
+using MrCMS.Settings;
+
 // ReSharper disable Mvc.ViewNotResolved - Views compiled in MrCMS.DLL
 
 namespace MrCMS.Installation.Controllers
@@ -13,10 +17,12 @@ namespace MrCMS.Installation.Controllers
     public class InstallController : Controller
     {
         private readonly IInstallationService _installationService;
+        private readonly IGetSystemCultureInfo _getSystemCultureInfo;
 
-        public InstallController(IInstallationService installationService)
+        public InstallController(IInstallationService installationService, IGetSystemCultureInfo getSystemCultureInfo)
         {
             _installationService = installationService;
+            _getSystemCultureInfo = getSystemCultureInfo;
         }
 
         public ViewResult RequiresSettings()
@@ -44,14 +50,10 @@ namespace MrCMS.Installation.Controllers
                 {
                     SiteUrl = Request.Host.ToString(),
                     AdminEmail = "admin@yoursite.com",
-                    //DatabaseConnectionString = "",
-                    ////DatabaseProvider = typeof(SqlServer2012Provider).FullName,
-                    //SqlAuthenticationType = SqlAuthenticationType.SQL,
-                    //SqlConnectionInfo = SqlConnectionInfo.Values,
-                    //SqlServerCreateDatabase = false,
+                    CultureOptions = _getSystemCultureInfo.GetCultureOptions()
                 };
             }
-
+            
             ViewData["provider-types"] = _installationService.GetProviderTypes();
             return View("Installation/Views/Install/Setup.cshtml", installModel);
         }

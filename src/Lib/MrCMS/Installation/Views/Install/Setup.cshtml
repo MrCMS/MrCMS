@@ -1,12 +1,17 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Globalization
+@using MrCMS.Helpers
 @using MrCMS.Installation
 @using MrCMS.Installation.Models
+@using MrCMS.Services.Resources
 @model InstallModel
+@inject IGetSystemCultureInfo GetSystemCultureInfo
 @{
     ViewBag.Title = "MrCMS Installation";
     var installationResult = TempData.Get<InstallationResult>();
     var providerTypes = ViewData["provider-types"] as List<DatabaseProviderInfo> ?? new List<DatabaseProviderInfo>();
     Layout = "~/Installation/Views/Install/_Layout.cshtml";
+    var modelCultureOptions = Model.CultureOptions ?? GetSystemCultureInfo.GetCultureOptions();
+    
 }
 @using (Html.BeginForm("Setup", "Install", FormMethod.Post, new { id = "installationform" }))
 {
@@ -65,14 +70,9 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.UiCulture)
-                    @Html.DropDownListFor(x => x.UiCulture, Model.CultureOptions, new { @class = "form-control" })
+                   
+                    @Html.DropDownListFor(x => x.UiCulture, modelCultureOptions, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.UiCulture)
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(x => x.TimeZone)
-                    @Html.DropDownListFor(x => x.TimeZone, Model.TimeZoneOptions, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.TimeZone)
                 </div>
 
             </fieldset>

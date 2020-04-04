@@ -58,57 +58,17 @@ namespace MrCMS.Settings
         [DisplayName("Log 404 in admin logs")]
         public bool Log404s { get; set; }
 
-        [DisplayName("Raygun API Key")]
-        public string RaygunAPIKey { get; set; }
-        [DisplayName("Raygun Excluded Status Codes")]
-        public string RaygunExcludedStatusCodes { get; set; }
-
-        public IEnumerable<int> RaygunExcludedStatusCodeCollection
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(RaygunExcludedStatusCodes)) yield break;
-                string[] statusCodes = RaygunExcludedStatusCodes.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (string statusCode in statusCodes)
-                {
-                    if (int.TryParse(statusCode, out int id))
-                        yield return id;
-                }
-            }
-        }
-
-
-
         [DisplayName("Site UI Culture"), DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
 
         [MediaSelector]
         public string AdminLogo { get; set; }
 
-        public CultureInfo CultureInfo
-        {
-            get
-            {
-                return !String.IsNullOrWhiteSpace(UICulture)
-                    ? CultureInfo.GetCultureInfo(UICulture)
-                    : CultureInfo.CurrentCulture;
-            }
-        }
-
-        [DisplayName("Time zones"), DropDownSelection("TimeZones")]
-        public string TimeZone { get; set; }
-
-        //Moved to config
-        /*public TimeZoneInfo TimeZoneInfo
-        {
-            get
-            {
-                return !String.IsNullOrWhiteSpace(TimeZone)
-                    ? TimeZoneInfo.FromSerializedString(TimeZone)
-                    : TimeZoneInfo.Local;
-            }
-        }*/
-
+        public CultureInfo CultureInfo =>
+            !string.IsNullOrWhiteSpace(UICulture)
+                ? CultureInfo.GetCultureInfo(UICulture)
+                : CultureInfo.CurrentCulture;
+        
         [DisplayName("Honeypot Field Name")]
         public string HoneypotFieldName { get; set; }
 
@@ -168,8 +128,6 @@ namespace MrCMS.Settings
             viewDataDictionary["Themes"] = generator.GetThemeNames(ThemeName);
 
             viewDataDictionary["UiCultures"] = generator.GetUiCultures(UICulture);
-
-            viewDataDictionary["TimeZones"] = generator.GetTimeZones(TimeZone);
 
             viewDataDictionary["DefaultFormRenderer"] =
                 generator.GetFormRendererOptions(FormRendererType);

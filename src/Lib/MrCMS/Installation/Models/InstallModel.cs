@@ -14,9 +14,7 @@ namespace MrCMS.Installation.Models
     {
         public InstallModel()
         {
-            TimeZone = (TimeZones.Zones.FirstOrDefault(x => Equals(x, TimeZoneInfo.Local))
-                        ?? TimeZones.Zones.FirstOrDefault(x => x.BaseUtcOffset == TimeZoneInfo.Local.BaseUtcOffset))
-                ?.ToSerializedString();
+           
         }
 
         [Required]
@@ -64,24 +62,6 @@ namespace MrCMS.Installation.Models
         public string SiteUrl { get; set; }
 
         [DisplayName("UI Culture")] [Required] public string UiCulture { get; set; }
-
-        [DisplayName("Time Zone")] [Required] public string TimeZone { get; set; }
-
-        [DisplayName("Culture Options")]
-        public IEnumerable<SelectListItem> CultureOptions => CultureInfo.GetCultures(CultureTypes.AllCultures)
-            .OrderBy(info => info.DisplayName)
-            .BuildSelectItemList(info => info.DisplayName, info => info.Name,
-                info =>
-                    string.IsNullOrWhiteSpace(UiCulture)
-                        ? Equals(info, CultureInfo.CurrentCulture)
-                        : info.Name == UiCulture,
-                emptyItem: null);
-
-        public IEnumerable<SelectListItem> TimeZoneOptions => TimeZones.Zones
-            .BuildSelectItemList(info => info.DisplayName, info => info.ToSerializedString(),
-                info =>
-                    string.IsNullOrWhiteSpace(TimeZone)
-                        ? Equals(info, TimeZoneInfo.Local)
-                        : info.ToSerializedString() == TimeZone, emptyItem: null);
+        [DisplayName("Culture Options")] public IEnumerable<SelectListItem> CultureOptions { get; set; }
     }
 }

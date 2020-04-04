@@ -65,7 +65,7 @@ namespace MrCMS.DbConfiguration
         private ValueConverter<DateTime?, DateTime?> NullableDateTimeConverter()
         {
             return new ValueConverter<DateTime?, DateTime?>(
-                v => !v.HasValue ? (DateTime?) null : TimeZoneInfo.ConvertTime(v.Value, 
+                v => !v.HasValue ? (DateTime?) null :  v.Value.Kind == DateTimeKind.Utc ? v : TimeZoneInfo.ConvertTime(v.Value, 
                     _systemConfigurationSettings.Value.TimeZoneInfo,TimeZoneInfo.Utc), 
                 v => !v.HasValue ? (DateTime?) null : 
                     TimeZoneInfo.ConvertTime(v.Value, TimeZoneInfo.Utc,
