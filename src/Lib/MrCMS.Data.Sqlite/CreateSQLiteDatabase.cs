@@ -12,9 +12,9 @@ namespace MrCMS.Data.Sqlite
         private const string DatabaseFileName = "MrCMS.Db.db";
         //private const string DatabasePath = @"|DataDirectory|\" + DatabaseFileName;
         //private const string ConnectionString = "Data Source=" + DatabasePath;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public CreateSQLiteDatabase(IHostingEnvironment hostingEnvironment)
+        public CreateSQLiteDatabase(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

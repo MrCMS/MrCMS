@@ -9,7 +9,7 @@ namespace MrCMS.Entities.Indexes
     public class AdminWebpageIndexDefinition : IndexDefinition<Webpage>
     {
         public AdminWebpageIndexDefinition(ISession session,
-            IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+            IWebHostEnvironment hostingEnvironment, IServiceProvider serviceProvider)
             : base(session, hostingEnvironment, serviceProvider)
         {
         }

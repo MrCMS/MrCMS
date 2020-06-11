@@ -25,9 +25,6 @@ namespace MrCMS.DbConfiguration
             SqlServerGuidHelper.SetGuidToUniqueWithDefaultValue(config);
         }
 
-        public string Type
-        {
-            get { return GetType().FullName; }
-        }
+        public string Type => GetType().FullName;
     }
 }

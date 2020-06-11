@@ -20,9 +20,9 @@ namespace MrCMS.Indexing.Management
 {
     public abstract class IndexDefinition
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        protected IndexDefinition(IHostingEnvironment hostingEnvironment)
+        protected IndexDefinition(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -95,7 +95,7 @@ namespace MrCMS.Indexing.Management
         protected readonly ISession Session;
         private readonly IServiceProvider _serviceProvider;
 
-        protected IndexDefinition(ISession session, IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+        protected IndexDefinition(ISession session, IWebHostEnvironment hostingEnvironment, IServiceProvider serviceProvider)
         : base(hostingEnvironment)
         {
             Session = session;

@@ -33,6 +33,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.Hosting;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
 using StackExchange.Profiling.Storage;
@@ -60,24 +61,9 @@ namespace MrCMS.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var isInstalled = IsInstalled();
-
-            // services always required
-            services.RegisterAllSimplePairings();
-            services.RegisterOpenGenerics();
-            services.SelfRegisterAllConcreteTypes();
-            services.AddSession();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.DefaultRequestCulture = new RequestCulture("en-US");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-                options.RequestCultureProviders.Insert(0, new UserProfileRequestCultureProvider());
-            });
-
+            services.AddRequiredServices();
+            services.AddCultureInfo();
+            
             var appContext = services.AddMrCMSApps(context =>
             {
                 context.RegisterApp<MrCMSCoreApp>();
@@ -87,23 +73,10 @@ namespace MrCMS.Web
                 context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
-            services.AddMrCMSDataAccess(isInstalled, Configuration.GetSection(Database));
+            services.AddMrCMSData(isInstalled, Configuration);
 
             // TODO: Look to removing Site for constructors and resolving like this
-            services.AddScoped(provider =>
-            {
-                var site =
-                    provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-site"] as Site;
-
-                site = site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
-                var session = provider.GetRequiredService<ISession>();
-                if (site != null)
-                {
-                    session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
-                }
-
-                return site;
-            });
+            services.AddSiteProvider();
 
             services.AddMrCMSFileSystem();
 
@@ -115,15 +88,11 @@ namespace MrCMS.Web
                 appContext.ConfigureAutomapper(expression);
             }, GetType().Assembly);
 
-
-            // if the system is not installed we just want MrCMS to show the installation screen
             if (!isInstalled)
             {
                 services.AddInstallationServices();
                 return;
             }
-
-            // Live services
 
             var fileProvider = services.AddFileProvider(Environment, appContext);
 
@@ -153,33 +122,7 @@ namespace MrCMS.Web
             });
             services.AddSingleton<IMemoryCache>(provider => provider.GetRequiredService<IClearableInMemoryCache>());
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
-            services.AddMiniProfiler(options =>
-            {
-                // All of this is optional. You can simply call .AddMiniProfiler() for all defaults
-
-                // (Optional) Path to use for profiler URLs, default is /mini-profiler-resources
-                options.RouteBasePath = "/profiler";
-
-                // (Optional) Control storage
-                // (default is 30 minutes in MemoryCacheStorage)
-                (options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
-
-                // (Optional) Control which SQL formatter to use, InlineFormatter is the default
-                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
-
-                // (Optional) To control authorization, you can use the Func<HttpRequest, bool> options:
-                // (default is everyone can access profilers)
-                options.ResultsAuthorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
-                options.ResultsListAuthorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
-
-                // (Optional)  To control which requests are profiled, use the Func<HttpRequest, bool> option:
-                // (default is everything should be profiled)
-                options.ShouldProfile = MiniProfilerAuth.ShouldStartFor;
-
-                // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
-                // (defaults to true, and connection opening/closing is tracked)
-                options.TrackConnectionOpenClose = true;
-            });
+            services.AddMiniProfiler();
 
             services.AddScoped(x =>
             {
@@ -190,30 +133,9 @@ namespace MrCMS.Web
             services.AddScoped(provider => provider.GetService<IStringLocalizerFactory>()
                 .Create(null, null));
 
-                var authenticationBuilder = services.AddAuthentication();
-            var serviceProvider = services.BuildServiceProvider();
-            var thirdPartyAuthSettings = serviceProvider.GetRequiredService<ThirdPartyAuthSettings>();
-
-            if (thirdPartyAuthSettings.GoogleEnabled)
-            {
-                authenticationBuilder.AddGoogle(options =>
-                {
-                    options.ClientId = thirdPartyAuthSettings.GoogleClientId;
-                    options.ClientSecret = thirdPartyAuthSettings.GoogleClientSecret;
-                });
-            }
-
-            if (thirdPartyAuthSettings.FacebookEnabled)
-            {
-                authenticationBuilder.AddFacebook(options =>
-                {
-                    options.AppId = thirdPartyAuthSettings.FacebookAppId;
-                    options.AppSecret = thirdPartyAuthSettings.FacebookAppSecret;
-                    options.Fields.Add("email");
-                    options.Scope.Add("email");
-                });
-            }
-
+            var authenticationBuilder = services.AddAuthentication();
+            services.AddExternalAuthProviders(authenticationBuilder);
+            
             services.TryAddEnumerable(ServiceDescriptor
                 .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
                 >());
@@ -228,12 +150,12 @@ namespace MrCMS.Web
 
         private bool IsInstalled()
         {
-            var dbSection = Configuration.GetSection(Database);
-            return dbSection.Exists();
+            var dbSection = Configuration.GetConnectionString("mrcms");
+            return dbSection?.Length > 0;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MrCMSAppContext appContext)
         {
             if (env.IsDevelopment())
             {
@@ -247,15 +169,14 @@ namespace MrCMS.Web
                 app.ShowInstallation();
                 return;
             }
-
-
+            
             app.UseMrCMS(builder =>
             {
                 app.UseRequestLocalization();
                 builder.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new CompositeFileProvider(
-                        new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+                        new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
                 });
                 builder.UseAuthentication();
                 builder.UseMiniProfiler();

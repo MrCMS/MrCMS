@@ -16,11 +16,12 @@ namespace MrCMS.Installation.Services
 {
     public class DatabaseCreationService : IDatabaseCreationService
     {
-        private const string ConfigKey = "Database";
+        private const string ConnectionStringsKey = "ConnectionStrings";
+        private const string DatabaseKey = "Database";
         private readonly IServiceProvider _serviceProvider;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-        public DatabaseCreationService(IServiceProvider serviceProvider, IHostingEnvironment environment)
+        public DatabaseCreationService(IServiceProvider serviceProvider, IWebHostEnvironment environment)
         {
             _serviceProvider = serviceProvider;
             _environment = environment;
@@ -61,7 +62,7 @@ namespace MrCMS.Installation.Services
             var info = _environment.ContentRootFileProvider.GetFileInfo($"appsettings.{environmentName}.json");
             var config = GetConfig(info);
 
-            if (config.ContainsKey(ConfigKey) && config[ConfigKey] is DatabaseSettings settings)
+            if (config.ContainsKey(ConnectionStringsKey) && config[ConnectionStringsKey] is DatabaseSettings settings)
             {
                 return !string.IsNullOrWhiteSpace(settings.ConnectionString);
             }
@@ -84,13 +85,17 @@ namespace MrCMS.Installation.Services
 
         public void SaveConnectionSettings(ICreateDatabase provider, InstallModel installModel)
         {
-            var info = GetEnvironmentAppSettingsInfo();
+            var info = GetConnectionStringsSettingsFileInfo();
             var config = GetConfig(info);
 
-            config[ConfigKey] = new DatabaseSettings
+            config[ConnectionStringsKey] = new 
             {
-                DatabaseProviderType = installModel.DatabaseProvider,
-                ConnectionString = provider.GetConnectionString(installModel)
+                mrcms = provider.GetConnectionString(installModel)
+            };
+
+            config[DatabaseKey] = new
+            {
+                DatabaseProviderType = installModel.DatabaseProvider
             };
 
             File.WriteAllText(info.PhysicalPath, JsonConvert.SerializeObject(config, Formatting.Indented));
@@ -101,11 +106,9 @@ namespace MrCMS.Installation.Services
             IDictionary<String, object> config;
             if (info.Exists)
             {
-                using (var stream = info.CreateReadStream())
-                using (TextReader reader = new StreamReader(stream))
-                {
-                    config = JsonConvert.DeserializeObject<ExpandoObject>(reader.ReadToEnd());
-                }
+                using var stream = info.CreateReadStream();
+                using TextReader reader = new StreamReader(stream);
+                config = JsonConvert.DeserializeObject<ExpandoObject>(reader.ReadToEnd());
             }
             else
             {
@@ -115,12 +118,10 @@ namespace MrCMS.Installation.Services
             return config;
         }
 
-        private IFileInfo GetEnvironmentAppSettingsInfo()
+        private IFileInfo GetConnectionStringsSettingsFileInfo()
         {
-            var environmentName = _environment.EnvironmentName;
-            var info = _environment.ContentRootFileProvider.GetFileInfo($"appsettings.{environmentName}.json");
-
-            //path = Path.Combine(_environment.ContentRootPath, $"appsettings.{environmentName}.json");
+            //var environmentName = _environment.EnvironmentName;
+            var info = _environment.ContentRootFileProvider.GetFileInfo($"connectionstrings.json");
             return info;
         }
     }

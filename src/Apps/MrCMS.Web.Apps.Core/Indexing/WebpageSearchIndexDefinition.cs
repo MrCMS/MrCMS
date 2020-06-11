@@ -9,7 +9,7 @@ namespace MrCMS.Web.Apps.Core.Indexing
     public class WebpageSearchIndexDefinition : IndexDefinition<Webpage>
     {
         public WebpageSearchIndexDefinition(ISession session,
-            IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+            IWebHostEnvironment hostingEnvironment, IServiceProvider serviceProvider)
             : base(session, hostingEnvironment, serviceProvider)
         {
         }
