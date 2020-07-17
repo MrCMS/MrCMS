@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -12,6 +13,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
+using MrCMS.Website;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services
@@ -21,15 +23,17 @@ namespace MrCMS.Services
         private readonly MailSettings _mailSettings;
         private readonly ISaveFormFileUpload _saveFormFileUpload;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IGetWebpageForPath _getWebpageForPath;
         private readonly ISession _session;
 
         public const string GDPRConsent = nameof(GDPRConsent);
 
-        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor)
+        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor, IGetWebpageForPath getWebpageForPath)
         {
             _session = session;
             _saveFormFileUpload = saveFormFileUpload;
             _contextAccessor = contextAccessor;
+            _getWebpageForPath = getWebpageForPath;
             _mailSettings = mailSettings;
         }
 
@@ -41,12 +45,14 @@ namespace MrCMS.Services
         public List<string> SaveFormData(Form form, HttpRequest request)
         {
             var formProperties = form.FormProperties;
-
             var errors = new List<string>();
             if (!form.SendByEmailOnly)
             {
+                //todo add webpageId to form rendering so dont need to look up on request.ref
+                var referer = new Uri(request?.Referer() ?? "/");
+                var page = _getWebpageForPath.GetWebpage(referer.AbsolutePath);
                 var files = new List<IFormFile>();
-                var formPosting = new FormPosting { Form = form };
+                var formPosting = new FormPosting { Form = form, Webpage = page};
                 _session.Transact(session =>
                 {
                     form.FormPostings.Add(formPosting);

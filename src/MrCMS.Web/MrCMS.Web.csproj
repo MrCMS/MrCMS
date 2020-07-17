@@ -32,5 +32,12 @@
     <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\select2.jquery.json" />
     <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\sweetalert-master\bower.json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Areas\Admin\scripts\form-entries-search.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
   
 </Project>
