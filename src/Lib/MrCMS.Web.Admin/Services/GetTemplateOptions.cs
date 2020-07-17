@@ -33,7 +33,7 @@ namespace MrCMS.Web.Admin.Services
 
             viewData["template-options"] = templates.BuildSelectItemList(template => template.Name,
                 template => template.Id.ToString(),
-                emptyItem: new SelectListItem {Text = "Default template", Value = "0"});
+                emptyItem: new SelectListItem {Text = "Default template", Value = ""});
         }
     }
 }

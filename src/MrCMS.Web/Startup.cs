@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -62,7 +63,8 @@ namespace MrCMS.Web
         {
             var isInstalled = IsInstalled();
             services.AddRequiredServices();
-            services.AddCultureInfo();
+            services.Configure<SystemConfig>(Configuration.GetSection("SystemConfig"));
+            services.AddCultureInfo(Configuration);
             
             var appContext = services.AddMrCMSApps(context =>
             {

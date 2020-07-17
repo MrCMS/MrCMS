@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -19,16 +20,18 @@ namespace MrCMS.Web.Admin.Services
         private readonly IMapper _mapper;
         private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
         private readonly SiteSettings _siteSettings;
+        private readonly IOptions<SystemConfig> _config;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
             IMapper mapper,
             IGetDocumentsByParent<Webpage> getDocumentsByParent,
-            SiteSettings siteSettings)
+            SiteSettings siteSettings, IOptions<SystemConfig> config)
         {
             _webpageRepository = webpageRepository;
             _mapper = mapper;
             _getDocumentsByParent = getDocumentsByParent;
             _siteSettings = siteSettings;
+            _config = config;
         }
 
 
@@ -147,7 +150,7 @@ namespace MrCMS.Web.Admin.Services
         public string GetServerDate()
         {
             var now = DateTime.UtcNow;
-            return now.Add(_siteSettings.TimeZoneInfo.GetUtcOffset(now)).ToString();
+            return now.Add(_config.Value.TimeZoneInfo.GetUtcOffset(now)).ToString();
         }
     }
 }

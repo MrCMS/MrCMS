@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication;
@@ -68,17 +70,23 @@ namespace MrCMS.Helpers
             return serviceCollection;
         }
         
-        public static IServiceCollection AddCultureInfo(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddCultureInfo(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            var supportedCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
+            var settings = new SystemConfig();
+            configuration.GetSection("SystemConfigurationSettings").Bind(settings);
+            var settingsSupportedCultures = settings.SupportedCultures ?? new List<string>() {"en-GB"};
+            var supportedCultures =
+                CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+                    .Where(x=> settingsSupportedCultures.Contains(x.Name)).ToList();
 
             serviceCollection.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
                 options.RequestCultureProviders.Insert(0, new UserProfileRequestCultureProvider());
             });
+
             return serviceCollection;
         }
 

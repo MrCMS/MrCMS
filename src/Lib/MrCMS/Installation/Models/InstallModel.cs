@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 
@@ -12,13 +14,6 @@ namespace MrCMS.Installation.Models
 {
     public class InstallModel
     {
-        public InstallModel()
-        {
-            TimeZone = (TimeZones.Zones.FirstOrDefault(x => Equals(x, TimeZoneInfo.Local))
-                        ?? TimeZones.Zones.FirstOrDefault(x => x.BaseUtcOffset == TimeZoneInfo.Local.BaseUtcOffset))
-                ?.ToSerializedString();
-        }
-
         [Required]
         [EmailAddress]
         [DisplayName("Admin Email")]
@@ -65,23 +60,12 @@ namespace MrCMS.Installation.Models
 
         [DisplayName("UI Culture")] [Required] public string UiCulture { get; set; }
 
-        [DisplayName("Time Zone")] [Required] public string TimeZone { get; set; }
 
-        [DisplayName("Culture Options")]
-        public IEnumerable<SelectListItem> CultureOptions => CultureInfo.GetCultures(CultureTypes.AllCultures)
-            .OrderBy(info => info.DisplayName)
-            .BuildSelectItemList(info => info.DisplayName, info => info.Name,
-                info =>
-                    string.IsNullOrWhiteSpace(UiCulture)
-                        ? Equals(info, CultureInfo.CurrentCulture)
-                        : info.Name == UiCulture,
-                emptyItem: null);
-
-        public IEnumerable<SelectListItem> TimeZoneOptions => TimeZones.Zones
+        /*public IEnumerable<SelectListItem> TimeZoneOptions => TimeZones.Zones
             .BuildSelectItemList(info => info.DisplayName, info => info.ToSerializedString(),
                 info =>
                     string.IsNullOrWhiteSpace(TimeZone)
                         ? Equals(info, TimeZoneInfo.Local)
-                        : info.ToSerializedString() == TimeZone, emptyItem: null);
+                        : info.ToSerializedString() == TimeZone, emptyItem: null);*/
     }
 }

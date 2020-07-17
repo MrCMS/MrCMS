@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Installation.Models;
 using MrCMS.Installation.Services;
+using MrCMS.Settings;
 
 namespace MrCMS.Installation.Controllers
 {
@@ -12,11 +14,13 @@ namespace MrCMS.Installation.Controllers
     {
         private readonly IInstallationService _installationService;
         private readonly IHostApplicationLifetime _applicationLifetime;
+        private readonly IOptions<SystemConfig> _config;
 
-        public InstallController(IInstallationService installationService, IHostApplicationLifetime applicationLifetime)
+        public InstallController(IInstallationService installationService, IHostApplicationLifetime applicationLifetime, IOptions<SystemConfig> config)
         {
             _installationService = installationService;
             _applicationLifetime = applicationLifetime;
+            _config = config;
         }
 
         public IActionResult Setup()
@@ -30,7 +34,7 @@ namespace MrCMS.Installation.Controllers
             if (installModel == null)
             {
                 ModelState.Clear();
-                installModel = new InstallModel
+                installModel = new InstallModel()
                 {
                     SiteUrl = Request.Host.ToString(),
                     AdminEmail = "admin@yoursite.com",

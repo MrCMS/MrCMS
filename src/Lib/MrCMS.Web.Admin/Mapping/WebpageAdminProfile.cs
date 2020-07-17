@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using AutoMapper;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models;
@@ -23,10 +23,6 @@ namespace MrCMS.Web.Admin.Mapping
                 .ReverseMap()
                 .ForMember(webpage => webpage.FrontEndAllowedRoles,
                     expression => expression.MapFrom<FrontEndAllowedRoleMapper>())
-                .BeforeMap((model, webpage, context) =>
-                {
-                    context.Items["password-is-same"] = model.Password == webpage.Password;
-                })
                 .ForMember(webpage => webpage.PasswordAccessToken,
                     expression => expression.MapFrom((model, webpage, destMember, context) =>
                     {
@@ -35,7 +31,7 @@ namespace MrCMS.Web.Admin.Mapping
                             model.PermissionType == WebpagePermissionType.PasswordBased)
                         {
                             // if the password is the same
-                            if ((bool)context.Items["password-is-same"])
+                            if (model.Password == webpage.Password)
                             {
                                 // keep it the same
                                 return webpage.PasswordAccessToken;

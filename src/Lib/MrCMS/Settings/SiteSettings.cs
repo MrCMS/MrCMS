@@ -95,19 +95,6 @@ namespace MrCMS.Settings
             }
         }
 
-        [DisplayName("Time zones"), DropDownSelection("TimeZones")]
-        public string TimeZone { get; set; }
-
-        public TimeZoneInfo TimeZoneInfo
-        {
-            get
-            {
-                return !String.IsNullOrWhiteSpace(TimeZone)
-                    ? TimeZoneInfo.FromSerializedString(TimeZone)
-                    : TimeZoneInfo.Local;
-            }
-        }
-
         [DisplayName("Honeypot Field Name")]
         public string HoneypotFieldName { get; set; }
 
@@ -168,8 +155,6 @@ namespace MrCMS.Settings
             viewDataDictionary["Themes"] = generator.GetThemeNames(ThemeName);
 
             viewDataDictionary["UiCultures"] = generator.GetUiCultures(UICulture);
-
-            viewDataDictionary["TimeZones"] = generator.GetTimeZones(TimeZone);
 
             viewDataDictionary["DefaultFormRenderer"] =
                 generator.GetFormRendererOptions(FormRendererType);
