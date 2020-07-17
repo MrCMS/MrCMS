@@ -1,12 +1,12 @@
 ﻿@using System.Globalization
 @using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Web.Apps.Admin.Helpers
+@using MrCMS.Web.Admin.Helpers
 @using MrCMS.Website
 @using MrCMS.Website.Optimization
 @inject IGetCurrentUser GetCurrentUser
 <!DOCTYPE html>
-<html lang="@(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)">
+<html>
 <head>
     <title>@ViewBag.Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,25 +16,24 @@
     @Html.RenderStyleBundle("~/admin/stylesheets/apps")
 
     @{ Html.RenderCss(); }
-    
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
 </head>
-<body class="hold-transition sidebar-mini">
+<body>
 
-@RenderBody() 
+<div id="loading" style="display: none;">
+    <img src="/Areas/Admin/img/ajax-loader2.gif"/>
+</div>
 
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script> 
+@RenderBody()
 
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script>
+
+@Html.RenderScriptBundle("~/admin/scripts/lib")
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
 <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
 <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
-@Html.RenderScriptBundle("~/admin/scripts/lib")
 @Html.RenderScriptBundle("~/admin/scripts/mrcms")
 @Html.RenderScriptBundle("~/admin/scripts/apps")
-<script type="text/javascript" src="/Areas/Admin/lib/jquery/ui/i18n/jquery.ui.datepicker-@(CultureInfo.CurrentCulture.Name).js"></script>
-
 
 @if (GetCurrentUser.Get()?.DisableNotifications == false)
 {
@@ -51,7 +50,6 @@
 {
     @RenderSection("JavaScriptBlock")
 }
-@*    @MiniProfiler.Current.RenderIncludes(Context)*@
-<mini-profiler />
+<mini-profiler />T
 </body>
 </html>

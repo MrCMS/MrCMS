@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Admin.Models.AddFormListOptionModel
+@model MrCMS.Web.Admin.Models.AddFormListOptionModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Add", "FormListOption", new { id = "" }, FormMethod.Post,null, new { @class = "form-update-form" }))
 {
@@ -18,7 +18,7 @@
                     @Html.ValidationMessageFor(option => option.Value)
                 </div>
 
-                @Html.EditorFor(option => option.Selected)
+                @Html.InlineCheckboxFor(option => option.Selected)
             </div>
         </div>
     </fieldset>

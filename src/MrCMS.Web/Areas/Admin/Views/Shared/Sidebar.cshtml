@@ -2,15 +2,16 @@
 @using MrCMS.Settings
 @using System.Drawing
 @using MrCMS.Services
-@inject SiteSettings Settings
 @inject IGetCurrentUser GetCurrentUser
+@inject IConfigurationProvider ConfigurationProvider
 @{
     var user = GetCurrentUser.Get();
     var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/160";
+    var siteSettings = ConfigurationProvider.GetSiteSettings<SiteSettings>();
 }
 <a href="@Url.Action("Index", "Home")" tabindex="1" class="brand-link">
     @{
-        var adminLogo = Settings.AdminLogo;
+        var adminLogo = siteSettings.AdminLogo;
     }
     @if (!string.IsNullOrWhiteSpace(adminLogo))
     {

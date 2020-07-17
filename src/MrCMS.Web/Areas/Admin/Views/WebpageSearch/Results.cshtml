@@ -1,9 +1,9 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Admin.Models
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.WebpageSearchQuery
+@model MrCMS.Web.Admin.Models.WebpageSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<Webpage>;
 }
@@ -31,5 +31,5 @@
     {
         <span>No children found.</span>
     }
-    @Html.PagedListPager(results, i => Url.Action("Results","WebpageSearch", new { page = i, Model.Query, Model.ParentId }), MrCmsPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, i => Url.Action("Results","WebpageSearch", new { page = i, Model.Query, Model.ParentId }))
 </div>

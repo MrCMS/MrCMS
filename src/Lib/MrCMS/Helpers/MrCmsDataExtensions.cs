@@ -84,6 +84,7 @@ namespace MrCMS.Helpers
 
         public static IServiceCollection AddSiteProvider(this IServiceCollection serviceCollection)
         {
+        // TODO: Look to removing Site for constructors and resolving like this
             serviceCollection.AddScoped(provider =>
             {
                 var site =

@@ -1,47 +1,33 @@
-﻿@using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
-@model MrCMS.Web.Apps.Admin.Models.ContentBlocks.AddContentBlockViewModel
+﻿@using MrCMS.Web.Admin.Infrastructure.Helpers
+@model MrCMS.Web.Admin.Models.ContentBlocks.AddContentBlockViewModel
 @{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var additionalPropertyModel = ViewData["additional-property-model"];
 }
 
-<form asp-action="Add" asp-controller="ContentBlock" method="post">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h1>@Html.Resource("admin-add", "Add") @Model.TypeDisplayName</h1>
-                </div>
-                <div class="col">
-                    <span class="btn-group pull-right">
-                        <a href="@Url.Action("Edit", "Webpage", new {Id = Model.WebpageId})" class="btn btn-secondary">@Html.Resource("admin-back", "Back")</a>
-                        <button type="submit" class="btn btn-primary">@Html.Resource("admin-save", "Save")</button>
-                    </span>
-                </div>
-            </div>
+@using (Html.BeginForm("Add", "ContentBlock", new { id = "" }, FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            Add @Model.TypeDisplayName
+            <span class="btn-group pull-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </span>
+        </legend>
+        @Html.HiddenFor(block => block.WebpageId)
+        @Html.HiddenFor(block => block.BlockType)
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name)
         </div>
-    </section>
 
-    <div class="card">
-        <div class="card-body">
-            <fieldset>
-                @Html.HiddenFor(block => block.WebpageId)
-                @Html.HiddenFor(block => block.BlockType)
-
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                    @Html.ValidationMessageFor(x => x.Name)
-                </div>
-
-                @if (additionalPropertyModel != null)
-                {
-                    @await Html.RenderCustomAddAdminProperties(Model.ClrType, additionalPropertyModel)
-                }
+        @if (additionalPropertyModel != null)
+        {
+            @await Html.RenderCustomAddAdminProperties(Model.ClrType, additionalPropertyModel)
+        }
 
 
-            </fieldset>
-        </div>
-    </div>
-</form>
-
-    
+    </fieldset>
+}

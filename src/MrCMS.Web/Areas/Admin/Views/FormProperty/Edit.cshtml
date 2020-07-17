@@ -1,6 +1,6 @@
 ﻿@using MrCMS.Entities.Documents.Web.FormProperties
 @using MrCMS.Helpers
-@model MrCMS.Web.Apps.Admin.Models.UpdateFormPropertyModel
+@model MrCMS.Web.Admin.Models.UpdateFormPropertyModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 @using (Html.BeginForm("Edit", "FormProperty", new { id = Model.Id }, FormMethod.Post,null, new { @class = "form-update-form" }))

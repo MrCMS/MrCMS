@@ -1,41 +1,28 @@
 ﻿@using MrCMS.Entities.Documents
-@using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
-@model MrCMS.Web.Apps.Admin.Models.ContentBlocks.UpdateContentBlockViewModel
+@using MrCMS.Web.Admin.Infrastructure.Helpers
+@model MrCMS.Web.Admin.Models.ContentBlocks.UpdateContentBlockViewModel
 @{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var contentBlock = ViewData["block"] as ContentBlock;
 }
 
-<form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model.Id" method="post">
-    <input type="hidden" asp-for="WebpageId"/>
+@using (Html.BeginForm("Edit", "ContentBlock", new {Model.Id}, FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            Update @(contentBlock.DisplayName)
+            <span class="btn-group pull-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </span>
+        </legend>
 
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h1>@Html.Resource("admin-update", "Update") @Model.Name</h1>
-                </div>
-                <div class="col">
-                    <span class="btn-group pull-right">
-                        <a href="@Url.Action("Edit", "Webpage", new {Id = Model.WebpageId})" class="btn btn-secondary">@Html.Resource("admin-back", "Back")</a>
-                        <button type="submit" class="btn btn-primary">@Html.Resource("admin-save", "Save")</button>
-                    </span>
-                </div>
-            </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
+            @Html.ValidationMessageFor(x => x.Name)
         </div>
-    </section>
 
-    <div class="card">
-        <div class="card-body">
-            <fieldset>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                    @Html.ValidationMessageFor(x => x.Name)
-                </div>
+        @await Html.RenderUpdateCustomAdminProperties(contentBlock)
 
-                @await Html.RenderUpdateCustomAdminProperties(contentBlock)
-
-            </fieldset>
-        </div>
-    </div>
-</form>
+    </fieldset>
+}

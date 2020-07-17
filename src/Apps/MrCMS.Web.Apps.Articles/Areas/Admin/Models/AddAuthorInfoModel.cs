@@ -1,4 +1,4 @@
-﻿using MrCMS.Web.Apps.Admin.Infrastructure.Models;
+﻿using MrCMS.Web.Admin.Infrastructure.Models;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
 {

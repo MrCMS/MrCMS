@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MrCMS.Web.Apps.Admin.Mapping;
+using MrCMS.Web.Admin.Mapping;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Controllers;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Entities;

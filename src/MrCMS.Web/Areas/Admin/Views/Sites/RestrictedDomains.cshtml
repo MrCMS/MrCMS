@@ -1,6 +1,6 @@
 ﻿@using System.Linq
-@using MrCMS.Web.Apps.Admin.Services
-@model MrCMS.Web.Apps.Admin.Models.UpdateSiteModel
+@using MrCMS.Web.Admin.Services
+@model MrCMS.Web.Admin.Models.UpdateSiteModel
 @inject ISiteAdminService AdminService
 @{
     var redirectedDomains = AdminService.GetRedirectedDomains(Model.Id);

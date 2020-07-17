@@ -1,9 +1,9 @@
 ﻿@using System.Linq
 @using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Web.Apps.Admin.ACL
-@using MrCMS.Web.Apps.Admin.Services
-@model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+@using MrCMS.Web.Admin.ACL
+@using MrCMS.Web.Admin.Services
+@model MrCMS.Web.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
     Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
@@ -16,28 +16,29 @@
 }
 
 <div class="mb-3">
-    <partial name="Upload" model="category"/>
+    <partial name="Upload" model="category" />
+    <div class="clearfix"></div>
 </div>
 
-@using (Html.BeginForm(FormMethod.Get, new {}))
+@using (Html.BeginForm(FormMethod.Get, new { }))
 {
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 @Html.LabelFor(model => model.SearchText)
-                @Html.TextBoxFor(model => model.SearchText, new {@class = "form-control"})
+                @Html.TextBoxFor(model => model.SearchText, new { @class = "form-control" })
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 @Html.LabelFor(model => model.SortBy)
-                @Html.DropDownListFor(model => model.SortBy, sortByOptions, new {@class = "form-control"})
+                @Html.DropDownListFor(model => model.SortBy, sortByOptions, new { @class = "form-control" })
             </div>
         </div>
         <div class="col-sm-2">
             <div class="form-group">
                 <label class="hidden-xs">&nbsp;</label>
-                <button type="submit" class="btn btn-outline-primary form-control">@Html.Resource("Search")</button>
+                <button type="submit" class="btn btn-primary form-control">@Html.Resource("Search")</button>
             </div>
         </div>
     </div>
@@ -60,5 +61,6 @@
         }
     </span>
 }
+<div class="clearfix"></div>
 
-<partial name="Directory" model="Model"/>
+<partial name="Directory" model="Model" />

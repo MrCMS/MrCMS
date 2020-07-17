@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Rendering
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Models
-@model MrCMS.Web.Apps.Admin.Models.AddWidgetModel
+@using MrCMS.Web.Admin.Models
+@model MrCMS.Web.Admin.Models.AddWidgetModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 @using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, null, new { id = "add-widget-form" }))

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
-using MrCMS.Web.Apps.Admin.Infrastructure.Models;
-using MrCMS.Web.Apps.Admin.Infrastructure.Services;
+using MrCMS.Web.Admin.Infrastructure.Models;
+using MrCMS.Web.Admin.Infrastructure.Services;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Entities;
 using MrCMS.Website.Controllers;

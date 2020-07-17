@@ -25,7 +25,7 @@ using MrCMS.Logging;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Themes.Red;
-using MrCMS.Web.Apps.Admin;
+using MrCMS.Web.Admin;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
@@ -66,22 +66,17 @@ namespace MrCMS.Web
             
             var appContext = services.AddMrCMSApps(context =>
             {
+                context.RegisterApp<MrCMSAdmin>();
                 context.RegisterApp<MrCMSCoreApp>();
-                context.RegisterApp<MrCMSAdminApp>();
                 context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
                 context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
-            services.AddMrCMSData(isInstalled, Configuration);
-
-            // TODO: Look to removing Site for constructors and resolving like this
+            services.AddMrCMSData(isInstalled, Configuration);            
             services.AddSiteProvider();
-
             services.AddMrCMSFileSystem();
-
             services.AddSignalR();
-
             services.AddAutoMapper(expression =>
             {
                 expression.AllowNullDestinationValues = true;

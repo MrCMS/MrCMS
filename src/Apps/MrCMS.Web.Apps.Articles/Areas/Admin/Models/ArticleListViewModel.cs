@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MrCMS.Web.Apps.Admin.Infrastructure.ModelBinding;
-using MrCMS.Web.Apps.Admin.Infrastructure.Models;
+using MrCMS.Web.Admin.Infrastructure.ModelBinding;
+using MrCMS.Web.Admin.Infrastructure.Models;
 using MrCMS.Web.Apps.Articles.Pages;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models

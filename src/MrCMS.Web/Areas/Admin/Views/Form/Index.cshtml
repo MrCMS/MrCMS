@@ -1,52 +1,50 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model MrCMS.Web.Apps.Admin.Models.FormSearchModel
+@model MrCMS.Web.Admin.Models.FormSearchModel
 @{
     ViewBag.Title = "Manage Forms";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var results = ViewData["results"] as IPagedList<Form>;
 }
 
-<admin-header>
-    <row>
-        <admin-header-title title="@Html.Resource("admin-forms", "Forms") "/>
-
-        <admin-header-actions>
+<fieldset>
+    <legend>
+        @Html.Resource("Forms")
+        <span class="btn-group d-inline pull-right">
             <a asp-action="Add" asp-controller="Form" class="btn btn-success" data-toggle="fb-modal">@Html.Resource("Add")</a>
-        </admin-header-actions>
-    </row>
-</admin-header>
+        </span>
+    </legend>
+    <form method="get" asp-action="Index" asp-controller="Form">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
 
-<card>
-    <card-body>
-
-        <form method="get" asp-action="Index" asp-controller="Form" class="mb-3">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="input-group">
-                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control", placeholder="Form name..."})
-                        @Html.ValidationMessageFor(x => x.Name)
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">@Html.Resource("Search")</button>
-                        </div>
-                    </div>
+                    @Html.LabelFor(x => x.Name)
+                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Name)
                 </div>
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">@Html.Resource("Search")</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
-        
-
-        @if (!results.Any())
-        {
-            <p>
-                @Html.Resource("There are currently no forms matching the search criteria")
-            </p>
-        }
-        else
-        {
-            <table class="table table-condensed table-striped">
-                <thead>
+    @if (!results.Any())
+    {
+        <p>
+            @Html.Resource("There are currently no forms matching the search criteria")
+        </p>
+    }
+    else
+    {
+        <table class="table table-condensed table-striped">
+            <thead>
                 <tr>
                     <th>
                         @Html.Resource("Name")
@@ -58,8 +56,8 @@
                         @Html.Resource("Actions")
                     </th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 @foreach (var form in results)
                 {
                     <tr>
@@ -71,19 +69,18 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-secondary"})
-                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                                @Html.ActionLink(Html.Resource("Edit"), "Edit", "Form", new { id = form.Id }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink(Html.Resource("Delete"), "Delete", "Form", new { id = form.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
                             </div>
                         </td>
                     </tr>
                 }
-                </tbody>
-            </table>
-        }
-        @if (results.TotalItemCount > 1)
-        {
-            @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}), MrCmsPagedListRenderOptions.Bootstrap4)
-        }
-        
-    </card-body>
-</card>
+            </tbody>
+        </table>
+    }
+    @if (results.TotalItemCount > 1)
+    {
+        @Html.PagedListPager(results, page => Url.Action("Index", new { page, Model.Name }), MrCmsPagedListRenderOptions.Bootstrap4)
+    }
+</fieldset>
+
