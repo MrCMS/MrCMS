@@ -27,7 +27,7 @@
         <card-body>
             <div id="tabs">
                 <ul class="nav nav-tabs mb-2" data-stickytabs="site-settings">
-                    @foreach (var settingType in Model)
+                    @foreach (var settingType in Model.OrderBy(x=>x.TypeName))
                     {
                         <li class="nav-item">
                             <a href="#@settingType.DivId" data-toggle="tab" class="nav-link">@settingType.TypeName</a>
