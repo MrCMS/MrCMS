@@ -3,11 +3,11 @@
 @using MrCMS.Web.Admin.Infrastructure.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject SiteSettings SiteSettings
-<link href="@Url.Content("~/Areas/Admin/styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css"/>
-<link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css"/>
-<link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css"/>
+<link href="@Url.Content("~/Areas/Admin/styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
 @{
-    var canEditPage = Html.CanAccess("Webpage","Edit");
+    var canEditPage = Html.CanAccess("Webpage", "Edit");
 }
 <div class="mrcms-admin-nav-bar">
     <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
@@ -25,10 +25,10 @@
     }
     @if (Model.CanAddChildren())
     {
-        @Html.ActionLink("Add a child page", "Add", "Webpage", new {id = Model.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary"})
+        @Html.ActionLink("Add a child page", "Add", "Webpage", new { id = Model.Id, area = "Admin" }, new { @class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary" })
     }
 
-    @Html.ActionLink("Add page", "Add", "Webpage", new {id = Model.Parent?.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary"})
+    @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent?.Id, area = "Admin" }, new { @class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary" })
 
     @if (Html.CanAccess<InlineEditingACL>("Allowed"))
     {

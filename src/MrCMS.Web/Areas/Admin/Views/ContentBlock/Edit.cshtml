@@ -2,27 +2,40 @@
 @using MrCMS.Web.Admin.Infrastructure.Helpers
 @model MrCMS.Web.Admin.Models.ContentBlocks.UpdateContentBlockViewModel
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var contentBlock = ViewData["block"] as ContentBlock;
 }
 
-@using (Html.BeginForm("Edit", "ContentBlock", new {Model.Id}, FormMethod.Post))
-{
-    <fieldset>
-        <legend>
-            Update @(contentBlock.DisplayName)
-            <span class="btn-group pull-right">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </span>
-        </legend>
+<form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model.Id" method="post">
+    <input type="hidden" asp-for="WebpageId"/>
 
-        <div class="form-group">
-            @Html.LabelFor(x => x.Name)
-            @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-            @Html.ValidationMessageFor(x => x.Name)
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <h1>@Html.Resource("admin-update", "Update") @Model.Name</h1>
+                </div>
+                <div class="col">
+                    <span class="btn-group pull-right">
+                        <a href="@Url.Action("Edit", "Webpage", new {Id = Model.WebpageId})" class="btn btn-secondary">@Html.Resource("admin-back", "Back")</a>
+                        <button type="submit" class="btn btn-primary">@Html.Resource("admin-save", "Save")</button>
+                    </span>
+                </div>
+            </div>
         </div>
+    </section>
 
-        @await Html.RenderUpdateCustomAdminProperties(contentBlock)
+    <div class="card">
+        <div class="card-body">
+            <fieldset>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Name)
+                    @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(x => x.Name)
+                </div>
 
-    </fieldset>
-}
+                @await Html.RenderUpdateCustomAdminProperties(contentBlock)
+
+            </fieldset>
+        </div>
+    </div>
+</form>

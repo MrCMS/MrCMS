@@ -16,13 +16,13 @@
 <form asp-controller="Webpage" asp-action="edit" id="edit-document" data-are-you-sure="@Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@Model.Name" />
-            
+            <admin-header-title title="@Model.Name"/>
+
             <admin-header-actions>
                 <div class="input-group" id="edit-webpage-options">
                     <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
 
-                    <input type="text" asp-for="PublishOn" class="form-control date-time-picker"/>
+                    <input type="input" asp-for="PublishOn" class="form-control date-time-picker"/>
                     @Html.ValidationMessageFor(x => x.PublishOn)
 
                     <div class="input-group-append">
@@ -31,7 +31,7 @@
                         <a href="@GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
 
                         @*@Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new {Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})*@
-                        @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new { Model.Id }, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "btn btn-secondary"})
                         @if (Html.AnyChildren())
                         {
                             @Html.ActionLink(Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "btn btn-secondary"})
@@ -39,7 +39,7 @@
 
                         @if (Html.CanDelete())
                         {
-                            <a class="btn btn-danger" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@Html.Resource("Delete")</a>
+                            <button class="btn btn-danger" data-toggle="confirmation" data-value="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">Delete</button>
                         }
                         <button class="btn btn-primary">@Html.Resource("Save")</button>
                     </div>

@@ -31,5 +31,5 @@
     {
         <span>No children found.</span>
     }
-    @Html.PagedListPager(results, i => Url.Action("Results","WebpageSearch", new { page = i, Model.Query, Model.ParentId }))
+    @Html.PagedListPager(results, i => Url.Action("Results","WebpageSearch", new { page = i, Model.Query, Model.ParentId }), MrCmsPagedListRenderOptions.Bootstrap4)
 </div>

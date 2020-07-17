@@ -76,14 +76,14 @@ namespace MrCMS.Web.Admin.Controllers
             }
         }
 
-        public ActionResult Edit(MediaFile file)
+        public ActionResult Edit(MediaFile file)    
         {
             return View("Edit", file);
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST(MediaFile file)
+        public ActionResult Edit_POST(MediaFile file) //todo make this a model
         {
             _fileService.SaveFile(file);
 

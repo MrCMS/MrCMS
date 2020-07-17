@@ -7,37 +7,47 @@
     var tabs = TabsService.GetEditTabs(Html, Model);
 }
 
-@using (Html.BeginForm("Edit", "Form", FormMethod.Post, new { data_are_you_sure = Html.Resource(AdminMessages.AreYouSureDefaultMessage) }))
-{
-    <fieldset>
-        <legend>
-            @Html.Resource("Edit Form")
-            <span class="btn-group d-inline pull-right">
-                <a asp-action="Index" class="btn btn-secondary">@Html.Resource("Back to list")</a>
-                <button type="submit" class="btn-primary btn">@Html.Resource("Save")</button>
-            </span>
-        </legend>
-        @Html.ValidationSummary()
+<form asp-controller="Form" asp-action="Edit" method="post" data-are-you-sure="@Html.Resource(AdminMessages.AreYouSureDefaultMessage)">
 
-        <div class="form-group">
-            @Html.LabelFor(x => x.Name)
-            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Name)
-        </div>
+    <admin-header>
+        <row>
+            <admin-header-title title="@Html.Resource("admin-edit-form", "Edit Form") "/>
 
-        <ul class="nav nav-tabs pt-3" data-stickytabs="webpage-@Model.Id">
-            @foreach (var tab in tabs)
-            {
-                ViewData["is-first"] = tab == tabs.First();
-                <partial name="Tab" model="tab" view-data="ViewData" />
-            }
-        </ul>
-        <div class="tab-content">
-            @foreach (var tab in tabs)
-            {
-                ViewData["is-first"] = tab == tabs.First();
-                <partial name="TabContent" model="tab" view-data="ViewData" />
-            }
-        </div>
-    </fieldset>
-}
+            <admin-header-actions>
+                <span class="btn-group pull-right">
+                    <a asp-action="Index" class="btn btn-secondary">@Html.Resource("admin-back","Back")</a>
+                    <button type="submit" class="btn-primary btn">@Html.Resource("admin-save","Save")</button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <card>
+        <card-body>
+            <div asp-validation-summary="All"></div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
+                @Html.ValidationMessageFor(x => x.Name)
+            </div>
+
+            <ul class="nav nav-tabs pt-3 mb-2" data-stickytabs="form-@Model.Id">
+                @foreach (var tab in tabs)
+                {
+                    ViewData["is-first"] = tab == tabs.First();
+                    <partial name="Tab" model="tab" view-data="ViewData"/>
+                }
+            </ul>
+            <div class="tab-content">
+                @foreach (var tab in tabs)
+                {
+                    ViewData["is-first"] = tab == tabs.First();
+                    <partial name="TabContent" model="tab" view-data="ViewData"/>
+                }
+            </div>
+
+        </card-body>
+    </card>
+
+</form>
