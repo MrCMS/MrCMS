@@ -63,7 +63,7 @@ namespace MrCMS.Web
         {
             var isInstalled = IsInstalled();
             services.AddRequiredServices();
-            services.Configure<SystemConfig>(Configuration.GetSection("SystemConfig"));
+            services.Configure<SystemConfig>(Configuration.GetSection(SystemConfig.SectionName));
             services.AddCultureInfo(Configuration);
             
             var appContext = services.AddMrCMSApps(context =>

@@ -22,26 +22,33 @@
                 <div class="input-group" id="edit-webpage-options">
                     <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
 
-                    <input type="input" asp-for="PublishOn" class="form-control date-time-picker"/>
+                    <input type="text" asp-for="PublishOn" class="form-control date-time-picker"/>
                     @Html.ValidationMessageFor(x => x.PublishOn)
 
                     <div class="input-group-append">
-                        @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
 
-                        <a href="@GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
+                            <a href="@(GetLiveUrl.GetUrlSegment(Model, true))" class="btn btn-secondary">View</a>
 
-                        @*@Html.ActionLink(Html.Resource("Move"), "Set", "WebpageParent", new {Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})*@
-                        @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "btn btn-secondary"})
-                        @if (Html.AnyChildren())
-                        {
-                            @Html.ActionLink(Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "btn btn-secondary"})
-                        }
-
-                        @if (Html.CanDelete())
-                        {
-                            <button class="btn btn-danger" data-toggle="confirmation" data-value="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">Delete</button>
-                        }
-                        <button class="btn btn-primary">@Html.Resource("Save")</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    More
+                                </button>
+                                <div class="dropdown-menu">
+                                    @if (Html.CanDelete())
+                                    {
+                                        <a class="dropdown-item" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@Html.Resource("Delete")</a>
+                                    }
+                                    @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                    @if (Html.AnyChildren())
+                                    {
+                                        @Html.ActionLink(Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                    }
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">@Html.Resource("Save")</button>
+                        </div>
                     </div>
                 </div>
             </admin-header-actions>

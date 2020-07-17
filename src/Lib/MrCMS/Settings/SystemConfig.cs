@@ -8,6 +8,7 @@ namespace MrCMS.Settings
     /// </summary>
     public class SystemConfig
     {
+        public static string SectionName = "SystemConfig";
         public List<string> SupportedCultures { get; set; } = new List<string>() {"en-GB"};
         public string TimeZone { get; set; }
         

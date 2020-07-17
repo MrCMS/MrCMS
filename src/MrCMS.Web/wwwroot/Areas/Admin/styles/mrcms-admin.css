@@ -1,5 +1,7 @@
 ﻿#mrcms-admin-links-right > li > a {padding-right: 0.7rem; padding-left: 0.7rem}
 
+label > input[type="checkbox"] {margin-right: 5px;}
+
 .ui-autocomplete {z-index: 1000}
 
 .settings-textarea {

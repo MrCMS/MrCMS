@@ -26,6 +26,11 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Areas\Admin\Views\RegisteredHandlers\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\bootstrap\package.json" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\ckeditor\samples\toolbarconfigurator\font\config.json" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\bower.json" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\select2.jquery.json" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\sweetalert-master\bower.json" />
   </ItemGroup>
   
 </Project>

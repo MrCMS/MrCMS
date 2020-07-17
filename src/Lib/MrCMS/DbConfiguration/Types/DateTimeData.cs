@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MrCMS.Helpers;
@@ -13,7 +14,10 @@ namespace MrCMS.DbConfiguration.Types
     {
         protected override TimeZoneInfo GetTimeZone(ISessionImplementor session)
         {
-            return session.GetContext().Request.HttpContext.RequestServices.GetRequiredService<IOptions<SystemConfig>>()?.Value.TimeZoneInfo ?? TimeZoneInfo.Local;
+            var requiredService = session.GetContext()?.RequestServices?.GetRequiredService<IConfiguration>();
+            var s = new SystemConfig();
+            requiredService?.GetSection("SystemConfig")?.Bind(s);
+            return s?.TimeZoneInfo ?? TimeZoneInfo.Local;
         }
     }
 }
