@@ -8,6 +8,7 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using MrCMS.Installation.Models;
 using ISession = NHibernate.ISession;
 
@@ -17,13 +18,15 @@ namespace MrCMS.Installation.Services
     {
         private readonly IDatabaseCreationService _databaseCreationService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
         private readonly IFileSystemAccessService _fileSystemAccessService;
 
-        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceProvider serviceProvider)
+        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceProvider serviceProvider, IConfiguration configuration)
         {
             _fileSystemAccessService = fileSystemAccessService;
             _databaseCreationService = databaseCreationService;
             _serviceProvider = serviceProvider;
+            _configuration = configuration;
         }
 
         public InstallationResult Install(InstallModel model)
@@ -71,7 +74,7 @@ namespace MrCMS.Installation.Services
 
         public bool DatabaseIsInstalled()
         {
-            return _databaseCreationService.IsDatabaseInstalled();
+            return _configuration.GetConnectionString("mrcms").Length > 0;
         }
 
         private void SetUpInitialData(InstallModel model, IDatabaseProvider provider)

@@ -87,10 +87,8 @@ namespace MrCMS.Services
         public void WriteToStream(string filePath, Stream stream)
         {
             var path = GetPath(filePath);
-            using (var fileStream = File.OpenRead(path))
-            {
-                fileStream.CopyTo(stream);
-            }
+            using var fileStream = File.OpenRead(path);
+            fileStream.CopyTo(stream);
         }
 
         public IEnumerable<string> GetFiles(string filePath)

@@ -59,7 +59,7 @@ namespace MrCMS.Installation.Services
         public bool IsDatabaseInstalled()
         {
             var environmentName = _environment.EnvironmentName;
-            var info = _environment.ContentRootFileProvider.GetFileInfo($"appsettings.{environmentName}.json");
+            var info = _environment.ContentRootFileProvider.GetFileInfo($"connectionstrings.json");
             var config = GetConfig(info);
 
             if (config.ContainsKey(ConnectionStringsKey) && config[ConnectionStringsKey] is DatabaseSettings settings)

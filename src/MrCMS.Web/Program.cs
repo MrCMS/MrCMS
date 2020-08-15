@@ -22,7 +22,7 @@ namespace MrCMS.Web
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.AddJsonFile(
-                        "connectionStrings.json", optional: true, reloadOnChange: true);
+                        "connectionstrings.json", optional: true, reloadOnChange: true);
                 })
                 .UseStartup<Startup>();
     }
