@@ -1,29 +1,29 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace MrCMS.Logging
 {
     public class MrCMSDatabaseLoggerProvider : ILoggerProvider
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public MrCMSDatabaseLoggerProvider(IServiceProvider serviceProvider)
+        private readonly ConcurrentDictionary<string, MrCMSDatabaseLogger> _loggers =
+            new ConcurrentDictionary<string, MrCMSDatabaseLogger>();
+
+        public MrCMSDatabaseLoggerProvider(IHttpContextAccessor contextAccessor)
         {
-            _serviceProvider = serviceProvider;
+            _contextAccessor = contextAccessor;
         }
+
         public void Dispose()
         {
         }
 
         public ILogger CreateLogger(string categoryName)
         {
-            var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            if (httpContext == null)
-                return NullLogger.Instance;
-            return httpContext.RequestServices.GetRequiredService<MrCMSDatabaseLogger>();
+            return _loggers.GetOrAdd(categoryName,
+                s => new MrCMSDatabaseLogger(_contextAccessor));
         }
     }
 }
