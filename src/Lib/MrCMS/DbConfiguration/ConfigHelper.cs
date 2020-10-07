@@ -56,6 +56,11 @@ namespace MrCMS.DbConfiguration
             return propertyPart.CustomType<VarcharMax>().Length(4001);
         }
 
+        public static PropertyPart MakeCustomVarChar(this PropertyPart propertyPart, int size)
+        {
+            return propertyPart.CustomType<VarcharMax>().Length(size);
+        }
+
         public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model,
             MrCMSAppContext appContext)
         {

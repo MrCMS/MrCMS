@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.Documents
 {
@@ -45,5 +46,13 @@ namespace MrCMS.Entities.Documents
         protected internal virtual IList<DocumentVersion> Versions { get; set; }
 
         public virtual bool HideInAdminNav { get; set; }
+        
+        public virtual ISet<TagPage> TagPages { get; set; }
+
+        public virtual string TagPageList
+        {
+            get { return string.Join(",", TagPages.Select(x => x.Name)); }
+        }
+
     }
 }

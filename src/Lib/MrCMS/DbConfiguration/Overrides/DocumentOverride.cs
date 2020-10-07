@@ -13,6 +13,7 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.HasMany(document => document.Versions).KeyColumn("DocumentId").Cascade.All();
             mapping.IgnoreProperty(x => x.UrlSegment);
             mapping.Map(x => x.DocumentType).Formula("DocumentType").Access.ReadOnly();
+            mapping.HasManyToMany(x => x.TagPages).Table("DocumentTagPages").Cascade.SaveUpdate();
         }
     }
 }

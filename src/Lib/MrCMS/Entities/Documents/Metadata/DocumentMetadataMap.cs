@@ -10,7 +10,7 @@ namespace MrCMS.Entities.Documents.Metadata
     /// Abstract class useed to define metadata of your documents within Mr CMS
     /// </summary>
     /// <typeparam name="T">DocumentType</typeparam>
-    public abstract class DocumentMetadataMap<T> : IGetDocumentMetadata where T : Webpage, new()
+    public abstract class DocumentMetadataMap<T> : IGetDocumentMetadataInfo where T : Webpage, new()
     {
         /// <summary>
         /// Name of the document type for display when adding a page in Mr CMS. I.E Text Page, Blog Page etc
@@ -126,11 +126,11 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public virtual bool HasBodyContent { get { return true; } }
 
-        public DocumentMetadata Metadata
+        public DocumentMetadataInfo Metadata
         {
             get
             {
-                return new DocumentMetadata
+                return new DocumentMetadataInfo
                            {
                                Name = Name,
                                IconClass = IconClass,

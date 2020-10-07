@@ -121,5 +121,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual bool DoNotCache { get; set; }
 
         public virtual IList<ContentBlock> ContentBlocks { get; set; }
+        
+        public virtual string CampaignName { get; set; } // TODO - Render this all edit webpage automatically, like bodycontent?
     }
 }
