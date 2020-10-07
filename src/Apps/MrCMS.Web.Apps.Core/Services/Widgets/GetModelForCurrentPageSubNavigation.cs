@@ -7,6 +7,7 @@ using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Helpers;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
@@ -17,7 +18,8 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
         private readonly IGetCurrentPage _getCurrentPage;
         private readonly IGetLiveUrl _getLiveUrl;
 
-        public GetModelForCurrentPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage, IGetLiveUrl getLiveUrl)
+        public GetModelForCurrentPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage,
+            IGetLiveUrl getLiveUrl)
         {
             _session = session;
             _getCurrentPage = getCurrentPage;
@@ -32,17 +34,12 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             var navigationRecords =
                 webpages
                     .Select(webpage => new NavigationRecord
-                    {
-                        Text = new HtmlString(webpage.Name),
-                        Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage, true)),
-                        Children = GetPublishedChildWebpages(webpage.Id)
+                    (webpage.Name, _getLiveUrl.GetUrlSegment(webpage, true),
+                        webpage.Unproxy().GetType(), GetPublishedChildWebpages(webpage.Id)
                             .Select(child =>
-                                new NavigationRecord
-                                {
-                                    Text = new HtmlString(child.Name),
-                                    Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
-                                }).ToList()
-                    }).ToList();
+                                new NavigationRecord(child.Name, _getLiveUrl.GetUrlSegment(child, true),
+                                    child.Unproxy().GetType()))
+                    )).ToList();
 
             return new CurrentPageSubNavigationModel
             {

@@ -1,7 +1,6 @@
 ﻿@using System.Drawing
 @using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Web.Apps.Articles.Helpers
 @using MrCMS.Web.Apps.Articles.Models
 @using MrCMS.Web.Apps.Articles.Pages
 @using MrCMS.Web.Apps.Articles.Services
@@ -51,5 +50,5 @@
 
 @if (Model.AllowPaging)
 {
-    @Html.PagedListPager(results, page => GetCurrentPageUrl.GetUrl(new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCmsPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => GetCurrentPageUrl.GetUrl(new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCMSPagedListRenderOptions.Bootstrap4)
 }

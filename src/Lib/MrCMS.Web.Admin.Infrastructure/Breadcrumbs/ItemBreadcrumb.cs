@@ -29,7 +29,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 
             string DefaultName()
             {
-                return type.Name.BreakUpString() + " - Id:" + item.Id;
+                return $"{type.Name.BreakUpString()} - Id: {item.Id}";
             }
 
             if (property == null)

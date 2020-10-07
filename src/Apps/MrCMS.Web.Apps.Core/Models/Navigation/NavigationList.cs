@@ -8,5 +8,7 @@ namespace MrCMS.Web.Apps.Core.Models.Navigation
         {
             AddRange(list);
         }
+        
+        public static readonly NavigationList Empty = new NavigationList(new List<NavigationRecord>());
     }
 }

@@ -12,7 +12,7 @@ using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
-    public class RoleStore : IQueryableRoleStore<UserRole>//, IRoleClaimStore<UserRole>
+    public class RoleStore : IQueryableRoleStore<UserRole>
     {
         private readonly ISession _session;
 
@@ -22,7 +22,6 @@ namespace MrCMS.Services
         }
         public void Dispose()
         {
-            //throw new NotImplementedException();
         }
 
         public async Task<IdentityResult> CreateAsync(UserRole role, CancellationToken cancellationToken)

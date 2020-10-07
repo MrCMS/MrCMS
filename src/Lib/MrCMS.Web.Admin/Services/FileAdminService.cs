@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
@@ -23,13 +24,15 @@ namespace MrCMS.Web.Admin.Services
         private readonly IFileService _fileService;
         private readonly MediaSettings _mediaSettings;
         private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
+        private readonly IMapper _mapper;
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
 
         public FileAdminService(IFileService fileService, ISession session,
             IStringResourceProvider stringResourceProvider, IRepository<MediaCategory> mediaCategoryRepository,
-            MediaSettings mediaSettings, IGetDocumentsByParent<MediaCategory> getDocumentsByParent)
+            MediaSettings mediaSettings, IGetDocumentsByParent<MediaCategory> getDocumentsByParent,
+            IMapper mapper)
         {
             _fileService = fileService;
             _session = session;
@@ -37,6 +40,7 @@ namespace MrCMS.Web.Admin.Services
             _mediaCategoryRepository = mediaCategoryRepository;
             _mediaSettings = mediaSettings;
             _getDocumentsByParent = getDocumentsByParent;
+            _mapper = mapper;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
@@ -52,9 +56,12 @@ namespace MrCMS.Web.Admin.Services
             _fileService.DeleteFile(mediaFile);
         }
 
-        public void SaveFile(MediaFile mediaFile)
+        public MediaFile UpdateSEO(UpdateFileSEOModel model)
         {
-            _fileService.SaveFile(mediaFile);
+            var file = _session.Get<MediaFile>(model.Id);
+            _mapper.Map(model, file);
+            _fileService.SaveFile(file);
+            return file;
         }
 
         public bool IsValidFileType(string fileName)
@@ -135,6 +142,14 @@ namespace MrCMS.Web.Admin.Services
 
             return queryOver.Cacheable().List();
         }
+
+        public UpdateFileSEOModel GetEditModel(int id)
+        {
+            var file = _session.Get<MediaFile>(id);
+
+            return _mapper.Map<UpdateFileSEOModel>(file);
+        }
+
 
         public string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null)
         {

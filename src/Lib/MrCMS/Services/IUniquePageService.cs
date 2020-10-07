@@ -9,5 +9,6 @@ namespace MrCMS.Services
         RedirectResult PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
         T GetUniquePage<T>() where T : Webpage, IUniquePage;
         string GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage;
+        string GetAbsoluteUrl<T>(object queryString = null) where T : Webpage, IUniquePage;
     }
 }

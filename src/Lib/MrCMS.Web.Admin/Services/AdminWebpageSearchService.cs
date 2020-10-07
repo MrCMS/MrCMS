@@ -27,13 +27,14 @@ namespace MrCMS.Web.Admin.Services
         private readonly ISearcher<Webpage, AdminWebpageIndexDefinition> _documentSearcher;
         private readonly IGetBreadcrumbs _getBreadcrumbs;
         private readonly IGetLiveUrl _getLiveUrl;
+        private readonly IDocumentMetadataService _documentMetadataService;
         private readonly ISession _session;
         private readonly Site _site;
         private readonly IStringResourceProvider _stringResourceProvider;
 
         public AdminWebpageSearchService(ISearcher<Webpage, AdminWebpageIndexDefinition> documentSearcher,
             IGetBreadcrumbs getBreadcrumbs, ISession session, Site site, IStringResourceProvider stringResourceProvider,
-            IGetLiveUrl getLiveUrl)
+            IGetLiveUrl getLiveUrl, IDocumentMetadataService documentMetadataService)
         {
             _documentSearcher = documentSearcher;
             _getBreadcrumbs = getBreadcrumbs;
@@ -41,6 +42,7 @@ namespace MrCMS.Web.Admin.Services
             _site = site;
             _stringResourceProvider = stringResourceProvider;
             _getLiveUrl = getLiveUrl;
+            _documentMetadataService = documentMetadataService;
         }
 
         public IPagedList<Webpage> Search(AdminWebpageSearchQuery model)
@@ -67,7 +69,7 @@ namespace MrCMS.Web.Admin.Services
 
         public List<SelectListItem> GetDocumentTypes(string type)
         {
-            return DocumentMetadataHelper.DocumentMetadatas
+            return _documentMetadataService.GetDocumentMetadatas()
                 .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
                     definition => definition.TypeName == type,
                     _stringResourceProvider.GetValue("Admin Select Type", "Select type"));

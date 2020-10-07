@@ -6,20 +6,20 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 {
     public class SitemapNode
     {
-        public SitemapNode(Breadcrumb breadcrumb)
+        public SitemapNode(Breadcrumb breadcrumb, string url)
         {
             BreadcrumbType = breadcrumb.GetType();
             Name = breadcrumb.Name;
             Order = breadcrumb.Order;
-            Controller = breadcrumb.Controller;
-            Action = breadcrumb.Action;
             CssClass = breadcrumb.CssClass;
+            Url = url;
         }
 
         public Type BreadcrumbType { get; set; }
         public string Name { get; private set; }
-        public string Controller { get; }
-        public string Action { get; }
+        public string Url { get; }
+        // public string Controller { get; }
+        // public string Action { get; }
         public List<SitemapNode> Nodes { get; } = new List<SitemapNode>();
         public SitemapNode Parent { get; set; }
 
@@ -59,7 +59,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
         }
 
         public int Order { get; }
-        public bool HasRouteInfo => !string.IsNullOrWhiteSpace(Controller) && !string.IsNullOrWhiteSpace(Action);
+        // public bool HasRouteInfo => !string.IsNullOrWhiteSpace(Controller) && !string.IsNullOrWhiteSpace(Action);
         public string CssClass { get; }
 
         public bool IsActive(List<PageHeaderBreadcrumb> breadcrumbs)

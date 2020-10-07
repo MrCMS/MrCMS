@@ -2,7 +2,7 @@ using X.PagedList.Mvc.Core.Common;
 
 namespace MrCMS.Helpers
 {
-    public static class MrCmsPagedListRenderOptions
+    public static class MrCMSPagedListRenderOptions
     {
         public static PagedListRenderOptions Bootstrap4 =>
             new PagedListRenderOptions

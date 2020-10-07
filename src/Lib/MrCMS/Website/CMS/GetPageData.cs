@@ -7,19 +7,24 @@ namespace MrCMS.Website.CMS
     public class GetPageData : IGetPageData
     {
         private readonly IGetWebpageForPath _getWebpageForPath;
-        private readonly ISetCurrentPage _setCurrentPage;
         private readonly ICanPreviewWebpage _canPreview;
+        private readonly IDocumentMetadataService _documentMetadataService;
 
-        public GetPageData(IGetWebpageForPath getWebpageForPath, ISetCurrentPage setCurrentPage, ICanPreviewWebpage canPreview)
+        public GetPageData(IGetWebpageForPath getWebpageForPath, ICanPreviewWebpage canPreview,
+            IDocumentMetadataService documentMetadataService)
         {
             _getWebpageForPath = getWebpageForPath;
-            _setCurrentPage = setCurrentPage;
             _canPreview = canPreview;
+            _documentMetadataService = documentMetadataService;
         }
 
         public PageData GetData(string url, string method)
         {
-            Webpage webpage = _getWebpageForPath.GetWebpage(url);
+            return GetData(_getWebpageForPath.GetWebpage(url), method);
+        }
+
+        public PageData GetData(Webpage webpage, string method)
+        {
             if (webpage == null)
             {
                 return null;
@@ -31,7 +36,7 @@ namespace MrCMS.Website.CMS
                 return null;
             }
 
-            var metadata = webpage.GetMetadata();
+            var metadata = _documentMetadataService.GetMetadata(webpage);
 
             return new PageData
             {
@@ -44,5 +49,4 @@ namespace MrCMS.Website.CMS
             };
         }
     }
-
 }

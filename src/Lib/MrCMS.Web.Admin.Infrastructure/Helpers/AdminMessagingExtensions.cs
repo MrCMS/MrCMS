@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace MrCMS.Web.Admin.Helpers
+namespace MrCMS.Web.Admin.Infrastructure.Helpers
 {
     public static class AdminMessagingExtensions
     {

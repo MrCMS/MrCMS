@@ -29,18 +29,13 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             var childPages = widget.IncludeChildren ? GetPages(rootPages) : new List<Webpage>();
             var navigationRecords =
                 rootPages.Where(webpage => webpage.Published).OrderBy(webpage => webpage.DisplayOrder)
-                       .Select(webpage => new NavigationRecord
-                       {
-                           Text = new HtmlString(webpage.Name),
-                           Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage,true)),
-                           Children = childPages.Where(webpage1 => webpage1.ParentId == webpage.Id)
-                                            .Select(child =>
-                                                    new NavigationRecord
-                                                    {
-                                                        Text = new HtmlString(child.Name),
-                                                        Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
-                                                    }).ToList()
-                       }).ToList();
+                    .Select(webpage => new NavigationRecord
+                    (webpage.Name, _getLiveUrl.GetUrlSegment(webpage, true),
+                        webpage.Unproxy().GetType(), childPages.Where(y => y.ParentId == webpage.Id)
+                            .Select(child =>
+                                new NavigationRecord(child.Name, _getLiveUrl.GetUrlSegment(child, true),
+                                    child.Unproxy().GetType()))
+                    )).ToList();
 
             return new NavigationList(navigationRecords.ToList());
         }
@@ -57,6 +52,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 var parentIds = parents.Select(p => p.Id).ToList();
                 queryOver = queryOver.Where(webpage => webpage.Parent.Id.IsIn(parentIds));
             }
+
             return
                 queryOver.Where(webpage => webpage.RevealInNavigation)
                     .OrderBy(webpage => webpage.DisplayOrder).Asc

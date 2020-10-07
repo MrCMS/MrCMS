@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services.FileMigration;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers

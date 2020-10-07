@@ -6,6 +6,7 @@ using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Admin.ModelBinders;
 using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using NHibernate;

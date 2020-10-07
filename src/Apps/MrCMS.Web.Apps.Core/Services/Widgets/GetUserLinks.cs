@@ -33,39 +33,26 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 var userAccountPage = _uniquePageService.GetUrl<UserAccountPage>();
                 if (!string.IsNullOrWhiteSpace(userAccountPage))
                 {
-                    navigationRecords.Add(new NavigationRecord
-                    {
-                        Text = new HtmlString(_stringResourceProvider.GetValue("My Account")),
-                        Url =
-                            new HtmlString($"{userAccountPage}")
-                    });
+                    navigationRecords.Add(new NavigationRecord(_stringResourceProvider.GetValue("My Account"),
+                        $"{userAccountPage}", typeof(UserAccountPage)));
                 }
 
 
-                navigationRecords.Add(new NavigationRecord
-                {
-                    Text = new HtmlString(_stringResourceProvider.GetValue("Logout")),
-                    Url = new HtmlString("/logout")
-                });
+                navigationRecords.Add(new NavigationRecord(_stringResourceProvider.GetValue("Logout"), "/logout"));
             }
             else
             {
                 var loginPageUrl = _uniquePageService.GetUrl<LoginPage>();
                 if (loginPageUrl != null)
                 {
-                    navigationRecords.Add(new NavigationRecord
-                    {
-                        Text = new HtmlString(_stringResourceProvider.GetValue("Login")),
-                        Url = new HtmlString(loginPageUrl)
-                    });
+                    navigationRecords.Add(new NavigationRecord(_stringResourceProvider.GetValue("Login"), loginPageUrl,
+                        typeof(LoginPage)
+                    ));
                     var registerPageUrl = _uniquePageService.GetUrl<RegisterPage>();
                     if (registerPageUrl != null)
                     {
-                        navigationRecords.Add(new NavigationRecord
-                        {
-                            Text = new HtmlString(_stringResourceProvider.GetValue("Register")),
-                            Url = new HtmlString(registerPageUrl)
-                        });
+                        navigationRecords.Add(new NavigationRecord(_stringResourceProvider.GetValue("Register"),
+                            registerPageUrl, typeof(RegisterPage)));
                     }
                 }
             }

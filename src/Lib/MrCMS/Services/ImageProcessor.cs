@@ -51,6 +51,15 @@ namespace MrCMS.Services
             return crop;
         }
 
+        public void SetFileDimensions(MediaFile file, Stream stream)
+        {
+            using var b = new Bitmap(stream);
+            file.Width = b.Size.Width;
+            file.Height = b.Size.Height;
+            file.ContentLength = Convert.ToInt32(stream.Length);
+        }
+
+
         public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)
         {
             Size newSize = CalculateDimensions(file.Size, size);
@@ -68,6 +77,7 @@ namespace MrCMS.Services
             {
                 return;
             }
+
             var imageInfo = new MagickImageInfo(stream);
             file.Width = imageInfo.Width;
             file.Height = imageInfo.Height;
@@ -91,6 +101,7 @@ namespace MrCMS.Services
                     image.Resize(geometry);
                     image.Strip();
                 }
+
                 collection.OptimizePlus();
                 collection.Write(outputStream);
                 outputStream.Position = 0;
@@ -133,8 +144,10 @@ namespace MrCMS.Services
                                     Height = rectangle.Height
                                 });
                         }
+
                         image.Strip();
                     }
+
                     collection.OptimizePlus();
                     collection.Write(outputStream);
                     outputStream.Position = 0;
@@ -174,6 +187,7 @@ namespace MrCMS.Services
                 int lastIndexOf = imageUrl.LastIndexOf(resizePart, StringComparison.OrdinalIgnoreCase);
                 imageUrl = imageUrl.Remove(lastIndexOf - 1, resizePart.Length + 1);
             }
+
             return imageUrl;
         }
 
@@ -191,7 +205,8 @@ namespace MrCMS.Services
             int height = 0;
             string[] parts = resizePart.Split('_');
             var valid = parts.Count() == 2 && parts[0].StartsWith("w") && parts[1].StartsWith("h") &&
-                   int.TryParse(parts[0].Substring(1), out width) && int.TryParse(parts[1].Substring(1), out height);
+                        int.TryParse(parts[0].Substring(1), out width) &&
+                        int.TryParse(parts[1].Substring(1), out height);
             if (!valid)
                 return null;
 
@@ -222,13 +237,14 @@ namespace MrCMS.Services
             double ratio = 0;
 
             // What ratio should we resize it by
-            double? widthRatio = targetSize.Width == 0 ? (double?)null : originalSize.Width / (double)targetSize.Width;
+            double? widthRatio =
+                targetSize.Width == 0 ? (double?) null : originalSize.Width / (double) targetSize.Width;
             double? heightRatio = targetSize.Height == 0
-                ? (double?)null
-                : originalSize.Height / (double)targetSize.Height;
+                ? (double?) null
+                : originalSize.Height / (double) targetSize.Height;
             ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
-                ? originalSize.Width / (double)targetSize.Width
-                : originalSize.Height / (double)targetSize.Height;
+                ? originalSize.Width / (double) targetSize.Width
+                : originalSize.Height / (double) targetSize.Height;
 
             double width = Math.Ceiling(originalSize.Width / ratio);
             width = targetSize.Width != 0 && width > targetSize.Width ? targetSize.Width : width;
@@ -238,7 +254,7 @@ namespace MrCMS.Services
             height = targetSize.Height != 0 && height > targetSize.Height ? targetSize.Height : height;
             double resizeHeight = height;
 
-            return new Size((int)resizeWidth, (int)resizeHeight);
+            return new Size((int) resizeWidth, (int) resizeHeight);
         }
 
         public static bool RequiresResize(Size originalSize, Size targetSize)

@@ -42,7 +42,7 @@
         <hr class="mt-0 mb-0" />
     }
 
-    @Html.PagedListPager(results, page => UniquePageService.GetUrl<SearchPage>(new { page, searchModel.ParentId, searchModel.Term, searchModel.CreatedOnFrom, searchModel.CreatedOnTo, searchModel.Type }), MrCmsPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => UniquePageService.GetUrl<SearchPage>(new { page, searchModel.ParentId, searchModel.Term, searchModel.CreatedOnFrom, searchModel.CreatedOnTo, searchModel.Type }), MrCMSPagedListRenderOptions.Bootstrap4)
 }
 else
 {

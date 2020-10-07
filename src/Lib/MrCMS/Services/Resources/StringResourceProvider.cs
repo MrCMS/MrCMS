@@ -26,7 +26,8 @@ namespace MrCMS.Services.Resources
         private readonly Site _site;
         private bool _retryingAllResources;
 
-        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo, ILogger<StringResourceProvider> logger)
+        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo,
+            ILogger<StringResourceProvider> logger)
         {
             _session = session;
             _site = site;
@@ -230,7 +231,8 @@ namespace MrCMS.Services.Resources
                     var allResourcesFromDb =
                         _session.QueryOver<StringResource>().Cacheable().List().ToHashSet();
                     var groupBy =
-                        allResourcesFromDb.GroupBy(resource => resource.Key);
+                        allResourcesFromDb.GroupBy(resource => resource.Key,
+                            StringComparer.OrdinalIgnoreCase);
                     return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
                 }
             }

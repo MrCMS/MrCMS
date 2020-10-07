@@ -32,38 +32,6 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             };
         }
 
-        [Fact]
-        public void FileController_UpdateSEO_ShouldReturnChangesSaved()
-        {
-            FileController fileController = GetFileController();
-
-            var mediaFile = new MediaFile();
-            fileController.UpdateSEO(mediaFile, "test", "test").Should().Be("Changes saved");
-        }
-
-        [Fact]
-        public void FileController_UpdateSEO_ShouldSetTitleAndDescriptionFromInputs()
-        {
-            FileController fileController = GetFileController();
-
-            var mediaFile = new MediaFile();
-            fileController.UpdateSEO(mediaFile, "test-title", "test-description");
-
-            mediaFile.Title.Should().Be("test-title");
-            mediaFile.Description.Should().Be("test-description");
-        }
-
-        [Fact]
-        public void FileController_UpdateSEO_IfErrorIsThrownOnSaveReturnValueContainsMessage()
-        {
-            FileController fileController = GetFileController();
-
-            var mediaFile = new MediaFile();
-            A.CallTo(() => _fileAdminService.SaveFile(mediaFile)).Throws(new Exception("Test exception"));
-            fileController.UpdateSEO(mediaFile, "test-title", "test-description")
-                          .Should()
-                          .Be("There was an error saving the SEO values: Test exception");
-        }
 
         [Fact]
         public void FileController_Delete_ShouldBeViewResult()
@@ -80,8 +48,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             fileController.Delete_POST(1);
             var mediaFile = A.Fake<MediaFile>();
             A.CallTo(() => _fileAdminService.GetFile(1)).Returns(mediaFile);
-            // todo implement
-            //A.CallTo(() => _fileAdminService.DeleteFile(mediaFile)).MustHaveHappened();
+            A.CallTo(() => _fileAdminService.DeleteFile(mediaFile)).MustHaveHappened();
         }
 
         [Fact]

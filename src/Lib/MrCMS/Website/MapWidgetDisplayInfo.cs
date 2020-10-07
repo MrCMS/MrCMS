@@ -30,22 +30,22 @@ namespace MrCMS.Website
                         Widgets = _mapWidgetData.MapData(pair.Value)
                     };
                 }, StringComparer.OrdinalIgnoreCase);
-
         }
 
         public IDictionary<string, WidgetDisplayInfo> MapInfo(IEnumerable<LayoutArea> layoutAreas, Webpage webpage)
         {
-            return layoutAreas.ToDictionary(area => area.AreaName,
+            return layoutAreas.GroupBy(x => x.AreaName, StringComparer.OrdinalIgnoreCase).ToDictionary(area => area.Key,
                 area =>
                 {
+                    var layoutArea = area.First();
                     return new WidgetDisplayInfo
                     {
-                        Id = area.Id,
-                        Name = area.AreaName,
-                        HasCustomSort = webpage.PageWidgetSorts?.Any(x => x.LayoutArea?.Id == area.Id) == true,
-                        Widgets = _mapWidgetData.MapData(area.GetWidgets(webpage))
+                        Id = layoutArea.Id,
+                        Name = area.Key,
+                        HasCustomSort = webpage.PageWidgetSorts?.Any(x => x.LayoutArea?.Id == layoutArea.Id) == true,
+                        Widgets = _mapWidgetData.MapData(layoutArea.GetWidgets(webpage))
                     };
-                });
+                }, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

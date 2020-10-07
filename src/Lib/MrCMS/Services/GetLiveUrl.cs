@@ -33,7 +33,7 @@ namespace MrCMS.Services
             if (authority.EndsWith("/"))
                 authority = authority.TrimEnd('/');
 
-            return string.Format("{0}{1}/{2}", scheme, authority, GetSegment(webpage));
+            return $"{scheme}{authority}/{GetSegment(webpage)}";
         }
 
         private string GetSegment(Webpage webpage)

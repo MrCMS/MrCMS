@@ -7,6 +7,9 @@ using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
 using System;
 using System.Linq;
+using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Metadata;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Helpers
 {
@@ -27,7 +30,8 @@ namespace MrCMS.Helpers
 
             foreach (var interfaceType in interfaces)
             {
-                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(interfaceType).Where(x => x.IsGenericTypeDefinition))
+                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(interfaceType)
+                    .Where(x => x.IsGenericTypeDefinition))
                 {
                     container.AddScoped(interfaceType, type);
                 }
@@ -50,7 +54,8 @@ namespace MrCMS.Helpers
                     provider =>
                     {
                         var configurationProvider = provider.GetRequiredService<ISystemConfigurationProvider>();
-                        var methodInfo = configurationProvider.GetType().GetMethodExt(nameof(ISystemConfigurationProvider.GetSystemSettings));
+                        var methodInfo = configurationProvider.GetType()
+                            .GetMethodExt(nameof(ISystemConfigurationProvider.GetSystemSettings));
                         return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
                     });
             }
@@ -67,6 +72,7 @@ namespace MrCMS.Helpers
                     });
             }
         }
+
         public static void RegisterFormRenderers(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>())
@@ -104,6 +110,30 @@ namespace MrCMS.Helpers
                 }
             }
         }
+
+        public static void RegisterDocumentMetadata(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IGetDocumentMetadataInfo>())
+            {
+                if (!type.IsGenericType)
+                {
+                    container.AddScoped(typeof(IGetDocumentMetadataInfo), type);
+                    container.AddScoped(type, type);
+                }
+                else
+                {
+                    foreach (
+                        var webpageType in
+                        TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                            .Where(type => !type.ContainsGenericParameters))
+                    {
+                        var genericType = type.MakeGenericType(webpageType);
+                        container.AddScoped(genericType, genericType);
+                    }
+                }
+            }
+        }
+
         public static void RegisterDatabaseProviders(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IDatabaseProvider>())
@@ -111,7 +141,6 @@ namespace MrCMS.Helpers
                 container.AddTransient(typeof(IDatabaseProvider), type);
                 container.AddTransient(type);
             }
-
         }
 
         public static void RegisterTasks(this IServiceCollection container)

@@ -8,11 +8,9 @@ namespace MrCMS.Shortcodes.Forms
         
         public static string GetString(this IHtmlContent content)
         {
-            using (var writer = new System.IO.StringWriter())
-            {        
-                content.WriteTo(writer, HtmlEncoder.Default);
-                return writer.ToString();
-            } 
+            using var writer = new System.IO.StringWriter();
+            content.WriteTo(writer, HtmlEncoder.Default);
+            return writer.ToString();
         }
     }
 }

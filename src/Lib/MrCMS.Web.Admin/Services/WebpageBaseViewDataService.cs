@@ -17,19 +17,22 @@ namespace MrCMS.Web.Admin.Services
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly IAccessChecker _accessChecker;
         private readonly IGetAdminActionDescriptor _getDescriptor;
+        private readonly IDocumentMetadataService _documentMetadataService;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService,
             IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
             IGetCurrentUser getCurrentUser,
             IAccessChecker accessChecker,
-            IGetAdminActionDescriptor getDescriptor)
+            IGetAdminActionDescriptor getDescriptor,
+            IDocumentMetadataService documentMetadataService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
             _getCurrentUser = getCurrentUser;
             _accessChecker = accessChecker;
             _getDescriptor = getDescriptor;
+            _documentMetadataService = documentMetadataService;
         }
 
         public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
@@ -75,11 +78,8 @@ namespace MrCMS.Web.Admin.Services
 
         public void SetEditPageViewData(ViewDataDictionary viewData, Webpage page)
         {
-            DocumentMetadata documentMetadata = page.GetMetadata();
-            if (documentMetadata != null)
-            {
-                viewData["EditView"] = documentMetadata.EditPartialView;
-            }
+            DocumentMetadata documentMetadata = _documentMetadataService.GetMetadata(page);
+            viewData["EditView"] = documentMetadata.EditPartialView;
         }
     }
 }

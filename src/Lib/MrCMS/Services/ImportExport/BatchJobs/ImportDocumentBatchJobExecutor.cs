@@ -21,18 +21,22 @@ namespace MrCMS.Services.ImportExport.BatchJobs
         private readonly IUpdateUrlHistoryService _updateUrlHistoryService;
         private readonly IEventContext _eventContext;
         private readonly IWebpageUrlService _webpageUrlService;
+        private readonly IDocumentMetadataService _documentMetadataService;
 
 
         public ImportDocumentBatchJobExecutor(ISession session,
             IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService,
             IEventContext eventContext,
-            IWebpageUrlService webpageUrlService)
+            IWebpageUrlService webpageUrlService,
+            IDocumentMetadataService documentMetadataService
+            )
         {
             _session = session;
             _updateTagsService = updateTagsService;
             _updateUrlHistoryService = updateUrlHistoryService;
             _eventContext = eventContext;
             _webpageUrlService = webpageUrlService;
+            _documentMetadataService = documentMetadataService;
         }
 
         protected override BatchJobExecutionResult OnExecute(ImportDocumentBatchJob batchJob)
@@ -52,7 +56,7 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                 var isNew = webpage == null;
                 if (isNew)
                     webpage = (Webpage)
-                        Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(documentImportDto.DocumentType));
+                        Activator.CreateInstance(_documentMetadataService.GetTypeByName(documentImportDto.DocumentType));
 
                 if (!String.IsNullOrEmpty(documentImportDto.ParentUrl))
                 {

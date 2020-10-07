@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -124,6 +125,10 @@ namespace MrCMS.Tests.Helpers
         }
 
         public void AppendConfiguration(Configuration configuration)
+        {
+        }
+
+        public void ConfigureAuthorization(AuthorizationOptions options)
         {
         }
     }

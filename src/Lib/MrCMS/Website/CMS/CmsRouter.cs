@@ -5,6 +5,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using System;
 using System.Threading.Tasks;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Website.CMS
 {
@@ -40,6 +41,13 @@ namespace MrCMS.Website.CMS
             var url = context.HttpContext.Request.Path.ToUriComponent()?.TrimStart('/');
 
             var matchResult = serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url, method);
+            await HandleMatchResult(context, serviceProvider, matchResult);
+        }
+
+        private async Task HandleMatchResult(RouteContext context,
+            IServiceProvider serviceProvider, CmsMatchData matchResult,
+            Action<RouteData> assignAdditionalRouteData = null)
+        {
             switch (matchResult.MatchType)
             {
                 case CmsRouteMatchType.NoMatch:
@@ -51,11 +59,26 @@ namespace MrCMS.Website.CMS
                     context.RouteData.MakePreview();
                     break;
             }
-            serviceProvider.GetRequiredService<IAssignPageDataToRouteData>().Assign(context.RouteData, matchResult.PageData);
+
+            serviceProvider.GetRequiredService<IAssignPageDataToRouteData>()
+                .Assign(context.RouteData, matchResult.PageData);
+
+            assignAdditionalRouteData?.Invoke(context.RouteData);
 
             context.RouteData.MakeCMSRequest();
             context.RouteData.Routers.Add(_defaultRouter);
             await _defaultRouter.RouteAsync(context);
+        }
+
+        public async Task HandlePageExecution(RouteContext routeContext, Webpage webpage,
+            Action<RouteData> assignAdditionalRouteData = null)
+        {
+            var serviceProvider = routeContext.HttpContext.RequestServices;
+            var matchResult = serviceProvider.GetRequiredService<ICmsRouteMatcher>()
+                .Match(webpage, routeContext.HttpContext.Request.Method);
+            if (matchResult.WillRender)
+                serviceProvider.GetService<ISetCurrentPage>().SetPage(webpage);
+            await HandleMatchResult(routeContext, serviceProvider, matchResult, assignAdditionalRouteData);
         }
 
         private async Task HandleDisallowed(RouteContext context, IServiceProvider serviceProvider)
@@ -72,7 +95,9 @@ namespace MrCMS.Website.CMS
                 return;
             }
 
-            var metadata = webpage.GetMetadata();
+            var documentMetadataService = serviceProvider.GetRequiredService<IDocumentMetadataService>();
+
+            var metadata = documentMetadataService.GetMetadata(webpage);
             context.RouteData.Values["controller"] = metadata.WebGetController;
             context.RouteData.Values["action"] = metadata.WebGetAction;
             context.RouteData.Values["id"] = webpage.Id;
@@ -86,9 +111,11 @@ namespace MrCMS.Website.CMS
             {
                 var values = new RouteValueDictionary(context.Values);
                 values.Remove("data");
-                url = context.HttpContext.RequestServices.GetRequiredService<IQuerySerializer>().AppendToUrl(url, values);
+                url = context.HttpContext.RequestServices.GetRequiredService<IQuerySerializer>()
+                    .AppendToUrl(url, values);
                 return new VirtualPathData(this, url);
             }
+
             return _defaultRouter.GetVirtualPath(context);
         }
 

@@ -15,7 +15,7 @@ namespace MrCMS.Website.CMS
 
             IDictionary<string, object> dictionary = new Dictionary<string, object>();
 
-            foreach (var pair in values)
+            foreach (var pair in values.Where(x => x.Value != null))
                 dictionary.Add(pair.Key, pair.Value);
 
             return dictionary;
@@ -36,7 +36,7 @@ namespace MrCMS.Website.CMS
         private string Serialize(IDictionary<string, object> data)
         {
             return string.Join("&",
-                data.Keys.Select(x => $"{WebUtility.UrlEncode(x)}={WebUtility.UrlEncode(data[x].ToString())}"));
+                data.Keys.Select(x => $"{WebUtility.UrlEncode(x)}={WebUtility.UrlEncode(data[x]?.ToString())}"));
         }
 
 
@@ -62,7 +62,7 @@ namespace MrCMS.Website.CMS
             if (arg.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(arg.PropertyType))
             {
                 if (value is IEnumerable enumerable)
-                    foreach (var item in enumerable.OfType<object>().Select((o, i) => new { o, i }))
+                    foreach (var item in enumerable.OfType<object>().Select((o, i) => new {o, i}))
                         yield return new KeyValuePair<string, object>($"{arg.Name}[{item.i}]", item.o);
             }
             else

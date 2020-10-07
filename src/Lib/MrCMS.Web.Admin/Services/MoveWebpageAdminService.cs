@@ -18,20 +18,25 @@ namespace MrCMS.Web.Admin.Services
         private readonly IStringResourceProvider _resourceProvider;
         private readonly IWebpageUrlService _webpageUrlService;
         private readonly ICreateUpdateUrlBatch _createUpdateUrlBatch;
+        private readonly IDocumentMetadataService _documentMetadataService;
 
-        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch)
+        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider,
+            IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch,
+            IDocumentMetadataService documentMetadataService)
         {
             _webpageRepository = webpageRepository;
             _resourceProvider = resourceProvider;
             _webpageUrlService = webpageUrlService;
             _createUpdateUrlBatch = createUpdateUrlBatch;
+            _documentMetadataService = documentMetadataService;
         }
 
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
         {
             var webpages = GetValidParentWebpages(webpage);
             List<SelectListItem> result = webpages
-                .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
+                .BuildSelectItemList(
+                    page => $"{page.Name} ({_documentMetadataService.GetMetadata(page).Name})",
                     page => page.Id.ToString(),
                     webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
 
@@ -45,7 +50,7 @@ namespace MrCMS.Web.Admin.Services
 
         private IOrderedEnumerable<Webpage> GetValidParentWebpages(Webpage webpage)
         {
-            List<DocumentMetadata> validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
+            List<DocumentMetadata> validParentTypes = _documentMetadataService.GetValidParentTypes(webpage);
 
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
@@ -93,7 +98,9 @@ namespace MrCMS.Web.Admin.Services
             return new MoveWebpageResult
             {
                 Success = valid,
-                Message = valid ? string.Empty : _resourceProvider.GetValue("Sorry, but you can't select that as a parent for this page.")
+                Message = valid
+                    ? string.Empty
+                    : _resourceProvider.GetValue("Sorry, but you can't select that as a parent for this page.")
             };
         }
 
@@ -111,7 +118,7 @@ namespace MrCMS.Web.Admin.Services
 
         private bool IsRootAllowed(Webpage webpage)
         {
-            return !webpage.GetMetadata().RequiresParent;
+            return !_documentMetadataService.GetMetadata(webpage).RequiresParent;
         }
 
         public MoveWebpageConfirmationModel GetConfirmationModel(MoveWebpageModel model)
@@ -128,7 +135,8 @@ namespace MrCMS.Web.Admin.Services
             };
         }
 
-        private List<MoveWebpageChangedPageModel> GetChangedPages(MoveWebpageModel model, Webpage webpage, Webpage parent)
+        private List<MoveWebpageChangedPageModel> GetChangedPages(MoveWebpageModel model, Webpage webpage,
+            Webpage parent)
         {
             var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
 
@@ -142,7 +150,8 @@ namespace MrCMS.Web.Admin.Services
                 activePages.Reverse();
                 var immediateParent = childActivePages.ElementAtOrDefault(1);
                 childActivePages.Reverse();
-                var newUrl = GetNewUrl(model, parent, page, immediateParent, models.FirstOrDefault(x => x.Id == immediateParent?.Id));
+                var newUrl = GetNewUrl(model, parent, page, immediateParent,
+                    models.FirstOrDefault(x => x.Id == immediateParent?.Id));
                 models.Add(new MoveWebpageChangedPageModel
                 {
                     Id = page.Id,
@@ -153,6 +162,7 @@ namespace MrCMS.Web.Admin.Services
                     NewHierarchy = GetHierarchy(parentActivePages.Concat(childActivePages))
                 });
             }
+
             return models;
         }
 
@@ -197,7 +207,8 @@ namespace MrCMS.Web.Admin.Services
         private IEnumerable<Webpage> GetWebpageHierarchy(Webpage webpage)
         {
             yield return webpage;
-            var descendants = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id).OrderBy(x => x.DisplayOrder)
+            var descendants = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id)
+                .OrderBy(x => x.DisplayOrder)
                 .ToList();
             foreach (var descendant in descendants)
             {

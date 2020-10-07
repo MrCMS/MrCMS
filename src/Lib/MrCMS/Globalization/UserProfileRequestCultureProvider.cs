@@ -23,7 +23,8 @@ namespace MrCMS.Globalization
                 var cultureResult = new ProviderCultureResult(culture.Name);
                 return Task.FromResult(cultureResult);
             }
-            var result = new ProviderCultureResult("en-US");
+
+            var result = new ProviderCultureResult("en-GB");
             return Task.FromResult(result);
         }
     }

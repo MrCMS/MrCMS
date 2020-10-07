@@ -9,11 +9,11 @@ using MrCMS.Web.Admin.Infrastructure.Models;
 
 namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 {
-
     // ReSharper disable once UnusedTypeParameter -- used to establish hierarchy when read via reflection
     public abstract class Breadcrumb<T> : Breadcrumb where T : Breadcrumb
     {
     }
+
     public abstract class Breadcrumb
     {
         public virtual string Title => Name;
@@ -37,13 +37,14 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 
         public virtual string Url(IUrlHelper url)
         {
-            return IsPlaceHolder ? null : url.Action(Action, Controller, new { Id });
+            return IsPlaceHolder ? null : url.Action(Action, Controller, new {Id, area = "Admin"});
         }
 
         /// <summary>
         /// If this is true, it will use the parent id to get another of the same type rather than go to the parent type 
         /// </summary>
         public virtual bool Hierarchical { get; }
+
         public virtual string CssClass { get; }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 
         protected static IDictionary<string, object> CreateIdArguments(int? id, object additionalData = null)
         {
-            var arguments = new RouteValueDictionary { ["id"] = id };
+            var arguments = new RouteValueDictionary {["id"] = id};
             if (additionalData != null)
             {
                 var properties = additionalData.GetType().GetProperties();
@@ -100,6 +101,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
                     arguments[property.Name] = property.GetValue(additionalData);
                 }
             }
+
             return arguments;
         }
     }

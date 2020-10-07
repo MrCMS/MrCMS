@@ -30,14 +30,24 @@ namespace MrCMS.Services
             var url = _getLiveUrl.GetUrlSegment(page, true);
             if (queryString != null)
             {
-                url += string.Format("?{0}",
-                    string.Join("&",
-                        new RouteValueDictionary(queryString).Select(
-                            pair => string.Format("{0}={1}", pair.Key, pair.Value))));
+                url +=
+                    $"?{string.Join("&", new RouteValueDictionary(queryString).Select(pair => $"{pair.Key}={pair.Value}"))}";
             }
 
             return url;
+        }
 
+        public string GetAbsoluteUrl<T>(object queryString = null) where T : Webpage, IUniquePage
+        {
+            var page = GetUniquePage<T>();
+            var url = _getLiveUrl.GetAbsoluteUrl(page);
+            if (queryString != null)
+            {
+                url +=
+                    $"?{string.Join("&", new RouteValueDictionary(queryString).Select(pair => $"{pair.Key}={pair.Value}"))}";
+            }
+
+            return url;
         }
 
         public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage

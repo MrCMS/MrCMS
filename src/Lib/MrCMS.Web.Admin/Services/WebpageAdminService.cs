@@ -19,18 +19,18 @@ namespace MrCMS.Web.Admin.Services
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IMapper _mapper;
         private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
-        private readonly SiteSettings _siteSettings;
+        private readonly IDocumentMetadataService _documentMetadataService;
         private readonly IOptions<SystemConfig> _config;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
             IMapper mapper,
             IGetDocumentsByParent<Webpage> getDocumentsByParent,
-            SiteSettings siteSettings, IOptions<SystemConfig> config)
+            IDocumentMetadataService documentMetadataService, IOptions<SystemConfig> config)
         {
             _webpageRepository = webpageRepository;
             _mapper = mapper;
             _getDocumentsByParent = getDocumentsByParent;
-            _siteSettings = siteSettings;
+            _documentMetadataService = documentMetadataService;
             _config = config;
         }
 
@@ -67,7 +67,7 @@ namespace MrCMS.Web.Admin.Services
         {
             var type = TypeHelper.GetTypeByName(model.DocumentType);
             var instance = Activator.CreateInstance(type) as Webpage;
-            var revealInNavigation = instance.GetMetadata().RevealInNavigation;    
+            var revealInNavigation = _documentMetadataService.GetMetadata(instance).RevealInNavigation;
             _mapper.Map(model, instance);
 
             if (revealInNavigation)
@@ -91,10 +91,12 @@ namespace MrCMS.Web.Admin.Services
             foreach (var model in viewModel.Models)
                 _mapper.Map(model, webpage);
 
+            var otherSections = webpage.GetType().GetProperty("FeaturedArticle")?.GetValue(webpage);
+            
             _webpageRepository.Update(webpage);
 
             return webpage;
-        }    
+        }
 
         public Webpage Delete(int id)
         {
@@ -108,7 +110,7 @@ namespace MrCMS.Web.Admin.Services
             var parent = GetWebpage(id);
             return _getDocumentsByParent.GetDocuments(parent)
                 .Select(
-                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                    arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
                 .OrderBy(x => x.Order)
                 .ToList();
         }
@@ -132,7 +134,7 @@ namespace MrCMS.Web.Admin.Services
             if (webpage.PublishOn == null)
             {
                 webpage.Published = true;
-                webpage.PublishOn = DateTime.UtcNow; 
+                webpage.PublishOn = DateTime.UtcNow;
                 _webpageRepository.Update(webpage);
             }
         }

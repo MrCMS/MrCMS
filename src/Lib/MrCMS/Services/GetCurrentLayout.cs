@@ -9,14 +9,17 @@ namespace MrCMS.Services
     public class GetCurrentLayout : IGetCurrentLayout
     {
         private readonly PageDefaultsSettings _pageDefaultsSettings;
+        private readonly IDocumentMetadataService _documentMetadataService;
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
 
-        public GetCurrentLayout(ISession session, SiteSettings siteSettings, PageDefaultsSettings pageDefaultsSettings)
+        public GetCurrentLayout(ISession session, SiteSettings siteSettings, PageDefaultsSettings pageDefaultsSettings,
+            IDocumentMetadataService documentMetadataService)
         {
             _session = session;
             _siteSettings = siteSettings;
             _pageDefaultsSettings = pageDefaultsSettings;
+            _documentMetadataService = documentMetadataService;
         }
 
         public Layout Get(Webpage webpage)
@@ -34,7 +37,7 @@ namespace MrCMS.Services
 
         private Layout GetTypeDefaultLayout(Webpage webpage)
         {
-            var documentMetadata = webpage.GetMetadata();
+            var documentMetadata = _documentMetadataService.GetMetadata(webpage);
             var layoutId = _pageDefaultsSettings.GetLayoutId(documentMetadata.Type);
             if (layoutId.HasValue)
             {

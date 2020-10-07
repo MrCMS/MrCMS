@@ -7,6 +7,7 @@ using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Website;
@@ -20,17 +21,19 @@ namespace MrCMS.Web.Admin.Services
         private readonly IGetLayoutOptions _getLayoutOptions;
         private readonly ISession _session;
         private readonly MrCMSAppContext _appContext;
+        private readonly IDocumentMetadataService _documentMetadataService;
         private readonly IConfigurationProvider _configurationProvider;
 
         public PageDefaultsAdminService(IConfigurationProvider configurationProvider,
             IGetUrlGeneratorOptions getUrlGeneratorOptions, IGetLayoutOptions getLayoutOptions, ISession session,
-            MrCMSAppContext appContext)
+            MrCMSAppContext appContext,IDocumentMetadataService documentMetadataService)
         {
             _configurationProvider = configurationProvider;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
             _getLayoutOptions = getLayoutOptions;
             _session = session;
             _appContext = appContext;
+            _documentMetadataService = documentMetadataService;
         }
 
 
@@ -57,7 +60,7 @@ namespace MrCMS.Web.Admin.Services
         private string GetDisplayName(Type key)
         {
             var appName = _appContext.Types.ContainsKey(key) ? _appContext.Types[key].Name : "System"; 
-            return string.Format("{0} ({1})", key.GetMetadata().Name, appName);
+            return $"{_documentMetadataService.GetMetadata(key).Name} ({appName})";
         }
 
         private string GetLayoutName(List<SelectListItem> layoutOptions, Type key)
@@ -68,7 +71,7 @@ namespace MrCMS.Web.Admin.Services
             {
                 var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
                 var systemDefaultLayout = _session.Get<Layout>(siteSettings.DefaultLayoutId);
-                return string.Format("System Default ({0})", systemDefaultLayout.Name);
+                return $"System Default ({systemDefaultLayout.Name})";
             }
             return _session.Get<Layout>(layoutId.Value).Name;
         }

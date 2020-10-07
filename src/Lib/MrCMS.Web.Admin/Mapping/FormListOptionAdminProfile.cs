@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping

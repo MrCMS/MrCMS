@@ -20,8 +20,8 @@ namespace MrCMS.Services
             if (user != null && user.IsAdmin) return true;
             if (webpage.InheritFrontEndRolesFromParent)
             {
-                if (webpage.Parent is Webpage)
-                    return IsCurrentUserAllowed(webpage.Parent as Webpage);
+                if (webpage.Parent.Unproxy() is Webpage)
+                    return IsCurrentUserAllowed(webpage.Parent.Unproxy() as Webpage);
                 return true;
             }
             if (!webpage.FrontEndAllowedRoles.Any()) return true;

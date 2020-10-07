@@ -62,7 +62,8 @@ namespace MrCMS.Helpers
 
         public static void AddAppUIScripts(this IHtmlHelper html)
         {
-            foreach (var script in html.ViewContext.HttpContext.RequestServices.GetServices<IAppScriptList>()
+            var scriptLists = html.ViewContext.HttpContext.RequestServices.GetServices<IAppScriptList>().ToList();
+            foreach (var script in scriptLists
                 .SelectMany(appScriptList => appScriptList.UIScripts))
             {
                 html.IncludeScript(script);

@@ -15,16 +15,18 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly ISession _session;
         private readonly ITreeNavService _treeNavService;
+        private readonly IDocumentMetadataService _documentMetadataService;
         private readonly IUrlHelper _urlHelper;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session,
-            IUrlHelper urlHelper, ITreeNavService treeNavService)
+            IUrlHelper urlHelper, ITreeNavService treeNavService,IDocumentMetadataService documentMetadataService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
             _urlHelper = urlHelper;
             _treeNavService = treeNavService;
+            _documentMetadataService = documentMetadataService;
         }
 
         public AdminTree GetTree(int? id)
@@ -35,13 +37,13 @@ namespace MrCMS.Web.Admin.Services
                 RootContoller = "Webpage",
                 IsRootRequest = parent == null
             };
-            int maxChildNodes = parent == null ? 1000 : parent.GetMetadata().MaxChildNodes;
+            int maxChildNodes = parent == null ? 1000 : _documentMetadataService.GetMetadata(parent).MaxChildNodes;
             IQueryOver<Webpage, Webpage> query = GetQuery(parent);
 
             int rowCount = GetRowCount(query);
             query.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
             {
-                DocumentMetadata documentMetadata = doc.GetMetadata();
+                DocumentMetadata documentMetadata = _documentMetadataService.GetMetadata(doc);
                 var node = new AdminTreeNode
                 {
                     Id = doc.Id,
@@ -91,7 +93,7 @@ namespace MrCMS.Web.Admin.Services
             if (parent != null)
             {
                 query = query.Where(x => x.Parent.Id == parent.Id);
-                DocumentMetadata metaData = parent.GetMetadata();
+                DocumentMetadata metaData = _documentMetadataService.GetMetadata(parent);
                 query = ApplySort(metaData, query);
             }
             else

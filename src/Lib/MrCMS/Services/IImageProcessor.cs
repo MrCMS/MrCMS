@@ -10,6 +10,7 @@ namespace MrCMS.Services
         MediaFile GetImage(string imageUrl);
         Crop GetCrop(string imageUrl);
 
+        void SetFileDimensions(MediaFile mediaFile, Stream stream);
         void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl);
         void SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl);
         void SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes, string fileUrl);

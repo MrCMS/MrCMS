@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MrCMS.Entities.Documents;
+using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models.ContentBlocks;
 
 namespace MrCMS.Web.Admin.Mapping

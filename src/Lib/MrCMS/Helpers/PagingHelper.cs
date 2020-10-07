@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using X.PagedList;
 
-// todo: move core?
-namespace MrCMS.Web.Apps.Articles.Helpers
+namespace MrCMS.Helpers
 {
     public static class PagingHelper
     {

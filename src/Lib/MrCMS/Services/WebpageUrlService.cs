@@ -59,7 +59,7 @@ namespace MrCMS.Services
             if (id > 0)
             {
                 var pageTemplate = _session.Get<PageTemplate>(id);
-                Type urlGeneratorType = pageTemplate.GetUrlGeneratorType();
+                Type urlGeneratorType = GetUrlGeneratorType(pageTemplate);
                 if (pageTemplate != null && urlGeneratorType != null)
                 {
                     generator = _serviceProvider.GetService(urlGeneratorType) as IWebpageUrlGenerator;
@@ -70,6 +70,13 @@ namespace MrCMS.Services
                 generator = _serviceProvider.GetService(_settings.GetGeneratorType(documentType)) as IWebpageUrlGenerator;
             }
             return generator ?? new DefaultWebpageUrlGenerator();
+        }
+
+        private static Type GetUrlGeneratorType(PageTemplate template)
+        {
+            return template != null
+                ? TypeHelper.GetTypeByName(template.UrlGeneratorType)
+                : null;
         }
     }
 }

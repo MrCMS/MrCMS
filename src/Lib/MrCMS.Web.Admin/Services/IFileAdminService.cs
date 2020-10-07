@@ -14,12 +14,13 @@ namespace MrCMS.Web.Admin.Services
             int mediaCategoryId);
 
         void DeleteFile(MediaFile mediaFile);
-        void SaveFile(MediaFile mediaFile);
+        MediaFile UpdateSEO(UpdateFileSEOModel model);
         bool IsValidFileType(string fileName);
         IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
         List<ImageSortItem> GetFilesToSort(MediaCategory category = null);
         void SetOrders(List<SortItem> items);
         IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel);
+        UpdateFileSEOModel GetEditModel(int id);
 
         string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null);
         void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null);

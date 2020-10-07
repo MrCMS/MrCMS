@@ -10,32 +10,33 @@ namespace MrCMS.Services
     public class ValidWebpageChildrenService : IValidWebpageChildrenService
     {
         private readonly IExistAnyWebpageService _existAnyWebpageService;
+        private readonly IDocumentMetadataService _documentMetadataService;
 
-        public ValidWebpageChildrenService(IExistAnyWebpageService existAnyWebpageService)
+        public ValidWebpageChildrenService(IExistAnyWebpageService existAnyWebpageService, IDocumentMetadataService documentMetadataService)
         {
             _existAnyWebpageService = existAnyWebpageService;
+            _documentMetadataService = documentMetadataService;
         }
 
         public IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(Webpage webpage, Func<DocumentMetadata, bool> predicate)
         {
             var documentTypeDefinitions = new HashSet<DocumentMetadata>();
+            var webpageMetadata = _documentMetadataService.WebpageMetadata.ToHashSet();
             if (webpage == null)
                 documentTypeDefinitions = new HashSet<DocumentMetadata>(
-                    DocumentMetadataHelper.WebpageMetadata.Where(definition => !definition.RequiresParent));
+                    webpageMetadata.Where(definition => !definition.RequiresParent));
             else
             {
                 var documentTypeDefinition =
-                    DocumentMetadataHelper.WebpageMetadata.FirstOrDefault(
+                    webpageMetadata.FirstOrDefault(
                         definition => definition.TypeName == webpage.Unproxy().GetType().Name);
 
-                if (documentTypeDefinition == null) return Enumerable.Empty<DocumentMetadata>();
-
-                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(DocumentMetadataHelper.GetMetadata);
+                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(_documentMetadataService.GetMetadata);
                 switch (documentTypeDefinition.ChildrenListType)
                 {
                     case ChildrenListType.BlackList:
                         IEnumerable<DocumentMetadata> documentMetadatas =
-                            DocumentMetadataHelper.WebpageMetadata.Except(metadatas).Where(def => !def.AutoBlacklist);
+                            webpageMetadata.Except(metadatas).Where(def => !def.AutoBlacklist);
                         documentMetadatas.ForEach(item => documentTypeDefinitions.Add(item));
                         break;
                     case ChildrenListType.WhiteList:

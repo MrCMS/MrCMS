@@ -14,11 +14,13 @@ namespace MrCMS.Installation
         {
             services.AddSingleton<IFileProvider>(new InstallationContentFileProvider());
 
-            services.AddMvc(options => { }).AddApplicationPart(Assembly.GetAssembly(typeof(InstallationExtensions))).AddRazorRuntimeCompilation(options =>
+            services.AddMvc(options => { }).AddApplicationPart(Assembly.GetAssembly(typeof(InstallationExtensions)))
+                .AddRazorRuntimeCompilation(options =>
                 {
                     var fileProvider = new InstallationViewFileProvider();
                     options.FileProviders.Insert(0, fileProvider);
-                });
+                })
+                ;
 
             return services;
         }

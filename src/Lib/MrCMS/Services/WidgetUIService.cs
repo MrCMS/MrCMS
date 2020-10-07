@@ -6,6 +6,7 @@ using MrCMS.Services.Caching;
 using NHibernate;
 using System;
 using System.Threading.Tasks;
+using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
@@ -26,12 +27,13 @@ namespace MrCMS.Services
 
         public IHtmlContent GetContent(IViewComponentHelper helper, int id, Func<IViewComponentHelper, Task<IHtmlContent>> func)
         {
-            return _htmlCacheService.GetContent(helper, _getWidgetCachingInfo.Get(id), func);
+            var htmlContent = _htmlCacheService.GetContent(helper, _getWidgetCachingInfo.Get(id), func);
+            return htmlContent;
         }
 
         public (Widget Widget, object Model) GetModel(int id)
         {
-            var widget = _session.Get<Widget>(id);
+            var widget = _session.Get<Widget>(id).Unproxy();
             return (widget, _widgetModelService.GetModel(widget));
         }
     }

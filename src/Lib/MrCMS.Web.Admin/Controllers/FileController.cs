@@ -60,13 +60,12 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public string UpdateSEO(MediaFile mediaFile, string title, string description)
+        public string UpdateSEO(UpdateFileSEOModel model)
+            // MediaFile mediaFile, string title, string description)
         {
             try
             {
-                mediaFile.Title = title;
-                mediaFile.Description = description;
-                _fileService.SaveFile(mediaFile);
+                _fileService.UpdateSEO(model);
 
                 return "Changes saved";
             }
@@ -76,16 +75,16 @@ namespace MrCMS.Web.Admin.Controllers
             }
         }
 
-        public ActionResult Edit(MediaFile file)    
+        public ActionResult Edit(int id)    
         {
-            return View("Edit", file);
+            return View("Edit", _fileService.GetEditModel(id));
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST(MediaFile file) //todo make this a model
+        public ActionResult Edit_POST(UpdateFileSEOModel model) 
         {
-            _fileService.SaveFile(file);
+                var file = _fileService.UpdateSEO(model);
 
             return file.MediaCategory != null
                 ? RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id})

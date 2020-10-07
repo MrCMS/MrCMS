@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping

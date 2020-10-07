@@ -38,7 +38,8 @@ namespace MrCMS.Services
                 {
                     Title = crop.Title,
                     Description = crop.Description,
-                    ImageUrl = GetCropImageUrl(crop, targetSize)
+                    ImageUrl = GetCropImageUrl(crop, targetSize),
+                    ActualSize = ImageProcessor.CalculateDimensions(crop.Size, targetSize)
                 };
             var image = _imageProcessor.GetImage(imageUrl);
             if (image != null)
@@ -46,7 +47,8 @@ namespace MrCMS.Services
                 {
                     Title = image.Title,
                     Description = image.Description,
-                    ImageUrl = GetFileImageUrl(image, targetSize)
+                    ImageUrl = GetFileImageUrl(image, targetSize),
+                    ActualSize = ImageProcessor.CalculateDimensions(image.Size, targetSize)
                 };
             return null;
         }

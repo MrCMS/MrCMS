@@ -74,7 +74,7 @@ namespace MrCMS.Installation.Services
 
         public bool DatabaseIsInstalled()
         {
-            return _configuration.GetConnectionString("mrcms").Length > 0;
+            return _configuration.GetConnectionString("mrcms")?.Length > 0;
         }
 
         private void SetUpInitialData(InstallModel model, IDatabaseProvider provider)

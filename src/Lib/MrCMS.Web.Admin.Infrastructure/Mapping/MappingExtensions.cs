@@ -5,7 +5,7 @@ using AutoMapper;
 using MrCMS.Entities;
 using NHibernate;
 
-namespace MrCMS.Web.Admin.Mapping
+namespace MrCMS.Web.Admin.Infrastructure.Mapping
 {
     public static class MappingExtensions
     {

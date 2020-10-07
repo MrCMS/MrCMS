@@ -25,7 +25,7 @@ namespace MrCMS.Services.Resources
             _site = site;
             _missingLocalisation = missingLocalisation;
             _cultureRecords = allRecords.Where(x => x.Culture == culture.Name || !x.Culture.HasValue())
-                .GroupBy(x => x.Key)
+                .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
                 .ToDictionary(x => x.Key,
                     // if there's one for the passed site, use that, otherwise use the first one you find
                     x => _site != null && x.Any(y => y.SiteId == _site.Id)

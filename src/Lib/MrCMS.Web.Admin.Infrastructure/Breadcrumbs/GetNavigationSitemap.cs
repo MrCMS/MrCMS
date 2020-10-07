@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 {
     public class GetNavigationSitemap : IGetNavigationSitemap
     {
         private readonly IBreadcrumbAccessChecker _breadcrumbAccessChecker;
+        private readonly IUrlHelper _urlHelper;
         private readonly IGetNavigationTypes _getNavigationTypes;
         private readonly IServiceProvider _serviceProvider;
 
         public GetNavigationSitemap(IGetNavigationTypes getNavigationTypes, IServiceProvider serviceProvider,
-            IBreadcrumbAccessChecker breadcrumbAccessChecker)
+            IBreadcrumbAccessChecker breadcrumbAccessChecker, IUrlHelper urlHelper)
         {
             _getNavigationTypes = getNavigationTypes;
             _serviceProvider = serviceProvider;
             _breadcrumbAccessChecker = breadcrumbAccessChecker;
+            _urlHelper = urlHelper;
         }
 
         public Sitemap GetNavigation()
@@ -50,7 +53,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
             if (!breadcrumb.IsPlaceHolder && !_breadcrumbAccessChecker.CanAccess(breadcrumb))
                 return null;
 
-            var node = new SitemapNode(breadcrumb);
+            var node = new SitemapNode(breadcrumb, breadcrumb.Url(_urlHelper));
 
             var types = _getNavigationTypes.GetChildren(type);
             node.AddChildren(FilterAndSort(types));

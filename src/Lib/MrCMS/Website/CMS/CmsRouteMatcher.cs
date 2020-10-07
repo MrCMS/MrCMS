@@ -1,3 +1,4 @@
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 
 namespace MrCMS.Website.CMS
@@ -16,9 +17,14 @@ namespace MrCMS.Website.CMS
         public CmsMatchData TryMatch(string path, string method)
         {
             var pageData = _getPageData.GetData(path, method);
+            return HandlePageData(pageData);
+        }
+
+        private CmsMatchData HandlePageData(PageData pageData)
+        {
             if (pageData == null)
             {
-                return new CmsMatchData { MatchType = CmsRouteMatchType.NoMatch };
+                return new CmsMatchData {MatchType = CmsRouteMatchType.NoMatch};
             }
 
             var isCurrentUserAllowed = _userUIPermissionsService.IsCurrentUserAllowed(pageData.Webpage);
@@ -32,6 +38,12 @@ namespace MrCMS.Website.CMS
                         : CmsRouteMatchType.Success,
                 PageData = pageData
             };
+        }
+
+        public CmsMatchData Match(Webpage webpage, string method)
+        {
+            var pageData = _getPageData.GetData(webpage, method);
+            return HandlePageData(pageData);
         }
     }
 }

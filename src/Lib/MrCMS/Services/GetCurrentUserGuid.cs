@@ -5,7 +5,7 @@ namespace MrCMS.Services
 {
     public class GetCurrentUserGuid : IGetCurrentUserGuid
     {
-        private const string UserSessionId = "current.usersessionGuid";
+        public const string UserSessionId = "current.usersessionGuid";
 
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IGetCurrentUser _getCurrentUser;
