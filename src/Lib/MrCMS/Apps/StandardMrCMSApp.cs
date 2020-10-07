@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 using MrCMS.Helpers;
 
 namespace MrCMS.Apps
@@ -46,5 +47,6 @@ namespace MrCMS.Apps
         }
 
         public virtual void AppendConfiguration(Configuration configuration) { }
+        public virtual void ConfigureAuthorization(AuthorizationOptions options) { }
     }
 }

@@ -31,7 +31,7 @@
         else
         {
             <li class="nav-item">
-                <a asp-action="@item.Action" asp-controller="@item.Controller" class="nav-link @(item.IsActive(breadcrumbs)? "active" : "")">
+                <a href="@item.Url" class="nav-link @(item.IsActive(breadcrumbs)? "active" : "")">
                     <i class="fa fa-circle-o nav-icon"></i>
                     <p>
                         @Html.Resource("Nav Links - " + item.Name, item.Name)

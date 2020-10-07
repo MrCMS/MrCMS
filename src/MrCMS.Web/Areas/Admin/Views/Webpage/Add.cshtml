@@ -2,8 +2,10 @@
 @using MrCMS.Entities.Documents
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Admin.Models
 @model AddWebpageModel
+@inject IDocumentMetadataService DocumentMetadataService
 @{
     ViewBag.Title = "Add Webpage";
     var parent = ViewData["parent"] as Webpage;
@@ -21,8 +23,8 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))" />
-            
+            <admin-header-title title="@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))"/>
+
             <admin-header-actions>
                 <input type="submit" class="btn-primary btn hide-until-document-selected " value="@Html.Resource("Save")" style="display: none;"/>
             </admin-header-actions>
@@ -37,7 +39,7 @@
                     {
                         var inputId = documentType.DocumentType + documentType.TemplateId;
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="DocumentType" id="dt-@inputId" value="@documentType.DocumentType" data-page-template-id="@documentType.TemplateId" >
+                            <input class="form-check-input" type="radio" name="DocumentType" id="dt-@inputId" value="@documentType.DocumentType" data-page-template-id="@documentType.TemplateId">
                             <label class="form-check-label" for="dt-@inputId">
                                 <i class="@documentType.Type.IconClass"></i>
                                 @documentType.DisplayName
@@ -61,7 +63,7 @@
                     </div>
                     <div class="checkbox">
                         <label>
-                            @if (parent?.GetMetadata().ChildrenMaintainHierarchy == true)
+                            @if (parent != null && DocumentMetadataService.GetMetadata(parent).ChildrenMaintainHierarchy == true)
                             {
                                 <input type="checkbox" name="mode" id="mode" value="1" checked/>
                             }

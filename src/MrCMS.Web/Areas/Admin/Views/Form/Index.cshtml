@@ -82,7 +82,7 @@
         }
         @if (results.TotalItemCount > 1)
         {
-            @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}), MrCmsPagedListRenderOptions.Bootstrap4)
+            @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}), MrCMSPagedListRenderOptions.Bootstrap4)
         }
         
     </card-body>

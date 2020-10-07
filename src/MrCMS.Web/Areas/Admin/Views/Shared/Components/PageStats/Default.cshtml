@@ -1,5 +1,7 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Admin.Models
+@inject IDocumentMetadataService DocumentMetadataService
 @model IList<MrCMS.Web.Admin.Models.WebpageStats>
     
 <div class="card">
@@ -23,7 +25,7 @@
             @foreach (var stat in Model)
             {
                 <tr>
-                    <td>@DocumentMetadataHelper.GetMetadataByTypeName(stat.DocumentType).Name</td>
+                    <td>@DocumentMetadataService.GetMetadataByTypeName(stat.DocumentType).Name</td>
                     <td>
                         @stat.NumberOfPages
                     </td>

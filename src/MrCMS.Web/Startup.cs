@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -96,9 +96,10 @@ namespace MrCMS.Web
             services.RegisterSettings();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
+            services.RegisterDocumentMetadata();
             services.RegisterTasks();
 
-            services.AddMvcForMrCMS(appContext, fileProvider);
+            services.AddMvcForMrCMS(appContext, Environment.IsDevelopment());
 
             services.AddLogging(builder => builder.AddMrCMSLogger());
 
@@ -142,6 +143,7 @@ namespace MrCMS.Web
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+                appContext.ConfigureAuthorization(options);
             });
         }
 

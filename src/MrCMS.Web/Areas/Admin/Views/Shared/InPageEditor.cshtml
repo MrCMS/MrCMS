@@ -1,8 +1,10 @@
 ﻿@using MrCMS.ACL.Rules
+@using MrCMS.Services
 @using MrCMS.Settings
 @using MrCMS.Web.Admin.Infrastructure.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject SiteSettings SiteSettings
+@inject IWebpageChildrenChecker WebpageChildrenChecker
 <link href="@Url.Content("~/Areas/Admin/styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
@@ -23,7 +25,7 @@
             <a id="publish-now" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning">Publish</a>
         }
     }
-    @if (Model.CanAddChildren())
+    @if (WebpageChildrenChecker.CanAddChildren(Model))
     {
         @Html.ActionLink("Add a child page", "Add", "Webpage", new { id = Model.Id, area = "Admin" }, new { @class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary" })
     }

@@ -1,5 +1,9 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Media.MediaCategory
+@{
+    Html.IncludeScript("~/Areas/Admin/scripts/media-category.js");
+    Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
+}
 @if (Model != null)
 {
     <div id="upload-anywhere">

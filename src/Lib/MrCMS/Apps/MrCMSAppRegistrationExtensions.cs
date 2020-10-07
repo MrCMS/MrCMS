@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Lucene.Net.Support;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,8 +42,15 @@ namespace MrCMS.Apps
         }
 
         public static IMvcBuilder AddMvcForMrCMS(this IServiceCollection services, MrCMSAppContext appContext,
-            IFileProvider fileProvider)
+            bool isDevelopment)
         {
+            // services.AddRazorPages()
+            //     .AddRazorRuntimeCompilation(options =>
+            //     {
+            //         options.FileProviders.Add(fileProvider);
+            //     });
+
+
             return services.AddMvc(options =>
                 {
                     // add custom binder to beginning of collection
@@ -59,7 +69,25 @@ namespace MrCMS.Apps
                 .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions)))
                 .AddRazorRuntimeCompilation(options =>
                 {
-                    options.FileProviders.Add(fileProvider);
+                    if (isDevelopment)
+                    {
+                        // GS - this enables compilation on apps, themes, and libraries, but assumes that they're in the folders relative to MrCMS.Web
+                        var assembly = Assembly.GetEntryAssembly();
+                        var assemblyLocation = assembly?.Location;
+                        var lastBin = assemblyLocation?.LastIndexOf("bin", StringComparison.Ordinal);
+                        if (!lastBin.HasValue)
+                            return;
+                        var folder = assemblyLocation.Substring(0, lastBin.Value);
+                        var mrCMSWebFolder = new DirectoryInfo(folder);
+                        var parent = mrCMSWebFolder.Parent;
+                        foreach (var directory in parent.GetDirectories()
+                            .Where(x => x.FullName != mrCMSWebFolder.FullName)
+                            .Select(x => x.GetDirectories())
+                            .SelectMany(folders => folders.Reverse()))
+                        {
+                            options.FileProviders.Insert(0, new PhysicalFileProvider(directory.FullName));
+                        }
+                    }
                 })
                 .AddRazorOptions(options =>
                 {
@@ -71,14 +99,14 @@ namespace MrCMS.Apps
                 .AddMrCMSDataAnnotations()
                 .AddDataAnnotationsLocalization()
                 .AddAppMvcConfig(appContext);
-        } 
+        }
 
         public static IFileProvider AddFileProvider(this IServiceCollection services,
             IWebHostEnvironment environment, MrCMSAppContext appContext)
         {
             var physicalProvider = environment.ContentRootFileProvider;
             var compositeFileProvider =
-                new CompositeFileProvider(new[] { physicalProvider }.Concat(appContext.ViewFileProviders));
+                new CompositeFileProvider(new[] {physicalProvider}.Concat(appContext.ViewFileProviders));
 
             services.AddSingleton<IFileProvider>(compositeFileProvider);
 

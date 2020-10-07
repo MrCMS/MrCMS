@@ -6,7 +6,6 @@
 @using MrCMS.Web.Admin.Services
 @using X.PagedList
 @using X.PagedList.Mvc
-@using X.PagedList.Mvc.Common
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
@@ -51,7 +50,7 @@
                     </div>
                 }
                 <div class="clearfix"> </div>
-                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new {page, Model.SearchText, Model.SortBy, Model.Id}), MrCmsPagedListRenderOptions.Bootstrap4)
+                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new {page, Model.SearchText, Model.SortBy, Model.Id}), MrCMSPagedListRenderOptions.Bootstrap4)
             }
             else
             {

@@ -10,6 +10,7 @@ using NHibernate.Cfg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MrCMS.Apps
 {
@@ -94,6 +95,11 @@ namespace MrCMS.Apps
         public void AppendConfiguration(Configuration configuration)
         {
             Apps.ForEach(app => app.AppendConfiguration(configuration));
+        }
+
+        public void ConfigureAuthorization(AuthorizationOptions options)
+        {
+            Apps.ForEach(app=>app.ConfigureAuthorization(options));
         }
     }
 }

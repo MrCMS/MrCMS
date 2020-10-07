@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,5 +30,6 @@ namespace MrCMS.Apps
         void SetupMvcOptions(MvcOptions options);
         void ConfigureAutomapper(IMapperConfigurationExpression expression);
         void AppendConfiguration(Configuration configuration);
+        void ConfigureAuthorization(AuthorizationOptions options);
     }
 }

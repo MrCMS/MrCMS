@@ -8,7 +8,7 @@
     var user = GetCurrentUser.Get();
     var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/160";
 }
-<a href="@Url.Action("Index", "Home")" tabindex="1" class="brand-link">
+<a href="@Url.Action("Index", "Home", new {area = "Admin"})" tabindex="1" class="brand-link">
     @{
         var adminLogo = Settings.AdminLogo;
     }

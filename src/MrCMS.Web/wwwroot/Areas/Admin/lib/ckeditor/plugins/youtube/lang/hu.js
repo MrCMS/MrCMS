@@ -9,8 +9,6 @@ CKEDITOR.plugins.setLang('youtube', 'hu', {
 	chkRelated : 'Ajánlott videók megjelenítése, amikor a videó befejeződik',
 	chkPrivacy : 'Fokozott adatvédelmi mód engedélyezése',
 	chkOlderCode : 'Régi beágyazott kód használata',
-	chkAutoplay : 'Automatikus lejátszás',
-	chkControls : 'Lejátszásvezérlők mutatása',
 	noCode : 'A beágyazott kód, vagy az URL megadása kötelező',
 	invalidEmbed : 'A beágyazott kód érvénytelen',
 	invalidUrl : 'A megadott URL érvénytelen',
@@ -19,7 +17,5 @@ CKEDITOR.plugins.setLang('youtube', 'hu', {
 	invalidWidth : 'Érvényes szélességet adjon meg',
 	noHeight : 'A magasság megadása kötelező',
 	invalidHeight : 'Érvényes magasságot adjon meg',
-	invalidTime : 'Érvényes kezdő időpontot adjon meg',
-	txtResponsive : 'Reszponzív videó',
-	txtNoEmbed : 'Csak kép és hivatkozás jelenjen meg'
+	invalidTime : 'Érvényes kezdő időpontot adjon meg'
 });

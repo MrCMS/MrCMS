@@ -55,7 +55,7 @@
             }
             <div class="clearfix  mb-2"></div>
 
-            @Html.PagedListPager(results, page => Url.Action("CKEditor", new {page, Model.CategoryId, Model.CKEditor, Model.CKEditorFuncNum}), MrCmsPagedListRenderOptions.Bootstrap4)
+            @Html.PagedListPager(results, page => Url.Action("CKEditor", new {page, Model.CategoryId, Model.CKEditor, Model.CKEditorFuncNum}), MrCMSPagedListRenderOptions.Bootstrap4)
         }
         else
         {

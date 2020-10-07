@@ -5,7 +5,7 @@
 @model MrCMS.Web.Admin.Models.UpdateWidgetModel
 @{
     var widget = ViewData["widget"] as Widget;
-    ViewBag.Title = "Edit | " + widget.WidgetType.BreakUpString();
+    ViewBag.Title = "Edit | " + widget.WidgetTypeFormatted;
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var cacheExpiryOptions = ViewData["cache-expiry-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
@@ -13,7 +13,7 @@
 {
     <fieldset>
         <legend>
-            @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : widget.WidgetType.BreakUpString())
+            @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : widget.WidgetTypeFormatted)
 
             <span class="btn-group pull-right">
                 <input type="submit" class="btn-success btn" value="@Html.Resource("Save")" />

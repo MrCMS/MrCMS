@@ -2,9 +2,11 @@
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Web.Admin.Models
+@using MrCMS.Web.Admin.Services
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.PageTemplateSearchQuery
+@inject IPageTemplateService PageTemplateService
 @{
     var results = ViewData["results"] as IPagedList<PageTemplate>;
 }
@@ -57,16 +59,16 @@
                             @template.Name
                         </td>
                         <td>
-                            @template.GetPageTypeName()
+                            @PageTemplateService.GetPageTypeName(template)
                         </td>
                         <td>
                             @template.PageTemplateName
                         </td>
                         <td>
-                            @template.GetLayoutName()
+                            @PageTemplateService.GetLayoutName(template)
                         </td>
                         <td>
-                            @template.GetUrlGeneratorType().Name.BreakUpString()
+                            @PageTemplateService.GetUrlGeneratorType(template).Name.BreakUpString()
                         </td>
                         <td>
                             @template.SingleUse
@@ -80,7 +82,7 @@
                 }
                 </tbody>
             </table>
-            @Html.PagedListPager(results, page => Url.Action("Index", new {page}), MrCmsPagedListRenderOptions.Bootstrap4)
+            @Html.PagedListPager(results, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
         }
         else
         {

@@ -1,7 +1,9 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Admin.Infrastructure.Helpers
 @model MrCMS.Web.Admin.Models.WebpageEdit.WebpagePropertiesTabViewModel
+@inject IDocumentMetadataService DocumentMetadataService
 @{
     var webpage = ViewData["webpage"] as Webpage;
 }
@@ -16,7 +18,7 @@
     @Html.ValidationMessageFor(x => x.Name)
 </div>
 
-@if (Html.GetDocumentMetadata(Model.Id).HasBodyContent)
+@if (DocumentMetadataService.GetDocumentMetadata(Html, Model.Id).HasBodyContent)
 {
     <div class="body-content">
         <!-- leave this class here for fixing the bar to top only for body content -->

@@ -1,8 +1,14 @@
 ﻿@using System.Drawing
+@using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Services.FileMigration
 @using MrCMS.Web.Admin.Helpers
-@model MrCMS.Entities.Documents.Media.MediaFile
+@using NHibernate
+@model MrCMS.Web.Admin.Models.UpdateFileSEOModel
+@inject ISession Session
+@{
+    var file = Session.Get<MediaFile>(Model.Id);
+}
 
 
 <form asp-controller="File" asp-action="Edit" method="post">
@@ -21,25 +27,25 @@
 
     <card>
         <card-body>
-            @if (Model.IsImage())
+            @if (file.IsImage())
             {
-                @Html.RenderImage(Model.FileUrl, new Size(100, 100))
+                @Html.RenderImage(file.FileUrl, new Size(100, 100))
             }
             else
             {
-                <i class="@Model.FileExtension.GetIconClass()"> </i>
+                <i class="@file.FileExtension.GetIconClass()"> </i>
             }
             <br/>
-            @Html.Link(Model.FileName, Model.FileUrl)
+            @Html.Link(file.FileName, file.FileUrl)
 
 
             <br/>
 
-            @if (Model.MediaCategory != null)
+            @if (file.MediaCategory != null)
             {
                 <p>
                     Folder:
-                    <a href="@Url.Action("Show", "MediaCategory", new {id = Model.MediaCategory.Id})">@Model.MediaCategory.Name</a>
+                    <a href="@Url.Action("Show", "MediaCategory", new {id = file.MediaCategory.Id})">@file.MediaCategory.Name</a>
                 </p>
             }
             <hr/>
