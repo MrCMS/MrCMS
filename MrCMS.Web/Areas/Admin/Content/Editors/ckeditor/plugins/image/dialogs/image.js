@@ -174,7 +174,9 @@
                 }, {
                     type: "text", id: "txtdlgGenStyle", requiredContent: "img{cke-xyz}", label: c.lang.common.cssStyle, validate: CKEDITOR.dialog.validate.inlineStyle(c.lang.common.invalidInlineStyle), "default": "", setup: function (a,
                     b) { if (a == f) { var c = b.getAttribute("style"); !c && b.$.style.cssText && (c = b.$.style.cssText); this.setValue(c); var e = b.$.style.height, c = b.$.style.width, e = (e ? e : "").match(k), c = (c ? c : "").match(k); this.attributesInStyle = { height: !!e, width: !!c } } }, onChange: function () { i.call(this, "info:cmbFloat info:cmbAlign info:txtVSpace info:txtHSpace info:txtBorder info:txtWidth info:txtHeight".split(" ")); g(this) }, commit: function (a, b) { a == f && (this.getValue() || this.isChanged()) && b.setAttribute("style", this.getValue()) }
-                }]
+                    }, {
+                        type: 'checkbox',id: 'lazyloading',label: 'Enable lazy loading','default': 'checked',commit: function (a, b) { this.getValue() ? b.setAttribute("loading", "lazy") : b.removeAttribute("loading") }
+                    }]
             }]
         }
     };

@@ -24,6 +24,7 @@ namespace MrCMS.Settings
             MaxImageSizeHeight = 1200;
             MaxImageSizeWidth = 1200;
             MediaPageSize = 72;
+            EnableLazyLoading = true;
         }
 
         [DisplayName("Thumbnail Image Height")]
@@ -49,6 +50,9 @@ namespace MrCMS.Settings
 
         [DisplayName("Small Image Width")]
         public int SmallImageWidth { get; set; }
+
+        [DisplayName("Enable Lazy Loading")]
+        public bool EnableLazyLoading { get; set; }
 
         public Size ThumbnailSize
         {

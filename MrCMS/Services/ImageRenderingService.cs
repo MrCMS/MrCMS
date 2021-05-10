@@ -100,6 +100,10 @@ namespace MrCMS.Services
             tagBuilder.Attributes.Add("src", imageInfo.ImageUrl);
             tagBuilder.Attributes.Add("alt", alt ?? imageInfo.Title);
             tagBuilder.Attributes.Add("title", title ?? imageInfo.Description);
+            if (_mediaSettings.EnableLazyLoading)
+            {
+                tagBuilder.Attributes.Add("loading", "lazy");
+            }
             if (attributes != null)
             {
                 var routeValueDictionary = MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(attributes);
