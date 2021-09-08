@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
+using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -25,7 +26,15 @@ namespace MrCMS.Web.Admin.Controllers
         public RedirectToActionResult Index_POST()
         {
             _clearCachesService.ClearCache();
-            TempData["cleared"] = true;
+            TempData.AddSuccessMessage("Caches cleared");
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public RedirectToActionResult HighPriority()
+        {
+            _clearCachesService.ClearHighPriorityCache();
+            TempData.AddSuccessMessage("High priority cache cleared");
             return RedirectToAction("Index");
         }
     }

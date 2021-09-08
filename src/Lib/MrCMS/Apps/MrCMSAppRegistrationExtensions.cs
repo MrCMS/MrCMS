@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Lucene.Net.Support;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
+using MrCMS.Attributes;
 using MrCMS.Services.Resources;
 using MrCMS.Website;
 using MrCMS.Website.Filters;
-using MrCMS.Website.Profiling;
-using StackExchange.Profiling.Internal;
 
 namespace MrCMS.Apps
 {
@@ -41,76 +38,57 @@ namespace MrCMS.Apps
             return builder;
         }
 
-        public static IMvcBuilder AddMvcForMrCMS(this IServiceCollection services, MrCMSAppContext appContext,
-            bool isDevelopment)
+        public static IMvcBuilder AddMvcForMrCMS(this IServiceCollection services, MrCMSAppContext appContext)
         {
-            // services.AddRazorPages()
-            //     .AddRazorRuntimeCompilation(options =>
-            //     {
-            //         options.FileProviders.Add(fileProvider);
-            //     });
-
-
             return services.AddMvc(options =>
                 {
-                    // add custom binder to beginning of collection
-                    options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
-                    options.Filters.Add<EndRequestHandlerFilter>();
-                    options.Filters.Add<ProfilingAsyncActionFilter<WebpageCachingFilter>>();
-                    options.Filters.Add<ActionProfilingFilter>();
-                    options.Filters.Add<ResultProfilingFilter>();
+                    //options.Filters.Add<EndRequestHandlerFilter>(); //todo is needed with Quartz?
                     options.Filters.Add<GoogleRecaptchaFilter>();
+                    options.Filters.Add<ReturnUrlFilter>();
+                    options.Filters.Add<CanonicalLinksFilter>();
+                    options.Filters.Add<AddWebpageViewsData>();
                     options.Filters.Add<HoneypotFilter>();
-                    options.Filters.Add<DoNotCacheFilter>();
-                    options.Filters.Add<ProfilingActionFilter>();
-                    options.EnableEndpointRouting = false;
+                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    var index = options.ValueProviderFactories.IndexOf(
+                        options.ValueProviderFactories.OfType<QueryStringValueProviderFactory>().Single());
+                    options.ValueProviderFactories[index] = new CulturedQueryStringValueProviderFactory();
                     appContext.SetupMvcOptions(options);
                 })
                 .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions)))
-                .AddRazorRuntimeCompilation(options =>
-                {
-                    if (isDevelopment)
-                    {
-                        // GS - this enables compilation on apps, themes, and libraries, but assumes that they're in the folders relative to MrCMS.Web
-                        var assembly = Assembly.GetEntryAssembly();
-                        var assemblyLocation = assembly?.Location;
-                        var lastBin = assemblyLocation?.LastIndexOf("bin", StringComparison.Ordinal);
-                        if (!lastBin.HasValue)
-                            return;
-                        var folder = assemblyLocation.Substring(0, lastBin.Value);
-                        var mrCMSWebFolder = new DirectoryInfo(folder);
-                        var parent = mrCMSWebFolder.Parent;
-                        foreach (var directory in parent.GetDirectories()
-                            .Where(x => x.FullName != mrCMSWebFolder.FullName)
-                            .Select(x => x.GetDirectories())
-                            .SelectMany(folders => folders.Reverse()))
-                        {
-                            options.FileProviders.Insert(0, new PhysicalFileProvider(directory.FullName));
-                        }
-                    }
-                })
                 .AddRazorOptions(options =>
                 {
                     options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());
-                    options.ViewLocationExpanders.Insert(1, new AppViewLocationExpander());
+                    options.ViewLocationExpanders.Insert(1, new WidgetViewExpander());
                     options.ViewLocationExpanders.Insert(2, new ThemeViewLocationExpander());
+                    options.ViewLocationExpanders.Insert(3, new AppViewLocationExpander());
                 })
-                .AddViewLocalization()
                 .AddMrCMSDataAnnotations()
                 .AddDataAnnotationsLocalization()
                 .AddAppMvcConfig(appContext);
         }
 
-        public static IFileProvider AddFileProvider(this IServiceCollection services,
-            IWebHostEnvironment environment, MrCMSAppContext appContext)
+        public class CulturedQueryStringValueProviderFactory : IValueProviderFactory
         {
-            var physicalProvider = environment.ContentRootFileProvider;
-            var compositeFileProvider =
-                new CompositeFileProvider(new[] {physicalProvider}.Concat(appContext.ViewFileProviders));
+            public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
+            {
+                if (context == null)
+                {
+                    throw new ArgumentNullException(nameof(context));
+                }
 
-            services.AddSingleton<IFileProvider>(compositeFileProvider);
+                var query = context.ActionContext.HttpContext.Request.Query;
+                if (query != null && query.Count > 0)
+                {
+                    var valueProvider = new QueryStringValueProvider(
+                        BindingSource.Query,
+                        query,
+                        CultureInfo.CurrentCulture);
 
-            return compositeFileProvider;
+                    context.ValueProviders.Add(valueProvider);
+                }
+
+                return Task.CompletedTask;
+            }
         }
     }
 }

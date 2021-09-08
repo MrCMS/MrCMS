@@ -1,9 +1,9 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -16,18 +16,17 @@ namespace MrCMS.Web.Admin.Controllers
             _stringResourceUpdateService = stringResourceUpdateService;
         }
 
-        public FileResult Export(StringResourceSearchQuery searchQuery)
+        public async Task<FileResult> Export(StringResourceSearchQuery searchQuery)
         {
-            return _stringResourceUpdateService.Export(searchQuery);
+            return await _stringResourceUpdateService.Export(searchQuery);
         }
 
         [HttpPost]
-        public RedirectToActionResult Import()
+        public async Task<RedirectToActionResult> Import()
         {
-            var summary = _stringResourceUpdateService.Import(Request.Form.Files[0]);
-            TempData.SuccessMessages()
-                .Add(string.Format("{0} resourced procesed - {1} added, {2} updated",
-                    summary.Processed, summary.Added, summary.Updated));
+            var summary = await _stringResourceUpdateService.Import(Request.Form.Files[0]);
+            TempData.AddSuccessMessage(
+                $"{summary.Processed} resourced procesed - {summary.Added} added, {summary.Updated} updated");
             return RedirectToAction("Index", "Resource");
         }
     }

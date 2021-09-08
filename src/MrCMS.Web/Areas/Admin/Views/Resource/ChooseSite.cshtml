@@ -1,14 +1,14 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Web.Admin.Models.ChooseSiteParams
+﻿@model MrCMS.Web.Admin.Models.ChooseSiteParams
 
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @if (!siteOptions.Any())
-{ <fieldset>
+{
+    <fieldset>
         <legend>
-            @Html.Resource("Admin Resources Cannot Override", "Cannot Override")
+            @await Html.Resource("Admin Resources Cannot Override", "Cannot Override")
 
         </legend>
         <p>
@@ -18,13 +18,13 @@
 }
 else
 {
-    using (Html.BeginForm("Add", "Resource", FormMethod.Get, new { id = "resource-choose-site" }))
+    using (Html.BeginForm("Add", "Resource", FormMethod.Get, new {id = "resource-choose-site"}))
     {
         <fieldset>
             <legend>
-                @Html.Resource("Admin Resources Choose Site", "Choose site")
+                @await Html.Resource("Admin Resources Choose Site", "Choose site")
                 <span class="btn-group d-inline pull-right">
-                    <button type="submit" class="btn-primary btn">@Html.Resource("Proceed")</button>
+                    <button type="submit" class="btn-primary btn">@await Html.Resource("Proceed")</button>
                 </span>
             </legend>
             @if (Context.Request.Referer() != null)
@@ -34,11 +34,10 @@ else
             @Html.HiddenFor(siteParams => siteParams.Key)
             @Html.HiddenFor(siteParams => siteParams.Language)
             <div class="form-group">
-                @Html.LabelFor(siteParams => siteParams.Id, @Html.Resource("Site"))
-                @Html.DropDownListFor(siteParams => siteParams.Id, siteOptions, new { @data_val = "true", data_val_required = "Please select a site.", @class = "form-control" })
+                @Html.LabelFor(siteParams => siteParams.Id, await Html.Resource("Site"))
+                @Html.DropDownListFor(siteParams => siteParams.Id, siteOptions, new {@data_val = "true", data_val_required = "Please select a site.", @class = "form-control"})
                 @Html.ValidationMessageFor(siteParams => siteParams.Id)
             </div>
         </fieldset>
     }
 }
-@{ Html.IncludeScript("~/Areas/Admin/scripts/choose-site.js");}

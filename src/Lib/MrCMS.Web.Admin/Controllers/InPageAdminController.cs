@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
-using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -12,34 +12,33 @@ namespace MrCMS.Web.Admin.Controllers
     public class InPageAdminController : MrCMSAdminController
     {
         private readonly IInPageAdminService _inPageAdminService;
+        private readonly IWebpageAdminService _webpageUiService;
 
-        public InPageAdminController(IInPageAdminService inPageAdminService)
+        public InPageAdminController(IInPageAdminService inPageAdminService, IWebpageAdminService webpageUiService)
         {
             _inPageAdminService = inPageAdminService;
+            _webpageUiService = webpageUiService;
         }
 
-        public ActionResult InPageEditor(Webpage page)
+        public async Task<ActionResult> InPageEditor(int id)
         {
-            return PartialView("InPageEditor", page);
+            return PartialView("InPageEditor", await _webpageUiService.GetWebpage(id));
         }
 
         [HttpPost]
-        //[ValidateInput(false)]
-        public JsonResult SaveContent(UpdatePropertyData updatePropertyData)
+        public async Task<JsonResult> SaveContent(UpdatePropertyData updatePropertyData)
         {
-            return Json(_inPageAdminService.SaveContent(updatePropertyData));
+            return Json(await _inPageAdminService.SaveContent(updatePropertyData));
         }
 
-        //[ValidateInput(false)]
-        public PartialViewResult GetUnformattedContent(GetPropertyData getPropertyData)
+        public async Task<PartialViewResult> GetUnformattedContent(GetPropertyData getPropertyData)
         {
-            return PartialView(_inPageAdminService.GetContent(getPropertyData));
+            return PartialView(await _inPageAdminService.GetContent(getPropertyData));
         }
 
-        //[ValidateInput(false)]
-        public PartialViewResult GetFormattedContent(GetPropertyData getPropertyData)
+        public async Task<PartialViewResult> GetFormattedContent(GetPropertyData getPropertyData)
         {
-            return PartialView(_inPageAdminService.GetContent(getPropertyData));
+            return PartialView(await _inPageAdminService.GetContent(getPropertyData));
         }
     }
 }

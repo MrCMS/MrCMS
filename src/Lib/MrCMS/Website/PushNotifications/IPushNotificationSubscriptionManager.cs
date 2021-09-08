@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Website.PushNotifications
 {
     public interface IPushNotificationSubscriptionManager
     {
-        WebPushResult CreateSubscription(PushNotificationSubscription subscription);
-        WebPushResult RemoveSubscription(string endpoint);
-        string GetServiceWorkerJavaScript();
+        Task<WebPushResult> CreateOrUpdateSubscription(PushNotificationSubscription subscription);
+        Task<WebPushResult> RemoveSubscription(string endpoint);
+        Task<string> GetServiceWorkerJavaScript();
     }
 }

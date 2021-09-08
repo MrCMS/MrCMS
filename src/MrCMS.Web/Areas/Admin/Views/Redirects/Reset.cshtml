@@ -1,0 +1,19 @@
+@model MrCMS.Entities.Documents.Web.UrlHistory
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+<form asp-controller="Redirects" asp-action="Reset" asp-route-id="@Model.Id">
+    @Html.ReturnToReferrer()
+    <fieldset>
+        <legend>
+            Reset
+            <span class="btn-group display-inline pull-right">
+                <button type="submit" class="btn btn-warning">Reset</button>
+            </span>
+        </legend>
+        <p>
+            @string.Format(await Html.Resource("Redirects - reset", "Are you sure you wish to reset '{0}'?"), Model.UrlSegment)
+        </p>
+    </fieldset>
+</form>

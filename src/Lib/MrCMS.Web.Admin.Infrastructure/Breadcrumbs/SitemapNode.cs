@@ -13,11 +13,13 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
             Order = breadcrumb.Order;
             CssClass = breadcrumb.CssClass;
             Url = url;
+            OpenInNewWindow = breadcrumb.OpenInNewWindow;
         }
 
         public Type BreadcrumbType { get; set; }
         public string Name { get; private set; }
         public string Url { get; }
+        public bool OpenInNewWindow { get; }
         // public string Controller { get; }
         // public string Action { get; }
         public List<SitemapNode> Nodes { get; } = new List<SitemapNode>();
@@ -58,7 +60,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
             }
         }
 
-        public int Order { get; }
+        public decimal Order { get; }
         // public bool HasRouteInfo => !string.IsNullOrWhiteSpace(Controller) && !string.IsNullOrWhiteSpace(Action);
         public string CssClass { get; }
 

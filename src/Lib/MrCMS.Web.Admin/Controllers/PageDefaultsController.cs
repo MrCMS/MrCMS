@@ -1,9 +1,8 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Web.Admin.ModelBinders;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -16,39 +15,37 @@ namespace MrCMS.Web.Admin.Controllers
             _service = service;
         }
 
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
-            return View(_service.GetAll());
+            return View(await _service.GetAll());
         }
 
         [HttpGet]
-        public PartialViewResult Set(
-            [ModelBinder(typeof(GetUrlGeneratorOptionsTypeModelBinder))]
-            Type type) 
+        public async Task<PartialViewResult> Set(string type)
         {
-            ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(type);
-            ViewData["layout-options"] = _service.GetLayoutOptions();
+            ViewData["url-generator-options"] =  _service.GetUrlGeneratorOptions(type);
+            ViewData["layout-options"] = await _service.GetLayoutOptions();
             return PartialView(_service.GetInfo(type));
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(DefaultsInfo info)
+        public async Task<RedirectToActionResult> Set(DefaultsInfo info)
         {
-            _service.SetDefaults(info);
+            await _service.SetDefaults(info);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public RedirectToActionResult EnableCache(string typeName)
+        public async Task<RedirectToActionResult> EnableCache(string typeName)
         {
-            _service.EnableCache(typeName);
+            await _service.EnableCache(typeName);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public RedirectToActionResult DisableCache(string typeName)
+        public async Task<RedirectToActionResult> DisableCache(string typeName)
         {
-            _service.DisableCache(typeName);
+            await _service.DisableCache(typeName);
             return RedirectToAction("Index");
         }
     }

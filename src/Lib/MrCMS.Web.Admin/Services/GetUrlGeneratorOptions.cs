@@ -9,15 +9,18 @@ namespace MrCMS.Web.Admin.Services
 {
     public class GetUrlGeneratorOptions : IGetUrlGeneratorOptions
     {
+        private static readonly HashSet<Type> GeneratorTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(WebpageUrlGenerator<>));
+
         public List<SelectListItem> Get(Type type, Type currentGeneratorType = null)
         {
             List<SelectListItem> selectListItems = new List<SelectListItem>();
             if (type != null)
             {
                 Type defaultGenerator = typeof(DefaultWebpageUrlGenerator);
-                selectListItems.Add(new SelectListItem { Text = "Default", Value = defaultGenerator.FullName });
-                selectListItems.AddRange(
-                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(WebpageUrlGenerator<>).MakeGenericType(type)).Select(
+                selectListItems.Add(new SelectListItem {Text = "Default", Value = defaultGenerator.FullName});
+                selectListItems.AddRange(GeneratorTypes
+                    .FindAll(x => typeof(WebpageUrlGenerator<>).MakeGenericType(type).IsAssignableFrom(x)).Select(
                         generatorType =>
                             new SelectListItem
                             {
@@ -26,6 +29,7 @@ namespace MrCMS.Web.Admin.Services
                                 Selected = generatorType == currentGeneratorType
                             }));
             }
+
             return selectListItems;
         }
     }

@@ -1,9 +1,8 @@
-﻿using System.Web;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Settings;
-using MrCMS.Website;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services.Auth
@@ -20,7 +19,7 @@ namespace MrCMS.Services.Auth
             _session = session;
             _httpContextAccessor = httpContextAccessor;
         }
-        public void Execute(UserFailedLoginEventArgs args)
+        public async Task Execute(UserFailedLoginEventArgs args)
         {
             if (!_securitySettings.LogLoginAttempts)
                 return;
@@ -33,7 +32,7 @@ namespace MrCMS.Services.Auth
                 IpAddress = request.GetCurrentIP(),
                 UserAgent = request.UserAgent()
             };
-            _session.Transact(session => session.Save(loginAttempt));
+            await _session.TransactAsync(session => session.SaveAsync(loginAttempt));
         }
     }
 }

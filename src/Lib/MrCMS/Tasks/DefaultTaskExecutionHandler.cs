@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
     public class DefaultTaskExecutionHandler : ITaskExecutionHandler
     {
-        public DefaultTaskExecutionHandler(ITaskStatusUpdater taskStatusUpdater, ILogger<DefaultTaskExecutionHandler> logger)
+        public DefaultTaskExecutionHandler(ITaskStatusUpdater taskStatusUpdater,
+            ILogger<DefaultTaskExecutionHandler> logger)
         {
             _taskStatusUpdater = taskStatusUpdater;
             _logger = logger;
@@ -16,7 +17,8 @@ namespace MrCMS.Tasks
 
         private readonly ITaskStatusUpdater _taskStatusUpdater;
         private readonly ILogger<DefaultTaskExecutionHandler> _logger;
-        public int Priority { get { return -1; } }
+        public int Priority => -1;
+
         public IList<AdHocTask> ExtractTasksToHandle(ref IList<AdHocTask> list)
         {
             var newList = list.ToList();
@@ -24,21 +26,28 @@ namespace MrCMS.Tasks
             return newList;
         }
 
-        public List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list)
+        public async Task<IReadOnlyCollection<TaskExecutionResult>> ExecuteTasks(IList<AdHocTask> list)
         {
-            _taskStatusUpdater.BeginExecution(list);
-            var results = list.Select(Execute).ToList();
+            if (!list.Any())
+                return new List<TaskExecutionResult>();
+
+            _logger.LogInformation($"Executing {list.Count} task(s)");
+
+            await _taskStatusUpdater.BeginExecution(list);
+            // var results = list.Select(Execute).ToList();
+            // todo - check if this works, otherwise refactor to a loop
+            var results = await Task.WhenAll(list.Select(Execute));
 
             // we are batching these to increase performance (no need for 1 transaction per update)
-            _taskStatusUpdater.CompleteExecution(results);
+            await _taskStatusUpdater.CompleteExecution(results);
             return results;
         }
 
-        private TaskExecutionResult Execute(AdHocTask executableTask)
+        private async Task<TaskExecutionResult> Execute(AdHocTask executableTask)
         {
             try
             {
-                return executableTask.Execute();
+                return await executableTask.Execute();
             }
             catch (Exception exception)
             {

@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 //using MrCMS.DbConfiguration.Caches;
-using MrCMS.Helpers;
-using NHibernate.Cache;
 
 namespace MrCMS.DbConfiguration
 {

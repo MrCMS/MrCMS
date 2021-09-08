@@ -6,6 +6,5 @@ namespace MrCMS.Batching
     public interface IBatchJobExecutor
     {
         Task<BatchJobExecutionResult> Execute(BatchJob batchJob);
-        bool UseAsync { get; }
     }
 }

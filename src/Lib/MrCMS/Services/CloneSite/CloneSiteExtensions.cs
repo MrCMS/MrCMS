@@ -20,7 +20,7 @@ namespace MrCMS.Services.CloneSite
             if (type == null)
                 return int.MaxValue;
             var cloneSitePartOrderAttribute = type.GetCustomAttribute<CloneSitePartAttribute>();
-            return cloneSitePartOrderAttribute != null ? cloneSitePartOrderAttribute.Order : int.MaxValue;
+            return cloneSitePartOrderAttribute?.Order ?? int.MaxValue;
         }
         public static string GetCloneSitePartDisplayName(Type type)
         {

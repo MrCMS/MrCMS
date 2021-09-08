@@ -4,9 +4,6 @@ namespace MrCMS.Services.FileMigration
 {
     public class MigrateFilesBatchJob : BatchJob
     {
-        public override string Name
-        {
-            get { return "Migrate Files"; }
-        }
+        public override string Name => "Migrate Files";
     }
 }

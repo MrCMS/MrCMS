@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -17,14 +17,23 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            IEnumerable<Webpage> copies = GetWebpageCopies(@from, to, siteCloneContext).ToList();
+            var copies = await GetWebpageCopies(@from, to, siteCloneContext);
 
-            _session.Transact(session => copies.ForEach(webpage => session.Save(webpage)));
+            await _session.TransactAsync(async session =>
+            {
+                foreach (var webpage in copies)
+                {
+                    await session.SaveAsync(webpage);
+                }
+
+                // return copies.ForEach(webpage => session.Save(webpage));
+            });
         }
 
-        private IEnumerable<Webpage> GetWebpageCopies(Site @from, Site to, SiteCloneContext siteCloneContext,
+        private async Task<IReadOnlyList<Webpage>> GetWebpageCopies(Site @from, Site to,
+            SiteCloneContext siteCloneContext,
             Webpage fromParent = null,
             Webpage toParent = null)
         {
@@ -33,18 +42,21 @@ namespace MrCMS.Services.CloneSite
             queryOver = fromParent == null
                 ? queryOver.Where(webpage => webpage.Parent == null)
                 : queryOver.Where(webpage => webpage.Parent.Id == fromParent.Id);
-            IList<Webpage> webpages = queryOver.List();
+            IList<Webpage> webpages = await queryOver.ListAsync();
+            var list = new List<Webpage>();
             foreach (Webpage webpage in webpages)
             {
                 Webpage copy = webpage.GetCopyForSite(to);
                 siteCloneContext.AddEntry(webpage, copy);
                 copy.Parent = toParent;
-                yield return copy;
-                foreach (Webpage child in GetWebpageCopies(@from, to, siteCloneContext, webpage, copy))
+                list.Add(copy);
+                foreach (Webpage child in await GetWebpageCopies(@from, to, siteCloneContext, webpage, copy))
                 {
-                    yield return child;
+                    list.Add(child);
                 }
             }
+
+            return list;
         }
     }
 }

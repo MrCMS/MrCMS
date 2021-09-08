@@ -5,7 +5,7 @@
 
 <div class="form-group">
     @Html.LabelFor(x => x.ArticleListId)
-    @Html.DropDownListFor(x => x.ArticleListId, GetArticleListOptions.GetOptions(), new { @class = "form-control" })
+    @Html.DropDownListFor(x => x.ArticleListId, await GetArticleListOptions.GetOptions(), new { @class = "form-control" })
     @Html.ValidationMessageFor(x => x.ArticleListId)
 </div>
 

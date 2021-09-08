@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services.Events;
@@ -18,28 +19,28 @@ namespace MrCMS.Services
             _eventContext = eventContext;
         }
 
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
-            _session.Transact(session => { session.Save(user); });
-            _eventContext.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
+            await _session.TransactAsync((session) => session.SaveAsync(user));
+            await _eventContext.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
         }
 
-        public void SaveUser(User user)
+        public async Task SaveUser(User user)
         {
-            _session.Transact(session => session.Update(user));
+            await _session.TransactAsync(session => session.UpdateAsync(user));
         }
 
-        public User GetUser(int id)
+        public Task<User> GetUser(int id)
         {
-            return _session.Get<User>(id);
+            return _session.GetAsync<User>(id);
         }
 
-        public void DeleteUser(int id)
+        public async Task DeleteUser(int id)
         {
-            var user = GetUser(id);
+            var user = await GetUser(id);
             if (user == null)
                 return;
-            _session.Transact(session => session.Delete(user));
+            await _session.TransactAsync((session) => session.DeleteAsync(user));
         }
 
         /// <summary>
@@ -48,19 +49,20 @@ namespace MrCMS.Services
         /// <param name="email"></param>
         /// <param name="id">The id of user to exclude from check. Has to be string because of AdditionFields on Remote property</param>
         /// <returns></returns>
-        public bool IsUniqueEmail(string email, int? id = null)
+        public async Task<bool> IsUniqueEmail(string email, int? id = null)
         {
             if (id.HasValue)
             {
-                return _session.QueryOver<User>().Where(u => u.Email == email && u.Id != id.Value).RowCount() == 0;
+                return await _session.QueryOver<User>().Where(u => u.Email == email && u.Id != id.Value)
+                    .RowCountAsync() == 0;
             }
 
-            return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
+            return await _session.QueryOver<User>().Where(u => u.Email == email).RowCountAsync() == 0;
         }
 
-        public IPagedList<User> GetAllUsersPaged(int page)
+        public Task<IPagedList<User>> GetAllUsersPaged(int page)
         {
-            return _session.QueryOver<User>().Paged(page);
+            return _session.QueryOver<User>().PagedAsync(page);
         }
     }
 }

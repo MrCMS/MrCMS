@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using MrCMS.Batching;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -21,17 +20,19 @@ namespace MrCMS.Services.WebsiteManagement
             _notificationDisabler = notificationDisabler;
         }
 
-        protected override BatchJobExecutionResult OnExecute(UpdateUrlBatchJob batchJob)
+
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(UpdateUrlBatchJob batchJob)
         {
             using (_notificationDisabler.Disable())
             {
                 var webpage = _session.Get<Webpage>(batchJob.WebpageId);
                 if (webpage == null)
                 {
-                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
+                    return
+                        BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
                 }
 
-                _session.Transact(session =>
+                await _session.TransactAsync(async session =>
                 {
                     var urlHistories = webpage.Urls.ToList();
                     foreach (var webpageUrl in urlHistories)
@@ -40,20 +41,15 @@ namespace MrCMS.Services.WebsiteManagement
                             continue;
 
                         webpage.Urls.Remove(webpageUrl);
-                        session.Delete(webpageUrl);
+                        await session.DeleteAsync(webpageUrl);
                     }
 
                     webpage.UrlSegment = batchJob.NewUrl;
-                    session.Update(webpage);
+                    await session.UpdateAsync(webpage);
                 });
 
                 return BatchJobExecutionResult.Success();
             }
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(UpdateUrlBatchJob batchJob)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,7 +1,6 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
-using MrCMS.Helpers;
-using MrCMS.Models.Auth;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
@@ -18,28 +17,27 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _unlockPageService = unlockPageService;
         }
 
-
         [HttpGet]
         [CanonicalLinks]
-        public ViewResult Show(WebpagePasswordPage page, int lockedPage)
+        public async Task<ViewResult> Show(WebpagePasswordPage page, int lockedPage)
         {
-            ViewData["locked-page"] = _unlockPageService.GetLockedPage(lockedPage);
+            ViewData["locked-page"] = await _unlockPageService.GetLockedPage(lockedPage);
 
             return View(page);
         }
 
         [HttpPost]
-        public RedirectResult Post(WebpagePasswordPage page, UnlockPageModel model)
+        public async Task<RedirectResult> Post(WebpagePasswordPage page, UnlockPageModel model)
         {
-            var result = _unlockPageService.TryUnlockPage(model,Response.Cookies);
+            var result = await _unlockPageService.TryUnlockPage(model,Response.Cookies);
 
             if (result.Success)
             {
-                return _unlockPageService.RedirectToPage(result.LockedPageId);
+                return await _unlockPageService.RedirectToPage(result.LockedPageId);
             }
 
             TempData["error"] = true;
-            return _unlockPageService.RedirectBackToPage(model);
+            return await _unlockPageService.RedirectBackToPage(model);
         }
 
     }

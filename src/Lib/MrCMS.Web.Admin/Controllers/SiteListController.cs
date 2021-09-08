@@ -1,6 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -13,9 +14,9 @@ namespace MrCMS.Web.Admin.Controllers
             _siteListService = siteListService;
         }
 
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            return PartialView(_siteListService.GetSites());
+            return PartialView(await _siteListService.GetSites());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Website.Controllers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {

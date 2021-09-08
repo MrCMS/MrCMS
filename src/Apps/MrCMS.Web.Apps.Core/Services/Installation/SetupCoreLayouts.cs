@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
@@ -21,10 +22,10 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             _configurationProvider = configurationProvider;
         }
 
-        public void Setup()
+        public async Task Setup()
         {
             Layout baseLayout = null;
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 baseLayout = new Layout
                 {
@@ -33,18 +34,20 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                     LayoutAreas = new List<LayoutArea>()
                 };
 
-                session.Save(baseLayout);
+                await session.SaveAsync(baseLayout);
             });
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
             siteSettings.DefaultLayoutId = baseLayout.Id;
-            _configurationProvider.SaveSettings(siteSettings);
+            await _configurationProvider.SaveSettings(siteSettings);
 
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
-
                 List<LayoutArea> layoutAreas = GetDefaultAreas(baseLayout);
-                layoutAreas.ForEach(area => session.Save(area));
+                foreach (var area in layoutAreas)
+                {
+                    await session.SaveAsync(area);
+                }
 
                 var layoutTwoColumn = new Layout
                 {
@@ -52,7 +55,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                     Name = "Two Column"
                 };
 
-                session.Save(layoutTwoColumn);
+                await session.SaveAsync(layoutTwoColumn);
 
                 var layoutAreasTwoColumn = new List<LayoutArea>
                 {
@@ -63,9 +66,13 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                     }
                 };
                 foreach (LayoutArea layoutArea in layoutAreasTwoColumn)
-                    session.Save(layoutArea);
+                    await session.SaveAsync(layoutArea);
 
-                AddWidgets(layoutAreas).ForEach(widget => session.Save(widget));
+                var widgets = AddWidgets(layoutAreas);
+                foreach (var widget in widgets)
+                {
+                    await session.SaveAsync(widget);
+                }
             });
         }
 

@@ -15,7 +15,8 @@ namespace MrCMS.Batching.Services
         private readonly ISetBatchJobExecutionStatus _setBatchJobExecutionStatus;
         private readonly ILogger<BatchExecutionService> _logger;
 
-        public BatchJobExecutionService(IServiceProvider serviceProvider, ISetBatchJobExecutionStatus setBatchJobExecutionStatus, ILogger<BatchExecutionService> logger)
+        public BatchJobExecutionService(IServiceProvider serviceProvider,
+            ISetBatchJobExecutionStatus setBatchJobExecutionStatus, ILogger<BatchExecutionService> logger)
         {
             _serviceProvider = serviceProvider;
             _setBatchJobExecutionStatus = setBatchJobExecutionStatus;
@@ -27,11 +28,12 @@ namespace MrCMS.Batching.Services
         static BatchJobExecutionService()
         {
             var batchJobTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<BatchJob>();
+            var allExecutorTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(BaseBatchJobExecutor<>));
 
             foreach (var batchJobType in batchJobTypes)
             {
                 var type = typeof(BaseBatchJobExecutor<>).MakeGenericType(batchJobType);
-                var executorTypes = TypeHelper.GetAllTypesAssignableFrom(type);
+                var executorTypes = allExecutorTypes.FindAll(t => type.IsAssignableFrom(t));
                 if (executorTypes.Any())
                 {
                     _executorTypeList[batchJobType] = executorTypes.First();
@@ -54,9 +56,9 @@ namespace MrCMS.Batching.Services
 
             try
             {
-                _setBatchJobExecutionStatus.Starting(batchJob);
+                await _setBatchJobExecutionStatus.Starting(batchJob);
                 var result = await batchJobExecutor.Execute(batchJob);
-                _setBatchJobExecutionStatus.Complete(batchJob, result);
+                await _setBatchJobExecutionStatus.Complete(batchJob, result);
                 return result;
             }
             catch (Exception exception)

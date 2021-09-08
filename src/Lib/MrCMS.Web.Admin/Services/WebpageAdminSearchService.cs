@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
@@ -16,7 +17,7 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public IPagedList<Webpage> Search(WebpageSearchQuery searchQuery)
+        public async Task<IPagedList<Webpage>> Search(WebpageSearchQuery searchQuery)
         {
             var query = _session.QueryOver<Webpage>().Where(x => x.Parent.Id == searchQuery.ParentId);
 
@@ -25,7 +26,7 @@ namespace MrCMS.Web.Admin.Services
                 query = query.Where(x => x.Name.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere));
             }
 
-            return query.Paged(searchQuery.Page);
+            return await query.PagedAsync(searchQuery.Page, 50);
         }
     }
 }

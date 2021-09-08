@@ -1,4 +1,5 @@
-﻿using MrCMS.Settings;
+﻿using System.Threading.Tasks;
+using MrCMS.Settings;
 
 namespace MrCMS.Messages.Security
 {
@@ -10,15 +11,15 @@ namespace MrCMS.Messages.Security
         {
             _mailSettings = mailSettings;
         }
-        public override TrackingScriptsChangeMessageTemplate Get()
+        public override Task<TrackingScriptsChangeMessageTemplate> Get()
         {
-            return new TrackingScriptsChangeMessageTemplate
+            return Task.FromResult(new TrackingScriptsChangeMessageTemplate
             {
                 Subject = "Tracking Script Change - {Status}",
                 FromAddress = _mailSettings.SystemEmailAddress,
                 ToAddress = _mailSettings.SystemEmailAddress,
                 Body = "The tracking script has been modified."
-            };
+            });
         }
     }
 }

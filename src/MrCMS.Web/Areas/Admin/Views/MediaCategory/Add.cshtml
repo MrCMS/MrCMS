@@ -5,45 +5,36 @@
     var parent = ViewData["parent"] as MediaCategory;
 }
 
-@section JavaScriptBlock
-{
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/scripts/add-category.js")"></script>
-}
-
-<form asp-controller="MediaCategory" asp-action="Add" method="post" id = "add-media-category">
+<form asp-controller="MediaCategory" asp-action="Add" method="post" id="add-media-category">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-add", "Add") "/>
+            <admin-header-title title="@await Html.Resource("admin-add", "Add") " />
 
             <admin-header-actions>
                 <button class="btn btn-primary">
-                    @Html.Resource("Add")
+                    @await Html.Resource("Add")
                 </button>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
-            <div class="row">
-                <div class="col-lg-12">
-                    @Html.HiddenFor(x => x.ParentId)
-                    @Html.Hidden("ParentUrl", parent?.UrlSegment)
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.Name, "Folder Name")
-                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.UrlSegment, "Path")
-                        @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
-                    </div>
-                    @Html.Hidden("DocumentType", "MediaCategory")
-                </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <input type="hidden" asp-for="ParentId" />
+            @Html.Hidden("ParentUrl", parent?.UrlSegment)
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input type="text" asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name"></span>
             </div>
-        </card-body>
-    </card>
+            <div class="form-group">
+                <label asp-for="UrlSegment"></label>
+                <input type="text" asp-for="UrlSegment" class="form-control" />
+                <span asp-validation-for="UrlSegment"></span>
+            </div>
+            @Html.Hidden("DocumentType", "MediaCategory")
+        </div>
+    </div>
 
 </form>

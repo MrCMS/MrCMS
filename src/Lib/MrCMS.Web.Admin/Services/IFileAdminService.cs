@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
@@ -10,25 +11,25 @@ namespace MrCMS.Web.Admin.Services
 {
     public interface IFileAdminService
     {
-        ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            int mediaCategoryId);
+        Task<ViewDataUploadFilesResult> AddFile(Stream stream, string fileName, string contentType, long contentLength,
+            int? mediaCategoryId);
 
-        void DeleteFile(MediaFile mediaFile);
-        MediaFile UpdateSEO(UpdateFileSEOModel model);
+        Task DeleteFile(int id);
+        Task<MediaFile> UpdateSEO(UpdateFileSEOModel model);
         bool IsValidFileType(string fileName);
-        IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
-        List<ImageSortItem> GetFilesToSort(MediaCategory category = null);
-        void SetOrders(List<SortItem> items);
-        IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel);
-        UpdateFileSEOModel GetEditModel(int id);
+        Task<IPagedList<MediaFile>> GetFilesForFolder(MediaCategorySearchModel searchModel);
+        Task<IList<ImageSortItem>> GetFilesToSort(MediaCategory category = null);
+        Task SetOrders(List<SortItem> items);
+        Task<IList<MediaCategory>> GetSubFolders(MediaCategorySearchModel searchModel);
+        Task<UpdateFileSEOModel> GetEditModel(int id);
 
-        string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null);
-        void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null);
-        void DeleteFilesSoft(IEnumerable<MediaFile> files);
-        void DeleteFilesHard(IEnumerable<MediaFile> files);
-        void DeleteFoldersSoft(IEnumerable<MediaCategory> folders);
-        MediaCategory GetCategory(MediaCategorySearchModel searchModel);
+        Task<string> MoveFolders(IEnumerable<int> folderIds, int? parentId = null);
+        Task MoveFiles(IEnumerable<int> fileIds, int? parentId = null);
+        Task DeleteFilesSoft(IEnumerable<int> fileIds);
+        Task DeleteFilesHard(IEnumerable<int> fileIds);
+        Task DeleteFoldersSoft(IEnumerable<int> folderIds);
+        Task<MediaCategory> GetCategory(MediaCategorySearchModel searchModel);
         List<SelectListItem> GetSortByOptions(MediaCategorySearchModel searchModel);
-        MediaFile GetFile(int id);
+        Task<MediaFile> GetFile(int id);
     }
 }

@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function (config) {
     config.removePlugins = 'elementspath';
     config.forcePasteAsPlainText = true;
     config.allowedContent = true;
-    config.contentsCss = ['/Apps/Core/lib/bootstrap/dist/css/bootstrap.css', '/Apps/Core/styles/style.css'];
+    config.contentsCss = ['/lib/bootstrap/dist/css/bootstrap.css', '/styles/style.css'];
 	config.removeDialogTabs = 'link:advanced';
 
     config.filebrowserImageBrowseUrl = '/admin/mediaselector/ckeditor';

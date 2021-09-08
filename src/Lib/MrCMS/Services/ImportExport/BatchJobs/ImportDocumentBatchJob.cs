@@ -22,9 +22,6 @@ namespace MrCMS.Services.ImportExport.BatchJobs
             }
         }
 
-        public override string Name
-        {
-            get { return "Import Document - " + UrlSegment; }
-        }
+        public override string Name => "Import Document - " + UrlSegment;
     }
 }

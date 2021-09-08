@@ -1,8 +1,6 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Website
 @model MrCMS.Web.Admin.Models.WebpageEdit.RedirectSEOTabViewModel
 @inject IDocumentMetadataService DocumentMetadataService
 @{
@@ -12,16 +10,25 @@
     <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
             For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
 
-    @Html.Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control", style = "display:none;"})
+    @await Html.Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control", style = "display:none;"})
     @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
     <button id="change-url" class="btn btn-secondary btn-sm">Change</button>
+
+    <hr/>
+
+    <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="The publish date can be set in the future should you wish the page to go live at a later date">&nbsp;</i>
+    <label asp-for="PublishOn">
+        Publish On - <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@await Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
+    </label>
+    <input type="text" asp-for="PublishOn" class="form-control date-time-picker"/>
+    <span asp-validation-for="PublishOn"></span>
 
     <hr/>
 
     <div class="d-inline">
         <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
 
-        @Html.ActionLink(Html.Resource("Add"), "Add", "UrlHistory", new {webpageId = Model.Id}, new {@class = "btn btn-sm btn-success", data_toggle = "fb-modal"})
+        @Html.ActionLink(await Html.Resource("Add"), "Add", "UrlHistory", new {webpageId = Model.Id}, new {@class = "btn btn-sm btn-success", data_toggle = "fb-modal"})
     </div>
     @if (webpage.Urls.Any())
     {
@@ -43,16 +50,16 @@
     }
     else
     {
-        @Html.Resource("Admin Webpage Seo No URL History", "No URL History")
+        @await Html.Resource("Admin Webpage Seo No URL History", "No URL History")
     }
 
 </div>
 
 <hr/>
-<strong>@Html.Resource("Page type"):</strong> @DocumentMetadataService.GetDocumentMetadata(Html, Model.Id).Name
+<strong>@await Html.Resource("Page type"):</strong> @DocumentMetadataService.GetDocumentMetadata(Html, Model.Id).Name
 <br/>
-<strong>@Html.Resource("Created On"): </strong>@webpage.CreatedOn
+<strong>@await Html.Resource("Created On"): </strong>@webpage.CreatedOn
 <br/>
-<strong>@Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
+<strong>@await Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
 <br/>
 <strong>Page Id: </strong>@Model.Id

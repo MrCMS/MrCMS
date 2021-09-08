@@ -2,14 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Data;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.ModelBinders
 {
-
     public class MoveFilesModelBinder : IModelBinder
     {
         //private readonly IRepository<MediaCategory> _mediaCategoryRepository;
@@ -37,21 +33,19 @@ namespace MrCMS.Web.Admin.ModelBinders
 
             var model = new MoveFilesAndFoldersModel();
 
-            var mediaCategoryRepository = bindingContext.HttpContext.RequestServices.GetRequiredService<IRepository<MediaCategory>>();
-            var mediaFileRepository = bindingContext.HttpContext.RequestServices.GetRequiredService<IRepository<MediaFile>>();
             if (folderId != "")
             {
-                model.Folder = mediaCategoryRepository.Get(Convert.ToInt32(folderId));
+                model.Folder = Convert.ToInt32(folderId);
             }
+
             if (files != "")
             {
-                var filesList = files.Split(',').Select(int.Parse).ToList();
-                model.Files = mediaFileRepository.Query().Where(arg => filesList.Contains(arg.Id)).ToList();
+                model.Files = files.Split(',').Select(int.Parse).ToList();
             }
+
             if (folders != "")
             {
-                var foldersList = folders.Split(',').Select(int.Parse).ToList();
-                model.Folders = mediaCategoryRepository.Query().Where(arg => foldersList.Contains(arg.Id)).ToList();
+                model.Folders = folders.Split(',').Select(int.Parse).ToList();
             }
 
             bindingContext.Result = ModelBindingResult.Success(model);

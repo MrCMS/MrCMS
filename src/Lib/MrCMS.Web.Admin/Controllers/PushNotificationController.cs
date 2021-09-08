@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -14,14 +15,34 @@ namespace MrCMS.Web.Admin.Controllers
             _service = service;
         }
 
-        public ViewResult Index()
+        public async Task<ViewResult> Index(PushNotificationSearchModel searchModel)
         {
-            return View();
+            ViewData["results"] = await _service.Search(searchModel);
+            return View(searchModel);
         }
 
-        public JsonResult Push(PushNotificationModel model)
+        public ViewResult SendToAll(PushNotificationModel model)
         {
-            return Json(_service.PushToAll(model));
+            ModelState.Clear();
+            return View(model);
+        }
+
+        public ViewResult SendToRole(PushToRoleNotificationModel model)
+        {
+            ModelState.Clear();
+            return View(model);
+        }
+
+        [ActionName(nameof(SendToAll)), HttpPost]
+        public async Task<JsonResult> PushToAll(PushNotificationModel model)
+        {
+            return Json(await _service.PushToAll(model));
+        }
+
+        [ActionName(nameof(SendToRole)), HttpPost]
+        public async Task<JsonResult> PushToRole(PushToRoleNotificationModel model)
+        {
+            return Json(await _service.PushToRole(model));
         }
     }
 }

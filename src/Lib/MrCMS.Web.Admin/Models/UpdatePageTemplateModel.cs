@@ -17,6 +17,7 @@ namespace MrCMS.Web.Admin.Models
         [Required]
         public string PageType { get; set; }
 
+        [DisplayName("Layout")]
         public int? LayoutId { get; set; }
 
         [Required]

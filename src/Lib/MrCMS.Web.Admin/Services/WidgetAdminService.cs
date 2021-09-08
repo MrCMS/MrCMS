@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
@@ -19,6 +21,10 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
             _mapper = mapper;
         }
+
+        private static readonly HashSet<Type> AddPropertiesTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(
+            typeof(IAddPropertiesViewModel<>));
+
         public object GetAdditionalPropertyModel(string type)
         {
             if (string.IsNullOrWhiteSpace(type))
@@ -27,16 +33,15 @@ namespace MrCMS.Web.Admin.Services
             var documentType = TypeHelper.GetTypeByName(type);
             if (documentType == null)
                 return null;
-            var additionalPropertyType =
-                TypeHelper.GetAllConcreteTypesAssignableFrom(
-                    typeof(IAddPropertiesViewModel<>).MakeGenericType(documentType)).FirstOrDefault();
+            var additionalPropertyType = AddPropertiesTypes.FirstOrDefault(x =>
+                typeof(IAddPropertiesViewModel<>).MakeGenericType(documentType).IsAssignableFrom(x));
             if (additionalPropertyType == null)
                 return null;
 
             return Activator.CreateInstance(additionalPropertyType);
         }
 
-        public Widget AddWidget(AddWidgetModel model, object additionalPropertyModel)
+        public async Task<Widget> AddWidget(AddWidgetModel model, object additionalPropertyModel)
         {
             var type = TypeHelper.GetTypeByName(model.WidgetType);
             var instance = Activator.CreateInstance(type) as Widget;
@@ -45,45 +50,45 @@ namespace MrCMS.Web.Admin.Services
                 _mapper.Map(additionalPropertyModel, instance);
 
             instance.LayoutArea.AddWidget(instance);
-            _session.Transact(session => session.Save(instance));
+            await _session.TransactAsync(session => session.SaveAsync(instance));
 
             return instance;
         }
 
-        public UpdateWidgetModel GetEditModel(int id)
+        public async Task<UpdateWidgetModel> GetEditModel(int id)
         {
-            return _mapper.Map<UpdateWidgetModel>(GetWidget(id));
+            return _mapper.Map<UpdateWidgetModel>(await GetWidget(id));
         }
 
-        public Widget GetWidget(int id)
+        public async Task<Widget> GetWidget(int id)
         {
-            return _session.Get<Widget>(id);
+            return await _session.GetAsync<Widget>(id);
         }
 
-        public object GetAdditionalPropertyModel(int id)
+        public async Task<object> GetAdditionalPropertyModel(int id)
         {
-            var widget = GetWidget(id);
+            var widget = await GetWidget(id);
             return GetAdditionalPropertyModel(widget?.WidgetType);
         }
 
-        public Widget UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel)
+        public async Task<Widget> UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel)
         {
-            var widget = GetWidget(model.Id);
+            var widget = await GetWidget(model.Id);
             _mapper.Map(model, widget);
 
             if (additionalPropertyModel != null)
                 _mapper.Map(additionalPropertyModel, widget);
 
-            _session.Transact(session => session.Update(widget));
+            await _session.TransactAsync(session => session.UpdateAsync(widget));
 
             return widget;
         }
 
-        public Widget DeleteWidget(int id)
+        public async Task<Widget> DeleteWidget(int id)
         {
-            var widget = GetWidget(id);
+            var widget = await GetWidget(id);
 
-            _session.Transact(session => session.Delete(widget));
+            await _session.TransactAsync(session => session.DeleteAsync(widget));
 
             return widget;
         }

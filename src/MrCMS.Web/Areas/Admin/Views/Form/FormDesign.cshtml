@@ -1,17 +1,15 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Web.Admin.Models.Forms.FormDesignTabViewModel
-<h4>@Html.Resource("Admin Webpage Form Design", "Form Design")</h4>
+﻿@model MrCMS.Web.Admin.Models.Forms.FormDesignTabViewModel
+<h4>@await Html.Resource("Admin Webpage Form Design", "Form Design")</h4>
 
 @Html.InfoBlock("Heads up!", "By default, Mr CMS creates the for HTML form you. " +
-                                  "However if you want a custom form design then you can manually create the form using " +
-                                  "{label:Name}, {input:Name}, {validation:Name} and {submitted-message} where 'Name' is the name " +
-                                  "of the field provided by yourself and {submitted-message} is where you would like to see the success message. " +
-                                  "Note you need a button element and there is no need to open or close the form.")
+                             "However if you want a custom form design then you can manually create the form using " +
+                             "{label:Name}, {input:Name}, {validation:Name} and {submitted-message} where 'Name' is the name " +
+                             "of the field provided by yourself and {submitted-message} is where you would like to see the success message. " +
+                             "Note you need a button element and there is no need to open or close the form.")
 
-@Html.TextAreaFor(webpage => webpage.FormDesign, new { @style = "width: 100%; height: 200px;" })
+<textarea asp-for="FormDesign" class="form-control" style="height: 200px;"></textarea>
 
-
-<h5>@Html.Resource("Example")</h5>
+<h5>@await Html.Resource("Example")</h5>
 <textarea style="width: 100%; height: 200px;">
     <table>
         <tbody>

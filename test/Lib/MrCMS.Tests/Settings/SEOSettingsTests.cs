@@ -1,10 +1,8 @@
 ﻿using System;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Settings;
 using MrCMS.TestSupport;
-using NHibernate;
 using Xunit;
 
 namespace MrCMS.Tests.Settings

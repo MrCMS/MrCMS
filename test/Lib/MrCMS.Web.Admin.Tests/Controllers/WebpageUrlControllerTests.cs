@@ -1,9 +1,9 @@
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Controllers;
-using MrCMS.Web.Apps.Core.Pages;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Controllers
@@ -21,21 +21,21 @@ namespace MrCMS.Web.Admin.Tests.Controllers
 
 
         [Fact]
-        public void WebpageController_SuggestDocumentUrl_ShouldCallGetDocumentUrl()
+        public async Task WebpageController_SuggestDocumentUrl_ShouldCallGetDocumentUrl()
         {
             var suggestParams = new SuggestParams();
-            _webpageUrlController.Suggest(suggestParams);
+            await _webpageUrlController.Suggest(suggestParams);
 
             A.CallTo(() => _webpageUrlService.Suggest(suggestParams)).MustHaveHappened();
         }
 
         [Fact]
-        public void WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
+        public async Task WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
             var suggestParams = new SuggestParams();
             A.CallTo(() => _webpageUrlService.Suggest(suggestParams)).Returns("test/result");
 
-            string url = _webpageUrlController.Suggest(suggestParams);
+            string url = await _webpageUrlController.Suggest(suggestParams);
 
             url.Should().BeEquivalentTo("test/result");
         }

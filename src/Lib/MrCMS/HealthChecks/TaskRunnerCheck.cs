@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Tasks;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
@@ -18,35 +15,33 @@ namespace MrCMS.HealthChecks
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public override string DisplayName
-        {
-            get { return "Task Runner"; }
-        }
+        public override string DisplayName => "Task Runner";
 
-        public override HealthCheckResult PerformCheck()
+        public override Task<HealthCheckResult> PerformCheck()
         {
-            var nowForSite = _getDateTimeNow.LocalNow;
-            var tasks = _taskSettingManager.GetInfo()
-                        .ToList()
-                        .Where(x => x.Enabled &&
-                            (!x.LastCompleted.HasValue || x.LastCompleted.Value <= nowForSite.AddSeconds(-(x.FrequencyInSeconds + 120))));
-
-            if (tasks.Any())
-            {
-                var messages = tasks.Select(task =>
-                {
-                    var lastComplete = task.LastCompleted;
-                    return lastComplete.HasValue
-                        ? $"{task.Name} has not been ran since {lastComplete}"
-                        : $"{task.Name} has never been run";
-                }).ToList();
-                return new HealthCheckResult
-                {
-                    Messages = messages,
-                    Status = HealthCheckStatus.Failure
-                };
-            }
-            return HealthCheckResult.Success;
+            // var nowForSite = _getDateTimeNow.LocalNow;
+            // var tasks = _taskSettingManager.GetInfo()
+            //             .ToList()
+            //             .Where(x => x.Enabled &&
+            //                 (!x.LastCompleted.HasValue || x.LastCompleted.Value <= nowForSite.AddSeconds(-(x.FrequencyInSeconds + 120))));
+            //
+            // if (tasks.Any())
+            // {
+            //     var messages = tasks.Select(task =>
+            //     {
+            //         var lastComplete = task.LastCompleted;
+            //         return lastComplete.HasValue
+            //             ? $"{task.Name} has not been ran since {lastComplete}"
+            //             : $"{task.Name} has never been run";
+            //     }).ToList();
+            //     return new HealthCheckResult
+            //     {
+            //         Messages = messages,
+            //         Status = HealthCheckStatus.Failure
+            //     };
+            // }
+            // todo - potentially remove
+            return Task.FromResult(HealthCheckResult.Success);
         }
     }
 }

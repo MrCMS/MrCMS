@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using NHibernate;
 
 namespace MrCMS.Settings
 {
     public interface ISiteSettingsOptionGenerator
     {
-        List<SelectListItem> GetErrorPageOptions(int pageId);
+        List<SelectListItem> GetTopLevelPageOptions(int pageId);
         List<SelectListItem> GetMediaCategoryOptions(int? categoryId);
         List<SelectListItem> GetLayoutOptions(int? selectedLayoutId);
         List<SelectListItem> GetThemeNames(string themeName);

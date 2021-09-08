@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
-using MrCMS.Helpers;
-using MrCMS.Website;
 
 namespace MrCMS.Batching.Services
 {
@@ -32,14 +30,14 @@ namespace MrCMS.Batching.Services
             if (runResult == null)
             {
                 if (result.Complete)
-                    _setRunStatus.Complete(batchRun);
+                    await _setRunStatus.Complete(batchRun);
                 if (result.Paused)
-                    _setRunStatus.Paused(batchRun);
+                    await _setRunStatus.Paused(batchRun);
                 return false;
             }
 
             if (runResult.BatchJob == null)
-                _setBatchJobExecutionStatus.Complete(runResult,
+                await _setBatchJobExecutionStatus.Complete(runResult,
                     BatchJobExecutionResult.Failure("No job associated to result"));
 
             await _runBatchRunResult.Run(runResult, stopWatch);

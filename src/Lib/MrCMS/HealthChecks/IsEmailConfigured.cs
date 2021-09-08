@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Settings;
 
 namespace MrCMS.HealthChecks
@@ -13,12 +14,9 @@ namespace MrCMS.HealthChecks
             _mailSettings = mailSettings;
         }
 
-        public override string DisplayName
-        {
-            get { return "Email settings check"; }
-        }
+        public override string DisplayName => "Email settings check";
 
-        public override HealthCheckResult PerformCheck()
+        public override Task<HealthCheckResult> PerformCheck()
         {
             var unsetFacets = new List<string>();
             if (string.IsNullOrWhiteSpace(_mailSettings.SystemEmailAddress))
@@ -28,9 +26,9 @@ namespace MrCMS.HealthChecks
             if (_mailSettings.Port <= 0)
                 unsetFacets.Add("Port is not set");
 
-            return !unsetFacets.Any()
+            return Task.FromResult(!unsetFacets.Any()
                 ? HealthCheckResult.Success
-                : new HealthCheckResult { Messages = unsetFacets };
+                : new HealthCheckResult { Messages = unsetFacets });
         }
     }
 }

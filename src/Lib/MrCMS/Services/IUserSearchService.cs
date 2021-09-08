@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
 using MrCMS.Models;
@@ -8,7 +9,7 @@ namespace MrCMS.Services
 {
     public interface IUserSearchService
     {
-        List<SelectListItem> GetAllRoleOptions();
-        IPagedList<User> GetUsersPaged(UserSearchQuery searchQuery);
+        Task<List<SelectListItem>> GetAllRoleOptions();
+        Task<IPagedList<User>> GetUsersPaged(UserSearchQuery searchQuery);
     }
 }

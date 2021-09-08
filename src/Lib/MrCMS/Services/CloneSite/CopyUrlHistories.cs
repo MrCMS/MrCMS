@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using NHibernate;
@@ -14,11 +15,11 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public override void ClonePart(Webpage @from, Webpage to, SiteCloneContext siteCloneContext)
+        public override async Task ClonePart(Webpage @from, Webpage to, SiteCloneContext siteCloneContext)
         {
             if (!@from.Urls.Any())
                 return;
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 foreach (var urlHistory in @from.Urls)
                 {
@@ -26,8 +27,8 @@ namespace MrCMS.Services.CloneSite
                     copy.Webpage = to;
                     to.Urls.Add(copy);
                     siteCloneContext.AddEntry(urlHistory, copy);
-                    session.Save(copy);
-                    session.Update(to);
+                    await session.SaveAsync(copy);
+                    await session.UpdateAsync(to);
                 }
             });
         }

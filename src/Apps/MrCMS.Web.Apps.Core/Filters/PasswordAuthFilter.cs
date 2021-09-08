@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
@@ -7,37 +9,30 @@ using MrCMS.Web.Apps.Core.Services;
 
 namespace MrCMS.Web.Apps.Core.Filters
 {
-    public class PasswordAuthFilter : IActionFilter
+    public class PasswordAuthFilter : IAsyncActionFilter
     {
-        private readonly IPasswordProtectedPageChecker _checker;
-        private readonly IUniquePageService _uniquePageService;
-
-        public PasswordAuthFilter(IPasswordProtectedPageChecker checker, IUniquePageService uniquePageService)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            _checker = checker;
-            _uniquePageService = uniquePageService;
-        }
-
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
+            // todo - refactor this to be picked up a different way
             var webpage = context.ActionArguments.Values.OfType<Webpage>().FirstOrDefault();
 
             if (webpage == null)
             {
+                await next();
                 return;
             }
 
-            var canAccess = _checker.CanAccessPage(webpage, context.HttpContext.Request.Cookies);
+            var serviceProvider = context.HttpContext.RequestServices;
+            var canAccess = await serviceProvider.GetRequiredService<IPasswordProtectedPageChecker>()
+                .CanAccessPage(webpage, context.HttpContext.Request.Cookies);
             if (canAccess)
             {
+                await next();
                 return;
             }
 
-            context.Result = _uniquePageService.RedirectTo<WebpagePasswordPage>(new {lockedPage = webpage.Id});
-        }
-
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
+            context.Result = await serviceProvider.GetRequiredService<IUniquePageService>()
+                .RedirectTo<WebpagePasswordPage>(new { lockedPage = webpage.Id });
         }
     }
 }

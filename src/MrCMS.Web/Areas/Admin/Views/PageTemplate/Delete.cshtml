@@ -1,0 +1,21 @@
+﻿@model MrCMS.Web.Admin.Models.UpdatePageTemplateModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+@using (Html.BeginForm("Delete", "PageTemplate", new {id = Model.Id}, FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Page Template Delete Title", "Delete Page Template")
+            <span class="btn-group d-inline pull-right">
+                <input type="submit" class="btn-danger btn" value="@await Html.Resource("Delete")"/>
+            </span>
+        </legend>
+        @Html.HiddenFor(model => model.Id)
+
+        <p>
+            @await Html.Resource("Page template - Delete", "Are you sure you wish to delete this page template? This can not be undone!")
+        </p>
+    </fieldset>
+}

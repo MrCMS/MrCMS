@@ -12,6 +12,8 @@ namespace MrCMS.Web.Admin.Helpers
     {
         public static ErrorContextData GetContextData(this Log log)
         {
+            if (log?.RequestData == null)
+                return null;
 
             try
             {

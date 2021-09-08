@@ -11,5 +11,6 @@
         public virtual string Badge { get; set; }
 
         public virtual string ActionUrl { get; set; }
+        public virtual string Image { get; set; }
     }
 }

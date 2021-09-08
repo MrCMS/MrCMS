@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models.SEOAnalysis;
@@ -8,19 +9,24 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
 {
     public class TitleIsCorrectLength : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override Task<IReadOnlyList<SEOAnalysisFacet>> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
+            var facets = new List<SEOAnalysisFacet>();
             string titleText = document.GetElementText("title") ?? string.Empty;
 
             if (titleText.Length < 50)
-                yield return GetFacet("Title length", SEOAnalysisStatus.Error, "The title should be at least 50 characters long");
+                facets.Add(GetFacet("Title length", SEOAnalysisStatus.Error,
+                    "The title should be at least 50 characters long"));
             else if (titleText.Length > 90)
-                yield return
-                    GetFacet("Title length", SEOAnalysisStatus.Error, "The title should be at most 90 characters long");
+                facets.Add(
+                    GetFacet("Title length", SEOAnalysisStatus.Error,
+                        "The title should be at most 90 characters long"));
             else
-                yield return
+                facets.Add(
                     GetFacet("Title length", SEOAnalysisStatus.Success,
-                        "The title is of optimal length (50-90 characters)");
+                        "The title is of optimal length (50-90 characters)"));
+            return Task.FromResult<IReadOnlyList<SEOAnalysisFacet>>(facets);
         }
     }
 }

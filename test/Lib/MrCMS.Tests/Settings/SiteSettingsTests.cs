@@ -52,49 +52,6 @@ namespace MrCMS.Tests.Settings
 
 
         [Fact]
-        public void SiteSettings_SetViewData_ShouldAssignTheResultOfSiteSettingsOptionGeneratorGetErrorPageOptionsTo403OptionsViewData()
-        {
-            _siteSettings.Error403PageId = 123;
-            var items = new List<SelectListItem>();
-            A.CallTo(() => _siteSettingsOptionGenerator.GetErrorPageOptions(_siteSettings.Error403PageId))
-             .Returns(items);
-
-
-            var viewDataDictionary = ViewDataDictionaryHelper.GetNewDictionary();
-            _siteSettings.SetViewData(_serviceProvider, viewDataDictionary);
-            viewDataDictionary["403Options"].Should().Be(items);
-        }
-
-        [Fact]
-        public void SiteSettings_SetViewData_ShouldAssignTheResultOfSiteSettingsOptionGeneratorGetErrorPageOptionsTo404OptionsViewData()
-        {
-            _siteSettings.Error404PageId = 123;
-            var items = new List<SelectListItem>();
-            A.CallTo(() => _siteSettingsOptionGenerator.GetErrorPageOptions(_siteSettings.Error404PageId))
-             .Returns(items);
-
-            var viewDataDictionary = ViewDataDictionaryHelper.GetNewDictionary();
-            _siteSettings.SetViewData(_serviceProvider, viewDataDictionary);
-
-            viewDataDictionary["404Options"].Should().Be(items);
-        }
-
-        [Fact]
-        public void SiteSettings_SetViewData_ShouldAssignTheResultOfSiteSettingsOptionGeneratorGetErrorPageOptionsTo500OptionsViewData()
-        {
-            _siteSettings.Error500PageId = 123;
-            var items = new List<SelectListItem>();
-            A.CallTo(() => _siteSettingsOptionGenerator.GetErrorPageOptions(_siteSettings.Error500PageId))
-             .Returns(items);
-
-            var viewDataDictionary = ViewDataDictionaryHelper.GetNewDictionary();
-            _siteSettings.SetViewData(_serviceProvider, viewDataDictionary);
-
-
-            viewDataDictionary["500Options"].Should().Be(items);
-        }
-
-        [Fact]
         public void SiteSettings_CultureInfo_IfUICultureIsNotSetShouldBeSystemCulture()
         {
             _siteSettings.CultureInfo.Should().Be(CultureInfo.CurrentCulture);

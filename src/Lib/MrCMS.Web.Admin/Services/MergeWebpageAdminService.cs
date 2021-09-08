@@ -8,7 +8,9 @@ using MrCMS.Services;
 using MrCMS.Services.Resources;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models;
+using NHibernate.Linq;
 
 
 namespace MrCMS.Web.Admin.Services
@@ -33,11 +35,15 @@ namespace MrCMS.Web.Admin.Services
             _documentMetadataService = documentMetadataService;
         }
 
-        public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
+        public async Task<List<SelectListItem>> GetValidParents(Webpage webpage)
         {
-            var children = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id).ToList();
+            var children = await _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id).ToListAsync();
             // get the matching pages for all types
-            var potentialParents = children.Select(child => GetValidParentWebpages(child).ToHashSet()).ToHashSet();
+            var potentialParents = new HashSet<IReadOnlyList<Webpage>>();
+            foreach (var child in children)
+            {
+                potentialParents.Add(await GetValidParentWebpages(child));
+            }
 
             var validForAll = potentialParents.SelectMany(x => x).Distinct()
                 .Where(x => x != webpage && potentialParents.All(y => y.Contains(x))).ToHashSet();
@@ -50,29 +56,29 @@ namespace MrCMS.Web.Admin.Services
             return items;
         }
 
-        private IOrderedEnumerable<Webpage> GetValidParentWebpages(Webpage webpage)
+        private async Task<IReadOnlyList<Webpage>> GetValidParentWebpages(Webpage webpage)
         {
             List<DocumentMetadata> validParentTypes = _documentMetadataService.GetValidParentTypes(webpage);
 
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
-                _webpageRepository.Query()
+                await _webpageRepository.Query()
                     .Where(page => validParentTypeNames.Contains(page.DocumentType))
-                    .ToList();
+                    .ToListAsync();
 
             var webpages = potentialParents.Distinct()
                 .Where(page => !page.ActivePages.Contains(webpage))
                 .OrderBy(x => x.Name);
-            return webpages;
+            return webpages.ToList();
         }
 
-        public MergeWebpageResult Validate(MergeWebpageModel moveWebpageModel)
+        public async Task<MergeWebpageResult> Validate(MergeWebpageModel moveWebpageModel)
         {
-            var webpage = GetWebpage(moveWebpageModel);
-            var parent = GetParent(moveWebpageModel);
+            var webpage = await GetWebpage(moveWebpageModel);
+            var parent = await GetParent(moveWebpageModel);
 
-            var validParentWebpages = GetValidParentWebpages(webpage);
+            var validParentWebpages = await GetValidParentWebpages(webpage);
             var valid = webpage != null && parent != null && validParentWebpages.Contains(parent);
 
             return new MergeWebpageResult
@@ -80,38 +86,37 @@ namespace MrCMS.Web.Admin.Services
                 Success = valid,
                 Message = valid
                     ? string.Empty
-                    : _resourceProvider.GetValue("Sorry, but you can't select that as a parent for this page.")
+                    : await _resourceProvider.GetValue("Sorry, but you can't select that as a parent for this page.")
             };
         }
 
-        private Webpage GetParent(MergeWebpageModel moveWebpageModel)
+        private async Task<Webpage> GetParent(MergeWebpageModel moveWebpageModel)
         {
-            return _webpageRepository.Get(moveWebpageModel.MergeIntoId);
+            return await _webpageRepository.Get(moveWebpageModel.MergeIntoId);
         }
 
-        private Webpage GetWebpage(MergeWebpageModel moveWebpageModel)
+        private async Task<Webpage> GetWebpage(MergeWebpageModel moveWebpageModel)
         {
-            return _webpageRepository.Get(moveWebpageModel.Id);
+            return await _webpageRepository.Get(moveWebpageModel.Id);
         }
 
-        public MergeWebpageConfirmationModel GetConfirmationModel(MergeWebpageModel model)
+        public async Task<MergeWebpageConfirmationModel> GetConfirmationModel(MergeWebpageModel model)
         {
-            var webpage = GetWebpage(model);
-            var parent = GetParent(model);
-
+            var webpage = await GetWebpage(model);
+            var parent = await GetParent(model);
 
             return new MergeWebpageConfirmationModel
             {
                 Webpage = webpage,
                 MergedInto = parent,
-                ChangedPages = GetChangedPages(model, webpage, parent)
+                ChangedPages = await GetChangedPages(model, webpage, parent)
             };
         }
 
-        private List<MergeWebpageChangedPageModel> GetChangedPages(MergeWebpageModel model, Webpage webpage,
+        private async Task<List<MergeWebpageChangedPageModel>> GetChangedPages(MergeWebpageModel model, Webpage webpage,
             Webpage parent)
         {
-            var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
+            var webpageHierarchy = await GetWebpageHierarchy(webpage);
 
             var parentActivePages = (parent.ActivePages.Reverse()).ToList();
             List<MergeWebpageChangedPageModel> models = new List<MergeWebpageChangedPageModel>();
@@ -123,7 +128,7 @@ namespace MrCMS.Web.Admin.Services
                 activePages.Reverse();
                 var immediateParent = childActivePages.ElementAtOrDefault(1);
                 childActivePages.Reverse();
-                var newUrl = GetNewUrl(model, parent, page, immediateParent,
+                var newUrl = await GetNewUrl(model, parent, page, immediateParent,
                     models.FirstOrDefault(x => x.Id == immediateParent?.Id));
                 models.Add(new MergeWebpageChangedPageModel
                 {
@@ -139,7 +144,8 @@ namespace MrCMS.Web.Admin.Services
             return models;
         }
 
-        private string GetNewUrl(MergeWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent,
+        private async Task<string> GetNewUrl(MergeWebpageModel model, Webpage parent, Webpage page,
+            Webpage immediateParent,
             MergeWebpageChangedPageModel parentModel)
         {
             if (!model.UpdateUrls)
@@ -149,7 +155,7 @@ namespace MrCMS.Web.Admin.Services
 
             if (immediateParent == null)
             {
-                return _webpageUrlService.Suggest(new SuggestParams
+                return await _webpageUrlService.Suggest(new SuggestParams
                 {
                     DocumentType = page.DocumentType,
                     PageName = page.Name,
@@ -160,7 +166,7 @@ namespace MrCMS.Web.Admin.Services
                 });
             }
 
-            return _webpageUrlService.Suggest(new SuggestParams
+            return await _webpageUrlService.Suggest(new SuggestParams
             {
                 DocumentType = page.DocumentType,
                 PageName = $"{parentModel.NewUrl}/{page.Name}",
@@ -176,32 +182,32 @@ namespace MrCMS.Web.Admin.Services
             return string.Join(" > ", webpages.Select(x => x.Name));
         }
 
-        private IEnumerable<Webpage> GetWebpageHierarchy(Webpage webpage)
+        private async Task<IReadOnlyList<Webpage>> GetWebpageHierarchy(Webpage webpage)
         {
-            var descendants = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id)
+            var descendants = await _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id)
                 .OrderBy(x => x.DisplayOrder)
-                .ToList();
+                .ToListAsync();
+            var result = new List<Webpage>();
             foreach (var descendant in descendants)
             {
-                yield return descendant;
-                foreach (var child in GetWebpageHierarchy(descendant))
-                {
-                    yield return child;
-                }
+                result.Add(descendant);
+                result.AddRange(await GetWebpageHierarchy(descendant));
             }
+
+            return result;
         }
 
 
-        public MergeWebpageResult Confirm(MergeWebpageModel model)
+        public async Task<MergeWebpageResult> Confirm(MergeWebpageModel model)
         {
-            var confirmationModel = GetConfirmationModel(model);
+            var confirmationModel = await GetConfirmationModel(model);
 
-            var success = _createMergeBatch.CreateBatch(confirmationModel);
+            var success = await _createMergeBatch.CreateBatch(confirmationModel);
 
             return new MergeWebpageResult
             {
                 Success = success,
-                Message = _resourceProvider.GetValue(success
+                Message = await _resourceProvider.GetValue(success
                     ? "The page has been moved successfully"
                     : "There was an issue creating the batch to complete the merge")
             };

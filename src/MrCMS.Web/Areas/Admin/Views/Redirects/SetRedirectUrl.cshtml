@@ -1,0 +1,21 @@
+@model MrCMS.Web.Admin.Models.SetRedirectUrlModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+<form asp-controller="Redirects" asp-action="SetRedirectUrl" asp-route-id="@Model.Id">
+    @Html.ReturnToReferrer()
+    <fieldset>
+        <legend>
+            Set Redirect Url
+            <span class="btn-group display-inline pull-right">
+                <button type="submit" class="btn btn-secondary">Set Url</button>
+            </span>
+        </legend>
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <label asp-for="Url"></label>
+            <input asp-for="Url" class="form-control"/>
+        </div>
+    </fieldset>
+</form>

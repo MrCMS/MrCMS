@@ -1,11 +1,19 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using MrCMS.Batching.Entities;
 using MrCMS.Web.Admin.Infrastructure.Breadcrumbs;
+using NHibernate;
 
 namespace MrCMS.Web.Admin.Breadcrumbs.System
 {
     public class BatchRunBreadcrumb : Breadcrumb<BatchRunsBreadcrumb>
     {
+        private readonly ISession _session;
+
+        public BatchRunBreadcrumb(ISession session)
+        {
+            _session = session;
+        }
+
         public override string Controller => "BatchRun";
         public override string Action => "Show";
 
@@ -17,10 +25,9 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System
             }
 
             Name = $"Run #{Id}";
-            if (ActionArguments["batchRun"] is BatchRun batchRun)
-            {
-                ParentActionArguments = new RouteValueDictionary { ["batch"] = batchRun.Batch };
-            }
+            var batchRun = _session.Get<BatchRun>(Id.Value);
+            if (batchRun != null)
+                ParentActionArguments = new RouteValueDictionary {["id"] = batchRun.Batch.Id};
         }
     }
 }

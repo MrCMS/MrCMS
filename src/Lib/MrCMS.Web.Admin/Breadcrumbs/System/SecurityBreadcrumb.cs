@@ -4,7 +4,7 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System
 {
     public class SecurityBreadcrumb : Breadcrumb<SystemBreadcrumb>
     {
-        public override int Order => 1;
+        public override decimal Order => 1;
         public override string Controller => "";
         public override string Action => "";
         public override bool IsPlaceHolder => true;

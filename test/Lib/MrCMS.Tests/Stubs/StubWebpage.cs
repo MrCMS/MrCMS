@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Documents.Web.FormProperties;
-using System.Linq;
+﻿using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Tests.Stubs
 {

@@ -15,18 +15,17 @@ namespace MrCMS.Apps
     {
         string Name { get; }
         string Version { get; }
-        string ContentPrefix { get; set; }
-        string ViewPrefix { get; set; }
 
         Assembly Assembly { get; }
         IEnumerable<Type> Conventions { get; }
         IEnumerable<Type> BaseTypes { get; }
         IDictionary<Type, string> SignalRHubs { get; }
-        IEnumerable<RegistrationInfo> Registrations { get; }
+        IEnumerable<ApplicationRegistrationInfo> Registrations { get; }
+        IEnumerable<EndpointRegistrationInfo> EndpointRegistrations { get; }
 
         IServiceCollection RegisterServices(IServiceCollection serviceCollection);
 
-        IRouteBuilder MapRoutes(IRouteBuilder routeBuilder);
+        IEndpointRouteBuilder MapRoutes(IEndpointRouteBuilder routeBuilder);
         void SetupMvcOptions(MvcOptions options);
         void ConfigureAutomapper(IMapperConfigurationExpression expression);
         void AppendConfiguration(Configuration configuration);

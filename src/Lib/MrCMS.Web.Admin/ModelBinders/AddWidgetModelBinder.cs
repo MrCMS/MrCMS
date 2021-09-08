@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using MrCMS.Website;
 
 namespace MrCMS.Web.Admin.ModelBinders
 {
@@ -31,11 +29,6 @@ namespace MrCMS.Web.Admin.ModelBinders
             if (bindingContext.Result.Model is Widget widget)
             {
                 widget.LayoutArea?.AddWidget(widget);
-                widget.Webpage?.Widgets.Add(widget);
-                if (bindingContext.ValueProvider.GetValue("AddType").FirstValue == "global")
-                {
-                    widget.Webpage = null;
-                }
             }
         }
     }

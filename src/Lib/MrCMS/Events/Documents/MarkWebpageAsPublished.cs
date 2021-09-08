@@ -1,4 +1,4 @@
-using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
 
@@ -13,7 +13,7 @@ namespace MrCMS.Events.Documents
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public void Execute(OnUpdatingArgs<Webpage> args)
+        public Task Execute(OnUpdatingArgs<Webpage> args)
         {
             var now = _getDateTimeNow.UtcNow;
             var webpage = args.Item;
@@ -21,9 +21,10 @@ namespace MrCMS.Events.Documents
             {
                 webpage.Published = true;
             }
+            return Task.CompletedTask;
         }
 
-        public void Execute(OnAddingArgs<Webpage> args)
+        public Task Execute(OnAddingArgs<Webpage> args)
         {
             var now = _getDateTimeNow.LocalNow;
             var webpage = args.Item;
@@ -31,6 +32,7 @@ namespace MrCMS.Events.Documents
             {
                 webpage.Published = true;
             }
+            return Task.CompletedTask;
         }
     }
 }

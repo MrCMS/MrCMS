@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
+using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Web.Admin.Controllers
@@ -18,31 +20,31 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Add(Site site)
+        public PartialViewResult Add(int Id)
         {
-            return PartialView(new RedirectedDomain {Site = site});
+            return PartialView(new AddRedirectedDomainModel {SiteId = Id});
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(string url, int siteId)
+        public async Task<RedirectToActionResult> Add(AddRedirectedDomainModel model)
         {
-            var site = _session.Get<Site>(siteId);
-            var rd = new RedirectedDomain(){Site = site, Url = url};
-            
-            _redirectedDomainService.Save(rd);
-            return RedirectToAction("Edit", "Sites", new {id = rd.Site.Id});
+            var site = await _session.GetAsync<Site>(model.SiteId);
+            var rd = new RedirectedDomain() {Site = site, Url = model.Url};
+
+            await _redirectedDomainService.Save(rd);
+            return RedirectToAction("Edit", "Sites", new {id = model.SiteId});
         }
 
-        public PartialViewResult Delete(RedirectedDomain domain)
+        public async Task<PartialViewResult> Delete(int id)
         {
-            return PartialView(domain);
+            return PartialView(await _session.GetAsync<RedirectedDomain>(id));
         }
 
         [HttpPost]
         [ActionName("Delete")]
-        public RedirectToActionResult Delete_POST(int id, int siteId)
+        public async Task<RedirectToActionResult> Delete_POST(int id, int siteId)
         {
-            _redirectedDomainService.Delete(id);
+            await _redirectedDomainService.Delete(id);
             return RedirectToAction("Edit", "Sites", new {id = siteId});
         }
     }

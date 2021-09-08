@@ -1,60 +1,68 @@
 ﻿@using MrCMS.ACL.Rules
+@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @using MrCMS.Settings
 @using MrCMS.Web.Admin.Infrastructure.Helpers
-@model MrCMS.Entities.Documents.Web.Webpage
+@using MrCMS.Web.Admin.Services
+@model dynamic
 @inject SiteSettings SiteSettings
 @inject IWebpageChildrenChecker WebpageChildrenChecker
-<link href="@Url.Content("~/Areas/Admin/styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/styles/featherlight.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
+@inject FormAdminService FormAdminService
+@inject IGetCurrentPage GetCurrentPage
 @{
-    var canEditPage = Html.CanAccess("Webpage", "Edit");
+    var currentPage = GetCurrentPage.GetPage();
+    var currentPageId = currentPage?.Id ?? 0;
+    var canEditPage = await Html.CanAccess("Webpage", "Edit");
+    var postingCountForWebpage = await FormAdminService.GetPostingCountForWebpage(currentPageId);
 }
-<div class="mrcms-admin-nav-bar">
-    <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
-    @if (canEditPage)
-    {
-        <a href="@Url.Action("Edit", "Webpage", new {Model.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
-        if (Model.Published)
+<div class="mrcms-admin-nav-bar" data-webpage-id="@currentPageId">
+    <div>
+        <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
+        @if (currentPage != null)
         {
-            <a id="unpublish-now" class="mrcms-btn mrcms-btn-sm mrcms-btn-success">Unpublish</a>
+            if (canEditPage)
+            {
+                <a href="@Url.Action("Edit", "Webpage", new {currentPage.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
+            }
+            if (await Html.CanAccess<InlineEditingACL>("Allowed"))
+            {
+                <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline Editing: On</a>
+            }
+
+            if (postingCountForWebpage.Count > 0)
+            {
+                <a href="/Admin/Form/Edit/@postingCountForWebpage.FormId#form-postings-tab" class="mrcms-btn mrcms-btn-xs mrcms-btn-info" target="_parent">
+                    @postingCountForWebpage.Count
+                    Form entr@(postingCountForWebpage.Count > 1 ? "ies" : "y")
+                </a>
+            }
+            @if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published || currentPage.PublishStatus == Webpage.WebpagePublishStatus.Scheduled)
+            {
+                var s = ((DateTime) currentPage.PublishOn).ToString("dddd, dd MMMM yyyy HH:mm tt");
+                if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published)
+                {
+                    <span class="admin-success">@($"Published {s}")</span>
+                }
+                else if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Scheduled)
+                {
+                    <span class="admin-success">@($"Publish scheduled for {s}")</span>
+                }
+            }
+            else
+            {
+                <span class="admin-warning">Unpublished</span>
+            }
+        }
+    </div>
+    <div class="items-right">
+        <a href="/Identity/Account/Logout" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Logout</a>
+        @if (SiteSettings.SiteIsLive)
+        {
+            <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-success">Site is set live</a>
         }
         else
         {
-            <a id="publish-now" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning">Publish</a>
+            <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning">Site is not set live</a>
         }
-    }
-    @if (WebpageChildrenChecker.CanAddChildren(Model))
-    {
-        @Html.ActionLink("Add a child page", "Add", "Webpage", new { id = Model.Id, area = "Admin" }, new { @class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary" })
-    }
-
-    @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent?.Id, area = "Admin" }, new { @class = "mrcms-btn mrcms-btn-sm mrcms-btn-secondary" })
-
-    @if (Html.CanAccess<InlineEditingACL>("Allowed"))
-    {
-        <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline Editing: On</a>
-    }
-    <a href="/logout" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary" style="float: right;">Logout</a>
-    @if (SiteSettings.SiteIsLive)
-    {
-        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-success" style="float: right;">Site is set live</a>
-    }
-    else
-    {
-        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning" style="float: right;">Site is not set live</a>
-    }
+    </div>
 </div>
-
-@Html.HiddenFor(webpage => webpage.Id)
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-@{
-    Html.IncludeScript("~/Areas/Admin/lib/ckeditor/ckeditor.js");
-    Html.IncludeScript("~/Areas/Admin/lib/store.js");
-    Html.IncludeScript("~/Areas/Admin/lib/dropzone.js");
-    Html.IncludeScript("~/Areas/Admin/lib/featherlight.js");
-    Html.IncludeScript("~/Areas/Admin/scripts/front-end-editing.js");
-    Html.IncludeScript("~/Areas/Admin/scripts/media-selector.js");
-    Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
-}

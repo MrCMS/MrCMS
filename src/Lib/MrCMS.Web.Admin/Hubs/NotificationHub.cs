@@ -17,20 +17,22 @@ namespace MrCMS.Web.Admin.Hubs
             _userLookup = userLookup;
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
-            User user = _userLookup.GetCurrentUser(Context.User);
-            return user == null || !user.IsAdmin
-                ? Groups.AddToGroupAsync(Context.ConnectionId, UsersGroup)
-                : Groups.AddToGroupAsync(Context.ConnectionId, AdminGroup);
+            User user = await _userLookup.GetCurrentUser(Context.User);
+            if (user == null || !user.IsAdmin)
+                await Groups.AddToGroupAsync(Context.ConnectionId, UsersGroup);
+            else
+                await Groups.AddToGroupAsync(Context.ConnectionId, AdminGroup);
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
-            User user = _userLookup.GetCurrentUser(Context.User);
-            return user == null || !user.IsAdmin
-                ? Groups.RemoveFromGroupAsync(Context.ConnectionId, UsersGroup)
-                : Groups.RemoveFromGroupAsync(Context.ConnectionId, AdminGroup);
+            User user = await _userLookup.GetCurrentUser(Context.User);
+            if (user == null || !user.IsAdmin)
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, UsersGroup);
+            else
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, AdminGroup);
         }
     }
 }

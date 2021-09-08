@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Infrastructure.Routing;
 using MrCMS.Website.Auth;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Services
@@ -35,14 +35,17 @@ namespace MrCMS.Web.Admin.Services
             _documentMetadataService = documentMetadataService;
         }
 
-        public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
+        public async Task SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
         {
             viewData["parent"] = parent;
 
-            IOrderedEnumerable<DocumentMetadata> validWebpageDocumentTypes = _validWebpageChildrenService
+            var user = await _getCurrentUser.Get();
+            var webpageDocumentTypes = await _validWebpageChildrenService
                 .GetValidWebpageDocumentTypes(parent,
-                    metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"), _getCurrentUser.Get()))
-                .OrderBy(metadata => metadata.DisplayOrder);
+                    metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"),
+                        user));
+            var validWebpageDocumentTypes =
+                webpageDocumentTypes.OrderBy(metadata => metadata.DisplayOrder).ToList();
 
             var templates = _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);
 
@@ -55,7 +58,7 @@ namespace MrCMS.Web.Admin.Services
                     documentTypeToAdds.Add(new DocumentTypeToAdd
                     {
                         Type = type,
-                        DisplayName = string.Format("Default {0}", type.Name)
+                        DisplayName = $"Default {type.Name}"
                     });
                     DocumentMetadata typeCopy = type;
                     documentTypeToAdds.AddRange(
@@ -69,17 +72,18 @@ namespace MrCMS.Web.Admin.Services
                 }
                 else
                 {
-                    documentTypeToAdds.Add(new DocumentTypeToAdd { Type = type, DisplayName = type.Name });
+                    documentTypeToAdds.Add(new DocumentTypeToAdd {Type = type, DisplayName = type.Name});
                 }
             }
 
             viewData["DocumentTypes"] = documentTypeToAdds;
         }
 
-        public void SetEditPageViewData(ViewDataDictionary viewData, Webpage page)
+        public Task SetEditPageViewData(ViewDataDictionary viewData, Webpage page)
         {
             DocumentMetadata documentMetadata = _documentMetadataService.GetMetadata(page);
             viewData["EditView"] = documentMetadata.EditPartialView;
+            return Task.CompletedTask;
         }
     }
 }

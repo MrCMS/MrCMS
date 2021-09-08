@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Entities;
 using MrCMS.Helpers;
@@ -14,23 +15,22 @@ namespace MrCMS.Batching
             _session = session;
         }
 
-        public void Starting<T>(T entity) where T : SystemEntity, IHaveJobExecutionStatus
+        public async Task Starting<T>(T entity) where T : SystemEntity, IHaveJobExecutionStatus
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 entity.Status = JobExecutionStatus.Executing;
-                session.Update(entity);
+                await session.UpdateAsync(entity);
             });
         }
 
-        public void Complete<T>(T entity, BatchJobExecutionResult result) where T : SystemEntity, IHaveJobExecutionStatus
+        public async Task Complete<T>(T entity, BatchJobExecutionResult result) where T : SystemEntity, IHaveJobExecutionStatus
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 entity.Status = result.Successful ? JobExecutionStatus.Succeeded : JobExecutionStatus.Failed;
-                session.Update(entity);
+                await session.UpdateAsync(entity);
             });
-
         }
     }
 }

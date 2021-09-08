@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -22,9 +22,9 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [Acl(typeof(RoleACL), RoleACL.View)]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View(_roleAdminService.GetAllRoles());
+            return View(await _roleAdminService.GetAllRoles());
         }
 
         [HttpGet]
@@ -37,20 +37,20 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Add)]
-        public RedirectToActionResult Add(AddRoleModel model)
+        public async Task<RedirectToActionResult> Add(AddRoleModel model)
         {
-            var addRoleResult = _roleAdminService.AddRole(model);
+            var addRoleResult = await _roleAdminService.AddRole(model);
             if (!addRoleResult.Success)
-                TempData.ErrorMessages().Add(addRoleResult.Error);
+                TempData.AddErrorMessage(addRoleResult.Error);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(RoleACL), RoleACL.Edit)]
-        public ActionResult Edit_Get(int id)
+        public async Task<ActionResult> Edit_Get(int id)
         {
-            var role = _roleAdminService.GetEditModel(id);
+            var role = await _roleAdminService.GetEditModel(id);
             if (role == null)
                 return RedirectToAction("Index");
 
@@ -59,9 +59,9 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Edit)]
-        public RedirectToActionResult Edit(UpdateRoleModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateRoleModel model)
         {
-            _roleAdminService.SaveRole(model);
+            await _roleAdminService.SaveRole(model);
 
             return RedirectToAction("Index");
         }
@@ -69,9 +69,9 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpGet]
         [ActionName("Delete")]
         [Acl(typeof(RoleACL), RoleACL.Delete)]
-        public ActionResult Delete_Get(int id)
+        public async Task<ActionResult> Delete_Get(int id)
         {
-            var role = _roleAdminService.GetEditModel(id);
+            var role = await _roleAdminService.GetEditModel(id);
             if (role == null)
                 return RedirectToAction("Index");
 
@@ -80,15 +80,15 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Delete)]
-        public RedirectToActionResult Delete(int id)
+        public async Task<RedirectToActionResult> Delete(int id)
         {
-            _roleAdminService.DeleteRole(id);
+            await _roleAdminService.DeleteRole(id);
             return RedirectToAction("Index");
         }
 
-        public JsonResult Search(string term)
+        public async Task<JsonResult> Search(string term)
         {
-            IEnumerable<AutoCompleteResult> result = _roleAdminService.Search(term);
+            IEnumerable<AutoCompleteResult> result = await _roleAdminService.Search(term);
 
             return Json(result);
         }
@@ -98,9 +98,9 @@ namespace MrCMS.Web.Admin.Controllers
         ///     in edit view of a webpage.
         /// </summary>
         /// <returns></returns>
-        public JsonResult GetRolesForPermissions()
+        public async Task<JsonResult> GetRolesForPermissions()
         {
-            return Json(_roleAdminService.GetRolesForPermissions());
+            return Json(await _roleAdminService.GetRolesForPermissions());
         }
     }
 }

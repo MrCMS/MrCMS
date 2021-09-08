@@ -11,5 +11,6 @@ namespace MrCMS.Web.Admin.Models
         public string Url { get; set; }
         public string Icon { get; set; }
         public string Badge { get; set; }
+        public string Image { get; set; }
     }
 }

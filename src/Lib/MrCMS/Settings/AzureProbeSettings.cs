@@ -16,9 +16,6 @@ namespace MrCMS.Settings
         [AppSettingName("azure-probe-password")]
         public string Password { get; set; }
 
-        public override bool RenderInSettings
-        {
-            get { return true; }
-        }
+        public override bool RenderInSettings => true;
     }
 }

@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using MrCMS.Helpers;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
-using NHibernate;
+using MrCMS.Services;
 
 namespace MrCMS.Entities.Documents
 {
     public readonly struct DocumentMetadata
     {
-        public DocumentMetadata(string name, string iconClass, string webGetController, string webGetAction,
-            string webPostController, string webPostAction, int maxChildNodes, bool sortable, SortBy sortBy,
+        public DocumentMetadata(string name, string iconClass,
+            string webGetController, string webGetAction, string webPostController, string webPostAction,
+            string webGetControllerUnauthorized, string webGetActionUnauthorized, string webPostControllerUnauthorized,
+            string webPostActionUnauthorized,
+            string webGetControllerForbidden, string webGetActionForbidden, string webPostControllerForbidden,
+            string webPostActionForbidden,
+            int maxChildNodes, bool sortable, SortBy sortBy,
             int displayOrder, Type type, Type[] postTypes, ChildrenListType childrenListType,
             IEnumerable<Type> childrenList, bool autoBlacklist, bool requiresParent, string defaultLayoutName,
             string editPartialView, bool showChildrenInAdminNav, bool childrenMaintainHierarchy, bool hasBodyContent,
@@ -22,6 +25,14 @@ namespace MrCMS.Entities.Documents
             WebGetAction = webGetAction;
             WebPostController = webPostController;
             WebPostAction = webPostAction;
+            WebGetControllerUnauthorized = webGetControllerUnauthorized;
+            WebGetActionUnauthorized = webGetActionUnauthorized;
+            WebPostControllerUnauthorized = webPostControllerUnauthorized;
+            WebPostActionUnauthorized = webPostActionUnauthorized;
+            WebGetControllerForbidden = webGetControllerForbidden;
+            WebGetActionForbidden = webGetActionForbidden;
+            WebPostControllerForbidden = webPostControllerForbidden;
+            WebPostActionForbidden = webPostActionForbidden;
             MaxChildNodes = maxChildNodes;
             Sortable = sortable;
             SortBy = sortBy;
@@ -49,6 +60,16 @@ namespace MrCMS.Entities.Documents
         public string WebPostController { get; }
         public string WebPostAction { get; }
 
+        public string WebGetControllerUnauthorized { get; }
+        public string WebGetActionUnauthorized { get; }
+        public string WebPostControllerUnauthorized { get; }
+        public string WebPostActionUnauthorized { get; }
+
+        public string WebGetControllerForbidden { get; }
+        public string WebGetActionForbidden { get; }
+        public string WebPostControllerForbidden { get; }
+        public string WebPostActionForbidden { get; }
+
         public int MaxChildNodes { get; }
 
         public bool Sortable { get; }
@@ -59,10 +80,7 @@ namespace MrCMS.Entities.Documents
         public Type Type { get; }
         public Type[] PostTypes { get; }
 
-        public string TypeName
-        {
-            get { return Type == null ? string.Empty : Type.Name; }
-        }
+        public string TypeName => Type == null ? string.Empty : Type.Name;
 
         public ChildrenListType ChildrenListType { get; }
         public IEnumerable<Type> ChildrenList { get; }
@@ -101,22 +119,66 @@ namespace MrCMS.Entities.Documents
 
         public bool RevealInNavigation { get; }
 
-        public string GetController(string method)
+        public string GetController(string method, PageAccessPermission permission)
         {
             if (HttpMethods.IsPost(method))
-                return WebPostController;
+                return GetPostController(permission); //WebPostController;
             if (HttpMethods.IsGet(method) || HttpMethods.IsHead(method))
-                return WebGetController;
+                return GetGetController(permission); // WebGetController;
             return null;
         }
 
-        public string GetAction(string method)
+        private string GetGetController(PageAccessPermission permission)
+        {
+            return permission switch
+            {
+                PageAccessPermission.Allowed => WebGetController,
+                PageAccessPermission.Unauthorized => WebGetControllerUnauthorized,
+                PageAccessPermission.Forbidden => WebGetControllerForbidden,
+                _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
+            };
+        }
+
+        private string GetPostController(PageAccessPermission permission)
+        {
+            return permission switch
+            {
+                PageAccessPermission.Allowed => WebPostController,
+                PageAccessPermission.Unauthorized => WebPostControllerUnauthorized,
+                PageAccessPermission.Forbidden => WebPostControllerForbidden,
+                _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
+            };
+        }
+
+        public string GetAction(string method, PageAccessPermission permission)
         {
             if (HttpMethods.IsPost(method))
-                return WebPostAction;
+                return GetPostAction(permission); // WebPostAction;
             if (HttpMethods.IsGet(method) || HttpMethods.IsHead(method))
-                return WebGetAction;
+                return GetGetAction(permission); //WebGetAction;
             return null;
+        }
+
+        private string GetGetAction(PageAccessPermission permission)
+        {
+            return permission switch
+            {
+                PageAccessPermission.Allowed => WebGetAction,
+                PageAccessPermission.Unauthorized => WebGetActionUnauthorized,
+                PageAccessPermission.Forbidden => WebGetActionForbidden,
+                _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
+            };
+        }
+
+        private string GetPostAction(PageAccessPermission permission)
+        {
+            return permission switch
+            {
+                PageAccessPermission.Allowed => WebPostAction,
+                PageAccessPermission.Unauthorized => WebPostActionUnauthorized,
+                PageAccessPermission.Forbidden => WebPostActionForbidden,
+                _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
+            };
         }
     }
 }

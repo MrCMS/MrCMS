@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.ACL;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 
@@ -27,12 +26,12 @@ namespace MrCMS.Website.Auth
             _siteConfigurationProvider = siteConfigurationProvider;
         }
 
-        public StandardLogicCheckResult Check()
+        public async Task<StandardLogicCheckResult> Check()
         {
-            return Check(_getCurrentUser.Get());
+            return await Check(await _getCurrentUser.Get());
         }
 
-        public StandardLogicCheckResult Check(User user)
+        public async Task<StandardLogicCheckResult> Check(User user)
         {
             // must be logged in
             if (user == null)
@@ -40,15 +39,15 @@ namespace MrCMS.Website.Auth
 
             if (_cachedResults.ContainsKey(user.Id))
                 return _cachedResults[user.Id];
-            var result = GetResult(user);
+            var result = await GetResult(user);
             _cachedResults[user.Id] = result;
             return result;
         }
 
-        private StandardLogicCheckResult GetResult(User user)
+        private async Task<StandardLogicCheckResult> GetResult(User user)
         {
             // if they're an admin they're always allowed
-            if (_userRoleManager.IsInRoleAsync(user, UserRole.Administrator).ExecuteSync()) 
+            if (await _userRoleManager.IsInRoleAsync(user, UserRole.Administrator))
                 return new StandardLogicCheckResult { CanAccess = true };
 
             // if ACL isn't on, they're not allowed because they're not an admin
@@ -57,7 +56,7 @@ namespace MrCMS.Website.Auth
                 return new StandardLogicCheckResult { CanAccess = false };
 
             // if the user has no roles, they cannot have any acl access granted
-            var roles = _userRoleManager.GetRolesAsync(user).ExecuteSync(); 
+            var roles = await _userRoleManager.GetRolesAsync(user);
             if (!roles.Any())
                 return new StandardLogicCheckResult { CanAccess = false };
 

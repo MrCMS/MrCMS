@@ -4,7 +4,6 @@ using MrCMS.Entities;
 using MrCMS.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using MrCMS.Models;
 using MrCMS.Web.Admin.Infrastructure.Models;
 
 namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
@@ -26,7 +25,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 
         public virtual string Name { get; protected set; }
 
-        public virtual int Order => 0;
+        public virtual decimal Order => 0;
 
         public virtual bool IsNav => false;
 
@@ -39,6 +38,8 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
         {
             return IsPlaceHolder ? null : url.Action(Action, Controller, new {Id, area = "Admin"});
         }
+
+        public virtual bool OpenInNewWindow { get; }
 
         /// <summary>
         /// If this is true, it will use the parent id to get another of the same type rather than go to the parent type 

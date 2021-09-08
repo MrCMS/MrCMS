@@ -1,9 +1,10 @@
 using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Services
 {
     public interface IGetCurrentUserGuid
     {
-        Guid Get();
+        Task<Guid> Get();
     }
 }

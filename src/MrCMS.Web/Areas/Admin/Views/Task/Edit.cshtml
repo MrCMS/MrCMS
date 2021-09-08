@@ -1,15 +1,13 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Models
-@model MrCMS.Web.Admin.Models.TaskUpdateData
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+﻿@model MrCMS.Web.Admin.Models.TaskUpdateData
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 @using (Html.BeginForm("Edit", "Task", FormMethod.Post))
 {
     @Html.HiddenFor(x => x.TypeName)
     <fieldset>
         <legend>
-            @Html.Resource("Admin Tasks Edit", "Edit task")
+            @await Html.Resource("Admin Tasks Edit", "Edit task")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn" value="@Html.Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
             </span>
         </legend>
         <div class="form-group">
@@ -19,9 +17,9 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(task => task.FrequencyInSeconds)
-            @Html.TextBoxFor(task => task.FrequencyInSeconds, new { @class = "form-control" })
-            @Html.ValidationMessageFor(task => task.FrequencyInSeconds)
+            @Html.LabelFor(task => task.CronSchedule)
+            @Html.TextBoxFor(task => task.CronSchedule, new {@class = "form-control"})
+            @Html.ValidationMessageFor(task => task.CronSchedule)
         </div>
         <div class="form-group">
             @Html.InlineCheckboxFor(x => x.Enabled)

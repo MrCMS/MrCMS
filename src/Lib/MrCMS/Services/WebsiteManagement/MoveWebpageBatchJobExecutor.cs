@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using MrCMS.Batching;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -21,7 +18,7 @@ namespace MrCMS.Services.WebsiteManagement
             _notificationDisabler = notificationDisabler;
         }
 
-        protected override BatchJobExecutionResult OnExecute(MoveWebpageBatchJob batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(MoveWebpageBatchJob batchJob)
         {
             using (_notificationDisabler.Disable())
             {
@@ -34,22 +31,18 @@ namespace MrCMS.Services.WebsiteManagement
                 var parent = batchJob.NewParentId.HasValue ? _session.Get<Webpage>(batchJob.NewParentId) : null;
                 if (batchJob.NewParentId.HasValue && parent == null)
                 {
-                    return BatchJobExecutionResult.Failure("Could not find the parent webpage with id " + batchJob.NewParentId);
+                    return BatchJobExecutionResult.Failure("Could not find the parent webpage with id " +
+                                                           batchJob.NewParentId);
                 }
 
-                _session.Transact(session =>
+                await _session.TransactAsync(async session =>
                 {
                     webpage.Parent = parent;
-                    session.Update(webpage);
+                    await session.UpdateAsync(webpage);
                 });
 
                 return BatchJobExecutionResult.Success();
             }
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(MoveWebpageBatchJob batchJob)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

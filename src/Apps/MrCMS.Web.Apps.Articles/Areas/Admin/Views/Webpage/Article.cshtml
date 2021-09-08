@@ -22,7 +22,7 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.UserId)
-    @Html.DropDownListFor(model => model.UserId, GetAuthorOptions.GetUsers(), new { @class = "form-control" })
+    @Html.DropDownListFor(model => model.UserId, await GetAuthorOptions.GetUsers(), new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.UserId)
 </div>
 

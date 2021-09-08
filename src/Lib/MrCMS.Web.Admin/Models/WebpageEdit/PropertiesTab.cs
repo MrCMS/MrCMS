@@ -14,14 +14,14 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
             get { return 0; }
         }
 
-        public override string Name(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Webpage entity)
         {
-            return "Properties";
+            return Task.FromResult("Properties");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         public override Type ParentType

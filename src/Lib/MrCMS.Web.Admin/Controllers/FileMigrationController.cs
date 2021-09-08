@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services.FileMigration;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -20,14 +21,14 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Migrate()
+        public async Task<ActionResult> Migrate()
         {
-            FileMigrationResult result = _fileMigrationService.MigrateFiles();
+            FileMigrationResult result = await _fileMigrationService.MigrateFiles();
 
             if (result.MigrationRequired)
-                TempData.SuccessMessages().Add(result.Message);
+                TempData.AddSuccessMessage(result.Message);
             else
-                TempData.InfoMessages().Add(result.Message);
+                TempData.AddInfoMessage(result.Message);
 
             return RedirectToAction("FileSystem", "Settings");
         }

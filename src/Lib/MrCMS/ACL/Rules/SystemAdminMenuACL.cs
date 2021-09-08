@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.ACL.Rules
+﻿namespace MrCMS.ACL.Rules
 {
     public class SystemAdminMenuACL : ACLRule
     {
@@ -25,10 +23,7 @@ namespace MrCMS.ACL.Rules
         public const string Security = "Security";
         public const string About = "About";
 
-        public override string DisplayName
-        {
-            get { return "System Admin Menu"; }
-        }
+        public override string DisplayName => "System Admin Menu";
 
 
         //protected override List<string> GetOperations()

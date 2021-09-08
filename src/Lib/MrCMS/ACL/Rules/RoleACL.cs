@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.ACL.Rules
+﻿namespace MrCMS.ACL.Rules
 {
     public class RoleACL : ACLRule
     {
@@ -9,10 +7,7 @@ namespace MrCMS.ACL.Rules
         public const string Edit = "Edit";
         public const string Delete = "Delete";
 
-        public override string DisplayName
-        {
-            get { return "Roles"; }
-        }
+        public override string DisplayName => "Roles";
 
         //protected override List<string> GetOperations()
         //{

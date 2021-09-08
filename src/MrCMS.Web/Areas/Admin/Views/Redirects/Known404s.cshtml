@@ -1,0 +1,84 @@
+@using X.PagedList
+@using MrCMS.Entities.Documents.Web
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Admin.Models.Known404sSearchQuery
+
+@{
+    var results = ViewData["404s"] as IPagedList<UrlHistory>;
+}
+
+<form asp-controller="Redirects" asp-action="Known404s" method="get">
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin - known 404s to process", "Known 404s To Process") "/>
+
+            <admin-header-actions>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+    <fieldset>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Url"></label>
+                    <input asp-for="Url" class="form-control" placeholder="Url" type="text"/>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+    @if (results.TotalItemCount > 0)
+    {
+        <table class="table table-condensed table-striped">
+            <thead>
+            <tr>
+                <th>
+                    Url
+                </th>
+                <th>
+                    Count
+                </th>
+                <th class="text-right">
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var result in results)
+            {
+                <tr>
+                    <td class="align-middle">
+                        <partial name="ItemSummary" model="result"/>
+                    </td>
+                    <td class="align-middle">
+                        @result.FailedLookupCount
+                    </td>
+                    <td class="align-middle text-right">
+                        <partial name="ItemActions" model="result"/>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+
+        @Html.PagedListPager(results, page => Url.Action("Known404s", "Redirects", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    }
+    else
+    {
+        if (string.IsNullOrWhiteSpace(Model.Url))
+        {
+            <div class="alert alert-success">
+                No alerts to process!
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No results match your query
+            </div>
+        }
+    }
+
+</form>

@@ -4,7 +4,7 @@ namespace MrCMS.Web.Admin.Breadcrumbs
 {
     public class UsersBreadcrumb : Breadcrumb
     {
-        public override int Order => 99;
+        public override decimal Order => 99;
         public override string Controller => "";
         public override string Action => "";
         public override bool IsPlaceHolder => true;

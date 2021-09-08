@@ -2,10 +2,14 @@
 @if (Model != null && Model.Any())
 {
     <ul class="breadcrumb">
-        <li><a href="/Admin/Search?parent=0">Top</a> <span class="divider">/</span></li>
+        <li>
+            <a href="/Admin/Search?parent=0">Top</a> <span class="divider">/</span>
+        </li>
         @foreach (var item in Model.ToList())
         {
-            <li><a href="@item.UrlSegment&amp;type=@Context.Request.Query["type"]">@item.Name</a> <span class="divider">/</span></li>
+            <li>
+                <a href="@item.UrlSegment&amp;type=@Context.Request.Query["type"]">@item.Name</a> <span class="divider">/</span>
+            </li>
         }
     </ul>
 }

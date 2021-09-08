@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
@@ -16,9 +17,14 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public IPagedList<Batch> Search(BatchSearchModel searchModel)
+        public async Task<IPagedList<Batch>> Search(BatchSearchModel searchModel)
         {
-            return _session.Query<Batch>().OrderByDescending(batch => batch.Id).ToPagedList(searchModel.Page);
+            return await _session.Query<Batch>().OrderByDescending(batch => batch.Id).PagedAsync(searchModel.Page);
+        }
+
+        public async Task<Batch> Get(int id)
+        {
+            return await _session.GetAsync<Batch>(id);
         }
     }
 }

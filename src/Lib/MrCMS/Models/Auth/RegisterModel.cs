@@ -14,7 +14,7 @@ namespace MrCMS.Models.Auth
 
         [Required(ErrorMessage = "Email is required")]
         [StringLength(128, MinimumLength = 5)]
-        [Remote("CheckEmailIsNotRegistered", "Registration", ErrorMessage = "This email is already registered.")]
+        [Remote("CheckEmailIsNotRegisteredMVC", "Registration", ErrorMessage = "This email is already registered.")]
         [EmailAddress]
         public string Email { get; set; }
 

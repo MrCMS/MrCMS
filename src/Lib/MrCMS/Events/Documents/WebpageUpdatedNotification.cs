@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Notifications;
 using MrCMS.Services.Notifications;
@@ -16,7 +17,7 @@ namespace MrCMS.Events.Documents
             _documentModifiedUser = documentModifiedUser;
         }
 
-        public void Execute(OnUpdatedArgs<Webpage> args)
+        public async Task Execute(OnUpdatedArgs<Webpage> args)
         {
             Webpage current = args.Item;
             Webpage original = args.Original;
@@ -35,8 +36,8 @@ namespace MrCMS.Events.Documents
 
             string message = string.Format("<a href=\"/Admin/Webpage/Edit/{1}\">{0}</a> has been {2}{3}.",
                 current.Name,
-                current.Id, action, _documentModifiedUser.GetInfo());
-            _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
+                current.Id, action, await _documentModifiedUser.GetInfo());
+            await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
     }
 }

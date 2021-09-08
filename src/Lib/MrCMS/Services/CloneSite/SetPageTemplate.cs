@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using NHibernate;
@@ -13,12 +14,12 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public override void ClonePart(Webpage @from, Webpage to, SiteCloneContext siteCloneContext)
+        public override async Task ClonePart(Webpage @from, Webpage to, SiteCloneContext siteCloneContext)
         {
             if (@from.PageTemplate == null) 
                 return;
             to.PageTemplate = siteCloneContext.FindNew<PageTemplate>(@from.PageTemplate.Id);
-            _session.Transact(session => session.Update(to));
+            await _session.TransactAsync(session => session.UpdateAsync(to));
         }
     }
 }

@@ -7,6 +7,7 @@ namespace MrCMS.Helpers
 {
     public static class SeoHelper
     {
+        
         //returns a neat url, lower case, allows: -_/0-9a-z
         public static string TidyUrl(string url)
         {

@@ -45,14 +45,14 @@ namespace MrCMS.Services.Auth
             {
                 return new ExternalLoginCallbackResult
                 {
-                    Error = string.Format(_stringLocalizer.GetValue("Error from external provider: {0}"), remoteError)
+                    Error = string.Format(await _stringLocalizer.GetValue("Error from external provider: {0}"), remoteError)
                 };
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                return new ExternalLoginCallbackResult { Error = _stringLocalizer.GetValue("An error has occurred") };
+                return new ExternalLoginCallbackResult { Error = await _stringLocalizer.GetValue("An error has occurred") };
             }
 
             // Sign in the user with this external login provider if the user already has a login.
@@ -73,7 +73,7 @@ namespace MrCMS.Services.Auth
                 return null;
             }
             var user = new User { Email = model.Email };
-            _userManagementService.AddUser(user);
+            await _userManagementService.AddUser(user);
             var result = await _userLoginManager.AddLoginAsync(user, info);
             if (result.Succeeded)
             {
@@ -111,11 +111,11 @@ namespace MrCMS.Services.Auth
             var user = await _userLoginManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
             if (user != null)
                 return user;
-            user = _userLookup.GetUserByEmail(email);
+            user = await _userLookup.GetUserByEmail(email);
             if (user == null)
             {
                 user = new User { Email = email, IsActive = true };
-                _userManagementService.AddUser(user);
+                await _userManagementService.AddUser(user);
             }
             await _userLoginManager.AddLoginAsync(user, loginInfo);
             return user;

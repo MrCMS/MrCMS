@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -18,15 +19,16 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
             _stringResourceProvider = stringResourceProvider;
         }
 
-        public IList<SelectListItem> GetUsers()
+        public async Task<IList<SelectListItem>> GetUsers()
         {
-            return _session.QueryOver<User>()
+            var users = await _session.QueryOver<User>()
                 .Cacheable()
-                .List()
+                .ListAsync();
+            return users
                 .BuildSelectItemList(user => user.Name, user => user.Id.ToString(),
                     emptyItem: new SelectListItem
                     {
-                        Text = _stringResourceProvider.GetValue("Please select..."),
+                        Text = await _stringResourceProvider.GetValue("Please select..."),
                         Value = ""
                     });
         }

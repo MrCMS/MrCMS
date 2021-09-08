@@ -23,10 +23,10 @@ namespace MrCMS.Batching
             _executeRequestForNextTask = executeRequestForNextTask;
         }
 
-        public void ExecuteRequestForNextTask(Guid guid)
+        public async Task ExecuteRequestForNextTask(Guid guid)
         {
             var run = _repository.Query().FirstOrDefault(x => x.Guid == guid);
-            _executeRequestForNextTask.Execute(run);
+            await _executeRequestForNextTask.Execute(run);
         }
 
         public async Task<int?> ExecuteNextTask(Guid guid)

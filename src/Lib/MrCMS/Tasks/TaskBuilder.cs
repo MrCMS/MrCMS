@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using NHibernate;
-using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace MrCMS.Tasks
 {
     public class TaskBuilder : ITaskBuilder
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISession _session;
+        private readonly IStatelessSession _session;
         private readonly ILogger<TaskBuilder> _logger;
 
-        public TaskBuilder(IServiceProvider serviceProvider,ISession session, ILogger<TaskBuilder> logger)
+        public TaskBuilder(IServiceProvider serviceProvider, IStatelessSession session, ILogger<TaskBuilder> logger)
         {
             _serviceProvider = serviceProvider;
             _session = session;
             _logger = logger;
         }
 
-        public IList<AdHocTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks)
+        public async Task<IList<AdHocTask>> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks)
         {
             var executableTasks = new List<AdHocTask>();
             var failedTasks = new List<QueuedTask>();
@@ -38,26 +38,34 @@ namespace MrCMS.Tasks
                     failedTasks.Add(queuedTask);
                 }
             }
+
             if (failedTasks.Any())
             {
-                _session.Transact(session => failedTasks.ForEach(task =>
+                await _session.TransactAsync(async session =>
                 {
-                    task.Status = TaskExecutionStatus.Failed;
-                    task.FailedAt = DateTime.UtcNow;
-                    session.Update(task);
-                }));
+                    foreach (var task in failedTasks)
+                    {
+                        task.Status = TaskExecutionStatus.Failed;
+                        task.FailedAt = DateTime.UtcNow;
+                        await session.UpdateAsync(task);
+                    }
+                });
             }
+
             return executableTasks;
         }
 
         private AdHocTask GetTask(QueuedTask queuedTask)
         {
-            var task = _serviceProvider.GetService(queuedTask.GetTaskType()) as AdHocTask;
+            var serviceType = queuedTask.GetTaskType();
+            if (serviceType == null)
+                throw new Exception($"Unknown type: {queuedTask.Type}");
+            
+            var task = _serviceProvider.GetService(serviceType) as AdHocTask;
             task.Site = queuedTask.Site;
             task.Entity = queuedTask;
             task.SetData(queuedTask.Data);
             return task;
         }
-
     }
 }

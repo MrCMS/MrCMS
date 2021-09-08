@@ -1,16 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.ACL.Rules
+﻿namespace MrCMS.ACL.Rules
 {
     public class SystemSettingsACL : ACLRule
     {
         public const string View = "View";
         public const string Save = "Save";
 
-        public override string DisplayName
-        {
-            get { return "System Settings"; }
-        }
+        public override string DisplayName => "System Settings";
 
         //protected override List<string> GetOperations()
         //{

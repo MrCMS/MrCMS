@@ -1,29 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Website.Optimization;
 
 namespace MrCMS.Web.Admin.Bundles
 {
-    public class AdminMrCMSStylesheetBundle : IStylesheetBundle
+    public class AdminMrCMSStylesheetBundle : IAdminStyleBundle
     {
-        public string Url { get { return "~/admin/stylesheets/mrcms"; } }
+        public int Priority => int.MaxValue;
 
-        public IEnumerable<string> Files
+        public Task<bool> ShouldShow(string theme)
+        {
+            return Task.FromResult(true);
+        }
+
+        public string Url => "/Areas/Admin/Content/admin.css";
+        public string MinifiedUrl => "/Areas/Admin/Content/admin.min.css";
+
+        public IEnumerable<string> VendorFiles
         {
             get
             {
-                yield return "~/Areas/Admin/styles/jquery.mrcms-mediaselector.css";
-                yield return "~/Areas/Admin/styles/featherlight.css";
-                yield return "~/Areas/Admin/styles/jquery.tagit.css";
-                yield return "~/Areas/Admin/styles/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css";
-                yield return "~/Areas/Admin/lib/font-awesome/css/font-awesome.css";
-                yield return "~/Areas/Admin/lib/jstree/themes/default/style.css";
-                yield return "~/Areas/Admin/lib/adminlte/css/adminlte.css";
-                
-                //yield return "~/Areas/Admin/lib/bootstrap/dist/css/bootstrap.css";
-                yield return "~/Areas/Admin/lib/sweetalert-master/lib/sweet-alert.css";
-                yield return "~/Areas/Admin/styles/dropzone.css";
-                yield return "~/Areas/Admin/styles/mrcms-admin.css";
-                yield return "~/Areas/Admin/lib/spectrum/spectrum.css";
+                yield return "/Areas/Admin/Content/lib/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css";
+                yield return "/Areas/Admin/Content/lib/font-awesome/css/font-awesome.css";
+                // yield return "/Areas/Admin/Content/lib/sweetalert-master/lib/sweet-alert.css";
+                yield return "/Areas/Admin/Content/lib/select2-3.4.5/select2.css";
+                yield return "/Areas/Admin/Content/lib/spectrum/spectrum.css";
             }
         }
     }

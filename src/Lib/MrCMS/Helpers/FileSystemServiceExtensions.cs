@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Services;
-using MrCMS.Settings;
 
 namespace MrCMS.Helpers
 {
@@ -10,25 +9,26 @@ namespace MrCMS.Helpers
         {
             services.AddScoped<IFileSystem>(provider =>
             {
-                var settings = provider.GetService<FileSystemSettings>();
-
-                var storageType = settings.StorageType;
-                if (string.IsNullOrWhiteSpace(storageType))
-                {
-                    return provider.GetService<FileSystem>();
-                }
-
-                var type = TypeHelper.GetTypeByName(storageType);
-                if (type?.IsAssignableFrom(typeof(IFileSystem)) != true)
-                {
-                    return provider.GetService(type) as IFileSystem;
-                }
-
-                return provider.GetService(type) as IFileSystem;
+                return provider.GetService<IFileSystemFactory>()
+                    .GetForSite(provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite());
+                // var settings = provider.GetService<FileSystemSettings>();
+                //
+                // var storageType = settings.StorageType;
+                // if (string.IsNullOrWhiteSpace(storageType))
+                // {
+                //     return provider.GetService<FileSystem>();
+                // }
+                //
+                // var type = TypeHelper.GetTypeByName(storageType);
+                // if (type?.IsAssignableFrom(typeof(IFileSystem)) != true)
+                // {
+                //     return provider.GetService(type) as IFileSystem;
+                // }
+                //
+                // return provider.GetService(type) as IFileSystem;
             });
 
             return services;
         }
-
     }
 }

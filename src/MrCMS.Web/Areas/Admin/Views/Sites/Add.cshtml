@@ -1,17 +1,15 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Models
-@model MrCMS.Web.Admin.Models.AddSiteModel
+﻿@model MrCMS.Web.Admin.Models.AddSiteModel
 
 <form asp-controller="Sites" asp-action="Add" method="post">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-add-site", "Add Site") "/>
+            <admin-header-title title="@await Html.Resource("admin-add-site", "Add Site") "/>
 
             <admin-header-actions>
                 <div class="btn btn-group">
-                    <a asp-action="Index" class="btn btn-secondary">@Html.Resource("admin-back", "Back")</a>
-                    <input type="submit" class="btn-primary btn" value="@Html.Resource("admin-save", "Save")"/>
+                    <a asp-action="Index" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
+                    <input type="submit" class="btn-primary btn" value="@await Html.Resource("admin-save", "Save")"/>
 
                 </div>
 
@@ -19,31 +17,26 @@
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.Name)
-                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.Name)
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.BaseUrl)
-                        @Html.TextBoxFor(x => x.BaseUrl, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.BaseUrl)
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" type="text" class="form-control" />
+                <span asp-validation-for="Name"></span>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <partial name="CloneOptions" model="Model"/>
-                </div>
+            <div class="form-group">
+                <label asp-for="BaseUrl"></label>
+                <input asp-for="BaseUrl" type="text" class="form-control" />
+                <span asp-validation-for="BaseUrl"></span>
             </div>
-        </card-body>
-    </card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <partial name="CloneOptions" model="Model"/>
+        </div>
+    </div>
+
 
 </form>
-
-@{ Html.IncludeScript("~/Areas/Admin/scripts/add-site.js"); }

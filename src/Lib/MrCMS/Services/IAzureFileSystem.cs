@@ -1,11 +1,13 @@
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using System.Reflection.Metadata;
+using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 
 namespace MrCMS.Services
 {
-    public interface IAzureFileSystem
+    public interface IAzureFileSystem : IFileSystem
     {
-        CloudBlobContainer Container { get; }
-        CloudStorageAccount StorageAccount { get; }
+        Task<BlobContainerClient> GetContainerClient();
+        Task<BlobServiceClient> GetServiceClient();
+        Task<BlobClient> GetBlobClient(string filePath);
     }
 }

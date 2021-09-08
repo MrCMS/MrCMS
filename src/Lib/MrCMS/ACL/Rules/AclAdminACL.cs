@@ -1,16 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.ACL.Rules
+﻿namespace MrCMS.ACL.Rules
 {
     public class AclAdminACL : ACLRule
     {
         public const string View = "View";
         public const string Edit = "Edit";
 
-        public override string DisplayName
-        {
-            get { return "ACLAdmin"; }
-        }
+        public override string DisplayName => "ACLAdmin";
 
         //protected override List<string> GetOperations()
         //{

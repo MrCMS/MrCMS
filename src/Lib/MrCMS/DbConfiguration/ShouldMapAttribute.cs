@@ -6,4 +6,8 @@ namespace MrCMS.DbConfiguration
     public class ShouldMapAttribute : Attribute
     {
     }
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ShouldMapEntityAttribute : Attribute
+    {
+    }
 }

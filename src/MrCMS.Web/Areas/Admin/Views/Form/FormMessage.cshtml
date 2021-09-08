@@ -1,57 +1,57 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Web.Admin.Models.Forms.FormMessageTabViewModel
+﻿@model MrCMS.Web.Admin.Models.Forms.FormMessageTabViewModel
 
-@Html.InfoBlock(Html.Resource("Heads up") + "!",
-    string.Format(Html.Resource("Webpage - Form Tag Usage", "To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use [form-{0}]"), ViewContext.RouteData.Values["id"]))
+@Html.InfoBlock(await Html.Resource("Heads up") + "!",
+    string.Format(await Html.Resource("admin-forms-how-to-use-text", "To include this form in your page simply use the short code [form id={0}] where you would like it rendered. Should you want to render this form in another page you can use [form id={1}]"), Model.Id, Model.Id))
 
-<h4>@Html.Resource("Admin Webpage Form Message After Submitted", "Message to show after form is submitted")</h4>
-
+<h4>@await Html.Resource("Admin Webpage Form Message After Submitted", "Message to show after form is submitted")</h4>
 <div class="form-group">
-    @Html.TextBoxFor(model => model.FormSubmittedMessage, new { @class = "form-control", placeholder = "e.g Thank you!" })
-    @Html.ValidationMessageFor(x => x.FormSubmittedMessage, "", new { @class = "error" })
-</div>
-<h4>@Html.Resource("Admin Webpage Form RedirectUrl", "Page to redirect to (Leave blank for current page and show success message above)")</h4>
-<div class="form-group">
-    @Html.TextBoxFor(model => model.FormRedirectUrl, new { @class = "form-control", placeholder = "e.g http://www.example.com/thankyou" })
-    @Html.ValidationMessageFor(x => x.FormRedirectUrl, "", new { @class = "error" })
+    <input asp-for="FormSubmittedMessage" type="text" class="form-control" placeholder="e.g Thank you!"/>
+    <span asp-validation-for="FormSubmittedMessage"></span>
 </div>
 
-<h4>@Html.Resource("Admin Webpage Form Submit Button settings", "Submit Button settings")</h4>
+<h4>@await Html.Resource("Admin Webpage Form RedirectUrl", "Page to redirect to (Leave blank for current page and show success message above)")</h4>
+<div class="form-group">
+    <input asp-for="FormRedirectUrl" type="text" class="form-control" placeholder="@await Html.Resource("e.g http://www.example.com/thankyou")"/>
+    <span asp-validation-for="FormRedirectUrl"></span>
+</div>
 
-@Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Webpage Form Custom Design Info warning", "If you are using a custom design these properties will be ignored."))
+<h4>@await Html.Resource("Admin Webpage Form Submit Button settings", "Submit Button settings")</h4>
+
+@Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Webpage Form Custom Design Info warning", "If you are using a custom design these properties will be ignored."))
 
 <div class="row">
     <div class="col-lg-6">
         <div class="form-group">
-            @Html.LabelFor(model => model.SubmitButtonText)
-            @Html.TextBoxFor(model => model.SubmitButtonText, new { @class = "form-control", placeholder = "e.g Sign Up!" })
-            @Html.ValidationMessageFor(x => x.SubmitButtonText, "", new { @class = "error" })
+            <label asp-for="SubmitButtonText"></label>
+            <input asp-for="SubmitButtonText" type="text" class="form-control" placeholder="@await Html.Resource("e.g Sign Up!")"/>
+            <span asp-validation-for="SubmitButtonText"></span>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="form-group">
-            @Html.LabelFor(model => model.SubmitButtonCssClass)
-            @Html.TextBoxFor(model => model.SubmitButtonCssClass, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.SubmitButtonCssClass, "", new { @class = "error" })
+            <label asp-for="SubmitButtonCssClass"></label>
+            <input asp-for="SubmitButtonCssClass" type="text" class="form-control" />
+            <span asp-validation-for="SubmitButtonCssClass"></span>
         </div>
     </div>
 </div>
 
-<h4>@Html.Resource("Admin Webpage Form Email Settings", "Email Settings")</h4>
+<h4>@await Html.Resource("Admin Webpage Form Email Settings", "Email Settings")</h4>
 <div class="form-group">
-    @Html.LabelFor(model => model.FormEmailTitle, "Subject")
-    @Html.TextBoxFor(model => model.FormEmailTitle, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.FormEmailTitle, "", new { @class = "error" })
+    <label asp-for="FormEmailTitle"></label>
+    <input asp-for="FormEmailTitle" type="text" class="form-control" />
+    <span asp-validation-for="FormEmailTitle"></span>
 </div>
-<div class="form-group">
 
-    @Html.LabelFor(model => model.SendFormTo, "To")
-    @Html.TextBoxFor(model => model.SendFormTo, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.SendFormTo, "", new { @class = "error" })
-</div>
 <div class="form-group">
-
-    @Html.LabelFor(model => model.FormMessage, "Message")
-    @Html.TextAreaFor(x => x.FormMessage, new { @class = "ckedit-enabled" })
+    <label asp-for="SendFormTo"></label>
+    <input asp-for="SendFormTo" type="text" class="form-control" />
+    <span asp-validation-for="SendFormTo"></span>
 </div>
-@Html.InfoBlock(Html.Resource("Heads up") + "!", string.Format( Html.Resource("Admin Webpage Form Email Embed Notification", "Use [form] in the message body to embed the form result in the email."), Model.Id))
+
+<div class="form-group">
+    <label asp-for="FormMessage"></label>
+    <textarea asp-for="FormMessage" class="ckedit-enabled"></textarea>
+</div>
+
+@Html.InfoBlock(await Html.Resource("Heads up") + "!", string.Format(await Html.Resource("Admin Webpage Form Email Embed Notification", "Use [form] in the message body to embed the form result in the email."), Model.Id))

@@ -2,22 +2,22 @@
 @model MrCMS.Entities.Documents.Web.Form
 @inject IFormAdminService AdminService
 @{
-    var postingsModel = AdminService.GetFormPostings(Model, 1, string.Empty);
+    var postingsModel = await AdminService.GetFormPostings(Model, 1, string.Empty);
 }
 <div class="tab-pane" id="postings-tab">
     <div class="row">
         <div class="col-lg-7">
-            <h4>@Html.Resource("Admin Webpage Form Entries", "Form Entries") (@postingsModel.Items.TotalItemCount)</h4>
+            <h4>@await Html.Resource("Admin Webpage Form Entries", "Form Entries") (@postingsModel.Items.TotalItemCount)</h4>
         </div>
         <div class="col-lg-5">
             <div class="pull-right btn-group">
                 @if (postingsModel.Items.TotalItemCount > 0)
                 {
-                    @Html.ActionLink(Html.Resource("Admin Webpage Form Delete All","Delete all entries"), "ClearFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
-                    @Html.ActionLink(Html.Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-sm btn-primary" })
+                    @Html.ActionLink(await Html.Resource("Admin Webpage Form Delete All", "Delete all entries"), "ClearFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                    @Html.ActionLink(await Html.Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-sm btn-primary"})
                 }
             </div>
         </div>
     </div>
-    <partial name="~/Areas/Admin/Views/Form/Postings.cshtml" model="postingsModel" />
+    <partial name="~/Areas/Admin/Views/Form/Postings.cshtml" model="postingsModel"/>
 </div>

@@ -1,13 +1,14 @@
+using System.Threading.Tasks;
 using AutoMapper;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
-using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
+using MrCMS.Website;
+using MrCMS.Website.Caching;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Services
@@ -16,83 +17,82 @@ namespace MrCMS.Web.Admin.Tests.Services
     {
         public LayoutAreaAdminServiceTests()
         {
-            _sut = new LayoutAreaAdminService(_layoutAreaRepository, _webpageRepository,
-                _widgetRepository, _pageWidgetSortRepository, _mapper);
+            _sut = new LayoutAreaAdminService(_layoutAreaRepository,
+                _widgetRepository, _mapper, _cacheManager, _widgetLoader);
         }
 
         private readonly LayoutAreaAdminService _sut;
         private readonly IRepository<LayoutArea> _layoutAreaRepository = A.Fake<IRepository<LayoutArea>>();
-        private readonly IRepository<Webpage> _webpageRepository = A.Fake<IRepository<Webpage>>();
         private readonly IRepository<Widget> _widgetRepository = A.Fake<IRepository<Widget>>();
 
-        private readonly IRepository<PageWidgetSort> _pageWidgetSortRepository =
-            new InMemoryRepository<PageWidgetSort>();
 
         private readonly IMapper _mapper = A.Fake<IMapper>();
+        private readonly ICacheManager _cacheManager = A.Fake<ICacheManager>();
+        private IWidgetLoader _widgetLoader = A.Fake<IWidgetLoader>();
 
         [Fact]
-        public void LayoutAreaAdminService_DeleteArea_AreaIsRemovedFromLayoutsLayoutAreaList()
+        public async Task LayoutAreaAdminService_DeleteArea_AreaIsRemovedFromLayoutsLayoutAreaList()
         {
             var layout = new Layout();
-            var layoutArea = new LayoutArea { Layout = layout };
+            var layoutArea = new LayoutArea {Layout = layout};
             layout.LayoutAreas.Add(layoutArea);
             A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
-            _sut.DeleteArea(123);
+            await _sut.DeleteArea(123);
 
             layout.LayoutAreas.Should().NotContain(layoutArea);
         }
 
         [Fact]
-        public void LayoutAreaAdminService_DeleteArea_DeletesThePassedArea()
+        public async Task LayoutAreaAdminService_DeleteArea_DeletesThePassedArea()
         {
             var layoutArea = new LayoutArea();
             A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
 
-            _sut.DeleteArea(123);
+            await _sut.DeleteArea(123);
 
             A.CallTo(() => _layoutAreaRepository.Delete(layoutArea)).MustHaveHappened();
         }
 
         [Fact]
-        public void LayoutAreaAdminService_GetArea_ShouldReturnLayoutAreaForValidId()
+        public async Task LayoutAreaAdminService_GetArea_ShouldReturnLayoutAreaForValidId()
         {
             var layoutArea = A.Dummy<LayoutArea>();
             A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
 
-            var loadedLayoutArea = _sut.GetArea(123);
+            var loadedLayoutArea = await _sut.GetArea(123);
 
             loadedLayoutArea.Should().BeSameAs(layoutArea);
         }
 
         [Fact]
-        public void LayoutAreaAdminService_GetArea_ShouldReturnNullForInvalidId()
+        public async Task LayoutAreaAdminService_GetArea_ShouldReturnNullForInvalidId()
         {
-            A.CallTo(() => _layoutAreaRepository.Get(-1)).Returns(null);
+            A.CallTo(() => _layoutAreaRepository.Get(-1)).Returns((LayoutArea) null);
 
-            var layoutArea = _sut.GetArea(-1);
+            var layoutArea = await _sut.GetArea(-1);
 
             layoutArea.Should().BeNull();
         }
 
         [Fact]
-        public void LayoutAreaAdminService_SaveArea_IfLayoutIsSetAddLayoutAreaToLayoutAreasList()
+        public async Task LayoutAreaAdminService_SaveArea_IfLayoutIsSetAddLayoutAreaToLayoutAreasList()
         {
             var layout = new Layout();
-            var layoutArea = new LayoutArea { Layout = layout };
+            var layoutArea = new LayoutArea {Layout = layout};
             A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
 
-            _sut.Update(new UpdateLayoutAreaModel {Id = 123});
+            await _sut.Update(new UpdateLayoutAreaModel {Id = 123});
 
             layout.LayoutAreas.Should().Contain(layoutArea);
         }
 
         [Fact]
-        public void LayoutAreaAdminService_SaveArea_SavesTheArea()
+        public async Task LayoutAreaAdminService_SaveArea_SavesTheArea()
         {
             var layoutArea = new LayoutArea();
             A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
 
-            _sut.Update(new UpdateLayoutAreaModel {Id = 123});
+            await _sut.Update(new UpdateLayoutAreaModel {Id = 123});
 
             A.CallTo(() => _layoutAreaRepository.Update(layoutArea)).MustHaveHappened();
         }

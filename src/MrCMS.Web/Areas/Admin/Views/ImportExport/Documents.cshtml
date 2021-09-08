@@ -1,90 +1,81 @@
-﻿@using System.Collections.Generic
-@using System.Linq
-@using MrCMS.Helpers
-@using MrCMS.Models
-@using MrCMS.Services.ImportExport
-@model MrCMS.Models.ExportDocumentsModel
+﻿@model MrCMS.Models.ExportDocumentsModel
 @{
     ViewBag.Title = "Import/Export Documents";
-    var result = (ImportDocumentsResult) ViewBag.Messages;
+    var result = (ImportDocumentsResult)ViewBag.Messages;
 }
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-impor-export-documents", "Import/Export Webpages") "/>
-
-        <admin-header-actions>
-        </admin-header-actions>
+        <admin-header-title title="@await Html.Resource("admin-impor-export-documents", "Import/Export<> Webpages") " />
+        <admin-header-actions></admin-header-actions>
     </row>
 </admin-header>
-
-<card>
-    <card-body>
-        <div class="row">
-            <div class="col-6">
-                <div class="btn-group">
-                    <a href="@Url.Action("ExportDocuments", "ImportExport")" class="btn btn-primary">@Html.Resource("Admin Import / Export Documents Export Button", "Export Documents")</a>
-                </div>
-            </div>
-            <div class="col-6">
-                @using (Html.BeginForm("ExportDocumentsToEmail", "ImportExport", FormMethod.Post))
-                {
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Email)
-                        @Html.TextBoxFor(model => model.Email, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(model => model.Email)
-                    </div>
-                    <button class="btn btn-primary">Export and send via email</button>
-                }
-            </div>
+<row>
+    <div class="col-6">
+        <div class="btn-group">
+            <a href="@Url.Action("ExportDocuments", "ImportExport")" class="btn btn-primary">
+                @await Html.Resource("Admin Import / Export Documents Export Button", "Export Documents")
+            </a>
         </div>
+    </div>
+    <div class="col-6">
+        <form asp-action="ExportDocumentsToEmail" asp-controller="ImportExport" method="post">
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="text" class="form-control" />
+                <span asp-validation-for="Email"></span>
+            </div>
+            <button class="btn btn-primary">
+                @await Html.Resource("Admin Import / Export Do", "Export and send via email")
+            </button>
+        </form>
+    </div>
+</row>
 
-
-        @if (ViewBag.ExportStatus != null)
+@if (ViewBag.ExportStatus != null)
+{
+    <br />
+    <span class="alert alert-info" role="alert">
+        @ViewBag.ExportStatus
+    </span>
+    <div class="clearfix"></div>
+}
+<hr />
+@Html.InfoBlock("", await Html.Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
+<hr />
+<form asp-controller="ImportExport" asp-action="ImportDocuments" enctype="multipart/form-data" type="post">
+    <label for="document">@await Html.Resource("Admin Import / Export Documents Choose Import File Label", "Choose Import File")</label>
+    <input type="file" name="document" id="document" />
+    <br />
+    @if (result != null)
+    {
+        foreach (var item in result.Errors)
         {
-            <br/>
-            <span class="alert alert-info">@ViewBag.ExportStatus</span>
-            <div class="clearfix"></div>
+            <span>
+                @string.Format(await Html.Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
+            </span>
+            <ul>
+                @foreach (string error in item.Value)
+                {
+                    <li>
+                        @error
+                    </li>
+                }
+            </ul>
         }
-        <hr/>
-        @Html.InfoBlock("", Html.Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
-        <hr/>
-        @using (Html.BeginForm("ImportDocuments", "ImportExport", FormMethod.Post, new {enctype = "multipart/form-data"}))
+        @if (result.Success)
         {
-            <label for="document">@Html.Resource("Admin Import / Export Documents Choose Import File Label", "Choose Import File")</label>
-
-            <input type="file" name="document" id="document"/>
-            <br/>
-            if (result != null)
-            {
-                foreach (var item in result.Errors)
-                {
-                    <span>
-                        @string.Format(Html.Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
-                    </span>
-                    <ul>
-                        @foreach (string error in item.Value)
-                        {
-                            <li>
-                                @error
-                            </li>
-                        }
-                    </ul>
-                }
-                if (result.Success)
-                {
-                    <div class="alert alert-success">
-                        @Html.Resource("Admin Import / Export Documents Choose Batch Created", "A batch run was successfully created for the file").
-                    </div>
-                }
-            }
-            if (ViewBag.ImportStatus != null)
-            {
-                <div class="alert alert-danger">@ViewBag.ImportStatus</div>
-            }
-
-            <input type="submit" class="btn btn-primary" value="@Html.Resource("Import Documents")"/>
+            <div class="alert alert-success" role="alert">
+                @await Html.Resource("Admin Import / Export Documents Choose Batch Created", "A batch run was successfully created for the file").
+            </div>
         }
+    }
+    @if (ViewBag.ImportStatus != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ImportStatus
+        </div>
+    }
 
-    </card-body>
-</card>
+    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Import Documents")" />
+</form>

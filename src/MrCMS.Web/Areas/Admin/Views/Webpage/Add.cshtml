@@ -1,7 +1,4 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.Documents
-@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
+﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @using MrCMS.Web.Admin.Models
 @model AddWebpageModel
@@ -16,17 +13,16 @@
         Model.DocumentType = types.First().DocumentType;
     }
 
-    Html.IncludeScript("~/Areas/Admin/scripts/add-webpage.js");
 }
 
-<form asp-controller="Webpage" asp-action="Add" method="post">
+<form asp-controller="Webpage" asp-action="Add" method="post" data-add-webpage autocomplete="off">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : Html.Resource("admin-root", "Root"))"/>
+            <admin-header-title title="@await Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : await Html.Resource("admin-root", "Root"))"/>
 
             <admin-header-actions>
-                <input type="submit" class="btn-primary btn hide-until-document-selected " value="@Html.Resource("Save")" style="display: none;"/>
+                <input type="submit" class="btn-primary btn hide-until-document-selected " value="@await Html.Resource("Save")" style="display: none;"/>
             </admin-header-actions>
         </row>
     </admin-header>
@@ -34,7 +30,7 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-md-3">
                     @foreach (var documentType in types)
                     {
                         var inputId = documentType.DocumentType + documentType.TemplateId;
@@ -49,17 +45,17 @@
                     @Html.HiddenFor(x => x.PageTemplateId)
                 </div>
 
-                <div class="col-lg-10 hide-until-document-selected" style="display: none;">
+                <div class="col-lg-9 hide-until-document-selected" style="display: none;">
                     <div class="form-group">
-                        @Html.HiddenFor(x => x.ParentId)
-                        @Html.LabelFor(x => x.Name, "Page Name")
-                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control", autocomplete = "off"})
-                        @Html.ValidationMessageFor(x => x.Name)
+                        <input type="hidden" asp-for="ParentId"/>
+                        <label asp-for="Name"></label>
+                        <input type="text" asp-for="Name" class="form-control" autocomplete="off"/>
+                        <span asp-validation-for="Name"></span>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.UrlSegment, "Url")
-                        @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.UrlSegment)
+                        <label asp-for="UrlSegment"></label>
+                        <input type="text" asp-for="UrlSegment" class="form-control" autocomplete="off"/>
+                        <span asp-validation-for="UrlSegment"></span>
                     </div>
                     <div class="checkbox">
                         <label>
@@ -78,7 +74,7 @@
                     </div>
                 </div>
                 <div class="col-lg-10" id="message-choose-document">
-                    <p>@Html.Resource("Admin Webpage Please select a document type", "Please select a document type")</p>
+                    <p>@await Html.Resource("Admin Webpage Please select a document type", "Please select a document type")</p>
                 </div>
 
             </div>

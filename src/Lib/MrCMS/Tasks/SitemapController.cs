@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Services.Sitemaps;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
@@ -12,31 +14,32 @@ namespace MrCMS.Tasks
         public const string SitemapUrl = "sitemap.xml";
         private readonly ISitemapService _sitemapService;
         private readonly IGetSitemapPath _getSitemapPath;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
 
-        public SitemapController(ISitemapService sitemapService, IGetSitemapPath getSitemapPath, Site site)
+        public SitemapController(ISitemapService sitemapService, IGetSitemapPath getSitemapPath, ICurrentSiteLocator siteLocator)
         {
             _sitemapService = sitemapService;
             _getSitemapPath = getSitemapPath;
-            _site = site;
+            _siteLocator = siteLocator;
         }
 
         [TaskExecutionKeyPasswordAuth]
         [Route(WriteSitemapUrl)]
-        public ContentResult Update()
+        public async Task<ContentResult> Update()
         {
-            _sitemapService.WriteSitemap();
+            await _sitemapService.WriteSitemap();
             return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 
         [Route(SitemapUrl)]
         public ActionResult Show()
         {
-            if (!_getSitemapPath.FileExists(_site))
+            var site = _siteLocator.GetCurrentSite();
+            if (!_getSitemapPath.FileExists(site))
                 return new EmptyResult();
 
-            return PhysicalFile(_getSitemapPath.GetAbsolutePath(_site), "application/xml");
+            return PhysicalFile(_getSitemapPath.GetAbsolutePath(site), "application/xml");
         }
     }
 }

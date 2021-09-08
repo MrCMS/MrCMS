@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.Models
+﻿namespace MrCMS.Models
 {
     public class ACLUpdateRecord
     {

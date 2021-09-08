@@ -1,10 +1,9 @@
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Web.Admin.Models;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Admin.Services
@@ -21,30 +20,30 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public void SetAvatar(int userId, IFormFile formFile)
+        public async Task SetAvatar(int userId, IFormFile formFile)
         {
-            var folder = GetUserAvatarCategoryModel();
+            var folder = await GetUserAvatarCategoryModel();
             var user = _session.Get<User>(userId);
             var extension = Path.GetExtension(formFile.FileName);
             var filename = user.Guid.ToString() + "." + extension;
 
-            var result = _fileAdminService.AddFile(formFile.OpenReadStream(), filename, formFile.ContentType,
+            var result = await _fileAdminService.AddFile(formFile.OpenReadStream(), filename, formFile.ContentType,
                 formFile.Length,
                 folder);
 
-            user.AvatarImage = _session.Get<MediaFile>(result.Id)?.FileUrl;
-            _session.Transact(x => x.Update(user));
+            user.AvatarImage = (await _session.GetAsync<MediaFile>(result.Id))?.FileUrl;
+            await _session.TransactAsync(x => x.UpdateAsync(user));
         }
 
-        int GetUserAvatarCategoryModel()
+        async Task<int> GetUserAvatarCategoryModel()
         {
-            var userAvatarCategoryModel = _session.QueryOver<MediaCategory>()
+            var userAvatarCategoryModel = await _session.QueryOver<MediaCategory>()
                 .Where(x => x.UrlSegment == UserAvatarUrl)
-                .SingleOrDefault();
-            return userAvatarCategoryModel?.Id ?? CreateUserAvatarModel();
+                .SingleOrDefaultAsync();
+            return userAvatarCategoryModel?.Id ?? await CreateUserAvatarModel();
         }
 
-        private int CreateUserAvatarModel()
+        private async Task<int> CreateUserAvatarModel()
         {
             var avatarFolder = new MediaCategory
             {
@@ -52,7 +51,7 @@ namespace MrCMS.Web.Admin.Services
                 UrlSegment = UserAvatarUrl,
                 HideInAdminNav = true
             };
-            _session.Transact(x => x.Save(avatarFolder));
+            await _session.TransactAsync(x => x.SaveAsync(avatarFolder));
             return avatarFolder.Id;
         }
     }

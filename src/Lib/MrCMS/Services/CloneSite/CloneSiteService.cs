@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
@@ -19,7 +20,7 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void CloneData(Site site, List<SiteCopyOption> options)
+        public async Task CloneData(Site site, List<SiteCopyOption> options)
         {
             using (new SiteFilterDisabler(_session))
             {
@@ -30,10 +31,10 @@ namespace MrCMS.Services.CloneSite
                 var siteCloneContext = new SiteCloneContext();
                 foreach (var info in siteCopyOptionInfos)
                 {
-                    var @from = _session.Get<Site>(info.SiteId);
+                    var @from = await _session.GetAsync<Site>(info.SiteId);
                     if (@from == null)
                         continue;
-                    info.CloneSiteParts.Clone(@from, site, siteCloneContext);
+                    await info.CloneSiteParts.Clone(@from, site, siteCloneContext);
                 }
             }
         }

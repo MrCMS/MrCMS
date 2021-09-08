@@ -1,7 +1,5 @@
-﻿@using System.Globalization
-@using Microsoft.Extensions.Options
+﻿@using Microsoft.Extensions.Options
 @using MrCMS.Helpers
-@using MrCMS.Installation
 @using MrCMS.Installation.Models
 @using MrCMS.Settings
 @model InstallModel
@@ -39,6 +37,7 @@
         <br />
         @using (Html.BeginForm("Setup", "Install", FormMethod.Post, new { id = "installationform" }))
         {
+            @Html.AntiForgeryToken()
             if (installationResult != null)
             {
                 if (installationResult.Errors.Any())

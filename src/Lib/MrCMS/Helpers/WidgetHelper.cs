@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MrCMS.ACL;
 using MrCMS.Entities.Widget;
 
 namespace MrCMS.Helpers

@@ -6,7 +6,6 @@ using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Controllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
 using System.Threading.Tasks;
 using MrCMS.Services;
@@ -30,12 +29,12 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WidgetController_EditGet_ShouldReturnTheLoadedModel()
+        public async Task WidgetController_EditGet_ShouldReturnTheLoadedModel()
         {
             UpdateWidgetModel model = new UpdateWidgetModel();
             A.CallTo(() => _widgetService.GetEditModel(123)).Returns(model);
 
-            var result = _widgetController.Edit_Get(123);
+            var result = await _widgetController.Edit_Get(123);
 
             result.Model.Should().Be(model);
         }
@@ -103,26 +102,14 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WidgetController_DeletePost_IfReturnUrlIsSetReturnsRedirectResult()
+        public async Task WidgetController_DeletePost_IfReturnUrlIsSetReturnsRedirectResult()
         {
-            ActionResult actionResult = _widgetController.Delete(123, "test");
+            ActionResult actionResult = await _widgetController.Delete(123, "test");
 
             actionResult.Should().BeOfType<RedirectResult>();
             actionResult.As<RedirectResult>().Url.Should().Be("test");
         }
 
-        [Fact]
-        public void WidgetController_DeletePost_NullReturnUrlWebpageSetRedirectsToEditWebpage()
-        {
-            var textWidget = new TextWidget{Webpage = new TextPage{Id=234}};
-            A.CallTo(() => _widgetService.DeleteWidget(123)).Returns(textWidget);
-
-            var result = _widgetController.Delete(123, null).As<RedirectToActionResult>();
-
-            result.ControllerName.Should().Be("Webpage");
-            result.ActionName.Should().Be("Edit");
-            result.RouteValues["id"].Should().Be(234); // from widget id
-        }
 
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()

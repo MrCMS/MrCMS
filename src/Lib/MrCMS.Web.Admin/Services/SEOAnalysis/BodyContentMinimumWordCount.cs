@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models.SEOAnalysis;
@@ -9,29 +10,28 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
 {
     public class BodyContentMinimumWordCount : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override Task<IReadOnlyList<SEOAnalysisFacet>> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
             var text =
                 (HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty).Replace(
                     Environment.NewLine, " ");
             var strings = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             var wordCount = strings.Count();
+            var result = new List<SEOAnalysisFacet>();
             if (wordCount <= 300)
             {
-                yield return
+                result.Add(
                     GetFacet("Word Count", SEOAnalysisStatus.Error,
-                        string.Format(
-                            "The word count is currently less than the 300 word recommended minimum ({0} words)",
-                            wordCount));
+                        $"The word count is currently less than the 300 word recommended minimum ({wordCount} words)"));
             }
             else
             {
-                yield return
+                result.Add(
                     GetFacet("Word Count", SEOAnalysisStatus.Success,
-                        string.Format(
-                            "The word count is currently at leastt the 300 word recommended minimum ({0} words)",
-                            wordCount));
+                        $"The word count is currently at leastt the 300 word recommended minimum ({wordCount} words)"));
             }
+            return Task.FromResult<IReadOnlyList<SEOAnalysisFacet>>(result);
         }
     }
 }

@@ -1,16 +1,14 @@
-﻿@using MrCMS.Web.Admin.Models
-@model MrCMS.Web.Admin.Models.AdminTree
+﻿@model MrCMS.Web.Admin.Models.AdminTree
 @if (Model.IsRootRequest)
 {
     <ul>
         <li class="jstree-open" id="@Model.RootContoller" data-id="" data-can-add-child="True" data-sortable="True" data-haschildren="True" data-jstree='{"icon":"fa fa-certificate"}' data-controller="@Model.RootContoller">
-            <a href="#">@Html.Resource("Root")</a>
-            <partial name="Children" model="Model.Nodes" />
+            <a href="#">@await Html.Resource("Root")</a>
+            <partial name="Children" model="Model.Nodes"/>
         </li>
     </ul>
 }
 else
 {
-    <partial name="Children" model="Model.Nodes" />
+    <partial name="Children" model="Model.Nodes"/>
 }
-

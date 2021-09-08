@@ -2,9 +2,8 @@
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var webpageId = ViewData["web-page"] as int? ?? 0;
-    Html.IncludeScript("~/Areas/Admin/scripts/sort.js");
 }
-@using (Html.BeginForm("Sort", "ContentBlock", new { webpageId }, FormMethod.Post))
+@using (Html.BeginForm("Sort", "ContentBlock", new {webpageId}, FormMethod.Post))
 {
     <fieldset>
         <legend>
@@ -36,4 +35,3 @@
         </ul>
     </fieldset>
 }
-

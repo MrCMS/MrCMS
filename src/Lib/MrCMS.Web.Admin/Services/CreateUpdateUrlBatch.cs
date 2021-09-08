@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching.Services;
 using MrCMS.Services.WebsiteManagement;
 using MrCMS.Web.Admin.Models;
@@ -16,7 +17,7 @@ namespace MrCMS.Web.Admin.Services
             _controlBatchRun = controlBatchRun;
         }
 
-        public bool CreateBatch(MoveWebpageConfirmationModel model)
+        public async Task<bool> CreateBatch(MoveWebpageConfirmationModel model)
         {
             var itemsToUpdate = model.ChangedPages.FindAll(x => x.OldUrl != x.NewUrl);
 
@@ -25,13 +26,13 @@ namespace MrCMS.Web.Admin.Services
                 return true;
             }
 
-            var result = _createBatch.Create(itemsToUpdate.Select(x => new UpdateUrlBatchJob
+            var result = await _createBatch.Create(itemsToUpdate.Select(x => new UpdateUrlBatchJob
             {
                 NewUrl = x.NewUrl,
                 WebpageId = x.Id
             }));
 
-            return _controlBatchRun.Start(result.InitialBatchRun);
+            return await _controlBatchRun.Start(result.InitialBatchRun);
         }
     }
 }

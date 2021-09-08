@@ -1,12 +1,15 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Tests.Services.Events
 {
     public class TestEventImplementation : ITestEvent
     {
         public static int ExecutionCount = 0;
 
-        public void Execute(TestEventArgs args)
+        public Task Execute(TestEventArgs args)
         {
             ExecutionCount++;
+            return Task.CompletedTask;
         }
 
         public static void Reset()

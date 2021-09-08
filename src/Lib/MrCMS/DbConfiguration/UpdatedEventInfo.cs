@@ -25,14 +25,8 @@ namespace MrCMS.DbConfiguration
         public T OriginalVersion { get; private set; }
         public T Object { get; private set; }
 
-        public override object ObjectBase
-        {
-            get { return Object; }
-        }
+        public override object ObjectBase => Object;
 
-        public override object OriginalVersionBase
-        {
-            get { return OriginalVersion; }
-        }
+        public override object OriginalVersionBase => OriginalVersion;
     }
 }

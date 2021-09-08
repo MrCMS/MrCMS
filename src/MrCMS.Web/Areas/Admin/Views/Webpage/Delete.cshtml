@@ -1,16 +1,16 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.Webpage
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("Delete", "Webpage", new { id = Model.Id }, FormMethod.Post, null,new { style = "display:inline;" }))
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Delete", "Webpage", new {id = Model.Id}, FormMethod.Post, null, new {style = "display:inline;"}))
 {
     <fieldset>
-        <legend>@Html.Resource("Admin Wepage Delete Page", "Delete page")
-                <span class="btn-group pull-right">
-                    <input type="submit" class="btn btn-danger" value="@Html.Resource("Delete")" />
-                </span>
+        <legend>
+            @await Html.Resource("Admin Wepage Delete Page", "Delete page")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
+            </span>
         </legend>
 
-        @Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+        @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
 
-    </fieldset>    
+    </fieldset>
 }

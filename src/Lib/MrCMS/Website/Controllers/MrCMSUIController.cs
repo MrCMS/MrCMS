@@ -1,8 +1,10 @@
-﻿using MrCMS.Helpers;
+﻿using Microsoft.AspNetCore.Mvc;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website.Controllers
 {
     [HandleWebpageViews]
+    [AutoValidateAntiforgeryToken]
     public abstract class MrCMSUIController : MrCMSController
     {
         public void SetPageTitle(string pageTitle)

@@ -1,6 +1,5 @@
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Settings;
 using NHibernate;
 
@@ -33,6 +32,12 @@ namespace MrCMS.Services
             }
 
             return GetSiteDefault();
+        }
+
+        public Layout GetUserAccountLayout()
+        {
+            var siteSettingsUserAccountLayoutId = _siteSettings.UserAccountLayoutId;
+            return siteSettingsUserAccountLayoutId > 0 ? _session.Get<Layout>(siteSettingsUserAccountLayoutId) : GetSiteDefault();
         }
 
         private Layout GetTypeDefaultLayout(Webpage webpage)

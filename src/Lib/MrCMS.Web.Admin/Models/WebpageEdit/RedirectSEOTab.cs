@@ -11,14 +11,14 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
     {
         public override int Order => 100;
 
-        public override string Name(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Webpage entity)
         {
-            return "SEO & Properties";
+            return Task.FromResult("SEO & Properties");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return (entity is Redirect);
+            return Task.FromResult(entity is Redirect);
         }
 
         public override Type ParentType => null;

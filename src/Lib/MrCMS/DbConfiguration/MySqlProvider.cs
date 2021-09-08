@@ -1,7 +1,3 @@
-using System.ComponentModel;
-using FluentNHibernate.Cfg.Db;
-using MrCMS.Settings;
-
 namespace MrCMS.DbConfiguration
 {
     //[Description("MySQL")]

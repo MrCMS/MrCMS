@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.ACL.Rules
+﻿namespace MrCMS.ACL.Rules
 {
     public class CoreACL : ACLRule
     {

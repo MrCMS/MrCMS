@@ -2,6 +2,6 @@
 @using MrCMS.Web.Admin.Services
 @model MrCMS.Messages.MessageTemplate
 @inject IMessageTemplateTokensAdminService MessageTemplateTokensAdminService;
-<hr />
-<strong>@Html.Resource("Admin Message Template Tokens", "Available Tokens"):</strong>
+<hr/>
+<strong>@await Html.Resource("Admin Message Template Tokens", "Available Tokens"):</strong>
 @string.Join(", ", MessageTemplateTokensAdminService.GetTokens(Model).Select(s => string.Format("{{{0}}}", s)))

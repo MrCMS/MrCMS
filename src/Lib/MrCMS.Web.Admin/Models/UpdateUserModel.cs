@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Media;
 
 namespace MrCMS.Web.Admin.Models
 {

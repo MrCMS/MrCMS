@@ -42,6 +42,13 @@ namespace MrCMS.Shortcodes.Forms
 
             var form = GetForm(formEntity);
             var renderingType = _siteSettings.FormRendererType;
+            if (submittedStatus.Submitted)
+            {
+                form.InnerHtml.AppendHtml(new TagBuilder("br"));
+                form.InnerHtml.AppendHtml(
+                    _submittedMessageRenderer.AppendSubmittedMessage(formEntity, submittedStatus));
+            }
+
             foreach (var property in formProperties)
             {
                 IHtmlContentBuilder elementHtml = new HtmlContentBuilder();
@@ -71,17 +78,13 @@ namespace MrCMS.Shortcodes.Forms
                 form.InnerHtml.AppendHtml(GetGDPRCheckbox(renderingType, _siteSettings.GDPRFairProcessingText));
             }
 
+            form.InnerHtml.AppendHtml(helper.AntiForgeryToken());
+
             form.InnerHtml.AppendHtml(helper.RenderRecaptcha());
 
             var div = new TagBuilder("div");
             div.InnerHtml.AppendHtml(GetSubmitButton(formEntity));
             form.InnerHtml.AppendHtml(div);
-
-            if (submittedStatus.Submitted)
-            {
-                form.InnerHtml.AppendHtml(new TagBuilder("br"));
-                form.InnerHtml.AppendHtml(_submittedMessageRenderer.AppendSubmittedMessage(formEntity, submittedStatus));
-            }
 
             if (_siteSettings.HasHoneyPot)
             {
@@ -110,12 +113,13 @@ namespace MrCMS.Shortcodes.Forms
             checkboxBuilder.Attributes["id"] = sanitizedId;
             checkboxBuilder.AddCssClass("form-check-input");
 
-            cbLabelBuilder.InnerHtml.AppendHtml(labelText);
             var checkboxContainer = new TagBuilder("div");
 
             if (renderingType == FormRenderingType.Bootstrap3)
             {
+                cbLabelBuilder.AddCssClass("checkbox-inline");
                 cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+                cbLabelBuilder.InnerHtml.AppendHtml(labelText);
 
                 checkboxContainer.AddCssClass("checkbox");
                 checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
@@ -129,6 +133,7 @@ namespace MrCMS.Shortcodes.Forms
 
             if (renderingType == FormRenderingType.Bootstrap4)
             {
+                cbLabelBuilder.InnerHtml.AppendHtml(labelText);
                 cbLabelBuilder.AddCssClass("form-check-label");
                 checkboxContainer.AddCssClass("form-check");
                 checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
@@ -146,12 +151,11 @@ namespace MrCMS.Shortcodes.Forms
             checkboxContainer.InnerHtml.AppendHtml(
                 ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
             return checkboxContainer;
-
         }
 
         public TagBuilder GetSubmitButton(Form form)
         {
-            var tagBuilder = new TagBuilder("input") { TagRenderMode = TagRenderMode.SelfClosing };
+            var tagBuilder = new TagBuilder("input") {TagRenderMode = TagRenderMode.SelfClosing};
             tagBuilder.Attributes["type"] = "submit";
             tagBuilder.Attributes["value"] = !string.IsNullOrWhiteSpace(form.SubmitButtonText)
                 ? form.SubmitButtonText

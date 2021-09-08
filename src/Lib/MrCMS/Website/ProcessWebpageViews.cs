@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -20,9 +22,8 @@ namespace MrCMS.Website
             _getWidgetDisplayInfo = getWidgetDisplayInfo;
         }
 
-        public void Process(ViewResult result, Webpage webpage)
+        public async Task Process(ViewResult result, Webpage webpage)
         {
-
             if (string.IsNullOrWhiteSpace(result.ViewName))
             {
                 if (webpage.PageTemplate != null && !string.IsNullOrWhiteSpace(webpage.PageTemplate.PageTemplateName))
@@ -36,10 +37,24 @@ namespace MrCMS.Website
                 Layout layout = _getCurrentLayout.Get(webpage);
                 if (layout != null)
                 {
-                    result.ViewData[LayoutFile] = layout.GetLayoutName();
-                    result.ViewData[WidgetData] = _getWidgetDisplayInfo.GetWidgets(layout, webpage);
+                    await SetLayoutViewData(result.ViewData, layout);
                 }
             }
+        }
+
+        public async Task ProcessForDefault(ViewDataDictionary viewData)
+        {
+            Layout layout = _getCurrentLayout.GetUserAccountLayout();
+            if (layout != null)
+            {
+                await SetLayoutViewData(viewData, layout);
+            }
+        }
+
+        private async Task SetLayoutViewData(ViewDataDictionary viewData, Layout layout)
+        {
+            viewData[LayoutFile] = layout.GetLayoutName();
+            viewData[WidgetData] = await _getWidgetDisplayInfo.GetWidgets(layout);
         }
     }
 }

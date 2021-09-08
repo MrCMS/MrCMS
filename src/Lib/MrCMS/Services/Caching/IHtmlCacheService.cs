@@ -11,6 +11,7 @@ namespace MrCMS.Services.Caching
     {
         IHtmlContent GetContent(Controller controller, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
         IHtmlContent GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, IHtmlContent> func);
-        IHtmlContent GetContent(IViewComponentHelper helper, CachingInfo cachingInfo, Func<IViewComponentHelper, Task<IHtmlContent>> func);
+        Task<IHtmlContent> GetContent(IViewComponentHelper helper, CachingInfo cachingInfo,
+            Func<IViewComponentHelper, Task<IHtmlContent>> func);
     }
 }

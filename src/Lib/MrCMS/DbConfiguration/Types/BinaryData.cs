@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -52,11 +51,9 @@ namespace MrCMS.DbConfiguration.Types
         {
             if (value == null)
                 return null;
-            using (var memoryStream = new MemoryStream())
-            {
-                BinaryFormatter.Serialize(memoryStream, value);
-                return memoryStream.GetBuffer();
-            }
+            using var memoryStream = new MemoryStream();
+            BinaryFormatter.Serialize(memoryStream, value);
+            return memoryStream.ToArray();
         }
 
         public static T Deserialize<T>(byte[] bytes) where T : class, new()

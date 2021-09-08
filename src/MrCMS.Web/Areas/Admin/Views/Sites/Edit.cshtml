@@ -1,8 +1,4 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.People
-@using MrCMS.Settings
-@using MrCMS.Web.Admin.Models
-@model MrCMS.Web.Admin.Models.UpdateSiteModel
+﻿@model MrCMS.Web.Admin.Models.UpdateSiteModel
 @{
     ViewBag.Title = "Edit | " + Model.Name;
 }
@@ -15,33 +11,31 @@
             <admin-header-actions>
                 @Html.ActionLink("Back to list", "Index", "Sites", null, new {@class = "btn btn-secondary"})
                 <button class="btn btn-primary">
-                    @Html.Resource("Save")
+                    @await Html.Resource("Save")
                 </button>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
-            <div class="form-group">
-                @Html.HiddenFor(x => x.Id)
-                @Html.LabelFor(x => x.Name)
-                @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                @Html.ValidationMessageFor(x => x.Name)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.BaseUrl)
-                @Html.TextBoxFor(x => x.BaseUrl, new {@class = "form-control"})
-                @Html.ValidationMessageFor(x => x.BaseUrl)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.StagingUrl)
-                @Html.TextBoxFor(x => x.StagingUrl, new {@class = "form-control"})
-                @Html.ValidationMessageFor(x => x.StagingUrl)
-            </div>
+    <input asp-for="Id" type="hidden"/>
 
-            <partial name="RestrictedDomains" model="Model"/>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" type="text" class="form-control" />
+        <span asp-validation-for="Name"></span>
+    </div>
 
-        </card-body>
-    </card>
+    <div class="form-group">
+        <label asp-for="BaseUrl"></label>
+        <input asp-for="BaseUrl" type="text" class="form-control" />
+        <span asp-validation-for="BaseUrl"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StagingUrl"></label>
+        <input asp-for="StagingUrl" type="text" class="form-control" />
+        <span asp-validation-for="StagingUrl"></span>
+    </div>
+
+    <partial name="RestrictedDomains" model="Model"/>
 }

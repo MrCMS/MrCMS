@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
 using NHibernate;
@@ -13,20 +14,20 @@ namespace MrCMS.Web.Admin.Services.Batching
             _session = session;
         }
 
-        public BatchStatus Get(Batch batch)
+        public async Task<BatchStatus> Get(Batch batch)
         {
             if (batch == null)
                 return new BatchStatus();
-            var anyRuns = _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id).Any();
+            var anyRuns = await _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id).AnyAsync();
             if (!anyRuns)
                 return BatchStatus.Pending;
-            var anyPaused = _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status == BatchRunStatus.Paused).Any();
+            var anyPaused = await _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status == BatchRunStatus.Paused).AnyAsync();
             if (anyPaused)
                 return BatchStatus.Paused;
-            var anyExecuting = _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status == BatchRunStatus.Executing).Any();
+            var anyExecuting = await _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status == BatchRunStatus.Executing).AnyAsync();
             if (anyExecuting)
                 return BatchStatus.Executing;
-            if (_session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status != BatchRunStatus.Complete).Any())
+            if (await _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status != BatchRunStatus.Complete).AnyAsync())
                 return BatchStatus.Pending;
             return BatchStatus.Complete;
         }

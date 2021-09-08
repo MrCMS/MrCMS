@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
 using NHibernate.Transform;
@@ -15,11 +16,12 @@ namespace MrCMS.Services.ImportExport
             _session = session;
         }
 
-        public List<UrlHistoryInfo> GetAllOtherUrls(Webpage webpage)
+        public async Task<List<UrlHistoryInfo>> GetAllOtherUrls(Webpage webpage)
         {
             var urlHistoryInfo = new UrlHistoryInfo();
             var urlHistoryInfoList =
-                _session.QueryOver<UrlHistory>()
+                await _session.QueryOver<UrlHistory>()
+                    .Where(x => x.Webpage != null)
                     .SelectList(
                         builder =>
                             builder.Select(history => history.UrlSegment)
@@ -28,9 +30,9 @@ namespace MrCMS.Services.ImportExport
                                 .WithAlias(() => urlHistoryInfo.WebpageId))
                     .TransformUsing(Transformers.AliasToBean<UrlHistoryInfo>())
                     .Cacheable()
-                    .List<UrlHistoryInfo>();
+                    .ListAsync<UrlHistoryInfo>();
             var webpageHistoryInfoList =
-                _session.QueryOver<Webpage>()
+                await _session.QueryOver<Webpage>()
                     .SelectList(
                         builder =>
                             builder.Select(page => page.UrlSegment)
@@ -39,9 +41,10 @@ namespace MrCMS.Services.ImportExport
                                 .WithAlias(() => urlHistoryInfo.WebpageId))
                     .TransformUsing(Transformers.AliasToBean<UrlHistoryInfo>())
                     .Cacheable()
-                    .List<UrlHistoryInfo>();
+                    .ListAsync<UrlHistoryInfo>();
 
-            return urlHistoryInfoList.Union(webpageHistoryInfoList).Where(info => info.WebpageId != webpage.Id).ToList();
+            return urlHistoryInfoList.Union(webpageHistoryInfoList).Where(info => info.WebpageId != webpage.Id)
+                .ToList();
         }
     }
 }

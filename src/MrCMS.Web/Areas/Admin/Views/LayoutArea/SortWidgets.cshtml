@@ -1,30 +1,24 @@
-﻿@using MrCMS.Entities.Widget
-@using MrCMS.Helpers
-@model MrCMS.Models.PageWidgetSortModel
+﻿@model MrCMS.Models.WidgetSortModel
 @{
     ViewBag.Title = "Sort Webpage";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 
-    var action = Model.WebpageId > 0 ? "SortWidgetsForPage" : "SortWidgetsAction";
-
 }
-@{Html.IncludeScript("~/Areas/Admin/scripts/sort.js");}
 
-@using (Html.BeginForm(action, "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
+@using (Html.BeginForm("SortWidgetsAction", "LayoutArea", FormMethod.Post, new {id = "edit-sort"}))
 {
-
     @Html.Hidden("returnUrl", ViewData["returnUrl"])
     @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
     <fieldset>
         <legend>
-            @Html.Resource("Admin Sort Widgets Title", "Sort Widgets")
-        <span class="btn-group pull-right">
-            <button class="btn btn-primary">@Html.Resource("Save")</button>
+            @await Html.Resource("Admin Sort Widgets Title", "Sort Widgets")
+            <span class="btn-group pull-right">
+                <button class="btn btn-primary">@await Html.Resource("Save")</button>
             </span>
         </legend>
 
         <ul id="sortable" class="list-group mb-3">
-            @for (int i = 0; i < Model.Widgets.Count; i++)
+            @for (var i = 0; i < Model.Widgets.Count; i++)
             {
                 var widget = Model.Widgets[i];
                 <li class="list-group-item">
@@ -37,4 +31,4 @@
         </ul>
     </fieldset>
 }
-@Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Widgets Sort info", "Drag items in to the order you would like then click save."))
+@Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Widgets Sort info", "Drag items in to the order you would like then click save."))

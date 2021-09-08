@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Helpers;
@@ -19,19 +20,21 @@ namespace MrCMS.Tests.Services
         public WebpageUrlGeneratorTests()
         {
             _urlValidationService = A.Fake<IUrlValidationService>();
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(A<string>.Ignored, A<int?>.Ignored)).Returns(true);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(A<string>.Ignored, A<int?>.Ignored))
+                .Returns(true);
             _pageDefaultsSettings = new PageDefaultsSettings();
-            _webpageUrlService = new WebpageUrlService(_urlValidationService, Session, ServiceProvider, _pageDefaultsSettings);
+            _webpageUrlService =
+                new WebpageUrlService(_urlValidationService, Session, ServiceProvider, _pageDefaultsSettings);
         }
 
         [Fact]
-        public void WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheHierarchyIfTheFlagIsSetToTrue()
+        public async Task WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheHierarchyIfTheFlagIsSetToTrue()
         {
-            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage {Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite};
 
-            Session.Transact(session => session.SaveOrUpdate(textPage));
+            await Session.TransactAsync(session => session.SaveOrUpdateAsync(textPage));
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
@@ -39,17 +42,17 @@ namespace MrCMS.Tests.Services
                 UseHierarchy = true
             });
 
-           documentUrl.Should().Be("test-page/nested-page");
+            documentUrl.Should().Be("test-page/nested-page");
         }
 
         [Fact]
-        public void WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheNameIfTheFlagIsSetToFalse()
+        public async Task WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheNameIfTheFlagIsSetToFalse()
         {
-            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage {Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite};
 
-            Session.Transact(session => session.SaveOrUpdate(textPage));
+            await Session.TransactAsync(session => session.SaveOrUpdateAsync(textPage));
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
@@ -61,9 +64,9 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void WebpageUrlGenerator_GetDocumentUrlWithExistingName_ShouldReturnTheUrlWithADigitAppended()
+        public async Task WebpageUrlGenerator_GetDocumentUrlWithExistingName_ShouldReturnTheUrlWithADigitAppended()
         {
-            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
+            var parent = new BasicMappedWebpage {Name = "Parent", UrlSegment = "parent", Site = CurrentSite};
             var textPage = new BasicMappedWebpage
             {
                 Name = "Test Page",
@@ -71,15 +74,15 @@ namespace MrCMS.Tests.Services
                 UrlSegment = "parent/test-page",
                 Site = CurrentSite
             };
-            Session.Transact(session =>
+            await Session.TransactAsync(async session =>
             {
-                session.SaveOrUpdate(parent);
-                session.SaveOrUpdate(textPage);
+                await session.SaveOrUpdateAsync(parent);
+                await session.SaveOrUpdateAsync(textPage);
             });
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page", null))
                 .Returns(false);
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
@@ -91,10 +94,10 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void
+        public async Task
             WebpageUrlGenerator_GetDocumentUrlWithExistingName_MultipleFilesWithSameNameShouldNotAppendMultipleDigits()
         {
-            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
+            var parent = new BasicMappedWebpage {Name = "Parent", UrlSegment = "parent", Site = CurrentSite};
             var textPage = new BasicMappedWebpage
             {
                 Name = "Test Page",
@@ -102,17 +105,17 @@ namespace MrCMS.Tests.Services
                 UrlSegment = "parent/test-page",
                 Site = CurrentSite
             };
-            Session.Transact(session =>
+            await Session.TransactAsync(async session =>
             {
-                session.SaveOrUpdate(parent);
-                session.SaveOrUpdate(textPage);
+                await session.SaveOrUpdateAsync(parent);
+                await session.SaveOrUpdateAsync(textPage);
             });
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page", null))
                 .Returns(false);
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page-1", null))
                 .Returns(false);
 
-            string documentUrl = _webpageUrlService.Suggest(new SuggestParams
+            string documentUrl = await _webpageUrlService.Suggest(new SuggestParams
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,

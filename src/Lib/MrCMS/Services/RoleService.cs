@@ -1,11 +1,12 @@
 using System.Collections.Generic;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using NHibernate;
 using NHibernate.Criterion;
 using System.Linq;
+using System.Threading.Tasks;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -18,43 +19,46 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public void SaveRole(UserRole role)
+        public async Task SaveRole(UserRole role)
         {
-            _session.Transact(session => session.SaveOrUpdate(role));
+            await _session.TransactAsync(session => session.SaveOrUpdateAsync(role));
         }
 
-        public IEnumerable<UserRole> GetAllRoles()
+        public async Task<IList<UserRole>> GetAllRoles()
         {
-            return _session.QueryOver<UserRole>().Cacheable().List();
+            return await _session.QueryOver<UserRole>().Cacheable().ListAsync();
         }
 
-        public UserRole GetRoleByName(string name)
+        public async Task<UserRole> GetRoleByName(string name)
         {
-            return _session.QueryOver<UserRole>().Where(role => role.Name.IsLike(name, MatchMode.Exact)).Cacheable().
-                                SingleOrDefault();
+            return await _session.QueryOver<UserRole>().Where(role => role.Name.IsLike(name, MatchMode.Exact))
+                .Cacheable().SingleOrDefaultAsync();
         }
 
-        public void DeleteRole(UserRole role)
+        public async Task DeleteRole(UserRole role)
         {
             if (!role.IsAdmin)
-                _session.Transact(session => session.Delete(role));
+                await _session.TransactAsync(session => session.DeleteAsync(role));
         }
 
-        public bool IsOnlyAdmin(User user)
+        public async Task<bool> IsOnlyAdmin(User user)
         {
-            var adminRole = GetRoleByName(UserRole.Administrator);
-
-            var users = adminRole.Users.Where(user1 => user1.IsActive).Distinct().ToList();
-            return users.Count() == 1 && users.First() == user;
+            var adminRole = await GetRoleByName(UserRole.Administrator);
+            var users = _session.Query<User>()
+                .Where(x => x.Roles.Any(role => role.Id == adminRole.Id) && x.IsActive)
+                .WithOptions(x => x.SetCacheable(true)).Distinct().Count();
+            return users == 1;
         }
 
-        public IEnumerable<AutoCompleteResult> Search(string term)
+        public async Task<IEnumerable<AutoCompleteResult>> Search(string term)
         {
-            var userRoles = _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List();
+            var userRoles = await _session.QueryOver<UserRole>()
+                .Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start))
+                .ListAsync();
             return
                 userRoles.Select(
                     tag =>
-                    new AutoCompleteResult
+                        new AutoCompleteResult
                         {
                             id = tag.Id,
                             label = tag.Name,
@@ -62,9 +66,9 @@ namespace MrCMS.Services
                         });
         }
 
-        public UserRole GetRole(int id)
+        public Task<UserRole> GetRole(int id)
         {
-            return _session.Get<UserRole>(id);
+            return _session.GetAsync<UserRole>(id);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Helpers;
 
 namespace MrCMS.Tasks
@@ -14,13 +15,13 @@ namespace MrCMS.Tasks
             _serviceProvider = serviceProvider;
         }
 
-        public BatchExecutionResult Execute(IList<AdHocTask> tasksToExecute)
+        public async Task<BatchExecutionResult> Execute(IList<AdHocTask> tasksToExecute)
         {
             var results = new List<TaskExecutionResult>();
             foreach (var handler in GetHandlers())
             {
                 var tasks = handler.ExtractTasksToHandle(ref tasksToExecute);
-                results.AddRange(handler.ExecuteTasks(tasks));
+                results.AddRange(await handler.ExecuteTasks(tasks));
             }
             return new BatchExecutionResult { Results = results };
         }
@@ -33,7 +34,7 @@ namespace MrCMS.Tasks
                 .OrderByDescending(handler => handler.Priority);
         }
 
-        public BatchExecutionResult Execute(AdHocTask task)
+        public async Task<BatchExecutionResult> Execute(AdHocTask task)
         {
             if (task != null)
             {
@@ -42,7 +43,7 @@ namespace MrCMS.Tasks
                 {
                     var tasks = handler.ExtractTasksToHandle(ref tasksToExecute);
                     if (tasks.Any())
-                        return new BatchExecutionResult {Results = handler.ExecuteTasks(tasks)};
+                        return new BatchExecutionResult {Results = await handler.ExecuteTasks(tasks)};
                 }
             }
             return new BatchExecutionResult();

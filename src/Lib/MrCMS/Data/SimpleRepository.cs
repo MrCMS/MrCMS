@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using NHibernate;
@@ -16,19 +17,19 @@ namespace MrCMS.Data
             _session = session;
         }
 
-        public T Get(int id)
+        public async Task<T> Get(int id)
         {
-            return _session.Get<T>(id);
+            return (await _session.GetAsync<T>(id)).Unproxy();
         }
 
-        public void Add(T entity)
+        public async Task Add(T entity)
         {
-            _session.Transact(session => session.Save(entity));
+            await _session.TransactAsync(session => session.SaveAsync(entity));
         }
 
-        public void Delete(T entity)
+        public async Task Delete(T entity)
         {
-            _session.Transact(session => session.Delete(entity));
+            await _session.TransactAsync(session => session.DeleteAsync(entity));
         }
 
         public IQueryable<T> Query()
@@ -36,17 +37,14 @@ namespace MrCMS.Data
             return _session.Query<T>().WithOptions(options => options.SetCacheable(true));
         }
 
-        public void Transact(Action<IRepository<T>> action)
+        public async Task TransactAsync(Func<IRepository<T>, Task> func)
         {
-            _session.Transact(session =>
-            {
-                action(this);
-            });
+            await _session.TransactAsync(async session => { await func(this); });
         }
 
-        public void Update(T entity)
+        public async Task Update(T entity)
         {
-            _session.Transact(session => session.Update(entity));
+            await _session.TransactAsync(session => session.UpdateAsync(entity));
         }
     }
 }

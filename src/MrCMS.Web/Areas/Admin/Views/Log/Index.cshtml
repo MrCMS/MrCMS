@@ -1,131 +1,133 @@
 ﻿@using System.Linq
-@using MrCMS.Helpers
 @using MrCMS.Logging
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model LogSearchQuery
 @{
     ViewBag.Title = "Logs";
-    var logs = ViewData["logs"] as IPagedList<Log>;
+    var logs = ViewData["logs"] as IPagedList<Log> ?? PagingHelper.EmptyList<Log>();
+    var typeOptions = Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All");
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 <form asp-controller="Log" asp-action="Index" method="get">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-logs", "Logs") "/>
+            <admin-header-title title="@await Html.Resource("admin - logs", "Logs") "/>
 
             <admin-header-actions>
                 <span class="btn-group">
-                    <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
-                    <input type="submit" class="btn btn-primary" value="@Html.Resource("Search")"/>
+                    <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@await Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
+                    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Search")"/>
                 </span>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.Type)
-                        @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.SiteId)
-                        @Html.DropDownListFor(query => query.SiteId, siteOptions, new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.From)
-                        @Html.TextBoxFor(query => query.From, new {@class = "date-time-picker form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.To)
-                        @Html.TextBoxFor(query => query.To, new {@class = "date-time-picker form-control"})
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label asp-for="Type"></label>
+                <select asp-for="Type" asp-items="typeOptions" class="form-control"></select>
+                <span asp-validation-for="Type"></span>
             </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.Message)
-                        @Html.TextBoxFor(query => query.Message, new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.Detail)
-                        @Html.TextBoxFor(query => query.Detail, new {@class = "form-control"})
-                    </div>
-                </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label asp-for="SiteId"></label>
+                <select asp-for="SiteId" asp-items="@siteOptions" class="form-control"></select>
+                <span asp-validation-for="SiteId"></span>
             </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label asp-for="From"></label>
+                <input type="text" asp-for="From" class="form-control date-time-picker">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label asp-for="To"></label>
+                <input type="text" asp-for="To" class="form-control date-time-picker">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label asp-for="Message"></label>
+                <input asp-for="Message" type="text" class="form-control" />
+                <span asp-validation-for="Message"></span>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label asp-for="Detail"></label>
+                <input asp-for="Detail" type="text" class="form-control" />
+                <span asp-validation-for="Detail"></span>
+            </div>
+        </div>
+    </div>
 
-            @if (logs.Count == 0)
+    @if (!logs.Any())
+    {
+        @await Html.Resource("Admin Logs No Logs", "No logs")
+    }
+    else
+    {
+        <table class="table table-striped table-condensed" style="overflow: scroll">
+            <thead>
+            <tr>
+                <th>
+                    @await Html.Resource("Date")
+                </th>
+                <th>
+                    @await Html.Resource("Site")
+                </th>
+                <th>
+                    @await Html.Resource("Level")
+                </th>
+                <th>
+                    @await Html.Resource("Message")
+                </th>
+                <th>
+                    @await Html.Resource("Type")
+                </th>
+                <th>
+                    @await Html.Resource("Actions")
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var entry in logs)
             {
-                @Html.Resource("Admin Logs No Logs", "No logs")
+                <tr>
+                    <td>
+                        @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td>
+                        @entry.SiteName
+                    </td>
+                    <td>
+                        @entry.LogLevel
+                    </td>
+                    <td>
+                        @entry.Message
+                    </td>
+                    <td>
+                        @entry.Type
+                    </td>
+                    <td>
+                        @Html.ActionLink(await Html.Resource("Show"), "Show", new {id = entry.Id}, new {@class = "btn btn-sm btn-secondary"})
+                    </td>
+                </tr>
             }
-            else
-            {
-                <table class="table table-striped table-condensed" style="overflow: scroll">
-                    <thead>
-                    <tr>
-                        <th>
-                            @Html.Resource("Date")
-                        </th>
-                        <th>
-                            @Html.Resource("Site")
-                        </th>
-                        <th>
-                            @Html.Resource("Level")
-                        </th>
-                        <th>
-                            @Html.Resource("Message")
-                        </th>
-                        <th>
-                            @Html.Resource("Type")
-                        </th>
-                        <th>
-                            @Html.Resource("Actions")
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var entry in logs)
-                    {
-                        <tr>
-                            <td>
-                                @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
-                            </td>
-                            <td>
-                                @entry.SiteName
-                            </td>
-                            <td>
-                                @entry.LogLevel
-                            </td>
-                            <td>
-                                @entry.Message
-                            </td>
-                            <td>
-                                @entry.Type
-                            </td>
-                            <td>
-                                @Html.ActionLink(Html.Resource("Show"), "Show", new {id = entry.Id}, new {@class = "btn btn-sm btn-secondary"})
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            }
-            @Html.PagedListPager(logs, page => Url.Action("Index", new {page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId}), MrCMSPagedListRenderOptions.Bootstrap4)
+            </tbody>
+        </table>
+    }
+    @Html.PagedListPager(logs, page => Url.Action("Index", new {page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId}), MrCMSPagedListRenderOptions.Bootstrap4)
 
-        </card-body>
-    </card>
+
+
 
 </form>

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -14,15 +16,15 @@ namespace MrCMS.Services
             _repository = repository;
         }
 
-        public IEnumerable<T> GetDocuments(T parent) 
+        public async Task<IReadOnlyList<T>> GetDocuments(T parent)
         {
             var queryable = _repository.Query();
             queryable = parent != null
-                ? queryable .Where(arg => arg.Parent.Id == parent.Id)
+                ? queryable.Where(arg => arg.Parent.Id == parent.Id)
                 : queryable
                     .Where(arg => arg.Parent == null);
-            return queryable.OrderBy(arg => arg.DisplayOrder)
-                .ToList();
+            return await queryable.OrderBy(arg => arg.DisplayOrder)
+                .ToListAsync();
         }
     }
 }

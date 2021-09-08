@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 
 namespace MrCMS.Batching.Services
 {
     public interface ISetRunStatus
     {
-        void Complete(BatchRun batchRun);
-        void Paused(BatchRun batchRun);
+        Task Complete(BatchRun batchRun);
+        Task Paused(BatchRun batchRun);
     }
 }

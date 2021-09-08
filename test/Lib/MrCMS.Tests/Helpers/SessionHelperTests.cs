@@ -1,4 +1,5 @@
-﻿using MrCMS.Tests.Stubs;
+﻿using System.Threading.Tasks;
+using MrCMS.Tests.Stubs;
 using NHibernate.Criterion;
 using Xunit;
 using MrCMS.Helpers;
@@ -9,22 +10,15 @@ namespace MrCMS.Tests.Helpers
 {
     public class SessionHelperTests : InMemoryDatabaseTest
     {
-        [Fact]
-        public void SessionHelper_Transact_AllowsNestedCalls()
-        {
-            var stubWebpage = new StubWebpage();
-
-            this.Invoking(tests => Session.Transact(session => session.Transact(iSession => iSession.Save(stubWebpage)))).Should().NotThrow();
-        }
 
         [Fact]
-        public void SessionHelper_Paged_WorksWhenPassedAnIQueryOver()
+        public async Task SessionHelper_Paged_WorksWhenPassedAnIQueryOver()
         {
-            Session.Transact(session =>
+            await Session.TransactAsync(async session =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    session.Save(new StubWebpage { Name = i.ToString() });
+                    await session.SaveAsync(new StubWebpage { Name = i.ToString() });
                 }
             });
 
@@ -37,13 +31,13 @@ namespace MrCMS.Tests.Helpers
         }
 
         [Fact]
-        public void SessionHelper_Paged_WorksWhenPassedAQueryOver()
+        public async Task SessionHelper_Paged_WorksWhenPassedAQueryOver()
         {
-            Session.Transact(session =>
+            await Session.TransactAsync(async session =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    session.Save(new StubWebpage { Name = i.ToString() });
+                    await session.SaveAsync(new StubWebpage { Name = i.ToString() });
                 }
             });
 

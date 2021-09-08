@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -51,9 +51,9 @@ namespace MrCMS.Installation.Controllers
         }
 
         [HttpPost]
-        public IActionResult Setup(InstallModel installModel)
+        public async Task<IActionResult> Setup(InstallModel installModel)
         {
-            var installationResult = _installationService.Install(installModel);
+            var installationResult = await _installationService.Install(installModel);
 
             if (!installationResult.Success)
             {

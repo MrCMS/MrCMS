@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using MrCMS.Models;
 using MrCMS.Web.Admin.Infrastructure.Models;
 
 namespace MrCMS.Web.Admin.Models

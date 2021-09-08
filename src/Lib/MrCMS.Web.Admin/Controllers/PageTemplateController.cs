@@ -1,11 +1,8 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.ModelBinders;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -18,42 +15,57 @@ namespace MrCMS.Web.Admin.Controllers
             _service = service;
         }
 
-        public ViewResult Index(PageTemplateSearchQuery query)
+        public async Task<ViewResult> Index(PageTemplateSearchQuery query)
         {
-            ViewData["results"] = _service.Search(query);
+            ViewData["results"] = await _service.Search(query);
             return View(query);
         }
 
         [HttpGet]
-        public PartialViewResult Add()
+        public async Task<ViewResult> Add()
         {
             ViewData["page-type-options"] = _service.GetPageTypeOptions();
-            ViewData["layout-options"] = _service.GetLayoutOptions();
+            ViewData["layout-options"] = await _service.GetLayoutOptions();
             ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(null);
-            return PartialView();
+            return View();
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddPageTemplateModel model)
+        public async Task<RedirectToActionResult> Add(AddPageTemplateModel model)
         {
-            _service.Add(model);
+            await _service.Add(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public PartialViewResult Edit(int id)
+        public async Task<ViewResult> Edit(int id)
         {
-            var model = _service.GetEditModel(id);
-            ViewData["layout-options"] = _service.GetLayoutOptions();
+            var model = await _service.GetEditModel(id);
+            ViewData["layout-options"] = await _service.GetLayoutOptions();
             ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(model.PageType);
-            return PartialView(model);
+            return View(model);
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public RedirectToActionResult Edit_POST(UpdatePageTemplateModel model)
+        public async Task<ActionResult> Edit_POST(UpdatePageTemplateModel model)
         {
-            _service.Update(model);
+            await _service.Update(model);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> Delete(int id)
+        {
+            var model = await _service.GetEditModel(id);
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<RedirectToActionResult> Delete_POST(int id)
+        {
+            await _service.Delete(id);
             return RedirectToAction("Index");
         }
 

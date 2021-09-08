@@ -6,6 +6,7 @@ namespace MrCMS.Services.Sitemaps
     {
         string GetRelativePath(Site site);
         string GetAbsolutePath(Site site);
+        string GetAbsolutePathForPart(Site site,int partNumber);
         bool FileExists(Site site);
     }
 }

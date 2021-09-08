@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Services;
 using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Criterion;
@@ -13,38 +15,45 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
-        public MessageQueueAdminService(ISession session, SiteSettings siteSettings, Site site)
+        public MessageQueueAdminService(ISession session, SiteSettings siteSettings, ICurrentSiteLocator siteLocator)
         {
             _session = session;
             _siteSettings = siteSettings;
-            _site = site;
+            _siteLocator = siteLocator;
         }
 
-        public IPagedList<QueuedMessage> GetMessages(MessageQueueQuery searchQuery)
+        public async Task<IPagedList<QueuedMessage>> GetMessages(MessageQueueQuery searchQuery)
         {
-            var queryOver = _session.QueryOver<QueuedMessage>().Where(message => message.Site == _site);
+            var site = _siteLocator.GetCurrentSite();
+            var queryOver = _session.QueryOver<QueuedMessage>().Where(message => message.Site == site);
             if (searchQuery.From.HasValue)
                 queryOver = queryOver.Where(message => message.CreatedOn >= searchQuery.From);
             if (searchQuery.To.HasValue)
                 queryOver = queryOver.Where(message => message.CreatedOn <= searchQuery.To);
             if (!string.IsNullOrWhiteSpace(searchQuery.FromQuery))
                 queryOver =
-                    queryOver.Where(message => message.FromAddress.IsInsensitiveLike(searchQuery.FromQuery, MatchMode.Anywhere) || message.FromName.IsInsensitiveLike(searchQuery.FromQuery, MatchMode.Anywhere));
+                    queryOver.Where(message =>
+                        message.FromAddress.IsInsensitiveLike(searchQuery.FromQuery, MatchMode.Anywhere) ||
+                        message.FromName.IsInsensitiveLike(searchQuery.FromQuery, MatchMode.Anywhere));
             if (!string.IsNullOrWhiteSpace(searchQuery.ToQuery))
                 queryOver =
-                    queryOver.Where(message => message.ToAddress.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere) || message.ToName.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere));
+                    queryOver.Where(message =>
+                        message.ToAddress.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere) ||
+                        message.ToName.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere));
 
             if (!string.IsNullOrWhiteSpace(searchQuery.Subject))
-                queryOver = queryOver.Where(message => message.Subject.IsInsensitiveLike(searchQuery.Subject, MatchMode.Anywhere));
-            
-            return queryOver.OrderBy(message => message.CreatedOn).Desc.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
+                queryOver = queryOver.Where(message =>
+                    message.Subject.IsInsensitiveLike(searchQuery.Subject, MatchMode.Anywhere));
+
+            return await queryOver.OrderBy(message => message.CreatedOn).Desc
+                .PagedAsync(searchQuery.Page, _siteSettings.DefaultPageSize);
         }
 
-        public QueuedMessage GetMessageBody(int id)
+        public async Task<QueuedMessage> GetMessage(int id)
         {
-            return _session.Get<QueuedMessage>(id);
+            return await _session.GetAsync<QueuedMessage>(id);
         }
     }
 }

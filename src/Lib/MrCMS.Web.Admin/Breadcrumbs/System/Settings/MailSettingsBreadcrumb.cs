@@ -8,6 +8,6 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System.Settings
         public override string Action => "Mail";
 
         public override bool IsNav => true;
-        public override int Order => 3;
+        public override decimal Order => 3;
     }
 }

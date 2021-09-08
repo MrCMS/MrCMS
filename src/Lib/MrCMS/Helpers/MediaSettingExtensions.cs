@@ -10,6 +10,7 @@ namespace MrCMS.Helpers
     {
         public const string RenderTagPrefix = "RenderImage.Tag.";
         public const string RenderUrlPrefix = "RenderImage.Url.";
+        public const string RenderInfoPrefix = "RenderImage.Info.";
 
         public static CachingInfo GetImageTagCachingInfo(this MediaSettings mediasettings, string imageUrl, Size targetSize = default(Size), string alt = null, string title = null, object attributes = null)
         {
@@ -20,6 +21,11 @@ namespace MrCMS.Helpers
         public static CachingInfo GetImageUrlCachingInfo(this MediaSettings mediasettings, string imageUrl, Size targetSize = default(Size))
         {
             var cacheKey = GetCacheKey(RenderUrlPrefix, imageUrl, targetSize);
+            return new CachingInfo(mediasettings.Cache, cacheKey, TimeSpan.FromSeconds(mediasettings.CacheLength), mediasettings.CacheExpiryType);
+        }
+        public static CachingInfo GetImageInfoCachingInfo(this MediaSettings mediasettings, string imageUrl, Size targetSize = default(Size))
+        {
+            var cacheKey = GetCacheKey(RenderInfoPrefix, imageUrl, targetSize);
             return new CachingInfo(mediasettings.Cache, cacheKey, TimeSpan.FromSeconds(mediasettings.CacheLength), mediasettings.CacheExpiryType);
         }
 

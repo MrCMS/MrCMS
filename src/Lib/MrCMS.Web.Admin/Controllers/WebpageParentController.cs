@@ -1,6 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -14,19 +15,19 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Set(int id)
+        public async Task<PartialViewResult> Set(int id)
         {
-            var webpage = _webpageParentAdminService.GetWebpage(id);
-            ViewData["valid-parents"] = _webpageParentAdminService.GetValidParents(webpage);
+            var webpage = await _webpageParentAdminService.GetWebpage(id);
+            ViewData["valid-parents"] = await _webpageParentAdminService.GetValidParents(webpage);
             return PartialView(webpage);
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(int id, int? parentVal)
+        public async Task<RedirectToActionResult> Set(int id, int? parentVal)
         {
-            _webpageParentAdminService.Set(id, parentVal);
+            await _webpageParentAdminService.Set(id, parentVal);
 
-            return RedirectToAction("Edit", "Webpage", new { id });
+            return RedirectToAction("Edit", "Webpage", new {id});
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using FluentNHibernate.Automapping;
 using MrCMS.Entities;
@@ -10,8 +9,10 @@ namespace MrCMS.DbConfiguration.Mapping
     {
         public override bool ShouldMap(Type type)
         {
-            return type.IsSubclassOf(typeof(SystemEntity)) &&
-                   base.ShouldMap(type) && !HasDoNotMapAttribute(type) && !type.Assembly.IsDynamic;
+            var shouldMap = (type.GetCustomAttribute<ShouldMapEntityAttribute>() != null ||
+                                type.IsSubclassOf(typeof(SystemEntity)) &&
+                                base.ShouldMap(type) && !HasDoNotMapAttribute(type)) && !type.Assembly.IsDynamic;
+            return shouldMap;
         }
 
         private bool HasDoNotMapAttribute(Type type)
@@ -21,7 +22,8 @@ namespace MrCMS.DbConfiguration.Mapping
 
         public override bool ShouldMap(FluentNHibernate.Member member)
         {
-            return (member.CanWrite || member.MemberInfo.GetCustomAttribute<ShouldMapAttribute>() != null) && base.ShouldMap(member);
+            return (member.CanWrite || member.MemberInfo.GetCustomAttribute<ShouldMapAttribute>() != null) &&
+                   base.ShouldMap(member);
         }
 
         public override bool IsId(FluentNHibernate.Member member)

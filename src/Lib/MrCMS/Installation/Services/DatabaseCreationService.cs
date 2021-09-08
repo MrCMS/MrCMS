@@ -4,13 +4,13 @@ using Microsoft.Extensions.FileProviders;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Installation.Models;
-using MrCMS.Settings;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace MrCMS.Installation.Services
 {
@@ -36,10 +36,12 @@ namespace MrCMS.Installation.Services
                 result.AddModelError("Cannot validate connection string for model.");
                 return result;
             }
+
             if (!createDatabase.ValidateConnectionString(model))
             {
                 result.AddModelError("Unable to create the connection string with the provided details.");
             }
+
             return result;
         }
 
@@ -58,23 +60,17 @@ namespace MrCMS.Installation.Services
 
         public bool IsDatabaseInstalled()
         {
-            var environmentName = _environment.EnvironmentName;
-            var info = _environment.ContentRootFileProvider.GetFileInfo($"connectionstrings.json");
-            var config = GetConfig(info);
-
-            if (config.ContainsKey(ConnectionStringsKey) && config[ConnectionStringsKey] is DatabaseSettings settings)
-            {
-                return !string.IsNullOrWhiteSpace(settings.ConnectionString);
-            }
-            return false;
+            var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("mrcms");
+            return !string.IsNullOrWhiteSpace(connectionString);
         }
 
         private ICreateDatabase GetDatabaseCreator(InstallModel model)
         {
-            Type creatorType =
-                TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(ICreateDatabase<>).MakeGenericType(TypeHelper.GetTypeByName(model.DatabaseProvider)))
-                    .FirstOrDefault();
+            var type =
+                typeof(ICreateDatabase<>).MakeGenericType(TypeHelper.GetTypeByName(model.DatabaseProvider));
+            Type creatorType = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(ICreateDatabase<>))
+                .FirstOrDefault(x => type.IsAssignableFrom(x));
             if (creatorType == null)
             {
                 return null;
@@ -88,7 +84,7 @@ namespace MrCMS.Installation.Services
             var info = GetConnectionStringsSettingsFileInfo();
             var config = GetConfig(info);
 
-            config[ConnectionStringsKey] = new 
+            config[ConnectionStringsKey] = new
             {
                 mrcms = provider.GetConnectionString(installModel)
             };

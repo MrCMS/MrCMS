@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MrCMS.Web.Apps.Core.Areas.Admin.Models;
 using MrCMS.Web.Apps.Core.Areas.Admin.Models.Widgets;
 using MrCMS.Web.Apps.Core.Widgets;
 

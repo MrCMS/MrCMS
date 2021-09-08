@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using MrCMS.Website;
+using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.Batching.Services
@@ -11,21 +12,23 @@ namespace MrCMS.Batching.Services
     public class CreateBatch : ICreateBatch
     {
         private readonly IStatelessSession _statelessSession;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
         private readonly ICreateBatchRun _createBatchRun;
 
-        public CreateBatch(IStatelessSession statelessSession, Site site, ICreateBatchRun createBatchRun)
+        public CreateBatch(IStatelessSession statelessSession, ICurrentSiteLocator siteLocator,
+            ICreateBatchRun createBatchRun)
         {
             _statelessSession = statelessSession;
-            _site = site;
+            _siteLocator = siteLocator;
             _createBatchRun = createBatchRun;
         }
 
-        public BatchCreationResult Create(IEnumerable<BatchJob> jobs)
+        public async Task<BatchCreationResult> Create(IEnumerable<BatchJob> jobs)
         {
             DateTime now = DateTime.UtcNow;
             // we need to make sure that the site is loaded from the correct session
-            var site = _statelessSession.Get<Site>(_site.Id);
+            var currentSite = _siteLocator.GetCurrentSite();
+            var site = _statelessSession.Get<Site>(currentSite.Id);
             var batch = new Batch
             {
                 BatchJobs = new List<BatchJob>(),
@@ -34,8 +37,8 @@ namespace MrCMS.Batching.Services
                 CreatedOn = now,
                 UpdatedOn = now
             };
-            _statelessSession.Transact(session => session.Insert(batch));
-            _statelessSession.Transact(session =>
+            await _statelessSession.TransactAsync(session => session.InsertAsync(batch));
+            await _statelessSession.TransactAsync(async session =>
             {
                 foreach (BatchJob job in jobs)
                 {
@@ -45,12 +48,12 @@ namespace MrCMS.Batching.Services
                     job.Batch = batch;
 
                     batch.BatchJobs.Add(job);
-                    session.Insert(job);
+                    await session.InsertAsync(job);
                 }
             });
-            BatchRun batchRun = _createBatchRun.Create(batch);
+            BatchRun batchRun = await _createBatchRun.Create(batch);
             batch.BatchRuns.Add(batchRun);
-            _statelessSession.Transact(session => session.Update(batch));
+            await _statelessSession.TransactAsync(session => session.UpdateAsync(batch));
 
             return new BatchCreationResult(batch, batchRun);
         }

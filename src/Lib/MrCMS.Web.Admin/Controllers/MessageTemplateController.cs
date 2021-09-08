@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Messages;
 using MrCMS.Web.Admin.ModelBinders;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -19,9 +19,9 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View(_messageTemplateAdminService.GetAllMessageTemplateTypesWithDetails());
+            return View(await _messageTemplateAdminService.GetAllMessageTemplateTypesWithDetails());
         }
 
         [HttpGet]
@@ -32,71 +32,75 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [ActionName("AddSiteOverride")]
-        public ActionResult AddSiteOverride_POST(
+        public async Task<ActionResult> AddSiteOverride_POST(
             [ModelBinder(typeof(MessageTemplateOverrideModelBinder))]
             MessageTemplate messageTemplate)
 
         {
             if (messageTemplate != null)
             {
-                _messageTemplateAdminService.AddOverride(messageTemplate);
+                await _messageTemplateAdminService.AddOverride(messageTemplate);
             }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult DeleteSiteOverride(string type)
+        public async Task<ActionResult> DeleteSiteOverride(string type)
         {
-            return View(_messageTemplateAdminService.GetOverride(type));
+            return View(await _messageTemplateAdminService.GetOverride(type));
         }
 
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
-        public ActionResult DeleteSiteOverride_POST(string type)
+        public async Task<ActionResult> DeleteSiteOverride_POST(string type)
         {
             if (type != null)
             {
-                _messageTemplateAdminService.DeleteOverride(type);
+                await _messageTemplateAdminService.DeleteOverride(type);
             }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult Edit(string type)
+        public async Task<ActionResult> Edit(string type)
         {
             ModelState.Clear();
-            MessageTemplate template = _messageTemplateAdminService.GetTemplate(type);
+            MessageTemplate template = await _messageTemplateAdminService.GetTemplate(type);
             if (template != null)
             {
                 return View(template);
             }
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST([ModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
+        public async Task<ActionResult> Edit_POST([ModelBinder(typeof(MessageTemplateOverrideModelBinder))]
+            MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
-                _messageTemplateAdminService.Save(messageTemplate);
-                TempData.SuccessMessages()
-                    .Add(string.Format("{0} successfully edited", messageTemplate.GetType().Name.BreakUpString()));
-                return RedirectToAction("Edit", new { type = messageTemplate.GetType().FullName });
+                await _messageTemplateAdminService.Save(messageTemplate);
+                TempData.AddSuccessMessage($"{messageTemplate.GetType().Name.BreakUpString()} successfully edited");
+                return RedirectToAction("Edit", new {type = messageTemplate.GetType().FullName});
             }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public ActionResult ImportLegacyTemplate(string type)
         {
-            return View((object)type);
+            return View((object) type);
         }
 
         [HttpPost, ActionName("ImportLegacyTemplate")]
-        public ActionResult ImportLegacyTemplate_POST(string type)
+        public async Task<ActionResult> ImportLegacyTemplate_POST(string type)
         {
-            _messageTemplateAdminService.ImportLegacyTemplate(type);
+            await _messageTemplateAdminService.ImportLegacyTemplate(type);
             return RedirectToAction("Index");
         }
     }

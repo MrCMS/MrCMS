@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services.ImportExport;
-using MrCMS.Web.Admin.Helpers;
-using MrCMS.Website.Controllers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -25,7 +25,7 @@ namespace MrCMS.Web.Admin.Controllers
         public ActionResult Documents()
         {
             //if (TempData.ContainsKey("messages"))
-                ViewBag.Messages = TempData.Get<ImportDocumentsResult>("messages");
+            ViewBag.Messages = TempData.Get<ImportDocumentsResult>("messages");
             if (TempData.ContainsKey("import-status"))
                 ViewBag.ImportStatus = TempData["import-status"];
             if (TempData.ContainsKey("export-status"))
@@ -34,11 +34,11 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportDocuments()
+        public async Task<ActionResult> ExportDocuments()
         {
             try
             {
-                byte[] file = _importExportManager.ExportDocumentsToExcel();
+                byte[] file = await _importExportManager.ExportDocumentsToExcel();
                 TempData["export-status"] = "Documents successfully exported.";
                 return File(file, ImportExportManager.XlsxContentType,
                     "MrCMS-Documents-" + DateTime.UtcNow + ".xlsx");
@@ -53,29 +53,31 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ImportDocuments(IFormFile document)
+        public async Task<ActionResult> ImportDocuments(IFormFile document)
         {
             if (document != null && document.Length > 0 &&
                 document.ContentType == ImportExportManager.XlsxContentType)
-                TempData.Set(_importExportManager.ImportDocumentsFromExcel(document.OpenReadStream()), "messages");
+                TempData.Set(await _importExportManager.ImportDocumentsFromExcel(document.OpenReadStream()),
+                    "messages");
             else
                 TempData["import-status"] = "Please choose non-empty Excel (.xslx) file before uploading.";
             return RedirectToAction("Documents");
         }
 
         [HttpPost]
-        public ActionResult ExportDocumentsToEmail(ExportDocumentsModel model)
+        public async Task<ActionResult> ExportDocumentsToEmail(ExportDocumentsModel model)
         {
             try
             {
-                _importExportManager.ExportDocumentsToEmail(model);
+                await _importExportManager.ExportDocumentsToEmail(model);
                 TempData["export-status"] = "Documents successfully exported.";
             }
-            catch 
+            catch
             {
                 TempData["export-status"] =
                     "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
             }
+
             return RedirectToAction("Documents");
         }
     }

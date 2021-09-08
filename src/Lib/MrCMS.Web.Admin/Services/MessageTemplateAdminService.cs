@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Messages;
+using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
 
@@ -14,25 +16,28 @@ namespace MrCMS.Web.Admin.Services
     public class MessageTemplateAdminService : IMessageTemplateAdminService
     {
         private readonly IMessageTemplateProvider _messageTemplateProvider;
+        private readonly ICurrentSiteLocator _siteLocator;
         private readonly ISession _session;
-        private readonly Site _site;
 
-        public MessageTemplateAdminService(IMessageTemplateProvider messageTemplateProvider, Site site, ISession session)
+        public MessageTemplateAdminService(IMessageTemplateProvider messageTemplateProvider,
+            ICurrentSiteLocator siteLocator,
+            ISession session)
         {
             _messageTemplateProvider = messageTemplateProvider;
-            _site = site;
+            _siteLocator = siteLocator;
             _session = session;
         }
 
-        public List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails()
+        public async Task<List<MessageTemplateInfo>> GetAllMessageTemplateTypesWithDetails()
         {
-            List<MessageTemplate> templates = _messageTemplateProvider.GetAllMessageTemplates(_site);
+            var site = _siteLocator.GetCurrentSite();
+            List<MessageTemplate> templates = await _messageTemplateProvider.GetAllMessageTemplates(site);
             IList<string> legacyMessageTemplateTypes =
-                _session.QueryOver<LegacyMessageTemplate>()
+                await _session.QueryOver<LegacyMessageTemplate>()
                     .Where(template => !template.Imported)
                     .Select(template => template.MessageTemplateType)
                     .Cacheable()
-                    .List<string>();
+                    .ListAsync<string>();
             return templates.Select(template =>
             {
                 Type type = template.GetType();
@@ -48,50 +53,53 @@ namespace MrCMS.Web.Admin.Services
             }).ToList();
         }
 
-        public MessageTemplate GetNewOverride(string type)
+        public async Task<MessageTemplate> GetNewOverride(string type)
         {
             Type typeByName = TypeHelper.GetTypeByName(type);
-            MessageTemplate messageTemplateBase = _messageTemplateProvider.GetNewMessageTemplate(typeByName);
+            MessageTemplate messageTemplateBase = await _messageTemplateProvider.GetNewMessageTemplate(typeByName);
             if (messageTemplateBase == null) return null;
-            messageTemplateBase.SiteId = _site.Id;
+            var site = _siteLocator.GetCurrentSite();
+            messageTemplateBase.SiteId = site.Id;
             return messageTemplateBase;
         }
 
-        public void AddOverride(MessageTemplate messageTemplate)
+        public async Task AddOverride(MessageTemplate messageTemplate)
         {
-            _messageTemplateProvider.SaveSiteOverride(messageTemplate, _site);
+            var site = _siteLocator.GetCurrentSite();
+            await _messageTemplateProvider.SaveSiteOverride(messageTemplate, site);
         }
 
-        public MessageTemplate GetOverride(string type)
+        public async Task<MessageTemplate> GetOverride(string type)
         {
-            MessageTemplate messageTemplateBase = GetTemplate(type);
+            MessageTemplate messageTemplateBase = await GetTemplate(type);
             if (messageTemplateBase != null && messageTemplateBase.SiteId.HasValue)
                 return messageTemplateBase;
             return null;
         }
 
 
-        public void DeleteOverride(string type)
+        public async Task DeleteOverride(string type)
         {
-            var messageTemplate = GetOverride(type);
+            var messageTemplate = await GetOverride(type);
             if (messageTemplate == null)
                 return;
-            _messageTemplateProvider.DeleteSiteOverride(messageTemplate, _site);
+            var site = _siteLocator.GetCurrentSite();
+            await _messageTemplateProvider.DeleteSiteOverride(messageTemplate, site);
         }
 
-        public void ImportLegacyTemplate(string type)
+        public async Task ImportLegacyTemplate(string type)
         {
-            var legacyMessageTemplate = _session.QueryOver<LegacyMessageTemplate>()
+            var legacyMessageTemplate = await _session.QueryOver<LegacyMessageTemplate>()
                 .Where(template => template.MessageTemplateType == type)
                 .Take(1)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (legacyMessageTemplate == null)
                 return;
-            var messageTemplate = GetOverride(type);
+            var messageTemplate = await GetOverride(type);
             if (messageTemplate == null)
             {
-                messageTemplate = GetNewOverride(type);
-                Save(messageTemplate);
+                messageTemplate = await GetNewOverride(type);
+                await Save(messageTemplate);
             }
 
             messageTemplate.Bcc = legacyMessageTemplate.Bcc;
@@ -103,24 +111,27 @@ namespace MrCMS.Web.Admin.Services
             messageTemplate.Subject = legacyMessageTemplate.Subject;
             messageTemplate.ToAddress = legacyMessageTemplate.ToAddress;
             messageTemplate.ToName = legacyMessageTemplate.ToName;
-            Save(messageTemplate);
+            await Save(messageTemplate);
             legacyMessageTemplate.Imported = true;
-            _session.Transact(session => session.Save(legacyMessageTemplate));
+            await _session.TransactAsync(session => session.SaveAsync(legacyMessageTemplate));
         }
 
-        public MessageTemplate GetTemplate(string type)
+        public async Task<MessageTemplate> GetTemplate(string type)
         {
+            var site = _siteLocator.GetCurrentSite();
+            var allMessageTemplates = await _messageTemplateProvider.GetAllMessageTemplates(site);
             return
-                _messageTemplateProvider.GetAllMessageTemplates(_site)
+                allMessageTemplates
                     .FirstOrDefault(@base => @base.GetType().FullName == type);
         }
 
-        public void Save(MessageTemplate messageTemplate)
+        public async Task Save(MessageTemplate messageTemplate)
         {
             if (messageTemplate.SiteId.HasValue)
-                _messageTemplateProvider.SaveSiteOverride(messageTemplate, _session.Get<Site>(messageTemplate.SiteId));
+                await _messageTemplateProvider.SaveSiteOverride(messageTemplate,
+                    await _session.GetAsync<Site>(messageTemplate.SiteId));
             else
-                _messageTemplateProvider.SaveTemplate(messageTemplate);
+                await _messageTemplateProvider.SaveTemplate(messageTemplate);
         }
 
         private bool CanPreview(MessageTemplate template)

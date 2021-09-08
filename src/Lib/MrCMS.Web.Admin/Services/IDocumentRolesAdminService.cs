@@ -5,6 +5,6 @@ namespace MrCMS.Web.Admin.Services
 {
     public interface IDocumentRolesAdminService
     {
-        ISet<UserRole> GetFrontEndRoles(string frontEndRoles, bool inheritFromParent);
+        ISet<UserRole> GetFrontEndRoles(string frontEndRoles);
     }
 }

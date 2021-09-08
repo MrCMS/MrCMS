@@ -1,0 +1,46 @@
+﻿@using MrCMS.Services
+@model MrCMS.Web.Admin.Models.PushToRoleNotificationModel
+@inject IRoleService RoleService
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var roles = await RoleService.GetAllRoles();
+    var roleOptions = roles.BuildSelectItemList(x => x.Name, x => x.Id.ToString(), emptyItemText: "Select role...");
+}
+
+<form asp-controller="PushNotification" asp-action="SendToRole" method="post" data-push-notification-form="">
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Push Notification To Role", "Push notification to role")
+            <span class="btn-group d-inline pull-right">
+                <button type="submit" class="btn-primary btn">@await Html.Resource("Push")</button>
+            </span>
+        </legend>
+        <div class="form-group">
+            <label asp-for="RoleId"></label>
+            <select class="form-control" asp-for="RoleId" asp-items="@roleOptions"></select>
+            <span asp-validation-for="RoleId"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input type="text" class="form-control" asp-for="Title" />
+            <span asp-validation-for="Title"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Body"></label>
+            <textarea class="form-control" asp-for="Body"></textarea>
+            <span asp-validation-for="Body"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Url"></label>
+            <input type="text" class="form-control" asp-for="Url" />
+            <span asp-validation-for="Url"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Image"></label>
+            <br />
+            <input type="text" class="form-control" asp-for="Image" data-type="media-selector" />
+            <span asp-validation-for="Image"></span>
+        </div>
+    </fieldset>
+</form>

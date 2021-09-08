@@ -1,4 +1,3 @@
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +13,7 @@ namespace MrCMS.Entities.Documents.Web
             FormProperties = new List<FormProperty>();
         }
         [Required]
+        [StringLength(100)]
         public virtual string Name { get; set; }
 
         [DisplayName("Form Submitted Message")]
@@ -21,6 +21,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string FormSubmittedMessage { get; set; }
 
         [DisplayName("Form Success Redirect")]
+        [StringLength(500)]
         public virtual string FormRedirectUrl { get; set; }
 
         [DisplayName("Subject")]

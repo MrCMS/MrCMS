@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Services.Notifications
@@ -19,7 +19,8 @@ namespace MrCMS.Services.Notifications
             _eventContext = eventContext;
         }
 
-        public void PublishNotification(string message, PublishType publishType = PublishType.Both, NotificationType notificationType = NotificationType.All)
+        public async Task PublishNotification(string message, PublishType publishType = PublishType.Both,
+            NotificationType notificationType = NotificationType.All)
         {
             if (_session.GetContext().AreNotificationsDisabled())
                 return;
@@ -27,37 +28,37 @@ namespace MrCMS.Services.Notifications
             var notification = new Notification
             {
                 Message = message,
-                User = _getCurrentUser.Get(),
+                User = await _getCurrentUser.Get(),
                 NotificationType = notificationType
             };
             switch (publishType)
             {
                 case PublishType.Transient:
-                    PushNotification(notification);
+                    await PushNotification(notification);
                     break;
                 case PublishType.Persistent:
-                    SaveNotification(notification);
+                    await SaveNotification(notification);
                     break;
                 case PublishType.Both:
-                    SaveNotification(notification);
-                    PushNotification(notification);
+                    await SaveNotification(notification);
+                    await PushNotification(notification);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("publishType");
+                    throw new ArgumentOutOfRangeException(nameof(publishType));
             }
         }
 
-        private void SaveNotification(Notification notification)
+        private async Task SaveNotification(Notification notification)
         {
-            _session.Transact(session => session.Save(notification));
-            _eventContext.Publish<IOnPersistentNotificationPublished, OnPersistentNotificationPublishedEventArgs>(
-                            new OnPersistentNotificationPublishedEventArgs(notification));
+            await _session.TransactAsync(async (session, token) => await session.SaveAsync(notification, token));
+            await _eventContext.Publish<IOnPersistentNotificationPublished, OnPersistentNotificationPublishedEventArgs>(
+                new OnPersistentNotificationPublishedEventArgs(notification));
         }
 
-        private void PushNotification(Notification notification)
+        private async Task PushNotification(Notification notification)
         {
-            _eventContext.Publish<IOnTransientNotificationPublished, OnTransientNotificationPublishedEventArgs>(
-                            new OnTransientNotificationPublishedEventArgs(notification));
+            await _eventContext.Publish<IOnTransientNotificationPublished, OnTransientNotificationPublishedEventArgs>(
+                new OnTransientNotificationPublishedEventArgs(notification));
         }
     }
 }

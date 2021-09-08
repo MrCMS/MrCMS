@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Batching.Entities;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services.Batching;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -14,37 +14,41 @@ namespace MrCMS.Web.Admin.Controllers
             _batchRunUIService = batchRunUIService;
         }
 
-        public ViewResult Show(BatchRun batchRun)
+        public async Task<ViewResult> Show(int id)
         {
+            var batchRun = await _batchRunUIService.Get(id);
             return View(batchRun);
         }
 
-        public PartialViewResult ShowPartial(BatchRun batchRun)
+        public async Task<PartialViewResult> ShowPartial(int id)
         {
+            var batchRun = await _batchRunUIService.Get(id);
             return PartialView("Show", batchRun);
         }
 
         [HttpPost]
-        public JsonResult Start(int id)
+        public async Task<JsonResult> Start(int id)
         {
-            return Json(_batchRunUIService.Start(id));
+            return Json(await _batchRunUIService.Start(id));
         }
 
         [HttpPost]
-        public JsonResult Pause(int id)
+        public async Task<JsonResult> Pause(int id)
         {
-            return Json(_batchRunUIService.Pause(id));
+            return Json(await _batchRunUIService.Pause(id));
         }
 
-        public ActionResult Status(BatchRun batchRun)
+        public async Task<ActionResult> Status(int id)
         {
-            ViewData["completion-status"] = _batchRunUIService.GetCompletionStatus(batchRun);
+            var batchRun = await _batchRunUIService.Get(id);
+            ViewData["completion-status"] = await _batchRunUIService.GetCompletionStatus(batchRun);
             return PartialView(batchRun);
         }
 
-        public ActionResult Row(BatchRun batchRun)
+        public async Task<ActionResult> Row(int id)
         {
-            ViewData["completion-status"] = _batchRunUIService.GetCompletionStatus(batchRun);
+            var batchRun = await _batchRunUIService.Get(id);
+            ViewData["completion-status"] = await _batchRunUIService.GetCompletionStatus(batchRun);
             return PartialView(batchRun);
         }
     }

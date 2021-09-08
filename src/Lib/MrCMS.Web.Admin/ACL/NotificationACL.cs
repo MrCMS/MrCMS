@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MrCMS.ACL;
+﻿using MrCMS.ACL;
 
 namespace MrCMS.Web.Admin.ACL
 {

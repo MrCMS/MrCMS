@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Web.Admin.Services
 {
     public interface IRedirectedDomainService
     {
-        void Save(RedirectedDomain domain);
-        void Delete(int id);
+        Task Save(RedirectedDomain domain);
+        Task Delete(int id);
     }
 }

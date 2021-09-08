@@ -9,7 +9,7 @@ using MrCMS.Web.Admin.Filters;
 using MrCMS.Web.Admin.Hubs;
 using MrCMS.Web.Admin.ModelBinders;
 using MrCMS.Web.Admin.Helpers;
-using MrCMS.Website.Profiling;
+using MrCMS.Website.CMS;
 
 namespace MrCMS.Web.Admin
 {
@@ -17,25 +17,24 @@ namespace MrCMS.Web.Admin
     {
         public MrCMSAdmin()
         {
-            ContentPrefix = "/Areas/Admin";
-            ViewPrefix = "/Areas/Admin";
+            // ContentPrefix = "/Areas/Admin";
         }
 
         public override string Name => "Admin";
         public override string Version => "1.0";
 
-        public override IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
+        public override IEndpointRouteBuilder MapRoutes(IEndpointRouteBuilder endpointRouteBuilder)
         {
-            routeBuilder.MapRoute("ckeditor Config", "Areas/Admin/lib/ckeditor/config.js",
-                new { controller = "CKEditor", action = "Config" });
+            endpointRouteBuilder.MapControllerRoute("ckeditor Config", "Areas/Admin/Content/lib/ckeditor/config.js",
+                new {controller = "CKEditor", action = "Config"});
 
-            routeBuilder.MapAreaRoute("Admin route",
+            endpointRouteBuilder.MapAreaControllerRoute("Admin route",
                 "Admin",
                 "Admin/{controller}/{action}/{id?}",
-                new { controller = "Home", action = "Index" }
+                new {controller = "Home", action = "Index"}
             );
 
-            return routeBuilder;
+            return endpointRouteBuilder;
         }
 
         public override IServiceCollection RegisterServices(IServiceCollection serviceCollection)
@@ -47,8 +46,8 @@ namespace MrCMS.Web.Admin
         public override void SetupMvcOptions(MvcOptions options)
         {
             options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
-            options.Filters.AddService<ProfilingAuthorizationFilter<AdminAuthFilter>>();
-            options.Filters.AddService<ProfilingAsyncActionFilter<BreadcrumbActionFilter>>();
+            options.Filters.AddService<AdminAuthFilter>();
+            options.Filters.AddService<BreadcrumbActionFilter>();
         }
 
         public override IDictionary<Type, string> SignalRHubs { get; } = new Dictionary<Type, string>
@@ -56,5 +55,21 @@ namespace MrCMS.Web.Admin
             [typeof(BatchProcessingHub)] = "/batchHub",
             [typeof(NotificationHub)] = "/notificationsHub",
         };
+
+        public override IEnumerable<EndpointRegistrationInfo> EndpointRegistrations
+        {
+            get
+            {
+                yield return new EndpointRegistrationInfo
+                {
+                    Order = 10000,
+                    Registration = builder =>
+                    {
+                        builder.MapHub<NotificationHub>("/notificationsHub");
+                        builder.MapHub<BatchProcessingHub>("/batchHub");
+                    }
+                };
+            }
+        }
     }
 }

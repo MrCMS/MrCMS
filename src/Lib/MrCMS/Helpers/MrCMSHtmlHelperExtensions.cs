@@ -337,7 +337,7 @@ namespace MrCMS.Helpers
                     .Assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true)
                     .OfType<AssemblyFileVersionAttribute>()
                     .FirstOrDefault();
-            return fileVersion != null ? fileVersion.Version : null;
+            return fileVersion?.Version;
         }
 
 
@@ -401,20 +401,20 @@ namespace MrCMS.Helpers
             return tagBulder;
         }
 
-        public static IHtmlContent RenderFavicon(this IHtmlHelper html, Size size)
+        public static async Task<IHtmlContent> RenderFavicon(this IHtmlHelper html, Size size)
         {
             var seoSettings = html.ViewContext.HttpContext.RequestServices.GetRequiredService<SEOSettings>();
             var fileService = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IFileService>();
             var imageRenderingService =
                 html.ViewContext.HttpContext.RequestServices.GetRequiredService<IImageRenderingService>();
 
-            var file = fileService.GetFileByUrl(seoSettings.Favicon);
+            var file = await fileService.GetFileByUrl(seoSettings.Favicon);
             if (file == null)
             {
                 return HtmlString.Empty;
             }
 
-            var imageUrl = imageRenderingService.GetImageUrl(file.FileUrl, size);
+            var imageUrl = await imageRenderingService.GetImageUrl(file.FileUrl, size);
 
             var tagBuilder = new TagBuilder("link");
             tagBuilder.Attributes["rel"] = "icon";

@@ -1,10 +1,11 @@
-﻿using MrCMS.Batching.Entities;
+﻿using System.Threading.Tasks;
+using MrCMS.Batching.Entities;
 
 namespace MrCMS.Batching.Services
 {
     public interface IControlBatchRun
     {
-        bool Start(BatchRun batchRun);
-        bool Pause(BatchRun batchRun);
+        Task<bool> Start(BatchRun batchRun);
+        Task<bool> Pause(BatchRun batchRun);
     }
 }

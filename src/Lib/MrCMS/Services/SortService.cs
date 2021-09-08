@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -16,14 +17,19 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public void Sort<T>(IList<SortItem> sortItems) where T : SiteEntity, ISortable
+        public async Task Sort<T>(IList<SortItem> sortItems) where T : SiteEntity, ISortable
         {
-            _session.Transact(session => sortItems.ForEach(item =>
+            await _session.TransactAsync(async session =>
             {
-                var entity = session.Get<T>(item.Id);
-                entity.DisplayOrder = item.Order;
-                session.Update(entity);
-            }));
+
+                foreach (var item in sortItems)
+                {
+                    var entity = await session.GetAsync<T>(item.Id);
+                    entity.DisplayOrder = item.Order;
+                    await session.UpdateAsync(entity);
+                    
+                }
+            });
         }
 
         public IList<SortItem> GetSortItems<T>(List<T> items) where T : SiteEntity, ISortable

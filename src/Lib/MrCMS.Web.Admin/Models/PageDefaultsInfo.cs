@@ -6,7 +6,6 @@ namespace MrCMS.Web.Admin.Models
         public string DisplayName { get; set; }
         public string GeneratorDisplayName { get; set; }
         public string LayoutName { get; set; }
-        public CacheEnabledStatus CacheEnabled { get; set; }
     }
 
     public enum CacheEnabledStatus

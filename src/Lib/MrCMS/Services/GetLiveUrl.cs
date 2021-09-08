@@ -1,50 +1,59 @@
-using System;
+using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Settings;
+using MrCMS.Helpers;
+using NHibernate;
 
 namespace MrCMS.Services
 {
     public class GetLiveUrl : IGetLiveUrl
     {
         private readonly IGetHomePage _getHomePage;
-        private readonly SiteSettings _settings;
+        private readonly ISiteUrlResolver _siteUrlResolver;
 
-        public GetLiveUrl(IGetHomePage getHomePage, SiteSettings settings)
+        public GetLiveUrl(IGetHomePage getHomePage, ISiteUrlResolver siteUrlResolver)
         {
             _getHomePage = getHomePage;
-            _settings = settings;
+            _siteUrlResolver = siteUrlResolver;
         }
-        public string GetUrlSegment(Webpage webpage, bool addLeadingSlash)
+
+        public async Task<string> GetUrlSegment(Webpage webpage, bool addLeadingSlash)
         {
             var builder = new StringBuilder(addLeadingSlash ? "/" : string.Empty);
-            builder.Append(GetSegment(webpage));
+            builder.Append(await GetSegment(webpage));
             return builder.ToString();
         }
 
-        public string GetAbsoluteUrl(Webpage webpage)
+        public async Task<string> GetAbsoluteUrl(Webpage webpage)
         {
+            webpage = webpage.Unproxy();
             if (webpage == null)
                 return null;
-            string scheme = (webpage.RequiresSSL|| _settings.SSLEverywhere)
-                ? "https://"
-                : "http://";
-            string authority = webpage.Site.BaseUrl;
-            if (authority.EndsWith("/"))
-                authority = authority.TrimEnd('/');
 
-            return $"{scheme}{authority}/{GetSegment(webpage)}";
+            var site = webpage.Site.Unproxy();
+
+            var siteUrl = _siteUrlResolver.GetSiteUrl(site);
+
+            return $"{siteUrl}{await GetSegment(webpage)}";
         }
 
-        private string GetSegment(Webpage webpage)
+        private async Task<string> GetSegment(Webpage webpage)
         {
             if (webpage == null)
             {
                 return string.Empty;
             }
 
-            var homepage = _getHomePage.Get();
-            return webpage.Id == homepage?.Id ? string.Empty : webpage.UrlSegment;
+            var homepage = await _getHomePage.GetForSite(webpage.Site.Unproxy());
+            return webpage.Id == homepage?.Id ? string.Empty : GetLiveUrl.GetSegmentEncoded(webpage);
+        }
+
+        private static string GetSegmentEncoded(Webpage webpage)
+        {
+            var parts = webpage.UrlSegment.Split("/");
+            return string.Join("/", parts.Select(WebUtility.UrlEncode));
         }
     }
 }

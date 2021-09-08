@@ -3,7 +3,8 @@ namespace MrCMS.Website.CMS
     public enum CmsRouteMatchType
     {
         NoMatch,
-        Disallowed,
+        Unauthorised,
+        Forbidden,
         Preview,
         Success
     }

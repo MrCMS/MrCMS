@@ -1,4 +1,5 @@
-﻿using MrCMS.Events.Documents;
+﻿using System.Threading.Tasks;
+using MrCMS.Events.Documents;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Settings.Events;
@@ -13,12 +14,13 @@ namespace MrCMS.Events.Settings
         {
             _eventContext = eventContext;
         }
-        public void Execute(OnSavingSiteSettingsArgs<SEOSettings> args)
+
+        public async Task Execute(OnSavingSiteSettingsArgs<SEOSettings> args)
         {
             if (args.Original?.TrackingScriptsBody == args.Settings?.TrackingScriptsBody)
                 return;
 
-            _eventContext.Publish<IOnTrackingScriptsBodyChanged, ScriptChangedEventArgs<SEOSettings>>(
+            await _eventContext.Publish<IOnTrackingScriptsBodyChanged, ScriptChangedEventArgs<SEOSettings>>(
                 new ScriptChangedEventArgs<SEOSettings>(args.Settings, args.Settings?.TrackingScriptsBody,
                     args.Original?.TrackingScriptsBody));
         }

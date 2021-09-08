@@ -1,12 +1,5 @@
 using System;
 using System.ComponentModel;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using Lucene.Net.Search;
-using Lucene.Net.Util;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Indexing.Definitions;
-using MrCMS.Indexing.Management;
 
 namespace MrCMS.Web.Apps.Core.Models.Search
 {

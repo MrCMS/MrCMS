@@ -29,9 +29,9 @@ namespace MrCMS.Helpers
             }
         }
 
-        public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int page, int pageSize = SessionHelper.DefaultPageSize)
+        public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int page, int? pageSize = null)
         {
-            return new PagedList<T>(source, page, pageSize);
+            return new PagedList<T>(source, page, pageSize?? SessionHelper.DefaultPageSize);
         }
     }
 }

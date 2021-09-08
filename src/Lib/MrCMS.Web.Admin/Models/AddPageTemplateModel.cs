@@ -15,6 +15,7 @@ namespace MrCMS.Web.Admin.Models
         [Required]
         public string PageType { get; set; }
 
+        [DisplayName("Layout")]
         public int? LayoutId { get; set; }
 
         [Required]
@@ -24,4 +25,23 @@ namespace MrCMS.Web.Admin.Models
         [DisplayName("Single Use?")]
         public bool SingleUse { get; set; }
     }
+    
+    public class PageTemplateModel
+    {   
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public string PageTemplateName { get; set; }
+
+        public string PageType { get; set; }
+
+        public string LayoutName { get; set; }
+        public string UrlGeneratorType { get; set; }
+
+        public bool SingleUse { get; set; }
+        
+        public int Count { get; set; }
+    }
+    
+    
 }

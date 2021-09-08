@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NHibernate.Criterion.Lambda;
+using NHibernate.Transform;
 using X.PagedList;
 using ISession = NHibernate.ISession;
 
@@ -18,9 +20,10 @@ namespace MrCMS.Helpers
 {
     public static class SessionHelper
     {
-        public const int DefaultPageSize = 10;
+        public static int DefaultPageSize = 25;
 
-        public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, IServiceProvider serviceProvider)
+        public static ISession OpenFilteredSession(this ISessionFactory sessionFactory,
+            IServiceProvider serviceProvider)
         {
             var sessionBuilder = sessionFactory.WithOptions()
                 .Interceptor(new MrCMSInterceptor(serviceProvider));
@@ -33,6 +36,7 @@ namespace MrCMS.Helpers
         {
             return GetContext(session.GetSessionImplementation());
         }
+
         public static HttpContext GetContext(this ISessionImplementor session)
         {
             return (session.Interceptor as MrCMSInterceptor)?.Context;
@@ -42,6 +46,7 @@ namespace MrCMS.Helpers
         {
             return session.GetSessionImplementation().GetService<T>();
         }
+
         public static T GetService<T>(this ISessionImplementor sessionImplementor)
         {
             return !(sessionImplementor.Interceptor is MrCMSInterceptor mrCMSInterceptor)
@@ -49,125 +54,237 @@ namespace MrCMS.Helpers
                 : mrCMSInterceptor.ServiceProvider.GetRequiredService<T>();
         }
 
-        public static TResult Transact<TResult>(this ISession session, Func<ISession, TResult> func)
-        {
-            if (!session.Transaction.IsActive)
-            {
-                // Wrap in transaction
-                TResult result;
-                using (ITransaction tx = session.BeginTransaction())
-                {
-                    result = func.Invoke(session);
-                    tx.Commit();
-                }
-                return result;
-            }
 
-            // Don't wrap;
-            return func.Invoke(session);
+        public static Task TransactAsync(this ISession session, Func<ISession, Task> action)
+        {
+            return TransactAsync(session, (s, token) => action(s), CancellationToken.None);
         }
+
         public static Task TransactAsync(this ISession session, Func<ISession, CancellationToken, Task> action)
         {
             return TransactAsync(session, action, CancellationToken.None);
         }
-        public static Task TransactAsync(this ISession session, Func<ISession, CancellationToken, Task> action, CancellationToken cancellationToken)
+
+        public static async Task<TResult> TransactAsync<TResult>(this ISession session,
+            Func<ISession, CancellationToken, Task<TResult>> func, CancellationToken cancellationToken)
         {
-            return Transact(session, async ses =>
-            {
-                await action.Invoke(ses, cancellationToken);
-                return false;
-            });
+            if (session.GetCurrentTransaction() != null)
+                // Don't wrap;
+                return await func.Invoke(session, cancellationToken);
+
+            // Wrap in transaction
+            using var tx = session.BeginTransaction();
+            var result = await func.Invoke(session, cancellationToken);
+            await tx.CommitAsync(cancellationToken);
+
+            return result;
         }
 
-        public static async Task<TResult> TransactAsync<TResult>(this IStatelessSession session, Func<IStatelessSession, CancellationToken, Task<TResult>> func, CancellationToken cancellationToken)
+        public static async Task<TResult> TransactAsync<TResult>(this ISession session,
+            Func<ISession, Task<TResult>> func)
         {
-            if (!session.Transaction.IsActive)
-            {
-                // Wrap in transaction
-                TResult result;
-                using (ITransaction tx = session.BeginTransaction())
+            if (session.GetCurrentTransaction() != null)
+                // Don't wrap;
+                return await func.Invoke(session);
+
+            // Wrap in transaction
+            using var tx = session.BeginTransaction();
+            var result = await func.Invoke(session);
+            await tx.CommitAsync();
+
+            return result;
+        }
+
+        public static Task TransactAsync(this ISession session, Func<ISession, CancellationToken, Task> action,
+            CancellationToken cancellationToken)
+        {
+            return TransactAsync(session, async (ses, token) =>
                 {
-                    result = await func.Invoke(session, cancellationToken);
-                    await tx.CommitAsync(cancellationToken);
-                }
-                return result;
+                    await action.Invoke(ses, token);
+                    return false;
+                },
+                cancellationToken);
+        }
+
+
+        public static async Task TransactAsync(this IStatelessSession session,
+            Func<IStatelessSession, Task> func)
+        {
+            if (session.GetCurrentTransaction() != null)
+            {
+                // Don't wrap;
+                await func.Invoke(session);
+                return;
             }
 
-            // Don't wrap;
-            return await func.Invoke(session, cancellationToken);
+            // Wrap in transaction
+            using ITransaction tx = session.BeginTransaction();
+            await func.Invoke(session);
+            await tx.CommitAsync();
         }
 
-        public static void Transact(this ISession session, Action<ISession> action)
+        public static async Task<TResult> TransactAsync<TResult>(this IStatelessSession session,
+            Func<IStatelessSession, Task<TResult>> func)
         {
-            Transact(session, ses =>
-            {
-                action.Invoke(ses);
-                return false;
-            });
+            if (session.GetCurrentTransaction() != null)
+                // Don't wrap;
+                return await func.Invoke(session);
+
+            // Wrap in transaction
+            using ITransaction tx = session.BeginTransaction();
+            var result = await func.Invoke(session);
+            await tx.CommitAsync();
+
+            return result;
         }
 
-        public static TResult Transact<TResult>(this IStatelessSession session, Func<IStatelessSession, TResult> func)
+        public static async Task TransactAsync(this IStatelessSession session,
+            Func<IStatelessSession, CancellationToken, Task> func, CancellationToken cancellationToken)
         {
-            if (!session.Transaction.IsActive)
+            if (session.GetCurrentTransaction() != null)
             {
-                // Wrap in transaction
-                TResult result;
-                using (ITransaction tx = session.BeginTransaction())
-                {
-                    result = func.Invoke(session);
-                    tx.Commit();
-                }
-                return result;
+                // Don't wrap;
+                await func.Invoke(session, cancellationToken);
+                return;
             }
 
-            // Don't wrap;
-            return func.Invoke(session);
+            // Wrap in transaction
+            using ITransaction tx = session.BeginTransaction();
+            await func.Invoke(session, cancellationToken);
+            await tx.CommitAsync(cancellationToken);
         }
 
-        public static void Transact(this IStatelessSession session, Action<IStatelessSession> action)
+        public static async Task<TResult> TransactAsync<TResult>(this IStatelessSession session,
+            Func<IStatelessSession, CancellationToken, Task<TResult>> func, CancellationToken cancellationToken)
         {
-            Transact(session, ses =>
-            {
-                action.Invoke(ses);
-                return false;
-            });
+            if (session.GetCurrentTransaction() != null)
+                // Don't wrap;
+                return await func.Invoke(session, cancellationToken);
+
+            // Wrap in transaction
+            using ITransaction tx = session.BeginTransaction();
+            var result = await func.Invoke(session, cancellationToken);
+            await tx.CommitAsync(cancellationToken);
+
+            return result;
         }
+
 
         public static IPagedList<T> Paged<T>(this ISession session, QueryOver<T> query, int pageNumber,
-            int pageSize = DefaultPageSize)
-            where T : SystemEntity
+            int? pageSize = null)
         {
-            IEnumerable<T> values =
-                query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * pageSize).Take(pageSize).Cacheable().List<T>();
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<T> values = query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * size)
+                .Take(size).Cacheable().List<T>();
 
             var rowCount = query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefault<int>();
 
-            return new StaticPagedList<T>(values, pageNumber, pageSize, rowCount);
+            return new StaticPagedList<T>(values, pageNumber, size, rowCount);
+        }
+        public static async Task<IPagedList<T>> PagedAsync<T>(this ISession session, QueryOver<T> query, int pageNumber,
+            int? pageSize = null)
+        {
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<T> values = await query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * size)
+                .Take(size).Cacheable().ListAsync<T>();
+
+            var rowCount = await query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefaultAsync<int>();
+
+            return new StaticPagedList<T>(values, pageNumber, size, rowCount);
         }
 
         public static IPagedList<TResult> Paged<TResult>(this IQueryOver<TResult, TResult> queryBase, int pageNumber,
-            int pageSize = DefaultPageSize)
-            where TResult : SystemEntity
+            int? pageSize = null)
         {
-            IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1) * pageSize).Take(pageSize).Cacheable().List();
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<TResult> results =
+                queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().List();
 
             int rowCount = queryBase.Cacheable().RowCount();
 
-            return new StaticPagedList<TResult>(results, pageNumber, pageSize, rowCount);
+            return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
+        }
+
+        public static async Task<IPagedList<TResult>> PagedAsync<TResult>(this IQueryOver<TResult, TResult> queryBase,
+            int pageNumber,
+            int? pageSize = null)
+        {
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<TResult> results = await
+                queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().ListAsync();
+
+            int rowCount = await queryBase.Cacheable().RowCountAsync();
+
+            return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
+        }
+
+        public static IPagedList<TResult> PagedMapped<TQuery, TResult>(this IQueryOver<TQuery, TQuery> queryBase,
+            int pageNumber,
+            Func<QueryOverProjectionBuilder<TQuery>, QueryOverProjectionBuilder<TQuery>> builder,
+            int? pageSize = null)
+        {
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<TResult> results =
+                queryBase
+                    .SelectList(builder)
+                    .TransformUsing(Transformers.AliasToBean<TResult>())
+                    .Skip((pageNumber - 1) * size).Take(size).Cacheable().List<TResult>();
+
+            int rowCount = queryBase.Cacheable().RowCount();
+
+            return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
+        }
+
+        public static async Task<IPagedList<TResult>> PagedMappedAsync<TQuery, TResult>(
+            this IQueryOver<TQuery, TQuery> queryBase,
+            int pageNumber,
+            Func<QueryOverProjectionBuilder<TQuery>, QueryOverProjectionBuilder<TQuery>> builder,
+            int? pageSize = null)
+        {
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<TResult> results =
+                await queryBase
+                    .SelectList(builder)
+                    .TransformUsing(Transformers.AliasToBean<TResult>())
+                    .Skip((pageNumber - 1) * size).Take(size).Cacheable().ListAsync<TResult>();
+
+            int rowCount = await queryBase.Cacheable().RowCountAsync();
+
+            return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
         }
 
         public static IPagedList<TResult> Paged<TResult>(this IQueryable<TResult> queryable, int pageNumber,
-            int pageSize = DefaultPageSize)
-            where TResult : SystemEntity
+            int? pageSize = null)
         {
+            var size = pageSize ?? DefaultPageSize;
             IQueryable<TResult> cacheable = queryable.WithOptions(options => options.SetCacheable(true));
 
-            return new PagedList<TResult>(cacheable, pageNumber, pageSize);
+            return new PagedList<TResult>(cacheable, pageNumber, size);
+        }
+
+        public static async Task<IPagedList<TResult>> PagedAsync<TResult>(this IQueryable<TResult> queryable,
+            int pageNumber,
+            int? pageSize = null)
+        {
+            var size = pageSize ?? DefaultPageSize;
+            IQueryable<TResult> cacheable = queryable.WithOptions(options => options.SetCacheable(true));
+            IEnumerable<TResult> results = await
+                cacheable
+                    .Skip((pageNumber - 1) * size).Take(size).ToListAsync();
+
+            int rowCount = await cacheable.CountAsync();
+
+            return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
         }
 
         public static bool Any<T>(this IQueryOver<T> query)
         {
             return query.RowCount() > 0;
+        }
+
+        public static async Task<bool> AnyAsync<T>(this IQueryOver<T> query)
+        {
+            return await query.RowCountAsync() > 0;
         }
 
         public static T GetByGuid<T>(this ISession session, Guid guid) where T : SystemEntity

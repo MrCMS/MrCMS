@@ -2,9 +2,7 @@ using System;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Website;
 
 namespace MrCMS.Services.Caching
 {

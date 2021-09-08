@@ -1,20 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
 
 namespace MrCMS.Website.Controllers
 {
     public class SitemapPlaceholderController : MrCMSUIController
     {
         private readonly ISitemapPlaceholderUIService _sitemapPlaceholderUIService;
+        private readonly IWebpageUIService _webpageUiService;
 
-        public SitemapPlaceholderController(ISitemapPlaceholderUIService sitemapPlaceholderUIService)
+        public SitemapPlaceholderController(ISitemapPlaceholderUIService sitemapPlaceholderUIService, IWebpageUIService webpageUiService)
         {
             _sitemapPlaceholderUIService = sitemapPlaceholderUIService;
+            _webpageUiService = webpageUiService;
         }
 
-        public RedirectResult Show(SitemapPlaceholder page)
+        public async Task<RedirectResult> Show(int id)
         {
-            return _sitemapPlaceholderUIService.Redirect(page);
+            var page = await _webpageUiService.GetPage<SitemapPlaceholder>(id);
+            return await _sitemapPlaceholderUIService.Redirect(page);
         }
     }
 }

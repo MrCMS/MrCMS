@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using NHibernate;
@@ -13,19 +14,19 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public void Save(RedirectedDomain domain)
+        public async Task Save(RedirectedDomain domain)
         {
             if (domain.Site != null)
                 domain.Site.RedirectedDomains.Add(domain);
-            _session.Transact(session => session.Save(domain));
+            await _session.TransactAsync(session => session.SaveAsync(domain));
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             var rd = _session.Get<RedirectedDomain>(id);
             rd.Site.RedirectedDomains.Remove(rd);
             
-            _session.Transact(session => session.Delete(rd));
+            await _session.TransactAsync(session =>  session.DeleteAsync(rd));
         }
     }
 }

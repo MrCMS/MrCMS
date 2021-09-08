@@ -1,36 +1,31 @@
-﻿@using MrCMS.Web.Admin.Models
-@model MrCMS.Web.Admin.Models.AddLayoutModel
+﻿@model MrCMS.Web.Admin.Models.AddLayoutModel
 @{
     ViewBag.Title = "Add Layout";
 }
-<form asp-controller="Layout" asp-action="Add" method="post" id = "add-layout">
+<form asp-controller="Layout" asp-action="Add" method="post" id="add-layout">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-add-layout", "Add Layout") "/>
+            <admin-header-title title="@await Html.Resource("admin-add-layout", "Add Layout") "/>
 
             <admin-header-actions>
                 <button class="btn btn-primary">
-                    @Html.Resource("admin-add", "Add")
+                    @await Html.Resource("admin-add", "Add")
                 </button>
             </admin-header-actions>
         </row>
     </admin-header>
-
-    <card>
-        <card-body>
-            @Html.HiddenFor(x => x.ParentId)
-            <div class="form-group">
-                @Html.LabelFor(x => x.Name)
-                @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.UrlSegment)
-                @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
-                @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
-            </div>
-        </card-body>
-    </card>
+    <input type="hidden" asp-for="ParentId"/>
+    
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input type="text" asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UrlSegment"></label>
+        <input type="text" asp-for="UrlSegment" class="form-control"/>
+        <span asp-validation-for="UrlSegment"></span>
+    </div>
 
 </form>

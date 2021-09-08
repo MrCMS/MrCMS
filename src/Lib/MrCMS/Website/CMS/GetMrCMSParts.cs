@@ -1,119 +1,150 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
-using MrCMS.Logging;
-using MrCMS.Services;
-using MrCMS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
+using MrCMS.Services;
 
 namespace MrCMS.Website.CMS
 {
     public class GetMrCMSParts : IGetMrCMSParts
     {
-        public IEnumerable<RegistrationInfo> GetSortedMiddleware(MrCMSAppContext appContext,
-               Action<IApplicationBuilder> coreFunctions)
+        public IEnumerable<ApplicationRegistrationInfo> GetSortedMiddleware(MrCMSAppContext appContext,
+            Action<IApplicationBuilder> coreFunctions)
         {
-            var sortedMiddleware = new List<RegistrationInfo>
+            var sortedMiddleware = new List<ApplicationRegistrationInfo>
             {
-                new RegistrationInfo
+                new()
                 {
-                    Registration = builder => builder.UseMiddleware<MrCMSLoggingMiddleware>(),
+                    Registration = builder => builder.UseMiddleware<SetCurrentSite>(),
                     Order = int.MaxValue
                 },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseMiddleware<CurrentSiteSettingsMiddleware>(),
-                    Order = int.MaxValue - 1
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseMiddleware<CurrentWebpageMiddleware>(),
-                    Order = int.MaxValue - 1
-                },
-                new RegistrationInfo
+                new()
                 {
                     Registration = coreFunctions,
-                    Order = 10000
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseMiddleware<RedirectPageMiddleware>(),
-                    Order = 9950
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseMiddleware<SiteRedirectMiddleware>(),
-                    Order = 9850
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder =>
-                        builder.UseWhen(
-                            context => context.RequestServices.GetRequiredService<SiteSettings>().SSLEverywhere,
-                            app => app.UseHttpsRedirection()),
-                    Order = 9750
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseMiddleware<HomePageRedirectMiddleware>(),
-                    Order = 9700
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseWhen(
-                        context => context.RequestServices.GetRequiredService<IGetCurrentUser>().Get()?.IsAdmin == true
-                                   && context.RequestServices.GetRequiredService<SiteSettings>().SSLAdmin,
-                        app => app.UseHttpsRedirection()),
-                    Order = 1040
+                    Order = int.MaxValue - 1
                 },
 
-                new RegistrationInfo
-                {
-                    Registration = app => app.UseSignalR(routes =>
-                    {
-                        var methodInfo = typeof(HubRouteBuilder).GetMethod(nameof(HubRouteBuilder.MapHub),
-                            new Type[] {typeof(PathString)});
-                        var signalRRoutes = appContext.SignalRHubs;
-                        foreach (var key in signalRRoutes.Keys)
-                        {
-                            var pathString = new PathString(signalRRoutes[key]);
-                            methodInfo.MakeGenericMethod(key).Invoke(routes, new object[] {pathString});
-                        }
-                    }),
-                    Order = 1001
-                },
-                new RegistrationInfo
-                {
-                    Registration = app => app.UseMvc(builder =>
-                    {
-                        builder.MapMrCMS();
-                        builder.MapMrCMSApps(appContext);
-
-                        builder.MapRoute(
-                            "default",
-                            "{controller=Home}/{action=Index}/{id?}");
-
-                        builder.Routes.Add(new FileNotFoundRouter(builder.DefaultHandler));
-                    }),
-                    Order = 1000
-                },
-                new RegistrationInfo
-                {
-                    Registration = builder => builder.UseMiddleware<TrimTrailingSlashMiddleware>(),
-                    Order = 501
-                },
+                // new()
+                // {
+                //     Registration = builder =>
+                //         builder.UseWhen(
+                //             context => !Path.HasExtension(context.Request.Path),
+                //             app => app.UseMiddleware<CurrentWebpageMiddleware>()),
+                //     Order = int.MaxValue - 2
+                // },
+                //
+                // new()
+                // {
+                //     Registration = builder => builder.UseMiddleware<RedirectPageMiddleware>(),
+                //     Order = 9950
+                // },
+                // new()
+                // {
+                //     Registration = builder =>
+                //         builder.UseWhen(
+                //             context => !Path.HasExtension(context.Request.Path),
+                //             app => app.UseMiddleware<SiteRedirectMiddleware>()),
+                //     Order = 9850
+                // },
+                // new()
+                // {
+                //     Registration = builder =>
+                //         builder.UseWhen(
+                //             context => context.Request.Path == "/",
+                //             app => app.UseMiddleware<HomePageRedirectMiddleware>()),
+                //     Order = 9700
+                // },
+                // new()
+                // {
+                //     Registration = builder => builder.UseMiddleware<TrimTrailingSlashMiddleware>(),
+                //     Order = 501
+                // },
+                // new()
+                // {
+                //     Registration = builder => builder.UseMiddleware<UrlHistoryMiddleware>(),
+                //     Order = 100
+                // },
             };
 
 
             sortedMiddleware.AddRange(appContext.Registrations);
             return sortedMiddleware.OrderByDescending(x => x.Order);
+        }
+
+        public class SetCurrentSite : IMiddleware
+        {
+            public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+            {
+                var provider = context.RequestServices;
+                var site =
+                    provider.GetRequiredService<IHttpContextAccessor>().HttpContext?.Items["override-site"] as Site;
+
+                var siteLocator = provider.GetRequiredService<ICurrentSiteLocator>();
+                site ??= siteLocator.GetCurrentSite().Unproxy();
+                if (site == null)
+                {
+                    // check for redirected domain
+                    var domain = siteLocator.GetCurrentRedirectedDomain().Unproxy();
+                    var redirectSite = domain?.Site.Unproxy();
+                    if (redirectSite == null)
+                    {
+                        context.Response.StatusCode = 404;
+                        return;
+                    }
+
+                    context.Response.Redirect(
+                        $"https://{redirectSite.BaseUrl.Trim('/')}{context.Request.Path}{context.Request.QueryString}",
+                        true);
+                    return;
+                }
+
+                var session = provider.GetRequiredService<NHibernate.ISession>();
+                if (site != null)
+                {
+                    session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
+                    context.Items["current-site"] = site;
+                }
+
+                await next(context);
+            }
+        }
+
+        public IEnumerable<EndpointRegistrationInfo> GetSortedEndpoints(MrCMSAppContext appContext,
+            Action<IEndpointRouteBuilder> coreFunctions)
+        {
+            var list = new List<EndpointRegistrationInfo>
+            {
+                new()
+                {
+                    Registration = coreFunctions,
+                    Order = 10000
+                },
+                new()
+                {
+                    Registration = builder =>
+                    {
+                        builder.MapMrCMS(appContext);
+
+                        builder.MapControllerRoute(
+                            "default",
+                            "{controller=Home}/{action=Index}/{id?}");
+
+                        //builder.Routes.Add(new FileNotFoundRouter(builder.DefaultHandler));
+                    },
+                    Order = 1000
+                },
+            };
+
+
+            list.AddRange(appContext.EndpointRegistrations);
+            return list.OrderByDescending(x => x.Order);
         }
     }
 }

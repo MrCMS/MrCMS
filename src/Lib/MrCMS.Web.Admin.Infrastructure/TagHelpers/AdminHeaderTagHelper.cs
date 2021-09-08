@@ -9,9 +9,8 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "section";
-            output.AddClass("content-header", HtmlEncoder.Default);
+            output.AddClass("mrcms-content-header", HtmlEncoder.Default);
             output.AddClass("container-fluid", HtmlEncoder.Default);
-            output.AddClass("mb-0", HtmlEncoder.Default);
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
@@ -21,7 +20,9 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
-            output.AddClass("row", HtmlEncoder.Default);
+            output.AddClass("d-flex", HtmlEncoder.Default);
+            output.AddClass("justify-content-between", HtmlEncoder.Default);
+            output.AddClass("flex-end", HtmlEncoder.Default);
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
@@ -32,9 +33,7 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
-            output.AddClass("col-lg-6", HtmlEncoder.Default);
-            output.AddClass("col-xl-7", HtmlEncoder.Default);
-            output.Content.SetHtmlContent($@"<h1 class=""text-truncate"">{Title}</h1>");
+            output.Content.SetHtmlContent($@"<h1>{Title}</h1>");
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
@@ -45,9 +44,6 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
-            output.AddClass("col-lg-6", HtmlEncoder.Default);
-            output.AddClass("col-xl-5", HtmlEncoder.Default);
-            output.AddClass("text-right", HtmlEncoder.Default);
             
             output.TagMode = TagMode.StartTagAndEndTag;
         }

@@ -4,6 +4,7 @@ namespace MrCMS.Services
 {
     public class SHA512HashAlgorithm : IHashAlgorithm
     {
+        public const string Name = "SHA512";
         private readonly SHA512Managed _algorithm = new SHA512Managed();
         
         public byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
@@ -23,6 +24,7 @@ namespace MrCMS.Services
             return _algorithm.ComputeHash(plainTextWithSaltBytes);
         }
 
-        public string Type { get { return "SHA512"; } }
+        public string Type => Name;
     }
+
 }

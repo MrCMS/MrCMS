@@ -1,5 +1,6 @@
 using System;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
@@ -16,31 +17,36 @@ namespace MrCMS.Services
 
         //private readonly ErrorSignal _errorSignal;
         private readonly IStringResourceProvider _resourceProvider;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
-        public TestSmtpSettings(IGetSmtpClient getSmtpClient, ILogger<TestSmtpSettings> logger, IStringResourceProvider resourceProvider, Site site)
+        public TestSmtpSettings(IGetSmtpClient getSmtpClient, ILogger<TestSmtpSettings> logger,
+            IStringResourceProvider resourceProvider, ICurrentSiteLocator siteLocator)
         {
             _getSmtpClient = getSmtpClient;
             _logger = logger;
             _resourceProvider = resourceProvider;
-            _site = site;
+            _siteLocator = siteLocator;
         }
-        public bool TestSettings(MailSettings settings, TestEmailInfo info)
+
+        public async Task<bool> TestSettings(MailSettings settings, TestEmailInfo info)
         {
             try
             {
                 using (var smtpClient = _getSmtpClient.GetClient(settings))
                 {
+                    var site = _siteLocator.GetCurrentSite();
                     var mailMessage = new MailMessage
                     {
                         From = new MailAddress(settings.SystemEmailAddress),
                         Subject = "SMTP Test",
-                        Body = _resourceProvider.GetValue("Admin - Test Email - Content", "Testing email functionality from " + _site.DisplayName),
+                        Body = await _resourceProvider.GetValue("Admin - Test Email - Content",
+                            "Testing email functionality from " + site.DisplayName),
                     };
                     mailMessage.To.Add(new MailAddress(info.Email));
 
                     smtpClient.Send(mailMessage);
                 }
+
                 return true;
             }
             catch (Exception ex)

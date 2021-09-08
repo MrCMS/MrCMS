@@ -1,18 +1,13 @@
 ﻿@using System.Linq
-@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Models
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.PostingsModel
-@{
-    Html.IncludeScript("/Areas/Admin/scripts/form-entries-search.js");
-}
 
 <div data-paging-type="async">
     @Html.LabelFor(model => model.Search)
     <div class="input-group">
-        @Html.TextBoxFor(webpage => webpage.Search, new {@class = "form-control"})
-        <span class="input-group-btn">
-            <button class="btn btn-secondary" id="search-postings" data-action="update" data-url="@Url.Action("Postings", "Form", new {id = Model.Id})">@Html.Resource("Admin Form Postings Search Button", "Search")</button>
+        <input asp-for="Search" type="text" class="form-control" />
+        <span class="input-group-append">
+            <button class="btn btn-secondary" id="search-postings" data-action="update" data-url="@Url.Action("Postings", "Form", new {id = Model.Id})">@await Html.Resource("Admin Form Postings Search Button", "Search")</button>
         </span>
     </div>
     <br/>
@@ -27,9 +22,9 @@
                         @heading
                     </th>
                 }
-                <th>@Html.Resource("Admin Form Postings Posted Page", "Page")</th>
-                <th>@Html.Resource("Admin Form Postings Posted On", "Posted On")</th>
-                <th>@Html.Resource("Admin Form Postings Actions", "Actions")</th>
+                <th>@await Html.Resource("Admin Form Postings Posted Page", "Page")</th>
+                <th>@await Html.Resource("Admin Form Postings Posted On", "Posted On")</th>
+                <th>@await Html.Resource("Admin Form Postings Actions", "Actions")</th>
             </tr>
             </thead>
             <tbody>
@@ -41,7 +36,7 @@
                         <td>
                             @if (posting.Get(heading) != null && posting.Get(heading).IsFile)
                             {
-                                <a href="@posting.Get(heading).Value">@Html.Resource("Admin Form Postings Download", "Download")</a>
+                                <a href="@posting.Get(heading).Value">@await Html.Resource("Admin Form Postings Download", "Download")</a>
                             }
                             else
                             {
@@ -57,9 +52,9 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink(Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new {id = posting.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                            @Html.ActionLink(await Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new {id = posting.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
 
-                            @Html.ActionLink(Html.Resource("Delete"), "DeleteEntry", "Form", new {id = posting.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                            @Html.ActionLink(await Html.Resource("Delete"), "DeleteEntry", "Form", new {id = posting.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
                         </div>
                     </td>
                 </tr>
@@ -70,6 +65,6 @@
     }
     else
     {
-        <span>@Html.Resource("Admin Form Postings no postings found", "No postings found.")</span>
+        <span>@await Html.Resource("Admin Form Postings no postings found", "No postings found.")</span>
     }
 </div>

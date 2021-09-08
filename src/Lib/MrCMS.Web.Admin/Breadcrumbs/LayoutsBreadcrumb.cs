@@ -4,7 +4,7 @@ namespace MrCMS.Web.Admin.Breadcrumbs
 {
     public class LayoutsBreadcrumb : Breadcrumb
     {
-        public override int Order => 2;
+        public override decimal Order => 2;
         public override string Controller => "Layout";
         public override string Action => "Index";
         public override bool IsNav => true;

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
     public interface IEndRequestTaskManager
     {
         void AddTask(EndRequestTask task);
-        void ExecuteTasks();
+        Task ExecuteTasks();
         HashSet<EndRequestTask> GetTasks();
     }
 }

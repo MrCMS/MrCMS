@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -17,13 +18,14 @@ namespace MrCMS.Website.Controllers
 
         [GoogleRecaptcha]
         [Route("save-form/{id}")]
-        public ActionResult Save(int id)
+        [IgnoreAntiforgeryToken]
+        public async Task<ActionResult> Save(int id)
         {
             var form = _formPostingHandler.GetForm(id);
             if (form?.IsDeleted != false)
                 return new EmptyResult();
-            var saveFormData = _formPostingHandler.SaveFormData(form, Request);
-            
+            var saveFormData = await _formPostingHandler.SaveFormData(form, Request);
+
             TempData["form-submitted"] = true;
             TempData.Set(saveFormData, "form-submitted-message");
             // if any errors add form data to be renderered, otherwise form should be empty

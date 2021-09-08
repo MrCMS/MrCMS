@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Multisite;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
 using MrCMS.Settings;
 
@@ -6,25 +7,26 @@ namespace MrCMS.Services.ImportExport
 {
     public class GetDefaultExportDocumentsEmailTemplate : GetDefaultTemplate<ExportDocumentsEmailTemplate>
     {
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
         private readonly MailSettings _mailSettings;
 
-        public GetDefaultExportDocumentsEmailTemplate(Site site, MailSettings mailSettings)
+        public GetDefaultExportDocumentsEmailTemplate(ICurrentSiteLocator siteLocator, MailSettings mailSettings)
         {
-            _site = site;
+            _siteLocator = siteLocator;
             _mailSettings = mailSettings;
         }
 
-        public override ExportDocumentsEmailTemplate Get()
+        public override Task<ExportDocumentsEmailTemplate> Get()
         {
-            return new ExportDocumentsEmailTemplate
+            var site = _siteLocator.GetCurrentSite();
+            return Task.FromResult(new ExportDocumentsEmailTemplate
             {
                 IsHtml = true,
-                Subject = _site.Name + " Document Export",
+                Subject = site.Name + " Document Export",
                 Body = "Please find attached the site document export",
                 FromName = "Website",
                 FromAddress = _mailSettings.SystemEmailAddress,
-            };
+            });
         }
     }
 }

@@ -29,14 +29,8 @@ namespace MrCMS.Events
         public T Item { get; set; }
         public T Original { get; set; }
 
-        public override SystemEntity ItemBase
-        {
-            get { return Item; }
-        }
+        public override SystemEntity ItemBase => Item;
 
-        public override SystemEntity OriginalBase
-        {
-            get { return Original; }
-        }
+        public override SystemEntity OriginalBase => Original;
     }
 }

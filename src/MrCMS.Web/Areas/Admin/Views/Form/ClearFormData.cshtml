@@ -1,14 +1,15 @@
 ﻿@model MrCMS.Entities.Documents.Web.Form
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("ClearFormData", "Form",FormMethod.Post))
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("ClearFormData", "Form", FormMethod.Post))
 {
-    @Html.HiddenFor(x=>x.Id)
+    @Html.HiddenFor(x => x.Id)
     <fieldset>
-        <legend>@Html.Resource("Admin Form Delete Entries Title", "Delete All Entries")
+        <legend>
+            @await Html.Resource("Admin Form Delete Entries Title", "Delete All Entries")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn btn-danger" value="@Html.Resource("Admin Form Delete Entries Button", "Delete All Entries")" />
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Admin Form Delete Entries Button", "Delete All Entries")"/>
             </span>
         </legend>
-        @Html.Resource("Admin Form Delete Entries Warning", "Deleting entries cannot be undone, do you want to proceed?")
+        @await Html.Resource("Admin Form Delete Entries Warning", "Deleting entries cannot be undone, do you want to proceed?")
     </fieldset>
 }

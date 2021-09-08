@@ -8,9 +8,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Stat;
@@ -22,10 +24,12 @@ namespace MrCMS.DbConfiguration
     public class MrCMSSession : ISession
     {
         private readonly ISession _session;
+        private string _url;
 
         public MrCMSSession(ISession session)
         {
             _session = session;
+            _url = HttpContext?.Request.GetDisplayUrl();
         }
 
         public HashSet<EventInfo> Added { get; } = new HashSet<EventInfo>();
@@ -109,76 +113,77 @@ namespace MrCMS.DbConfiguration
             return _session.ReplicateAsync(entityName, obj, replicationMode, cancellationToken);
         }
 
-        public Task<object> SaveAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<object> SaveAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            return _session.SaveAsync(obj, cancellationToken);
+            if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
+            return await _session.SaveAsync(obj, cancellationToken);
         }
 
-        public Task SaveAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            return _session.SaveAsync(obj, id, cancellationToken);
-        }
-
-        public Task<object> SaveAsync(string entityName, object obj,
+        public async Task SaveAsync(object obj, object id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            return _session.SaveAsync(entityName, obj, cancellationToken);
+            if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
+            await _session.SaveAsync(obj, id, cancellationToken);
         }
 
-        public Task SaveAsync(string entityName, object obj, object id,
+        public async Task<object> SaveAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            return _session.SaveAsync(entityName, obj, id, cancellationToken);
+            if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
+           return await _session.SaveAsync(entityName, obj, cancellationToken);
         }
 
-        public Task SaveOrUpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
-        {
-            HandleSaveOrUpdate(obj);
-            return _session.SaveOrUpdateAsync(obj, cancellationToken);
-        }
-
-        public Task SaveOrUpdateAsync(string entityName, object obj,
+        public async Task SaveAsync(string entityName, object obj, object id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            HandleSaveOrUpdate(obj);
-            return _session.SaveOrUpdateAsync(entityName, obj, cancellationToken);
+            if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
+            await _session.SaveAsync(entityName, obj, id, cancellationToken);
         }
 
-        public Task SaveOrUpdateAsync(string entityName, object obj, object id,
+        public async Task SaveOrUpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        {
+            await HandleSaveOrUpdate(obj);
+            await _session.SaveOrUpdateAsync(obj, cancellationToken);
+        }
+
+        public async Task SaveOrUpdateAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            HandleSaveOrUpdate(obj);
-            return _session.SaveOrUpdateAsync(entityName, obj, id, cancellationToken);
+            await HandleSaveOrUpdate(obj);
+            await _session.SaveOrUpdateAsync(entityName, obj, cancellationToken);
         }
 
-        public Task UpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            return _session.UpdateAsync(obj, cancellationToken);
-        }
-
-        public Task UpdateAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            return _session.UpdateAsync(obj, id, cancellationToken);
-        }
-
-        public Task UpdateAsync(string entityName, object obj,
+        public async Task SaveOrUpdateAsync(string entityName, object obj, object id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            return _session.UpdateAsync(entityName, obj, cancellationToken);
+            await HandleSaveOrUpdate(obj);
+            await _session.SaveOrUpdateAsync(entityName, obj, id, cancellationToken);
         }
 
-        public Task UpdateAsync(string entityName, object obj, object id,
+        public async Task UpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
+            await _session.UpdateAsync(obj, cancellationToken);
+        }
+
+        public async Task UpdateAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
+            await _session.UpdateAsync(obj, id, cancellationToken);
+        }
+
+        public async Task UpdateAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            return _session.UpdateAsync(entityName, obj, id, cancellationToken);
+            if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
+            await _session.UpdateAsync(entityName, obj, cancellationToken);
+        }
+
+        public async Task UpdateAsync(string entityName, object obj, object id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
+            await  _session.UpdateAsync(entityName, obj, id, cancellationToken);
         }
 
         public Task<object> MergeAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
@@ -215,17 +220,17 @@ namespace MrCMS.DbConfiguration
             return _session.PersistAsync(entityName, obj, cancellationToken);
         }
 
-        public Task DeleteAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public async Task DeleteAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity entity) AddDeletedEvent(entity);
-            return _session.DeleteAsync(obj, cancellationToken);
+            if (obj is SystemEntity entity) await AddDeletedEvent(entity);
+            await _session.DeleteAsync(obj, cancellationToken);
         }
 
-        public Task DeleteAsync(string entityName, object obj,
+        public async Task DeleteAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (obj is SystemEntity entity) AddDeletedEvent(entity);
-            return _session.DeleteAsync(entityName, obj, cancellationToken);
+            if (obj is SystemEntity entity) await AddDeletedEvent(entity);
+            await _session.DeleteAsync(entityName, obj, cancellationToken);
         }
 
         public Task<int> DeleteAsync(string query, CancellationToken cancellationToken = new CancellationToken())
@@ -421,77 +426,68 @@ namespace MrCMS.DbConfiguration
 
         public object Save(object obj)
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            return _session.Save(obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Save(object obj, object id)
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            _session.Save(obj, id);
+            throw new NotImplementedException("Convert to async");
         }
 
         public object Save(string entityName, object obj)
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            return _session.Save(entityName, obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Save(string entityName, object obj, object id)
         {
-            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
-            _session.Save(entityName, obj, id);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void SaveOrUpdate(object obj)
         {
-            HandleSaveOrUpdate(obj);
-            _session.SaveOrUpdate(obj);
+            throw new NotImplementedException("Convert to async");
         }
 
-        private void HandleSaveOrUpdate(object obj)
+        private async Task HandleSaveOrUpdate(object obj)
         {
             var entity = obj as SystemEntity;
             if (entity != null && entity.Id == 0)
-                AddAddEvent(entity);
+                await AddAddEvent(entity);
             else if (entity != null)
-                AddUpdateEvent(entity);
+                await AddUpdateEvent(entity);
         }
 
         public void SaveOrUpdate(string entityName, object obj)
         {
-            HandleSaveOrUpdate(obj);
-            _session.SaveOrUpdate(entityName, obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void SaveOrUpdate(string entityName, object obj, object id)
         {
-            HandleSaveOrUpdate(obj);
-            _session.SaveOrUpdate(entityName, obj, id);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Update(object obj)
         {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            _session.Update(obj);
+            // if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
+            // _session.Update(obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Update(object obj, object id)
         {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            _session.Update(obj, id);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Update(string entityName, object obj)
         {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            _session.Update(entityName, obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Update(string entityName, object obj, object id)
         {
-            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
-            _session.Update(entityName, obj, id);
+            throw new NotImplementedException("Convert to async");
         }
 
         public object Merge(object obj)
@@ -524,16 +520,15 @@ namespace MrCMS.DbConfiguration
             _session.Persist(entityName, obj);
         }
 
+        [Obsolete("Convert to async", true)]
         public void Delete(object obj)
         {
-            if (obj is SystemEntity entity) AddDeletedEvent(entity);
-            _session.Delete(obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public void Delete(string entityName, object obj)
         {
-            if (obj is SystemEntity entity) AddDeletedEvent(entity);
-            _session.Delete(entityName, obj);
+            throw new NotImplementedException("Convert to async");
         }
 
         public int Delete(string query)
@@ -779,31 +774,33 @@ namespace MrCMS.DbConfiguration
             set => _session.DefaultReadOnly = value;
         }
 
+        [Obsolete("Use GetCurrentTransaction extension method instead, and check for null.")]
         public ITransaction Transaction => _session.Transaction;
 
         public ISessionStatistics Statistics => _session.Statistics;
 
-        private void AddAddEvent(SystemEntity obj)
+        private async Task AddAddEvent(SystemEntity obj)
         {
             if (Added.All(info => info.ObjectBase != obj))
             {
                 var eventInfo = obj.GetEventInfo();
                 Added.Add(eventInfo);
                 eventInfo.PreTransactionHandled = true;
-                eventInfo.Publish(this, typeof(IOnAdding<>),
+                await eventInfo.Publish(this, typeof(IOnAdding<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
             }
         }
 
-        private void AddUpdateEvent(SystemEntity obj)
+        private async Task AddUpdateEvent(SystemEntity obj)
         {
+            obj = obj.Unproxy();
             if (Updated.All(info => info.ObjectBase != obj))
             {
                 var originalVersion = GetOriginalVersion(obj);
                 var eventInfo = obj.GetUpdatedEventInfo(originalVersion);
                 Updated.Add(eventInfo);
                 eventInfo.PreTransactionHandled = true;
-                eventInfo.Publish(this, typeof(IOnUpdating<>),
+                await eventInfo.Publish(this, typeof(IOnUpdating<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToUpdatingArgs(ses, t));
             }
         }
@@ -817,6 +814,7 @@ namespace MrCMS.DbConfiguration
             var entry = persistenceContext.GetEntry(entity);
             if (entry == null)
                 return null;
+
             var loadedState = entry.LoadedState;
             if (loadedState == null)
                 return null;
@@ -843,14 +841,14 @@ namespace MrCMS.DbConfiguration
             return instance;
         }
 
-        private void AddDeletedEvent(SystemEntity obj)
+        private async Task AddDeletedEvent(SystemEntity obj)
         {
             if (Deleted.All(info => info.ObjectBase != obj))
             {
                 var eventInfo = obj.GetEventInfo();
                 Deleted.Add(eventInfo);
                 eventInfo.PreTransactionHandled = true;
-                eventInfo.Publish(this, typeof(IOnDeleting<>),
+                await eventInfo.Publish(this, typeof(IOnDeleting<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
             }
         }

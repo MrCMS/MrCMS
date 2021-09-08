@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Settings;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -18,14 +20,18 @@ namespace MrCMS.Web.Admin.Services
             _siteSettings = siteSettings;
         }
 
-        public List<SelectListItem> Get()
+        public async Task<List<SelectListItem>> Get()
         {
-            var layouts =
-                _session.QueryOver<Layout>().OrderBy(layout => layout.DisplayOrder).Asc.Cacheable().List().ToList();
-            var systemDefaultLayout = _session.Get<Layout>(_siteSettings.DefaultLayoutId);
+            var layouts = await
+                _session.Query<Layout>()
+                    .Fetch(x => x.Parent)
+                    .OrderBy(layout => layout.DisplayOrder)
+                    // .WithOptions(options => options.SetCacheable(true))
+                    .ToListAsync();
+            var systemDefaultLayout = await _session.GetAsync<Layout>(_siteSettings.DefaultLayoutId);
             var selectListItems = new List<SelectListItem>
             {
-                new SelectListItem {Text = string.Format("System Default ({0})", systemDefaultLayout.Name), Value = ""}
+                new() {Text = $"System Default ({systemDefaultLayout.Name})", Value = ""}
             };
 
             AddItems(layouts.FindAll(layout => layout.Parent == null), layouts, ref selectListItems);
@@ -33,7 +39,8 @@ namespace MrCMS.Web.Admin.Services
             return selectListItems;
         }
 
-        private void AddItems(List<Layout> layouts, List<Layout> allLayouts, ref List<SelectListItem> selectListItems, int depth = 0)
+        private void AddItems(List<Layout> layouts, List<Layout> allLayouts, ref List<SelectListItem> selectListItems,
+            int depth = 0)
         {
             foreach (var layout in layouts)
             {

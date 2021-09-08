@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Notifications;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.ACL;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -17,9 +17,9 @@ namespace MrCMS.Web.Admin.Controllers
             _service = service;
         }
 
-        public ViewResult Index(NotificationSearchQuery searchQuery)
+        public async Task<ViewResult> Index(NotificationSearchQuery searchQuery)
         {
-            ViewData["results"] = _service.Search(searchQuery);
+            ViewData["results"] = await _service.Search(searchQuery);
             ViewData["notification-type-options"] = _service.GetNotificationTypeOptions(true);
             return View(searchQuery);
         }
@@ -33,25 +33,27 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Push(NotificationModel model)
+        public async Task<RedirectToActionResult> Push(NotificationModel model)
         {
-            _service.PushNotification(model);
+            await _service.PushNotification(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [Acl(typeof(NotificationACL), NotificationACL.Delete)]
-        public ViewResult Delete(Notification notification)
+        public async Task<ViewResult> Delete(int id)
         {
+            var notification = await _service.GetNotification(id);
             return View(notification);
         }
 
         [HttpPost]
         [ActionName("Delete")]
         [Acl(typeof(NotificationACL), NotificationACL.Delete)]
-        public RedirectToActionResult Delete_POST(Notification notification)
+        public async Task<RedirectToActionResult> Delete_POST(int id)
         {
-            _service.Delete(notification);
+            var notification = await _service.GetNotification(id);
+            await _service.Delete(notification);
             return RedirectToAction("Index");
         }
     }

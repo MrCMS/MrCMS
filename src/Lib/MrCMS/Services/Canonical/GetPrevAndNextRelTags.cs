@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Attributes;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using X.PagedList;
@@ -18,6 +18,7 @@ namespace MrCMS.Services.Canonical
 
         static GetPrevAndNextRelTags()
         {
+            var allRelTags = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(GetRelTags<>));
             foreach (
                 var type in
                 TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
@@ -27,8 +28,8 @@ namespace MrCMS.Services.Canonical
                 var isSet = false;
                 while (typeof(Webpage).IsAssignableFrom(thisType) && !isSet)
                 {
-                    var formatter = TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(GetRelTags<>).MakeGenericType(thisType)).FirstOrDefault();
+                    var formatter = allRelTags.FirstOrDefault(x =>
+                        typeof(GetRelTags<>).MakeGenericType(thisType).IsAssignableFrom(x));
 
                     if (formatter != null)
                     {
@@ -47,18 +48,18 @@ namespace MrCMS.Services.Canonical
             _getLiveUrl = getLiveUrl;
         }
 
-        public string GetPrev(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
+        public async Task<string> GetPrev(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
         {
             if (webpage == null)
                 return null;
             webpage = webpage.Unproxy();
-            var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
+            var baseUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
             if (GetRelTypes.ContainsKey(type))
             {
                 if (_serviceProvider.GetRequiredService(GetRelTypes[type]) is GetRelTags getTags)
-                    return getTags.GetPrev(webpage, metadata, viewData);
+                    return await getTags.GetPrev(webpage, metadata, viewData);
             }
 
             if (metadata.IsFirstPage)
@@ -68,18 +69,18 @@ namespace MrCMS.Services.Canonical
             return $"{baseUrl}?Page={metadata.PageNumber - 1}";
         }
 
-        public string GetNext(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
+        public async Task<string> GetNext(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
         {
             if (webpage == null)
                 return null;
             webpage = webpage.Unproxy();
-            var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
+            var baseUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
             if (GetRelTypes.ContainsKey(type))
             {
                 if (_serviceProvider.GetRequiredService(GetRelTypes[type]) is GetRelTags getTags)
-                    return getTags.GetNext(webpage, metadata, viewData);
+                    return await getTags.GetNext(webpage, metadata, viewData);
             }
 
             if (metadata.IsLastPage)

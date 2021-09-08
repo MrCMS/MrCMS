@@ -7,28 +7,44 @@ namespace MrCMS.Helpers
 {
     public static class StringHelper
     {
+        private static Func<string, string> _breakUpString;
+
         public static string BreakUpString(this string value)
         {
-            return Regex.Replace(value,
-                                 "((?<=[a-z])[A-Z]|[A-Z](?=[a-z]))",
-                                 " $1",
-                                 RegexOptions.Compiled).Trim();
+            if (string.IsNullOrWhiteSpace(value))
+                return value?.Trim();
+
+            var func = _breakUpString ??= GetBreakUpStringFunc();
+
+            return func(value);
+        }
+
+        private static Func<string, string> GetBreakUpStringFunc()
+        {
+            Func<string, string> func = (input) => Regex.Replace(input,
+                "((?<=[a-z])[A-Z]|[A-Z](?=[a-z]))",
+                " $1",
+                RegexOptions.Compiled).Trim();
+
+            return func.ThreadSafeMemoize();
         }
 
         public static List<int> GetIntList(this string value)
         {
             return string.IsNullOrWhiteSpace(value)
-                       ? new List<int>()
-                       : value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s.Trim()))
-                             .ToList();
+                ? new List<int>()
+                : value.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s.Trim()))
+                    .ToList();
         }
 
         public static int GetIntValue(this string value, int defaultValue = 0)
         {
             int val;
             return string.IsNullOrWhiteSpace(value)
-                       ? defaultValue
-                       : int.TryParse(value, out val) ? val : defaultValue;
+                ? defaultValue
+                : int.TryParse(value, out val)
+                    ? val
+                    : defaultValue;
         }
 
         public static string ToString(this IEnumerable<int> value)
@@ -65,7 +81,7 @@ namespace MrCMS.Helpers
                 returnString = text.Substring(0, maxCharacters) + trailingText;
             else
                 returnString = text;
-            
+
             return returnString;
         }
 
@@ -75,6 +91,7 @@ namespace MrCMS.Helpers
                 return s;
             return s.Trim();
         }
+
         public static string SafeTrim(this string s, params char[] chars)
         {
             if (s == null)

@@ -8,6 +8,6 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System.Settings
         public override string Action => "FileSystem";
 
         public override bool IsNav => true;
-        public override int Order => 2;
+        public override decimal Order => 2;
     }
 }

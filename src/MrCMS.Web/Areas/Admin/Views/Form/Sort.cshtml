@@ -1,20 +1,20 @@
 ﻿@using System.Linq
-@using MrCMS.Helpers
 @model System.Collections.Generic.List<MrCMS.Models.SortItem>
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 
-<form asp-controller="Form" asp-action="Sort" class="form-update-form", id="sort-fields-form">
+<form asp-controller="Form" asp-action="Sort" class="form-update-form" data-form-sort-form id="sort-fields-form">
     <fieldset>
-        <legend>@Html.Resource("Admin Form Sort Fields", "Sort fields")
+        <legend>
+            @await Html.Resource("Admin Form Sort Fields", "Sort fields")
             <span class="btn-group pull-right">
-                <button class="btn btn-primary" id="submit">@Html.Resource("Admin Form Sort Save", "Save & Close")</button>
+                <button class="btn btn-primary" id="submit">@await Html.Resource("Admin Form Sort Save", "Save & Close")</button>
             </span>
         </legend>
 
         <ul id="sortable" class="list-group">
             @if (Model.Any())
             {
-                for (int i = 0; i < Model.Count; i++)
+                for (var i = 0; i < Model.Count; i++)
                 {
                     <li class="list-group-item">
                         @Html.HiddenFor(model => model[i].Id)
@@ -23,15 +23,11 @@
                         @Model[i].Name
                     </li>
                 }
-
             }
             else
             {
-                <li>@Html.Resource("Admin Form No form fields", "No form field").</li>
+                <li>@await Html.Resource("Admin Form No form fields", "No form field").</li>
             }
         </ul>
     </fieldset>
 </form>
-
-
-@{ Html.IncludeScript("~/Areas/Admin/scripts/form-sort.js");}

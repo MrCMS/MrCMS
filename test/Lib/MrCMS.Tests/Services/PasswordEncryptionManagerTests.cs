@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
+using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
@@ -20,32 +21,32 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void PasswordEncryptionManager_UpdateEncryption_ShouldResetCurrentEncryption()
+        public async Task PasswordEncryptionManager_UpdateEncryption_ShouldResetCurrentEncryption()
         {
             var user = new User { CurrentEncryption = "SHA1" };
 
-            _passwordEncryptionManager.UpdateEncryption(user, "password");
+            await _passwordEncryptionManager.UpdateEncryption(user, "password");
 
             user.CurrentEncryption.Should().BeNull();
         }
 
         [Fact]
-        public void PasswordEncryptionManager_UpdateEncryption_ShouldCallSetPassword()
+        public async Task PasswordEncryptionManager_UpdateEncryption_ShouldCallSetPassword()
         {
             var user = new User { CurrentEncryption = "SHA1" };
 
             var testablePasswordEncryptionManager = new TestablePasswordEncryptionManager(_hashAlgorithmProvider, _userService);
-            testablePasswordEncryptionManager.UpdateEncryption(user, "password");
+            await testablePasswordEncryptionManager.UpdateEncryption(user, "password");
 
             testablePasswordEncryptionManager.SetPasswordCalled.Should().BeTrue();
         }
 
         [Fact]
-        public void PasswordEncryptionManager_UpdateEncryption_ShouldSaveUser()
+        public async Task PasswordEncryptionManager_UpdateEncryption_ShouldSaveUser()
         {
             var user = new User { CurrentEncryption = "SHA1" };
 
-            _passwordEncryptionManager.UpdateEncryption(user, "password");
+            await _passwordEncryptionManager.UpdateEncryption(user, "password");
 
             A.CallTo(() => _userService.SaveUser(user)).MustHaveHappened();
         }

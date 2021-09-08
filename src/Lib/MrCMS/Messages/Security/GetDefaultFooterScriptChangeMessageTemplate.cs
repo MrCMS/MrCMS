@@ -1,4 +1,5 @@
-﻿using MrCMS.Settings;
+﻿using System.Threading.Tasks;
+using MrCMS.Settings;
 
 namespace MrCMS.Messages.Security
 {
@@ -10,15 +11,15 @@ namespace MrCMS.Messages.Security
         {
             _mailSettings = mailSettings;
         }
-        public override FooterScriptChangeMessageTemplate Get()
+        public override Task<FooterScriptChangeMessageTemplate> Get()
         {
-            return new FooterScriptChangeMessageTemplate
+            return Task.FromResult(new FooterScriptChangeMessageTemplate
             {
                 Subject = "Footer Script Change - {Status}",
                 FromAddress = _mailSettings.SystemEmailAddress,
                 ToAddress = _mailSettings.SystemEmailAddress,
                 Body = "The page {Name} ({Url}) has been modified."
-            };
+            });
         }
     }
 }

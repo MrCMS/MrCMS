@@ -9,7 +9,7 @@
 @if (Model is AdminTab<Webpage> tab)
 {
     <li class="nav-item">
-        <a href="#@tab.TabHtmlId" class="nav-link @(isFirst ?"active":"")" data-toggle="tab" aria-controls="@tab.TabHtmlId" aria-selected="@(isFirst ?"true":"false")" role="tab">@tab.Name(Html, webpage)</a>
+        <a href="#@tab.TabHtmlId" class="nav-link @(isFirst ? "active" : "")" data-toggle="tab" aria-controls="@tab.TabHtmlId" aria-selected="@(isFirst ? "true" : "false")" role="tab">@await tab.Name(Html, webpage)</a>
     </li>
 }
 else if (Model is AdminTabGroup<Webpage> @group)
@@ -21,9 +21,8 @@ else if (Model is AdminTabGroup<Webpage> @group)
         <ul class="dropdown-menu">
             @foreach (var child in @group.Children)
             {
-                <partial name="Tab" model="child" view-data="ViewData" />
+                <partial name="Tab" model="child" view-data="ViewData"/>
             }
         </ul>
     </li>
 }
- 

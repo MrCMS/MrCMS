@@ -1,79 +1,49 @@
-﻿@using MrCMS.Web.Admin.Models
-@model System.Collections.Generic.List<MrCMS.Web.Admin.Models.PageDefaultsInfo>
+﻿@model System.Collections.Generic.List<MrCMS.Web.Admin.Models.PageDefaultsInfo>
 
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-page-default", "Page Defaults") "/>
+        <admin-header-title title="@await Html.Resource("admin-page-default", "Page Defaults") "/>
 
         <admin-header-actions>
         </admin-header-actions>
     </row>
 </admin-header>
 
-<card>
-    <card-body>
-        <table class="table table-condensed table-striped">
-            <thead>
-            <tr>
-                <th>
-                    @Html.Resource("Admin Page Defaults Page Type", "Page Type")
-                </th>
-                <th>
-                    @Html.Resource("Admin Page Defaults Default Generator", "Default Generator")
-                </th>
-                <th>
-                    @Html.Resource("Admin Page Defaults Default Layout", "Default Layout")
-                </th>
-                <th>
-                    @Html.Resource("Admin Page Defaults Cache Enabled", "Cached?")
-                </th>
-                <th>
-                    @Html.Resource("Actions")
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var info in Model)
-            {
-                <tr>
-                    <td>
-                        @info.DisplayName
-                    </td>
-                    <td>
-                        @info.GeneratorDisplayName
-                    </td>
-                    <td>
-                        @info.LayoutName
-                    </td>
-                    <td>
-                        @if (info.CacheEnabled == CacheEnabledStatus.Enabled)
-                        {
-                            using (Html.BeginForm("DisableCache", "PageDefaults", new {info.TypeName}, FormMethod.Post))
-                            {
-                                @info.CacheEnabled
-                                <button class="btn btn-warning btn-sm pull-right" type="submit">Disable cache</button>
-                            }
-                        }
-                        else if (info.CacheEnabled == CacheEnabledStatus.Disabled)
-                        {
-                            using (Html.BeginForm("EnableCache", "PageDefaults", new {info.TypeName}, FormMethod.Post))
-                            {
-                                @info.CacheEnabled
-                                <button class="btn btn-success btn-sm pull-right" type="submit">Enable cache</button>
-                            }
-                        }
-                        else
-                        {
-                            @info.CacheEnabled
-                        }
-                    </td>
-                    <td>
-                        @Html.ActionLink(Html.Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new {type = info.TypeName}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
-                    </td>
-                </tr>
-            }
-        </table>
 
-    </card-body>
-</card>
+<table class="table table-condensed table-striped">
+    <thead>
+    <tr>
+        <th>
+            @await Html.Resource("Admin Page Defaults Page Type", "Page Type")
+        </th>
+        <th>
+            @await Html.Resource("Admin Page Defaults Default Generator", "Default Generator")
+        </th>
+        <th>
+            @await Html.Resource("Admin Page Defaults Default Layout", "Default Layout")
+        </th>
+        <th>
+            @await Html.Resource("Actions")
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var info in Model)
+    {
+        <tr>
+            <td>
+                @info.DisplayName
+            </td>
+            <td>
+                @info.GeneratorDisplayName
+            </td>
+            <td>
+                @info.LayoutName
+            </td>
+            <td>
+                @Html.ActionLink(await Html.Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new {type = info.TypeName}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
+            </td>
+        </tr>
+    }
+</table>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 
@@ -14,7 +15,7 @@ namespace MrCMS.Events
             _fileService = fileService;
         }
 
-        public void Execute(OnDeletingArgs<MediaCategory> args)
+        public async Task Execute(OnDeletingArgs<MediaCategory> args)
         {
             MediaCategory category = args.Item;
             if (category == null)
@@ -23,9 +24,10 @@ namespace MrCMS.Events
 
             foreach (MediaFile mediaFile in mediaFiles)
             {
-                _fileService.DeleteFile(mediaFile);
+                await _fileService.DeleteFile(mediaFile.Id);
             }
-            _fileService.RemoveFolder(category);
+
+          await  _fileService.RemoveFolder(category);
         }
     }
 }

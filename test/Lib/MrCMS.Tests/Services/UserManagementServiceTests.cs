@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
@@ -22,34 +24,34 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_AddUser_SavesAUserToSession()
+        public async Task UserService_AddUser_SavesAUserToSession()
         {
             _session = A.Fake<ISession>();
             _userManagementService = new UserManagementService(_session, EventContext);
             var user = new User();
 
-            _userManagementService.AddUser(user);
+            await _userManagementService.AddUser(user);
 
-            A.CallTo(() => _session.Save(user)).MustHaveHappened();
+            A.CallTo(() => _session.SaveAsync(user, CancellationToken.None)).MustHaveHappened();
         }
 
         [Fact]
-        public void UserService_SaveUser_UpdatesAUser()
+        public async Task UserService_SaveUser_UpdatesAUser()
         {
             _session = A.Fake<ISession>();
             _userManagementService = new UserManagementService(_session, EventContext);
             var user = new User();
 
-            _userManagementService.SaveUser(user);
+            await _userManagementService.SaveUser(user);
 
-            A.CallTo(() => _session.Update(user)).MustHaveHappened();
+            A.CallTo(() => _session.UpdateAsync(user, CancellationToken.None)).MustHaveHappened();
         }
 
         [Fact]
-        public void UserService_GetUser_ShouldReturnCorrectUser()
+        public async Task UserService_GetUser_ShouldReturnCorrectUser()
         {
-            var user = new User {FirstName = "Test", LastName = "User"};
-            Session.Transact(session => session.SaveOrUpdate(user));
+            var user = new User { FirstName = "Test", LastName = "User" };
+            await Session.TransactAsync(session => session.SaveOrUpdateAsync(user));
 
             var loadedUser = _userManagementService.GetUser(user.Id);
 
@@ -65,49 +67,51 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged()
+        public async Task UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged()
         {
-            Enumerable.Range(1, 15).ForEach(
-                i =>
-                    Session.Transact(
-                        session => session.SaveOrUpdate(new User {FirstName = "Test " + i, LastName = "User"})));
+            foreach (var i in Enumerable.Range(1, 15))
+            {
+                await Session.TransactAsync(
+                    session => session.SaveOrUpdateAsync(new User { FirstName = "Test " + i, LastName = "User" }));
+            }
 
-            var users = _userManagementService.GetAllUsersPaged(1);
+            var users = await _userManagementService.GetAllUsersPaged(1);
 
             users.Count.Should().Be(10);
             users.PageCount.Should().Be(2);
         }
 
         [Fact]
-        public void UserService_DeleteUser_ShouldRemoveAUser()
+        public async Task UserService_DeleteUser_ShouldRemoveAUser()
         {
             var user = new User();
-            Session.Transact(session => session.Save(user));
+            await Session.TransactAsync(session => session.SaveAsync(user));
 
-            _userManagementService.DeleteUser(user.Id);
+            await _userManagementService.DeleteUser(user.Id);
 
-            Session.QueryOver<User>().RowCount().Should().Be(0);
+            (await Session.QueryOver<User>().RowCountAsync()).Should().Be(0);
         }
 
         [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers()
+        public async Task UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers()
         {
-            _userManagementService.IsUniqueEmail("test@example.com").Should().BeTrue();
+            (await _userManagementService.IsUniqueEmail("test@example.com")).Should().BeTrue();
         }
 
         [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnFalseIfThereIsAnotherUserWithTheSameEmail()
+        public async Task UserService_IsUniqueEmail_ShouldReturnFalseIfThereIsAnotherUserWithTheSameEmail()
         {
-            Session.Transact(session => session.Save(new User {Email = "test@example.com"}));
-            _userManagementService.IsUniqueEmail("test@example.com").Should().BeFalse();
+            await Session.TransactAsync(session => session.SaveAsync(new User { Email = "test@example.com" }));
+            (await _userManagementService.IsUniqueEmail("test@example.com")).Should().BeFalse();
         }
 
         [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnTrueIfTheIdPassedAlongWithTheSavedEmailIsThatOfTheSameUser()
+        public async Task
+            UserService_IsUniqueEmail_ShouldReturnTrueIfTheIdPassedAlongWithTheSavedEmailIsThatOfTheSameUser()
         {
-            var user = new User {Email = "test@example.com"};
-            Session.Transact(session => session.Save(user));
-            _userManagementService.IsUniqueEmail("test@example.com", user.Id).Should().BeTrue();
+            var user = new User { Email = "test@example.com" };
+            await Session.TransactAsync(session => session.SaveAsync(user));
+            (await _userManagementService.IsUniqueEmail("test@example.com", user.Id)).Should().BeTrue();
         }
     }
 }

@@ -1,15 +1,12 @@
 using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
-using MrCMS.Website.CMS;
 using X.PagedList;
 using X.PagedList.Mvc.Core.Common;
 
@@ -79,9 +76,9 @@ namespace MrCMS.Helpers
             if (list.HasNextPage)
                 next.Attributes["href"] = GetUrl(urlHelper, targetPageNumber, webpage, extraParams);
             else
-                return WrapInListItem(next.ToString(), "active");
+                return WrapInListItem(next, "active");
 
-            return WrapInListItem(next.ToString());
+            return WrapInListItem(next);
         }
 
         private static TagBuilder Previous(IUrlHelper urlHelper, IPagedList list, PagedListRenderOptions options,
@@ -96,9 +93,9 @@ namespace MrCMS.Helpers
             if (list.HasPreviousPage)
                 previous.Attributes["href"] = GetUrl(urlHelper, targetPageNumber, webpage, extraParams);
             else
-                return WrapInListItem(previous.ToString(), "active");
+                return WrapInListItem(previous, "active");
 
-            return WrapInListItem(previous.ToString());
+            return WrapInListItem(previous);
         }
 
         private static TagBuilder Page<T>(IUrlHelper urlHelper, int index, int currentPage,
@@ -110,30 +107,30 @@ namespace MrCMS.Helpers
             var isCurrentPage = index == currentPage;
             if (isCurrentPage)
             {
-                return WrapInListItem(linkTag.ToString(), "active");
+                return WrapInListItem(linkTag, "active");
             }
 
             linkTag.Attributes["href"] = GetUrl(urlHelper, index, webpage, extraParams);
 
-            return WrapInListItem(linkTag.ToString());
+            return WrapInListItem(linkTag);
         }
 
         private static string GetUrl<T>(IUrlHelper urlHelper, int page, T webpage, RouteValueDictionary extraParams)
             where T : Webpage
         {
-            var routeValues = new RouteValueDictionary(new {data = webpage.UrlSegment}).Merge(extraParams);
-            if (page != 1)
-                routeValues["p"] = page;
-            return urlHelper.RouteUrl(CmsRouter.RouteName, routeValues);
+            // var routeValues = new RouteValueDictionary(new {data = webpage.UrlSegment}).Merge(extraParams);
+            // if (page != 1)
+            //     routeValues["p"] = page;
+            return urlHelper.RouteWebpage(webpage, new {p = page > 1 ? page : (int?) null});
             //return webpage.GetRoutedPagedUrl(page, extraParams);
         }
 
-        private static TagBuilder WrapInListItem(string inner, params string[] classes)
+        private static TagBuilder WrapInListItem(IHtmlContent content, params string[] classes)
         {
             var li = new TagBuilder("li");
             foreach (var @class in classes)
                 li.AddCssClass(@class);
-            li.InnerHtml.Append(inner);
+            li.InnerHtml.AppendHtml(content);
             return li;
         }
 

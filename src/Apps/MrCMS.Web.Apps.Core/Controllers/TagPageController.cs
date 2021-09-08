@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Services;
@@ -16,10 +17,10 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [CanonicalLinks("paged-articles")]
-        public ViewResult Show(int id, TagPageSearchModel model)
+        public async Task<ViewResult> Show(int id, TagPageSearchModel model)
         {
-            var page = _uiService.GetPage(id);
-            ViewData["paged-articles"] = _uiService.GetWebpages(page, model);
+            var page = await _uiService.GetPage(id);
+            ViewData["search-model"] = model;
             return View(page);
         }
     }

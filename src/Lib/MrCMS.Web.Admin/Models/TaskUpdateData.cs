@@ -14,6 +14,6 @@ namespace MrCMS.Web.Admin.Models
         }
 
         public bool Enabled { get; set; }
-        public int FrequencyInSeconds { get; set; }
+        public string CronSchedule { get; set; }
     }
 }

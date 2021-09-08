@@ -11,7 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models;
+using MrCMS.Web.Admin.Models.Forms;
+using NHibernate.Linq;
 using X.PagedList;
 
 namespace MrCMS.Web.Admin.Services
@@ -24,7 +27,8 @@ namespace MrCMS.Web.Admin.Services
         private readonly IMapper _mapper;
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
 
-        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger,
+        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider,
+            ILogger<FormAdminService> logger,
             IMapper mapper, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
         {
             _session = session;
@@ -34,25 +38,29 @@ namespace MrCMS.Web.Admin.Services
             _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
         }
 
-        public void ClearFormData(Form form)
+        public async Task ClearFormData(Form form)
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
-                form.FormPostings.ForEach(session.Delete);
+                foreach (var posting in form.FormPostings)
+                {
+                    await session.DeleteAsync(posting);
+                }
+
                 form.FormPostings.Clear();
             });
         }
 
-        public byte[] ExportFormData(Form form)
+        public async Task<byte[]> ExportFormData(Form form)
         {
             try
             {
                 var stringBuilder = new StringBuilder();
 
-                var headers = GetHeadersForExport(form).ToList();
+                var headers = await GetHeadersForExport(form);
                 stringBuilder.AppendLine(string.Join(",", headers.Select(FormatField)));
 
-                var formDataForExport = GetFormDataForExport(form);
+                var formDataForExport = await GetFormDataForExport(form);
                 foreach (var data in formDataForExport)
                 {
                     stringBuilder.AppendLine(string.Join(",", data.Value.Select(FormatField)));
@@ -67,60 +75,89 @@ namespace MrCMS.Web.Admin.Services
             }
         }
 
-        public FormPosting DeletePosting(int id)
+        public async Task<FormPosting> DeletePosting(int id)
         {
-            var posting = _session.Get<FormPosting>(id);
+            var posting = await _session.GetAsync<FormPosting>(id);
             posting.Form.FormPostings.Remove(posting);
-            _session.Transact(session => session.Delete(posting));
+            await _session.TransactAsync(session => session.DeleteAsync(posting));
             return posting;
         }
 
-        public void SetOrders(List<SortItem> items)
+        public async Task<WebpageViewModel> GetPostingCountForWebpage(int webpageId)
         {
-            _session.Transact(session => items.ForEach(item =>
+            return new()
             {
-                var formItem = session.Get<FormProperty>(item.Id);
-                formItem.DisplayOrder = item.Order;
-                session.Update(formItem);
-            }));
+                FormId = await _session.Query<FormPosting>()
+                    .Where(x => x.Webpage.Id == webpageId && x.Form != null)
+                    .Select(x=> x.Form.Id).FirstOrDefaultAsync(),
+                Count = await _session.Query<FormPosting>()
+                    .WithOptions(options => options.SetCacheable(true))
+                    .CountAsync(x => x.Webpage.Id == webpageId)
+            };
         }
 
-        public IPagedList<Form> Search(FormSearchModel model)
+        public async Task<FormPosting> GetFormPosting(int id)
+        {
+            return await _session.GetAsync<FormPosting>(id);
+        }
+
+        public async Task SetOrders(List<SortItem> items)
+        {
+            await _session.TransactAsync(async session =>
+            {
+                foreach (var item in items)
+                {
+                    var formItem = await session.GetAsync<FormProperty>(item.Id);
+                    formItem.DisplayOrder = item.Order;
+                    await session.UpdateAsync(formItem);
+                }
+            });
+        }
+
+        public Task<IPagedList<Form>> Search(FormSearchModel model)
         {
             var query = _session.Query<Form>();
 
             if (!string.IsNullOrWhiteSpace(model.Name))
             {
-                query = query.Where(x => x.Name.Contains(model.Name));
+                var parsed = int.TryParse(model.Name, out var id) && id > 0;
+                if (parsed)
+                {
+                    query = query.Where(x => x.Id == id || x.Name.Contains(model.Name));
+                }
+                else
+                {
+                    query = query.Where(x => x.Name.Contains(model.Name));
+                }
             }
 
-            return query.ToPagedList(model.Page);
+            return query.PagedAsync(model.Page);
         }
 
-        public Form AddForm(AddFormModel model)
+        public async Task<Form> AddForm(AddFormModel model)
         {
             var form = _mapper.Map<Form>(model);
 
-            _session.Transact(session => session.Save(form));
+            await _session.TransactAsync(session => session.SaveAsync(form));
 
             return form;
         }
 
-        public Form GetForm(int id)
+        public async Task<Form> GetForm(int id)
         {
-            return _session.Get<Form>(id);
+            return await _session.GetAsync<Form>(id);
         }
 
-        public UpdateFormModel GetUpdateModel(int id)
+        public async Task<UpdateFormModel> GetUpdateModel(int id)
         {
-            var form = GetForm(id);
+            var form = await GetForm(id);
 
             return _mapper.Map<UpdateFormModel>(form);
         }
 
-        public void Update(UpdateFormModel model)
+        public async Task Update(UpdateFormModel model)
         {
-            var form = GetForm(model.Id);
+            var form = await GetForm(model.Id);
             _mapper.Map(model, form);
 
             foreach (var o in model.Models)
@@ -128,17 +165,27 @@ namespace MrCMS.Web.Admin.Services
                 _mapper.Map(o, form);
             }
 
-            _session.Transact(session => session.Update(form));
+            await _session.TransactAsync(session => session.UpdateAsync(form));
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var form = GetForm(id);
+            var form = await GetForm(id);
 
-            _session.Transact(session => session.Delete(form));
+            await _session.TransactAsync(session => session.DeleteAsync(form));
         }
 
-        public PostingsModel GetFormPostings(Form form, int page, string search)
+        public async Task<IPagedList<Webpage>> GetPagesWithForms(WebpagesWithEmbeddedFormQuery query)
+        {
+            return await _session.Query<FormPosting>()
+                .Where(x => x.Webpage != null)
+                .Select(x => x.Webpage)
+                .OrderBy(x=>x.Name)
+                .Distinct()
+                .PagedAsync(query.Page, query.PageSize);
+        }
+
+        public async Task<PostingsModel> GetFormPostings(Form form, int page, string search)
         {
             FormPosting posting = null;
             var query =
@@ -151,37 +198,38 @@ namespace MrCMS.Web.Admin.Services
                             .Where(
                                 value =>
                                     value.FormPosting.Id == posting.Id &&
-                                    value.Value.IsInsensitiveLike(search, MatchMode.Anywhere)).Select(value => value.Id));
+                                    value.Value.IsInsensitiveLike(search, MatchMode.Anywhere))
+                            .Select(value => value.Id));
             }
 
-            IPagedList<FormPosting> formPostings = query.OrderBy(() => posting.CreatedOn).Desc.Paged(page);
+            var formPostings = await query.OrderBy(() => posting.CreatedOn).Desc.PagedAsync(page);
 
             return new PostingsModel(formPostings, form.Id);
         }
 
-        private IEnumerable<string> GetHeadersForExport(Form form)
+        private async Task<List<string>> GetHeadersForExport(Form form)
         {
             var headers = new List<string>();
             foreach (FormPosting posting in form.FormPostings)
             {
                 headers.AddRange(posting.FormValues.Select(x => x.Key).Distinct());
             }
-            headers.Add(_stringResourceProvider.GetValue("Admin Form Postings Posted On", "Posted On"));
+
+            headers.Add(await _stringResourceProvider.GetValue("Admin Form Postings Posted On", "Posted On"));
             return headers.Distinct().ToList();
         }
 
-        private Dictionary<int, List<string>> GetFormDataForExport(Form form)
+        private async Task<Dictionary<int, List<string>>> GetFormDataForExport(Form form)
         {
             var items = new Dictionary<int, List<string>>();
-            var formatProvider = _getCurrentUserCultureInfo.Get();
+            var formatProvider = await _getCurrentUserCultureInfo.Get();
+            var headersForExport = await GetHeadersForExport(form);
             for (int i = 0; i < form.FormPostings.Count; i++)
             {
                 FormPosting posting = form.FormPostings[i];
                 items.Add(i, new List<string>());
-                foreach (
-                    FormValue value in
-                        GetHeadersForExport(form)
-                            .SelectMany(header => posting.FormValues.Where(x => x.Key == header)))
+                foreach (FormValue value in headersForExport.SelectMany(header =>
+                    posting.FormValues.Where(x => x.Key == header)))
                 {
                     if (!value.IsFile)
                     {
@@ -195,6 +243,7 @@ namespace MrCMS.Web.Admin.Services
 
                 items[i].Add(posting.CreatedOn.ToString(formatProvider));
             }
+
             return items.OrderByDescending(x => x.Value.Count).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
@@ -203,6 +252,7 @@ namespace MrCMS.Web.Admin.Services
         {
             return string.Format("{1}{0}{1}", (data ?? string.Empty).Replace(Quote, Quote + Quote), Quote);
         }
+
         public const string Quote = "\"";
     }
 }

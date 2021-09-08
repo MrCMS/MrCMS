@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -18,61 +18,38 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public IList<QueuedTask> GetPendingQueuedTasks()
+        public async Task<IList<QueuedTask>> GetPendingQueuedTasks()
         {
-            return _session.Transact(session =>
+            return await _session.TransactAsync(async session =>
             {
                 var queuedAt = DateTime.UtcNow;
-                var queuedTasks =
+                var queuedTasks = await
                     session.QueryOver<QueuedTask>()
                         .Where(task => task.Status == TaskExecutionStatus.Pending)
-                        .List();
+                        .ListAsync();
 
                 foreach (var task in queuedTasks)
                 {
                     task.Status = TaskExecutionStatus.AwaitingExecution;
                     task.QueuedAt = queuedAt;
-                    _session.Update(task);
+                    await _session.UpdateAsync(task);
                 }
                 return queuedTasks;
             });
         }
 
 
-        public IList<Site> GetPendingQueuedTaskSites()
+        public async Task<IList<Site>> GetPendingQueuedTaskSites()
         {
             using (new SiteFilterDisabler(_session))
             {
                 Site siteAlias = null;
-                return _session.QueryOver(() => siteAlias)
+                return await _session.QueryOver(() => siteAlias)
                     .WithSubquery.WhereExists(QueryOver.Of<QueuedTask>()
                             .Where(task => task.Status == TaskExecutionStatus.Pending && task.Site.Id == siteAlias.Id)
                             .Select(task => task.Id))
-                            .List();
+                            .ListAsync();
             }
-        }
-
-        public IList<QueuedTask> GetPendingLuceneTasks()
-        {
-            return _session.Transact(session =>
-            {
-                var queuedAt = DateTime.UtcNow;
-                var queuedTasks =
-                    session.QueryOver<QueuedTask>()
-                        .Where(task => (task.Type.IsLike(typeof(InsertIndicesTask<>).FullName, MatchMode.Start) ||
-                                        task.Type.IsLike(typeof(UpdateIndicesTask<>).FullName, MatchMode.Start) ||
-                                        task.Type.IsLike(typeof(DeleteIndicesTask<>).FullName, MatchMode.Start)
-                            ) && task.Status == TaskExecutionStatus.Pending)
-                        .List();
-
-                foreach (var task in queuedTasks)
-                {
-                    task.Status = TaskExecutionStatus.AwaitingExecution;
-                    task.QueuedAt = queuedAt;
-                    _session.Update(task);
-                }
-                return queuedTasks;
-            });
         }
     }
 }

@@ -11,8 +11,15 @@ namespace MrCMS.Website.CMS
         public string Controller { get; set; }
         public string Action { get; set; }
 
-        public bool IsPreview { get; set; }
+        public PageDataState DisplayState { get; set; }
 
         public Webpage Webpage { get; set; }
+    }
+
+    public enum PageDataState
+    {
+        Unpublished,
+        Preview,
+        Display
     }
 }

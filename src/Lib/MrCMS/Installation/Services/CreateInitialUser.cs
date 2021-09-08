@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Installation.Models;
 using MrCMS.Services;
@@ -19,7 +20,7 @@ namespace MrCMS.Installation.Services
             _passwordManagementService = passwordManagementService;
         }
 
-        public void Create(InstallModel model)
+        public async Task Create(InstallModel model)
         {
             var user = new User
             {
@@ -28,7 +29,7 @@ namespace MrCMS.Installation.Services
             };
             _passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
 
-            _userManagementService.AddUser(user);
+            await _userManagementService.AddUser(user);
 
             var adminUserRole = new UserRole
             {
@@ -38,7 +39,7 @@ namespace MrCMS.Installation.Services
             user.Roles = new HashSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashSet<User> { user };
 
-            _roleService.SaveRole(adminUserRole);
+            await _roleService.SaveRole(adminUserRole);
         }
     }
 }

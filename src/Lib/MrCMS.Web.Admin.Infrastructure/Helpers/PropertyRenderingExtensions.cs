@@ -8,6 +8,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Apps;
@@ -18,7 +19,11 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
 {
     public static class PropertyRenderingExtensions
     {
-        public static async Task<IHtmlContent> RenderUpdateCustomAdminProperties<T>(this IHtmlHelper htmlHelper, T entity) where T : SystemEntity
+        private readonly static HashSet<Type> UpdateModelTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(IUpdatePropertiesViewModel<>));
+
+        public static async Task<IHtmlContent> RenderUpdateCustomAdminProperties<T>(this IHtmlHelper htmlHelper,
+            T entity) where T : SystemEntity
         {
             if (entity == null)
             {
@@ -27,7 +32,8 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
 
             var type = entity.Unproxy().GetType();
 
-            var modelType = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IUpdatePropertiesViewModel<>).MakeGenericType(type)).FirstOrDefault();
+            var modelType = UpdateModelTypes.FirstOrDefault(x =>
+                typeof(IUpdatePropertiesViewModel<>).MakeGenericType(type).IsAssignableFrom(x));
             if (modelType == null)
             {
                 return HtmlString.Empty;
@@ -38,20 +44,25 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
 
             return await RenderCustomAdminProperties(htmlHelper, String.Empty, type, model);
         }
+
         public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, string typeName)
         {
             return RenderCustomAddAdminProperties(htmlHelper, TypeHelper.GetTypeByName(typeName));
         }
+
         public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type)
         {
             return RenderCustomAddAdminProperties(htmlHelper, type, Activator.CreateInstance(type));
         }
-        public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type, object model)
+
+        public static Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type,
+            object model)
         {
             return RenderCustomAdminProperties(htmlHelper, "Add", type, model);
         }
 
-        private static async Task<IHtmlContent> RenderCustomAdminProperties(IHtmlHelper htmlHelper, string suffix, Type type, object model)
+        private static async Task<IHtmlContent> RenderCustomAdminProperties(IHtmlHelper htmlHelper, string suffix,
+            Type type, object model)
         {
             // try and find an implementation of IUpdatePropertiesViewModel
 
@@ -75,10 +86,12 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
                             "We could not find a custom admin view for this page. Either this page is bespoke or has no custom properties.");
                 }
             }
+
             return HtmlString.Empty;
         }
 
-        public static async Task<IHtmlContent> RenderUserOwnedObjectProperties(this IHtmlHelper<User> htmlHelper, Type entityType)
+        public static async Task<IHtmlContent> RenderUserOwnedObjectProperties(this IHtmlHelper<User> htmlHelper,
+            Type entityType)
         {
             var user = htmlHelper.ViewData.Model;
             if (user == null)
@@ -104,6 +117,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
                     logger.Log(LogLevel.Error, exception, exception.Message);
                 }
             }
+
             return HtmlString.Empty;
         }
 
@@ -115,7 +129,8 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
                     appContext.Types[type].Name;
         }
 
-        public static async Task<IHtmlContent> RenderUserProfileProperties(this IHtmlHelper<User> htmlHelper, Type userProfileType)
+        public static async Task<IHtmlContent> RenderUserProfileProperties(this IHtmlHelper<User> htmlHelper,
+            Type userProfileType)
         {
             var user = htmlHelper.ViewData.Model;
             if (user == null)
@@ -128,7 +143,8 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();
             var logger = htmlHelper.GetRequiredService<ILogger<CompositeViewEngine>>();
-            ViewEngineResult viewEngineResult = viewEngine.FindView(actionContextAccessor.ActionContext, userProfileType.Name, false);
+            ViewEngineResult viewEngineResult =
+                viewEngine.FindView(actionContextAccessor.ActionContext, userProfileType.Name, false);
             if (viewEngineResult.View != null)
             {
                 try
@@ -140,6 +156,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
                     logger.Log(LogLevel.Error, exception, exception.Message);
                 }
             }
+
             return HtmlString.Empty;
         }
     }

@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using AutoMapper;
+﻿using System.Linq;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Apps;
 using MrCMS.Helpers;
 using MrCMS.Tests.Services.Events;
-using MrCMS.Website.CMS;
-using MrCMS.Website.Controllers;
-using NHibernate.Cfg;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using Xunit;
 
 namespace MrCMS.Tests.Helpers
@@ -26,11 +15,11 @@ namespace MrCMS.Tests.Helpers
         }
 
         [Fact]
-        public void GenericTypeAssignableFromForInterfaces()
+        public void GenericTypeAssignableFromGenericForInterfaces()
         {
             typeof(GenericInterface<>).IsGenericTypeDefinition.Should().BeTrue();
 
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(GenericInterface<>));
+            var types = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(GenericInterface<>));
 
             types.Should().Contain(typeof(ImplementationOfGenericInterface));
         }
@@ -62,7 +51,7 @@ namespace MrCMS.Tests.Helpers
         [Fact]
         public void TypeHelper_GetAllConcreteTypesAssignableFrom_GenericTypePassedShouldReturnImplementations()
         {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(MrCMSAppAdminController<>));
+            var types = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(MrCMSAppAdminController<>));
 
             types.Should().Contain(typeof(TestAdminController));
         }
@@ -74,62 +63,6 @@ namespace MrCMS.Tests.Helpers
 
             types.Should().Contain(typeof(TestEventImplementation));
             types.Should().Contain(typeof(TestEventImplementation2));
-        }
-    }
-
-    public interface GenericInterface<T>
-    {
-        T Test { get; }
-    }
-
-    public class ImplementationOfGenericInterface : GenericInterface<string>
-    {
-        public string Test => "Test";
-    }
-
-
-    public class TestAdminController : MrCMSAppAdminController<TestApp>
-    {
-    }
-
-    public class TestApp : IMrCMSApp
-    {
-        public string Name => "Test";
-
-        public string Version => "0.1";
-
-        public string ContentPrefix { get; set; }
-        public string ViewPrefix { get; set; }
-        public Assembly Assembly { get; }
-        public IEnumerable<Type> Conventions { get; }
-        public IEnumerable<Type> BaseTypes { get; }
-        public IDictionary<Type, string> SignalRHubs { get; }
-        public IEnumerable<RegistrationInfo> Registrations { get; }
-
-        public IServiceCollection RegisterServices(IServiceCollection serviceCollection)
-        {
-            return serviceCollection;
-        }
-
-        public IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
-        {
-            return routeBuilder;
-        }
-
-        public void SetupMvcOptions(MvcOptions options)
-        {
-        }
-
-        public void ConfigureAutomapper(IMapperConfigurationExpression expression)
-        {
-        }
-
-        public void AppendConfiguration(Configuration configuration)
-        {
-        }
-
-        public void ConfigureAuthorization(AuthorizationOptions options)
-        {
         }
     }
 }

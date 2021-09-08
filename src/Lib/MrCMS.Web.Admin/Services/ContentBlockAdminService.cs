@@ -8,7 +8,9 @@ using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models.ContentBlocks;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -26,13 +28,13 @@ namespace MrCMS.Web.Admin.Services
         }
 
 
-        private int GetDisplayOrder(int webpageId)
+        private async Task<int> GetDisplayOrder(int webpageId)
         {
-            return _repository.Query()
-                       .Where(x => x.Webpage.Id == webpageId)
-                       .OrderByDescending(x => x.DisplayOrder)
-                       .Select(x => x.DisplayOrder)
-                       .FirstOrDefault() + 1; // + 1 because we want to set a value one higher than the highest
+            return (await _repository.Query()
+                .Where(x => x.Webpage.Id == webpageId)
+                .OrderByDescending(x => x.DisplayOrder)
+                .Select(x => x.DisplayOrder)
+                .FirstOrDefaultAsync()) + 1; // + 1 because we want to set a value one higher than the highest
         }
 
         public object GetAdditionalPropertyModel(string blockType)
@@ -46,10 +48,13 @@ namespace MrCMS.Web.Admin.Services
             return GetAdditionalPropertyModel(type);
         }
 
+        private static readonly HashSet<Type> AddPropertiesTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(
+            typeof(IAddPropertiesViewModel<>));
+
         private static object GetAdditionalPropertyModel(Type type)
         {
-            var additionalPropertyType = TypeHelper.GetAllConcreteTypesAssignableFrom(
-                typeof(IAddPropertiesViewModel<>).MakeGenericType(type)).FirstOrDefault();
+            var additionalPropertyType = AddPropertiesTypes.FirstOrDefault(x =>
+                typeof(IAddPropertiesViewModel<>).MakeGenericType(type).IsAssignableFrom(x));
             if (additionalPropertyType == null)
             {
                 return null;
@@ -58,9 +63,9 @@ namespace MrCMS.Web.Admin.Services
             return Activator.CreateInstance(additionalPropertyType);
         }
 
-        public object GetAdditionalPropertyModel(int id)
+        public async Task<object> GetAdditionalPropertyModel(int id)
         {
-            var block = GetEntity(id);
+            var block = await GetEntity(id);
             if (block == null)
             {
                 return null;
@@ -69,7 +74,7 @@ namespace MrCMS.Web.Admin.Services
             return GetAdditionalPropertyModel(block.Unproxy().GetType());
         }
 
-        public int? Add(AddContentBlockViewModel addModel, object additionalPropertyModel)
+        public async Task<int?> Add(AddContentBlockViewModel addModel, object additionalPropertyModel)
         {
             var type = TypeHelper.GetTypeByName(addModel.BlockType);
             if (type == null)
@@ -89,24 +94,24 @@ namespace MrCMS.Web.Admin.Services
                 _mapper.Map(additionalPropertyModel, block);
             }
 
-            block.DisplayOrder = GetDisplayOrder(block.Webpage?.Id ?? 0);
+            block.DisplayOrder = await GetDisplayOrder(block.Webpage?.Id ?? 0);
             block.Webpage?.ContentBlocks.Add(block);
-            _repository.Add(block);
+            await _repository.Add(block);
 
             return block.Webpage?.Id;
         }
 
-        public UpdateContentBlockViewModel GetUpdateModel(int id)
+        public async Task<UpdateContentBlockViewModel> GetUpdateModel(int id)
         {
-            var contentBlock = GetEntity(id);
+            var contentBlock = await GetEntity(id);
 
             return _mapper.Map<UpdateContentBlockViewModel>(contentBlock);
         }
 
 
-        public int? Update(UpdateContentBlockViewModel updateModel, object additionalPropertyModel)
+        public async Task<int?> Update(UpdateContentBlockViewModel updateModel, object additionalPropertyModel)
         {
-            var block = GetEntity(updateModel.Id);
+            var block = await GetEntity(updateModel.Id);
             if (block == null)
             {
                 return null;
@@ -118,14 +123,14 @@ namespace MrCMS.Web.Admin.Services
                 _mapper.Map(additionalPropertyModel, block);
             }
 
-            _repository.Update(block);
+            await _repository.Update(block);
 
             return block.Webpage?.Id;
         }
 
-        public int? Delete(int id)
+        public async Task<int?> Delete(int id)
         {
-            var block = GetEntity(id);
+            var block = await GetEntity(id);
             if (block == null)
             {
                 return null;
@@ -133,28 +138,28 @@ namespace MrCMS.Web.Admin.Services
 
             var webpageId = block.Webpage?.Id;
             block.Webpage?.ContentBlocks.Remove(block);
-            _repository.Delete(block);
+            await _repository.Delete(block);
             return webpageId;
         }
 
-        public IList<ContentBlock> GetBlocks(int webpageId)
+        public async Task<List<ContentBlock>> GetBlocks(int webpageId)
         {
-            return _repository.Query().Where(x => x.Webpage.Id == webpageId).OrderBy(x => x.DisplayOrder).ToList();
+            return await _repository.Query().Where(x => x.Webpage.Id == webpageId).OrderBy(x => x.DisplayOrder).ToListAsync();
         }
 
-        public IList<SortItem> GetSortItems(int webpageId)
+        public async Task<IList<SortItem>> GetSortItems(int webpageId)
         {
-            return _sortService.GetSortItems(GetBlocks(webpageId).ToList());
+            return _sortService.GetSortItems(await GetBlocks(webpageId));
         }
 
-        public void Sort(IList<SortItem> sortItems)
+        public async Task Sort(IList<SortItem> sortItems)
         {
-            _sortService.Sort<ContentBlock>(sortItems);
+            await _sortService.Sort<ContentBlock>(sortItems);
         }
 
-        public ContentBlock GetEntity(int id)
+        public async Task<ContentBlock> GetEntity(int id)
         {
-            return _repository.Get(id).Unproxy();
+            return await _repository.Get(id);
         }
     }
 }

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
-using Newtonsoft.Json;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -20,50 +20,51 @@ namespace MrCMS.Web.Admin.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<UserRole> GetAllRoles()
+        public async Task<IEnumerable<UserRole>> GetAllRoles()
         {
-            return _roleService.GetAllRoles();
+            return await _roleService.GetAllRoles();
         }
 
-        public IEnumerable<string> GetRolesForPermissions()
+        public async Task<IEnumerable<string>> GetRolesForPermissions()
         {
-            return _roleService.GetAllRoles().Select(x => x.Name);
+            var allRoles = await _roleService.GetAllRoles();
+            return allRoles.Select(x => x.Name);
         }
 
-        public IEnumerable<AutoCompleteResult> Search(string term)
+        public Task<IEnumerable<AutoCompleteResult>> Search(string term)
         {
             return _roleService.Search(term);
         }
 
-        public AddRoleResult AddRole(AddRoleModel model)
+        public async Task<AddRoleResult> AddRole(AddRoleModel model)
         {
-            if (_roleService.GetRoleByName(model.Name) != null)
-                return new AddRoleResult(false, string.Format("{0} already exists.", model.Name));
+            if (await _roleService.GetRoleByName(model.Name) != null)
+                return new AddRoleResult(false, $"{model.Name} already exists.");
             var role = _mapper.Map<UserRole>(model);
-            _roleService.SaveRole(role);
+            await _roleService.SaveRole(role);
             return new AddRoleResult(true, null);
         }
 
-        public UpdateRoleModel GetEditModel(int id)
+        public async Task<UpdateRoleModel> GetEditModel(int id)
         {
-            return _mapper.Map<UpdateRoleModel>(GetRole(id));
+            return _mapper.Map<UpdateRoleModel>(await GetRole(id));
         }
 
-        private UserRole GetRole(int id)
+        private async Task<UserRole> GetRole(int id)
         {
-            return _roleService.GetRole(id);
+            return await _roleService.GetRole(id);
         }
 
-        public void SaveRole(UpdateRoleModel model)
+        public async Task SaveRole(UpdateRoleModel model)
         {
-            var role = GetRole(model.Id);
+            var role = await GetRole(model.Id);
             _mapper.Map(model, role);
-            _roleService.SaveRole(role);
+            await _roleService.SaveRole(role);
         }
 
-        public void DeleteRole(int id)
+        public async Task DeleteRole(int id)
         {
-            _roleService.DeleteRole(GetRole(id));
+            await _roleService.DeleteRole(await GetRole(id));
         }
     }
 }

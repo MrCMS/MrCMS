@@ -1,7 +1,7 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
@@ -14,19 +14,16 @@ namespace MrCMS.Services
             _getCurrentUser = getCurrentUser;
         }
 
-        public bool IsCurrentUserAllowed(Webpage webpage)
+        public async Task<PageAccessPermission> IsCurrentUserAllowed(Webpage webpage)
         {
-            User user = _getCurrentUser.Get();
-            if (user != null && user.IsAdmin) return true;
-            if (webpage.InheritFrontEndRolesFromParent)
-            {
-                if (webpage.Parent.Unproxy() is Webpage)
-                    return IsCurrentUserAllowed(webpage.Parent.Unproxy() as Webpage);
-                return true;
-            }
-            if (!webpage.FrontEndAllowedRoles.Any()) return true;
-            if (webpage.FrontEndAllowedRoles.Any() && user == null) return false;
-            return user != null && user.Roles.Intersect(webpage.FrontEndAllowedRoles).Any();
+            User user = await _getCurrentUser.Get();
+            if (user != null && user.IsAdmin) return PageAccessPermission.Allowed;
+            
+            if (!webpage.FrontEndAllowedRoles.Any()) return PageAccessPermission.Allowed;
+            if (webpage.FrontEndAllowedRoles.Any() && user == null) return PageAccessPermission.Unauthorized;
+            return user.Roles.Intersect(webpage.FrontEndAllowedRoles).Any()
+                ? PageAccessPermission.Allowed
+                : PageAccessPermission.Forbidden;
         }
     }
 }

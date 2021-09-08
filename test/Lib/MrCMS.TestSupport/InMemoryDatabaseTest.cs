@@ -26,7 +26,7 @@ namespace MrCMS.TestSupport
             {
                 lock (lockObject)
                 {
-                    var assemblies = new List<Assembly> { typeof(InMemoryDatabaseTest).Assembly };
+                    var assemblies = new List<Assembly> {typeof(InMemoryDatabaseTest).Assembly};
                     var configurator = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
                     {
                         ManuallyAddedAssemblies = assemblies
@@ -36,24 +36,19 @@ namespace MrCMS.TestSupport
                     SessionFactory = Configuration.BuildSessionFactory();
                 }
             }
-            var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1 };
-            ServiceCollection.AddTransient<Site>(provider => site);
+
+            var site = new Site {Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1};
             Session = SessionFactory.OpenFilteredSession(ServiceProvider);
             ServiceCollection.AddTransient<ISession>(provider => Session);
-            ServiceCollection.AddTransient<IStatelessSession>(provider => SessionFactory.OpenStatelessSession(Session.Connection));
+            ServiceCollection.AddTransient<IStatelessSession>(provider =>
+                SessionFactory.OpenStatelessSession(Session.Connection));
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
             SetupUser();
 
 
-            CurrentSite = Session.Transact(session =>
-            {
-                ServiceCollection.AddTransient<Site>(provider => site);
-                session.Save(site);
-                return site;
-            });
-
+            CurrentSite = site;
             //CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
             //CurrentRequestData.ErrorSignal = new ErrorSignal();
@@ -84,8 +79,8 @@ namespace MrCMS.TestSupport
                 Name = UserRole.Administrator
             };
 
-            user.Roles = new HashSet<UserRole> { adminUserRole };
-            adminUserRole.Users = new HashSet<User> { user };
+            user.Roles = new HashSet<UserRole> {adminUserRole};
+            adminUserRole.Users = new HashSet<User> {user};
 
             //CurrentRequestData.CurrentUser = user;
         }
@@ -106,6 +101,7 @@ namespace MrCMS.TestSupport
                     Session.Dispose();
                     Session = null;
                 }
+
                 base.Dispose();
             }
         }

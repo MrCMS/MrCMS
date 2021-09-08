@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -20,16 +21,16 @@ namespace MrCMS.Web.Admin.Services
             _getCurrentUser = getCurrentUser;
         }
 
-        public IList<NotificationModel> GetNotifications()
+        public async Task<IList<NotificationModel>> GetNotifications()
         {
-            var user = _getCurrentUser.Get();
+            var user = await _getCurrentUser.Get();
             var queryOver = _session.QueryOver<Notification>();
 
             if (user.LastNotificationReadDate.HasValue)
                 queryOver = queryOver.Where(notification => notification.CreatedOn >= user.LastNotificationReadDate);
 
             NotificationModel notificationModelAlias = null;
-            return queryOver.SelectList(
+            return await queryOver.SelectList(
                 builder =>
                     builder.Select(notification => notification.Message)
                         .WithAlias(() => notificationModelAlias.Message)
@@ -39,25 +40,25 @@ namespace MrCMS.Web.Admin.Services
                 .TransformUsing(Transformers.AliasToBean<NotificationModel>())
                 .Take(15)
                 .Cacheable()
-                .List<NotificationModel>();
+                .ListAsync<NotificationModel>();
         }
 
-        public int GetNotificationCount()
+        public async Task<int> GetNotificationCount()
         {
-            var user = _getCurrentUser.Get();
+            var user = await _getCurrentUser.Get();
             var queryOver = _session.QueryOver<Notification>();
 
             if (user.LastNotificationReadDate.HasValue)
                 queryOver = queryOver.Where(notification => notification.CreatedOn >= user.LastNotificationReadDate);
 
-            return queryOver.RowCount();
+            return await queryOver.RowCountAsync();
         }
 
-        public void MarkAllAsRead()
+        public async Task MarkAllAsRead()
         {
-            var user = _getCurrentUser.Get();
+            var user = await _getCurrentUser.Get();
             user.LastNotificationReadDate = DateTime.UtcNow;
-            _session.Transact(session => session.Update(user));
+            await _session.TransactAsync(session => session.UpdateAsync(user));
         }
     }
 }

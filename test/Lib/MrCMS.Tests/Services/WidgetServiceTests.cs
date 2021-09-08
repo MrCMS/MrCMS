@@ -1,9 +1,8 @@
-﻿using FakeItEasy;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
-using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
 using MrCMS.TestSupport;
@@ -19,42 +18,42 @@ namespace MrCMS.Tests.Services
             _widgetService = new WidgetService(Session);
         }
         [Fact]
-        public void WidgetService_GetWidget_ReturnsAWidgetWhenIdExists()
+        public async Task WidgetService_GetWidget_ReturnsAWidgetWhenIdExists()
         {
 
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.SaveOrUpdate(textWidget));
+            await Session.TransactAsync(session => session.SaveOrUpdateAsync(textWidget));
 
-            var loadedWidget = _widgetService.GetWidget<BasicMappedWidget>(textWidget.Id);
+            var loadedWidget = await _widgetService.GetWidget<BasicMappedWidget>(textWidget.Id);
 
             loadedWidget.Should().BeSameAs(textWidget);
         }
 
         [Fact]
-        public void WidgetService_GetWidget_WhenIdIsInvalidShouldReturnNull()
+        public async Task WidgetService_GetWidget_WhenIdIsInvalidShouldReturnNull()
         {
-            var loadedWidget = _widgetService.GetWidget<BasicMappedWidget>(-1);
+            var loadedWidget = await _widgetService.GetWidget<BasicMappedWidget>(-1);
 
             loadedWidget.Should().BeNull();
         }
 
         [Fact]
-        public void WidgetService_SaveWidget_ShouldAddWidgetToDb()
+        public async Task WidgetService_SaveWidget_ShouldAddWidgetToDb()
         {
-            _widgetService.SaveWidget(new BasicMappedWidget());
+            await _widgetService.SaveWidget(new BasicMappedWidget());
 
-            Session.QueryOver<Widget>().RowCount().Should().Be(1);
+            (await Session.QueryOver<Widget>().RowCountAsync()).Should().Be(1);
         }
 
         [Fact]
-        public void WidgetService_Delete_RemovesWidgetFromDatabase()
+        public async Task WidgetService_Delete_RemovesWidgetFromDatabase()
         {
             var widget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(widget));
+            await Session.TransactAsync(session => session.SaveAsync(widget));
 
-            _widgetService.DeleteWidget(widget);
+            await _widgetService.DeleteWidget(widget);
 
-            Session.QueryOver<Widget>().RowCount().Should().Be(0);
+            (await Session.QueryOver<Widget>().RowCountAsync()).Should().Be(0);
         }
     }
 }

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -25,50 +25,57 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
             _serviceProvider = serviceProvider;
         }
 
-        public SEOAnalysisResult Analyze(Webpage webpage, string analysisTerm)
+        public async Task<SEOAnalysisResult> Analyze(Webpage webpage, string analysisTerm)
         {
             HtmlNode htmlNode;
-            using (new TemporaryPublisher(_session, webpage))
+            await using (var publisher = new TemporaryPublisher(_session, webpage))
             {
-                htmlNode = GetDocument(webpage);
+                await publisher.Publish();
+                htmlNode = await GetDocument(webpage);
             }
 
             var providers = GetProviders();
-            return
-                new SEOAnalysisResult(
-                    providers.SelectMany(provider => provider.GetFacets(webpage, htmlNode, analysisTerm)));
+            var facets = new List<SEOAnalysisFacet>();
+            foreach (var provider in providers)
+            {
+                facets.AddRange(await provider.GetFacets(webpage, htmlNode, analysisTerm));
+            }
+
+            return new SEOAnalysisResult(facets);
         }
 
-        public Webpage UpdateAnalysisTerm(int webpageId, string targetSeoPhrase)
+        public async Task<Webpage> UpdateAnalysisTerm(int webpageId, string targetSeoPhrase)
         {
             var webpage = _session.Get<Webpage>(webpageId);
             if (webpage == null)
                 throw new NullReferenceException("Webpage does not exist");
             webpage.SEOTargetPhrase = targetSeoPhrase;
-            _session.Transact(session => session.Update(webpage));
+            await _session.TransactAsync(session => session.UpdateAsync(webpage));
             return webpage;
         }
 
         public IEnumerable<ISEOAnalysisFacetProvider> GetProviders()
         {
-            var allConcreteTypesAssignableFrom = TypeHelper.GetAllConcreteTypesAssignableFrom<ISEOAnalysisFacetProvider>();
+            var allConcreteTypesAssignableFrom =
+                TypeHelper.GetAllConcreteTypesAssignableFrom<ISEOAnalysisFacetProvider>();
             return allConcreteTypesAssignableFrom
                 .Select(type => _serviceProvider.GetService(type)).Cast<ISEOAnalysisFacetProvider>();
         }
 
-        private HtmlNode GetDocument(Webpage webpage)
+        private async Task<HtmlNode> GetDocument(Webpage webpage)
         {
-            string absoluteUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
+            string absoluteUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
             WebRequest request = WebRequest.Create(absoluteUrl);
 
             var document = new HtmlDocument();
-            document.Load(request.GetResponse().GetResponseStream());
+            var response = await request.GetResponseAsync();
+            document.Load(response.GetResponseStream());
 
             HtmlNode htmlNode = document.DocumentNode;
             return htmlNode;
         }
 
-        public class TemporaryPublisher : IDisposable
+        public class TemporaryPublisher : IAsyncDisposable
         {
             private readonly bool _published;
             private readonly ISession _session;
@@ -79,19 +86,23 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
                 _session = session;
                 _webpage = webpage;
                 _published = webpage.Published;
-                if (!_published)
-                {
-                    webpage.Published = true;
-                    _session.Transact(s => s.Update(_webpage));
-                }
             }
 
-            public void Dispose()
+            public async Task Publish()
             {
                 if (!_published)
                 {
                     _webpage.Published = false;
-                    _session.Transact(s => s.Update(_webpage));
+                    await _session.TransactAsync(s => s.UpdateAsync(_webpage));
+                }
+            }
+
+            public async ValueTask DisposeAsync()
+            {
+                if (!_published)
+                {
+                    _webpage.Published = false;
+                    await _session.TransactAsync(s => s.UpdateAsync(_webpage));
                 }
             }
         }

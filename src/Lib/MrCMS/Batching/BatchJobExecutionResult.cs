@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using MrCMS.Website;
-
-namespace MrCMS.Batching
+﻿namespace MrCMS.Batching
 {
     public class BatchJobExecutionResult
     {

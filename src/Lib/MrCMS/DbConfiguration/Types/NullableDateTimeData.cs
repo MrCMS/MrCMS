@@ -1,10 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MrCMS.Helpers;
 using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate.Engine;
 
 namespace MrCMS.DbConfiguration.Types

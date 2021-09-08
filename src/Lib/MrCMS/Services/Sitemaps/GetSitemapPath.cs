@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Web;
 using Microsoft.AspNetCore.Hosting;
 using MrCMS.Entities.Multisite;
 
@@ -17,17 +15,27 @@ namespace MrCMS.Services.Sitemaps
 
         public string GetRelativePath(Site site)
         {
-            return $"App_Data\\sitemap-{site.Id}.xml";
+            return $"sitemap-{site.Guid}.xml";
+        }
+
+        public string GetRelativePathForPart(Site site, int partNumber)
+        {
+            return $"sitemap-{site.Guid}-{partNumber}.xml.gz";
         }
 
         public string GetAbsolutePath(Site site)
         {
-            return Path.Combine(_hostingEnvironment.ContentRootPath, GetRelativePath(site));
+            return Path.Combine(_hostingEnvironment.WebRootPath, GetRelativePath(site));
+        }
+
+        public string GetAbsolutePathForPart(Site site, int partNumber)
+        {
+            return Path.Combine(_hostingEnvironment.WebRootPath, GetRelativePathForPart(site, partNumber));
         }
 
         public bool FileExists(Site site)
         {
-            return _hostingEnvironment.ContentRootFileProvider.GetFileInfo(GetRelativePath(site)).Exists;
+            return _hostingEnvironment.WebRootFileProvider.GetFileInfo(GetRelativePath(site)).Exists;
         }
     }
 }

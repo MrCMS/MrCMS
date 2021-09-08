@@ -8,7 +8,8 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
+using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Installation.Models;
 using ISession = NHibernate.ISession;
 
@@ -18,18 +19,16 @@ namespace MrCMS.Installation.Services
     {
         private readonly IDatabaseCreationService _databaseCreationService;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _configuration;
         private readonly IFileSystemAccessService _fileSystemAccessService;
 
-        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceProvider serviceProvider, IConfiguration configuration)
+        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService, IServiceProvider serviceProvider)
         {
             _fileSystemAccessService = fileSystemAccessService;
             _databaseCreationService = databaseCreationService;
             _serviceProvider = serviceProvider;
-            _configuration = configuration;
         }
 
-        public InstallationResult Install(InstallModel model)
+        public async Task<InstallationResult> Install(InstallModel model)
         {
             if (model.DatabaseConnectionString != null)
             {
@@ -55,7 +54,7 @@ namespace MrCMS.Installation.Services
                 IDatabaseProvider provider = _databaseCreationService.CreateDatabase(model);
 
                 //save settings
-                SetUpInitialData(model, provider);
+                await SetUpInitialData(model, provider);
             }
             catch (Exception exception)
             {
@@ -74,17 +73,21 @@ namespace MrCMS.Installation.Services
 
         public bool DatabaseIsInstalled()
         {
-            return _configuration.GetConnectionString("mrcms")?.Length > 0;
+            return _databaseCreationService.IsDatabaseInstalled();
         }
 
-        private void SetUpInitialData(InstallModel model, IDatabaseProvider provider)
+        private async Task SetUpInitialData(InstallModel model, IDatabaseProvider provider)
         {
             var configurator =
                 new NHibernateConfigurator(provider, _serviceProvider.GetRequiredService<MrCMSAppContext>());
 
+            var validateNHibernateSchema = new ValidateNHibernateSchema(configurator);
+            await validateNHibernateSchema.Execute(CancellationToken.None);
+            
             ISessionFactory sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenFilteredSession(_serviceProvider);
             IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
+            
             var contextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
             var context = contextAccessor.HttpContext;
             context.Items["override-nh-session"] = session;
@@ -104,11 +107,14 @@ namespace MrCMS.Installation.Services
             context.Items["override-site"] = site;
             //CurrentRequestData.CurrentSite = site;
 
-            _serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
-            _serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
-            _serviceProvider.GetServices<IOnInstallation>()
-                .OrderBy(installation => installation.Priority)
-                .ForEach(installation => installation.Install(model));
+            await _serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
+            await _serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
+            var installations = _serviceProvider.GetServices<IOnInstallation>()
+                .OrderBy(installation => installation.Priority);
+            foreach (var installation in installations)
+            {
+                await installation.Install(model);
+            }
         }
     }
 }

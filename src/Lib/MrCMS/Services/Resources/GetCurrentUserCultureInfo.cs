@@ -1,5 +1,5 @@
 using System.Globalization;
-using MrCMS.Website;
+using System.Threading.Tasks;
 
 namespace MrCMS.Services.Resources
 {
@@ -14,14 +14,14 @@ namespace MrCMS.Services.Resources
             _getCurrentUser = getCurrentUser;
         }
 
-        public CultureInfo Get()
+        public async Task<CultureInfo> Get()
         {
-            return _getUserCultureInfo.Get(_getCurrentUser.Get());
+            return _getUserCultureInfo.Get(await _getCurrentUser.Get());
         }
 
-        public string GetInfoString()
+        public async Task<string> GetInfoString()
         {
-            return _getUserCultureInfo.GetInfoString(_getCurrentUser.Get());
+            return _getUserCultureInfo.GetInfoString(await _getCurrentUser.Get());
         }
     }
 }

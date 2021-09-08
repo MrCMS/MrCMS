@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.DbConfiguration.Types;
 
 namespace MrCMS.DbConfiguration.Conventions

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Layout;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -23,97 +23,66 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddLayoutAreaModel layoutArea)
+        public async Task<RedirectToActionResult> Add(AddLayoutAreaModel layoutArea)
         {
-            _layoutAreaAdminService.Add(layoutArea);
+            await _layoutAreaAdminService.Add(layoutArea);
 
-            return RedirectToAction("Edit", "Layout", new { id = layoutArea.LayoutId });
+            return RedirectToAction("Edit", "Layout", new {id = layoutArea.LayoutId});
         }
 
         [HttpGet]
         [ActionName("Edit")]
-        public ActionResult Edit_Get(int id)
+        public async Task<ActionResult> Edit_Get(int id)
         {
-            var model = _layoutAreaAdminService.GetEditModel(id);
+            var model = await _layoutAreaAdminService.GetEditModel(id);
             if (model == null)
                 return RedirectToAction("Index", "Layout");
 
-            ViewData["layout"] = _layoutAreaAdminService.GetLayout(id);
-            ViewData["widgets"] = _layoutAreaAdminService.GetWidgets(id);
+            ViewData["layout"] = await _layoutAreaAdminService.GetLayout(id);
+            ViewData["widgets"] = await _layoutAreaAdminService.GetWidgets(id);
             return View(model);
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateLayoutAreaModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateLayoutAreaModel model)
         {
-            var area = _layoutAreaAdminService.Update(model);
+            var area = await _layoutAreaAdminService.Update(model);
 
-            return RedirectToAction("Edit", "Layout", new { id = area.Layout.Id });
+            return RedirectToAction("Edit", "Layout", new {id = area.Layout.Id});
         }
 
 
         [HttpGet]
         [ActionName("Delete")]
-        public PartialViewResult Delete_Get(int id)
+        public async Task<PartialViewResult> Delete_Get(int id)
         {
-            return PartialView(_layoutAreaAdminService.GetEditModel(id));
+            return PartialView(await _layoutAreaAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var layoutArea = _layoutAreaAdminService.DeleteArea(id);
+            var layoutArea = await _layoutAreaAdminService.DeleteArea(id);
 
-            return RedirectToAction("Edit", "Layout", new { id = layoutArea.Layout.Id });
+            return RedirectToAction("Edit", "Layout", new {id = layoutArea.Layout.Id});
         }
 
         [HttpGet]
-        public ViewResult SortWidgets(int id, string returnUrl = null)
+        public async Task<ViewResult> SortWidgets(int id, string returnUrl = null)
         {
-            var area = _layoutAreaAdminService.GetArea(id);
+            var area = await _layoutAreaAdminService.GetArea(id);
             ViewData["returnUrl"] = returnUrl;
-            return View(new PageWidgetSortModel(area.GetWidgets(), area, null));
+            return View(new WidgetSortModel(await _layoutAreaAdminService.GetWidgets(id), area));
         }
 
         [HttpPost]
-        public RedirectResult SortWidgetsAction(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
+        public async Task<RedirectResult> SortWidgetsAction(WidgetSortModel widgetSortModel, string returnUrl = null)
         {
-            _layoutAreaAdminService.SetWidgetOrders(pageWidgetSortModel);
+            await _layoutAreaAdminService.SetWidgetOrders(widgetSortModel);
 
             return Redirect(!string.IsNullOrEmpty(returnUrl)
                 ? returnUrl
-                : "/Admin/LayoutArea/Edit/" + pageWidgetSortModel.LayoutAreaId);
-        }
-
-        [HttpGet]
-        public ViewResult SortWidgetsForPage(int id, int pageId, string returnUrl = null)
-        {
-            var area = _layoutAreaAdminService.GetArea(id);
-            ViewData["returnUrl"] = returnUrl;
-            return View(_layoutAreaAdminService.GetSortModel(area, pageId));
-        }
-
-        [HttpPost]
-        public ActionResult SortWidgetsForPage(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
-        {
-            _layoutAreaAdminService.SetWidgetForPageOrders(pageWidgetSortModel);
-
-            if (!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction("Edit", "Webpage", new { id = pageWidgetSortModel.WebpageId });
-        }
-
-        [HttpPost]
-        public ActionResult ResetSorting(int id, int pageId, string returnUrl = null)
-        {
-            _layoutAreaAdminService.ResetSorting(id, pageId);
-
-            if (!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction("Edit", "Webpage", new { id = pageId });
+                : "/Admin/LayoutArea/Edit/" + widgetSortModel.LayoutAreaId);
         }
     }
-
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
@@ -8,6 +9,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -18,7 +20,8 @@ namespace MrCMS.Web.Admin.Services
         private readonly IUrlValidationService _urlValidationService;
         private readonly IMapper _mapper;
 
-        public LayoutAdminService(IRepository<Layout> layoutRepository, IGetDocumentsByParent<Layout> getDocumentsByParent, IUrlValidationService urlValidationService,
+        public LayoutAdminService(IRepository<Layout> layoutRepository,
+            IGetDocumentsByParent<Layout> getDocumentsByParent, IUrlValidationService urlValidationService,
             IMapper mapper)
         {
             _layoutRepository = layoutRepository;
@@ -35,88 +38,94 @@ namespace MrCMS.Web.Admin.Services
             };
         }
 
-        public Layout GetLayout(int? id) => id.HasValue ? _layoutRepository.Get(id.Value) : null;
+        public async Task<Layout> GetLayout(int? id) => id.HasValue ? await _layoutRepository.Get(id.Value) : null;
 
-        public Layout Add(AddLayoutModel model)
+        public async Task<Layout> Add(AddLayoutModel model)
         {
             var layout = _mapper.Map<Layout>(model);
-            _layoutRepository.Add(layout);
+            await _layoutRepository.Add(layout);
             return layout;
         }
 
-        public UpdateLayoutModel GetEditModel(int id)
+        public async Task<UpdateLayoutModel> GetEditModel(int id)
         {
-            var layout = GetLayout(id);
+            var layout = await GetLayout(id);
             return _mapper.Map<UpdateLayoutModel>(layout);
         }
 
-        public List<LayoutArea> GetLayoutAreas(int id)
+        public async Task<List<LayoutArea>> GetLayoutAreas(int id)
         {
-            return GetLayout(id).GetLayoutAreas().Distinct().ToList();
+            var layout = await GetLayout(id);
+            return layout.GetLayoutAreas().Distinct().ToList();
         }
 
-        public void Update(UpdateLayoutModel model)
+        public async Task Update(UpdateLayoutModel model)
         {
-            var layout = GetLayout(model.Id);
+            var layout = await GetLayout(model.Id);
             _mapper.Map(model, layout);
-            _layoutRepository.Update(layout);
+            await _layoutRepository.Update(layout);
         }
 
-        public Layout Delete(int id)
+        public async Task<Layout> Delete(int id)
         {
-            var layout = GetLayout(id);
-            _layoutRepository.Delete(layout);
+            var layout = await GetLayout(id);
+            await _layoutRepository.Delete(layout);
             return layout;
         }
 
-        public List<SortItem> GetSortItems(int? parent)
+        public async Task<List<SortItem>> GetSortItems(int? parent)
         {
-            return _getDocumentsByParent.GetDocuments(GetLayout(parent))
+            var layout = await GetLayout(parent);
+            var documents = await _getDocumentsByParent.GetDocuments(layout);
+            return documents
                 .Select(
-                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                    arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
                 .OrderBy(x => x.Order)
                 .ToList();
         }
 
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _layoutRepository.Transact(repository => items.ForEach(item =>
+            await _layoutRepository.TransactAsync(async repository =>
             {
-                var mediaFile = repository.Get(item.Id);
-                mediaFile.DisplayOrder = item.Order;
-                repository.Update(mediaFile);
-            }));
+                foreach (var item in items)
+                {
+                    var mediaFile = await repository.Get(item.Id);
+                    mediaFile.DisplayOrder = item.Order;
+                    await repository.Update(mediaFile);
+                }
+            });
         }
 
-        public bool UrlIsValidForLayout(string urlSegment, int? id)
+        public async Task<bool> UrlIsValidForLayout(string urlSegment, int? id)
         {
-            return _urlValidationService.UrlIsValidForLayout(urlSegment, id);
+            return await _urlValidationService.UrlIsValidForLayout(urlSegment, id);
         }
 
-        public IEnumerable<SelectListItem> GetValidParents(int id)
+        public async Task<IEnumerable<SelectListItem>> GetValidParents(int id)
         {
-            var layout = GetLayout(id);
+            var layout = await GetLayout(id);
 
-            IList<Layout> potentialParents = _layoutRepository.Query().ToList();
+            IList<Layout> potentialParents = await _layoutRepository.Query().ToListAsync();
             List<SelectListItem> result = potentialParents.Distinct()
                 .Where(page => page.Id != layout.Id)
-                .OrderBy(x => x.Name).
-                BuildSelectItemList(page => page.Name, page => page.Id.ToString(),
+                .OrderBy(x => x.Name).BuildSelectItemList(page => page.Name, page => page.Id.ToString(),
                     webpage1 => layout.Parent != null && layout.ParentId == webpage1.Id, emptyItem: null);
 
-            return result.Prepend(new SelectListItem { Value = string.Empty, Text = "Root", Selected = layout.Parent == null });
+            return result.Prepend(new SelectListItem
+                {Value = string.Empty, Text = "Root", Selected = layout.Parent == null});
         }
 
-        public void SetParent(int id, int? parentId)
+        public async Task SetParent(int id, int? parentId)
         {
-            var layout = GetLayout(id);
+            var layout = await GetLayout(id);
             if (layout == null) return;
 
-            Layout parent = parentId.HasValue ? _layoutRepository.Get(parentId.Value) : null;
+            Layout parent = parentId.HasValue ? await _layoutRepository.Get(parentId.Value) : null;
 
             layout.Parent = parent;
 
-            _layoutRepository.Update(layout);
+            await _layoutRepository.Update(layout);
         }
     }
 }

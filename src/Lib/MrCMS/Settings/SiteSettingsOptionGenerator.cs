@@ -24,7 +24,7 @@ namespace MrCMS.Settings
             _appContext = appContext;
         }
 
-        public virtual List<SelectListItem> GetErrorPageOptions(int pageId)
+        public virtual List<SelectListItem> GetTopLevelPageOptions(int pageId)
         {
             var list = _session.QueryOver<Webpage>().Where(webpage => webpage.Parent == null).Cacheable().List();
             return

@@ -1,27 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Messaging;
-using MrCMS.Helpers;
-using MrCMS.Messages;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services
 {
     public class EmailSender : IEmailSender, IDisposable
     {
-        //private readonly ErrorSignal _errorSignal;
-        private readonly ISession _session;
         private readonly ILogger<EmailSender> _logger;
         private readonly SmtpClient _smtpClient;
 
-        public EmailSender(ISession session, MailSettings mailSettings, ILogger<EmailSender> logger, IGetSmtpClient getSmtpClient)
+        public EmailSender(MailSettings mailSettings, ILogger<EmailSender> logger, IGetSmtpClient getSmtpClient)
         {
-            _session = session;
             _logger = logger;
             _smtpClient = getSmtpClient.GetClient(mailSettings);
         }
@@ -37,13 +31,13 @@ namespace MrCMS.Services
                    !string.IsNullOrWhiteSpace(_smtpClient.Host);
         }
 
-        public void SendMailMessage(QueuedMessage queuedMessage)
+        public async Task<QueuedMessage> SendMailMessage(QueuedMessage queuedMessage)
         {
             try
             {
                 var mailMessage = BuildMailMessage(queuedMessage);
 
-                _smtpClient.Send(mailMessage);
+                await _smtpClient.SendMailAsync(mailMessage);
                 queuedMessage.SentOn = DateTime.UtcNow;
             }
             catch (Exception exception)
@@ -51,31 +45,10 @@ namespace MrCMS.Services
                 _logger.Log(LogLevel.Error, exception, exception.Message);
                 queuedMessage.Tries++;
             }
-            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+
+            return queuedMessage;
         }
 
-        public void AddToQueue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null)
-        {
-            _session.Transact(session =>
-            {
-                session.Save(queuedMessage);
-                if (attachments == null || !attachments.Any())
-                    return;
-                foreach (var data in attachments)
-                {
-                    var attachment = new QueuedMessageAttachment
-                    {
-                        QueuedMessage = queuedMessage,
-                        ContentType = data.ContentType,
-                        FileName = data.FileName,
-                        Data = data.Data,
-                        FileSize = data.Data.LongLength
-                    };
-                    queuedMessage.QueuedMessageAttachments.Add(attachment);
-                    session.Save(attachment);
-                }
-            });
-        }
 
         private MailMessage BuildMailMessage(QueuedMessage queuedMessage)
         {
@@ -95,10 +68,25 @@ namespace MrCMS.Services
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
-                mailMessage.CC.Add(queuedMessage.Cc);
-            if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
-                mailMessage.Bcc.Add(queuedMessage.Bcc);
+            multipleToAddress = queuedMessage.Cc.Split(new[] {',', ';'},
+                StringSplitOptions.RemoveEmptyEntries);
+            if (multipleToAddress.Any())
+            {
+                foreach (var email in multipleToAddress)
+                {
+                    mailMessage.CC.Add(new MailAddress(email.Trim(), queuedMessage.ToName));
+                }
+            }
+
+            multipleToAddress = queuedMessage.Bcc.Split(new[] {',', ';'},
+                StringSplitOptions.RemoveEmptyEntries);
+            if (multipleToAddress.Any())
+            {
+                foreach (var email in multipleToAddress)
+                {
+                    mailMessage.Bcc.Add(new MailAddress(email.Trim(), queuedMessage.ToName));
+                }
+            }
 
             if (queuedMessage.QueuedMessageAttachments != null)
                 foreach (var attachment in queuedMessage.QueuedMessageAttachments)

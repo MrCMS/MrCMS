@@ -1,13 +1,14 @@
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Services
 {
     public interface IFormListOptionAdminService
     {
-        void Add(AddFormListOptionModel formListOption);
-        void Update(UpdateFormListOptionModel formListOption);
-        void Delete(int formListOption);
+        Task Add(AddFormListOptionModel formListOption);
+        Task Update(UpdateFormListOptionModel formListOption);
+        Task Delete(int formListOption);
         AddFormListOptionModel GetAddModel(int formPropertyId);
-        UpdateFormListOptionModel GetUpdateModel(int id);
+        Task<UpdateFormListOptionModel> GetUpdateModel(int id);
     }
 }

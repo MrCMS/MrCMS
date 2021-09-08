@@ -4,7 +4,7 @@
 @inject IGetArticleAdminAuthorOptions GetAuthorOptions
 @{ Html.IncludeScript("~/Areas/Admin/Apps/Articles/scripts/article.js"); }
 @{
-    var userOptions = GetAuthorOptions.GetUsers();
+    var userOptions = await GetAuthorOptions.GetUsers();
 }
 <div class="form-group">
     @Html.LabelFor(model => model.FeatureImage, "Article Image") <br />

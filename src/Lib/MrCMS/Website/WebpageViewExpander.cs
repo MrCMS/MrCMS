@@ -17,11 +17,14 @@ namespace MrCMS.Website
                 return;
             }
 
-            var webpage = context.ActionContext.HttpContext.RequestServices.GetRequiredService<IGetCurrentPage>().GetPage();
+            var httpContext = context.ActionContext.HttpContext;
+            if (httpContext.Response.StatusCode != 200)
+                return;
+            var webpage = httpContext.RequestServices.GetRequiredService<IGetCurrentPage>().GetPage();
 
             if (webpage != null)
             {
-                context.Values[Key] = webpage.DocumentType;
+                context.Values[Key] = context.ViewName ?? webpage.DocumentType;
             }
         }
 

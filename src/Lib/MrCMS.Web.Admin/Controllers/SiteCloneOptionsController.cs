@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -13,9 +14,9 @@ namespace MrCMS.Web.Admin.Controllers
             _siteCloneOptionsAdminService = siteCloneOptionsAdminService;
         }
 
-        public PartialViewResult Get()
+        public async Task<PartialViewResult> Get()
         {
-            ViewData["other-sites"] = _siteCloneOptionsAdminService.GetOtherSiteOptions();
+            ViewData["other-sites"] = await _siteCloneOptionsAdminService.GetOtherSiteOptions();
 
             return PartialView(_siteCloneOptionsAdminService.GetClonePartOptions());
         }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
 

@@ -1,9 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
@@ -20,7 +19,7 @@ namespace MrCMS.Web.Admin.Services
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session,
-            IUrlHelper urlHelper, ITreeNavService treeNavService,IDocumentMetadataService documentMetadataService)
+            IUrlHelper urlHelper, ITreeNavService treeNavService, IDocumentMetadataService documentMetadataService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
@@ -29,9 +28,9 @@ namespace MrCMS.Web.Admin.Services
             _documentMetadataService = documentMetadataService;
         }
 
-        public AdminTree GetTree(int? id)
+        public async Task<AdminTree> GetTree(int? id)
         {
-            Webpage parent = id.HasValue ? _session.Get<Webpage>(id) : null;
+            Webpage parent = id.HasValue ? await _session.GetAsync<Webpage>(id) : null;
             var adminTree = new AdminTree
             {
                 RootContoller = "Webpage",
@@ -40,8 +39,9 @@ namespace MrCMS.Web.Admin.Services
             int maxChildNodes = parent == null ? 1000 : _documentMetadataService.GetMetadata(parent).MaxChildNodes;
             IQueryOver<Webpage, Webpage> query = GetQuery(parent);
 
-            int rowCount = GetRowCount(query);
-            query.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
+            int rowCount = await GetRowCount(query);
+            var webpages = await query.Take(maxChildNodes).Cacheable().ListAsync();
+            foreach (var doc in webpages)
             {
                 DocumentMetadata documentMetadata = _documentMetadataService.GetMetadata(doc);
                 var node = new AdminTreeNode
@@ -52,15 +52,17 @@ namespace MrCMS.Web.Admin.Services
                     IconClass = documentMetadata.IconClass,
                     NodeType = "Webpage",
                     Type = documentMetadata.Type.FullName,
-                    HasChildren = _treeNavService.WebpageHasChildren(doc.Id),
+                    HasChildren = await _treeNavService.WebpageHasChildren(doc.Id),
                     Sortable = documentMetadata.Sortable,
-                    CanAddChild = _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
+                    CanAddChild = await _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
                     IsPublished = doc.Published,
                     RevealInNavigation = doc.RevealInNavigation,
                     Url = _urlHelper.Action("Edit", "Webpage", new {id = doc.Id})
                 };
                 adminTree.Nodes.Add(node);
-            });
+            }
+
+            ;
             if (rowCount > maxChildNodes)
             {
                 adminTree.Nodes.Add(new AdminTreeNode
@@ -72,19 +74,20 @@ namespace MrCMS.Web.Admin.Services
                     Url = _urlHelper.Action("Search", "WebpageSearch", new {parentId = id}),
                 });
             }
+
             return adminTree;
         }
 
-        public bool HasChildren(int id)
+        public async Task<bool> HasChildren(int id)
         {
-            var parent = _session.Get<Webpage>(id);
+            var parent = await _session.GetAsync<Webpage>(id);
             IQueryOver<Webpage, Webpage> query = GetQuery(parent);
-            return GetRowCount(query) > 0;
+            return await GetRowCount(query) > 0;
         }
 
-        private static int GetRowCount(IQueryOver<Webpage, Webpage> query)
+        private static async Task<int> GetRowCount(IQueryOver<Webpage, Webpage> query)
         {
-            return query.Cacheable().RowCount();
+            return await query.Cacheable().RowCountAsync();
         }
 
         private IQueryOver<Webpage, Webpage> GetQuery(Webpage parent)
@@ -101,6 +104,7 @@ namespace MrCMS.Web.Admin.Services
                 query = query.Where(x => x.Parent == null);
                 query = query.OrderBy(x => x.DisplayOrder).Asc;
             }
+
             return query;
         }
 
@@ -118,18 +122,18 @@ namespace MrCMS.Web.Admin.Services
                 case SortBy.PublishedOn:
                     query =
                         query.OrderBy(
-                            Projections.Conditional(
-                                Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)),
-                                Projections.Constant(1), Projections.Constant(0)))
+                                Projections.Conditional(
+                                    Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)),
+                                    Projections.Constant(1), Projections.Constant(0)))
                             .Desc.ThenBy(webpage => webpage.PublishOn)
                             .Asc;
                     break;
                 case SortBy.PublishedOnDesc:
                     query =
                         query.OrderBy(
-                            Projections.Conditional(
-                                Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)),
-                                Projections.Constant(1), Projections.Constant(0)))
+                                Projections.Conditional(
+                                    Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)),
+                                    Projections.Constant(1), Projections.Constant(0)))
                             .Desc.ThenBy(webpage => webpage.PublishOn)
                             .Desc;
                     break;
@@ -142,6 +146,7 @@ namespace MrCMS.Web.Admin.Services
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return query;
         }
     }

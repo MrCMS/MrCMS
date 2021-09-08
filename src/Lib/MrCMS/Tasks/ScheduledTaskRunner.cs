@@ -1,59 +1,60 @@
 using Microsoft.Extensions.Logging;
-using MrCMS.Helpers;
 using MrCMS.Tasks.Entities;
 using System;
+using System.Threading.Tasks;
+using Quartz;
 
 namespace MrCMS.Tasks
 {
-    public class ScheduledTaskRunner : IScheduledTaskRunner
+    [DisallowConcurrentExecution]
+    public class ScheduledTaskRunner<T> : IJob where T : SchedulableTask
     {
-        private readonly ILogger<ScheduledTaskRunner> _logger;
-
+        private readonly ILogger<ScheduledTaskRunner<T>> _logger;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly ITaskSettingManager _taskSettingManager;
 
         public ScheduledTaskRunner(
             IServiceProvider serviceProvider, ITaskSettingManager taskSettingManager,
-            ILogger<ScheduledTaskRunner> logger)
+            ILogger<ScheduledTaskRunner<T>> logger)
         {
             _serviceProvider = serviceProvider;
             _taskSettingManager = taskSettingManager;
             _logger = logger;
         }
 
-
-        public void ExecuteTask(string type)
+        private async Task SetStatus(Type type, TaskExecutionStatus status, Action<TaskSettings> action = null)
         {
-            var typeObj = TypeHelper.GetTypeByName(type);
-            if (typeObj == null)
-            {
-                return;
-            }
+            await _taskSettingManager.SetStatus(type, status, action);
+        }
 
-            var schedulableTask = _serviceProvider.GetService(typeObj) as SchedulableTask;
-            if (schedulableTask == null)
-            {
-                return;
-            }
+        public async Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation($"{DateTime.UtcNow} - Executing task: {typeof(T).Name}");
+            var serviceType = typeof(T);
 
             try
             {
-                SetStatus(typeObj, TaskExecutionStatus.Executing);
-                schedulableTask.Execute();
-                SetStatus(typeObj, TaskExecutionStatus.Pending,
+                if (!(_serviceProvider.GetService(serviceType) is SchedulableTask schedulableTask))
+                {
+                    return;
+                }
+
+                await SetStatus(serviceType, TaskExecutionStatus.Executing,
+                    settings => settings.LastStarted = DateTime.UtcNow);
+                await schedulableTask.Execute();
+                await SetStatus(serviceType, TaskExecutionStatus.Pending,
                     settings => settings.LastCompleted = DateTime.UtcNow);
             }
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, exception, exception.Message);
-                SetStatus(typeObj, TaskExecutionStatus.Pending);
+                await SetStatus(serviceType, TaskExecutionStatus.Pending);
             }
-        }
-
-        private void SetStatus(Type type, TaskExecutionStatus status, Action<TaskSettings> action = null)
-        {
-            _taskSettingManager.SetStatus(type, status, action);
+            finally
+            {
+                _logger.LogInformation(
+                    $"{DateTime.UtcNow} - Executed task: {typeof(T).Name} - Duration: {context.JobRunTime}");
+            }
         }
     }
 }

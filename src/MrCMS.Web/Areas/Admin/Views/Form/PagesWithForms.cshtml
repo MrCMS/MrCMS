@@ -1,0 +1,54 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Admin.Models.Forms.WebpagesWithEmbeddedFormQuery
+@{
+    var results = ViewData["results"] as IPagedList<Webpage>;
+}
+<admin-header>
+    <row>
+        <admin-header-title title="@(await Html.Resource("admin-forms-with-pages-title", "Webpages with embedded forms"))"/>
+        <admin-header-actions>
+            <a asp-action="Index" class="btn btn-secondary">Back for all forms</a>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+
+@if (results.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-condensed table-hover">
+            <thead>
+            <tr>
+                <th>Article</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var data in results)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Edit" asp-controller="Webpage" asp-route-id="@data.Id">
+                            @data.Name
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div style="padding-top: 20px;">
+        <div class="alert alert-info" role="alert">
+            No Data to display.
+        </div>
+    </div>
+}
+
+@if (results.TotalItemCount > 1)
+{
+    @Html.PagedListPager(results, page => Url.Action("PagesWithForms", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+}

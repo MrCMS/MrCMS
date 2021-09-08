@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Batching.Entities;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -15,19 +15,21 @@ namespace MrCMS.Web.Admin.Controllers
             _batchAdminService = batchAdminService;
         }
 
-        public ViewResult Index(BatchSearchModel searchModel)
+        public async Task<ViewResult> Index(BatchSearchModel searchModel)
         {
-            ViewData["results"] = _batchAdminService.Search(searchModel);
+            ViewData["results"] = await _batchAdminService.Search(searchModel);
             return View(searchModel);
         }
 
-        public ViewResult Show(Batch batch)
+        public async Task<ViewResult> Show(int id)
         {
+            var batch = await _batchAdminService.Get(id);
             return View(batch);
         }
 
-        public ActionResult ShowPartial(Batch batch)
+        public async Task<ActionResult> ShowPartial(int id)
         {
+            var batch = await _batchAdminService.Get(id);
             return PartialView("Show", batch);
         }
     }

@@ -35,14 +35,22 @@ namespace MrCMS.DbConfiguration
             _transaction.Dispose();
         }
 
-        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
+        public async Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            await HandlePreTransaction(_session);
+            await _transaction.CommitAsync(cancellationToken);
+            if (!MrCMSTransactionWrapper.IsInPostTransaction(HttpContext))
+            {
+                using (new MrCMSTransactionWrapper(HttpContext))
+                {
+                    await HandlePostTransaction(_session);
+                }
+            }
         }
 
-        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
+        public async Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            await _transaction.RollbackAsync(cancellationToken);
         }
 
         public void Begin()
@@ -57,15 +65,16 @@ namespace MrCMS.DbConfiguration
 
         public void Commit()
         {
-            HandlePreTransaction(_session);
-            _transaction.Commit();
-            if (!MrCMSTransactionWrapper.IsInPostTransaction(HttpContext))
-            {
-                using (new MrCMSTransactionWrapper(HttpContext))
-                {
-                    HandlePostTransaction(_session);
-                }
-            }
+            throw new NotImplementedException("Refactor to use async");
+            // HandlePreTransaction(_session);
+            // _transaction.Commit();
+            // if (!MrCMSTransactionWrapper.IsInPostTransaction(HttpContext))
+            // {
+            //     using (new MrCMSTransactionWrapper(HttpContext))
+            //     {
+            //         await HandlePostTransaction(_session);
+            //     }
+            // }
         }
 
         public void Rollback()
@@ -91,20 +100,21 @@ namespace MrCMS.DbConfiguration
 
         public bool WasCommitted => _transaction.WasCommitted;
 
-        private static void HandlePostTransaction(MrCMSSession session)
+        private static async Task HandlePostTransaction(MrCMSSession session)
         {
             while (GetNextAddedEventInfoForPostTransaction(session) != null)
             {
                 EventInfo obj = GetNextAddedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof(IOnAdded<>), (info, ses, t) => info.GetTypedInfo(t).ToAddedArgs(ses, t));
+                await Publish(obj, session, typeof(IOnAdded<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToAddedArgs(ses, t));
             }
 
             while (GetNextUpdatedEventInfoForPostTransaction(session) != null)
             {
                 UpdatedEventInfo obj = GetNextUpdatedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof(IOnUpdated<>),
+                await Publish(obj, session, typeof(IOnUpdated<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToUpdatedArgs(ses, t));
             }
 
@@ -112,7 +122,7 @@ namespace MrCMS.DbConfiguration
             {
                 EventInfo obj = GetNextDeletedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof(IOnDeleted<>),
+                await Publish(obj, session, typeof(IOnDeleted<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToDeletedArgs(ses, t));
             }
         }
@@ -132,15 +142,18 @@ namespace MrCMS.DbConfiguration
             return session.Deleted.FirstOrDefault(x => !x.PostTransactionHandled);
         }
 
-        private static void Publish<T>(T onUpdatedArgs, ISession session, Type eventType,
+        private static async Task Publish<T>(T onUpdatedArgs, ISession session, Type eventType,
             Func<T, ISession, Type, object> getArgs)
         {
             Type type = onUpdatedArgs.GetType().GenericTypeArguments[0];
 
             List<Type> types = GetEntityTypes(type).Reverse().ToList();
 
-            types.ForEach(
-                t => session.GetService<IEventContext>().Publish(eventType.MakeGenericType(t), getArgs(onUpdatedArgs, session, t)));
+            foreach (var t in types)
+            {
+                await session.GetService<IEventContext>()
+                    .Publish(eventType.MakeGenericType(t), getArgs(onUpdatedArgs, session, t));
+            }
         }
 
         private static IEnumerable<Type> GetEntityTypes(Type type)
@@ -151,10 +164,11 @@ namespace MrCMS.DbConfiguration
                 yield return thisType;
                 thisType = thisType.BaseType;
             }
+
             yield return typeof(SystemEntity);
         }
 
-        private static void HandlePreTransaction(MrCMSSession session)
+        private static async Task HandlePreTransaction(MrCMSSession session)
         {
             HashSet<EventInfo> eventInfos = session.Added.ToHashSet();
             foreach (var obj in eventInfos)
@@ -165,7 +179,8 @@ namespace MrCMS.DbConfiguration
                 }
 
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof(IOnAdding<>), (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
+                await Publish(obj, session, typeof(IOnAdding<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
             }
 
             HashSet<UpdatedEventInfo> updatedEventInfos = session.Updated.ToHashSet();
@@ -177,7 +192,7 @@ namespace MrCMS.DbConfiguration
                 }
 
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof(IOnUpdating<>),
+                await Publish(obj, session, typeof(IOnUpdating<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToUpdatingArgs(ses, t));
             }
 
@@ -190,7 +205,7 @@ namespace MrCMS.DbConfiguration
                 }
 
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof(IOnDeleting<>),
+                await Publish(obj, session, typeof(IOnDeleting<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
             }
         }

@@ -1,5 +1,4 @@
 ﻿@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
 @using MrCMS.Services
 @using MrCMS.Web.Admin.Infrastructure.Helpers
 @model MrCMS.Web.Admin.Models.WebpageEdit.WebpagePropertiesTabViewModel
@@ -7,22 +6,42 @@
 @{
     var webpage = ViewData["webpage"] as Webpage;
 }
-@Html.HiddenFor(x => x.LiveUrlSegment)
-@Html.HiddenFor(x => x.DocumentType)
-@Html.HiddenFor(x => x.Id)
-
+<input type="hidden" asp-for="DocumentType"/>
+<input type="hidden" asp-for="Id"/>
 
 <div class="form-group">
     <label asp-for="Name"></label>
-    @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-    @Html.ValidationMessageFor(x => x.Name)
+    <input type="text" asp-for="Name" class="form-control"/>
+    <span asp-validation-for="Name"></span>
 </div>
 
 @if (DocumentMetadataService.GetDocumentMetadata(Html, Model.Id).HasBodyContent)
 {
-    <div class="body-content">
+    <div class="body-content mb-3" data-body-content>
         <!-- leave this class here for fixing the bar to top only for body content -->
-        @Html.TextAreaFor(x => x.BodyContent, new {@class = "ckedit-enabled"})
+        <textarea asp-for="BodyContent" class="ckedit-enabled"></textarea>
     </div>
 }
+
+<div class="form-group">
+    <label asp-for="CampaignName"></label>
+    <input type="text" asp-for="CampaignName" class="form-control"/>
+    <span asp-validation-for="CampaignName"></span>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(x => x.PageType, "pagetype")
+            @Html.TextBoxFor(x => x.PageType, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.PageType)
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="checkbox" style="margin-top: 30px;">
+            <label>
+                @Html.CheckBoxFor(model => model.OnlyAtLandingPage) @await Html.Resource("Exclude query strings")
+            </label>
+        </div>
+    </div>
+</div>
 @await Html.RenderUpdateCustomAdminProperties(webpage)

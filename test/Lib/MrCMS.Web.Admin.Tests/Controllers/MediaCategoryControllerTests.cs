@@ -8,6 +8,7 @@ using MrCMS.Web.Admin.Controllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Controllers
@@ -26,76 +27,76 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_AddGet_ShouldReturnAnAddCategoryModel()
+        public async Task MediaCategoryController_AddGet_ShouldReturnAnAddCategoryModel()
         {
             AddMediaCategoryModel model = new AddMediaCategoryModel();
             A.CallTo(() => _mediaCategoryAdminService.GetNewCategoryModel(123)).Returns(model);
 
-            var result = _mediaCategoryController.Add_Get(123);
+            var result = await _mediaCategoryController.Add_Get(123);
 
             result.Model.Should().Be(model);
         }
 
         [Fact]
-        public void MediaCategoryController_AddPost_ShouldCallAdd()
+        public async Task MediaCategoryController_AddPost_ShouldCallAdd()
         {
             var mediaCategory = new AddMediaCategoryModel();
 
-            _mediaCategoryController.Add(mediaCategory);
+            await _mediaCategoryController.Add(mediaCategory);
 
             A.CallTo(() => _mediaCategoryAdminService.Add(mediaCategory)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
-        public void MediaCategoryController_AddPost_ShouldRedirectToShow()
+        public async Task MediaCategoryController_AddPost_ShouldRedirectToShow()
         {
             var model = new AddMediaCategoryModel();
             MediaCategory mediaCategory = new MediaCategory { Id = 123 };
             A.CallTo(() => _mediaCategoryAdminService.Add(model)).Returns(mediaCategory);
 
-            var result = _mediaCategoryController.Add(model);
+            var result = await _mediaCategoryController.Add(model);
 
             result.ActionName.Should().Be("Show");
             result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
-        public void MediaCategoryController_EditGet_ShouldReturnAViewResult()
+        public async Task MediaCategoryController_EditGet_ShouldReturnAViewResult()
         {
-            var result = _mediaCategoryController.Edit_Get(123);
+            var result = await _mediaCategoryController.Edit_Get(123);
 
             result.Should().BeOfType<ViewResult>();
         }
 
         [Fact]
-        public void MediaCategoryController_EditGet_ShouldReturnEditModelAsViewModel()
+        public async Task MediaCategoryController_EditGet_ShouldReturnEditModelAsViewModel()
         {
             var model = new UpdateMediaCategoryModel();
             A.CallTo(() => _mediaCategoryAdminService.GetEditModel(123)).Returns(model);
 
-            var result = _mediaCategoryController.Edit_Get(123);
+            var result = await _mediaCategoryController.Edit_Get(123);
 
             result.Model.Should().Be(model);
         }
 
         [Fact]
-        public void MediaCategoryController_EditPost_ShouldCallUpdate()
+        public async Task MediaCategoryController_EditPost_ShouldCallUpdate()
         {
             var model = new UpdateMediaCategoryModel { Id = 1 };
 
-            _mediaCategoryController.Edit(model);
+            await _mediaCategoryController.Edit(model);
 
             A.CallTo(() => _mediaCategoryAdminService.Update(model)).MustHaveHappened();
         }
 
         [Fact]
-        public void MediaCategoryController_EditPost_ShouldRedirectToShow()
+        public async Task MediaCategoryController_EditPost_ShouldRedirectToShow()
         {
             var model = new UpdateMediaCategoryModel { };
             var category = new MediaCategory {Id = 1};
             A.CallTo(() => _mediaCategoryAdminService.Update(model)).Returns(category);
 
-            var result = _mediaCategoryController.Edit(model);
+            var result = await _mediaCategoryController.Edit(model);
 
             result.ActionName.Should().Be("Show");
             result.RouteValues["id"].Should().Be(1);
@@ -121,9 +122,9 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Show_IncorrectCategoryIdRedirectsToIndex()
+        public async Task MediaCategoryController_Show_IncorrectCategoryIdRedirectsToIndex()
         {
-            ActionResult actionResult = _mediaCategoryController.Show(null);
+            ActionResult actionResult = await _mediaCategoryController.Show(null);
 
             actionResult.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be("Index");
         }

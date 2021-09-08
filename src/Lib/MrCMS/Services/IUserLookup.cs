@@ -1,6 +1,6 @@
 using System;
 using System.Security.Principal;
-using System.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
 
@@ -8,11 +8,11 @@ namespace MrCMS.Services
 {
     public interface IUserLookup
     {
-        User GetUserByEmail(string email);
-        User GetUserByResetGuid(Guid resetGuid);
-        User GetUserByGuid(Guid guid);
-        User GetUserById(int id);
-        User GetCurrentUser(HttpContext context);
-        User GetCurrentUser(IPrincipal principal);
+        Task<User> GetUserByEmail(string email);
+        Task<User> GetUserByResetGuid(Guid resetGuid);
+        Task<User> GetUserByGuid(Guid guid);
+        Task<User> GetUserById(int id);
+        Task<User> GetCurrentUser(HttpContext context);
+        Task<User> GetCurrentUser(IPrincipal principal);
     }
 }

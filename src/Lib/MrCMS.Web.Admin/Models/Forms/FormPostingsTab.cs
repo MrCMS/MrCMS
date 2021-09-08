@@ -4,8 +4,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Web.Admin.Services;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
+using MrCMS.Web.Admin.Services;
 
 namespace MrCMS.Web.Admin.Models.Forms
 {
@@ -13,16 +13,16 @@ namespace MrCMS.Web.Admin.Models.Forms
     {
         public override int Order => 200;
 
-        public override string Name(IServiceProvider serviceProvider, Form entity)
+        public override async Task<string> Name(IServiceProvider serviceProvider, Form entity)
         {
-            var postingsModel = serviceProvider.GetRequiredService<IFormAdminService>()
+            var postingsModel = await serviceProvider.GetRequiredService<IFormAdminService>()
                 .GetFormPostings(entity, 1, string.Empty);
             return $"Entries ({postingsModel.Items.Count})";
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Form entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Form entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         public override Type ParentType => null;

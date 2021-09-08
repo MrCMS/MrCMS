@@ -1,9 +1,5 @@
-using System.Linq;
-using System.Reflection;
 using FluentNHibernate.Conventions;
-using FluentNHibernate.Conventions.Inspections;
 using FluentNHibernate.Conventions.Instances;
-using FluentNHibernate.MappingModel;
 
 namespace MrCMS.DbConfiguration.Conventions
 {

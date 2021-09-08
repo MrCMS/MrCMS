@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models;
@@ -9,13 +9,14 @@ namespace MrCMS.Web.Admin.Services
 {
     public interface IPageTemplateAdminService
     {
-        IPagedList<PageTemplate> Search(PageTemplateSearchQuery query);
-        void Add(AddPageTemplateModel model);
-        UpdatePageTemplateModel GetEditModel(int id);
-        void Update(UpdatePageTemplateModel template);
+        Task<IPagedList<PageTemplate>> Search(PageTemplateSearchQuery query);
+        Task Add(AddPageTemplateModel model);
+        Task<UpdatePageTemplateModel> GetEditModel(int id);
+        Task Update(UpdatePageTemplateModel template);
+        Task Delete(int id);
 
         List<SelectListItem> GetPageTypeOptions();
-        List<SelectListItem> GetLayoutOptions();
+        Task<List<SelectListItem>> GetLayoutOptions();
         List<SelectListItem> GetUrlGeneratorOptions(string typeName);
     }
 }

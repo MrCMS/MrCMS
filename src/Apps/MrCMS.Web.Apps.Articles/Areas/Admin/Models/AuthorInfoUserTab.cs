@@ -14,14 +14,14 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
         public override Type ParentType => null;
 
         public override Type ModelType { get; }
-        public override string Name(IServiceProvider serviceProvider, User entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, User entity)
         {
-            return "Author Info";
+            return Task.FromResult("Author Info");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, User entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, User entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         public override string TabHtmlId => "author-info";

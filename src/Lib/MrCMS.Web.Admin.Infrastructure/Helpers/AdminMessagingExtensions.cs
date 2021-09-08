@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -5,22 +6,47 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
 {
     public static class AdminMessagingExtensions
     {
-        public static ICollection<string> SuccessMessages(this ITempDataDictionary tempData)
+        private const string SuccessMessageKey = "success-message";
+        private const string ErrorMessageKey = "error-message";
+        private const string InfoMessageKey = "info-message";
+
+        public static void AddSuccessMessage(this ITempDataDictionary tempDataDictionary, string message)
         {
-            if (!tempData.ContainsKey("success-message")) tempData["success-message"] = new List<string>();
-            return tempData["success-message"] as ICollection<string>;
+            var messages = new List<string>(tempDataDictionary.SuccessMessages()) {message};
+            tempDataDictionary[SuccessMessageKey] = messages;
+        }
+        
+        public static IReadOnlyCollection<string> SuccessMessages(this ITempDataDictionary tempData)
+        {
+            if (tempData.ContainsKey(SuccessMessageKey))
+                return tempData[SuccessMessageKey] as IReadOnlyCollection<string>;
+            return Array.Empty<string>();
+        }
+        
+        public static void AddErrorMessage(this ITempDataDictionary tempDataDictionary, string message)
+        {
+            var messages = new List<string>(tempDataDictionary.ErrorMessages()) {message};
+            tempDataDictionary[ErrorMessageKey] = messages;
         }
 
-        public static ICollection<string> ErrorMessages(this ITempDataDictionary tempData)
+        public static IReadOnlyCollection<string> ErrorMessages(this ITempDataDictionary tempData)
         {
-            if (!tempData.ContainsKey("error-message")) tempData["error-message"] = new List<string>();
-            return tempData["error-message"] as ICollection<string>;
+            if (tempData.ContainsKey(ErrorMessageKey))
+                return tempData[ErrorMessageKey] as IReadOnlyCollection<string>;
+            return Array.Empty<string>();
+        }
+        
+        public static void AddInfoMessage(this ITempDataDictionary tempDataDictionary, string message)
+        {
+            var messages = new List<string>(tempDataDictionary.InfoMessages()) {message};
+            tempDataDictionary[InfoMessageKey] = messages;
         }
 
-        public static ICollection<string> InfoMessages(this ITempDataDictionary tempData)
+        public static IReadOnlyCollection<string> InfoMessages(this ITempDataDictionary tempData)
         {
-            if (!tempData.ContainsKey("info-message")) tempData["info-message"] = new List<string>();
-            return tempData["info-message"] as ICollection<string>;
+            if (tempData.ContainsKey(InfoMessageKey))
+                return tempData[InfoMessageKey] as IReadOnlyCollection<string>;
+            return Array.Empty<string>();
         }
     }
 }

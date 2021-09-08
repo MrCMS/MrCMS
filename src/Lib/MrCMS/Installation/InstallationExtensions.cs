@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing.Patterns;
+using Microsoft.AspNetCore.Http;
+using MrCMS.Entities.Multisite;
+using MrCMS.Services;
+using MrCMS.Settings;
 
 namespace MrCMS.Installation
 {
@@ -13,6 +16,13 @@ namespace MrCMS.Installation
         public static IServiceCollection AddInstallationServices(this IServiceCollection services)
         {
             services.AddSingleton<IFileProvider>(new InstallationContentFileProvider());
+            services.AddScoped<ICurrentSiteLocator>(provider =>
+            {
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var context = contextAccessor.HttpContext;
+                var site = context.Items["override-site"] as Site;
+                return new KnownSiteLocator(site);
+            });
 
             services.AddMvc(options => { }).AddApplicationPart(Assembly.GetAssembly(typeof(InstallationExtensions)))
                 .AddRazorRuntimeCompilation(options =>

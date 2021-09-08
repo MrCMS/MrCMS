@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
@@ -21,21 +24,24 @@ namespace MrCMS.Web.Admin.Services
         private readonly IStringResourceProvider _provider;
         private readonly ISession _session;
         private readonly IMapper _mapper;
+        private readonly IOptions<RequestLocalizationOptions> _requestLocalisationOptions;
         private readonly SiteSettings _siteSettings;
 
         public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
-            ISession session, IMapper mapper)
+            ISession session, IMapper mapper, IOptions<RequestLocalizationOptions> requestLocalisationOptions)
         {
             _provider = provider;
             _siteSettings = siteSettings;
             _session = session;
             _mapper = mapper;
+            _requestLocalisationOptions = requestLocalisationOptions;
         }
 
-        public IPagedList<StringResource> Search(StringResourceSearchQuery searchQuery)
+        public async Task<IPagedList<StringResource>> Search(StringResourceSearchQuery searchQuery)
         {
+            var allResources = await _provider.GetAllResources();
             IEnumerable<StringResource> resources =
-                _provider.AllResources.GetResourcesByKeyAndValue(searchQuery);
+                allResources.GetResourcesByKeyAndValue(searchQuery);
             if (searchQuery.Language == DefaultLanguage)
             {
                 resources = resources.Where(resource => resource.UICulture == null);
@@ -58,19 +64,20 @@ namespace MrCMS.Web.Admin.Services
                 }
             }
 
-            return new PagedList<StringResource>(resources.OrderBy(resource => StringResourceExtensions.GetDisplayKey(resource.Key)), searchQuery.Page,
+            return new PagedList<StringResource>(
+                resources.OrderBy(resource => StringResourceExtensions.GetDisplayKey(resource.Key)), searchQuery.Page,
                 _siteSettings.DefaultPageSize);
         }
 
-        public void Add(AddStringResourceModel model)
+        public async Task Add(AddStringResourceModel model)
         {
             var resource = _mapper.Map<StringResource>(model);
-            _provider.AddOverride(resource);
+            await _provider.AddOverride(resource);
         }
 
-        public StringResource GetResource(int id)
+        public async Task<StringResource> GetResource(int id)
         {
-            return _session.Get<StringResource>(id);
+            return await _session.GetAsync<StringResource>(id);
         }
 
         public UpdateStringResourceModel GetEditModel(StringResource resource)
@@ -78,23 +85,23 @@ namespace MrCMS.Web.Admin.Services
             return _mapper.Map<UpdateStringResourceModel>(resource);
         }
 
-        public void Update(UpdateStringResourceModel model)
+        public async Task Update(UpdateStringResourceModel model)
         {
-            var resource = GetResource(model.Id);
+            var resource = await GetResource(model.Id);
             _mapper.Map(model, resource);
-            _provider.Update(resource);
+            await _provider.Update(resource);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var resource = _session.Get<StringResource>(id);
-            _provider.Delete(resource);
+            var resource = await GetResource(id);
+            await _provider.Delete(resource);
         }
 
-        public List<SelectListItem> GetLanguageOptions(string key, int? siteId)
+        public async Task<List<SelectListItem>> GetLanguageOptions(string key, int? siteId)
         {
-            List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
-            IEnumerable<string> languages = _provider.GetOverriddenLanguages(key, siteId);
+            List<CultureInfo> cultureInfos = _requestLocalisationOptions.Value.SupportedCultures.ToList();
+            IEnumerable<string> languages = await _provider.GetOverriddenLanguages(key, siteId);
             cultureInfos.RemoveAll(info => languages.Contains(info.Name));
             return cultureInfos.OrderBy(info => info.DisplayName)
                 .BuildSelectItemList(info => info.DisplayName, info => info.Name,
@@ -102,48 +109,53 @@ namespace MrCMS.Web.Admin.Services
                     SelectListItemHelper.EmptyItem("Select a culture..."));
         }
 
-        public List<SelectListItem> SearchLanguageOptions()
+        public async Task<List<SelectListItem>> SearchLanguageOptions()
         {
             List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.SpecificCultures).ToList();
-            IEnumerable<string> languages = _provider.GetOverriddenLanguages();
+            IEnumerable<string> languages = await _provider.GetOverriddenLanguages();
             cultureInfos = cultureInfos.FindAll(info => languages.Contains(info.Name));
 
             List<SelectListItem> selectListItems = cultureInfos.OrderBy(info => info.DisplayName)
                 .BuildSelectItemList(info => info.DisplayName, info => info.Name, emptyItem: null);
 
-            selectListItems.Insert(0, new SelectListItem { Text = "Any", Value = "" });
-            selectListItems.Insert(1, new SelectListItem { Text = DefaultLanguage, Value = DefaultLanguage });
+            selectListItems.Insert(0, new SelectListItem {Text = "Any", Value = ""});
+            selectListItems.Insert(1, new SelectListItem {Text = DefaultLanguage, Value = DefaultLanguage});
             return selectListItems;
         }
 
-        public AddStringResourceModel GetNewResource(string key, int? id)
+        public async Task<AddStringResourceModel> GetNewResource(string key, int? id)
         {
+            var allResources = await _provider.GetAllResources();
             string value =
-                _provider.AllResources.Where(x => x.Key == key && x.Site == null && x.UICulture == null)
+                allResources.Where(x => x.Key == key && x.Site == null && x.UICulture == null)
                     .Select(resource => resource.Value)
                     .FirstOrDefault();
-            return new AddStringResourceModel { Key = key, SiteId = id, Value = value };
+            return new AddStringResourceModel {Key = key, SiteId = id, Value = value};
         }
 
-        public List<SelectListItem> ChooseSiteOptions(ChooseSiteParams chooseSiteParams)
+        public async Task<List<SelectListItem>> ChooseSiteOptions(ChooseSiteParams chooseSiteParams)
         {
-            IEnumerable<StringResource> resourcesByKey = _provider.AllResources.Where(x => x.Key == chooseSiteParams.Key);
-            List<Site> sites = GetAllSites();
+            var allResources = await _provider.GetAllResources();
+            IEnumerable<StringResource> resourcesByKey =
+                allResources.Where(x => x.Key == chooseSiteParams.Key);
+            List<Site> sites = await GetAllSites();
 
             if (!chooseSiteParams.Language)
             {
                 resourcesByKey = resourcesByKey.Where(resource => resource.Site != null && resource.UICulture == null);
                 sites =
-                    sites.Where(site => !resourcesByKey.Select(resource => resource.Site.Id).Contains(site.Id)).ToList();
+                    sites.Where(site => !resourcesByKey.Select(resource => resource.Site.Id).Contains(site.Id))
+                        .ToList();
             }
 
             return sites
                 .BuildSelectItemList(site => site.DisplayName, site => site.Id.ToString(), emptyItem: null);
         }
 
-        public List<SelectListItem> SearchSiteOptions()
+        public async Task<List<SelectListItem>> SearchSiteOptions()
         {
-            List<SelectListItem> siteOptions = GetAllSites()
+            var allSites = await GetAllSites();
+            List<SelectListItem> siteOptions = allSites
                 .BuildSelectItemList(site => site.DisplayName, site => site.Id.ToString(), emptyItemText: "All");
 
             siteOptions.Insert(1, new SelectListItem
@@ -155,10 +167,12 @@ namespace MrCMS.Web.Admin.Services
             return siteOptions;
         }
 
-        private List<Site> GetAllSites()
+        private async Task<List<Site>> GetAllSites()
         {
-            return _session.Query<Site>()
-                .OrderBy(x => x.Name).WithOptions(x => x.SetCacheable(true)).ToList();
+            return await _session.Query<Site>()
+                .OrderBy(x => x.Name)
+                .WithOptions(x => x.SetCacheable(true))
+                .ToListAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Documents.Web;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
@@ -15,16 +16,16 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public IPagedList<Webpage> Search(CustomScriptPagesSearchModel searchModel)
+        public async Task<IPagedList<Webpage>> Search(CustomScriptPagesSearchModel searchModel)
         {
-            return _session.QueryOver<Webpage>()
+            return await _session.QueryOver<Webpage>()
                 .Where(x =>
                     (x.CustomHeaderScripts != null && x.CustomHeaderScripts != "")
                     ||
                     (x.CustomFooterScripts != null && x.CustomFooterScripts != "")
                 )
                 .OrderBy(x => x.Name).Asc
-                .Paged(searchModel.Page);
+                .PagedAsync(searchModel.Page);
         }
     }
 }

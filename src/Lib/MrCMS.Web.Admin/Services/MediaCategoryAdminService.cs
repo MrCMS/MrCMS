@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -17,7 +19,7 @@ namespace MrCMS.Web.Admin.Services
         private readonly IMapper _mapper;
 
         public MediaCategoryAdminService(IRepository<MediaCategory> mediaCategoryRepository,
-            IGetDocumentsByParent<MediaCategory> getDocumentsByParent, 
+            IGetDocumentsByParent<MediaCategory> getDocumentsByParent,
             IUrlValidationService urlValidationService,
             IMapper mapper)
         {
@@ -35,62 +37,79 @@ namespace MrCMS.Web.Admin.Services
             };
         }
 
-        public MediaCategory GetCategory(int? id)
+        public async Task<MediaCategory> GetCategory(int? id)
         {
-            return id.HasValue ? _mediaCategoryRepository.Get(id.Value) : null;
+            return id.HasValue ? await _mediaCategoryRepository.Get(id.Value) : null;
         }
 
-        public MediaCategory Add(AddMediaCategoryModel model)
+        public async Task<IMediaCategoryAdminService.CanAddCategoryResult> CanAdd(AddMediaCategoryModel model)
         {
             var mediaCategory = _mapper.Map<MediaCategory>(model);
-            _mediaCategoryRepository.Add(mediaCategory);
+            if (await _mediaCategoryRepository.Query()
+                .AnyAsync(x => x.UrlSegment == mediaCategory.UrlSegment))
+                return new IMediaCategoryAdminService.CanAddCategoryResult
+                    {Success = false, ErrorMessage = "Category already exists at this location"};
+            return new IMediaCategoryAdminService.CanAddCategoryResult {Success = true};
+        }
+
+        public async Task<MediaCategory> Add(AddMediaCategoryModel model)
+        {
+            var mediaCategory = _mapper.Map<MediaCategory>(model);
+            await _mediaCategoryRepository.Add(mediaCategory);
             return mediaCategory;
         }
 
-        public MediaCategory Update(UpdateMediaCategoryModel model)
+        public async Task<MediaCategory> Update(UpdateMediaCategoryModel model)
         {
-            var category = GetCategory(model.Id);
+            var category = await GetCategory(model.Id);
             _mapper.Map(model, category);
-            _mediaCategoryRepository.Update(category);
+            await _mediaCategoryRepository.Update(category);
             return category;
         }
 
-        public MediaCategory Delete(int id)
+        public async Task<MediaCategory> Delete(int id)
         {
-            var mediaCategory = _mediaCategoryRepository.Get(id);
-            _mediaCategoryRepository.Delete(mediaCategory);
+            var mediaCategory = await _mediaCategoryRepository.Get(id);
+            await _mediaCategoryRepository.Delete(mediaCategory);
             return mediaCategory;
         }
 
-        public List<SortItem> GetSortItems(int id)
+        public async Task<List<SortItem>> GetSortItems(int id)
         {
             return
-                _getDocumentsByParent.GetDocuments(GetCategory(id))
-                    .Select(
-                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                    .OrderBy(x => x.Order)
-                    .ToList();
-
+                (await _getDocumentsByParent.GetDocuments(await GetCategory(id)))
+                .Select(
+                    arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
+                .OrderBy(x => x.Order)
+                .ToList();
         }
 
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _mediaCategoryRepository.Transact(repository => items.ForEach(item =>
+            await _mediaCategoryRepository.TransactAsync(async repository =>
             {
-                var mediaFile = repository.Get(item.Id);
-                mediaFile.DisplayOrder = item.Order;
-                repository.Update(mediaFile);
-            }));
+                foreach (var item in items)
+                {
+                    var mediaFile = await repository.Get(item.Id);
+                    mediaFile.DisplayOrder = item.Order;
+                    await repository.Update(mediaFile);
+                }
+            });
         }
 
-        public bool UrlIsValidForMediaCategory(string urlSegment, int? id)
+        public async Task<bool> UrlIsValidForMediaCategory(string urlSegment, int? id)
         {
-            return _urlValidationService.UrlIsValidForMediaCategory(urlSegment, id);
+            return await _urlValidationService.UrlIsValidForMediaCategory(urlSegment, id);
         }
 
-        public UpdateMediaCategoryModel GetEditModel(int id)
+        public async Task<UpdateMediaCategoryModel> GetEditModel(int id)
         {
-            return _mapper.Map<UpdateMediaCategoryModel>(GetCategory(id));
+            return _mapper.Map<UpdateMediaCategoryModel>(await GetCategory(id));
+        }
+
+        public async Task<MediaCategory> Get(int id)
+        {
+            return await _mediaCategoryRepository.Get(id);
         }
     }
 }

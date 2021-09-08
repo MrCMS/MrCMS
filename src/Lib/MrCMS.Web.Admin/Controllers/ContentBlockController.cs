@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Website.Controllers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models.ContentBlocks;
 using MrCMS.Web.Admin.Services;
 
@@ -14,7 +14,8 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly IContentBlockAdminService _contentBlockAdminService;
         private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
 
-        public ContentBlockController(IContentBlockAdminService contentBlockAdminService, IModelBindingHelperAdapter modelBindingHelperAdapter)
+        public ContentBlockController(IContentBlockAdminService contentBlockAdminService,
+            IModelBindingHelperAdapter modelBindingHelperAdapter)
         {
             _contentBlockAdminService = contentBlockAdminService;
             _modelBindingHelperAdapter = modelBindingHelperAdapter;
@@ -23,7 +24,8 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpGet]
         public ViewResult Add(AddContentBlockViewModel addModel)
         {
-            ViewData["additional-property-model"] = _contentBlockAdminService.GetAdditionalPropertyModel(addModel.BlockType);
+            ViewData["additional-property-model"] =
+                _contentBlockAdminService.GetAdditionalPropertyModel(addModel.BlockType);
             return View(addModel);
         }
 
@@ -33,59 +35,55 @@ namespace MrCMS.Web.Admin.Controllers
             var additionalPropertyModel = _contentBlockAdminService.GetAdditionalPropertyModel(addModel.BlockType);
             if (additionalPropertyModel != null)
             {
-                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel,
+                    additionalPropertyModel.GetType(), string.Empty);
             }
 
-            var id = _contentBlockAdminService.Add(addModel, additionalPropertyModel);
+            var id = await _contentBlockAdminService.Add(addModel, additionalPropertyModel);
 
             if (id != null)
             {
-                return RedirectToAction("Edit", "Webpage", new { id });
+                return RedirectToAction("Edit", "Webpage", new {id});
             }
 
             return RedirectToAction("Index", "Webpage");
         }
 
         [HttpGet]
-        public ViewResult Edit(int id)
+        public async Task<ViewResult> Edit(int id)
         {
-            ViewData["block"] = _contentBlockAdminService.GetEntity(id);
-            return View(_contentBlockAdminService.GetUpdateModel(id));
+            ViewData["block"] = await _contentBlockAdminService.GetEntity(id);
+            return View(await _contentBlockAdminService.GetUpdateModel(id));
         }
 
         [HttpPost]
         public async Task<RedirectToActionResult> Edit(UpdateContentBlockViewModel updateModel)
         {
-            var additionalPropertyModel = _contentBlockAdminService.GetAdditionalPropertyModel(updateModel.Id);
+            var additionalPropertyModel = await _contentBlockAdminService.GetAdditionalPropertyModel(updateModel.Id);
             if (additionalPropertyModel != null)
             {
-                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel,
+                    additionalPropertyModel.GetType(), string.Empty);
             }
 
-            var id = _contentBlockAdminService.Update(updateModel, additionalPropertyModel);
+            var id = await _contentBlockAdminService.Update(updateModel, additionalPropertyModel);
 
             if (id != null)
             {
-                return RedirectToAction("Edit", "Webpage", new { id });
+                return RedirectToAction("Edit", "Webpage", new {id});
             }
 
             return RedirectToAction("Index", "Webpage");
         }
 
-        [HttpGet]
-        public ViewResult Delete(int id)
+        [HttpPost]
+        public async Task<RedirectToActionResult> Delete(int id)
         {
-            return View(_contentBlockAdminService.GetUpdateModel(id));
-        }
-
-        [HttpPost, ActionName(nameof(Delete))]
-        public RedirectToActionResult Delete_POST(int id)
-        {
-            var webpageId = _contentBlockAdminService.Delete(id);
+            var webpageId = await _contentBlockAdminService.Delete(id);
 
             if (webpageId != null)
             {
-                return RedirectToAction("Edit", "Webpage", new { id = webpageId });
+                return RedirectToAction("Edit", "Webpage", new {id = webpageId});
             }
 
             return RedirectToAction("Index", "Webpage");
@@ -93,21 +91,20 @@ namespace MrCMS.Web.Admin.Controllers
 
 
         [HttpGet]
-        public ViewResult Sort(int id)
+        public async Task<ViewResult> Sort(int id)
         {
-            var sortItems = _contentBlockAdminService.GetSortItems(id);
+            var sortItems = await _contentBlockAdminService.GetSortItems(id);
             ViewData["web-page"] = id;
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort(IList<SortItem> sortItems, int webpageId)
+        public async Task<ActionResult> Sort(IList<SortItem> sortItems, int webpageId)
         {
-            _contentBlockAdminService.Sort(sortItems);
+            await _contentBlockAdminService.Sort(sortItems);
 
-            return RedirectToAction("Edit", "Webpage", new { id = webpageId });
+            return RedirectToAction("Edit", "Webpage", new {id = webpageId});
         }
-
     }
 }

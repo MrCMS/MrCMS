@@ -1,8 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Resources
 {
@@ -17,26 +15,14 @@ namespace MrCMS.Entities.Resources
 
         public virtual string UICulture { get; set; }
 
-        public virtual string DisplayUICulture
-        {
-            get { return IsDefaultUICulture ? "Default" : CultureInfo.GetCultureInfo(UICulture).DisplayName; }
-        }
-        public virtual string DisplaySite
-        {
-            get { return IsGlobal ? "System Default" : Site.DisplayName; }
-        }
-        public virtual bool IsDefault
-        {
-            get { return IsDefaultUICulture && IsGlobal; }
-        }
+        public virtual string DisplayUICulture => IsDefaultUICulture ? "Default" : CultureInfo.GetCultureInfo(UICulture).DisplayName;
 
-        public virtual bool IsDefaultUICulture
-        {
-            get { return string.IsNullOrWhiteSpace(UICulture); }
-        }
-        public virtual bool IsGlobal
-        {
-            get { return Site == null; }
-        }
+        public virtual string DisplaySite => IsGlobal ? "System Default" : Site.DisplayName;
+
+        public virtual bool IsDefault => IsDefaultUICulture && IsGlobal;
+
+        public virtual bool IsDefaultUICulture => string.IsNullOrWhiteSpace(UICulture);
+
+        public virtual bool IsGlobal => Site == null;
     }
 }

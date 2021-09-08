@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Web.Admin.Models;
 
@@ -7,13 +7,13 @@ namespace MrCMS.Web.Admin.Services
 {
     public interface IPageDefaultsAdminService
     {
-        List<PageDefaultsInfo> GetAll();
-        List<SelectListItem> GetUrlGeneratorOptions(Type type);
-        List<SelectListItem> GetLayoutOptions();
-        DefaultsInfo GetInfo(Type type);
-        void SetDefaults(DefaultsInfo info);
+        Task<List<PageDefaultsInfo>> GetAll();
+        List<SelectListItem> GetUrlGeneratorOptions(string typeName);
+        Task<List<SelectListItem>> GetLayoutOptions();
+        DefaultsInfo GetInfo(string typeName);
+        Task SetDefaults(DefaultsInfo info);
 
-        void EnableCache(string typeName);
-        void DisableCache(string typeName);
+        Task EnableCache(string typeName);
+        Task DisableCache(string typeName);
     }
 }

@@ -1,11 +1,12 @@
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Services.Caching;
 using MrCMS.Settings;
 using MrCMS.Website.Caching;
 using NHibernate;
@@ -30,67 +31,69 @@ namespace MrCMS.Services
             _cacheManager = cacheManager;
         }
 
-        public ImageInfo GetImageInfo(string imageUrl, Size targetSize)
+        public async Task<ImageInfo> GetImageInfo(string imageUrl, Size targetSize)
         {
-            var crop = _imageProcessor.GetCrop(imageUrl);
+            var crop = await _imageProcessor.GetCrop(imageUrl);
             if (crop != null)
                 return new ImageInfo
                 {
                     Title = crop.Title,
                     Description = crop.Description,
-                    ImageUrl = GetCropImageUrl(crop, targetSize),
+                    ImageUrl = await GetCropImageUrl(crop, targetSize),
                     ActualSize = ImageProcessor.CalculateDimensions(crop.Size, targetSize)
                 };
-            var image = _imageProcessor.GetImage(imageUrl);
+            var image = await _imageProcessor.GetImage(imageUrl);
             if (image != null)
                 return new ImageInfo
                 {
                     Title = image.Title,
                     Description = image.Description,
-                    ImageUrl = GetFileImageUrl(image, targetSize),
+                    ImageUrl = await GetFileImageUrl(image, targetSize),
                     ActualSize = ImageProcessor.CalculateDimensions(image.Size, targetSize)
                 };
             return null;
         }
 
-
-        public string GetImageUrl(string imageUrl, Size targetSize)
+        public async Task<string> GetImageUrl(string imageUrl, Size targetSize)
         {
             var info = _mediaSettings.GetImageUrlCachingInfo(imageUrl, targetSize);
-            return _cacheManager.GetOrCreate(info.CacheKey, () => string.IsNullOrWhiteSpace(imageUrl)
-                ? null
-                : GetImageInfo(imageUrl, targetSize)?.ImageUrl, info.TimeToCache, info.ExpiryType);
+            return await _cacheManager.GetOrCreateAsync(info.CacheKey, async () =>
+            {
+                var result = await GetImageInfo(imageUrl, targetSize);
+                return result.ImageUrl;
+            }, info.TimeToCache, info.ExpiryType);
         }
 
-        public IHtmlContent RenderImage(IHtmlHelper helper, string imageUrl, Size targetSize = new Size(),
+        public async Task<IHtmlContent> RenderImage(IHtmlHelper helper, string imageUrl, Size targetSize = new Size(),
             string alt = null,
             string title = null, object attributes = null)
         {
             var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, attributes);
-            return helper.GetCached(cachingInfo, htmlHelper =>
+
+            return await _cacheManager.GetOrCreateAsync(cachingInfo.CacheKey, async () =>
             {
                 using (new SiteFilterDisabler(_session))
                 {
                     if (string.IsNullOrWhiteSpace(imageUrl))
                         return HtmlString.Empty;
 
-                    var imageInfo = GetImageInfo(imageUrl, targetSize);
+                    var imageInfo = await GetImageInfo(imageUrl, targetSize);
                     if (imageInfo == null)
                         return HtmlString.Empty;
 
                     return ReturnTag(imageInfo, alt, title, attributes);
                 }
-            });
+            }, cachingInfo.TimeToCache, cachingInfo.ExpiryType);
         }
 
-        private string GetFileImageUrl(MediaFile image, Size targetSize)
+        private async Task<string> GetFileImageUrl(MediaFile image, Size targetSize)
         {
-            return _fileService.GetFileLocation(image, targetSize, true);
+            return await _fileService.GetFileLocation(image, targetSize, true);
         }
 
-        private string GetCropImageUrl(Crop crop, Size targetSize)
+        private async Task<string> GetCropImageUrl(Crop crop, Size targetSize)
         {
-            return _fileService.GetFileLocation(crop, targetSize, true);
+            return await _fileService.GetFileLocation(crop, targetSize, true);
         }
 
 
@@ -100,10 +103,12 @@ namespace MrCMS.Services
             tagBuilder.Attributes.Add("src", imageInfo.ImageUrl);
             tagBuilder.Attributes.Add("alt", alt ?? imageInfo.Title);
             tagBuilder.Attributes.Add("title", title ?? imageInfo.Description);
+            tagBuilder.Attributes.Add("loading", "lazy");
             if (attributes != null)
             {
                 var routeValueDictionary = MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(attributes);
-                foreach (var kvp in routeValueDictionary) tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
+                foreach (var kvp in routeValueDictionary.Where(kvp => kvp.Value != null))
+                    tagBuilder.Attributes.Add(kvp.Key, kvp.Value!.ToString());
             }
 
             tagBuilder.TagRenderMode = TagRenderMode.SelfClosing;

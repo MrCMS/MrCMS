@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Services
@@ -28,15 +29,15 @@ namespace MrCMS.Services
             }
         }
 
-        public bool ValidateUser(User user, string password)
+        public async Task<bool> ValidateUser(User user, string password)
         {
             if (!string.IsNullOrWhiteSpace(user.Source) && _userSources.ContainsKey(user.Source))
-                return _userSources[user.Source].ValidateUser(user, password);
+                return await _userSources[user.Source].ValidateUser(user, password);
 
             var compareByteArrays = _passwordEncryptionManager.ValidateUser(user, password);
             if (compareByteArrays && !string.IsNullOrWhiteSpace(user.CurrentEncryption))
             {
-                _passwordEncryptionManager.UpdateEncryption(user, password);
+                await _passwordEncryptionManager.UpdateEncryption(user, password);
             }
             return compareByteArrays;
         }

@@ -1,6 +1,4 @@
 ﻿@using MrCMS.Apps
-@using MrCMS.Helpers
-@using MrCMS.Website
 @model dynamic
 @inject MrCMSAppContext AppContext
 @{
@@ -9,19 +7,14 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-about-installation", "About Installation") "/>
+        <admin-header-title title="@await Html.Resource("admin-about", "About") "/>
 
         <admin-header-actions>
         </admin-header-actions>
     </row>
 </admin-header>
 
-<card>
-    <card-body>
-        <p>&copy; Mr CMS 2012-@DateTime.Now.Year - v@(Html.AssemblyVersion())</p>
-        <p>@Html.Resource("Admin Logged in from", "Logged in from") @Context.Request.GetCurrentIP()</p>
-        <h4>@Html.Resource("Admin Layout Installed apps", "Installed apps")</h4>
-        <p>@AppContext.AppSummary</p>
-
-    </card-body>
-</card>
+<p>&copy; Mr CMS 2012-@DateTime.Now.Year - v@(Html.AssemblyVersion())</p>
+<p>@await Html.Resource("Admin Logged in from", "Logged in from") @Context.Request.GetCurrentIP()</p>
+<h4>@await Html.Resource("Admin Layout Installed apps", "Installed apps")</h4>
+<p>@AppContext.AppSummary</p>

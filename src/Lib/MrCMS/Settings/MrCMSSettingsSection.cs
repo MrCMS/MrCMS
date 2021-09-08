@@ -9,9 +9,6 @@ namespace MrCMS.Settings
         }
 
         [ConfigurationProperty("", Options = ConfigurationPropertyOptions.IsDefaultCollection)]
-        public KeyValueConfigurationCollection Settings
-        {
-            get { return base[""] as KeyValueConfigurationCollection; }
-        }
+        public KeyValueConfigurationCollection Settings => base[""] as KeyValueConfigurationCollection;
     }
 }

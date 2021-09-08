@@ -1,4 +1,4 @@
-using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
@@ -20,21 +20,22 @@ namespace MrCMS.Services
             _fileService = fileService;
         }
 
-        public string SaveFile(Form form, FormPosting formPosting, IFormFile file)
+        public async Task<string> SaveFile(Form form, FormPosting formPosting, IFormFile file)
         {
-            var mediaCategory = _mediaCategoryLoader.GetByUrl("file-uploads") ??
-                                CreateFileUploadMediaCategory();
+            var mediaCategory = await _mediaCategoryLoader.GetByUrl("file-uploads") ??
+                                await CreateFileUploadMediaCategory();
 
-            var result = _fileService.AddFile(file.OpenReadStream(), form.Id + "-" + formPosting.Id + "-" + file.FileName,
+            var result = await _fileService.AddFile(file.OpenReadStream(),
+                form.Id + "-" + formPosting.Id + "-" + file.FileName,
                 file.ContentType, file.Length, mediaCategory);
 
             return result.FileUrl;
         }
 
-        private MediaCategory CreateFileUploadMediaCategory()
+        private async Task<MediaCategory> CreateFileUploadMediaCategory()
         {
-            var mediaCategory = new MediaCategory { UrlSegment = "file-uploads", Name = "File Uploads" };
-            _mediaCategoryRepository.Add(mediaCategory);
+            var mediaCategory = new MediaCategory {UrlSegment = "file-uploads", Name = "File Uploads"};
+            await _mediaCategoryRepository.Add(mediaCategory);
             return mediaCategory;
         }
     }

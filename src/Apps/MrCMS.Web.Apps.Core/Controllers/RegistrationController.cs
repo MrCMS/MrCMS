@@ -1,85 +1,36 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Attributes;
-using MrCMS.Models.Auth;
 using MrCMS.Services;
-using MrCMS.Services.Auth;
-using MrCMS.Services.Resources;
-using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class RegistrationController : MrCMSAppUIController<MrCMSCoreApp>
     {
-        private readonly IRegistrationService _registrationService;
-        private readonly IStringResourceProvider _stringResourceProvider;
-        private readonly IUniquePageService _uniquePageService;
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IUserLookup _userLookup;
 
-        public RegistrationController(IRegistrationService registrationService,
-            IStringResourceProvider stringResourceProvider,
-            IUniquePageService uniquePageService,
-            IGetCurrentUser getCurrentUser)
+        public RegistrationController(IUserLookup userLookup)
         {
-            _registrationService = registrationService;
-            _stringResourceProvider = stringResourceProvider;
-            _uniquePageService = uniquePageService;
-            _getCurrentUser = getCurrentUser;
+            _userLookup = userLookup;
         }
 
-        [CanonicalLinks]
-        public ActionResult Show(RegisterPage page)
+
+        [Route("check-email-is-not-registered")]
+        public async Task<JsonResult> CheckEmailIsNotRegistered([Bind(Prefix = "Input.Email")] string email,
+            [Bind(Prefix = "Input.Id")] int? id = null)
+
         {
-            var user = _getCurrentUser.Get();
-            if (user != null && !user.IsAdmin)
-                return Redirect("~/");
-            return View(page);
+            var user = await _userLookup.GetUserByEmail(email);
+            return Json(user == null || id.HasValue && user.Id == id);
         }
+        
+        [Route("check-email-exists")]
+        public async Task<JsonResult> CheckEmailIsNotRegisteredMVC(string email,
+            int? id = null)
 
-        [HttpGet]
-        public ViewResult RegistrationDetails(RegisterModel model, string returnUrl = null)
         {
-            ViewBag.Message = TempData["already-logged-in"];
-            ModelState.Clear();
-            model.ReturnUrl = returnUrl;
-            return View(model);
-        }
-
-        [HttpPost]
-        [ActionName("RegistrationDetails")]
-        public async Task<RedirectResult> RegistrationDetails_POST(RegisterModel model)
-        {
-            var user = _getCurrentUser.Get();
-            if (user != null)
-            {
-                TempData["already-logged-in"] = _stringResourceProvider.GetValue("Register Already Logged in",
-                    "You are already logged in. Please logout to create a new account.");
-                return _uniquePageService.RedirectTo<RegisterPage>();
-            }
-
-            if (model != null && ModelState.IsValid && _registrationService.CheckEmailIsNotRegistered(model.Email))
-            {
-                await _registrationService.RegisterUser(model);
-
-                return !string.IsNullOrEmpty(model.ReturnUrl)
-                    ? Redirect("~/" + model.ReturnUrl)
-                    : Redirect("~/");
-            }
-
-            model = model ?? new RegisterModel();
-
-            model.Password = null;
-            model.ConfirmPassword = null;
-
-            TempData["register-model"] = model;
-
-            return _uniquePageService.RedirectTo<RegisterPage>();
-        }
-
-        public JsonResult CheckEmailIsNotRegistered(string email)
-        {
-            return Json(_registrationService.CheckEmailIsNotRegistered(email));
+            var user = await _userLookup.GetUserByEmail(email);
+            return Json(user == null || id.HasValue && user.Id == id);
         }
     }
 }

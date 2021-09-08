@@ -38,6 +38,6 @@ namespace MrCMS.Shortcodes.Forms
             return AppendElement(formProperty as Email, existingValue, formRenderingType);
         }
 
-        public bool IsSelfClosing { get { return true; } }
+        public bool IsSelfClosing => true;
     }
 }

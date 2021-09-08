@@ -9,6 +9,6 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System.Settings
         public override string Action => "Index";
 
         public override bool IsNav => true;
-        public override int Order => 4;
+        public override decimal Order => 4;
     }
 }

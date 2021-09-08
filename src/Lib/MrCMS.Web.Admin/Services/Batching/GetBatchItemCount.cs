@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using NHibernate;
 
@@ -12,11 +13,11 @@ namespace MrCMS.Web.Admin.Services.Batching
             _session = session;
         }
 
-        public int Get(Batch batch)
+        public async Task<int> Get(Batch batch)
         {
             return batch == null
                 ? 0
-                : _session.QueryOver<BatchJob>().Where(job => job.Batch.Id == batch.Id).RowCount();
+                : await _session.QueryOver<BatchJob>().Where(job => job.Batch.Id == batch.Id).RowCountAsync();
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
-using MrCMS.Web.Admin.Helpers;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.ACL;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
@@ -38,62 +38,62 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddLayoutModel model)
+        public async Task<RedirectToActionResult> Add(AddLayoutModel model)
         {
-            var layout = _layoutAdminService.Add(model);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully added", model.Name));
-            return RedirectToAction("Edit", new { id = layout.Id });
+            var layout = await _layoutAdminService.Add(model);
+            TempData.AddSuccessMessage($"{model.Name} successfully added");
+            return RedirectToAction("Edit", new {id = layout.Id});
         }
 
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(LayoutsACL), LayoutsACL.Edit)]
-        public ViewResult Edit_Get(int id)
+        public async Task<ViewResult> Edit_Get(int id)
         {
-            var layout = _layoutAdminService.GetEditModel(id);
-            ViewData["layout-areas"] = _layoutAdminService.GetLayoutAreas(id);
+            var layout = await _layoutAdminService.GetEditModel(id);
+            ViewData["layout-areas"] = await _layoutAdminService.GetLayoutAreas(id);
             return View(layout);
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateLayoutModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateLayoutModel model)
         {
-            _layoutAdminService.Update(model);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", model.Name));
-            return RedirectToAction("Edit", new { id = model.Id });
+            await _layoutAdminService.Update(model);
+            TempData.AddSuccessMessage($"{model.Name} successfully saved");
+            return RedirectToAction("Edit", new {id = model.Id});
         }
 
         [HttpGet]
         [ActionName("Delete")]
         [Acl(typeof(LayoutsACL), LayoutsACL.Delete)]
-        public ActionResult Delete_Get(int id)
+        public async Task<ActionResult> Delete_Get(int id)
         {
-            return PartialView(_layoutAdminService.GetLayout(id));
+            return PartialView(await _layoutAdminService.GetLayout(id));
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var layout = _layoutAdminService.Delete(id);
-            TempData.InfoMessages().Add(string.Format("{0} deleted", layout.Name));
+            var layout = await _layoutAdminService.Delete(id);
+            TempData.AddInfoMessage($"{layout.Name} deleted");
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [Acl(typeof(LayoutsACL), LayoutsACL.Sort)]
-        public ViewResult Sort(int? id)
+        public async Task<ViewResult> Sort(int? id)
         {
-            var sortItems = _layoutAdminService.GetSortItems(id);
+            var sortItems = await _layoutAdminService.GetSortItems(id);
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort(
+        public async Task<ActionResult> Sort(
             int? id,
             List<SortItem> items)
         {
-            _layoutAdminService.SetOrders(items);
+            await _layoutAdminService.SetOrders(items);
             return RedirectToAction("Sort", id);
         }
 
@@ -103,27 +103,26 @@ namespace MrCMS.Web.Admin.Controllers
         /// <param name="urlSegment">The URL Segment entered</param>
         /// <param name="id">The id of the current page (if it exists yet)</param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
+        public async Task<ActionResult> ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_layoutAdminService.UrlIsValidForLayout(urlSegment, id)
+            return !await _layoutAdminService.UrlIsValidForLayout(urlSegment, id)
                 ? Json("Path already in use.")
                 : Json(true);
         }
 
         [HttpGet]
-        public PartialViewResult Set(int id)
+        public async Task<PartialViewResult> Set(int id)
         {
-            ViewData["valid-parents"] = _layoutAdminService.GetValidParents(id);
+            ViewData["valid-parents"] = await _layoutAdminService.GetValidParents(id);
             return PartialView(id);
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(int id, int? parentVal)
+        public async Task<RedirectToActionResult> Set(int id, int? parentVal)
         {
-            _layoutAdminService.SetParent(id, parentVal);
+            await _layoutAdminService.SetParent(id, parentVal);
 
-            return RedirectToAction("Edit", "Layout", new { id });
+            return RedirectToAction("Edit", "Layout", new {id});
         }
     }
-
 }

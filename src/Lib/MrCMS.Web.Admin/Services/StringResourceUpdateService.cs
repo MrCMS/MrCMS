@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
@@ -25,19 +26,20 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public FileResult Export(StringResourceSearchQuery searchQuery)
+        public async Task<FileResult> Export(StringResourceSearchQuery searchQuery)
         {
-            var resources = _provider.AllResources.GetResourcesByKeyAndValue(searchQuery);
+            var allResources = await _provider.GetAllResources();
+            var resources = allResources.GetResourcesByKeyAndValue(searchQuery);
             var data = new List<List<string>>
-                           {
-                               new List<string>
-                                   {
-                                       "Key",
-                                       "Value",
-                                       "Culture",
-                                       "SiteId"
-                                   }
-                           };
+            {
+                new List<string>
+                {
+                    "Key",
+                    "Value",
+                    "Culture",
+                    "SiteId"
+                }
+            };
             foreach (var source in resources.OrderBy(resource => resource.Key))
             {
                 var row = new List<string>();
@@ -47,6 +49,7 @@ namespace MrCMS.Web.Admin.Services
                 AddToRow(row, source.Site == null ? string.Empty : source.Site.Id.ToString());
                 data.Add(row);
             }
+
             string result = string.Join(Environment.NewLine, data.Select(list => string.Join(",", list)));
 
             return new FileContentResult(Encoding.UTF8.GetBytes(result), "text/csv")
@@ -57,17 +60,17 @@ namespace MrCMS.Web.Admin.Services
             };
         }
 
-        public ResourceImportSummary Import(IFormFile file)
+        public async Task<ResourceImportSummary> Import(IFormFile file)
         {
             Stream inputStream = file.OpenReadStream();
             inputStream.Position = 0;
             var reader = new StreamReader(inputStream, Encoding.UTF8);
-            string data = reader.ReadToEnd();
-            string[] rows = data.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            string data = await reader.ReadToEndAsync();
+            string[] rows = data.Split(new[] {"\r", "\n"}, StringSplitOptions.RemoveEmptyEntries);
             var resourceData = new List<StringResourceData>();
             foreach (string row in rows.Skip(1)) //skip the header row
             {
-                string[] columns = row.Split(new[] { "," }, StringSplitOptions.None);
+                string[] columns = row.Split(new[] {","}, StringSplitOptions.None);
                 if (columns.Count() != 4)
                     continue;
                 try
@@ -80,48 +83,52 @@ namespace MrCMS.Web.Admin.Services
                         Key = resourceKey,
                         Value = ReadData(columns[1]),
                         UICulture = ReadData(columns[2]),
-                        SiteId = int.TryParse(ReadData(columns[3]), out id) ? id : (int?)null
+                        SiteId = int.TryParse(ReadData(columns[3]), out id) ? id : (int?) null
                     });
                 }
                 catch
                 {
-
                 }
             }
+
             int added = 0, updated = 0;
+            var allResources = await _provider.GetAllResources();
             foreach (StringResourceData stringResourceData in resourceData)
             {
                 string uiCulture = string.IsNullOrWhiteSpace(stringResourceData.UICulture)
-                                       ? null
-                                       : stringResourceData.UICulture;
+                    ? null
+                    : stringResourceData.UICulture;
                 StringResource stringResource =
-                    _provider.AllResources.FirstOrDefault(
+                    allResources.FirstOrDefault(
                         resource =>
-                        resource.Key == stringResourceData.Key &&
-                        (stringResourceData.SiteId.HasValue
-                        ? resource.Site != null && resource.Site.Id == stringResourceData.SiteId
-                        : resource.Site == null) &&
-                        resource.UICulture == uiCulture);
+                            resource.Key == stringResourceData.Key &&
+                            (stringResourceData.SiteId.HasValue
+                                ? resource.Site != null && resource.Site.Id == stringResourceData.SiteId
+                                : resource.Site == null) &&
+                            resource.UICulture == uiCulture);
                 if (stringResource != null)
                 {
                     // we need to load the one out of the current session or else we'll have issues when saving
                     stringResource = _session.Get<StringResource>(stringResource.Id);
                     stringResource.Value = stringResourceData.Value;
-                    _provider.Update(stringResource);
+                    await _provider.Update(stringResource);
                     updated++;
                 }
                 else
                 {
-                    _provider.Insert(new StringResource
+                    await _provider.Insert(new StringResource
                     {
                         Key = stringResourceData.Key,
                         Value = stringResourceData.Value,
                         UICulture = uiCulture,
-                        Site = stringResourceData.SiteId.HasValue ? _session.Get<Site>(stringResourceData.SiteId) : null,
+                        Site = stringResourceData.SiteId.HasValue
+                            ? _session.Get<Site>(stringResourceData.SiteId)
+                            : null,
                     });
                     added++;
                 }
             }
+
             return new ResourceImportSummary
             {
                 Added = added,

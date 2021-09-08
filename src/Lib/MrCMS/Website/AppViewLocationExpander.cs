@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Apps;
 
 namespace MrCMS.Website
 {
@@ -16,16 +19,24 @@ namespace MrCMS.Website
             }
         }
 
-        public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
+        public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context,
+            IEnumerable<string> viewLocations)
         {
             foreach (var viewLocation in viewLocations)
             {
                 if (context.Values.ContainsKey(Key))
                 {
-                    yield return $"/Apps/{context.Values[Key]}{viewLocation}";
+                    var appName = context.Values[Key];
+                    yield return $"/Apps/{appName}{viewLocation}";
                 }
 
                 yield return viewLocation;
+
+                foreach (var appName in context.ActionContext.HttpContext.RequestServices
+                    .GetRequiredService<MrCMSAppContext>().Apps.Select(x => x.Name))
+                {
+                    yield return $"/Apps/{appName}{viewLocation}";
+                }
             }
         }
     }

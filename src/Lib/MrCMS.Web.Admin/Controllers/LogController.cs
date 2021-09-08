@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Logging;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -15,16 +16,16 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult Index(LogSearchQuery searchQuery)
+        public async Task<ViewResult> Index(LogSearchQuery searchQuery)
         {
-            ViewData["site-options"] = _adminService.GetSiteOptions();
-            ViewData["logs"] = _adminService.GetEntriesPaged(searchQuery);
+            ViewData["site-options"] = await _adminService.GetSiteOptions();
+            ViewData["logs"] = await _adminService.GetEntriesPaged(searchQuery);
             return View(searchQuery);
         }
 
-        public ViewResult Show(Log log)
+        public async Task<ViewResult> Show(int id)
         {
-            return View(log);
+            return View(await _adminService.Get(id));
         }
 
         [HttpGet]
@@ -35,24 +36,25 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete()
+        public async Task<ActionResult> Delete()
         {
-            _adminService.DeleteAllLogs();
+            await _adminService.DeleteAllLogs();
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [ActionName("DeleteLog")]
-        public ActionResult DeleteLog_Get(Log log)
+        public async Task<ActionResult> DeleteLog_Get(int id)
         {
+            var log = await _adminService.Get(id);
             return PartialView(log);
         }
 
         [HttpPost]
-        public ActionResult DeleteLog(int id)
+        public async Task<ActionResult> DeleteLog(int id)
         {
-            _adminService.DeleteLog(id);
+            await _adminService.DeleteLog(id);
 
             return RedirectToAction("Index");
         }

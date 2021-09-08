@@ -7,9 +7,10 @@ using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
 using System;
 using System.Linq;
-using MrCMS.Entities.Documents;
+using Microsoft.AspNetCore.Mvc.Routing;
 using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Shortcodes;
 
 namespace MrCMS.Helpers
 {
@@ -20,7 +21,9 @@ namespace MrCMS.Helpers
             var pairings = TypeHelper.GetSimpleInterfaceImplementationPairings();
             foreach (var interfaceType in pairings.Keys)
             {
-                container.AddScoped(interfaceType, pairings[interfaceType]);
+                if (!container.Any(x =>
+                    x.ServiceType == interfaceType && x.ImplementationType == pairings[interfaceType]))
+                    container.AddScoped(interfaceType, pairings[interfaceType]);
             }
         }
 
@@ -30,7 +33,7 @@ namespace MrCMS.Helpers
 
             foreach (var interfaceType in interfaces)
             {
-                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(interfaceType)
+                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFromGeneric(interfaceType)
                     .Where(x => x.IsGenericTypeDefinition))
                 {
                     container.AddScoped(interfaceType, type);
@@ -42,10 +45,15 @@ namespace MrCMS.Helpers
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<object>())
             {
-                container.AddScoped(type);
+                if (container.All(x => x.ServiceType != type))
+                    container.AddScoped(type);
             }
         }
 
+        public static void RegisterSiteLocator(this IServiceCollection container)
+        {
+            container.AddScoped<ICurrentSiteLocator, ContextCurrentSiteLocator>();
+        }
         public static void RegisterSettings(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())
@@ -75,10 +83,11 @@ namespace MrCMS.Helpers
 
         public static void RegisterFormRenderers(this IServiceCollection container)
         {
+            var allRenderers = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(IFormElementRenderer<>));
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>())
             {
                 var rendererInterfaceType = typeof(IFormElementRenderer<>).MakeGenericType(type);
-                var concreteType = TypeHelper.GetAllConcreteTypesAssignableFrom(rendererInterfaceType).FirstOrDefault();
+                var concreteType = allRenderers.FirstOrDefault(x => rendererInterfaceType.IsAssignableFrom(x));
                 if (concreteType != null)
                 {
                     container.AddScoped(rendererInterfaceType, concreteType);
@@ -86,24 +95,44 @@ namespace MrCMS.Helpers
             }
         }
 
+        public static void RegisterShortCodeRenderers(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IShortcodeRenderer>())
+            {
+                container.AddScoped(typeof(IShortcodeRenderer), type);
+            }
+        }
+
+        public static void RegisterRouteTransformers(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<DynamicRouteValueTransformer>())
+            {
+                container.AddTransient(type);
+            }
+        }
+
         public static void RegisterTokenProviders(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<ITokenProvider>())
             {
-                container.AddScoped(typeof(ITokenProvider), type);
+                if (!container.Any(x => x.ServiceType == typeof(ITokenProvider) && x.ImplementationType == type))
+                    container.AddScoped(typeof(ITokenProvider), type);
             }
 
-            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(ITokenProvider<>)))
+            var tokenProviderGenericType = typeof(ITokenProvider<>);
+            var tokenProviderTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(tokenProviderGenericType);
+            foreach (var type in tokenProviderTypes)
             {
                 if (type.IsGenericType)
                 {
-                    container.AddScoped(typeof(ITokenProvider<>), type);
+                    if (!container.Any(x => x.ServiceType == tokenProviderGenericType && x.ImplementationType == type))
+                        container.AddScoped(tokenProviderGenericType, type);
                 }
                 else
                 {
                     var typed = type.GetBaseTypes(true).SelectMany(x => x.GetInterfaces())
-                        .FirstOrDefault(x => x.GetGenericTypeDefinition() == typeof(ITokenProvider<>));
-                    if (typed != null)
+                        .FirstOrDefault(x => x.GetGenericTypeDefinition() == tokenProviderGenericType);
+                    if (typed != null && !container.Any(x => x.ServiceType == typed && x.ImplementationType == type))
                     {
                         container.AddScoped(typed, type);
                     }
@@ -117,8 +146,8 @@ namespace MrCMS.Helpers
             {
                 if (!type.IsGenericType)
                 {
-                    container.AddScoped(typeof(IGetDocumentMetadataInfo), type);
-                    container.AddScoped(type, type);
+                    container.AddSingleton(typeof(IGetDocumentMetadataInfo), type);
+                    container.AddSingleton(type, type);
                 }
                 else
                 {
@@ -128,7 +157,7 @@ namespace MrCMS.Helpers
                             .Where(type => !type.ContainsGenericParameters))
                     {
                         var genericType = type.MakeGenericType(webpageType);
-                        container.AddScoped(genericType, genericType);
+                        container.AddSingleton(genericType, genericType);
                     }
                 }
             }

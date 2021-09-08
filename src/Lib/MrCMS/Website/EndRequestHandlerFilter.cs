@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Filters;
-
-namespace MrCMS.Website
+﻿namespace MrCMS.Website
 {
-    public class EndRequestHandlerFilter : IAsyncResourceFilter
+    /*public class EndRequestHandlerFilter : IAsyncResourceFilter
     {
         private readonly IEndRequestTaskManager _manager;
 
@@ -17,5 +14,5 @@ namespace MrCMS.Website
             await next();
             _manager.ExecuteTasks();
         }
-    }
+    }*/
 }

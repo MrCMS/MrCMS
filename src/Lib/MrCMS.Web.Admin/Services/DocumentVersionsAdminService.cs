@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
@@ -12,30 +13,38 @@ namespace MrCMS.Web.Admin.Services
         private readonly IRepository<DocumentVersion> _documentVersionRepository;
         private readonly IRepository<Document> _documentRepository;
 
-        public DocumentVersionsAdminService(IRepository<DocumentVersion> documentVersionRepository,IRepository<Document> documentRepository)
+        public DocumentVersionsAdminService(IRepository<DocumentVersion> documentVersionRepository,
+            IRepository<Document> documentRepository)
         {
             _documentVersionRepository = documentVersionRepository;
             _documentRepository = documentRepository;
         }
 
-        public VersionsModel GetVersions(Document document, int page)
+        public async Task<VersionsModel> GetVersions(Document document, int page)
         {
-            IPagedList<DocumentVersion> versions = _documentVersionRepository.Query()
+            IPagedList<DocumentVersionViewModel> versions = await _documentVersionRepository.Query()
                 .Where(version => version.Document.Id == document.Id)
-                .OrderByDescending(version => version.CreatedOn)
-                .Paged(page);
+                .OrderByDescending(version => version.Id)//id faster than createdon for ordering
+                .Select(item => new DocumentVersionViewModel
+                {
+                    Id = item.Id,
+                    CreatedOn = item.CreatedOn,
+                    FirstName = item.User.FirstName,
+                    LastName = item.User.LastName
+                })
+                .PagedAsync(page);
 
             return new VersionsModel(versions, document.Id);
         }
 
-        public DocumentVersion GetDocumentVersion(int id)
+        public async Task<DocumentVersion> GetDocumentVersion(int id)
         {
-            return _documentVersionRepository.Get(id);
+            return await _documentVersionRepository.Get(id);
         }
 
-        public DocumentVersion RevertToVersion(int id)
+        public async Task<DocumentVersion> RevertToVersion(int id)
         {
-            var documentVersion = GetDocumentVersion(id);
+            var documentVersion = await GetDocumentVersion(id);
 
             var currentVersion = documentVersion.Document.Unproxy();
             var previousVersion = currentVersion.GetVersion(documentVersion.Id);
@@ -45,7 +54,8 @@ namespace MrCMS.Web.Admin.Services
             {
                 versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
             }
-            _documentRepository.Update(currentVersion);
+
+            await _documentRepository.Update(currentVersion);
             return documentVersion;
         }
     }

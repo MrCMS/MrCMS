@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
-using MrCMS.Helpers;
 
 namespace MrCMS.Apps
 {
@@ -22,10 +21,12 @@ namespace MrCMS.Apps
 
         public virtual IEnumerable<Type> BaseTypes => Enumerable.Empty<Type>();
         public virtual IDictionary<Type, string> SignalRHubs => new Dictionary<Type, string>();
-        public virtual IEnumerable<RegistrationInfo> Registrations => Enumerable.Empty<RegistrationInfo>();
 
-        public string ContentPrefix { get; set; }
-        public string ViewPrefix { get; set; }
+        public virtual IEnumerable<ApplicationRegistrationInfo> Registrations =>
+            Enumerable.Empty<ApplicationRegistrationInfo>();
+
+        public virtual IEnumerable<EndpointRegistrationInfo> EndpointRegistrations =>
+            Enumerable.Empty<EndpointRegistrationInfo>();
 
 
         public virtual IServiceCollection RegisterServices(IServiceCollection serviceCollection)
@@ -33,20 +34,27 @@ namespace MrCMS.Apps
             return serviceCollection;
         }
 
-        public virtual IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
+        public virtual IEndpointRouteBuilder MapRoutes(IEndpointRouteBuilder routeBuilder)
         {
             return routeBuilder;
         }
 
-        public virtual void SetupMvcOptions(MvcOptions options) { }
+        public virtual void SetupMvcOptions(MvcOptions options)
+        {
+        }
 
         public virtual void ConfigureAutomapper(IMapperConfigurationExpression expression)
         {
-            expression.AddProfiles(Assembly.GetTypes().Where(x => x.IsImplementationOf(typeof(Profile)))
+            expression.AddProfiles(Assembly.GetTypes().Where(x => typeof(Profile).IsAssignableFrom(x))
                 .Select(Activator.CreateInstance).Cast<Profile>());
         }
 
-        public virtual void AppendConfiguration(Configuration configuration) { }
-        public virtual void ConfigureAuthorization(AuthorizationOptions options) { }
+        public virtual void AppendConfiguration(Configuration configuration)
+        {
+        }
+
+        public virtual void ConfigureAuthorization(AuthorizationOptions options)
+        {
+        }
     }
 }

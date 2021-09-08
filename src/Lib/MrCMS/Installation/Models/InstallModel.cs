@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
-using System.Globalization;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Options;
-using MrCMS.Helpers;
-using MrCMS.Settings;
 
 namespace MrCMS.Installation.Models
 {

@@ -13,6 +13,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
         {
             _serviceProvider = serviceProvider;
         }
+
         private Type GetParent(Type type)
         {
             var result = TypeHelper.TypeIsImplementationOfOpenGeneric(type, typeof(Breadcrumb<>));
@@ -26,13 +27,14 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
             return TypeIterator(type).ToList();
         }
 
+        private static readonly HashSet<Type> BreadcrumbTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFrom<Breadcrumb>();
+
         public Type FindBreadcrumbType(string controllerName, string actionName)
         {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(Breadcrumb));
-
-            return types.FirstOrDefault(type =>
+            return BreadcrumbTypes.FirstOrDefault(type =>
             {
-                var breadcrumb = (_serviceProvider.GetService(type) as Breadcrumb);
+                var breadcrumb = _serviceProvider.GetService(type) as Breadcrumb;
 
                 return breadcrumb.Controller?.Equals(controllerName, StringComparison.InvariantCultureIgnoreCase) ==
                        true

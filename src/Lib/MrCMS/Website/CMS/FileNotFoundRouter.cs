@@ -1,10 +1,6 @@
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing;
-
 namespace MrCMS.Website.CMS
 {
-    public class FileNotFoundRouter : INamedRouter
+    /*public class FileNotFoundRouter : INamedRouter
     {
         private readonly IRouter _defaultRouter;
         public const string RouteName = "File Not Found Router";
@@ -35,5 +31,5 @@ namespace MrCMS.Website.CMS
         }
 
         public string Name => RouteName;
-    }
+    }*/
 }

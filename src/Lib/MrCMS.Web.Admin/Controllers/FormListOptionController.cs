@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Web.FormProperties;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -22,39 +22,38 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(AddFormListOptionModel model)
+        public async Task<ActionResult> Add(AddFormListOptionModel model)
         {
-            _adminService.Add(model);
-            return Json(new FormActionResult { success = true });
+            await _adminService.Add(model);
+            return Json(new FormActionResult {success = true});
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View(_adminService.GetUpdateModel(id));
+            return View(await _adminService.GetUpdateModel(id));
         }
 
         [HttpPost]
         [ActionName(nameof(Edit))]
-        public ActionResult Edit_POST(UpdateFormListOptionModel model)
+        public async Task<ActionResult> Edit_POST(UpdateFormListOptionModel model)
         {
-            _adminService.Update(model);
-            return Json(new FormActionResult { success = true });
+            await _adminService.Update(model);
+            return Json(new FormActionResult {success = true});
         }
 
         [HttpGet]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View(_adminService.GetUpdateModel(id));
+            return View(await _adminService.GetUpdateModel(id));
         }
 
         [HttpPost]
         [ActionName(nameof(Delete))]
-        public ActionResult Delete_POST(int id)
+        public async Task<ActionResult> Delete_POST(int id)
         {
-            _adminService.Delete(id);
-            return Json(new FormActionResult { success = true });
+            await _adminService.Delete(id);
+            return Json(new FormActionResult {success = true});
         }
-
     }
 }

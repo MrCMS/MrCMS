@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -18,14 +19,14 @@ namespace MrCMS.Web.Admin.Controllers
             return PartialView();
         }
 
-        public JsonResult Get()
+        public async Task<JsonResult> Get()
         {
-            return Json(_service.GetNotifications());
+            return Json(await _service.GetNotifications());
         }
 
-        public JsonResult GetCount()
+        public async Task<JsonResult> GetCount()
         {
-            return Json(_service.GetNotificationCount());
+            return Json(await _service.GetNotificationCount());
         }
 
         public PartialViewResult Navbar()
@@ -34,9 +35,9 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult MarkAllAsRead()
+        public async Task<JsonResult> MarkAllAsRead()
         {
-            _service.MarkAllAsRead();
+            await _service.MarkAllAsRead();
             return Json(true);
         }
     }

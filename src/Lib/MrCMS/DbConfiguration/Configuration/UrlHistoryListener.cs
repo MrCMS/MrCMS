@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Events;
 using MrCMS.Helpers;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
@@ -13,7 +15,7 @@ namespace MrCMS.DbConfiguration.Configuration
     /// </summary>
     public class UrlHistoryListener : IOnUpdated<Webpage>
     {
-        public void Execute(OnUpdatedArgs<Webpage> args)
+        public async Task Execute(OnUpdatedArgs<Webpage> args)
         {
             Webpage webpage = args.Item;
             if (webpage == null)
@@ -22,31 +24,43 @@ namespace MrCMS.DbConfiguration.Configuration
             string urlSegment = null;
             if (original != null)
                 urlSegment = original.UrlSegment;
-            SaveChangedUrl(urlSegment, webpage.UrlSegment, args.Session, webpage);
+            await SaveChangedUrl(urlSegment, webpage.UrlSegment, args.Session, webpage);
         }
 
-        private void SaveChangedUrl(string oldUrl, string newUrl, ISession session, Webpage webpage)
+        private async Task SaveChangedUrl(string oldUrl, string newUrl, ISession session, Webpage webpage)
         {
             //check that the URL is different and doesn't already exist in the URL history table.
-            if (!StringComparer.OrdinalIgnoreCase.Equals(oldUrl, newUrl) && !CheckUrlExistence(session, oldUrl))
+            if (!StringComparer.OrdinalIgnoreCase.Equals(oldUrl, newUrl))
             {
-                DateTime createdOn = DateTime.UtcNow;
-                var urlHistory = new UrlHistory
+                var existingUrlHistory = await GetExistingUrlHistory(session, oldUrl);
+                if (existingUrlHistory == null)
                 {
-                    Webpage = webpage,
-                    UrlSegment = Convert.ToString(oldUrl),
-                    CreatedOn = createdOn,
-                    UpdatedOn = createdOn,
-                    Site = session.Get<Site>(webpage.Site.Id)
-                };
-                webpage.Urls.Add(urlHistory);
-                session.Transact(ses => ses.Save(urlHistory));
+                    DateTime createdOn = DateTime.UtcNow;
+                    var urlHistory = new UrlHistory
+                    {
+                        Webpage = webpage,
+                        UrlSegment = Convert.ToString(oldUrl),
+                        CreatedOn = createdOn,
+                        UpdatedOn = createdOn,
+                        Site = session.Get<Site>(webpage.Site.Id)
+                    };
+                    webpage.Urls.Add(urlHistory);
+                    await session.TransactAsync((ses, token) => ses.SaveAsync(urlHistory, token));
+                }
+                else if (existingUrlHistory.Webpage == null)
+                {
+                    DateTime updatedOn = DateTime.UtcNow;
+                    existingUrlHistory.Webpage = webpage;
+                    existingUrlHistory.UpdatedOn = updatedOn;
+                    webpage.Urls.Add(existingUrlHistory);
+                    await session.TransactAsync((ses, token) => ses.UpdateAsync(existingUrlHistory, token));
+                }
             }
         }
 
-        private bool CheckUrlExistence(ISession session, string url)
+        private async Task<UrlHistory> GetExistingUrlHistory(ISession session, string url)
         {
-            return session.QueryOver<UrlHistory>().Where(doc => doc.UrlSegment == url).Any();
+            return await session.Query<UrlHistory>().FirstOrDefaultAsync(doc => doc.UrlSegment == url);
         }
     }
 }

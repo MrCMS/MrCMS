@@ -6,6 +6,7 @@ using MrCMS.Web.Apps.Core.Pages;
 using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
 {
@@ -20,78 +21,35 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             _configurationProvider = configurationProvider;
         }
 
-        private class ErrorPages
-        {
-            public Webpage Error403 { get; set; }
-            public Webpage Error404 { get; set; }
-            public Webpage Error500 { get; set; }
-        }
 
-        public void Setup()
+        public async Task Setup()
         {
-            ErrorPages errorPages = GetErrorPages();
-            _session.Transact(session =>
+            var form = await AddContactUsForm();
+            await _session.TransactAsync(async session =>
             {
-                GetBasicPages().ForEach(webpage => session.Save(webpage));
-
-                session.Save(errorPages.Error403);
-                session.Save(errorPages.Error404);
-                session.Save(errorPages.Error500);
+                foreach (var page in GetBasicPages(form))
+                {
+                    await session.SaveAsync(page);
+                }
             });
 
             var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
-            siteSettings.Error403PageId = errorPages.Error403.Id;
-            siteSettings.Error404PageId = errorPages.Error404.Id;
-            siteSettings.Error500PageId = errorPages.Error500.Id;
-            _configurationProvider.SaveSettings(siteSettings);
+            await _configurationProvider.SaveSettings(siteSettings);
 
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
+                await session.SaveAsync(GetSearchPage());
 
-                GetAccountPages().ForEach(webpage => session.Save(webpage));
-
-                session.Save(GetSearchPage());
-
-                var webpages = _session.QueryOver<Webpage>().List();
+                var webpages = await _session.QueryOver<Webpage>().ListAsync();
                 var publishOn = DateTime.UtcNow;
-                webpages.ForEach(webpage =>
+                foreach (var webpage in webpages)
                 {
                     webpage.PublishOn = publishOn;
-                    session.Update(webpage);
-                });
+                    await session.UpdateAsync(webpage);
+                }
             });
         }
 
-        private ErrorPages GetErrorPages()
-        {
-            var error403 = new TextPage
-            {
-                Name = "403",
-                UrlSegment = "403",
-                BodyContent = "<h1>403</h1><p>Sorry, you are not authorized to view this page.</p>",
-                RevealInNavigation = false,
-            };
-            var error404 = new TextPage
-            {
-                Name = "404",
-                UrlSegment = "404",
-                BodyContent = "<h1>404</h1><p>Sorry, this page cannot be found.</p>",
-                RevealInNavigation = false,
-            };
-            var error500 = new TextPage
-            {
-                Name = "500",
-                UrlSegment = "500",
-                BodyContent = "<h1>500</h1><p>Sorry, there has been an error.</p>",
-                RevealInNavigation = false,
-            };
-            return new ErrorPages
-            {
-                Error403 = error403,
-                Error404 = error404,
-                Error500 = error500
-            };
-        }
         private SearchPage GetSearchPage()
         {
             return new SearchPage
@@ -101,63 +59,10 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             };
         }
 
-        private IEnumerable<Webpage> GetAccountPages()
+
+        private IReadOnlyList<Webpage> GetBasicPages(Form contactUsForm)
         {
-            var loginPage = new LoginPage
-            {
-                Name = "Login",
-                UrlSegment = "login",
-                DisplayOrder = 100,
-                RevealInNavigation = false
-            };
-
-            yield return loginPage;
-            yield return new ForgottenPasswordPage
-            {
-                Name = "Forgot Password",
-                UrlSegment = "forgot-password",
-                Parent = loginPage,
-                DisplayOrder = 0,
-                RevealInNavigation = false
-            };
-
-            yield return new ResetPasswordPage
-            {
-                Name = "Reset Password",
-                UrlSegment = "reset-password",
-                Parent = loginPage,
-                DisplayOrder = 1,
-                RevealInNavigation = false
-            };
-
-            yield return new UserAccountPage
-            {
-                Name = "My Account",
-                UrlSegment = "my-account",
-                Parent = loginPage,
-                DisplayOrder = 1,
-                RevealInNavigation = false
-            };
-            yield return new TwoFactorCodePage
-            {
-                Name = "Verify Code",
-                UrlSegment = "verify-code",
-                BodyContent = "An email has been sent to your email address with your authentication code. Please enter this code below to authorise your login.",
-                Parent = loginPage,
-                DisplayOrder = 4,
-                RevealInNavigation = false
-            };
-
-            yield return new RegisterPage
-            {
-                Name = "Register",
-                UrlSegment = "register",
-            };
-        }
-
-
-        private IEnumerable<Webpage> GetBasicPages()
-        {
+            var webpages = new List<Webpage>();
             var homePage = new TextPage
             {
                 Name = "Home",
@@ -167,30 +72,31 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 RevealInNavigation = true,
             };
             //CurrentRequestData.HomePage = homePage;
-            yield return homePage;
-            yield return new TextPage
+            webpages.Add(homePage);
+            webpages.Add(new TextPage
             {
                 Name = "Page 2",
                 UrlSegment = "page-2",
                 BodyContent = "<h1>Another page</h1><p>Just another page!</p>",
                 RevealInNavigation = true,
-            };
+            });
             //contact us
-            var form = AddContactUsForm();
             var contactUs = new TextPage
             {
                 Name = "Contact us",
                 UrlSegment = "contact-us",
-                BodyContent = $"<h1>Contact</h1>Contact us at www.mrcms.com (coming soon). <p>Test form</a> [form id=\"{form.Id}\"]",
+                BodyContent =
+                    $"<h1>Contact</h1>Contact us at www.mrcms.com (coming soon). <p>Test form</a> [form id=\"{contactUsForm.Id}\"]",
                 RevealInNavigation = true,
             };
-            yield return contactUs;
+            webpages.Add(contactUs);
+            return webpages;
         }
 
 
-        private Form AddContactUsForm()
+        private async Task<Form> AddContactUsForm()
         {
-            var form = new Form { Name = "Contact Us Form" };
+            var form = new Form {Name = "Contact Us Form"};
             var fieldName = new TextBox
             {
                 Name = "Name",
@@ -208,11 +114,11 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Form = form,
                 DisplayOrder = 1
             };
-            _session.Transact(s =>
+            await _session.TransactAsync(async s =>
             {
-                s.Save(form);
-                s.Save(fieldName);
-                s.Save(fieldEmail);
+                await s.SaveAsync(form);
+                await s.SaveAsync(fieldName);
+                await s.SaveAsync(fieldEmail);
             });
             return form;
         }

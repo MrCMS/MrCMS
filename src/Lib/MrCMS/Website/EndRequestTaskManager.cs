@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
@@ -20,9 +21,9 @@ namespace MrCMS.Website
             GetTasks().Add(task);
         }
 
-        public void ExecuteTasks()
+        public async Task ExecuteTasks()
         {
-            _onEndRequestExecutor.ExecuteTasks(GetTasks());
+            await _onEndRequestExecutor.ExecuteTasks(GetTasks());
         }
 
         public HashSet<EndRequestTask> GetTasks()

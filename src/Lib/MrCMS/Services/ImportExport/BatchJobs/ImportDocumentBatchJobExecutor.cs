@@ -2,15 +2,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Batching;
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Search;
 using MrCMS.Services.Notifications;
 using NHibernate;
-using NHibernate.Linq;
 
 namespace MrCMS.Services.ImportExport.BatchJobs
 {
@@ -29,7 +26,7 @@ namespace MrCMS.Services.ImportExport.BatchJobs
             IEventContext eventContext,
             IWebpageUrlService webpageUrlService,
             IDocumentMetadataService documentMetadataService
-            )
+        )
         {
             _session = session;
             _updateTagsService = updateTagsService;
@@ -39,12 +36,10 @@ namespace MrCMS.Services.ImportExport.BatchJobs
             _documentMetadataService = documentMetadataService;
         }
 
-        protected override BatchJobExecutionResult OnExecute(ImportDocumentBatchJob batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(ImportDocumentBatchJob batchJob)
         {
             using (_eventContext.Disable<IOnTransientNotificationPublished>())
             using (_eventContext.Disable<IOnPersistentNotificationPublished>())
-            using (_eventContext.Disable<UpdateIndicesListener>())
-            using (_eventContext.Disable<UpdateUniversalSearch>())
             using (_eventContext.Disable<WebpageUpdatedNotification>())
             using (_eventContext.Disable<DocumentAddedNotification>())
             using (_eventContext.Disable<MediaCategoryUpdatedNotification>())
@@ -56,7 +51,8 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                 var isNew = webpage == null;
                 if (isNew)
                     webpage = (Webpage)
-                        Activator.CreateInstance(_documentMetadataService.GetTypeByName(documentImportDto.DocumentType));
+                        Activator.CreateInstance(
+                            _documentMetadataService.GetTypeByName(documentImportDto.DocumentType));
 
                 if (!String.IsNullOrEmpty(documentImportDto.ParentUrl))
                 {
@@ -66,42 +62,38 @@ namespace MrCMS.Services.ImportExport.BatchJobs
 
                 if (!string.IsNullOrWhiteSpace(documentImportDto.UrlSegment) && isNew)
                 {
-                    webpage.UrlSegment = _webpageUrlService.Suggest(new SuggestParams
+                    webpage.UrlSegment = await _webpageUrlService.Suggest(new SuggestParams
                     {
                         DocumentType = documentImportDto.DocumentType,
                         ParentId = webpage.Parent?.Id,
                         PageName = documentImportDto.Name
                     });
                 }
+
                 webpage.Name = documentImportDto.Name;
                 webpage.BodyContent = documentImportDto.BodyContent;
                 webpage.MetaTitle = documentImportDto.MetaTitle;
                 webpage.MetaDescription = documentImportDto.MetaDescription;
                 webpage.MetaKeywords = documentImportDto.MetaKeywords;
                 webpage.RevealInNavigation = documentImportDto.RevealInNavigation;
-                webpage.RequiresSSL = documentImportDto.RequireSSL;
                 webpage.DisplayOrder = documentImportDto.DisplayOrder;
                 webpage.PublishOn = documentImportDto.PublishDate;
 
-                _updateTagsService.SetTags(documentImportDto, webpage);
-                _updateUrlHistoryService.SetUrlHistory(documentImportDto, webpage);
+                await _updateTagsService.SetTags(documentImportDto, webpage);
+                await _updateUrlHistoryService.SetUrlHistory(documentImportDto, webpage);
 
-                _session.Transact(session =>
+               await  _session.TransactAsync(async session =>
                 {
                     if (isNew)
-                        session.Save(webpage);
+                        await session.SaveAsync(webpage);
                     else
-                        session.Update(webpage);
+                        await session.UpdateAsync(webpage);
                 });
 
                 return BatchJobExecutionResult.Success();
             }
         }
 
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(ImportDocumentBatchJob batchJob)
-        {
-            throw new NotImplementedException();
-        }
 
         private Webpage GetWebpageByUrl(string urlSegment)
         {

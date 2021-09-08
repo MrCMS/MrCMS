@@ -1,30 +1,32 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.People;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
     public class UserAvatarController : MrCMSAdminController
     {
         private readonly IUserAvatarService _userAvatarService;
+        private readonly IUserAdminService _userAdminService;
 
-        public UserAvatarController(IUserAvatarService userAvatarService)
+        public UserAvatarController(IUserAvatarService userAvatarService, IUserAdminService userAdminService)
         {
             _userAvatarService = userAvatarService;
+            _userAdminService = userAdminService;
         }
         
-        public ActionResult Set(User user)
+        public async Task<ActionResult> Set(int id)
         {
-            return View(user);
+            return View(await _userAdminService.GetUser(id));
         }
 
         [HttpPost]
         [ActionName("Set")]
-        public IActionResult Set_POST(IFormFile file, int id)
+        public async Task<IActionResult> Set_POST(IFormFile file, int id)
         {
-            _userAvatarService.SetAvatar(id, file); 
+            await _userAvatarService.SetAvatar(id, file); 
             return Ok(new {id = 1});
         }
     }

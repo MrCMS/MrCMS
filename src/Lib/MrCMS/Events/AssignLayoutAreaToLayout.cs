@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 
 namespace MrCMS.Events
 {
     public class AssignLayoutAreaToLayout : IOnAdding<LayoutArea>
     {
-        public void Execute(OnAddingArgs<LayoutArea> args)
+        public async Task Execute(OnAddingArgs<LayoutArea> args)
         {
             var layoutArea = args.Item;
             var layout = layoutArea.Layout;
@@ -12,7 +13,7 @@ namespace MrCMS.Events
                 return;
             
             layout.LayoutAreas.Add(layoutArea);
-            args.Session.SaveOrUpdate(layout);
+            await args.Session.SaveOrUpdateAsync(layout);
         }
     }
 }

@@ -16,11 +16,11 @@ namespace MrCMS.Models
         public string Name { get; set; }
 
         public Size Size { get; set; }
-        public int Height { get { return Size.Height; } }
-        public int Width { get { return Size.Width; } }
+        public int Height => Size.Height;
+        public int Width => Size.Width;
 
         public Size ActualSize { get; set; }
-        public int ActualHeight { get { return ActualSize.Height; } }
-        public int ActualWidth { get { return ActualSize.Width; } }
+        public int ActualHeight => ActualSize.Height;
+        public int ActualWidth => ActualSize.Width;
     }
 }

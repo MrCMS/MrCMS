@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using NHibernate;
 
 namespace MrCMS.Services
@@ -15,67 +17,72 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public bool UrlIsValidForWebpage(string url, int? id)
+        public async Task<bool> UrlIsValidForWebpage(string url, int? id)
         {
             if (string.IsNullOrEmpty(url))
                 return false;
 
             if (id.HasValue)
             {
-                var document = _session.Get<Webpage>(id.Value);
+                var document = await _session.GetAsync<Webpage>(id.Value);
                 var documentHistory = document.Urls.Any(x => x.UrlSegment == url);
-                if (url.Trim() == document.UrlSegment.Trim() || documentHistory) //if url is the same or has been used for the same page before lets go
+                if (url.Trim() == document.UrlSegment?.Trim() || documentHistory
+                ) //if url is the same or has been used for the same page before lets go
                     return true;
 
-                return !WebpageExists(url) && !ExistsInUrlHistory(url);
+                return !await WebpageExists(url) && !await ExistsInUrlHistory(url);
             }
 
-            return !WebpageExists(url) && !ExistsInUrlHistory(url);
+            return !await WebpageExists(url) && !await ExistsInUrlHistory(url);
         }
 
         /// <summary>
         /// Check to see if the supplied URL is ok to be added to the URL history table
         /// </summary>
-        public bool UrlIsValidForWebpageUrlHistory(string url)
+        public async Task<bool> UrlIsValidForWebpageUrlHistory(string url)
         {
             if (string.IsNullOrEmpty(url))
                 return false;
 
-            return !WebpageExists(url) && !ExistsInUrlHistory(url);
+            return !await WebpageExists(url) && !await ExistsInUrlHistory(url);
         }
 
-        public bool UrlIsValidForMediaCategory(string url, int? id)
+        public async Task<UrlHistory> Get(int id)
         {
-            if (string.IsNullOrEmpty(url))
-                return false;
-
-            if (id.HasValue)
-            {
-                var document = _session.Get<MediaCategory>(id.Value);
-                if (url.Trim() == document.UrlSegment.Trim())
-                    return true;
-                return !MediaCategoryExists(url);
-            }
-
-            return !MediaCategoryExists(url);
+            return await _session.GetAsync<UrlHistory>(id);
         }
 
-        public bool UrlIsValidForLayout(string url, int? id)
+        public async Task<bool> UrlIsValidForMediaCategory(string url, int? id)
         {
             if (string.IsNullOrEmpty(url))
                 return false;
 
             if (id.HasValue)
             {
-                var document = _session.Get<Layout>(id.Value);
+                var document = await _session.GetAsync<MediaCategory>(id.Value);
                 if (url.Trim() == document.UrlSegment.Trim())
                     return true;
-                return !LayoutExists(url);
+                return !await MediaCategoryExists(url);
             }
 
-            return !LayoutExists(url);
+            return !await MediaCategoryExists(url);
         }
 
+        public async Task<bool> UrlIsValidForLayout(string url, int? id)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            if (id.HasValue)
+            {
+                var document = await _session.GetAsync<Layout>(id.Value);
+                if (url.Trim() == document.UrlSegment.Trim())
+                    return true;
+                return !await LayoutExists(url);
+            }
+
+            return !await LayoutExists(url);
+        }
 
 
         /// <summary>
@@ -83,12 +90,12 @@ namespace MrCMS.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns>bool</returns>
-        private bool WebpageExists(string url)
+        private Task<bool> WebpageExists(string url)
         {
             return _session.QueryOver<Webpage>()
                 .Where(doc => doc.UrlSegment == url)
                 .Cacheable()
-                .RowCount() > 0;
+                .AnyAsync();
         }
 
         /// <summary>
@@ -96,13 +103,13 @@ namespace MrCMS.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns>bool</returns>
-        private bool ExistsInUrlHistory(string url)
+        private Task<bool> ExistsInUrlHistory(string url)
         {
             return
                 _session.QueryOver<UrlHistory>()
                     .Where(doc => doc.UrlSegment == url)
                     .Cacheable()
-                    .RowCount() > 0;
+                    .AnyAsync();
         }
 
         /// <summary>
@@ -110,12 +117,12 @@ namespace MrCMS.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns>bool</returns>
-        private bool MediaCategoryExists(string url)
+        private Task<bool> MediaCategoryExists(string url)
         {
             return _session.QueryOver<MediaCategory>()
                 .Where(doc => doc.UrlSegment == url)
                 .Cacheable()
-                .RowCount() > 0;
+                .AnyAsync();
         }
 
         /// <summary>
@@ -123,12 +130,12 @@ namespace MrCMS.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private bool LayoutExists(string url)
+        private Task<bool> LayoutExists(string url)
         {
             return _session.QueryOver<Layout>()
                 .Where(doc => doc.UrlSegment == url)
                 .Cacheable()
-                .RowCount() > 0;
+                .AnyAsync();
         }
     }
 }

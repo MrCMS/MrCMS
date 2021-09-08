@@ -3,7 +3,6 @@ using MrCMS.Services.Caching;
 using MrCMS.Website.Caching;
 using NHibernate;
 using NHibernate.Cache;
-using NHibernate.Caches.CoreMemoryCache;
 using NHibernate.Impl;
 
 namespace MrCMS.Website
@@ -13,12 +12,15 @@ namespace MrCMS.Website
         private readonly ICacheManager _cacheManager;
         private readonly IEnumerable<IClearCache> _manualCacheClears;
         private readonly ISessionFactory _factory;
+        private readonly IHighPriorityCacheManager _highPriorityCacheManager;
 
-        public ClearCachesService(ICacheManager cacheManager, IEnumerable<IClearCache> manualCacheClears, ISessionFactory factory)
+        public ClearCachesService(ICacheManager cacheManager, IEnumerable<IClearCache> manualCacheClears, ISessionFactory factory,
+            IHighPriorityCacheManager highPriorityCacheManager)
         {
             _cacheManager = cacheManager;
             _manualCacheClears = manualCacheClears;
             _factory = factory;
+            _highPriorityCacheManager = highPriorityCacheManager;
         }
 
         public void ClearCache()
@@ -34,6 +36,11 @@ namespace MrCMS.Website
             {
                 value.Clear();
             }
+        }
+
+        public void ClearHighPriorityCache()
+        {
+            _highPriorityCacheManager.Clear();
         }
     }
 }

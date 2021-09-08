@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Messages
 {
     public interface IGetDefaultMessageTemplate
     {
-        MessageTemplate Get();
+        Task<MessageTemplate> Get();
     }
 }

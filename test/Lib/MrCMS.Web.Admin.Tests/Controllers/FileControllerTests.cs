@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Controllers
@@ -34,33 +35,36 @@ namespace MrCMS.Web.Admin.Tests.Controllers
 
 
         [Fact]
-        public void FileController_Delete_ShouldBeViewResult()
+        public async Task FileController_Delete_ShouldBeViewResult()
         {
             FileController fileController = GetFileController();
 
-            fileController.Delete(new MediaFile()).Should().BeOfType<ViewResult>();
+            var delete = await fileController.Delete(0);
+            
+            delete.Should().BeOfType<ViewResult>();
         }
 
         [Fact]
-        public void FileController_Delete_CallsDeleteFileOnFileService()
+        public async Task FileController_Delete_CallsDeleteFileOnFileService()
         {
             FileController fileController = GetFileController();
-            fileController.Delete_POST(1);
+            await fileController.Delete_POST(1);
             var mediaFile = A.Fake<MediaFile>();
             A.CallTo(() => _fileAdminService.GetFile(1)).Returns(mediaFile);
-            A.CallTo(() => _fileAdminService.DeleteFile(mediaFile)).MustHaveHappened();
+            A.CallTo(() => _fileAdminService.DeleteFile(1)).MustHaveHappened();
         }
 
         [Fact]
-        public void FileController_FilesPost_ReturnsJsonNetResult()
+        public async Task FileController_FilesPost_ReturnsJsonNetResult()
         {
             FileController fileController = GetFileController();
 
-            fileController.Files_Post(123).Should().BeOfType<JsonResult>();
+            var filesPost = await fileController.Files_Post(123);
+            filesPost.Should().BeOfType<JsonResult>();
         }
 
         [Fact]
-        public void FileController_FilesPost_CallsAddFileForTheUploadedFileIfIsValidFile()
+        public async Task FileController_FilesPost_CallsAddFileForTheUploadedFileIfIsValidFile()
         {
             var random = new Random();
             var buffer = Enumerable.Range(1, random.Next(2, 200000))
@@ -81,7 +85,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
                     }
                 });
 
-            fileController.Files_Post(123);
+            await fileController.Files_Post(123);
 
 
             A.CallTo(() => _fileAdminService.AddFile(A<Stream>.That.Matches(x => x.Length == buffer.Length), fileName,
@@ -89,7 +93,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void FileController_FilesPost_DoesNotCallAddFileForTheUploadedFileIfIsNotAValidType()
+        public async Task FileController_FilesPost_DoesNotCallAddFileForTheUploadedFileIfIsNotAValidType()
         {
             var random = new Random();
             var buffer = Enumerable.Range(1, random.Next(2, 200000))
@@ -111,7 +115,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
                 });
             fileController.ControllerContext.HttpContext.Request.Headers["Content-Type"] = contentType;
 
-            fileController.Files_Post(123);
+            await fileController.Files_Post(123);
 
             A.CallTo(() => _fileAdminService.AddFile(A<Stream>.That.Matches(x => x.Length == buffer.Length), fileName,
                 contentType, contentLength, 123)).MustNotHaveHappened();

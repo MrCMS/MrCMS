@@ -11,6 +11,6 @@ namespace MrCMS.HealthChecks
         }
         public HealthCheckStatus Status { get; set; }
         public List<string> Messages { get; set; }
-        public static HealthCheckResult Success { get { return new HealthCheckResult { Status = HealthCheckStatus.Success }; } }
+        public static HealthCheckResult Success => new HealthCheckResult { Status = HealthCheckStatus.Success };
     }
 }

@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Documents.Web;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 
 namespace MrCMS.Events.Documents
@@ -11,12 +12,12 @@ namespace MrCMS.Events.Documents
         {
             _eventContext = eventContext;
         }
-        public void Execute(OnUpdatedArgs<Webpage> args)
+        public async Task Execute(OnUpdatedArgs<Webpage> args)
         {
             if (!args.HasChanged(x => x.CustomFooterScripts))
                 return;
 
-            _eventContext.Publish<IOnFooterScriptChanged, ScriptChangedEventArgs<Webpage>>(
+            await _eventContext.Publish<IOnFooterScriptChanged, ScriptChangedEventArgs<Webpage>>(
                 new ScriptChangedEventArgs<Webpage>(args.Item, args.Item.CustomFooterScripts,
                     args.Original?.CustomFooterScripts));
         }

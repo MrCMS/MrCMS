@@ -12,10 +12,7 @@ namespace MrCMS.Installation.Models
 
         public List<string> Errors { get; set; }
 
-        public bool Success
-        {
-            get { return !Errors.Any(); }
-        }
+        public bool Success => !Errors.Any();
 
         public void AddModelError(string message)
         {

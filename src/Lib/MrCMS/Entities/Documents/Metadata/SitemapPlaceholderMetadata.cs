@@ -4,13 +4,10 @@ namespace MrCMS.Entities.Documents.Metadata
 {
     public class SitemapPlaceholderMetadata : DocumentMetadataMap<SitemapPlaceholder>
     {
-        public override string IconClass { get { return "fa fa-forward"; } }
-        public override int DisplayOrder { get { return 99; } }
-        public override bool HasBodyContent { get { return false; } }
+        public override string IconClass => "fa fa-forward";
+        public override int DisplayOrder => 99;
+        public override bool HasBodyContent => false;
 
-        public override string WebGetController
-        {
-            get { return "SitemapPlaceholder"; }
-        }
+        public override string WebGetController => "SitemapPlaceholder";
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace MrCMS.Helpers
 {
@@ -8,6 +10,9 @@ namespace MrCMS.Helpers
     {
         public static bool IsLocal(this HttpRequest req)
         {
+            if (req == null)
+                return false;
+
             var connection = req.HttpContext.Connection;
             if (connection.RemoteIpAddress != null)
             {
@@ -22,7 +27,7 @@ namespace MrCMS.Helpers
 
         public static string Referer(this HttpRequest req)
         {
-            return req.Headers["Referer"];
+            return req?.GetTypedHeaders()?.Referer?.ToString();
         }
 
         //public static string GetCurrentIP(this HttpContext contextBase)
@@ -60,6 +65,20 @@ namespace MrCMS.Helpers
             return request.HttpContext.Connection.RemoteIpAddress.ToString();
         }
 
+        public static string GetRawHttpData(this HttpRequest request)
+        {
+            try
+            {
+                var serverVariables = request.Headers;
+                var dictionary = serverVariables.Keys.ToDictionary(s => s, s => serverVariables[s].ToString());
+                return JsonConvert.SerializeObject(dictionary);
+            }
+            catch
+            {
+                return "Could not get data";
+            }
+        }
+
         /// <summary>
         /// Determines whether the specified HTTP request is an AJAX request.
         /// </summary>
@@ -78,5 +97,4 @@ namespace MrCMS.Helpers
             return false;
         }
     }
-
 }

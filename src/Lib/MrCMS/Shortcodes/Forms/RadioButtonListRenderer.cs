@@ -19,6 +19,7 @@ namespace MrCMS.Shortcodes.Forms
                     .ToList();
 
             var tagBuilder = new TagBuilder("div");
+            tagBuilder.AddCssClass("form-group");
             foreach (var checkbox in formProperty.Options)
             {
                 var cbLabelBuilder = new TagBuilder("label");

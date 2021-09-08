@@ -19,10 +19,8 @@ namespace MrCMS.Entities.Documents.Web
 
         protected Webpage()
         {
-            InheritFrontEndRolesFromParent = true;
             IncludeInSitemap = true;
             Urls = new List<UrlHistory>();
-            Widgets = new List<Widget.Widget>();
             FrontEndAllowedRoles = new HashSet<UserRole>();
             ContentBlocks = new List<ContentBlock>();
         }
@@ -54,8 +52,6 @@ namespace MrCMS.Entities.Documents.Web
         [StringLength(8000)]
         public virtual string CustomFooterScripts { get; set; }
 
-        public virtual bool RequiresSSL { get; set; }
-
         public virtual bool Published { get; set; }
 
         public virtual WebpagePublishStatus PublishStatus
@@ -72,11 +68,6 @@ namespace MrCMS.Entities.Documents.Web
         }
 
         public virtual DateTime? PublishOn { get; set; }
-
-        public virtual ISet<Widget.Widget> ShownWidgets { get; set; }
-        public virtual ISet<Widget.Widget> HiddenWidgets { get; set; }
-        public virtual IList<Widget.Widget> Widgets { get; set; }
-        public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
         public virtual string BodyContent { get; set; }
 
@@ -99,9 +90,6 @@ namespace MrCMS.Entities.Documents.Web
         public virtual bool HasCustomPermissions { get; set; }
         public virtual WebpagePermissionType PermissionType { get; set; }
 
-        [DisplayName("Same as parent")]
-        public virtual bool InheritFrontEndRolesFromParent { get; set; }
-
         public virtual ISet<UserRole> FrontEndAllowedRoles { get; set; }
         public virtual string Password { get; set; }
         public virtual Guid? PasswordAccessToken { get; set; }
@@ -122,6 +110,10 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual IList<ContentBlock> ContentBlocks { get; set; }
         
+        // todo - remove from core!
         public virtual string CampaignName { get; set; } // TODO - Render this all edit webpage automatically, like bodycontent?
+        public virtual string PageType { get; set; }
+        public virtual bool OnlyAtLandingPage { get; set; }
+
     }
 }

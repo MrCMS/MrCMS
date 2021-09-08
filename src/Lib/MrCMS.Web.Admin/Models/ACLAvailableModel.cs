@@ -1,6 +1,3 @@
-using System;
-using MrCMS.ACL;
-
 namespace MrCMS.Web.Admin.Models
 {
     public class ACLAvailableModel

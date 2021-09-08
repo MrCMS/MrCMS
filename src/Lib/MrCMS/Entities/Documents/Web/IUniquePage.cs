@@ -1,5 +1,3 @@
-using System;
-
 namespace MrCMS.Entities.Documents.Web
 {
     /// <summary>

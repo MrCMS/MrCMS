@@ -6,8 +6,8 @@ using MrCMS.Helpers;
 using MrCMS.Services.Resources;
 using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.Tests.Stubs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Xunit;
 
@@ -24,7 +24,7 @@ namespace MrCMS.Web.Admin.Tests.Services
         }
 
         [Fact]
-        public void FormAdminService_ClearFormData_ShouldDeleteFormPosting()
+        public async Task FormAdminService_ClearFormData_ShouldDeleteFormPosting()
         {
             var form = new Form();
             var posting = new FormPosting
@@ -45,15 +45,15 @@ namespace MrCMS.Web.Admin.Tests.Services
 
             form.FormPostings = new List<FormPosting> { posting };
 
-            Session.Transact(session => session.Save(posting));
+            await Session.TransactAsync(session => session.SaveAsync(posting));
 
-            _formAdminService.ClearFormData(form);
+            await _formAdminService.ClearFormData(form);
 
-            Session.QueryOver<FormPosting>().RowCount().Should().Be(0);
+            (await Session.QueryOver<FormPosting>().RowCountAsync()).Should().Be(0);
         }
 
         [Fact]
-        public void FormAdminService_ExportFormData_ShouldReturnByteArray()
+        public async Task FormAdminService_ExportFormData_ShouldReturnByteArray()
         {
             var form = new Form();
             var posting = new FormPosting
@@ -74,7 +74,7 @@ namespace MrCMS.Web.Admin.Tests.Services
 
             form.FormPostings = new List<FormPosting> { posting };
 
-            byte[] result = _formAdminService.ExportFormData(form);
+            byte[] result = await _formAdminService.ExportFormData(form);
 
             result.Should().BeOfType<byte[]>();
         }

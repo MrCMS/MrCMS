@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using NHibernate;
@@ -16,14 +17,14 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var webpages = _session.QueryOver<Webpage>().Where(webpage => webpage.Site.Id == to.Id).List();
+            var webpages = await _session.QueryOver<Webpage>().Where(webpage => webpage.Site.Id == to.Id).ListAsync();
             foreach (var webpage in webpages)
             {
                 var original = siteCloneContext.GetOriginal(webpage);
                 if (original != null)
-                    _cloneWebpageSiteParts.Clone(original, webpage, siteCloneContext);
+                    await _cloneWebpageSiteParts.Clone(original, webpage, siteCloneContext);
             }
         }
     }

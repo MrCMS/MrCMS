@@ -1,6 +1,4 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.Widget
-@using MrCMS.Helpers
+﻿@using MrCMS.Entities.Widget
 @using MrCMS.Web.Admin.Infrastructure.Helpers
 @model MrCMS.Web.Admin.Models.UpdateWidgetModel
 @{
@@ -9,50 +7,62 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var cacheExpiryOptions = ViewData["cache-expiry-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
-@using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, null, new { id = "edit-widget" }))
+@using (Html.BeginForm("Edit", "Widget", new {}, FormMethod.Post, null, new {id = "edit-widget"}))
 {
     <fieldset>
         <legend>
             @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : widget.WidgetTypeFormatted)
 
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-success btn" value="@Html.Resource("Save")" />
+                <input type="submit" class="btn-success btn" value="@await Html.Resource("Save")"/>
             </span>
         </legend>
         @Html.HiddenFor(model => model.Id)
         @Html.Hidden("ReturnUrl", ViewData["return-url"])
         <div class="form-group">
             @Html.LabelFor(model => model.Name)
-            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+            @Html.TextBoxFor(model => model.Name, new {@class = "form-control"})
         </div>
-        @if (widget.Webpage != null)
-        {
-            <div class="form-group">
-                @Html.InlineCheckboxFor(model => model.IsRecursive, null, null, "Is Recursive (shows on child pages)")
-            </div>
-        }
-        <hr class="small-margin" />
+        <hr class="small-margin"/>
         @await Html.RenderUpdateCustomAdminProperties(widget)
 
 
-        @if (widget.IsTypeCacheable())
+        @*@if (widget.IsTypeCacheable())
         {
-            <hr />
-            <h4>@Html.Resource("Advanced")</h4>
-            <hr class="small-margin" />
+            <hr/>
+            <h4>@await Html.Resource("Advanced")</h4>
+            <hr class="small-margin"/>
             <div class="form-group">
                 @Html.InlineCheckboxFor(model => model.Cache)
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.CacheLength)
-                @Html.TextBoxFor(model => model.CacheLength, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.CacheLength, new {@class = "form-control"})
                 @Html.ValidationMessageFor(model => model.CacheLength)
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.CacheExpiryType)
-                @Html.DropDownListFor(model => model.CacheExpiryType, cacheExpiryOptions, new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.CacheExpiryType, cacheExpiryOptions, new {@class = "form-control"})
                 @Html.ValidationMessageFor(model => model.CacheExpiryType)
             </div>
-        }
+        }*@
+
+        <div class="small">
+            <h5>Info</h5>
+            <table class="table table-condensed">
+                <tr>
+                    <td>WidgetType</td>
+                    <td>
+                        @widget.GetType().Name
+                    </td>
+                </tr>
+                <tr>
+                    <td>Layout Area</td>
+                    <td>
+                        @widget.LayoutArea.Unproxy().AreaName
+                    </td>
+                </tr>
+            </table>
+        </div>
     </fieldset>
 }

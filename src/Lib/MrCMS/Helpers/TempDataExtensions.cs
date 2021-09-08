@@ -9,10 +9,12 @@ namespace MrCMS.Helpers
 {
     public static class TempDataExtensions
     {
+
         public static void Set<T>(this ITempDataDictionary tempData, T model, params object[] context) where T : class
         {
             Set(tempData, typeof(T), model, context);
         }
+
         public static void Set(this ITempDataDictionary tempData, Type type, object model, params object[] context)
         {
             if (tempData == null)
@@ -61,6 +63,7 @@ namespace MrCMS.Helpers
         {
             ContractResolver = new WritablePropertiesOnlyResolver()
         };
+
         class WritablePropertiesOnlyResolver : DefaultContractResolver
         {
             protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)

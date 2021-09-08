@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.DbConfiguration.Mapping;
-using MrCMS.Entities.People;
 
 namespace MrCMS.Web.Admin.Models
 {
@@ -16,6 +15,7 @@ namespace MrCMS.Web.Admin.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UICulture { get; set; }
+        [DisplayName("User is active")]
         public bool IsActive { get; set; }
         public bool DisableNotifications { get; set; }
         

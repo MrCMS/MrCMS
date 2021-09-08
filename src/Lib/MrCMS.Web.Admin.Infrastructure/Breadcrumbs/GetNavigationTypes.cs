@@ -7,18 +7,18 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
 {
     public class GetNavigationTypes : IGetNavigationTypes
     {
+        private static readonly HashSet<Type> BreadcrumbTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFrom<Breadcrumb>();
+
         public IEnumerable<Type> GetChildren(Type type)
         {
-            return TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(Breadcrumb<>).MakeGenericType(type));
-
+            return BreadcrumbTypes.FindAll(x => typeof(Breadcrumb<>).MakeGenericType(type).IsAssignableFrom(x));
         }
 
         public IEnumerable<Type> GetRootNavTypes()
         {
-            var implementations = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(Breadcrumb));
-
             // we only want direct implementations of Breadcrumb
-            return implementations.Where(x => !x.IsImplementationOf(typeof(Breadcrumb<>)));
+            return BreadcrumbTypes.Where(x => x.BaseType == typeof(Breadcrumb)).ToHashSet();
         }
     }
 }

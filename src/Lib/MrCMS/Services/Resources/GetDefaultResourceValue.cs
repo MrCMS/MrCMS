@@ -7,10 +7,13 @@ namespace MrCMS.Services.Resources
         public string GetValue(MissingLocalisationInfo info)
         {
             // If it already contains a space, it's likely already customised
-            if (info.Key.Contains(" "))
-                return info.Key;
+            var value = info.Key;
+            return GetDefaultValue(value);
+        }
 
-            return info.Key.BreakUpString();
+        public static string GetDefaultValue(string value)
+        {
+            return value.Contains(" ") ? value : value.BreakUpString();
         }
     }
 }

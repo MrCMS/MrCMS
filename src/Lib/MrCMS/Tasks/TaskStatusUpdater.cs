@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -15,45 +16,50 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public void BeginExecution(IEnumerable<AdHocTask> executableTasks)
+        public async Task BeginExecution(IEnumerable<AdHocTask> executableTasks)
         {
-            SetStatus(executableTasks, (status, task) => status.OnStarting(task));
+            await SetStatus(executableTasks, (status, task) => status.OnStarting(task));
         }
 
-        public void CompleteExecution(IEnumerable<TaskExecutionResult> results)
+        public async Task CompleteExecution(IEnumerable<TaskExecutionResult> results)
         {
             IList<TaskExecutionResult> taskExecutionResults = results as IList<TaskExecutionResult> ?? results.ToList();
-            _session.Transact(session =>
-                              {
-                                  SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
-                                  FailedExecution(taskExecutionResults.Where(result => !result.Success));
-                              });
+            await _session.TransactAsync(async session =>
+            {
+                await SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
+                await FailedExecution(taskExecutionResults.Where(result => !result.Success));
+            });
         }
 
-        private void SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
+        private async Task SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
         {
-            SetStatus(executableTasks.Select(result => result.Task), (status, task) => status.OnSuccess(task));
+            await SetStatus(executableTasks.Select(result => result.Task), (status, task) => status.OnSuccess(task));
         }
 
-        private void FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
+        private async Task FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
         {
-            _session.Transact(session => taskFailureInfos.ForEach(
-                taskFailureInfo =>
+            await _session.TransactAsync(async session =>
+            {
+                foreach (var taskFailureInfo in taskFailureInfos)
                 {
                     AdHocTask executableTask = taskFailureInfo.Task;
                     executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
-                    session.Update(executableTask.Entity);
-                }));
+                    await session.UpdateAsync(executableTask.Entity);
+                }
+            });
         }
 
-        private void SetStatus(IEnumerable<AdHocTask> executableTasks,
+        private async Task SetStatus(IEnumerable<AdHocTask> executableTasks,
             Action<IHaveExecutionStatus, AdHocTask> action)
         {
-            _session.Transact(session => executableTasks.ForEach(task =>
-                                                                 {
-                                                                     action(task.Entity, task);
-                                                                     session.Update(task.Entity);
-                                                                 }));
+            await _session.TransactAsync(async session =>
+            {
+                foreach (var task in executableTasks)
+                {
+                    action(task.Entity, task);
+                    await session.UpdateAsync(task.Entity);
+                }
+            });
         }
     }
 }

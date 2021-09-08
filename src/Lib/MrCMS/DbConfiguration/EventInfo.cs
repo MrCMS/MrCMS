@@ -19,9 +19,6 @@ namespace MrCMS.DbConfiguration
         }
         public T Object { get; private set; }
 
-        public override object ObjectBase
-        {
-            get { return Object; }
-        }
+        public override object ObjectBase => Object;
     }
 }

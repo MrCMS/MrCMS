@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace MrCMS.Services.CloneSite
 {
     internal class SiteCopyOptionInfo
@@ -13,12 +11,6 @@ namespace MrCMS.Services.CloneSite
         internal int SiteId { get; private set; }
         internal ICloneSiteParts CloneSiteParts { get; private set; }
 
-        internal int Order
-        {
-            get
-            {
-                return CloneSiteExtensions.GetCloneSitePartOrder(CloneSiteParts.GetType());
-            }
-        }
+        internal int Order => CloneSiteExtensions.GetCloneSitePartOrder(CloneSiteParts.GetType());
     }
 }

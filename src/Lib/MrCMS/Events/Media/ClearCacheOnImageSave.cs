@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Documents.Media;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Website.Caching;
 
@@ -13,19 +14,16 @@ namespace MrCMS.Events.Media
             _cacheManager = cacheManager;
         }
 
-        public void Execute(OnUpdatedArgs<MediaFile> args)
+        public Task Execute(OnUpdatedArgs<MediaFile> args)
         {
             if (!args.Item.IsImage())
-                return;
+                return Task.CompletedTask;
 
             if (!args.HasChanged(file => file.Title) && !args.HasChanged(file => file.Description))
-                return;
+                return Task.CompletedTask;
 
-            var tagPrefix = $"{MediaSettingExtensions.RenderTagPrefix}{GetUrlWithoutExtension(args.Item.FileUrl)}";
-            var urlPrefix = $"{MediaSettingExtensions.RenderUrlPrefix}{GetUrlWithoutExtension(args.Item.FileUrl)}";
-
-            _cacheManager.Clear(tagPrefix);
-            _cacheManager.Clear(urlPrefix);
+            _cacheManager.Clear();
+            return Task.CompletedTask;
         }
 
         public string GetUrlWithoutExtension(string url)

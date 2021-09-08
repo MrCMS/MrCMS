@@ -5,7 +5,7 @@ namespace MrCMS.Web.Admin.Models.SEOAnalysis
     public class SEOAnalysisResult : List<SEOAnalysisFacet>
     {
         public SEOAnalysisResult() { }
-        public SEOAnalysisResult(IEnumerable<SEOAnalysisFacet> facets)
+        public SEOAnalysisResult(IReadOnlyList<SEOAnalysisFacet> facets)
             : base(facets)
         {
 

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Web;
 
@@ -5,16 +6,16 @@ namespace MrCMS.Web.Admin.Services
 {
     public abstract class BaseAssignWebpageAdminViewData
     {
-        public abstract void AssignViewDataBase(Webpage webpage, ViewDataDictionary viewData);
+        public abstract Task AssignViewDataBase(Webpage webpage, ViewDataDictionary viewData);
     }
 
     public abstract class BaseAssignWebpageAdminViewData<T> : BaseAssignWebpageAdminViewData where T : Webpage
     {
-        public abstract void AssignViewData(T webpage, ViewDataDictionary viewData);
+        public abstract Task AssignViewData(T webpage, ViewDataDictionary viewData);
 
-        public override sealed void AssignViewDataBase(Webpage webpage, ViewDataDictionary viewData)
+        public sealed override async Task AssignViewDataBase(Webpage webpage, ViewDataDictionary viewData)
         {
-            AssignViewData(webpage as T, viewData);
+            await AssignViewData(webpage as T, viewData);
         }
     }
 }

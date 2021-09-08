@@ -6,6 +6,8 @@ namespace MrCMS.Web.Admin.Breadcrumbs.Layouts
 {
     public class LayoutBreadcrumb : ItemBreadcrumb<LayoutsBreadcrumb, Layout>
     {
+        public override decimal Order => 0.5m;
+
         public LayoutBreadcrumb(ISession session) : base(session)
         {
         }

@@ -22,7 +22,7 @@ namespace MrCMS.Entities.People
 
         public virtual ISet<User> Users { get; set; }
 
-        public virtual bool IsAdmin { get { return Name == Administrator; } }
+        public virtual bool IsAdmin => Name == Administrator;
 
         public virtual ISet<Webpage> FrontEndWebpages { get; set; }
         public virtual IList<ACLRole> ACLRoles { get; set; }

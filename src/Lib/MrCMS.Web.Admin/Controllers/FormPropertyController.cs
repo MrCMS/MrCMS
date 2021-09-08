@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -13,46 +14,47 @@ namespace MrCMS.Web.Admin.Controllers
         {
             _adminService = adminService;
         }
+
         [HttpGet]
         public ViewResult Add(int id)
         {
             ViewData["property-types"] = _adminService.GetPropertyTypeOptions();
-            return View(new AddFormPropertyModel { FormId = id });
+            return View(new AddFormPropertyModel {FormId = id});
         }
 
         [HttpPost]
-        public JsonResult Add(AddFormPropertyModel model)
+        public async Task<JsonResult> Add(AddFormPropertyModel model)
         {
-            _adminService.Add(model);
-            return Json(new FormActionResult { success = true });
+            await _adminService.Add(model);
+            return Json(new FormActionResult {success = true});
         }
 
         [HttpGet]
-        public ViewResult Edit(int id)
+        public async Task<ViewResult> Edit(int id)
         {
-            return View(_adminService.GetUpdateModel(id));
+            return View(await _adminService.GetUpdateModel(id));
         }
 
         [HttpPost]
         [ActionName(nameof(Edit))]
-        public JsonResult Edit_POST(UpdateFormPropertyModel model)
+        public async Task<JsonResult> Edit_POST(UpdateFormPropertyModel model)
         {
-            _adminService.Update(model);
-            return Json(new FormActionResult { success = true });
+            await _adminService.Update(model);
+            return Json(new FormActionResult {success = true});
         }
 
         [HttpGet]
-        public ViewResult Delete(int id)
+        public async Task<ViewResult> Delete(int id)
         {
-            return View(_adminService.GetUpdateModel(id));
-        }
-        [HttpPost]
-        [ActionName(nameof(Delete))]
-        public JsonResult Delete_POST(int id)
-        {
-            _adminService.Delete(id);
-            return Json(new FormActionResult { success = true });
+            return View(await _adminService.GetUpdateModel(id));
         }
 
+        [HttpPost]
+        [ActionName(nameof(Delete))]
+        public async Task<JsonResult> Delete_POST(int id)
+        {
+            await _adminService.Delete(id);
+            return Json(new FormActionResult {success = true});
+        }
     }
 }

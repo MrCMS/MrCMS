@@ -7,35 +7,58 @@ using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using Newtonsoft.Json;
-using ISession = NHibernate.ISession;
+using NHibernate;
 
 namespace MrCMS.Logging
 {
     public class MrCMSDatabaseLogger : ILogger
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ISessionFactory _factory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public MrCMSDatabaseLogger(IHttpContextAccessor contextAccessor)
+        public MrCMSDatabaseLogger(ISessionFactory factory, IHttpContextAccessor httpContextAccessor)
         {
-            _contextAccessor = contextAccessor;
+            _factory = factory;
+            _httpContextAccessor = httpContextAccessor;
         }
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+            Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
                 return;
-            var context = _contextAccessor.HttpContext;
-            var currentSiteLocator = context.RequestServices.GetRequiredService<ICurrentSiteLocator>();
-            var session = context.RequestServices.GetRequiredService<ISession>();
+
             var log = new Log
             {
                 LogLevel = logLevel,
                 ExceptionData = GetExceptionData(exception),
-                RequestData = GetRequestData(context),
-                Message = formatter(state, exception),
-                Detail = exception?.StackTrace,
-                Site = currentSiteLocator.GetCurrentSite()
+                Message = exception != null ? exception.Message : formatter(state, exception),
+                Detail = exception?.StackTrace
             };
-            session.Transact(s => s.Save(log));
+
+            using var statelessSession = _factory.OpenStatelessSession();
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext != null)
+            {
+                var site = httpContext.RequestServices.GetService<ICurrentSiteLocator>()?.GetCurrentSite();
+                log.RequestData = GetRequestData(httpContext);
+                log.Site = site;
+            }
+
+            log.CreatedOn = DateTime.UtcNow;
+            log.UpdatedOn = DateTime.UtcNow;
+            log.IsDeleted = false;
+
+            try
+            {
+                statelessSession.Insert(log);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private string GetRequestData(HttpContext httpContext)
@@ -77,8 +100,7 @@ namespace MrCMS.Logging
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return _contextAccessor.HttpContext != null &&
-                   (logLevel == LogLevel.Critical || logLevel == LogLevel.Error || logLevel == LogLevel.Warning);
+            return (logLevel == LogLevel.Critical || logLevel == LogLevel.Error);
         }
 
         public IDisposable BeginScope<TState>(TState state)

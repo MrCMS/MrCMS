@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -15,9 +16,9 @@ namespace MrCMS.Web.Admin.Controllers
             _tagAdminService = tagAdminService;
         }
 
-        public JsonResult Search(string term)
+        public async Task<JsonResult> Search(string term)
         {
-            IEnumerable<AutoCompleteResult> result = _tagAdminService.Search(term);
+            IEnumerable<AutoCompleteResult> result = await _tagAdminService.Search(term);
 
             return Json(result);
         }

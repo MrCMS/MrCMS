@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -18,7 +18,7 @@ namespace MrCMS.Batching.Services
             _statelessSession = statelessSession;
         }
 
-        public BatchRun Create(Batch batch)
+        public async Task<BatchRun> Create(Batch batch)
         {
             if (batch == null)
                 return null;
@@ -35,7 +35,7 @@ namespace MrCMS.Batching.Services
 
             // we need to make sure that the site is loaded from the correct session
             var site = _statelessSession.Get<Site>(batch.Site.Id);
-            return _statelessSession.Transact(session =>
+            return await _statelessSession.TransactAsync(async session =>
             {
                 var now = DateTime.UtcNow;
                 var batchRun = new BatchRun
@@ -46,7 +46,7 @@ namespace MrCMS.Batching.Services
                     CreatedOn = now,
                     UpdatedOn = now
                 };
-                session.Insert(batchRun);
+                await session.InsertAsync(batchRun);
                 for (int index = 0; index < jobs.Count; index++)
                 {
                     BatchJob batchJob = jobs[index];
@@ -61,7 +61,7 @@ namespace MrCMS.Batching.Services
                         UpdatedOn = now
                     };
                     batchRun.BatchRunResults.Add(batchRunResult);
-                    session.Insert(batchRunResult);
+                    await session.InsertAsync(batchRunResult);
                 }
                 return batchRun;
             });

@@ -5,7 +5,7 @@
 }
 
 <nav class="mt-2">
-    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" id="sidebar-nav">
+    <ul class="nav nav-pills nav-sidebar flex-column  text-sm" data-widget="treeview" role="menu" data-accordion="true" id="sidebar-nav">
 
         @foreach (var item in Model.Nodes)
         {
@@ -20,7 +20,7 @@
                     <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
                         <i class="nav-icon @item.CssClass"> </i>
                         <p>
-                            @Html.Resource("Nav Links - " + item.Name, item.Name)
+                            @await Html.Resource("Nav Links - " + item.Name, item.Name)
                             <i class="fa fa-angle-left right"></i>
                         </p>
                     </a>
@@ -31,10 +31,10 @@
             else
             {
                 <li class="nav-item">
-                    <a href="@item.Url" class="nav-link @item.SelectedClass(breadcrumbs)">
+                    <a href="@item.Url" class="nav-link @item.SelectedClass(breadcrumbs)" @(item.OpenInNewWindow ? "target=\"_blank\"":"")>
                         <i class="nav-icon @(item.CssClass ?? "fa fa-file-code-o")"></i>
                         <p>
-                            @Html.Resource("Nav Links - " + item.Name, item.Name)
+                            @await Html.Resource("Nav Links - " + item.Name, item.Name)
                         </p>
                     </a>
                 </li>

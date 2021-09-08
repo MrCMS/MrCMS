@@ -1,50 +1,42 @@
-using System;
 using System.Linq;
-using MrCMS.DbConfiguration;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Services.Notifications;
 using MrCMS.Website;
+using MrCMS.Website.Caching;
 using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public class PublishScheduledWebpagesTask : SchedulableTask
     {
-        private readonly ISession _session;
+        private readonly IStatelessSession _session;
         private readonly IGetDateTimeNow _getDateTimeNow;
-        private readonly INotificationDisabler _notificationDisabler;
+        private readonly ICacheManager _cacheManager;
 
-        public PublishScheduledWebpagesTask(ISession session, IGetDateTimeNow getDateTimeNow, INotificationDisabler notificationDisabler)
+        public PublishScheduledWebpagesTask(IStatelessSession session, IGetDateTimeNow getDateTimeNow,
+            ICacheManager cacheManager)
         {
             _session = session;
             _getDateTimeNow = getDateTimeNow;
-            _notificationDisabler = notificationDisabler;
+            _cacheManager = cacheManager;
         }
 
-        public override int Priority
+        protected override async Task OnExecute()
         {
-            get { return 0; }
-        }
-
-        protected override void OnExecute()
-        {
-            using (new SiteFilterDisabler(_session))
-            using (_notificationDisabler.Disable())
+            var now = _getDateTimeNow.LocalNow;
+            var due = await _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).ListAsync();
+            if (!due.Any())
+                return;
+            await _session.TransactAsync(async session =>
             {
-                var now = _getDateTimeNow.LocalNow;
-                var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
-                if (!due.Any())
-                    return;
-                _session.Transact(session =>
+                foreach (var webpage in due)
                 {
-                    foreach (var webpage in due)
-                    {
-                        webpage.Published = true;
-                        session.Update(webpage);
-                    }
-                });
-            }
+                    webpage.Published = true;
+                    await session.UpdateAsync(webpage);
+                }
+            });
+            _cacheManager.Clear();
         }
     }
 }

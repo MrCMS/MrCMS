@@ -16,16 +16,11 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public ISet<UserRole> GetFrontEndRoles(string frontEndRoles, bool inheritFromParent)
+        public ISet<UserRole> GetFrontEndRoles(string frontEndRoles)
         {
             if (frontEndRoles == null)
             {
                 frontEndRoles = string.Empty;
-            }
-
-            if (inheritFromParent)
-            {
-                return new HashSet<UserRole>();
             }
 
             var roleNames =

@@ -1,46 +1,46 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Helpers
-@model MrCMS.Web.Admin.Models.AddFormPropertyModel
+﻿@model MrCMS.Web.Admin.Models.AddFormPropertyModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
-@using (Html.BeginForm("Add", "FormProperty", new {id = ""}, FormMethod.Post, null, new {@class = "form-update-form", id="add-property"}))
-{
+
+<form method="post" asp-action="Add" asp-controller="FormProperty" class="form-update-form" id="add-property">
     <fieldset>
         <legend>
-            @Html.Resource("Admin Form Add Field Title", "Add Field")
+            @await Html.Resource("Admin Form Add Field Title", "Add Field")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn submit-form-btn" value="@Html.Resource("Admin Form Add Field Button", "Add form property")"/>
+                <input type="submit" class="btn-primary btn submit-form-btn" value="@await Html.Resource("Admin Form Add Field Button", "Add form property")" />
             </span>
         </legend>
-        @Html.HiddenFor(x => x.FormId)
+        <input type="hidden" asp-for="FormId"/>
 
         <div class="form-group">
-            @Html.DropDownListFor(x => x.PropertyType, ViewData["property-types"] as IEnumerable<SelectListItem>, new {@class = "form-control"})
+            <select asp-for="PropertyType" asp-items="@ViewData["property-types"] as IEnumerable<SelectListItem>" class="form-control"></select>
+            <span asp-validation-for="PropertyType"></span>
         </div>
-
-        @Html.EditorFor(x => x.Required)
-
-
+        
         <div class="form-group">
-            @Html.LabelFor(property => property.Name)
-            @Html.TextBoxFor(property => property.Name, new {@class = "form-control"})
-            @Html.ValidationMessageFor(property => property.Name)
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(property => property.LabelText)
-            @Html.TextBoxFor(property => property.LabelText, new {@class = "form-control"})
-            @Html.ValidationMessageFor(property => property.LabelText)
+            <div class="form-check">
+                <input asp-for="Required" type="checkbox" class="form-check-input" />
+                <label asp-for="Required" class="form-check-label"></label>
+            </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(property => property.CssClass)
-            @Html.TextBoxFor(property => property.CssClass, new {@class = "form-control"})
-            @Html.ValidationMessageFor(property => property.CssClass)
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" class="form-control" />
+            <span asp-validation-for="Name"></span>
         </div>
         <div class="form-group">
-            @Html.LabelFor(property => property.HtmlId)
-            @Html.TextBoxFor(property => property.HtmlId, new {@class = "form-control"})
-            @Html.ValidationMessageFor(property => property.HtmlId)
+            <label asp-for="LabelText"></label>
+            <input asp-for="LabelText" type="text" class="form-control" />
+            <span asp-validation-for="LabelText"></span>
         </div>
-
+        <div class="form-group">
+            <label asp-for="CssClass"></label>
+            <input asp-for="CssClass" type="text" class="form-control" />
+            <span asp-validation-for="CssClass"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="HtmlId"></label>
+            <input asp-for="HtmlId" type="text" class="form-control" />
+            <span asp-validation-for="HtmlId"></span>
+        </div>
     </fieldset>
-}
-@{ Html.IncludeScript("~/Areas/Admin/scripts/form-builder.js"); }
+</form>

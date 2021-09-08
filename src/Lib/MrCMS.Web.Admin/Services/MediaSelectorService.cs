@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
@@ -7,6 +10,7 @@ using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using X.PagedList;
 
 namespace MrCMS.Web.Admin.Services
@@ -16,19 +20,21 @@ namespace MrCMS.Web.Admin.Services
         private readonly ISession _session;
         private readonly IFileService _fileService;
         private readonly IImageProcessor _imageProcessor;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
-        public MediaSelectorService(ISession session, IFileService fileService, IImageProcessor imageProcessor, Site site)
+        public MediaSelectorService(ISession session, IFileService fileService, IImageProcessor imageProcessor,
+            ICurrentSiteLocator siteLocator)
         {
             _session = session;
             _fileService = fileService;
             _imageProcessor = imageProcessor;
-            _site = site;
+            _siteLocator = siteLocator;
         }
 
-        public IPagedList<MediaFile> Search(MediaSelectorSearchQuery searchQuery)
+        public async Task<IPagedList<MediaFile>> Search(MediaSelectorSearchQuery searchQuery)
         {
-            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site.Id == _site.Id);
+            var site = _siteLocator.GetCurrentSite();
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site.Id == site.Id);
             if (searchQuery.CategoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == searchQuery.CategoryId);
             if (!string.IsNullOrWhiteSpace(searchQuery.Query))
@@ -41,23 +47,28 @@ namespace MrCMS.Web.Admin.Services
                             file.Title.IsLike(term, MatchMode.Anywhere) ||
                             file.Description.IsLike(term, MatchMode.Anywhere));
             }
-            return queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(searchQuery.Page);
+
+            return await queryOver.OrderBy(file => file.CreatedOn).Desc.PagedAsync(searchQuery.Page);
         }
 
-        public List<SelectListItem> GetCategories()
+        public async Task<List<SelectListItem>> GetCategories()
         {
-            return _session.QueryOver<MediaCategory>()
-                .Where(category => category.Site.Id == _site.Id)
+            var site = _siteLocator.GetCurrentSite();
+            var listAsync = await _session.Query<MediaCategory>()
+                .Where(category => category.Site.Id == site.Id)
                 .Where(category => category.HideInAdminNav != true)
-                .Cacheable()
-                .List()
-                .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),
-                    emptyItemText: "All categories");
+                .WithOptions(options => options.SetCacheable(true))
+                .Select(x => new { x.Id, x.Name })
+                .ToListAsync();
+            return
+                listAsync
+                    .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),
+                        emptyItemText: "All categories");
         }
 
-        public SelectedItemInfo GetFileInfo(string value)
+        public async Task<SelectedItemInfo> GetFileInfo(string value)
         {
-            var file = _fileService.GetFile(value);
+            var file = await _fileService.GetFile(value);
             if (file == null)
             {
                 return null;
@@ -65,46 +76,46 @@ namespace MrCMS.Web.Admin.Services
 
             return new SelectedItemInfo
             {
-                Url = _fileService.GetFileUrl(file,value),
+                Url = await _fileService.GetFileUrl(file, value),
                 Alt = file.Title,
                 Description = file.Description,
             };
         }
 
-        public string GetAlt(string url)
+        public async Task<string> GetAlt(string url)
         {
-            var mediaFile = GetImage(url);
+            var mediaFile = await GetImage(url);
             return mediaFile != null ? mediaFile.Title : string.Empty;
         }
 
-        public string GetDescription(string url)
+        public async Task<string> GetDescription(string url)
         {
-            var mediaFile = GetImage(url);
+            var mediaFile = await GetImage(url);
             return mediaFile != null ? mediaFile.Description : string.Empty;
         }
 
-        private MediaFile GetImage(string url)
+        private async Task<MediaFile> GetImage(string url)
         {
-            return _imageProcessor.GetImage(url);
+            return await _imageProcessor.GetImage(url);
         }
 
-        public bool UpdateAlt(UpdateMediaParams updateMediaParams)
+        public async Task<bool> UpdateAlt(UpdateMediaParams updateMediaParams, CancellationToken token)
         {
-            var mediaFile = GetImage(updateMediaParams.Url);
+            var mediaFile = await GetImage(updateMediaParams.Url);
             if (mediaFile == null)
                 return false;
             mediaFile.Title = updateMediaParams.Value;
-            _session.Transact(session => session.Update(mediaFile));
+            await _session.TransactAsync((session, ct) => session.UpdateAsync(mediaFile, ct), token);
             return true;
         }
 
-        public bool UpdateDescription(UpdateMediaParams updateMediaParams)
+        public async Task<bool> UpdateDescription(UpdateMediaParams updateMediaParams, CancellationToken token)
         {
-            var mediaFile = GetImage(updateMediaParams.Url);
+            var mediaFile = await GetImage(updateMediaParams.Url);
             if (mediaFile == null)
                 return false;
             mediaFile.Description = updateMediaParams.Value;
-            _session.Transact(session => session.Update(mediaFile));
+            await _session.TransactAsync((session, ct) => session.UpdateAsync(mediaFile, ct), token);
             return true;
         }
     }

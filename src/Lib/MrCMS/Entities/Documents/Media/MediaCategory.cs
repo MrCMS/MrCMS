@@ -22,5 +22,19 @@ namespace MrCMS.Entities.Documents.Media
         public virtual bool IsGallery { get; set; }
 
         public virtual IList<MediaFile> Files { get; protected internal set; } = new List<MediaFile>();
+        
+        public virtual IEnumerable<MediaCategory> BreadCrumbs
+        {
+            get
+            {
+                MediaCategory page = this;
+                while (page != null)
+                {
+                    yield return page;
+                    page = page.Parent.Unproxy() as MediaCategory;
+                }
+            }
+        }
+
     }
 }

@@ -1,12 +1,13 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Widget;
 
 namespace MrCMS.Services
 {
     public interface IWidgetService
     {
-        T GetWidget<T>(int id) where T : Widget;
-        void SaveWidget(Widget widget);
-        void DeleteWidget(Widget widget);
-        Widget AddWidget(Widget widget);
+        Task<T> GetWidget<T>(int id) where T : Widget;
+        Task SaveWidget(Widget widget);
+        Task DeleteWidget(Widget widget);
+        Task<Widget> AddWidget(Widget widget);
     }
 }

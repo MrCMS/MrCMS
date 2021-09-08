@@ -21,7 +21,6 @@ namespace MrCMS.Services.ImportExport.DTOs
         public string MetaKeywords { get; set; }
         public bool RevealInNavigation { get; set; }
         public int DisplayOrder { get; set; }
-        public bool RequireSSL { get; set; }
         public DateTime? PublishDate { get; set; }
 
         public List<string> Tags { get; set; }

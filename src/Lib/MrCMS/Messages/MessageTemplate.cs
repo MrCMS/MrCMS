@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MrCMS.Services;
 
 namespace MrCMS.Messages
 {
@@ -34,19 +33,13 @@ namespace MrCMS.Messages
         [Required, DisplayName("Is disabled?")]
         public bool IsDisabled { get; set; }
 
-        public virtual Type ModelType
-        {
-            get { return null; }
-        }
+        public virtual Type ModelType => null;
 
         public int? SiteId { get; set; }
     }
 
     public abstract class MessageTemplate<T> : MessageTemplate
     {
-        public override sealed Type ModelType
-        {
-            get { return typeof(T); }
-        }
+        public override sealed Type ModelType => typeof(T);
     }
 }

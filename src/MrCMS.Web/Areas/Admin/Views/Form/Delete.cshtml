@@ -1,16 +1,14 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Models
-@model MrCMS.Web.Admin.Models.UpdateFormModel
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("Delete", "Form", new { Model.Id }, FormMethod.Post))
+﻿@model MrCMS.Web.Admin.Models.UpdateFormModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Delete", "Form", new {Model.Id}, FormMethod.Post))
 {
     <fieldset>
         <legend>
-            @Html.Resource("Admin Form Delete", "Delete form")
-        <span class="btn-group d-inline pull-right">
-            <button type="submit" class="btn-danger btn">@Html.Resource("Delete")</button>
-        </span>
-    </legend>
-    @Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
-</fieldset>
+            @await Html.Resource("Admin Form Delete", "Delete form")
+            <span class="btn-group d-inline pull-right">
+                <button type="submit" class="btn-danger btn">@await Html.Resource("Delete")</button>
+            </span>
+        </legend>
+        @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+    </fieldset>
 }

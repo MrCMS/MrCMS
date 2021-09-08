@@ -12,19 +12,15 @@ namespace MrCMS.Website.PushNotifications
         {
             _sendPushNotification = sendPushNotification;
         }
-        protected override BatchJobExecutionResult OnExecute(SendPushNotificationBatchJob batchJob)
+
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(SendPushNotificationBatchJob batchJob)
         {
             var data = JsonConvert.DeserializeObject<SendPushNotificationData>(batchJob.Data);
-            var result = _sendPushNotification.SendNotification(data);
+            var result = await _sendPushNotification.SendNotification(data);
 
             return result.StatusCode.HasValue
                 ? BatchJobExecutionResult.Failure(result.Error)
                 : BatchJobExecutionResult.Success();
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(SendPushNotificationBatchJob batchJob)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

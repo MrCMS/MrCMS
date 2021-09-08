@@ -5,38 +5,36 @@
 {
     <table class="table table-condensed table-striped table-bordered">
         <thead>
-            <tr>
-                <th>@Html.Resource("Value")</th>
-                <th>@Html.Resource("Admin Webpage Form Option Selected", "Selected")</th>
-                <th>@Html.Resource("Actions")</th>
-            </tr>
+        <tr>
+            <th>@await Html.Resource("Value")</th>
+            <th>@await Html.Resource("Admin Webpage Form Option Selected", "Selected")</th>
+            <th>@await Html.Resource("Actions")</th>
+        </tr>
         </thead>
         <tbody>
 
-            @foreach (var option in Model.Options)
-            {
-                <tr>
-                    <td>@option.Value</td>
-                    <td>@option.Selected</td>
-                    <td>
-                        <div class="btn-group">
-                            @Html.ActionLink(Html.Resource("Edit"), "Edit", "FormListOption", new { id = option.Id }, new { @class = "btn btn-sm btn-secondary", data_toggle = "fb-modal" })
-                            @Html.ActionLink(Html.Resource("Delete"), "Delete", "FormListOption", new { id = option.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
-                        </div>
-                    </td>
-                </tr>
-            }
+        @foreach (var option in Model.Options)
+        {
+            <tr>
+                <td>@option.Value</td>
+                <td>@option.Selected</td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.Resource("Delete"), "Delete", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                    </div>
+                </td>
+            </tr>
+        }
 
         </tbody>
     </table>
 }
 else
 {
-    @Html.Resource("Admin Webpage From Options None", "Please click add option to add your first option to this field.")
+    @await Html.Resource("Admin Webpage From Options None", "Please click add option to add your first option to this field.")
 }
-<br />
+<br/>
 <div class="btn-group">
-    @Html.ActionLink("Add Option", "Add", "FormListOption", new { id = Model.Id }, new { @class = "btn btn-sm btn-primary", data_toggle = "fb-modal" })
+    @Html.ActionLink("Add Option", "Add", "FormListOption", new {id = Model.Id}, new {@class = "btn btn-sm btn-primary", data_toggle = "fb-modal"})
 </div>
-
-

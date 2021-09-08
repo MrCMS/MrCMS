@@ -6,6 +6,8 @@ namespace MrCMS.Web.Admin.Breadcrumbs.Webpages
 {
     public class WebpageBreadcrumb : ItemBreadcrumb<WebpagesBreadcrumb, Webpage>
     {
+        public override decimal Order => -1;
+
         public WebpageBreadcrumb(ISession session) : base(session)
         {
         }

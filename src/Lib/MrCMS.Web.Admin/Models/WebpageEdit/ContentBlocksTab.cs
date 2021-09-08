@@ -12,14 +12,14 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
         public override int Order => 50;
         public override Type ParentType => null;
         public override Type ModelType => null;
-        public override string Name(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Webpage entity)
         {
-            return "Content Blocks";
+            return Task.FromResult("Content Blocks");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         public override string TabHtmlId => "content-blocks";

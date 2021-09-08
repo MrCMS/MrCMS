@@ -1,4 +1,5 @@
-﻿using MrCMS.Batching.Entities;
+﻿using System.Threading.Tasks;
+using MrCMS.Batching.Entities;
 using MrCMS.Batching.Events;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -17,36 +18,37 @@ namespace MrCMS.Batching.Services
             _eventContext = eventContext;
         }
 
-        public bool Start(BatchRun batchRun)
+        public async Task<bool> Start(BatchRun batchRun)
         {
             batchRun = GetBatchRunFromThisSession(batchRun);
             if (batchRun == null ||
                 (batchRun.Status == BatchRunStatus.Executing || batchRun.Status == BatchRunStatus.Complete))
                 return false;
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 batchRun.Status = BatchRunStatus.Executing;
-                session.Update(batchRun);
+                await session.UpdateAsync(batchRun);
             });
-            _session.GetService<IEventContext>().Publish<IOnBatchRunStart, BatchRunStartArgs>(new BatchRunStartArgs
-            {
-                BatchRun = batchRun
-            });
+            await _session.GetService<IEventContext>().Publish<IOnBatchRunStart, BatchRunStartArgs>(
+                new BatchRunStartArgs
+                {
+                    BatchRun = batchRun
+                });
             return true;
         }
 
-        public bool Pause(BatchRun batchRun)
+        public async Task<bool> Pause(BatchRun batchRun)
         {
             batchRun = GetBatchRunFromThisSession(batchRun);
             if (batchRun == null ||
                 (batchRun.Status != BatchRunStatus.Executing))
                 return false;
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 batchRun.Status = BatchRunStatus.Paused;
-                session.Update(batchRun);
+                await session.UpdateAsync(batchRun);
             });
-            _eventContext.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
+            await _eventContext.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
             {
                 BatchRun = batchRun
             });

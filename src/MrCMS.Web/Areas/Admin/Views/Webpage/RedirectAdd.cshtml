@@ -1,15 +1,14 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages.RedirectViewModel
+﻿@model MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages.RedirectViewModel
 <div class="form-group">
     @Html.LabelFor(redirect => redirect.RedirectUrl)
-    @Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "form-control" })
+    @Html.TextBoxFor(redirect => redirect.RedirectUrl, new {@class = "form-control"})
     @Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
 </div>
 <div class="form-group">
-    @Html.InlineCheckboxFor(redirect => redirect.Permanent, text: Html.Resource("301 Pemanent"))
+    @Html.InlineCheckboxFor(redirect => redirect.Permanent, text: await Html.Resource("301 Pemanent"))
     @Html.ValidationMessageFor(redirect => redirect.Permanent)
 </div>
 <div class="form-group">
-    @Html.InlineCheckboxFor(redirect => redirect.RevealInNavigation, text: Html.Resource("Show in Navigation"))
+    @Html.InlineCheckboxFor(redirect => redirect.RevealInNavigation, text: await Html.Resource("Show in Navigation"))
     @Html.ValidationMessageFor(redirect => redirect.RevealInNavigation)
 </div>

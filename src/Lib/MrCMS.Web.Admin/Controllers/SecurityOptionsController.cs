@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Settings;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -11,15 +11,16 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly IRoleAdminService _roleAdminService;
 
-        public SecurityOptionsController(ISystemConfigurationProvider configurationProvider, IRoleAdminService roleAdminService)
+        public SecurityOptionsController(ISystemConfigurationProvider configurationProvider,
+            IRoleAdminService roleAdminService)
         {
             _configurationProvider = configurationProvider;
             _roleAdminService = roleAdminService;
         }
 
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
-            ViewData["roles"] = _roleAdminService.GetAllRoles().ToList();
+            ViewData["roles"] = await _roleAdminService.GetAllRoles();
             ViewData["auth-role-settings"] = _configurationProvider.GetSystemSettings<AuthRoleSettings>();
             ViewData["security-settings"] = _configurationProvider.GetSystemSettings<SecuritySettings>();
 
@@ -27,17 +28,17 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Index(AuthRoleSettings settings)
+        public async Task<RedirectToActionResult> Index(AuthRoleSettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
+            await _configurationProvider.SaveSettings(settings);
             return RedirectToAction("Index");
         }
 
 
         [HttpPost]
-        public ActionResult Settings(SecuritySettings settings)
+        public async Task<ActionResult> Settings(SecuritySettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
+            await _configurationProvider.SaveSettings(settings);
             return RedirectToAction("Index");
         }
     }

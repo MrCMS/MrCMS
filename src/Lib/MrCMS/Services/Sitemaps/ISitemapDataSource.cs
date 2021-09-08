@@ -7,5 +7,11 @@ namespace MrCMS.Services.Sitemaps
     {
         IEnumerable<SitemapData> GetAdditionalData();
         IEnumerable<Type> TypesToRemove { get; }
+        
+    }
+
+    public interface ISitemapPagesToRemove
+    {
+        IEnumerable<int> WebpageIds { get; }
     }
 }

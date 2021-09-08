@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Web;
@@ -16,24 +18,42 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public override void AssignViewData(Webpage webpage, ViewDataDictionary viewData)
+        public override async Task AssignViewData(Webpage webpage, ViewDataDictionary viewData)
         {
             if (webpage == null)
                 return;
+            var defaultSelection = new SelectListItem {Text = "Default template", Value = ""};
             var typeName = webpage.GetType().FullName;
-            var templates = _session.QueryOver<PageTemplate>().Where(template => template.PageType == typeName)
-                .OrderBy(template => template.Name).Asc.Cacheable().List().ToList();
+            var pageTemplates = await _session.QueryOver<PageTemplate>()
+                .Where(template => template.PageType == typeName)
+                .OrderBy(template => template.Name).Asc.Cacheable().ListAsync();
 
-            templates = templates.FindAll(template =>
+            if (!pageTemplates.Any())
+            {
+                var selectListItems = new List<SelectListItem> {defaultSelection};
+
+                viewData["template-options"] = selectListItems;
+                return;
+            }
+            
+            var templates = new List<PageTemplate>();
+
+            foreach (var template in pageTemplates)
             {
                 if (!template.SingleUse)
-                    return true;
-                return !_session.QueryOver<Webpage>().Where(page => page.PageTemplate.Id == template.Id && page.Id != webpage.Id).Any();
-            });
+                    templates.Add(template);
+                else if (!await _session.QueryOver<Webpage>()
+                    .Where(page => page.PageTemplate.Id == template.Id && page.Id != webpage.Id).AnyAsync())
+                {
+                    templates.Add(template);
+                }
+            }
 
-            viewData["template-options"] = templates.BuildSelectItemList(template => template.Name,
+            var options = templates.BuildSelectItemList(template => template.Name,
                 template => template.Id.ToString(),
-                emptyItem: new SelectListItem {Text = "Default template", Value = ""});
+                emptyItem: defaultSelection);
+
+            viewData["template-options"] = options;
         }
     }
 }

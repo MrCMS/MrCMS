@@ -6,44 +6,41 @@
 {
     <div class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert">×</button>
-        @Html.Resource("Admin Settings Saved", "Settings saved")
+        @await Html.Resource("Admin Settings Saved", "Settings saved")
     </div>
 }
 <form asp-controller="Settings" asp-action="Index" method="post">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-site-settings", "Site Settings") "/>
+            <admin-header-title title="@await Html.Resource("admin-site-settings", "Site Settings") "/>
 
             <admin-header-actions>
                 <button class="btn btn-primary">
-                    @Html.Resource("admin-save", "Save")
+                    @await Html.Resource("admin-save", "Save")
                 </button>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
-            <div id="tabs">
-                <ul class="nav nav-tabs mb-2" data-stickytabs="site-settings">
-                    @foreach (var settingType in Model.OrderBy(x=>x.TypeName))
-                    {
-                        <li class="nav-item">
-                            <a href="#@settingType.DivId" data-toggle="tab" class="nav-link">@settingType.TypeName</a>
-                        </li>
-                    }
-                </ul>
-                <div class="tab-content">
-                    @foreach (var settingType in Model)
-                    {
-                        <partial name="Settings" model="settingType"/>
-                        //Html.RenderPartial("Settings", settingType);
-                    }
-                </div>
-            </div>
 
-        </card-body>
-    </card>
+    <div id="tabs">
+        <ul class="nav nav-tabs mb-2" data-stickytabs="site-settings">
+            @foreach (var settingType in Model.OrderBy(x => x.TypeName))
+            {
+                <li class="nav-item">
+                    <a href="#@settingType.DivId" data-toggle="tab" class="nav-link">@settingType.TypeName</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            @foreach (var settingType in Model)
+            {
+                <partial name="Settings" model="settingType"/>
+                //Html.RenderPartial("Settings", settingType);
+            }
+        </div>
+    </div>
+
 
 </form>

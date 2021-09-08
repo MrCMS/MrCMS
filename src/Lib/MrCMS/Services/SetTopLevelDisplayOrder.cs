@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Events;
 
@@ -13,7 +14,7 @@ namespace MrCMS.Services
             _getDocumentsByParent = getDocumentsByParent;
         }
 
-        public void Execute(OnAddingArgs<T> args)
+        public async Task Execute(OnAddingArgs<T> args)
         {
             T tDoc = args.Item;
             // if the document isn't set or it's not top level (i.e. has a parent) we don't want to deal with it here
@@ -24,7 +25,7 @@ namespace MrCMS.Services
             if (tDoc.DisplayOrder != 0)
                 return;
 
-            var documentsByParent = _getDocumentsByParent.GetDocuments(null)
+            var documentsByParent = (await _getDocumentsByParent.GetDocuments(null))
                 .Where(doc => doc != tDoc).ToList();
 
             tDoc.DisplayOrder = documentsByParent.Any()

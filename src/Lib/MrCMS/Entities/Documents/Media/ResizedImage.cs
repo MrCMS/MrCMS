@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MrCMS.DbConfiguration.Configuration;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -7,7 +6,8 @@ namespace MrCMS.Entities.Documents.Media
     {
         public virtual MediaFile MediaFile { get; set; }
         public virtual Crop Crop { get; set; }
-        [StringLength(450)]
-        public virtual string Url { get; set; }
+        [StringLength(450)] public virtual string Url { get; set; }
+        public virtual bool Missing { get; set; }
+        public virtual bool Cleansed { get; set; }
     }
 }

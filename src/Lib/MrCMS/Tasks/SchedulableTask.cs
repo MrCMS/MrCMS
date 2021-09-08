@@ -1,16 +1,13 @@
-using System;
-using MrCMS.Website;
+using System.Threading.Tasks;
 
 namespace MrCMS.Tasks
 {
-    public abstract class SchedulableTask
+    public abstract class SchedulableTask 
     {
-        public abstract int Priority { get; }
-
-        public void Execute()
+        public async Task Execute()
         {
-            OnExecute();
+            await OnExecute();
         }
-        protected abstract void OnExecute();
+        protected abstract Task OnExecute();
     }
 }

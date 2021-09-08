@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -9,7 +11,6 @@ using MrCMS.Apps;
 using MrCMS.Batching.Entities;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.DbConfiguration.Conventions;
-using MrCMS.DbConfiguration.Filters;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
@@ -18,8 +19,8 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
+using MrCMS.Website;
 using NHibernate;
-using NHibernate.Cache;
 using NHibernate.Caches.CoreMemoryCache;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
@@ -27,17 +28,49 @@ using Environment = NHibernate.Cfg.Environment;
 
 namespace MrCMS.DbConfiguration
 {
-    public class NHibernateConfigurator
+    public class ValidateNHibernateSchema : IExecuteOnStartup
+    {
+        private readonly IGetNHibernateConfiguration _getNHibernateConfiguration;
+
+        public ValidateNHibernateSchema(IGetNHibernateConfiguration getNHibernateConfiguration)
+        {
+            _getNHibernateConfiguration = getNHibernateConfiguration;
+        }
+        
+        public async Task Execute(CancellationToken cancellationToken)
+        {
+            var config = _getNHibernateConfiguration.GetConfiguration();
+            var validator = new SchemaValidator(config);
+            try
+            {
+                await validator.ValidateAsync(cancellationToken);
+            }
+            catch (HibernateException)
+            {
+                var update = new SchemaUpdate(config);
+                await update.ExecuteAsync(false, true, cancellationToken);
+            }
+
+        }
+
+        public int Order => 0;
+    }
+
+    public class NHibernateConfigurator : IGetNHibernateConfiguration
     {
         private readonly IDatabaseProvider _databaseProvider;
         private readonly MrCMSAppContext _appContext;
         private readonly Action<CacheSettingsBuilder> _configureCache;
+        private readonly string _connectionString;
+        private Lazy<NHibernate.Cfg.Configuration> _configuration;
 
-        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext, Action<CacheSettingsBuilder> configureCache = null)
+        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext, Action<CacheSettingsBuilder> configureCache = null, string connectionString = "")
         {
             _databaseProvider = databaseProvider;
             _appContext = appContext;
             _configureCache = configureCache;
+            _connectionString = connectionString;
+            _configuration = new Lazy<NHibernate.Cfg.Configuration>(LoadConfiguration);
         }
 
         public List<Assembly> ManuallyAddedAssemblies { get; set; }
@@ -53,19 +86,16 @@ namespace MrCMS.DbConfiguration
 
         public static void ValidateSchema(NHibernate.Cfg.Configuration config)
         {
-            var validator = new SchemaValidator(config);
-            try
-            {
-                validator.Validate();
-            }
-            catch (HibernateException)
-            {
-                var update = new SchemaUpdate(config);
-                update.Execute(false, true);
-            }
+         
+
         }
 
         public NHibernate.Cfg.Configuration GetConfiguration()
+        {
+            return _configuration.Value;
+        }
+
+        private NHibernate.Cfg.Configuration LoadConfiguration()
         {
             var assemblies = GetAssemblies();
 
@@ -83,7 +113,6 @@ namespace MrCMS.DbConfiguration
                     foreach (var assembly in assemblies)
                         m.FluentMappings.AddFromAssembly(assembly);
                 })
-
                 .Cache(SetupCache)
                 .ExposeConfiguration(AppendListeners)
                 .ExposeConfiguration(AppSpecificConfiguration)
@@ -91,19 +120,25 @@ namespace MrCMS.DbConfiguration
                 {
 #if DEBUG
                     c.SetProperty(Environment.GenerateStatistics, "true");
+                    c.DataBaseIntegration(x =>
+                    {
+                        _databaseProvider.DebugDatabaseIntegration(x);
+                    });
 #else
                     c.SetProperty(Environment.GenerateStatistics, "false");
 #endif
                     c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
-                    c.SetProperty(Environment.BatchSize, "25");
+                    c.SetProperty(Environment.BatchSize, "200");
                 })
                 .BuildConfiguration();
 
 
             _databaseProvider.AddProviderSpecificConfiguration(config);
-
-            ValidateSchema(config);
-
+            
+            // ValidateSchema(config);
+            
+            //DbConfig.Initialize(_connectionString);
+            
             config.BuildMappings();
 
             return config;
@@ -127,18 +162,13 @@ namespace MrCMS.DbConfiguration
 
         private void SetupCache(CacheSettingsBuilder builder)
         {
-            //if (!CacheEnabled)
-            //    return;
             if (_configureCache != null)
             {
                 _configureCache(builder);
             }
             else
             {
-                builder.UseSecondLevelCache()
-                    .UseQueryCache()
-                    .QueryCacheFactory<StandardQueryCacheFactory>();
-                builder.ProviderClass<CoreMemoryCacheProvider>();
+                builder.UseSecondLevelCache().UseQueryCache().ProviderClass<CoreMemoryCacheProvider>();
             }
         }
 
@@ -175,5 +205,10 @@ namespace MrCMS.DbConfiguration
             var softDeleteListener = new SoftDeleteListener();
             configuration.SetListener(ListenerType.Delete, softDeleteListener);
         }
+    }
+
+    public interface IGetNHibernateConfiguration
+    {
+        NHibernate.Cfg.Configuration GetConfiguration();
     }
 }

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.ACL;
-using MrCMS.Tasks;
 
 namespace MrCMS.HealthChecks
 {
@@ -16,10 +15,10 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName => "ACL Enabled";
 
-        public override HealthCheckResult PerformCheck()
+        public override Task<HealthCheckResult> PerformCheck()
         {
 
-            return _settings.ACLEnabled
+            return Task.FromResult(_settings.ACLEnabled
                 ? HealthCheckResult.Success
                 : new HealthCheckResult
                 {
@@ -28,7 +27,7 @@ namespace MrCMS.HealthChecks
                     {
                         "ACL has not been enabled for this site."
                     }
-                };
+                });
         }
     }
 }

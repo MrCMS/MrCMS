@@ -1,57 +1,37 @@
-﻿@using System.Globalization
-@using MrCMS.Helpers
-@using MrCMS.Services
-@using MrCMS.Web.Admin.Helpers
-@using MrCMS.Website
+﻿@using MrCMS.Services
 @using MrCMS.Website.Optimization
 @inject IGetCurrentUser GetCurrentUser
+@inject IGetCurrentUserCultureInfo GetCurrentUserCultureInfo
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var culture = await GetCurrentUserCultureInfo.Get();
+    var user = await GetCurrentUser.Get();
+}
 <!DOCTYPE html>
-<html lang="@(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)">
+<html lang="@culture.Name">
 <head>
     <title>@ViewBag.Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/gif" href="/Areas/Admin/img/mrcms-icon.gif">
-    @Html.RenderStyleBundle("~/admin/stylesheets/mrcms")
-    @Html.RenderStyleBundle("~/admin/stylesheets/apps")
-
-    @{ Html.RenderCss(); }
-    
-    <!-- Google Font: Source Sans Pro -->
+    <link rel="icon" type="image/gif" href="/Areas/Admin/Content/img/mrcms-icon.gif">
+    @await Html.RenderAdminVendorStyles()
+    @await Html.RenderAdminStyles()
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" data-current-ui-culture="@culture.Name" data-antiforgery-token="@Xsrf.GetAndStoreTokens(Context).RequestToken" data-disable-notifications="@user?.DisableNotifications">
+<div id="loading" style="display: none;">
+    <img src="/Areas/Admin/Content/img/ajax-loader2.gif" alt="loading"/>
+</div>
 
-@RenderBody() 
+@RenderBody()
 
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/ckeditor/ckeditor.js")"></script> 
-
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/lib/signalr/signalr.js")"></script>
-<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
-<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
-@Html.RenderScriptBundle("~/admin/scripts/lib")
-@Html.RenderScriptBundle("~/admin/scripts/mrcms")
-@Html.RenderScriptBundle("~/admin/scripts/apps")
-<script type="text/javascript" src="/Areas/Admin/lib/jquery/ui/i18n/jquery.ui.datepicker-@(CultureInfo.CurrentCulture.Name).js"></script>
-
-
-@if (GetCurrentUser.Get()?.DisableNotifications == false)
-{
-    Html.IncludeScript("~/Areas/Admin/scripts/transient-notifications.js");
-    Html.IncludeScript("~/Areas/Admin/scripts/persistent-notifications.js");
-}
-
-@{ Html.RenderLocalisedScripts(); }
-@{ Html.RenderScripts(); }
-
-@Html.Hidden("CurrentUICulture", CultureInfo.CurrentCulture.Name)
+@await Html.RenderAdminVendorScripts()
+@await Html.RenderAdminScripts()
 
 @if (IsSectionDefined("JavaScriptBlock"))
 {
-    @RenderSection("JavaScriptBlock")
+    @await RenderSectionAsync("JavaScriptBlock")
 }
-@*    @MiniProfiler.Current.RenderIncludes(Context)*@
-<mini-profiler />
+<mini-profiler/>
 </body>
 </html>

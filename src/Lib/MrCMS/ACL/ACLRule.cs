@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MrCMS.ACL
+﻿namespace MrCMS.ACL
 {
     public abstract class ACLRule
     {

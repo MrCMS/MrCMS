@@ -17,24 +17,12 @@ namespace MrCMS.Shortcodes.Forms
             _data = data ?? new NameValueCollection();
         }
 
-        public bool Submitted
-        {
-            get { return _submitted; }
-        }
+        public bool Submitted => _submitted;
 
-        public List<string> Errors
-        {
-            get { return _errors; }
-        }
+        public List<string> Errors => _errors;
 
-        public bool Success
-        {
-            get { return Submitted && !Errors.Any(); }
-        }
+        public bool Success => Submitted && !Errors.Any();
 
-        public NameValueCollection Data
-        {
-            get { return _data; }
-        }
+        public NameValueCollection Data => _data;
     }
 }

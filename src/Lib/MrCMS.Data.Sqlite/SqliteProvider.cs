@@ -3,6 +3,7 @@ using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.Options;
 using MrCMS.DbConfiguration;
 using MrCMS.Settings;
+using NHibernate.Cfg.Loquacious;
 
 namespace MrCMS.Data.Sqlite
 {
@@ -20,11 +21,19 @@ namespace MrCMS.Data.Sqlite
         public IPersistenceConfigurer GetPersistenceConfigurer()
         {
             return
-                SQLiteConfiguration.Standard.ConnectionString(builder => builder.Is(_databaseSettings.Value.ConnectionString));
+                SQLiteConfiguration.Standard.ConnectionString(builder =>
+                    builder.Is(_databaseSettings.Value.ConnectionString));
         }
 
         public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
         {
+        }
+
+        public void DebugDatabaseIntegration(DbIntegrationConfigurationProperties properties)
+        {
+            var logQueries = _databaseSettings.Value.LogQueries;
+            properties.LogFormattedSql = logQueries;
+            properties.LogSqlInConsole = logQueries;
         }
 
         public string Type

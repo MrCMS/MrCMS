@@ -1,8 +1,4 @@
-﻿@using System.Linq
-@using MrCMS.ACL.Rules
-@using MrCMS.Entities.People
-@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Services
+﻿@using MrCMS.Entities.People
 @model User
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -26,63 +22,52 @@
 </style>
 
 <form method="post" enctype="multipart/form-data" id="avatarForm">
-@Html.HiddenFor(x=>x.Id)
-<admin-header>
-    <row>
-        <admin-header-title title="@Model.Name"/>
+    @Html.HiddenFor(x => x.Id)
+    <admin-header>
+        <row>
+            <admin-header-title title="@Model.Name"/>
 
-        <admin-header-actions>
-            <span class="btn-group pull-right">
-                <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary" id="back-link">@Html.Resource("admin-back", "Back")</a>
-                <button class="btn btn-primary" id="choose-avatar">
-                    @Html.Resource("admin-user-select-avatar-image", "Choose Image")
-                </button>
-            </span>
-        </admin-header-actions>
-    </row>
-</admin-header>
+            <admin-header-actions>
+                <span class="btn-group pull-right">
+                    <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary" id="back-link">@await Html.Resource("admin-back", "Back")</a>
+                    <button class="btn btn-primary" id="choose-avatar">
+                        @await Html.Resource("admin-user-select-avatar-image", "Choose Image")
+                    </button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
 
-<card>
-    <card-body>
-        <label class="label" data-toggle="tooltip" title="Change your avatar">
-            <img class="rounded-circle" id="avatar" src="@avatarImg" alt="avatar">
-            <input type="file" class="sr-only" id="input" name="image" accept="image/*">
-        </label>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-        </div>
-        <div class="alert" role="alert"></div>
-        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalLabel">Crop the image</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+
+    <label class="label" data-toggle="tooltip" title="Change your avatar">
+        <img class="rounded-circle" id="avatar" src="@avatarImg" alt="avatar">
+        <input type="file" class="sr-only" id="input" name="image" accept="image/*">
+    </label>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+    </div>
+    <div class="alert" role="alert"></div>
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Crop the image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="image" src="@avatarImg">
                     </div>
-                    <div class="modal-body">
-                        <div class="img-container">
-                            <img id="image" src="@avatarImg">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="crop">Crop</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="crop">Crop</button>
                 </div>
             </div>
         </div>
-    </card-body>
-</card>
+    </div>
 
 
 </form>
-
-
-@{
-    Html.IncludeCss("/Areas/Admin/lib/cropper/cropper.css");
-    Html.IncludeScript("/Areas/Admin/lib/cropper/cropper.js");
-    Html.IncludeScript("/Areas/Admin/lib/cropper/jquery-cropper.js");
-    Html.IncludeScript("/Areas/Admin/scripts/user-avatar.js");
-}

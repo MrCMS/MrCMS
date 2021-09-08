@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
@@ -19,16 +18,20 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public IPagedList<Webpage> GetWebpages(TagPage page, TagPageSearchModel model)
         {
-            var webpages = new List<Webpage>();
-            foreach (var item in page.Documents)
-                webpages.Add(_session.Get<Webpage>(item.Id));
-            return EnumerableHelper.ToPagedList(webpages.Where(x => x.Published).OrderByDescending(x => x.PublishOn),
-                model.Page, pageSize: model.PageSize);
+            TagPage tagPageAlias = null;
+            var query = _session.QueryOver<Webpage>()
+                .JoinAlias(webpage => webpage.TagPages, () => tagPageAlias)
+                .Where(x => tagPageAlias.Id == page.Id)
+                .Where(x => x.Published)
+                .OrderBy(y => y.PublishOn).Desc;
+
+            return query.Paged(model.Page, pageSize:model.PageSize);
         }
 
-        public TagPage GetPage(in int id)
+        public async Task<TagPage> GetPage(int id)
         {
-            return _session.Get<TagPage>(id);
+            return await _session.GetAsync<TagPage>(id);
         }
     }
 }
+

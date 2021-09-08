@@ -10,62 +10,60 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-user-custom-scripts-pages", "Pages with custom scripts") "/>
+        <admin-header-title title="@await Html.Resource("admin-user-custom-scripts-pages", "Pages with custom scripts") "/>
 
         <admin-header-actions>
         </admin-header-actions>
     </row>
 </admin-header>
 
-<card>
-    <card-body>
-        @if (webpages.Any())
+
+@if (webpages.Any())
+{
+    <table class="table table-striped table-condensed">
+        <thead>
+
+        <tr>
+            <th>
+                @await Html.Resource("Name")
+            </th>
+            <th>
+                @await Html.Resource("Custom Header?")
+            </th>
+            <th>
+                @await Html.Resource("Custom Footer?")
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var webpage in webpages)
         {
-            <table class="table table-striped table-condensed">
-                <thead>
-
-                <tr>
-                    <th>
-                        @Html.Resource("Name")
-                    </th>
-                    <th>
-                        @Html.Resource("Custom Header?")
-                    </th>
-                    <th>
-                        @Html.Resource("Custom Footer?")
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var webpage in webpages)
-                {
-                    <tr>
-                        <td>
-                            @webpage.Name
-                        </td>
-                        <td>
-                            @(!string.IsNullOrWhiteSpace(webpage.CustomHeaderScripts) ? "✓" : "")
-                        </td>
-                        <td>
-                            @(!string.IsNullOrWhiteSpace(webpage.CustomFooterScripts) ? "✓" : "")
-                        </td>
-                        <td class="text-right">
-                            @Html.ActionLink(Html.Resource("Edit"), "Edit", "Webpage", new {id = webpage.Id}, new {@class = "btn btn-secondary btn-sm"})
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-
-            @Html.PagedListPager(webpages, page => Url.Action("Index", "CustomScriptPages", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+            <tr>
+                <td>
+                    @webpage.Name
+                </td>
+                <td>
+                    @(!string.IsNullOrWhiteSpace(webpage.CustomHeaderScripts) ? "✓" : "")
+                </td>
+                <td>
+                    @(!string.IsNullOrWhiteSpace(webpage.CustomFooterScripts) ? "✓" : "")
+                </td>
+                <td class="text-right">
+                    @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Webpage", new {id = webpage.Id}, new {@class = "btn btn-secondary btn-sm"})
+                </td>
+            </tr>
         }
-        else
-        {
-            <div class="alert alert-info">
-                @Html.Resource("admin-custom-script-pages", "No entries found.")
-            </div>
-        }
+        </tbody>
+    </table>
 
-    </card-body>
-</card>
+    @Html.PagedListPager(webpages, page => Url.Action("Index", "CustomScriptPages", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+}
+else
+{
+    <div class="alert alert-info">
+        @await Html.Resource("admin-custom-script-pages", "No entries found.")
+    </div>
+}
+
+

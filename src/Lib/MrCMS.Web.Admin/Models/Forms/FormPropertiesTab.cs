@@ -11,14 +11,14 @@ namespace MrCMS.Web.Admin.Models.Forms
     {
         public override int Order => 0;
 
-        public override string Name(IServiceProvider serviceProvider, Form entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Form entity)
         {
-            return "Fields";
+            return Task.FromResult("Fields");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Form entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Form entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         public override Type ParentType => null;

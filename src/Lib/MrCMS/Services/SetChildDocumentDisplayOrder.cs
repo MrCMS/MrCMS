@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Events;
 using NHibernate;
@@ -8,7 +8,7 @@ namespace MrCMS.Services
 {
     public class SetChildDocumentDisplayOrder : IOnAdding<Document>
     {
-        public void Execute(OnAddingArgs<Document> args)
+        public async Task Execute(OnAddingArgs<Document> args)
         {
             Document document = args.Item;
             // if the document isn't set or it's top level (i.e. no parent) we don't want to deal with it here
@@ -19,15 +19,15 @@ namespace MrCMS.Services
             if (document.DisplayOrder != 0)
                 return;
 
-            document.DisplayOrder = GetMaxParentDisplayOrder(document.Parent, args.Session);
+            document.DisplayOrder = await GetMaxParentDisplayOrder(document.Parent, args.Session);
         }
 
-        private int GetMaxParentDisplayOrder(Document parent, ISession session)
+        private async Task<int> GetMaxParentDisplayOrder(Document parent, ISession session)
         {
-            return session.QueryOver<Document>()
+            return await session.QueryOver<Document>()
                 .Where(doc => doc.Parent.Id == parent.Id)
                 .Select(Projections.Max<Document>(d => d.DisplayOrder))
-                .SingleOrDefault<int>();
+                .SingleOrDefaultAsync<int>();
         }
     }
 }

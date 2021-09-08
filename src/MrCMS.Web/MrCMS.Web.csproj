@@ -1,43 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+        <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+    </PropertyGroup>
 
 
-  <ItemGroup>
-    <Compile Remove="App_Data\**" />
-    <EmbeddedResource Remove="App_Data\**" />
-    <None Remove="App_Data\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="App_Data\**" />
+        <EmbeddedResource Remove="App_Data\**" />
+        <None Remove="App_Data\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Lib\MrCMS.Data.Sqlite\MrCMS.Data.Sqlite.csproj" />
-    <ProjectReference Include="..\Lib\MrCMS.Web.Admin\MrCMS.Web.Admin.csproj" />
-    <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
-    <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
-    <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Articles\MrCMS.Web.Apps.Articles.csproj" />
-    <ProjectReference Include="..\Lib\MrCMS\MrCMS.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Lib\MrCMS.Web.Admin\MrCMS.Web.Admin.csproj" />
+        <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
+        <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
+        <ProjectReference Include="..\Apps\MrCMS.Web.Apps.Articles\MrCMS.Web.Apps.Articles.csproj" />
+        <ProjectReference Include="..\Lib\MrCMS\MrCMS.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Areas\Admin\Views\RegisteredHandlers\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\bootstrap\package.json" />
-    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\ckeditor\samples\toolbarconfigurator\font\config.json" />
-    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\bower.json" />
-    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\select2.jquery.json" />
-    <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\sweetalert-master\bower.json" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.0" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.2.4" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.2.4" />
+        <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.2.4" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\Areas\Admin\scripts\form-entries-search.js">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-  
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="Areas\Admin\Views\RegisteredHandlers\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\bootstrap\package.json" />
+        <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\ckeditor\samples\toolbarconfigurator\font\config.json" />
+        <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\bower.json" />
+        <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\select2-3.4.5\select2.jquery.json" />
+        <_ContentIncludedByDefault Remove="Areas\Admin\wwwroot\lib\sweetalert-master\bower.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="wwwroot\Areas\Admin\scripts\form-entries-search.js">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="static" />
+    </ItemGroup>
+
 </Project>

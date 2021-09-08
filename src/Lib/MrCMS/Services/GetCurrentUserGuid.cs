@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace MrCMS.Services
@@ -16,9 +17,9 @@ namespace MrCMS.Services
             _getCurrentUser = getCurrentUser;
         }
 
-        public Guid Get()
+        public async Task<Guid> Get()
         {
-            var user = _getCurrentUser.Get();
+            var user = await _getCurrentUser.Get();
             if (user != null)
                 return user.Guid;
 

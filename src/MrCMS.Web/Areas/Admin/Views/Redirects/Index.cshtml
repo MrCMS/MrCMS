@@ -1,0 +1,85 @@
+@using X.PagedList
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Models
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Admin.Models.RedirectsSearchQuery
+
+@{
+    var results = ViewData["redirects"] as IPagedList<UrlHistory>;
+    var typeOptions = EnumHelper<UrlHistoryType>.GetOptions(new SelectListItem {Text = "All", Value = ""});
+    var sortByOptions = EnumHelper<RedirectSortBy>.GetOptions(new SelectListItem {Text = "All", Value = "0"});
+}
+
+<form asp-controller="Redirects" asp-action="Index" method="get">
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin - Redirects", "Redirects")"/>
+
+            <admin-header-actions>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+    <fieldset>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label asp-for="Url"></label>
+                    <input asp-for="Url" class="form-control" placeholder="Url" type="text"/>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label asp-for="Type"></label>
+                    <select asp-for="Type" class="form-control" asp-items="@typeOptions"></select>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="form-group">
+                    <label asp-for="SortBy"></label>
+                    <select asp-for="SortBy" class="form-control" asp-items="@sortByOptions"></select>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+
+    @if (results.TotalItemCount > 0)
+    {
+        <table class="table table-condensed table-striped">
+            <thead>
+            <tr>
+                <th>
+                    Url
+                </th>
+                <th class="text-right">
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var result in results)
+            {
+                <tr>
+                    <td class="align-middle">
+                        <partial name="ItemSummary" model="result"/>
+                    </td>
+                    <td class="align-middle text-right">
+                        <partial name="ItemActions" model="result"/>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+
+        @Html.PagedListPager(results, page => Url.Action("Index", "Redirects", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No results match your query
+        </div>
+    }
+</form>

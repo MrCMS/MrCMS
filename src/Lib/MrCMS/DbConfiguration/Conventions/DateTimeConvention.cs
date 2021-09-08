@@ -3,7 +3,6 @@ using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
 using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities;
-using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration.Conventions
 {

@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <h1>@Html.Resource("admin-add", "Add") @Model.TypeDisplayName</h1>
+                    <h1>@await Html.Resource("admin-add", "Add") @Model.TypeDisplayName</h1>
                 </div>
                 <div class="col">
                     <span class="btn-group pull-right">
-                        <a href="@Url.Action("Edit", "Webpage", new {Id = Model.WebpageId})" class="btn btn-secondary">@Html.Resource("admin-back", "Back")</a>
-                        <button type="submit" class="btn btn-primary">@Html.Resource("admin-save", "Save")</button>
+                        <a href="@Url.Action("Edit", "Webpage", new {Id = Model.WebpageId})" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
+                        <button type="submit" class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
                     </span>
                 </div>
             </div>
@@ -24,13 +24,12 @@
     <div class="card">
         <div class="card-body">
             <fieldset>
-                @Html.HiddenFor(block => block.WebpageId)
-                @Html.HiddenFor(block => block.BlockType)
-
+                <input type="hidden" asp-for="WebpageId" />
+                <input type="hidden" asp-for="BlockType" />
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                    @Html.ValidationMessageFor(x => x.Name)
+                    <label asp-for="Name"></label>
+                    <input type="text" asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name"></span>
                 </div>
 
                 @if (additionalPropertyModel != null)
@@ -38,10 +37,7 @@
                     @await Html.RenderCustomAddAdminProperties(Model.ClrType, additionalPropertyModel)
                 }
 
-
             </fieldset>
         </div>
     </div>
 </form>
-
-    

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Admin.ModelBinders;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -36,11 +35,14 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpPost]
         [ActionName("Index")]
         [Acl(typeof(SiteSettingsACL), SiteSettingsACL.Save)]
-        public RedirectToActionResult Index_Post(
+        public async Task<RedirectToActionResult> Index_Post(
             [ModelBinder(typeof(SiteSettingsModelBinder))]
-            List<SiteSettingsBase> settings) 
+            List<SiteSettingsBase> settings)
         {
-            settings.ForEach(s => _configurationProvider.SaveSettings(s));
+            foreach (var setting in settings)
+            {
+                await _configurationProvider.SaveSettings(setting);
+            }
             TempData["settings-saved"] = true;
             return RedirectToAction("Index");
         }
@@ -52,13 +54,11 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult FileSystem(FileSystemSettings settings) 
+        public async Task<RedirectToActionResult> FileSystem(FileSystemSettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
-            TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext));
+            await _configurationProvider.SaveSettings(settings);
+            TempData.AddSuccessMessage(await "Settings saved.".AsResource(HttpContext));
             return RedirectToAction("FileSystem");
         }
-
-     
     }
 }

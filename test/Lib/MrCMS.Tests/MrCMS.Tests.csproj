@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -9,8 +9,9 @@
   
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,8 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\MrCMS.TestSupport\MrCMS.TestSupport.csproj" />
     <ProjectReference Include="..\..\..\src\Lib\MrCMS\MrCMS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Auth" />
   </ItemGroup>
 
 </Project>

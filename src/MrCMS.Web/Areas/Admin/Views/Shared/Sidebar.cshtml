@@ -1,12 +1,13 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Settings
+﻿@using MrCMS.Settings
 @using System.Drawing
 @using MrCMS.Services
 @inject SiteSettings Settings
 @inject IGetCurrentUser GetCurrentUser
+@inject ICurrentSiteLocator CurrentSiteLocator
 @{
-    var user = GetCurrentUser.Get();
+    var user = await GetCurrentUser.Get();
     var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/160";
+    var site = CurrentSiteLocator.GetCurrentSite();
 }
 <a href="@Url.Action("Index", "Home", new {area = "Admin"})" tabindex="1" class="brand-link">
     @{
@@ -14,13 +15,13 @@
     }
     @if (!string.IsNullOrWhiteSpace(adminLogo))
     {
-        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new {@class = "brand-image"})
+        @await Html.RenderImage(adminLogo, new Size(0, 45), attributes: new {@class = "brand-image elevation-1 img-circle"})
     }
     else
     {
-        <img src="/Areas/Admin/img/logo.png" class="brand-image elevation-2 img-circle" alt="dashboard logo"/>
+        <img src="/Areas/Admin/Content/img/logo.png" class="brand-image elevation-1 img-circle" alt="dashboard logo"/>
     }
-    <span class="brand-text font-weight-light">Mr CMS</span>
+    <span class="brand-text font-weight-light">@site.Name</span>
 </a>
 
 <div class="sidebar">

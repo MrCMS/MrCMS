@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Events;
 
@@ -12,11 +13,11 @@ namespace MrCMS.Services
             _fileService = fileService;
         }
 
-        public void Execute(OnAddedArgs<MediaCategory> args)
+        public async Task Execute(OnAddedArgs<MediaCategory> args)
         {
             var mediaCategory = args.Item;
 
-            _fileService.CreateFolder(mediaCategory);
+            await _fileService.CreateFolder(mediaCategory);
         }
     }
 }

@@ -1,44 +1,32 @@
 using System;
-using System.Collections.Generic;
-using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
 using MrCMS.Apps;
-using MrCMS.Data.Sqlite;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
-using MrCMS.Globalization;
 using MrCMS.Helpers;
 using MrCMS.Installation;
-using MrCMS.Logging;
-using MrCMS.Services;
-using MrCMS.Services.Resources;
 using MrCMS.Themes.Red;
 using MrCMS.Web.Admin;
 using MrCMS.Web.Apps.Core;
-using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
-using MrCMS.Website.Caching;
 using MrCMS.Website.CMS;
-using System.Globalization;
-using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
+using MrCMS.Logging;
+using MrCMS.Scheduling;
+using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
-using StackExchange.Profiling.Storage;
-using ISession = NHibernate.ISession;
+using NHibernate;
+using Quartz;
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace MrCMS.Web
 {
@@ -61,21 +49,56 @@ namespace MrCMS.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            if (Environment.IsProduction())
+            {
+                var connectionString = Configuration["DataProtectionConnectionString"];
+                var keyName = Configuration["DataProtectionKeyName"];
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    services
+                        .AddDataProtection()
+                        .SetApplicationName("FleetNews")
+                        .PersistKeysToAzureBlobStorage(
+                            connectionString,
+                            "datakeys", keyName);
+                }
+            }
+
             var isInstalled = IsInstalled();
+            if (isInstalled)
+            {
+                services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
+                services.AddQuartz(q =>
+                {
+                    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+
+                    q.UsePersistentStore(options =>
+                    {
+                        options.UseSqlServer(providerOptions =>
+                        {
+                            providerOptions.ConnectionString = Configuration.GetConnectionString("mrcms");
+                        });
+                        options.UseClustering();
+                        options.UseJsonSerializer();
+                    });
+                });
+                services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
+            }
+
             services.AddRequiredServices();
             services.Configure<SystemConfig>(Configuration.GetSection(SystemConfig.SectionName));
             services.AddCultureInfo(Configuration);
-            
+            Configuration.SetDefaultPageSize();
+
             var appContext = services.AddMrCMSApps(context =>
             {
                 context.RegisterApp<MrCMSAdmin>();
                 context.RegisterApp<MrCMSCoreApp>();
                 context.RegisterApp<MrCMSArticlesApp>();
                 context.RegisterTheme<RedTheme>();
-                context.RegisterDatabaseProvider<SqliteProvider>();
             });
 
-            services.AddMrCMSData(isInstalled, Configuration);            
+            services.AddMrCMSData(isInstalled, Configuration);
             services.AddSiteProvider();
             services.AddMrCMSFileSystem();
             services.AddSignalR();
@@ -91,36 +114,25 @@ namespace MrCMS.Web
                 return;
             }
 
-            var fileProvider = services.AddFileProvider(Environment, appContext);
-
+            services.RegisterSiteLocator();
             services.RegisterSettings();
+            services.RegisterShortCodeRenderers();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
             services.RegisterDocumentMetadata();
+            services.RegisterRouteTransformers();
+            services.AddSingleton<IDocumentMetadataService, DocumentMetadataService>();
             services.RegisterTasks();
 
-            services.AddMvcForMrCMS(appContext, Environment.IsDevelopment());
-
-            services.AddLogging(builder => builder.AddMrCMSLogger());
-
-            services.AddMrCMSIdentity(Configuration);
-
+            services.AddMvcForMrCMS(appContext);
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IGetMrCMSParts, GetMrCMSParts>();
-            services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
+            services.AddSingleton<IAssignPageDataToRouteValues, AssignPageDataToRouteValues>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
 
-            services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton<IClearableInMemoryCache>(provider =>
-            {
-                var cacheOptions = new MemoryCacheOptions();
-                return new ClearableInMemoryCache(
-                    new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(cacheOptions)));
-            });
-            services.AddSingleton<IMemoryCache>(provider => provider.GetRequiredService<IClearableInMemoryCache>());
+
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
-            services.AddMiniProfiler();
 
             services.AddScoped(x =>
             {
@@ -128,23 +140,26 @@ namespace MrCMS.Web
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
             });
-            services.AddScoped(provider => provider.GetService<IStringLocalizerFactory>()
-                .Create(null, null));
 
-            var authenticationBuilder = services.AddAuthentication();
-            services.AddExternalAuthProviders(authenticationBuilder);
-            
-            services.TryAddEnumerable(ServiceDescriptor
-                .Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
-                >());
-            services
-                .AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache
-                >();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
                 appContext.ConfigureAuthorization(options);
             });
+
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(60);
+                //options.ExcludedHosts.Add("example.com");
+                //options.ExcludedHosts.Add("www.example.com");
+            });
+
+
+            // startup services
+            services.AddHostedService<StartupService>();
+            services.AddHostedService<RecoverErroredJobsService>();
         }
 
         private bool IsInstalled()
@@ -154,12 +169,27 @@ namespace MrCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MrCMSAppContext appContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
+            // NHibernate.ISessionFactory factory,
+            IHttpContextAccessor httpContextAccessor,
+            IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+                app.UseHttpsRedirection();
+            }
+
+            // if (Configuration["EnableHibernatingRhinos"]?.ToLower() == "true")
+            //     HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();
+
+
+            app.UseStatusCodePagesWithReExecute("/HandleStatusCode/{0}");
 
             app.UseSession();
 
@@ -168,18 +198,35 @@ namespace MrCMS.Web
                 app.ShowInstallation();
                 return;
             }
-            
+
+            loggerFactory.AddProvider(
+                new MrCMSDatabaseLoggerProvider(serviceProvider.GetRequiredService<ISessionFactory>(),
+                    httpContextAccessor));
+
             app.UseMrCMS(builder =>
             {
-                app.UseRequestLocalization();
+                builder.UseRequestLocalization();
+                builder.UseStaticFiles();
                 builder.UseStaticFiles(new StaticFileOptions
                 {
-                    FileProvider = new CompositeFileProvider(
-                        new[] {Environment.WebRootFileProvider}.Concat(appContext.ContentFileProviders))
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "static")),
+                    OnPrepareResponse = (context) =>
+                    {
+                        var headers = context.Context.Response.GetTypedHeaders();
+                        headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+                        {
+                            Public = true,
+                            MaxAge = env.IsDevelopment() ? TimeSpan.FromDays(-1) : TimeSpan.FromDays(30)
+                        };
+                    }
                 });
                 builder.UseAuthentication();
-                builder.UseMiniProfiler();
-            });
+            }, builder => { builder.MapRazorPages(); });
+
+
+            // we're doing DB up here because it happens before startup of hosted services
+            // - otherwise Quartz init doesn't happen, among other potential problems
+            QuartzConfig.Initialize(Configuration.GetConnectionString("mrcms"));
         }
     }
 }

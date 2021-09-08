@@ -1,6 +1,6 @@
 using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
-using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
@@ -8,9 +8,9 @@ namespace MrCMS.Tasks
     {
         public abstract int Priority { get; }
 
-        public TaskExecutionResult Execute()
+        public async Task<TaskExecutionResult> Execute()
         {
-            OnExecute();
+            await OnExecute();
             return TaskExecutionResult.Successful(this);
         }
 
@@ -35,6 +35,6 @@ namespace MrCMS.Tasks
         {
         }
 
-        protected abstract void OnExecute();
+        protected abstract Task OnExecute();
     }
 }

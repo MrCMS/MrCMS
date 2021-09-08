@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace MrCMS.Services.Resources
 {
     public class MissingLocalisationInfo

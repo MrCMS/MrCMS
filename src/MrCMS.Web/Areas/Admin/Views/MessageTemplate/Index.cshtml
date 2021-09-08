@@ -1,5 +1,4 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Models
+﻿@using MrCMS.Web.Admin.Models
 @model List<MessageTemplateInfo>
 @{
     ViewBag.Title = "Message Templates";
@@ -7,72 +6,67 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-message-template", "Message Templates") "/>
+        <admin-header-title title="@await Html.Resource("admin-message-template", "Message Templates") "/>
 
         <admin-header-actions>
         </admin-header-actions>
     </row>
 </admin-header>
 
-<card>
-    <card-body>
-        <table class="table table-condensed table-striped">
-            <thead>
-            <tr>
-                <th>
-                    @Html.Resource("Message template index - Template Type", "Template Type")
-                </th>
-                <th>
-                    @Html.Resource("Message template index - System/Site", "System/Site")
-                </th>
-                <th>
-                    @Html.Resource("Message template index - Enabled?", "Enabled?")
-                </th>
-                <th>
-                    @Html.Resource("Message template index - Actions", "Actions")
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @item.Type.Name.BreakUpString()
-                    </td>
-                    <td>
-                        @(item.IsOverride ? Html.Resource("Site Override") : Html.Resource("System Default"))
-                    </td>
-                    <td>
-                        @(item.IsEnabled ? Html.Resource("Message Template Enabled", "Enabled") : Html.Resource("Message Template Disabled", "Disabled"))
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm" })*@
-                            @if (item.LegacyTemplateExists)
-                            {
-                                @Html.ActionLink(Html.Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
-                            }
-                            @if (!item.IsOverride)
-                            {
-                                @Html.ActionLink(Html.Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
-                            }
-                            else
-                            {
-                                @Html.ActionLink(Html.Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
-                            }
-                            @Html.ActionLink(Html.Resource("Edit"), "Edit", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
-                            @if (item.CanPreview)
-                            {
-                                @Html.ActionLink(Html.Resource("Preview"), "Get", "MessageTemplatePreview", new {type = item.TypeName}, new {@class = "btn btn-sm btn-secondary"})
-                            }
-                        </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
 
-
-    </card-body>
-</card>
+<table class="table table-condensed table-striped">
+    <thead>
+    <tr>
+        <th>
+            @await Html.Resource("Message template index - Template Type", "Template Type")
+        </th>
+        <th>
+            @await Html.Resource("Message template index - System/Site", "System/Site")
+        </th>
+        <th>
+            @await Html.Resource("Message template index - Enabled?", "Enabled?")
+        </th>
+        <th>
+            @await Html.Resource("Message template index - Actions", "Actions")
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.Type.Name.BreakUpString()
+            </td>
+            <td>
+                @(item.IsOverride ? await Html.Resource("Site Override") : await Html.Resource("System Default"))
+            </td>
+            <td>
+                @(item.IsEnabled ? await Html.Resource("Message Template Enabled", "Enabled") : await Html.Resource("Message Template Disabled", "Disabled"))
+            </td>
+            <td>
+                <div class="btn-group">
+                    @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm" })*@
+                    @if (item.LegacyTemplateExists)
+                    {
+                        @Html.ActionLink(await Html.Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                    }
+                    @if (!item.IsOverride)
+                    {
+                        @Html.ActionLink(await Html.Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
+                    }
+                    else
+                    {
+                        @Html.ActionLink(await Html.Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                    }
+                    @Html.ActionLink(await Html.Resource("Edit"), "Edit", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
+                    @if (item.CanPreview)
+                    {
+                        @Html.ActionLink(await Html.Resource("Preview"), "Get", "MessageTemplatePreview", new {type = item.TypeName}, new {@class = "btn btn-sm btn-secondary"})
+                    }
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
-using MrCMS.DbConfiguration.Configuration;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -33,12 +32,12 @@ namespace MrCMS.Entities.Documents.Media
         public virtual int Width { get; set; }
         public virtual int Height { get; set; }
 
-        public virtual Size Size
-        {
-            get { return Width > 0 && Height > 0 ? new Size(Width, Height) : Size.Empty; }
-        }
+        public virtual Size Size => Width > 0 && Height > 0 ? new Size(Width, Height) : Size.Empty;
 
         public virtual IList<ResizedImage> ResizedImages { get; set; }
         public virtual IList<Crop> Crops { get; set; }
+        
+        public virtual bool Missing { get; set; }
+        public virtual bool Cleansed { get; set; }
     }
 }

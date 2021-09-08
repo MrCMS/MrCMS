@@ -1,26 +1,15 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Widget;
-using MrCMS.Helpers;
 
 namespace MrCMS.Events
 {
     public class OnDeletingWidget : IOnDeleting<Widget>
     {
-        public void Execute(OnDeletingArgs<Widget> args)
+        public Task Execute(OnDeletingArgs<Widget> args)
         {
-            Widget widget = args.Item;
-            if (widget == null)
-                return;
+            args.Item?.LayoutArea?.Widgets.Remove(args.Item); //required to clear cache
 
-            widget.ShownOn.ForEach(webpage => webpage.ShownWidgets.Remove(widget));
-            widget.HiddenOn.ForEach(webpage => webpage.HiddenWidgets.Remove(widget));
-            if (widget.LayoutArea != null)
-            {
-                widget.LayoutArea.Widgets.Remove(widget); //required to clear cache
-            }
-            if (widget.Webpage != null)
-            {
-                widget.Webpage.Widgets.Remove(widget);
-            }
+            return Task.CompletedTask;
         }
     }
 }

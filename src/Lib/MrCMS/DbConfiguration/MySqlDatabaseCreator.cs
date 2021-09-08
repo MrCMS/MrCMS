@@ -1,9 +1,6 @@
 //using MrCMS.Installation;
 //using MySql.Data.MySqlClient;
 
-using MrCMS.Installation;
-using MrCMS.Installation.Models;
-
 namespace MrCMS.DbConfiguration
 {
     //public class MySqlDatabaseCreator : ICreateDatabase<MySqlProvider>

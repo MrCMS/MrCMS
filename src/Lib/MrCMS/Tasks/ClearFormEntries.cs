@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.Testing.Values;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using NHibernate;
@@ -10,7 +10,6 @@ namespace MrCMS.Tasks
 {
     public class ClearFormEntries : SchedulableTask
     {
-        public override int Priority => 0;
         private readonly ISession _session;
 
         public ClearFormEntries(ISession session)
@@ -19,7 +18,7 @@ namespace MrCMS.Tasks
         }
         
 
-        protected override void OnExecute()
+        protected override async Task OnExecute()
         {
             var formsToCheck = _session.Query<Form>().Where(x => x.DeleteEntriesAfter != null).ToList();
 
@@ -34,7 +33,14 @@ namespace MrCMS.Tasks
 
             if (toDelete.Any())
             {
-                _session.Transact(session => toDelete.ForEach(session.Delete));
+                await _session.TransactAsync(async session =>
+                {
+
+                    foreach (var formPosting in toDelete)
+                    {
+                        await session.DeleteAsync(formPosting);
+                    }
+                });
             }
         }
     }

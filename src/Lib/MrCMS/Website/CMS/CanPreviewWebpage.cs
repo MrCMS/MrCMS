@@ -13,13 +13,10 @@ namespace MrCMS.Website.CMS
             _getCurrentUser = getCurrentUser;
         }
 
-        public bool CanPreview(Webpage webpage)
+        public async Task<bool> CanPreview(Webpage webpage)
         {
-            var user = _getCurrentUser.Get();
-            if (user == null)
-                return false;
-
-            return user.IsAdmin;
+            var user = await _getCurrentUser.Get();
+            return user != null && user.IsAdmin;
         }
     }
 }

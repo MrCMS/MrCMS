@@ -1,7 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -15,17 +15,17 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Revert(int id)
+        public async Task<PartialViewResult> Revert(int id)
         {
-            return PartialView(_service.GetDocumentVersion(id));
+            return PartialView(await _service.GetDocumentVersion(id));
         }
 
         [HttpPost]
         [ActionName("Revert")]
-        public RedirectToActionResult Revert_POST(int id)
+        public async Task<RedirectToActionResult> Revert_POST(int id)
         {
-            var version =_service.RevertToVersion(id);
-            return RedirectToAction("Edit", "Webpage", new { id = version.Document.Id });
+            var version = await _service.RevertToVersion(id);
+            return RedirectToAction("Edit", "Webpage", new {id = version.Document.Id});
         }
     }
 }

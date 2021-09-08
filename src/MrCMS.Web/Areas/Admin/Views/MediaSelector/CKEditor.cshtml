@@ -1,6 +1,5 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Media
-@using MrCMS.Helpers
 @using MrCMS.Settings
 @using X.PagedList
 @using X.PagedList.Mvc.Core
@@ -10,9 +9,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var categories = ViewData["categories"] as List<SelectListItem> ?? new List<SelectListItem>();
     var results = ViewData["results"] as IPagedList<MediaFile>;
-    Html.IncludeScript(Url.Content("~/Areas/Admin/scripts/ck-editor-image-picker.js"));
 }
-<h1>@Html.Resource("Admin Media Selector Media Selector Title", "Media Selector")</h1>
+<h1>@await Html.Resource("Admin Media Selector Media Selector Title", "Media Selector")</h1>
 <div data-type="media-selector-popup" style="min-height: 450px;">
     @using (Html.BeginForm("CKEditor", "MediaSelector", FormMethod.Get, new {id = "search-form", @class = "form-inline mb-2"}))
     {
@@ -24,14 +22,14 @@
             @Html.ValidationMessageFor(query => query.CategoryId)
         </div>
         <div class="form-group search-text">
-            @Html.TextBoxFor(query => query.Query, new {@class = "form-control ", @placeholder = Html.Resource("Admin - Media Selector Search Placeholder", "Search")})
+            @Html.TextBoxFor(query => query.Query, new {@class = "form-control ", @placeholder = await Html.Resource("Admin - Media Selector Search Placeholder", "Search")})
             @Html.ValidationMessageFor(query => query.Query)
         </div>
-        <input type="submit" class="btn btn-primary  search-btn" value="@Html.Resource("Search")"/>
+        <input type="submit" class="btn btn-primary  search-btn" value="@await Html.Resource("Search")"/>
     }
 
     <div id="results">
-        <div id="fileupload" data-message="@Html.Resource("Click here or drag files to upload")" class="dropzone mb-3 pt-3"></div>
+        <div id="fileupload" data-message="@await Html.Resource("Click here or drag files to upload")" class="dropzone mb-3 pt-3"></div>
 
         <input type="hidden" value="@Url.Action("Files", "File", new {Id = Model.CategoryId})" id="action-url"/>
 
@@ -60,9 +58,8 @@
         else
         {
             <p>
-                @Html.InfoBlock("", Html.Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
+                @Html.InfoBlock("", await Html.Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
             </p>
         }
     </div>
 </div>
-

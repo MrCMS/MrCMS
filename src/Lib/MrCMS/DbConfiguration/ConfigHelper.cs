@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +14,7 @@ namespace MrCMS.DbConfiguration
             params Assembly[] assemblies)
         {
             foreach (
-                Assembly assembly in assemblies.Where(assembly => !assembly.IsDynamic && !assembly.GlobalAssemblyCache))
+                Assembly assembly in assemblies.Where(assembly => !assembly.IsDynamic ))
             {
                 model.UseOverridesFromAssembly(assembly);
             }
@@ -32,7 +31,7 @@ namespace MrCMS.DbConfiguration
             params Assembly[] assemblies)
         {
             foreach (
-                Assembly assembly in assemblies.Where(assembly => !assembly.IsDynamic && !assembly.GlobalAssemblyCache))
+                Assembly assembly in assemblies.Where(assembly => !assembly.IsDynamic ))
             {
                 model.Conventions.AddAssembly(assembly);
             }

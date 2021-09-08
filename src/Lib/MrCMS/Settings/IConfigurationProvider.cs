@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Settings
 {
     public interface IConfigurationProvider 
     {
         TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new();
-        void SaveSettings(SiteSettingsBase settings);
-        void SaveSettings<T>(T settings) where T : SiteSettingsBase, new();
-        void DeleteSettings<T>(T settings)where T : SiteSettingsBase, new();
+        Task SaveSettings(SiteSettingsBase settings);
+        Task SaveSettings<T>(T settings) where T : SiteSettingsBase, new();
+        Task DeleteSettings<T>(T settings)where T : SiteSettingsBase, new();
         List<SiteSettingsBase> GetAllSiteSettings();
     }
 }

@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Settings;
 
@@ -7,13 +8,13 @@ namespace MrCMS.Services
 {
     public interface IImageProcessor
     {
-        MediaFile GetImage(string imageUrl);
-        Crop GetCrop(string imageUrl);
+        Task<MediaFile> GetImage(string imageUrl);
+        Task<Crop> GetCrop(string imageUrl);
 
         void SetFileDimensions(MediaFile mediaFile, Stream stream);
-        void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl);
-        void SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl);
-        void SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes, string fileUrl);
+        Task SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl);
+        Task SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl);
+        Task SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes, string fileUrl);
         void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings);
     }
 }

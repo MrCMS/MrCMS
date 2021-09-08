@@ -1,35 +1,33 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Web.Admin.Models.UpdateMediaCategoryModel
+﻿@model MrCMS.Web.Admin.Models.UpdateMediaCategoryModel
 @{
     ViewBag.Title = "Edit | " + Model.Name;
-
-    Html.IncludeScript("~/Areas/Admin/scripts/media-uploader.js");
-    Html.IncludeScript("~/Areas/Admin/scripts/media-category.js");
 }
 
 <form asp-controller="MediaCategory" asp-action="Edit" asp-route-id="@Model.Id" method="post" id="edit-media", target="_top">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-edit", "Edit") @Model.Name"/>
+            <admin-header-title title="@await Html.Resource("admin-edit", "Edit<>") @Model.Name"/>
 
             <admin-header-actions>
-                <input type="submit" class="btn btn-primary" value="@Html.Resource("admin-save", "Save")">
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save")">
 
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input type="text" asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="IsGallery" type="checkbox" class="form-check-input" />
+            <label asp-for="IsGallery" class="form-check-label"></label>
+        </div>
+        <span asp-validation-for="IsGallery"></span>
+    </div>
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Name, "Folder Name")
-                @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-            </div>
-            @Html.EditorFor(x => x.IsGallery)
-
-        </card-body>
-    </card>
 
 </form>

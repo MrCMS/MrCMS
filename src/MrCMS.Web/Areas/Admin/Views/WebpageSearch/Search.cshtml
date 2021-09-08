@@ -1,6 +1,4 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Models
-@model MrCMS.Web.Admin.Models.WebpageSearchQuery
+﻿@model MrCMS.Web.Admin.Models.WebpageSearchQuery
 
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
@@ -9,32 +7,24 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-search", "Search") "/>
+        <admin-header-title title="@await Html.Resource("admin-search", "Search") "/>
 
         <admin-header-actions>
         </admin-header-actions>
     </row>
 </admin-header>
 
-<card>
-    <card-body>
-        @using (Html.BeginForm("Results", "WebpageSearch", new {Model.ParentId}, FormMethod.Post, null, new {data_webpage_search_form = true}))
-        {
-            <div class="input-group">
-                @Html.TextBoxFor(query => query.Query, new {@class = "form-control", autocomplete = "off", placeholder = "Search"})
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary">@Html.Resource("Search")</button>
-                </span>
-            </div>
-        }
 
-        <br/>
+@using (Html.BeginForm("Results", "WebpageSearch", new {Model.ParentId}, FormMethod.Post, null, new {data_webpage_search_form = true}))
+{
+    <div class="input-group">
+        @Html.TextBoxFor(query => query.Query, new {@class = "form-control", autocomplete = "off", placeholder = "Search"})
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary">@await Html.Resource("Search")</button>
+        </span>
+    </div>
+}
 
-        @{ await Html.RenderPartialAsync("Results", Model, ViewData); }
+<br/>
 
-    </card-body>
-</card>
-
-
-@{ Html.IncludeScript("~/Areas/Admin/scripts/async-paging.js"); }
-@{ Html.IncludeScript("~/Areas/Admin/scripts/webpage-search.js"); }
+@{ await Html.RenderPartialAsync("Results", Model, ViewData); }

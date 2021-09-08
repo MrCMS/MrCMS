@@ -1,8 +1,0 @@
-﻿@using MrCMS.Services
-@model MrCMS.Website.WidgetDisplayInfo
-@inject IWidgetUIService UIService
-
-@foreach (var widget in Model.Widgets)
-{
-    @UIService.GetContent(Component, widget.Id, helper => helper.InvokeAsync("Widget", new { widget.Id }));
-}

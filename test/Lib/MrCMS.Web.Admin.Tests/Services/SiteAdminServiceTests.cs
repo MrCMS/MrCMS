@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using FakeItEasy;
 using FluentAssertions;
@@ -29,87 +30,90 @@ namespace MrCMS.Web.Admin.Tests.Services
         }
 
         [Fact]
-        public void SiteAdminService_GetAllSites_ReturnsPersistedSites()
+        public async Task SiteAdminService_GetAllSites_ReturnsPersistedSites()
         {
-            List<Site> sites = Enumerable.Range(1, 10).Select(i => new Site { Name = "Site " + i }).ToList();
-            sites.ForEach(site => Session.Transact(session => session.Save(site)));
+            List<Site> sites = Enumerable.Range(1, 10).Select(i => new Site {Name = "Site " + i}).ToList();
+            foreach (var site in sites)
+            {
+                await Session.TransactAsync(session => session.SaveAsync(site));
+            }
 
-            List<Site> allSites = _siteService.GetAllSites();
+            IList<Site> allSites = await _siteService.GetAllSites();
 
             sites.ForEach(site => allSites.Should().Contain(site));
         }
 
         [Fact]
-        public void SiteAdminService_AddSite_ShouldPersistSiteToSession()
+        public async Task SiteAdminService_AddSite_ShouldPersistSiteToSession()
         {
             var user = new User();
-            Session.Transact(session => session.Save(user));
+            await Session.TransactAsync(session => session.SaveAsync(user));
             //CurrentRequestData.CurrentUser = user;
             AddSiteModel model = new AddSiteModel();
             var site = new Site();
             A.CallTo(() => _mapper.Map<Site>(model)).Returns(site);
             var options = new List<SiteCopyOption>();
 
-            _siteService.AddSite(model, options);
+            await _siteService.AddSite(model, options);
 
             // Including CurrentSite from the base class
-            Session.QueryOver<Site>().RowCount().Should().Be(2);
+            (await Session.QueryOver<Site>().RowCountAsync()).Should().Be(2);
         }
 
         [Fact]
-        public void SiteAdminService_AddSite_SavesPassedSiteToSession()
+        public async Task SiteAdminService_AddSite_SavesPassedSiteToSession()
         {
             AddSiteModel model = new AddSiteModel();
             var site = new Site();
             A.CallTo(() => _mapper.Map<Site>(model)).Returns(site);
             var options = new List<SiteCopyOption>();
 
-            _siteService.AddSite(model, options);
+            await _siteService.AddSite(model, options);
 
-            Session.QueryOver<Site>().List().Should().Contain(site);
+            (await Session.QueryOver<Site>().ListAsync()).Should().Contain(site);
         }
 
 
         [Fact]
-        public void SiteAdminService_SaveSite_UpdatesPassedSite()
+        public async Task SiteAdminService_SaveSite_UpdatesPassedSite()
         {
             var site = new Site();
-            Session.Transact(session => session.Save(site));
+            await Session.TransactAsync(session => session.SaveAsync(site));
             site.Name = "updated";
-            var updateSiteModel = new UpdateSiteModel{Id=site.Id};
+            var updateSiteModel = new UpdateSiteModel {Id = site.Id};
 
-            _siteService.SaveSite(updateSiteModel);
+            await _siteService.SaveSite(updateSiteModel);
 
             A.CallTo(() => _mapper.Map(updateSiteModel, site)).MustHaveHappened();
-            Session.Evict(site);
-            Session.QueryOver<Site>().Where(s => s.Name == "updated").RowCount().Should().Be(1);
+            await Session.EvictAsync(site);
+            (await Session.QueryOver<Site>().Where(s => s.Name == "updated").RowCountAsync()).Should().Be(1);
         }
 
         [Fact]
-        public void SiteAdminService_DeleteSite_ShouldDeleteSiteFromSession()
+        public async Task SiteAdminService_DeleteSite_ShouldDeleteSiteFromSession()
         {
             var site = new Site();
-            Session.Transact(session => session.Save(site));
+            await Session.TransactAsync(session => session.SaveAsync(site));
 
-            _siteService.DeleteSite(site.Id);
+            await _siteService.DeleteSite(site.Id);
 
-            Session.QueryOver<Site>().List().Should().NotContain(site);
+            (await Session.QueryOver<Site>().ListAsync()).Should().NotContain(site);
         }
 
         [Fact]
-        public void SiteAdminService_DeleteSite_ShouldRemoveSiteFromSession()
+        public async Task SiteAdminService_DeleteSite_ShouldRemoveSiteFromSession()
         {
-            _siteService.DeleteSite(CurrentSite.Id);
+            await _siteService.DeleteSite(CurrentSite.Id);
 
             // Including CurrentSite from the base class
-            Session.QueryOver<Site>().RowCount().Should().Be(0);
+            (await Session.QueryOver<Site>().RowCountAsync()).Should().Be(0);
         }
 
         [Fact]
-        public void SiteAdminService_GetSite_ReturnsResultFromSessionGetAsResult()
+        public async Task SiteAdminService_GetSite_ReturnsResultFromSessionGetAsResult()
         {
             var site = new Site();
-            Session.Transact(session => session.Save(site));
+            await Session.TransactAsync(session => session.SaveAsync(site));
 
             _siteService.GetSite(site.Id).Should().Be(site);
         }

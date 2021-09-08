@@ -1,74 +1,76 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ImageMagick;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Settings;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
     public class ImageProcessor : IImageProcessor
     {
-        private readonly IFileSystem _fileSystem;
+        //match w300-h500.something or w300.something Group 0 = whole, Group 1 = With, Group 2 = height
+        public const string Pattern = @"_w([0-9]+)_?h?([0-9]+)?.";
+        private readonly IFileSystemFactory _fileSystemFactory;
         private readonly ISession _session;
 
-        public ImageProcessor(ISession session, IFileSystem fileSystem)
+        public ImageProcessor(ISession session, IFileSystemFactory fileSystemFactory)
         {
             _session = session;
-            _fileSystem = fileSystem;
+            _fileSystemFactory = fileSystemFactory;
         }
 
-        public MediaFile GetImage(string imageUrl)
+        public async Task<MediaFile> GetImage(string imageUrl)
         {
-            string originalImageUrl = GetOriginalImageUrl(imageUrl);
-            MediaFile fileByLocation =
-                _session.QueryOver<MediaFile>()
-                    .Where(file => file.FileUrl == originalImageUrl)
-                    .Cacheable()
-                    .List().FirstOrDefault();
+            using var disabler = new SiteFilterDisabler(_session);
+            var originalImageUrl = GetOriginalImageUrl(imageUrl);
+            var fileByLocation =
+                await _session
+                    .Query<MediaFile>()
+                    .WithOptions(x => x.SetCacheable(true))
+                    .FirstOrDefaultAsync(file => file.FileUrl == originalImageUrl);
 
             if (fileByLocation != null)
                 return fileByLocation;
 
-            var crop = GetCrop(imageUrl);
-            if (crop == null)
-                return null;
-
-            return crop.MediaFile;
+            var crop = await GetCrop(imageUrl);
+            return crop?.MediaFile;
         }
 
-        public Crop GetCrop(string imageUrl)
+        public async Task<Crop> GetCrop(string imageUrl)
         {
-            string originalImageUrl = GetOriginalImageUrl(imageUrl);
-            Crop crop =
-                _session.QueryOver<Crop>()
-                    .Where(file => file.Url == originalImageUrl)
-                    .Cacheable()
-                    .List().FirstOrDefault();
-
+            var originalImageUrl = GetOriginalImageUrl(imageUrl);
+            var crop =
+                await _session.Query<Crop>().WithOptions(x => x.SetCacheable(true))
+                    .FirstOrDefaultAsync(file => file.Url == originalImageUrl);
             return crop;
         }
 
         public void SetFileDimensions(MediaFile file, Stream stream)
         {
-            using var b = new Bitmap(stream);
-            file.Width = b.Size.Width;
-            file.Height = b.Size.Height;
+            stream.Position = 0;
+            var b = new MagickImageInfo(stream);
+            file.Width = b.Width;
+            file.Height = b.Height;
             file.ContentLength = Convert.ToInt32(stream.Length);
         }
 
 
-        public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)
+        public async Task SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)
         {
             Size newSize = CalculateDimensions(file.Size, size);
-            SaveFile(fileBytes, fileUrl, newSize, file.ContentType);
+            await SaveFile(fileBytes, fileUrl, newSize, file.ContentType);
         }
 
-        public void SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes, string fileUrl)
+        public async Task SaveCrop(MediaFile file, CropType cropType, Rectangle cropInfo, byte[] fileBytes,
+            string fileUrl)
         {
-            SaveFile(fileBytes, fileUrl, cropType.Size, file.ContentType, cropInfo);
+            await SaveFile(fileBytes, fileUrl, cropType.Size, file.ContentType, cropInfo);
         }
 
         public void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings)
@@ -113,116 +115,85 @@ namespace MrCMS.Services
         }
 
 
-        private void SaveFile(byte[] fileBytes, string fileUrl, Size newSize, string contentType,
+        private async Task SaveFile(byte[] fileBytes, string fileUrl, Size newSize, string contentType,
             Rectangle? cropRectangle = null)
         {
-            using (var inputStream = new MemoryStream())
-            using (var outputStream = new MemoryStream())
+            await using var inputStream = new MemoryStream();
+            await using var outputStream = new MemoryStream();
+
+            inputStream.Write(fileBytes, 0, fileBytes.Length);
+            inputStream.Position = 0;
+
+            using var collection = new MagickImageCollection(inputStream);
+            collection.Coalesce();
+            foreach (var image in collection)
             {
-                inputStream.Write(fileBytes, 0, fileBytes.Length);
-                inputStream.Position = 0;
-                using (var collection = new MagickImageCollection(inputStream))
+                MagickGeometry geometry = new MagickGeometry
                 {
-                    collection.Coalesce();
-                    foreach (var image in collection)
-                    {
-                        MagickGeometry geometry = new MagickGeometry
+                    Width = newSize.Width,
+                    Height = newSize.Height
+                };
+                image.Resize(geometry);
+                if (cropRectangle.HasValue)
+                {
+                    Rectangle rectangle = cropRectangle.Value;
+                    image.Crop(
+                        new MagickGeometry
                         {
-                            Width = newSize.Width,
-                            Height = newSize.Height
-                        };
-                        image.Resize(geometry);
-                        if (cropRectangle.HasValue)
-                        {
-                            Rectangle rectangle = cropRectangle.Value;
-                            image.Crop(
-                                new MagickGeometry
-                                {
-                                    X = rectangle.X,
-                                    Y = rectangle.Y,
-                                    Width = rectangle.Width,
-                                    Height = rectangle.Height
-                                });
-                        }
-
-                        image.Strip();
-                    }
-
-                    collection.OptimizePlus();
-                    collection.Write(outputStream);
-                    outputStream.Position = 0;
-                    _fileSystem.SaveFile(outputStream, fileUrl, contentType);
+                            X = rectangle.X,
+                            Y = rectangle.Y,
+                            Width = rectangle.Width,
+                            Height = rectangle.Height
+                        });
                 }
-            }
-            //{
-            //    inputStream.Write(fileBytes, 0, fileBytes.Length);
-            //    inputStream.Position = 0;
-            //    var instructions = new MagickGeometry()
-            //    {
-            //        Height = newSize.Height,
-            //        Width = newSize.Width,
-            //    };
-            //    if (cropRectangle.HasValue)
-            //    {
-            //        Rectangle rectangle = cropRectangle.Value;
-            //        instructions.CropRectangle = new double[] { rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom };
-            //    }
 
-            //    ImageBuilder.Current.Build(new ImageJob(inputStream, outputStream, instructions));
-            //    _fileSystem.SaveFile(outputStream, fileUrl, contentType);
-            //}
+                image.Strip();
+            }
+
+            collection.OptimizePlus();
+            await collection.WriteAsync(outputStream);
+            outputStream.Position = 0;
+            var fileSystem = _fileSystemFactory.GetForCurrentSite();
+            await fileSystem.SaveFile(outputStream, fileUrl, contentType);
         }
 
-        public void SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl)
+        public async Task SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl)
         {
             Size newSize = CalculateDimensions(crop.Size, size);
-            SaveFile(fileBytes, fileUrl, newSize, crop.ContentType);
+            await SaveFile(fileBytes, fileUrl, newSize, crop.ContentType);
         }
 
         private string GetOriginalImageUrl(string imageUrl)
         {
-            if (IsResized(imageUrl))
+            var match = Regex.Match(imageUrl, Pattern, RegexOptions.Compiled);
+            if (match.Success)
+            {
+                return imageUrl.Replace(match.Groups[0].Value, ".");
+            }
+            /*if (IsResized(imageUrl))
             {
                 string resizePart = GetResizePart(imageUrl);
                 int lastIndexOf = imageUrl.LastIndexOf(resizePart, StringComparison.OrdinalIgnoreCase);
                 imageUrl = imageUrl.Remove(lastIndexOf - 1, resizePart.Length + 1);
-            }
+            }*/
 
             return imageUrl;
         }
 
-        private static bool IsResized(string imageUrl)
-        {
-            return GetRequestedSize(imageUrl) != null;
-        }
 
         public static Size? GetRequestedSize(string imageUrl)
         {
-            string resizePart = GetResizePart(imageUrl);
-            if (resizePart == null) return null;
+            var matches = Regex.Match(imageUrl, Pattern, RegexOptions.Compiled);
+            if (matches.Length == 0) return null;
 
-            int width = 0;
+            int width = Convert.ToInt16(matches.Groups[1].Value);
             int height = 0;
-            string[] parts = resizePart.Split('_');
-            var valid = parts.Count() == 2 && parts[0].StartsWith("w") && parts[1].StartsWith("h") &&
-                        int.TryParse(parts[0].Substring(1), out width) &&
-                        int.TryParse(parts[1].Substring(1), out height);
-            if (!valid)
-                return null;
+            if (matches.Length == 3)
+            {
+                height = Convert.ToInt16(matches.Groups[2].Value);
+            }
 
             return new Size(width, height);
-        }
-
-        private static string GetResizePart(string imageUrl)
-        {
-            if (imageUrl.LastIndexOf("_w", StringComparison.Ordinal) == -1 || imageUrl.LastIndexOf('.') == -1)
-                return null;
-
-            int startIndex = imageUrl.LastIndexOf("_w", StringComparison.Ordinal) + 1;
-            int length = imageUrl.LastIndexOf('.') - startIndex;
-            if (length < 2) return null;
-            string resizePart = imageUrl.Substring(startIndex, length);
-            return resizePart;
         }
 
 
@@ -234,15 +205,13 @@ namespace MrCMS.Services
                 return originalSize;
             }
 
-            double ratio = 0;
-
             // What ratio should we resize it by
             double? widthRatio =
                 targetSize.Width == 0 ? (double?) null : originalSize.Width / (double) targetSize.Width;
             double? heightRatio = targetSize.Height == 0
                 ? (double?) null
                 : originalSize.Height / (double) targetSize.Height;
-            ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
+            var ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
                 ? originalSize.Width / (double) targetSize.Width
                 : originalSize.Height / (double) targetSize.Height;
 
@@ -266,40 +235,40 @@ namespace MrCMS.Services
         /// <summary>
         ///     Returns the name and full path of the requested file
         /// </summary>
-        public static string RequestedImageFileUrl(MediaFile file, Size size)
+        public static string RequestedFileUrl(string fileUrl, Size imageSize, Size targetSize)
         {
-            string fileLocation = file.FileUrl;
+            if (imageSize == targetSize || !RequiresResize(imageSize, targetSize))
+                return fileUrl;
 
-            if (file.Size == size || !RequiresResize(file.Size, size))
-                return fileLocation;
+            var fileExtension = Path.GetExtension(fileUrl);
 
-            string temp = fileLocation.Replace(file.FileExtension, "");
-            if (size.Width != 0)
-                temp += "_w" + size.Width;
-            if (size.Height != 0)
-                temp += "_h" + size.Height;
+            string temp = fileUrl.Replace(fileExtension, "");
+            if (targetSize.Width != 0)
+                temp += "_w" + targetSize.Width;
+            if (targetSize.Height != 0)
+                temp += "_h" + targetSize.Height;
 
-            return temp + file.FileExtension;
+            return temp + fileExtension;
         }
-
-        /// <summary>
-        ///     Returns the name and full path of the requested crop
-        /// </summary>
-        public static string RequestedResizedCropFileUrl(Crop crop, Size size)
-        {
-            string fileLocation = crop.Url;
-
-            if (crop.Size == size || !RequiresResize(crop.Size, size))
-                return fileLocation;
-
-            string temp = fileLocation.Replace(crop.FileExtension, "");
-            if (size.Width != 0)
-                temp += "_w" + size.Width;
-            if (size.Height != 0)
-                temp += "_h" + size.Height;
-
-            return temp + crop.FileExtension;
-        }
+        //
+        // /// <summary>
+        // ///     Returns the name and full path of the requested crop
+        // /// </summary>
+        // public static string RequestedResizedCropFileUrl(Crop crop, Size size)
+        // {
+        //     string fileLocation = crop.Url;
+        //
+        //     if (crop.Size == size || !RequiresResize(crop.Size, size))
+        //         return fileLocation;
+        //
+        //     string temp = fileLocation.Replace(crop.FileExtension, "");
+        //     if (size.Width != 0)
+        //         temp += "_w" + size.Width;
+        //     if (size.Height != 0)
+        //         temp += "_h" + size.Height;
+        //
+        //     return temp + crop.FileExtension;
+        // }
 
         /// <summary>
         ///     Returns the name and full path of the requested crop

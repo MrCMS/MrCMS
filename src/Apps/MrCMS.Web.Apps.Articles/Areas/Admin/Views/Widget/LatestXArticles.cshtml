@@ -9,5 +9,5 @@
 </div>
 <div class="form-group">
     @Html.LabelFor(x => x.RelatedNewsListId)
-    @Html.DropDownListFor(x => x.RelatedNewsListId, GetArticleListOptions.GetOptions(), new { @class = "form-control" })
+    @Html.DropDownListFor(x => x.RelatedNewsListId, await GetArticleListOptions.GetOptions(), new { @class = "form-control" })
 </div>

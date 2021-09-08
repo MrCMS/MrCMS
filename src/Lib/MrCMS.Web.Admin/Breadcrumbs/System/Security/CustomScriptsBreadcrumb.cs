@@ -7,6 +7,6 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System.Security
         public override string Controller => "CustomScriptPages";
         public override string Action => "Index";
         public override bool IsNav => true;
-        public override int Order => 0;
+        public override decimal Order => 0;
     }
 }

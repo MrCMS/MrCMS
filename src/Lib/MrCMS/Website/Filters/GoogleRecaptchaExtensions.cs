@@ -27,7 +27,7 @@ namespace MrCMS.Website.Filters
             recaptchaDiv.AddCssClass("mb-3");
             recaptchaDiv.Attributes["data-recaptcha-holder"] = "true";
             recaptchaDiv.Attributes["data-sitekey"] = settings.SiteKey;
-            id = id ?? Guid.NewGuid().ToString();
+            id ??= Guid.NewGuid().ToString();
             recaptchaDiv.Attributes["id"] = id;
 
             var message = new TagBuilder("span");

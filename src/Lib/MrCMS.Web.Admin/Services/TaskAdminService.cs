@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
+using MrCMS.Scheduling;
 using MrCMS.Tasks;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
@@ -13,21 +15,26 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly ISession _session;
         private readonly ITaskSettingManager _taskSettingManager;
+        private readonly IAdHocJobScheduler _adHocJobScheduler;
 
-        public TaskAdminService(ISession session,ITaskSettingManager taskSettingManager)
+        public TaskAdminService(ISession session, ITaskSettingManager taskSettingManager,
+            IAdHocJobScheduler adHocJobScheduler)
         {
             _session = session;
             _taskSettingManager = taskSettingManager;
+            _adHocJobScheduler = adHocJobScheduler;
         }
 
-        public List<TaskInfo> GetAllScheduledTasks()
+        public async Task<List<TaskInfo>> GetAllScheduledTasks()
         {
-            return _taskSettingManager.GetInfo().OrderBy(x => x.Name).ToList();
+            var info = await _taskSettingManager.GetInfo();
+            return info.OrderBy(x => x.Name).ToList();
         }
 
-        public TaskUpdateData GetTaskUpdateData(string type)
+        public async Task<TaskUpdateData> GetTaskUpdateData(string type)
         {
-            var info = GetAllScheduledTasks().FirstOrDefault(x => x.TypeName == type);
+            var allScheduledTasks = await GetAllScheduledTasks();
+            var info = allScheduledTasks.FirstOrDefault(x => x.TypeName == type);
 
             return info == null
                 ? null
@@ -35,29 +42,30 @@ namespace MrCMS.Web.Admin.Services
                 {
                     Enabled = info.Enabled,
                     TypeName = info.TypeName,
-                    FrequencyInSeconds = info.FrequencyInSeconds,
+                    CronSchedule = info.CronSchedule,
                     Name = info.Name
                 };
         }
 
-        public IPagedList<QueuedTask> GetQueuedTasks(QueuedTaskSearchQuery searchQuery)
+        public async Task<IPagedList<QueuedTask>> GetQueuedTasks(QueuedTaskSearchQuery searchQuery)
         {
             using (new SiteFilterDisabler(_session))
             {
-                return _session.QueryOver<QueuedTask>()
+                return await _session.QueryOver<QueuedTask>()
                     .OrderBy(task => task.CreatedOn).Desc
-                    .Paged(searchQuery.Page);
+                    .PagedAsync(searchQuery.Page);
             }
         }
 
-        public void Update(TaskUpdateData info)
+        public async Task<bool> Update(TaskUpdateData info)
         {
-            _taskSettingManager.Update(info.Type, info.Enabled, info.FrequencyInSeconds);
+            return await _taskSettingManager.Update(info.Type, info.Enabled, info.CronSchedule ?? string.Empty);
         }
 
-        public void Reset(TaskUpdateData info)
+
+        public async Task Execute(TaskUpdateData taskInfo)
         {
-            _taskSettingManager.Reset(info.Type, true);
+            await _adHocJobScheduler.Schedule(taskInfo.Type);
         }
     }
 }

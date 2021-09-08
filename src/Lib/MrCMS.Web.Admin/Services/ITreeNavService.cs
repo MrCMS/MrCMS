@@ -1,13 +1,14 @@
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Services
 {
     public interface ITreeNavService
     {
-        AdminTree GetWebpageNodes(int? id);
-        bool WebpageHasChildren(int id);
+        Task<AdminTree> GetWebpageNodes(int? id);
+        Task<bool> WebpageHasChildren(int id);
 
-        AdminTree GetMediaCategoryNodes(int? id);
-        AdminTree GetLayoutNodes(int? id);
+        Task<AdminTree> GetMediaCategoryNodes(int? id);
+        Task<AdminTree> GetLayoutNodes(int? id);
     }
 }

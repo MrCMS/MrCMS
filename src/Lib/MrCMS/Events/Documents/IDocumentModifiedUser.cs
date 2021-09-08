@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Events.Documents
 {
     public interface IDocumentModifiedUser
     {
-        string GetInfo();
+        Task<string> GetInfo();
     }
 }

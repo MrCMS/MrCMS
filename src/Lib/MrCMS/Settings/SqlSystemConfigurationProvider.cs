@@ -7,24 +7,32 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Website.Caching;
 
 namespace MrCMS.Settings
 {
     public class SqlSystemConfigurationProvider : ISystemConfigurationProvider
     {
+        public const string SystemConfigProviderDbKey = "SystemConfigProviderDbKey-{0}";
         private readonly IStatelessSession _session;
 
         private readonly IEventContext _eventContext;
+        private readonly ICacheManager _cacheManager;
 
-        public SqlSystemConfigurationProvider(IStatelessSession session, IEventContext eventContext)
+        public SqlSystemConfigurationProvider(IStatelessSession session, IEventContext eventContext,
+            ICacheManager cacheManager)
         {
             _session = session;
             _eventContext = eventContext;
+            _cacheManager = cacheManager;
         }
 
         public TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new()
         {
-            //using (MiniProfiler.Current.Step($"Get {typeof(TSettings).FullName}"))
+            var typeName = typeof(TSettings).FullName.ToLower();
+
+            return _cacheManager.GetOrCreate(string.Format(SystemConfigProviderDbKey, typeName), () =>
             {
                 var settings = Activator.CreateInstance<TSettings>();
 
@@ -50,21 +58,23 @@ namespace MrCMS.Settings
                 }
 
                 return settings;
-            }
+            }, TimeSpan.FromMinutes(15), CacheExpiryType.Sliding);
         }
-        private IDictionary<string, SystemSetting> GetDbSettings<TSettings>() where TSettings : SystemSettingsBase, new()
+
+
+        private IDictionary<string, SystemSetting> GetDbSettings<TSettings>()
+            where TSettings : SystemSettingsBase, new()
         {
-            //using (MiniProfiler.Current.Step($"Get from db: {typeof(TSettings).FullName}"))
-            {
-                var typeName = typeof(TSettings).FullName.ToLower();
-                var settings =
-                        _session.QueryOver<SystemSetting>()
-                            .Where(x => x.SettingType == typeName)
-                            .Cacheable()
-                            .List();
-                return settings.GroupBy(setting => setting.PropertyName)
-                    .ToDictionary(x => x.Key, x => x.Select(y => y).First());
-            }
+            var typeName = typeof(TSettings).FullName.ToLower();
+
+
+            var settings =
+                _session.QueryOver<SystemSetting>()
+                    .Where(x => x.SettingType == typeName)
+                    .Cacheable()
+                    .List();
+            return settings.GroupBy(setting => setting.PropertyName)
+                .ToDictionary(x => x.Key, x => x.Select(y => y).First());
         }
 
 
@@ -76,7 +86,8 @@ namespace MrCMS.Settings
         /// <param name="type">value type</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
-        protected virtual object GetSettingByKey(IDictionary<string, SystemSetting> existingSettings, string propertyName,
+        protected virtual object GetSettingByKey(IDictionary<string, SystemSetting> existingSettings,
+            string propertyName,
             Type type, object defaultValue = null)
         {
             if (string.IsNullOrEmpty(propertyName))
@@ -102,18 +113,20 @@ namespace MrCMS.Settings
             return value?.Trim().ToLowerInvariant();
         }
 
-        public void SaveSettings(SystemSettingsBase settings)
+        public async Task SaveSettings(SystemSettingsBase settings)
         {
             var methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
             var genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
-            genericMethod.Invoke(this, new object[] { settings });
+            await (Task) genericMethod.Invoke(this, new object[] {settings});
+
+            ClearCache();
         }
 
-        public void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
+        public async Task SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
         {
             var existing = GetSystemSettings<TSettings>();
             var existingInDb = GetDbSettings<TSettings>();
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 /* We do not clear cache after each setting update.
                  * This behavior can increase performance because cached settings will not be cleared 
@@ -128,11 +141,12 @@ namespace MrCMS.Settings
 
                     var typeName = typeof(TSettings).FullName;
                     dynamic value = prop.GetValue(settings, null);
-                    SetSetting(existingInDb, typeName, prop.Name, value ?? "");
+                    await SetSetting(existingInDb, typeName, prop.Name, value ?? "");
                 }
             });
+            ClearCache();
 
-            _eventContext.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
+            await _eventContext.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
                 new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
         }
 
@@ -145,7 +159,7 @@ namespace MrCMS.Settings
                 .OfType<SystemSettingsBase>().ToList();
         }
 
-        protected virtual void SetSetting<T>(IDictionary<string, SystemSetting> existingSettings, string typeName,
+        protected virtual async Task SetSetting<T>(IDictionary<string, SystemSetting> existingSettings, string typeName,
             string propertyName, T value)
         {
             typeName = Standardise(typeName);
@@ -158,7 +172,7 @@ namespace MrCMS.Settings
                 //update
                 setting.Value = valueStr;
                 setting.UpdatedOn = DateTime.UtcNow;
-                UpdateSetting(setting);
+                await UpdateSetting(setting);
             }
             else
             {
@@ -171,8 +185,10 @@ namespace MrCMS.Settings
                     CreatedOn = DateTime.UtcNow,
                     UpdatedOn = DateTime.UtcNow
                 };
-                InsertSetting(setting);
+                await InsertSetting(setting);
             }
+
+            ClearCache();
         }
 
 
@@ -181,14 +197,15 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void InsertSetting(SystemSetting setting)
+        protected virtual async Task InsertSetting(SystemSetting setting)
         {
             if (setting == null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
 
-            _session.Transact(session => session.Insert(setting));
+            await _session.TransactAsync(session => session.InsertAsync(setting));
+            ClearCache();
         }
 
         /// <summary>
@@ -196,14 +213,15 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void UpdateSetting(SystemSetting setting)
+        protected virtual async Task UpdateSetting(SystemSetting setting)
         {
             if (setting == null)
             {
                 throw new ArgumentNullException(nameof(setting));
             }
 
-            _session.Transact(session => session.Update(setting));
+            await _session.TransactAsync(session => session.UpdateAsync(setting));
+            ClearCache();
         }
 
         /// <summary>
@@ -219,7 +237,12 @@ namespace MrCMS.Settings
             }
 
             _session.Delete(setting);
+            ClearCache();
         }
 
+        private void ClearCache()
+        {
+            _cacheManager.Clear();
+        }
     }
 }

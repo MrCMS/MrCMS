@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Models;
 
 namespace MrCMS.Services.Canonical
 {
@@ -22,8 +23,16 @@ namespace MrCMS.Services.Canonical
             return builder;
         }
 
+        public void SetNoCanonical()
+        {
+            this[LinkTag.Canonical] = string.Empty;
+        }
+
         private IHtmlContent RenderPair(KeyValuePair<string, string> tag)
         {
+            if (string.IsNullOrWhiteSpace(tag.Key) || string.IsNullOrWhiteSpace(tag.Value))
+                return HtmlString.Empty;
+                
             var tagBuilder = new TagBuilder("link");
             tagBuilder.Attributes["rel"] = tag.Key;
             tagBuilder.Attributes["href"] = tag.Value;

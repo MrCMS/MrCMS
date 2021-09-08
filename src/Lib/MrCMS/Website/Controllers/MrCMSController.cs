@@ -4,15 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Website.Filters;
-using StackExchange.Profiling;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using MrCMS.Services;
 
 namespace MrCMS.Website.Controllers
 {
-
-    [ReturnUrlHandler(Order = 999)]
+    [ReturnUrl]
     public abstract class MrCMSController : Controller
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -24,7 +22,10 @@ namespace MrCMS.Website.Controllers
         {
             List<SiteEntity> entities = filterContext.ActionArguments.Values.OfType<SiteEntity>().ToList();
 
-            var site = filterContext.HttpContext.RequestServices.GetRequiredService<Site>();
+            var locator = filterContext.HttpContext.RequestServices.GetService<ICurrentSiteLocator>();
+            if (locator == null)
+                return;
+            var site = locator.GetCurrentSite();
             if (entities.Any(entity => !site.IsValidForSite(entity) && entity.Id != 0) ||
                 entities.Any(entity => entity.IsDeleted))
             {

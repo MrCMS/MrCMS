@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -21,27 +23,27 @@ namespace MrCMS.Web.Admin.Services
             _documentMetadataService = documentMetadataService;
         }
 
-        public Webpage GetWebpage(int id)
+        public async Task<Webpage> GetWebpage(int id)
         {
-            return _webpageRepository.Get(id);
+            return await _webpageRepository.Get(id);
         }
 
-        public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
+        public async Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage)
         {
             List<DocumentMetadata> validParentTypes = _documentMetadataService.GetValidParentTypes(webpage);
 
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
-                _webpageRepository.Query()
+                await _webpageRepository.Query()
                     .Where(page => validParentTypeNames.Contains(page.DocumentType))
-                    .ToList();
+                    .ToListAsync();
 
             List<SelectListItem> result = potentialParents.Distinct()
                 .Where(page => !page.ActivePages.Contains(webpage))
                 .OrderBy(x => x.Name)
                 .BuildSelectItemList(
-                    page => string.Format("{0} ({1})", page.Name, _documentMetadataService.GetMetadata(page).Name),
+                    page => $"{page.Name} ({_documentMetadataService.GetMetadata(page).Name})",
                     page => page.Id.ToString(),
                     webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
 
@@ -51,18 +53,18 @@ namespace MrCMS.Web.Admin.Services
             return result;
         }
 
-        public void Set(int id, int? parentVal)
+        public async Task Set(int id, int? parentVal)
         {
-            var webpage = GetWebpage(id);
+            var webpage = await GetWebpage(id);
 
             if (webpage == null)
                 return;
 
-            Webpage parent = parentVal.HasValue ? _webpageRepository.Get(parentVal.Value) : null;
+            Webpage parent = parentVal.HasValue ? await _webpageRepository.Get(parentVal.Value) : null;
 
             webpage.Parent = parent;
 
-            _webpageRepository.Update(webpage);
+            await _webpageRepository.Update(webpage);
         }
     }
 }

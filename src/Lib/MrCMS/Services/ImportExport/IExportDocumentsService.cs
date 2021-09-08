@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using ClosedXML.Excel;
 using MrCMS.Entities.Documents.Web;
-using OfficeOpenXml;
 
 namespace MrCMS.Services.ImportExport
 {
     public interface IExportDocumentsService
     {
-        ExcelPackage GetExportExcelPackage(List<Webpage> webpages);
-        byte[] ConvertPackageToByteArray(ExcelPackage package);
+        XLWorkbook GetExportExcelPackage(List<Webpage> webpages);
+        byte[] ConvertPackageToByteArray(XLWorkbook package);
     }
 }

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 
 namespace MrCMS.Services
 {
     public interface IGetBreadcrumbs
     {
-        IEnumerable<Document> Get(int? parent);
+        Task<IReadOnlyList<Document>> Get(int? parent);
     }
 }

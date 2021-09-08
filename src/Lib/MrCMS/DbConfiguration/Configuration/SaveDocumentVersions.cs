@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Events;
@@ -12,12 +13,12 @@ namespace MrCMS.DbConfiguration.Configuration
 {
     public class SaveDocumentVersions : IOnUpdated<Document>
     {
-        private User GetUser(ISession session)
+        private async Task<User> GetUser(ISession session)
         {
-            return session.GetService<IGetCurrentUser>().Get();
+            return await session.GetService<IGetCurrentUser>().Get();
         }
 
-        public void Execute(OnUpdatedArgs<Document> args)
+        public async Task Execute(OnUpdatedArgs<Document> args)
         {
             var document = args.Item;
             if (document != null && !document.IsDeleted && args.Original != null)
@@ -55,10 +56,10 @@ namespace MrCMS.DbConfiguration.Configuration
                     {
                         Document = document,
                         Data = JsonConvert.SerializeObject(jObject),
-                        User = GetUser(s),
+                        User = await GetUser(s),
                     };
                     document.Versions.Add(documentVersion);
-                    s.Transact(session => session.Save(documentVersion));
+                    await s.TransactAsync((session,token) => session.SaveAsync(documentVersion, token));
                 }
             }
         }

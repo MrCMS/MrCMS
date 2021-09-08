@@ -1,7 +1,5 @@
 using System.IO;
-using System.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
@@ -23,26 +21,26 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             _fileProvider = fileProvider;
         }
 
-        public void Setup()
+        public async Task Setup()
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async (session, token) =>
             {
                 var defaultMediaCategory = new MediaCategory
                 {
                     Name = "Default",
                     UrlSegment = "default",
                 };
-                session.Save(defaultMediaCategory);
+                await session.SaveAsync(defaultMediaCategory, token);
 
                 string logoPath = ("/images/mrcms-logo.png");
                 var fileStream = _fileProvider.GetFileInfo(logoPath).CreateReadStream();
-                MediaFile dbFile = _fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png",
+                MediaFile dbFile = await _fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png",
                     fileStream.Length,
                     defaultMediaCategory);
 
                 string logoPath1 = ("/Images/mrcms-hat.gif");
                 var fileStream1 = _fileProvider.GetFileInfo(logoPath).CreateReadStream(); 
-                MediaFile dbFile1 = _fileService.AddFile(fileStream1, Path.GetFileName(logoPath1), "image/gif",
+                MediaFile dbFile1 = await _fileService.AddFile(fileStream1, Path.GetFileName(logoPath1), "image/gif",
                     fileStream1.Length,
                     defaultMediaCategory);
             });

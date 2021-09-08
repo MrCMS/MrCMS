@@ -3,7 +3,6 @@ using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Helpers;
 using Xunit;
-using Xunit.Extensions;
 
 namespace MrCMS.Tests.Helpers
 {

@@ -11,14 +11,8 @@
             _original = original;
         }
 
-        public T Settings
-        {
-            get { return _settings; }
-        }
+        public T Settings => _settings;
 
-        public T Original
-        {
-            get { return _original; }
-        }
+        public T Original => _original;
     }
 }

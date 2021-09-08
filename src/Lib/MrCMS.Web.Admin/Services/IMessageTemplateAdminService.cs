@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Messages;
 using MrCMS.Web.Admin.Models;
 
@@ -6,15 +7,15 @@ namespace MrCMS.Web.Admin.Services
 {
     public interface IMessageTemplateAdminService
     {
-        List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails();
+        Task<List<MessageTemplateInfo>> GetAllMessageTemplateTypesWithDetails();
 
-        MessageTemplate GetNewOverride(string type);
-        MessageTemplate GetOverride(string type);
-        MessageTemplate GetTemplate(string type);
+        Task<MessageTemplate> GetNewOverride(string type);
+        Task<MessageTemplate> GetOverride(string type);
+        Task<MessageTemplate> GetTemplate(string type);
 
-        void AddOverride(MessageTemplate messageTemplate);
-        void Save(MessageTemplate messageTemplate);
-        void DeleteOverride(string type);
-        void ImportLegacyTemplate(string type);
+        Task AddOverride(MessageTemplate messageTemplate);
+        Task Save(MessageTemplate messageTemplate);
+        Task DeleteOverride(string type);
+        Task ImportLegacyTemplate(string type);
     }
 }

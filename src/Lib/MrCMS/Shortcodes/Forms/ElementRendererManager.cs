@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web.FormProperties;
-using MrCMS.Helpers;
 using MrCMS.Settings;
 using System;
-using System.Linq;
+
 namespace MrCMS.Shortcodes.Forms
 {
     public class ElementRendererManager : IElementRendererManager
@@ -25,7 +24,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             if (formRenderingType == FormRenderingType.Bootstrap3 || formRenderingType == FormRenderingType.Bootstrap4)
             {
-                if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload || property is Email)
+                // if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload || property is Email)
                 {
                     var elementContainer = new TagBuilder("div");
                     elementContainer.AddCssClass("form-group");

@@ -1,5 +1,4 @@
 ﻿@using System.Drawing
-@using MrCMS.Helpers
 @model System.Collections.Generic.List<MrCMS.Models.ImageSortItem>
 @{
     ViewBag.Title = "Sort Files";
@@ -24,53 +23,49 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-sort-file", "Sort Files") "/>
+            <admin-header-title title="@await Html.Resource("admin-sort-file", "Sort Files") "/>
 
             <admin-header-actions>
                 <span class="btn-group pull-right">
-                    @Html.ActionLink(Html.Resource("admin-back", "Back"), "Show", new {id = ViewData["categoryId"]}, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(await Html.Resource("admin-back", "Back"), "Show", new {id = ViewData["categoryId"]}, new {@class = "btn btn-secondary"})
                     <button class="btn btn-primary">
-                        @Html.Resource("admin-save", "Save")</button>
+                        @await Html.Resource("admin-save", "Save")
+                    </button>
                 </span>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
 
-            @if (Model.Count == 0)
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            @await Html.Resource("admin-no-files-to-sort", "There are no files to sort.")
+        </div>
+    }
+    else
+    {
+        <ul id="sortable" class="list-group">
+            @for (var i = 0; i < Model.Count; i++)
             {
-                <div class="alert alert-info">
-                    @Html.Resource("admin-no-files-to-sort", "There are no files to sort.")
-                </div>
-            }
-            else
-            {
-                <ul id="sortable" class="list-group">
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    @Html.HiddenFor(model => model[i].Id)
-                                    @Html.HiddenFor(model => model[i].Order)
-                                    <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
-                                    @Model[i].Name
-                                    <div class="pull-right">
-                                        @if (Model[i].IsImage)
-                                        {
-                                            @Html.RenderImage(Model[i].ImageUrl, new Size(100, 100))
-                                        }
-                                    </div>
-                                </div>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @Html.HiddenFor(model => model[i].Id)
+                            @Html.HiddenFor(model => model[i].Order)
+                            <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
+                            @Model[i].Name
+                            <div class="pull-right">
+                                @if (Model[i].IsImage)
+                                {
+                                    @await Html.RenderImage(Model[i].ImageUrl, new Size(100, 100))
+                                }
                             </div>
-                        </li>
-                    }
-                </ul>
+                        </div>
+                    </div>
+                </li>
             }
-
-        </card-body>
-    </card>
+        </ul>
+    }
 
 </form>

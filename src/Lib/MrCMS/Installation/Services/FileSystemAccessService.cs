@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using MrCMS.Installation.Models;
 
 namespace MrCMS.Installation.Services

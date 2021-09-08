@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
@@ -17,12 +18,12 @@ namespace MrCMS.Events.Documents
             _documentModifiedUser = documentModifiedUser;
         }
 
-        public void Execute(OnDeletedArgs<Document> args)
+        public async Task Execute(OnDeletedArgs<Document> args)
         {
             string message = string.Format("{1} {0} has been deleted{2}.", args.Item.Name,
-                args.Item.GetAdminController(), _documentModifiedUser.GetInfo());
+                args.Item.GetAdminController(), await _documentModifiedUser.GetInfo());
 
-            _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
+            await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
     }
 }

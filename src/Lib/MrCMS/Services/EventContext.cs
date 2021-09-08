@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Events;
 using MrCMS.Helpers;
-using NHibernate.Util;
 
 namespace MrCMS.Services
 {
@@ -19,51 +19,28 @@ namespace MrCMS.Services
             _serviceProvider = serviceProvider;
         }
 
-        //public static IEventContext Instance
-        //{
-        //    get
-        //    {
-        //        try
-        //        {
-        //            //return MrCMSApplication.Get<IEventContext>();
-        //            return null;
-        //        }
-        //        catch
-        //        {
-        //            return new InstallationEventContext();
-        //        }
-        //    }
-        //}
+        public HashSet<Type> DisabledEvents => _disabledEvents;
 
-        public HashSet<Type> DisabledEvents
+        public async Task Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
         {
-            get { return _disabledEvents; }
+            await Publish(typeof(TEvent), args);
         }
 
-        public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
-        {
-            Publish(typeof (TEvent), args);
-        }
+        private static readonly HashSet<Type> EventTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<IEvent>();
 
-        public void Publish(Type eventType, object args)
+        public async Task Publish(Type eventType, object args)
         {
-            //using (MiniProfiler.Current.Step("Publishing " + eventType.FullName))
+            foreach (var type in EventTypes.FindAll(eventType.IsAssignableFrom).Where(type => !IsDisabled(type)))
             {
-                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(eventType).Where(type => !IsDisabled(type)))
-                {
-                    //using (MiniProfiler.Current.Step("Invoking " + @event.GetType().FullName))
-                    {
-                        MethodInfo methodInfo = type.GetMethod("Execute", new[] {args.GetType()});
-                        var instance = _serviceProvider.GetRequiredService(type);
-                        methodInfo.Invoke(instance, new[] {args});
-                    }
-                }
+                MethodInfo methodInfo = type.GetMethod("Execute", new[] {args.GetType()});
+                var instance = _serviceProvider.GetRequiredService(type);
+                await (Task) methodInfo.Invoke(instance, new[] {args});
             }
         }
 
         public IDisposable Disable<T>()
         {
-            return new EventPublishingDisabler(this, typeof (T));
+            return new EventPublishingDisabler(this, typeof(T));
         }
 
         public IDisposable Disable(params Type[] types)
@@ -71,9 +48,14 @@ namespace MrCMS.Services
             return new EventPublishingDisabler(this, types);
         }
 
+        public IDisposable DisableAll()
+        {
+            return new EventPublishingDisabler(this, EventTypes.ToArray());
+        }
+
         private bool IsDisabled(Type type)
         {
-            return DisabledEvents.Any(type.IsImplementationOf);
+            return DisabledEvents.Any(x => x.IsAssignableFrom(type));
         }
 
         public class EventPublishingDisabler : IDisposable

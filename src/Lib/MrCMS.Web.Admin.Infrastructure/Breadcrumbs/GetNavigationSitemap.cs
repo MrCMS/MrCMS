@@ -22,41 +22,41 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
             _urlHelper = urlHelper;
         }
 
-        public Sitemap GetNavigation()
+        public async Task<Sitemap> GetNavigation()
         {
-            return new Sitemap {Nodes = GetNodes()};
+            return new Sitemap {Nodes = await GetNodes()};
         }
 
-        private List<SitemapNode> GetNodes()
+        private async Task<List<SitemapNode>> GetNodes()
         {
             var rootNavTypes = _getNavigationTypes.GetRootNavTypes();
 
-            return FilterAndSort(rootNavTypes);
+            return await FilterAndSort(rootNavTypes);
         }
 
-        private List<SitemapNode> FilterAndSort(IEnumerable<Type> types)
+        private async Task<List<SitemapNode>> FilterAndSort(IEnumerable<Type> types)
         {
             List<SitemapNode> sitemapNodes = new List<SitemapNode>();
             foreach (var type in types)
             {
-                sitemapNodes.Add(GetNodeForType(type));
+                sitemapNodes.Add(await GetNodeForType(type));
             }
 
             return sitemapNodes.Where(x => x != null).OrderBy(x => x.Order).ToList();
         }
 
-        private SitemapNode GetNodeForType(Type type)
+        private async Task<SitemapNode> GetNodeForType(Type type)
         {
             var breadcrumb = (Breadcrumb) _serviceProvider.GetService(type);
             if (breadcrumb?.IsNav != true)
                 return null;
-            if (!breadcrumb.IsPlaceHolder && !_breadcrumbAccessChecker.CanAccess(breadcrumb))
+            if (!breadcrumb.IsPlaceHolder && !await _breadcrumbAccessChecker.CanAccess(breadcrumb))
                 return null;
 
             var node = new SitemapNode(breadcrumb, breadcrumb.Url(_urlHelper));
 
             var types = _getNavigationTypes.GetChildren(type);
-            node.AddChildren(FilterAndSort(types));
+            node.AddChildren(await FilterAndSort(types));
 
             return node;
         }

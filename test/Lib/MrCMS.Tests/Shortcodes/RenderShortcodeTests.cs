@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Shortcodes;
 using MrCMS.TestSupport;
-using MrCMS.Website;
 using Xunit;
-using Xunit.Extensions;
 
 namespace MrCMS.Tests.Shortcodes
 {

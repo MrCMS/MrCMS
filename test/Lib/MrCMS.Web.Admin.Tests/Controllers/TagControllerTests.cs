@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -13,25 +14,25 @@ namespace MrCMS.Web.Admin.Tests.Controllers
     public class TagControllerTests
     {
         [Fact]
-        public void TagController_Search_ShouldCallTagServiceSearch()
+        public async Task TagController_Search_ShouldCallTagServiceSearch()
         {
             var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
 
-            tagController.Search( "test");
+            await tagController.Search( "test");
 
             A.CallTo(() => tagService.Search("test")).MustHaveHappened();
         }
 
         [Fact]
-        public void TagController_Search_ShouldReturnTheResultOfTheServiceQuery()
+        public async Task TagController_Search_ShouldReturnTheResultOfTheServiceQuery()
         {
             var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
             IEnumerable<AutoCompleteResult> results = Enumerable.Empty<AutoCompleteResult>();
             A.CallTo(() => tagService.Search("test")).Returns(results);
 
-            JsonResult result = tagController.Search("test");
+            JsonResult result = await tagController.Search("test");
             result.Value.As<IEnumerable<AutoCompleteResult>>().Should().BeEquivalentTo(results);
         }
     }

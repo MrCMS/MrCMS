@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -29,9 +30,10 @@ namespace MrCMS.Web.Admin.Services
                 }).ToList();
         }
 
-        public List<SelectListItem> GetOtherSiteOptions()
+        public async Task<List<SelectListItem>> GetOtherSiteOptions()
         {
-            return _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.Cacheable().List()
+            var sites = await _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.Cacheable().ListAsync();
+            return sites
                 .BuildSelectItemList(site => site.DisplayName, site => site.Id.ToString(), emptyItem: new SelectListItem
                 {
                     Text = "Do not copy",

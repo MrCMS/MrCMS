@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Widget;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website
 {
@@ -12,7 +13,8 @@ namespace MrCMS.Website
                 .Select(widget => new WidgetData
                 {
                     Id = widget.Id,
-                    Name = widget.Name
+                    Name = widget.Name,
+                    ViewName = widget.Unproxy().GetType().Name
                 })
                 .ToList();
         }

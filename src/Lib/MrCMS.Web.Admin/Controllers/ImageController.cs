@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services;
-using MrCMS.Website.Controllers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -13,14 +14,15 @@ namespace MrCMS.Web.Admin.Controllers
             _imageRenderingService = imageRenderingService;
         }
 
-        public JsonResult GetImageData(string url)
+        public async Task<JsonResult> GetImageData(string url)
         {
             var imageInfo =
-                _imageRenderingService.GetImageInfo(url, ImageProcessor.GetRequestedSize(url).GetValueOrDefault());
+                await _imageRenderingService.GetImageInfo(url,
+                    ImageProcessor.GetRequestedSize(url).GetValueOrDefault());
 
             return imageInfo != null
-                ? Json(new { alt = imageInfo.Title, title = imageInfo.Description, url = imageInfo.ImageUrl })
-                : Json(new { alt = "", title = "" });
+                ? Json(new {alt = imageInfo.Title, title = imageInfo.Description, url = imageInfo.ImageUrl})
+                : Json(new {alt = "", title = ""});
         }
     }
 }

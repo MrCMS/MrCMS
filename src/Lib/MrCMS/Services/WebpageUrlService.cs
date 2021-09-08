@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -23,7 +24,7 @@ namespace MrCMS.Services
             _settings = settings;
         }
 
-        public string Suggest(SuggestParams suggestParams)
+        public async Task<string> Suggest(SuggestParams suggestParams)
         {
             var documentType = suggestParams.DocumentType;
             var parts = documentType.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries);
@@ -40,14 +41,14 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (!_urlValidationService.UrlIsValidForWebpage(url, suggestParams.WebpageId))
+            if (!await _urlValidationService.UrlIsValidForWebpage(url, suggestParams.WebpageId))
             {
                 int counter = 1;
 
-                while (!_urlValidationService.UrlIsValidForWebpage(string.Format("{0}-{1}", url, counter), suggestParams.WebpageId))
+                while (!await _urlValidationService.UrlIsValidForWebpage($"{url}-{counter}", suggestParams.WebpageId))
                     counter++;
 
-                url = string.Format("{0}-{1}", url, counter);
+                url = $"{url}-{counter}";
             }
             return url;
         }

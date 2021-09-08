@@ -1,12 +1,14 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Messages
 {
     public abstract class GetDefaultTemplate<T> : IGetDefaultMessageTemplate where T : MessageTemplate, new()
     {
-        public abstract T Get();
+        public abstract Task<T> Get();
 
-        MessageTemplate IGetDefaultMessageTemplate.Get()
+        async Task<MessageTemplate> IGetDefaultMessageTemplate.Get()
         {
-            return Get();
+            return await Get();
         }
     }
 }

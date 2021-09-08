@@ -14,9 +14,6 @@
 
         public T Data { get; private set; }
 
-        public override sealed object BaseData
-        {
-            get { return Data; }
-        }
+        public override sealed object BaseData => Data;
     }
 }

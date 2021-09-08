@@ -1,16 +1,13 @@
-﻿@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using MrCMS.Helpers
+﻿@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 @model string
-@using (Html.BeginForm("ImportLegacyTemplate", "MessageTemplate", new { type = Model }, FormMethod.Post))
+@using (Html.BeginForm("ImportLegacyTemplate", "MessageTemplate", new {type = Model}, FormMethod.Post))
 {
-
     <h1 class="page-header">
-        @Html.Resource("Import Legacy Message Template")
+        @await Html.Resource("Import Legacy Message Template")
         <span class="btn-group pull-right">
-            <input type="submit" class="btn btn-primary" value="@Html.Resource("Import")" />
+            <input type="submit" class="btn btn-primary" value="@await Html.Resource("Import")"/>
         </span>
     </h1>
 
-    @Html.Resource("Admin Message Template Import Legacy", "Are you sure you want to import the legacy message template? This action cannot be undone.")
+    @await Html.Resource("Admin Message Template Import Legacy", "Are you sure you want to import the legacy message template? This action cannot be undone.")
 }
-

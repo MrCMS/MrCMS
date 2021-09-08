@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
-using MrCMS.Settings;
-using MrCMS.Tasks.Entities;
 using MrCMS.Website;
 using NHibernate;
 
@@ -12,58 +12,44 @@ namespace MrCMS.Tasks
     public class TaskResetter : ITaskResetter
     {
         private readonly ISession _session;
-        private readonly ITaskSettingManager _taskSettingManager;
         private readonly IGetDateTimeNow _getDateTimeNow;
+        private readonly ILogger<TaskResetter> _logger;
 
-        public TaskResetter(ISession session, ITaskSettingManager taskSettingManager, IGetDateTimeNow getDateTimeNow)
+        public TaskResetter(ISession session, IGetDateTimeNow getDateTimeNow, ILogger<TaskResetter> logger)
         {
             _session = session;
-            _taskSettingManager = taskSettingManager;
             _getDateTimeNow = getDateTimeNow;
+            _logger = logger;
         }
 
-        public void ResetHungTasks()
+        public async Task ResetHungTasks()
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 var now = _getDateTimeNow.LocalNow;
                 using (new SiteFilterDisabler(session))
-                    ResetQueuedTasks(session, now);
+                    await ResetQueuedTasks(session, now);
             });
-            ResetScheduledTasks();
         }
 
-        private void ResetScheduledTasks()
+        private async Task ResetQueuedTasks(ISession session, DateTime now)
         {
-            var now = _getDateTimeNow.LocalNow;
-            var hungScheduledTasks = _taskSettingManager.GetInfo()
-                .Where(
-                    task => task.Enabled &&
-                        (task.Status == TaskExecutionStatus.AwaitingExecution ||
-                         task.Status == TaskExecutionStatus.Executing || task.Status == TaskExecutionStatus.Failed) &&
-                        (task.LastStarted < now.AddMinutes(-15) || task.LastStarted == null)
-                )
-                .ToList();
-            foreach (var task in hungScheduledTasks)
-            {
-                _taskSettingManager.Reset(task.Type, false);
-            }
-        }
-
-        private void ResetQueuedTasks(ISession session, DateTime now)
-        {
-            var hungTasks = session.QueryOver<QueuedTask>()
+            var hungTasks = await session.QueryOver<QueuedTask>()
                 .Where(
                     task =>
                         (task.Status == TaskExecutionStatus.AwaitingExecution ||
                          task.Status == TaskExecutionStatus.Executing) &&
                         task.QueuedAt < now.AddMinutes(-15))
-                .List();
+                .ListAsync();
+            if (!hungTasks.Any())
+                return;
+            
+            _logger.LogInformation($"Resetting {hungTasks.Count} task(s)");
             foreach (var task in hungTasks)
             {
                 task.QueuedAt = null;
                 task.Status = TaskExecutionStatus.Pending;
-                session.Update(task);
+                await session.UpdateAsync(task);
             }
         }
     }

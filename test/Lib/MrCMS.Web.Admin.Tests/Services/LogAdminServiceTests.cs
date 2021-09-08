@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using MrCMS.Helpers;
 using MrCMS.Logging;
@@ -18,42 +19,37 @@ namespace MrCMS.Web.Admin.Tests.Services
             _logService = new LogAdminService(Session);
         }
 
+
         [Fact]
-        public void LogAdminService_GetAllLogEntries_ReturnsAllLogEntries()
+        public async Task LogAdminService_DeleteAllLogs_ShouldRemoveAllLogs()
         {
-            List<Log> list = CreateLogList();
+            List<Log> list = await CreateLogList();
 
-            IList<Log> logs = _logService.GetAllLogEntries();
+            await _logService.DeleteAllLogs();
 
-            logs.Should().BeEquivalentTo(list);
+            (await Session.QueryOver<Log>().RowCountAsync()).Should().Be(0);
         }
 
         [Fact]
-        public void LogAdminService_DeleteAllLogs_ShouldRemoveAllLogs()
+        public async Task LogAdminService_DeleteLog_ShouldRemoveTheDeletedLog()
         {
-            List<Log> list = CreateLogList();
+            List<Log> list = await CreateLogList();
 
-            _logService.DeleteAllLogs();
+            await _logService.DeleteLog(list[0].Id);
 
-            Session.QueryOver<Log>().RowCount().Should().Be(0);
-        }
-
-        [Fact]
-        public void LogAdminService_DeleteLog_ShouldRemoveTheDeletedLog()
-        {
-            List<Log> list = CreateLogList();
-
-            _logService.DeleteLog(list[0].Id);
-
-            Session.QueryOver<Log>().List().Should().NotContain(list[0]);
+            (await Session.QueryOver<Log>().ListAsync()).Should().NotContain(list[0]);
         }
 
 
-        private List<Log> CreateLogList()
+        private async Task<List<Log>> CreateLogList()
         {
             List<Log> logList =
-                Enumerable.Range(1, 20).Select(i => new Log { Message = i.ToString() }).ToList();
-            logList.ForEach(log => Session.Transact(session => session.Save(log)));
+                Enumerable.Range(1, 20).Select(i => new Log {Message = i.ToString()}).ToList();
+            foreach (var log in logList)
+            {
+                await Session.TransactAsync(session => session.SaveAsync(log));
+            }
+
             return logList;
         }
     }

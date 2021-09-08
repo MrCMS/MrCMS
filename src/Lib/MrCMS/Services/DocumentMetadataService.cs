@@ -45,14 +45,15 @@ namespace MrCMS.Services
         private List<DocumentMetadataInfo> GetDocumentMetadataInfo()
         {
             var list = new List<DocumentMetadataInfo>();
+            var allMaps = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(DocumentMetadataMap<>));
 
             foreach (
                 Type type in
                 TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
                     .Where(type => !type.ContainsGenericParameters))
             {
-                var types =
-                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(DocumentMetadataMap<>).MakeGenericType(type));
+                var types = allMaps.FindAll(
+                    x => typeof(DocumentMetadataMap<>).MakeGenericType(type).IsAssignableFrom(x));
                 if (types.Any())
                 {
                     var definition = _serviceProvider.GetRequiredService(types.First()) as IGetDocumentMetadataInfo;
@@ -93,6 +94,14 @@ namespace MrCMS.Services
                 info.WebGetAction,
                 info.WebPostController,
                 info.WebPostAction,
+                info.WebGetControllerUnauthorized,
+                info.WebGetActionUnauthorized,
+                info.WebPostControllerUnauthorized,
+                info.WebPostActionUnauthorized,
+                info.WebGetControllerForbidden,
+                info.WebGetActionForbidden,
+                info.WebPostControllerForbidden,
+                info.WebPostActionForbidden,
                 info.MaxChildNodes,
                 info.Sortable,
                 info.SortBy,

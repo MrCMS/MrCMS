@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using NHibernate;
 
@@ -13,18 +14,20 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public IEnumerable<Document> Get(int? parent)
+        public async Task<IReadOnlyList<Document>> Get(int? parent)
         {
+            var list = new List<Document>();
             if (parent > 0)
             {
-                var document = _session.Get<Document>(parent);
+                var document = await _session.GetAsync<Document>(parent);
                 while (document != null)
                 {
-                    yield return document;
+                    list.Add(document);
                     document = document.Parent;
                 }
             }
+            list.Reverse();
+            return list;
         }
-
     }
 }

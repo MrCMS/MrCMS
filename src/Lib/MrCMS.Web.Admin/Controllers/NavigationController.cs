@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -14,22 +15,22 @@ namespace MrCMS.Web.Admin.Controllers
             _treeNavService = treeNavService;
         }
 
-        public PartialViewResult WebSiteTree(int? id)
+        public async Task<PartialViewResult> WebSiteTree(int? id)
         {
-            AdminTree admintree = _treeNavService.GetWebpageNodes(id);
-            return PartialView("TreeList", admintree);
+            AdminTree adminTree = await _treeNavService.GetWebpageNodes(id);
+            return PartialView("TreeList", adminTree);
         }
 
-        public PartialViewResult MediaTree(int? id)
+        public async Task<PartialViewResult> MediaTree(int? id)
         {
-            AdminTree admintree = _treeNavService.GetMediaCategoryNodes(id);
-            return PartialView("TreeList", admintree);
+            AdminTree adminTree = await _treeNavService.GetMediaCategoryNodes(id);
+            return PartialView("TreeList", adminTree);
         }
 
-        public PartialViewResult LayoutTree(int? id)
+        public async Task<PartialViewResult> LayoutTree(int? id)
         {
-            AdminTree admintree = _treeNavService.GetLayoutNodes(id);
-            return PartialView("TreeList", admintree);
+            AdminTree adminTree = await _treeNavService.GetLayoutNodes(id);
+            return PartialView("TreeList", adminTree);
         }
     }
 }

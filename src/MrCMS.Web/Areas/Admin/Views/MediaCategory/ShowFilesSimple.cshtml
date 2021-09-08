@@ -1,7 +1,6 @@
 ﻿@using System.Drawing
 @using System.Linq
 @using Microsoft.AspNetCore.Html
-@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Media.MediaCategory
 <div id="file-list-simple" data-category-id="@Model.Id">
     @if (Model.Files.Any())
@@ -22,7 +21,7 @@
                         @if (file.IsImage())
                         {
                             <a href="@file.FileUrl">
-                                @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                                @await Html.RenderImage(file.FileUrl, new Size(100, 100))
                             </a>
                         }
                         @Html.Link(file.FileName, file.FileUrl)

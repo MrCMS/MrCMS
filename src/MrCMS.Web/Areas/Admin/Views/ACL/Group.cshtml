@@ -1,7 +1,5 @@
-﻿@using System.Collections.Generic
-@using System.Linq
+﻿@using System.Linq
 @using MrCMS.Entities.People
-@using MrCMS.Models
 @using MrCMS.Web.Admin.Models
 @model System.Collections.Generic.List<MrCMS.Web.Admin.Models.ACLRuleModel>
 @{
@@ -13,24 +11,26 @@
     <h5>@app.Key</h5>
     <table class="table table-condensed table-striped">
         <thead>
-            <tr>
-                <th class="col-lg-4">Type
+        <tr>
+            <th class="col-lg-4">
+                Type
+            </th>
+            <th class="col-lg-4">
+                Operation
+            </th>
+            @foreach (var role in roles)
+            {
+                <th class="col-lg-4">
+                    @role.Name
                 </th>
-                <th class="col-lg-4">Operation
-                </th>
-                @foreach (var role in roles)
-                {
-                    <th class="col-lg-4">
-                        @role.Name
-                    </th>
-                }
-            </tr>
+            }
+        </tr>
         </thead>
         <tbody>
-            @foreach (var rule in app.OrderBy(model => model.Name))
+        @foreach (var rule in app.OrderBy(model => model.Name))
+        {
+            foreach (var operation in rule.Operations.OrderBy(model => model.DisplayName))
             {
-                foreach (var operation in rule.Operations.OrderBy(model => model.DisplayName))
-                {
                 <tr>
                     <td>
                         @rule.Name
@@ -42,20 +42,20 @@
                     {
                         if (role.RoleName != UserRole.Administrator)
                         {
-                        <td>
-                            @Html.CheckBox(string.Format("acl-{0}-{1}", role.Role.Name, operation.Key), role.IsAllowed)
-                        </td>
+                            <td>
+                                @Html.CheckBox(string.Format("acl-{0}-{1}", role.Role.Name, operation.Key), role.IsAllowed)
+                            </td>
                         }
                         else
                         {
-                        <td>
-                            <input type="checkbox" checked="checked" disabled="disabled" />
-                        </td>
+                            <td>
+                                <input type="checkbox" checked="checked" disabled="disabled"/>
+                            </td>
                         }
                     }
                 </tr>
-                }
             }
+        }
         </tbody>
     </table>
 }

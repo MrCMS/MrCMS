@@ -1,14 +1,14 @@
 ﻿@model MrCMS.Entities.Documents.DocumentVersion
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post, null, new { style = "display:inline;" }))
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Revert", "Versions", new {id = Model.Id}, FormMethod.Post, null, new {style = "display:inline;"}))
 {
     <fieldset>
         <legend>
-            @Html.Resource("Admin Webpage Revert to version", "Revert to version")
+            @await Html.Resource("Admin Webpage Revert to version", "Revert to version")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn btn-primary" value="@Html.Resource("Revert")" />
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Revert")"/>
             </span>
         </legend>
-        <p>@Html.Resource("Admin Webpage Revert Message", "Please confirm that you want to this version of") @Model.Document.Name</p>
+        <p>@await Html.Resource("Admin Webpage Revert Message", "Please confirm that you want to this version of") @Model.Document.Name</p>
     </fieldset>
 }

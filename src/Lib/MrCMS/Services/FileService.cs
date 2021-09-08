@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -11,32 +13,37 @@ using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
-using X.PagedList;
 
 namespace MrCMS.Services
 {
     public class FileService : IFileService
     {
-        private readonly Site _currentSite;
-        private readonly IFileSystem _fileSystem;
+        private readonly IFileSystemFactory _fileSystemFactory;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
+        private readonly ICurrentSiteLocator _siteLocator;
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
+        private IFileSystem _currentFileSystem;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor,
-            MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
+        public FileService(ISession session, IFileSystemFactory fileSystemFactory, IImageProcessor imageProcessor,
+            MediaSettings mediaSettings, ICurrentSiteLocator siteLocator, SiteSettings siteSettings)
         {
             _session = session;
-            _fileSystem = fileSystem;
+            _fileSystemFactory = fileSystemFactory;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
-            _currentSite = currentSite;
+            _siteLocator = siteLocator;
             _siteSettings = siteSettings;
         }
 
-        public MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            MediaCategory mediaCategory = null)
+        private IFileSystem GetFileSystem()
+        {
+            return _currentFileSystem ??= _fileSystemFactory.GetForCurrentSite();
+        }
+
+        public async Task<MediaFile> AddFile(Stream stream, string fileName, string contentType, long contentLength,
+            MediaCategory mediaCategory)
         {
             fileName = Path.GetFileName(fileName);
 
@@ -52,7 +59,7 @@ namespace MrCMS.Services
             if (mediaCategory != null)
             {
                 mediaFile.MediaCategory = mediaCategory;
-                int? max =
+                var max =
                     _session.Query<MediaFile>()
                         .Where(x => x.MediaCategory.Id == mediaFile.MediaCategory.Id)
                         .Max(x => (int?)x.DisplayOrder);
@@ -64,61 +71,68 @@ namespace MrCMS.Services
                 _imageProcessor.EnforceMaxSize(ref stream, mediaFile, _mediaSettings);
             }
 
-            string fileLocation = GetFileLocation(fileName, mediaCategory);
+            var fileLocation = await GetFileLocation(fileName, mediaCategory);
 
-            mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
+            var fileSystem = GetFileSystem();
+            mediaFile.FileUrl = await fileSystem.SaveFile(stream, fileLocation, contentType);
 
 
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
-                session.Save(mediaFile);
+                await session.SaveAsync(mediaFile);
                 if (mediaCategory != null)
                 {
                     mediaCategory.Files.Add(mediaFile);
-                    session.SaveOrUpdate(mediaCategory);
+                    await session.SaveOrUpdateAsync(mediaCategory);
                 }
             });
 
-            stream.Dispose();
+            await stream.DisposeAsync();
             return mediaFile;
         }
 
-        public void DeleteFile(MediaFile mediaFile)
+        public async Task DeleteFile(int id)
         {
+            var file = _session.Get<MediaFile>(id);
+            if (file == null)
+                return;
+
             // remove file from the file list for its category, to prevent missing item exception
-            if (mediaFile.MediaCategory != null)
-                mediaFile.MediaCategory.Files.Remove(mediaFile);
+            file.MediaCategory?.Files.Remove(file);
 
-            foreach (ResizedImage resizedImage in
-                mediaFile.ResizedImages
-                    .Where(path => _fileSystem.Exists(path.Url)))
+
+            var fileSystem = GetFileSystem();
+            foreach (var resizedImage in
+                file.ResizedImages)
             {
-                _fileSystem.Delete(resizedImage.Url);
+                if (await fileSystem.Exists(resizedImage.Url))
+                    await fileSystem.Delete(resizedImage.Url);
             }
-            _fileSystem.Delete(mediaFile.FileUrl);
 
-            _session.Transact(session => session.Delete(mediaFile));
+            await fileSystem.Delete(file.FileUrl);
+
+            await _session.TransactAsync((session, ct) => session.DeleteAsync(file, ct));
         }
 
-        public void SaveFile(MediaFile mediaFile)
+        public async Task SaveFile(MediaFile mediaFile)
         {
-            _session.Transact(session => session.SaveOrUpdate(mediaFile));
+            await _session.TransactAsync(session => session.SaveOrUpdateAsync(mediaFile));
         }
 
-        public string GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false)
+        public async Task<string> GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false)
         {
-            return GetUrl(mediaFile, imageSize, getCdn);
+            return await GetUrl(mediaFile, imageSize, getCdn);
         }
 
-        public string GetFileLocation(Crop crop, Size imageSize, bool getCdn = false)
+        public async Task<string> GetFileLocation(Crop crop, Size imageSize, bool getCdn = false)
         {
-            return GetUrl(crop, imageSize, getCdn);
+            return await GetUrl(crop, imageSize, getCdn);
         }
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
         {
-            IQueryOver<MediaFile, MediaFile> queryOver =
-                _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite);
+            var currentSite = _siteLocator.GetCurrentSite();
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == currentSite);
 
             if (categoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
@@ -126,153 +140,164 @@ namespace MrCMS.Services
             if (imagesOnly)
                 queryOver.Where(file => file.FileExtension.IsIn(MediaFileExtensions.ImageExtensions));
 
-            IPagedList<MediaFile> mediaFiles = queryOver.OrderBy(file => file.CreatedOn)
+            var mediaFiles = queryOver.OrderBy(file => file.CreatedOn)
                 .Desc.Paged(page, _siteSettings.DefaultPageSize);
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 
-        public MediaFile GetFileByUrl(string url)
+        public async Task<MediaFile> GetFileByUrl(string url)
         {
             return
-                _session.QueryOver<MediaFile>()
+                await _session.QueryOver<MediaFile>()
                     .Where(file => file.FileUrl == url)
                     .Take(1)
                     .Cacheable()
-                    .SingleOrDefault();
+                    .SingleOrDefaultAsync();
         }
 
-        public MediaFile GetFile(string value)
+        public async Task<MediaFile> GetFile(string value)
         {
-            MediaFile mediaFile = GetFileByUrl(value);
+            var mediaFile = await GetFileByUrl(value);
             if (mediaFile != null)
                 return mediaFile;
 
-            string[] split = value.Split('-');
-            int id = Convert.ToInt32(split[0]);
-            return _session.Get<MediaFile>(id);
+            var split = value.Split('-');
+            var id = Convert.ToInt32(split[0]);
+            return await _session.GetAsync<MediaFile>(id);
         }
 
-        public string GetFileUrl(MediaFile mediaFile, string value)
+        public async Task<string> GetFileUrl(MediaFile mediaFile, string value)
         {
             if (mediaFile == null)
                 return null;
             if (string.Equals(mediaFile.FileUrl, value, StringComparison.OrdinalIgnoreCase))
                 return mediaFile.FileUrl;
 
-            string[] split = value.Split('-');
-            int id = Convert.ToInt32(split[0]);
+            var split = value.Split('-');
+            var id = Convert.ToInt32(split[0]);
             var file = _session.Get<MediaFile>(id);
-            ImageSize imageSize =
+            var imageSize =
                 file.GetSizes(_mediaSettings)
-                    .FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
-            return GetFileLocation(file, imageSize.Size, false);
+                    .FirstOrDefault(size =>
+                        size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
+            return await GetFileLocation(file, imageSize.Size, false);
         }
 
-        public void RemoveFolder(MediaCategory mediaCategory)
+        public async Task RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
-                mediaCategory.UrlSegment);
+            var currentSite = _siteLocator.GetCurrentSite();
+            var folderLocation = $"{currentSite.Id}/{mediaCategory.UrlSegment}/";
 
-            _fileSystem.Delete(folderLocation);
+            var fileSystem = GetFileSystem();
+            await fileSystem.Delete(folderLocation);
         }
 
-        public void CreateFolder(MediaCategory mediaCategory)
+        public async Task CreateFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
-                mediaCategory.UrlSegment);
+            var currentSite = _siteLocator.GetCurrentSite();
+            var folderLocation = $"{currentSite.Id}/{mediaCategory.UrlSegment}/";
 
-            _fileSystem.CreateDirectory(folderLocation);
+            var fileSystem = GetFileSystem();
+            await fileSystem.CreateDirectory(folderLocation);
         }
 
         public bool IsValidFileType(string fileName)
         {
-            string extension = Path.GetExtension(fileName);
+            var extension = Path.GetExtension(fileName);
             if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
                 return false;
             return FileTypeUploadSettings.AllowedFileTypeList.Contains(extension, StringComparer.OrdinalIgnoreCase);
         }
 
-        public void DeleteFileSoft(MediaFile mediaFile)
+        public async Task DeleteFileSoft(int id)
         {
-            if (mediaFile.MediaCategory != null)
-                mediaFile.MediaCategory.Files.Remove(mediaFile);
-            _session.Transact(session => session.Delete(mediaFile));
+            var file = _session.Get<MediaFile>(id);
+            if (file == null)
+                return;
+            file.MediaCategory?.Files.Remove(file);
+            await _session.TransactAsync(session => session.DeleteAsync(file));
         }
 
-        private string GetFileLocation(string fileName, MediaCategory mediaCategory = null)
+        private async Task<string> GetFileLocation(string fileName, MediaCategory mediaCategory = null)
         {
-            string fileNameOriginal = fileName.GetTidyFileName();
+            var fileNameOriginal = fileName.GetTidyFileName();
 
-            string urlSegment = "root";
+            var urlSegment = "root";
             if (mediaCategory != null)
                 urlSegment = mediaCategory.UrlSegment;
 
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id, urlSegment);
+            var currentSite = _siteLocator.GetCurrentSite();
+            var folderLocation = $"{currentSite.Id}/{urlSegment}/";
 
             //check for duplicates
-            int i = 1;
-            while (_fileSystem.Exists(folderLocation + fileName))
+            var i = 1;
+            var fileSystem = GetFileSystem();
+            while (await fileSystem.Exists(folderLocation + fileName))
             {
                 fileName = fileNameOriginal.Replace(Path.GetExtension(fileName), "") + i + Path.GetExtension(fileName);
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Id, urlSegment, fileName);
+            var fileLocation = $"{currentSite.Id}/{urlSegment}/{fileName}";
             return fileLocation;
         }
 
-        protected virtual byte[] LoadFile(string filePath)
+        protected virtual async Task<byte[]> LoadFile(string filePath)
         {
-            if (!_fileSystem.Exists(filePath))
+            var fileSystem = GetFileSystem();
+            if (!await fileSystem.Exists(filePath))
                 return new byte[0];
-            return _fileSystem.ReadAllBytes(filePath);
+            return await fileSystem.ReadAllBytes(filePath);
         }
 
-        public virtual string GetUrl(MediaFile file, Size size, bool getCdnUrl)
+        public virtual async Task<string> GetUrl(MediaFile file, Size size, bool getCdnUrl)
         {
-            return GetCdnUrl(() =>
+            return await GetCdnUrl(async () =>
             {
+                var fileUrl = HttpUtility.UrlDecode(file.FileUrl);
                 if (!file.IsImage())
-                    return file.FileUrl;
+                    return fileUrl;
 
                 //check to see if the image already exists, if it does simply return it
-                string requestedImageFileUrl = ImageProcessor.RequestedImageFileUrl(file, size);
-
-                if (requestedImageFileUrl == file.FileUrl)
-                    return file.FileUrl;
+                var requestedImageFileUrl = ImageProcessor.RequestedFileUrl(fileUrl, file.Size, size);
+                if (requestedImageFileUrl == fileUrl)
+                    return fileUrl;
 
                 // if we've cached the file existing then we're fine
                 IList<ResizedImage> resizedImages =
-                    _session.QueryOver<ResizedImage>().Where(image => image.MediaFile.Id == file.Id).Cacheable().List();
+                    _session.Query<ResizedImage>().Where(image => image.MediaFile.Id == file.Id)
+                        .WithOptions(x => x.SetCacheable(true)).ToList();
                 if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
                     return requestedImageFileUrl;
 
                 // if it exists but isn't cached, we should add it to the cache
-                if (_fileSystem.Exists(requestedImageFileUrl))
+                var fileSystem = GetFileSystem();
+                if (await fileSystem.Exists(requestedImageFileUrl))
                 {
-                    CacheResizedImage(file, requestedImageFileUrl);
+                    await CacheResizedImage(file, requestedImageFileUrl);
                     return requestedImageFileUrl;
                 }
 
                 //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
-                byte[] fileBytes = LoadFile(file.FileUrl);
+                var fileBytes = await LoadFile(fileUrl);
                 if (fileBytes.Length == 0)
                     return "";
 
-                _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedImageFileUrl);
+                await _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedImageFileUrl);
 
                 // we also need to cache the resized image, to save making a request to find it
-                CacheResizedImage(file, requestedImageFileUrl);
+                await CacheResizedImage(file, requestedImageFileUrl);
 
                 return requestedImageFileUrl;
             }, getCdnUrl);
         }
 
-        private string GetCdnUrl(Func<string> func, bool getUrl)
+        private async Task<string> GetCdnUrl(Func<Task<string>> func, bool getUrl)
         {
-            var url = func();
-            var cdnInfo = _fileSystem.CdnInfo;
-            if (!getUrl || cdnInfo == null)
+            var url = await func();
+            var fileSystem = GetFileSystem();
+            var cdnInfo = await fileSystem.GetCdnInfo();
+            if (!getUrl || cdnInfo == null || string.IsNullOrWhiteSpace(url))
                 return url;
 
             var uri = new Uri(url, UriKind.RelativeOrAbsolute);
@@ -285,52 +310,54 @@ namespace MrCMS.Services
             return uriBuilder.Uri.ToString();
         }
 
-        public virtual string GetUrl(Crop crop, Size size, bool getCdnUrl)
+        public virtual async Task<string> GetUrl(Crop crop, Size size, bool getCdnUrl)
         {
-            return GetCdnUrl(() =>
+            return await GetCdnUrl(async () =>
             {
                 //check to see if the image already exists, if it does simply return it
-                string requestedImageFileUrl = ImageProcessor.RequestedResizedCropFileUrl(crop, size);
+                var filePath = HttpUtility.UrlDecode(crop.Url);
+                var requestedImageFileUrl = ImageProcessor.RequestedFileUrl(filePath, crop.Size, size);
 
                 // if we've cached the file existing then we're fine
-                IList<ResizedImage> resizedImages =
+                var resizedImages =
                     _session.QueryOver<ResizedImage>().Where(image => image.Crop.Id == crop.Id).Cacheable().List();
                 if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
                     return requestedImageFileUrl;
 
                 // if it exists but isn't cached, we should add it to the cache
-                if (_fileSystem.Exists(requestedImageFileUrl))
+                var fileSystem = GetFileSystem();
+                if (await fileSystem.Exists(requestedImageFileUrl))
                 {
-                    CacheResizedImage(crop, requestedImageFileUrl);
+                    await CacheResizedImage(crop, requestedImageFileUrl);
                     return requestedImageFileUrl;
                 }
 
                 //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
-                byte[] fileBytes = LoadFile(crop.Url);
+                var fileBytes = await LoadFile(filePath);
                 if (fileBytes.Length == 0)
                     return "";
 
-                _imageProcessor.SaveResizedCrop(crop, size, fileBytes, requestedImageFileUrl);
+                await _imageProcessor.SaveResizedCrop(crop, size, fileBytes, requestedImageFileUrl);
 
                 // we also need to cache the resized image, to save making a request to find it
-                CacheResizedImage(crop, requestedImageFileUrl);
+                await CacheResizedImage(crop, requestedImageFileUrl);
 
                 return requestedImageFileUrl;
             }, getCdnUrl);
         }
 
-        private void CacheResizedImage(MediaFile file, string requestedImageFileUrl)
+        private async Task CacheResizedImage(MediaFile file, string requestedImageFileUrl)
         {
             var resizedImage = new ResizedImage { Url = requestedImageFileUrl, MediaFile = file };
             file.ResizedImages.Add(resizedImage);
-            _session.Transact(session => session.Save(resizedImage));
+            await _session.TransactAsync(session => session.SaveAsync(resizedImage));
         }
 
-        private void CacheResizedImage(Crop crop, string requestedImageFileUrl)
+        private async Task CacheResizedImage(Crop crop, string requestedImageFileUrl)
         {
             var resizedImage = new ResizedImage { Url = requestedImageFileUrl, Crop = crop };
             crop.ResizedImages.Add(resizedImage);
-            _session.Transact(session => session.Save(resizedImage));
+            await _session.TransactAsync(session => session.SaveAsync(resizedImage));
         }
     }
 }

@@ -8,9 +8,6 @@
 
         public object CurrentValue { get; set; }
 
-        public bool AnyChange
-        {
-            get { return !Equals(PreviousValue, CurrentValue); }
-        }
+        public bool AnyChange => !Equals(PreviousValue, CurrentValue);
     }
 }

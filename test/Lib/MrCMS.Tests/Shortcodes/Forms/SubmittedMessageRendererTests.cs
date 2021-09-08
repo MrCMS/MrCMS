@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Shortcodes.Forms;
-using MrCMS.Tests.Stubs;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms

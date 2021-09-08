@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Media;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -19,17 +18,17 @@ namespace MrCMS.Web.Admin.Controllers
             _fileService = fileService;
         }
 
-
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post(int id) 
+        [RequestSizeLimit(500 * 1024 * 1024)] 
+        public async Task<JsonResult> Files_Post(int id)
         {
             var list = new List<ViewDataUploadFilesResult>();
             foreach (var file in Request.Form?.Files ?? new FormFileCollection())
             {
                 if (_fileService.IsValidFileType(file.FileName))
                 {
-                    ViewDataUploadFilesResult dbFile = _fileService.AddFile(file.OpenReadStream(), file.FileName,
+                    ViewDataUploadFilesResult dbFile = await _fileService.AddFile(file.OpenReadStream(), file.FileName,
                         file.ContentType, file.Length, id);
                     list.Add(dbFile);
                 }
@@ -42,49 +41,48 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpPost]
         [ActionName("Delete")]
         //public ActionResult Delete_POST(MediaFile file)
-        public ActionResult Delete_POST(int id)
+        public async Task<ActionResult> Delete_POST(int id)
         {
-            var file = _fileService.GetFile(id);
+            var file = await _fileService.GetFile(id);
             if (file == null)
                 return RedirectToAction("Index", "MediaCategory");
-            
+
             int categoryId = file.MediaCategory.Id;
-            _fileService.DeleteFile(file);
-            return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });
+            await _fileService.DeleteFile(id);
+            return RedirectToAction("Show", "MediaCategory", new {Id = categoryId});
         }
 
         [HttpGet]
-        public ActionResult Delete(MediaFile file)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View("Delete", file);
+            return View("Delete", await _fileService.GetFile(id));
         }
 
         [HttpPost]
-        public string UpdateSEO(UpdateFileSEOModel model)
-            // MediaFile mediaFile, string title, string description)
+        public async Task<string> UpdateSEO(UpdateFileSEOModel model)
         {
             try
             {
-                _fileService.UpdateSEO(model);
+                await _fileService.UpdateSEO(model);
 
                 return "Changes saved";
             }
             catch (Exception ex)
             {
-                return string.Format("There was an error saving the SEO values: {0}", ex.Message);
+                return $"There was an error saving the SEO values: {ex.Message}";
             }
         }
 
-        public ActionResult Edit(int id)    
+        public async Task<ActionResult> Edit(int id)
         {
-            return View("Edit", _fileService.GetEditModel(id));
+            return View("Edit", await _fileService.GetEditModel(id));
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST(UpdateFileSEOModel model) 
+        public async Task<ActionResult> Edit_POST(UpdateFileSEOModel model)
         {
-                var file = _fileService.UpdateSEO(model);
+            var file = await _fileService.UpdateSEO(model);
 
             return file.MediaCategory != null
                 ? RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id})

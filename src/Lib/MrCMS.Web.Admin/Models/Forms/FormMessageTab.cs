@@ -31,14 +31,14 @@ namespace MrCMS.Web.Admin.Models.Forms
             return html.RenderPartialAsync("FormMessage", mapper.Map<FormMessageTabViewModel>(form));
         }
 
-        public override string Name(IServiceProvider serviceProvider, Form entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Form entity)
         {
-            return "Settings";
+            return Task.FromResult("Settings");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Form entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Form entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

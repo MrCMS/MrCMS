@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
 using MrCMS.Services.Resources;
@@ -9,7 +10,7 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
 {
     public interface IGetArticleListOptions
     {
-        IList<SelectListItem> GetOptions();
+        Task<IList<SelectListItem>> GetOptions();
     }
 
     public class GetArticleListOptions : IGetArticleListOptions
@@ -23,14 +24,15 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
             _stringResourceProvider = stringResourceProvider;
         }
 
-        public IList<SelectListItem> GetOptions()
+        public async Task<IList<SelectListItem>> GetOptions()
         {
-            return _session.QueryOver<ArticleList>()
+            var articleLists = await _session.QueryOver<ArticleList>()
                 .OrderBy(list => list.Name)
-                .Asc.Cacheable().List()
+                .Asc.Cacheable().ListAsync();
+            return articleLists
                 .BuildSelectItemList(category => category.Name,
                     category => category.Id.ToString(),
-                    emptyItemText: _stringResourceProvider.GetValue("Select an article list..."));
+                    emptyItemText: await _stringResourceProvider.GetValue("Select an article list..."));
         }
     }
 }

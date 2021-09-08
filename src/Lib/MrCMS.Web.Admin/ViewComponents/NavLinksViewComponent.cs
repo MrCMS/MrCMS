@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.Breadcrumbs;
 using MrCMS.Web.Admin.Services;
 
@@ -8,13 +9,14 @@ namespace MrCMS.Web.Admin.ViewComponents
     {
         private readonly IGetNavigationSitemap _getNavigation;
 
-        public NavLinksViewComponent( IGetNavigationSitemap getNavigation)
+        public NavLinksViewComponent(IGetNavigationSitemap getNavigation)
         {
             _getNavigation = getNavigation;
         }
-        public IViewComponentResult Invoke()
+
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(_getNavigation.GetNavigation());
+            return View(await _getNavigation.GetNavigation());
         }
     }
 }

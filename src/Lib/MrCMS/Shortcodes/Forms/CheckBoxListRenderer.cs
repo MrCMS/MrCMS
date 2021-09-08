@@ -11,37 +11,42 @@ namespace MrCMS.Shortcodes.Forms
     {
         public const string CbHiddenValue = "cb-hidden-value";
 
-        public TagBuilder AppendElement(CheckboxList formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(CheckboxList formProperty, string existingValue,
+            FormRenderingType formRenderingType)
         {
             var values = existingValue == null
-                                ? new List<string>()
-                                : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                                               .Select(s => s.Trim())
-                                               .ToList();
+                ? new List<string>()
+                : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .ToList();
             values.Remove(CbHiddenValue);
 
             var tagBuilder = new TagBuilder("div");
+            tagBuilder.AddCssClass("form-group");
             foreach (var checkbox in formProperty.Options)
             {
                 var cbLabelBuilder = new TagBuilder("label");
-                cbLabelBuilder.Attributes["for"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value,"-");
-                
+                cbLabelBuilder.Attributes["for"] =
+                    TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value, "-");
+
                 var checkboxBuilder = GetCheckbox(formProperty, existingValue, checkbox, values);
                 checkboxBuilder.AddCssClass("form-check-input");
-                
-                cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
+
 
                 if (formRenderingType == FormRenderingType.Bootstrap3)
                 {
+                    cbLabelBuilder.AddCssClass("checkbox-inline");
                     cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+                    cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
 
                     var checkboxContainer = new TagBuilder("div");
                     checkboxContainer.AddCssClass("checkbox");
                     checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
                     tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
-                } 
+                }
                 else if (formRenderingType == FormRenderingType.Bootstrap4)
                 {
+                    cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
                     var checkboxContainer = new TagBuilder("div");
                     cbLabelBuilder.AddCssClass("form-check-label");
                     checkboxContainer.AddCssClass("form-check");
@@ -55,6 +60,7 @@ namespace MrCMS.Shortcodes.Forms
                     tagBuilder.InnerHtml.AppendHtml(cbLabelBuilder);
                 }
             }
+            
 
             var cbHiddenBuilder = new TagBuilder("input");
             cbHiddenBuilder.Attributes["type"] = "hidden";
@@ -65,7 +71,8 @@ namespace MrCMS.Shortcodes.Forms
             return tagBuilder;
         }
 
-        public static TagBuilder GetCheckbox(CheckboxList formProperty, string existingValue, FormListOption checkbox, List<string> values)
+        public static TagBuilder GetCheckbox(CheckboxList formProperty, string existingValue, FormListOption checkbox,
+            List<string> values)
         {
             var checkboxBuilder = new TagBuilder("input");
             checkboxBuilder.Attributes["type"] = "checkbox";
@@ -92,15 +99,17 @@ namespace MrCMS.Shortcodes.Forms
             }
 
             checkboxBuilder.Attributes["name"] = formProperty.Name;
-            checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value, "-");
+            checkboxBuilder.Attributes["id"] =
+                TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value, "-");
             return checkboxBuilder;
         }
 
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue,
+            FormRenderingType formRenderingType)
         {
             return AppendElement(formProperty as CheckboxList, existingValue, formRenderingType);
         }
 
-        public bool IsSelfClosing { get { return false; } }
+        public bool IsSelfClosing => false;
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -18,15 +19,15 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public List<SelectListItem> GetAllRoleOptions()
+        public async Task<List<SelectListItem>> GetAllRoleOptions()
         {
-            var roles = _session.QueryOver<UserRole>().OrderBy(role => role.Name).Asc.Cacheable().List();
+            var roles = await _session.QueryOver<UserRole>().OrderBy(role => role.Name).Asc.Cacheable().ListAsync();
 
             return roles.BuildSelectItemList(role => role.Name, role => role.Id.ToString(), emptyItemText: "Any role");
         }
 
 
-        public IPagedList<User> GetUsersPaged(UserSearchQuery searchQuery)
+        public async Task<IPagedList<User>> GetUsersPaged(UserSearchQuery searchQuery)
         {
             var query = _session.QueryOver<User>();
 
@@ -34,19 +35,19 @@ namespace MrCMS.Services
                 query =
                     query.Where(
                         user =>
-                            user.Email.IsInsensitiveLike(searchQuery.Email, MatchMode.Anywhere));
+                            user.Email.IsInsensitiveLike(searchQuery.Email, MatchMode.End));
 
             if (!string.IsNullOrWhiteSpace(searchQuery.FirstName))
                 query =
                     query.Where(
                         user =>
-                            user.FirstName.IsInsensitiveLike(searchQuery.FirstName, MatchMode.Anywhere));
+                            user.FirstName.IsInsensitiveLike(searchQuery.FirstName, MatchMode.End));
 
             if (!string.IsNullOrWhiteSpace(searchQuery.LastName))
                 query =
                     query.Where(
                         user =>
-                            user.LastName.IsInsensitiveLike(searchQuery.LastName, MatchMode.Anywhere));
+                            user.LastName.IsInsensitiveLike(searchQuery.LastName, MatchMode.End));
 
 
             if (searchQuery.UserRoleId != null)
@@ -55,7 +56,9 @@ namespace MrCMS.Services
                 query = query.JoinAlias(user => user.Roles, () => role).Where(() => role.Id == searchQuery.UserRoleId);
             }
 
-            return query.Paged(searchQuery.Page);
+            query = query.OrderBy(x => x.Id).Desc;
+
+            return await query.PagedAsync(searchQuery.Page);
         }
     }
 }

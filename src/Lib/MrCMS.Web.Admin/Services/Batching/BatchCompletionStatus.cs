@@ -1,5 +1,3 @@
-using System;
-
 namespace MrCMS.Web.Admin.Services.Batching
 {
     public struct BatchCompletionStatus
@@ -11,8 +9,8 @@ namespace MrCMS.Web.Admin.Services.Batching
         public int Succeeded { get; set; }
 
         public string AverageTimeTaken { get; set; }
-        public TimeSpan TimeTaken { get; set; }
-        public TimeSpan EstimatedTimeRemaining { get; set; }
+        public string TimeTaken { get; set; }
+        public string EstimatedTimeRemaining { get; set; }
 
         public string PercentageCompleted
         {

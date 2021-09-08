@@ -1,4 +1,5 @@
-﻿using MrCMS.ACL.Rules;
+﻿using System.Threading.Tasks;
+using MrCMS.ACL.Rules;
 using MrCMS.Services;
 using MrCMS.Settings;
 
@@ -6,7 +7,7 @@ namespace MrCMS.Website.Auth
 {
     public interface IFrontEndEditingChecker
     {
-        bool IsAllowed();
+        Task<bool> IsAllowed();
     }
 
     public class FrontEndEditingChecker : IFrontEndEditingChecker
@@ -22,12 +23,12 @@ namespace MrCMS.Website.Auth
             _siteSettings = siteSettings;
         }
 
-        public bool IsAllowed()
+        public async Task<bool> IsAllowed()
         {
             if (!_siteSettings.EnableInlineEditing)
                 return false;
-            var user = _getCurrentUser.Get();
-            return user != null && _accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show, user);
+            var user = await _getCurrentUser.Get();
+            return user != null && await _accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show, user);
         }
     }
 }

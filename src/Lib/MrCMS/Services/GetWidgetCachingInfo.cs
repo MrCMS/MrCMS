@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Widget;
 using MrCMS.Models;
@@ -13,39 +14,34 @@ namespace MrCMS.Services
         private readonly IGetCurrentUserGuid _getCurrentUserGuid;
         private readonly IRepository<Widget> _repository;
 
-        public GetWidgetCachingInfo(IGetCurrentPage getCurrentPage, IGetCurrentUserGuid getCurrentUserGuid, IRepository<Widget> repository)
+        public GetWidgetCachingInfo(IGetCurrentPage getCurrentPage, IGetCurrentUserGuid getCurrentUserGuid,
+            IRepository<Widget> repository)
         {
             _getCurrentPage = getCurrentPage;
             _getCurrentUserGuid = getCurrentUserGuid;
             _repository = repository;
         }
 
-        public CachingInfo Get(int id)
+        public async Task<CachingInfo> Get(int id)
         {
-            return Get(_repository.Get(id));
+            return await Get(await _repository.Get(id));
         }
 
-        public CachingInfo Get(Widget widget)
+        public async Task<CachingInfo> Get(Widget widget)
         {
-            //using (MiniProfiler.Current.Step("Get caching info"))
+            var attribute = widget?.GetType().GetCustomAttribute<WidgetOutputCacheableAttribute>();
+            if (attribute == null)
             {
-                if (widget == null)
-                {
-                    return CachingInfo.DoNotCache;
-                }
-                var attribute = widget.GetType().GetCustomAttribute<WidgetOutputCacheableAttribute>();
-                if (attribute == null)
-                {
-                    return CachingInfo.DoNotCache;
-                }
-                var shouldCache = widget.Cache && widget.CacheLength > 0;
-                return new CachingInfo(shouldCache, GetCacheKey(widget, attribute),
-                    TimeSpan.FromSeconds(widget.CacheLength),
-                    widget.CacheExpiryType);
+                return CachingInfo.DoNotCache;
             }
+
+            var shouldCache = widget.Cache && widget.CacheLength > 0;
+            return new CachingInfo(shouldCache, await GetCacheKey(widget, attribute),
+                TimeSpan.FromSeconds(widget.CacheLength),
+                widget.CacheExpiryType);
         }
 
-        private string GetCacheKey(Widget widget, WidgetOutputCacheableAttribute attribute)
+        private async Task<string> GetCacheKey(Widget widget, WidgetOutputCacheableAttribute attribute)
         {
             var cacheKey = "Widget." + widget.Id;
             if (attribute.PerPage)
@@ -56,12 +52,13 @@ namespace MrCMS.Services
                     cacheKey += ".Page:" + page.Id;
                 }
             }
+
             if (attribute.PerUser)
             {
-                cacheKey += ".User:" + (_getCurrentUserGuid.Get());
+                cacheKey += ".User:" + (await _getCurrentUserGuid.Get());
             }
+
             return cacheKey;
         }
-
     }
 }

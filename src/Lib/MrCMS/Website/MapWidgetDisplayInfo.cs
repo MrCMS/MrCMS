@@ -1,51 +1,36 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Widget;
 
 namespace MrCMS.Website
 {
     public class MapWidgetDisplayInfo : IMapWidgetDisplayInfo
     {
         private readonly IMapWidgetData _mapWidgetData;
+        private readonly IWidgetLoader _widgetLoader;
 
-        public MapWidgetDisplayInfo(IMapWidgetData mapWidgetData)
+        public MapWidgetDisplayInfo(IMapWidgetData mapWidgetData,
+            IWidgetLoader widgetLoader)
         {
             _mapWidgetData = mapWidgetData;
+            _widgetLoader = widgetLoader;
         }
 
-        public IDictionary<string, WidgetDisplayInfo> MapInfo(IDictionary<LayoutArea, IList<Widget>> widgetData)
+        public async Task<IDictionary<string, WidgetDisplayInfo>> MapInfo(IEnumerable<LayoutArea> layoutAreas)
         {
-            return widgetData.ToDictionary(area => area.Key.AreaName,
-                pair =>
-                {
-                    var area = pair.Key;
-
-                    return new WidgetDisplayInfo
+            var dictionary = new Dictionary<string, WidgetDisplayInfo>();
+            foreach (var area in layoutAreas)
+            {
+                dictionary[area.AreaName] =
+                    new WidgetDisplayInfo
                     {
                         Id = area.Id,
                         Name = area.AreaName,
-                        Widgets = _mapWidgetData.MapData(pair.Value)
+                        Widgets = _mapWidgetData.MapData(await _widgetLoader.GetWidgets(area))
                     };
-                }, StringComparer.OrdinalIgnoreCase);
-        }
+            }
 
-        public IDictionary<string, WidgetDisplayInfo> MapInfo(IEnumerable<LayoutArea> layoutAreas, Webpage webpage)
-        {
-            return layoutAreas.GroupBy(x => x.AreaName, StringComparer.OrdinalIgnoreCase).ToDictionary(area => area.Key,
-                area =>
-                {
-                    var layoutArea = area.First();
-                    return new WidgetDisplayInfo
-                    {
-                        Id = layoutArea.Id,
-                        Name = area.Key,
-                        HasCustomSort = webpage.PageWidgetSorts?.Any(x => x.LayoutArea?.Id == layoutArea.Id) == true,
-                        Widgets = _mapWidgetData.MapData(layoutArea.GetWidgets(webpage))
-                    };
-                }, StringComparer.OrdinalIgnoreCase);
+            return dictionary;
         }
     }
 }

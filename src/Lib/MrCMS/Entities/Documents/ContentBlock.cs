@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.Documents

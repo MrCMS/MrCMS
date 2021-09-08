@@ -1,28 +1,32 @@
+using System;
 using Microsoft.AspNetCore.Identity;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MrCMS.Services
 {
-    public class UserStore : IUserClaimStore<User>,
+    public class UserStore :
+        IUserLockoutStore<User>,
+        IUserClaimStore<User>,
         IUserEmailStore<User>,
+        IUserSecurityStampStore<User>,
         IUserRoleStore<User>,
-        //IUserPasswordStore<User>,
-        // TODO: implement password store
-        //IUserLockoutStore<User>, 
-        // TODO: implement lockout store properly
-        //IUserPhoneNumberStore<User>,
-        // TODO: implement phone number store
+        IUserPasswordStore<User>,
         IQueryableUserStore<User>,
-        IUserLoginStore<User>
+        IUserLoginStore<User>,
+        IUserTwoFactorStore<User>,
+        IUserTwoFactorRecoveryCodeStore<User>,
+        IUserPhoneNumberStore<User>,
+        IUserAuthenticatorKeyStore<User>,
+        IUserAuthenticationTokenStore<User>
     {
         private readonly ISession _session;
 
@@ -30,6 +34,7 @@ namespace MrCMS.Services
         {
             _session = session;
         }
+
         public void Dispose()
         {
         }
@@ -62,17 +67,20 @@ namespace MrCMS.Services
         public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
             await _session.TransactAsync((session, token) => session.SaveAsync(user, token), cancellationToken);
+            // _session.Transact(session => session.Save(user));
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
+            // _session.Transact(session => session.Update(user));
             await _session.TransactAsync((session, token) => session.UpdateAsync(user, token), cancellationToken);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
+            // _session.Transact(session => session.Delete(user));
             await _session.TransactAsync((session, token) => session.DeleteAsync(user, token), cancellationToken);
             return IdentityResult.Success;
         }
@@ -114,19 +122,20 @@ namespace MrCMS.Services
         {
             var userClaims = claims.Select(claim => MapUserClaim(claim, user));
             return _session.TransactAsync(async (session, token) =>
-             {
-                 foreach (var userClaim in userClaims)
-                 {
-                     await session.SaveAsync(userClaim, token);
-                     user.UserClaims.Add(userClaim);
-                 }
-                 await session.UpdateAsync(user, token);
-             }, cancellationToken);
+            {
+                foreach (var userClaim in userClaims)
+                {
+                    await session.SaveAsync(userClaim, token);
+                    user.UserClaims.Add(userClaim);
+                }
+
+                await session.UpdateAsync(user, token);
+            }, cancellationToken);
         }
 
         private static UserClaim MapUserClaim(Claim claim, User user)
         {
-            return new UserClaim
+            return new()
             {
                 Claim = claim.Type,
                 Value = claim.Value,
@@ -151,7 +160,6 @@ namespace MrCMS.Services
 
                 await session.UpdateAsync(user, token);
             }, cancellationToken);
-
         }
 
         public async Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
@@ -170,6 +178,7 @@ namespace MrCMS.Services
                     await session.DeleteAsync(existingUserClaim, token);
                     user.UserClaims.Remove(existingUserClaim);
                 }
+
                 await session.UpdateAsync(user, token);
             }, cancellationToken);
         }
@@ -184,10 +193,10 @@ namespace MrCMS.Services
                 .ToListAsync(cancellationToken);
         }
 
-        public Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
+        public async Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
         {
             user.Email = email;
-            return UpdateAsync(user, cancellationToken);
+            await UpdateAsync(user, cancellationToken);
         }
 
         public Task<string> GetEmailAsync(User user, CancellationToken cancellationToken)
@@ -197,19 +206,18 @@ namespace MrCMS.Services
 
         public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
         {
-            // TODO: implement email confirmed
-            return Task.FromResult(true);
+            return Task.FromResult(user.EmailConfirmed);
         }
 
         public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
         {
-            // TODO: implement email confirmed
+            user.EmailConfirmed = confirmed;
             return Task.CompletedTask;
         }
 
-        public Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
-            return _session.Query<User>().WithOptions(x => x.SetCacheable(true))
+            return await _session.Query<User>().WithOptions(x => x.SetCacheable(true))
                 .FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
         }
 
@@ -232,17 +240,13 @@ namespace MrCMS.Services
                 {
                     user.Roles.Add(role);
                 }
+                //
+                // if (!role.Users.Contains(user))
+                // {
+                //     role.Users.Add(user);
+                // }
 
-                if (!role.Users.Contains(user))
-                {
-                    role.Users.Add(user);
-                }
-
-                await _session.TransactAsync(async (session, token) =>
-                {
-                    await session.UpdateAsync(user, cancellationToken);
-                    await session.UpdateAsync(role, cancellationToken);
-                }, cancellationToken);
+                await _session.TransactAsync((session, token) => session.UpdateAsync(user, token), cancellationToken);
             }
         }
 
@@ -265,26 +269,19 @@ namespace MrCMS.Services
                     user.Roles.Remove(role);
                 }
 
-                if (role.Users.Contains(user))
-                {
-                    role.Users.Remove(user);
-                }
+                // if (role.Users.Contains(user))
+                // {
+                //     role.Users.Remove(user);
+                // }
 
-                await _session.TransactAsync(async (session, token) =>
-                {
-                    await session.UpdateAsync(user, cancellationToken);
-                    await session.UpdateAsync(role, cancellationToken);
-                }, cancellationToken);
+                await _session.TransactAsync((session, token) => session.UpdateAsync(user, token), cancellationToken);
             }
-
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
+        public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
-            return user.Roles.Select(x => x.Name).ToList();
+            return Task.FromResult<IList<string>>(user.Roles.Select(x => x.Name).ToList());
         }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
@@ -298,78 +295,8 @@ namespace MrCMS.Services
             return role.Users.ToList();
         }
 
-        //public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
-        //{
-        //    user.PasswordHash 
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task SetLockoutEndDateAsync(User user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<int> IncrementAccessFailedCountAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task ResetAccessFailedCountAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<int> GetAccessFailedCountAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<bool> GetLockoutEnabledAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task SetLockoutEnabledAsync(User user, bool enabled, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task SetPhoneNumberAsync(User user, string phoneNumber, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<string> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<bool> GetPhoneNumberConfirmedAsync(User user, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task SetPhoneNumberConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public IQueryable<User> Users => _session.Query<User>().WithOptions(x => x.SetCacheable(true));
+
         public async Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken)
         {
             var userLogin = new UserLogin
@@ -385,20 +312,20 @@ namespace MrCMS.Services
                 await session.SaveAsync(userLogin, token);
                 await session.UpdateAsync(user, token);
             }, cancellationToken);
-
         }
 
-        public async Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public async Task RemoveLoginAsync(User user, string loginProvider, string providerKey,
+            CancellationToken cancellationToken)
         {
             UserLogin userLogin =
                 user.UserLogins.FirstOrDefault(l => l.ProviderKey == providerKey && l.LoginProvider == loginProvider);
             if (userLogin != null)
             {
+                user.UserLogins.Remove(userLogin);
                 await _session.TransactAsync(async (session, token) =>
                 {
-                    user.UserLogins.Remove(userLogin);
-                    await session.DeleteAsync(userLogin, cancellationToken);
-                    await session.UpdateAsync(user, cancellationToken);
+                    await session.DeleteAsync(userLogin, token);
+                    await session.UpdateAsync(user, token);
                 }, cancellationToken);
             }
         }
@@ -412,15 +339,211 @@ namespace MrCMS.Services
             return Task.FromResult(list);
         }
 
-        public Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public Task<User> FindByLoginAsync(string loginProvider, string providerKey,
+            CancellationToken cancellationToken)
         {
             return _session.Query<UserLogin>()
-                    .Where(
-                        userLogin =>
-                            userLogin.ProviderKey == providerKey &&
-                            userLogin.LoginProvider == loginProvider)
-                    .Select(x => x.User)
-                    .FirstOrDefaultAsync(cancellationToken);
+                .Where(
+                    userLogin =>
+                        userLogin.ProviderKey == providerKey &&
+                        userLogin.LoginProvider == loginProvider)
+                .Select(x => x.User)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
+        {
+            user.PasswordHash = Encoding.UTF8.GetBytes(passwordHash);
+            user.PasswordSalt = null;
+            user.CurrentEncryption = "IdentityV3";
+            return Task.CompletedTask;
+        }
+
+        public async Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+        {
+            if (await HasPasswordAsync(user, cancellationToken))
+                return Encoding.UTF8.GetString(user.PasswordHash);
+            return null;
+        }
+
+        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user?.PasswordHash?.Any() == true);
+        }
+
+        public Task SetTwoFactorEnabledAsync(User user, bool enabled, CancellationToken cancellationToken)
+        {
+            user.TwoFactorAuthEnabled = enabled;
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> GetTwoFactorEnabledAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.TwoFactorAuthEnabled);
+        }
+
+        public Task ReplaceCodesAsync(User user, IEnumerable<string> recoveryCodes,
+            CancellationToken cancellationToken)
+        {
+            user.TwoFactorRecoveryCodes = string.Join(";", recoveryCodes);
+            return Task.CompletedTask;
+        }
+
+        public async Task<bool> RedeemCodeAsync(User user, string code, CancellationToken cancellationToken)
+        {
+            var codes = GetUserCodes(user);
+            var matchingCode = codes.FirstOrDefault(existingCode =>
+                string.Equals(code, existingCode, StringComparison.OrdinalIgnoreCase));
+            if (matchingCode == null)
+                return false;
+            codes.Remove(matchingCode);
+            await ReplaceCodesAsync(user, codes, cancellationToken);
+            return true;
+        }
+
+        private static List<string> GetUserCodes(User user)
+        {
+            var codes = (user.TwoFactorRecoveryCodes ?? string.Empty).Split(";").ToList();
+            return codes;
+        }
+
+        public Task<int> CountCodesAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(GetUserCodes(user).Count);
+        }
+
+        public Task SetPhoneNumberAsync(User user, string phoneNumber, CancellationToken cancellationToken)
+        {
+            user.PhoneNumber = phoneNumber;
+            return Task.CompletedTask;
+        }
+
+        public Task<string> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.PhoneNumber);
+        }
+
+        public Task<bool> GetPhoneNumberConfirmedAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.PhoneNumberConfirmed);
+        }
+
+        public Task SetPhoneNumberConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
+        {
+            user.PhoneNumberConfirmed = confirmed;
+            return Task.CompletedTask;
+        }
+
+        public Task SetAuthenticatorKeyAsync(User user, string key, CancellationToken cancellationToken)
+        {
+            user.AuthenticatorKey = key;
+            return Task.CompletedTask;
+        }
+
+        public Task<string> GetAuthenticatorKeyAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.AuthenticatorKey);
+        }
+
+        public Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.LockoutEndDate);
+        }
+
+        public Task SetLockoutEndDateAsync(User user, DateTimeOffset? lockoutEnd,
+            CancellationToken cancellationToken)
+        {
+            user.LockoutEndDate = lockoutEnd;
+            return Task.CompletedTask;
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(User user, CancellationToken cancellationToken)
+        {
+            var newAmount = user.AccessFailedCount + 1;
+            user.AccessFailedCount = newAmount;
+            return Task.FromResult(newAmount);
+        }
+
+        public Task ResetAccessFailedCountAsync(User user, CancellationToken cancellationToken)
+        {
+            user.AccessFailedCount = 0;
+            return Task.CompletedTask;
+        }
+
+        public Task<int> GetAccessFailedCountAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.AccessFailedCount);
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.LockoutEnabled);
+        }
+
+        public Task SetLockoutEnabledAsync(User user, bool enabled, CancellationToken cancellationToken)
+        {
+            user.LockoutEnabled = enabled;
+            return Task.CompletedTask;
+        }
+
+        public async Task SetTokenAsync(User user, string loginProvider, string name, string value,
+            CancellationToken cancellationToken)
+        {
+            await _session.TransactAsync(async (session, token) =>
+            {
+                var existingToken = GetExistingToken(user, loginProvider, name);
+                if (existingToken != null)
+                {
+                    user.UserTokens.Remove(existingToken);
+                    await session.DeleteAsync(existingToken, token);
+                }
+
+                var userToken = new UserToken
+                {
+                    User = user,
+                    Name = name,
+                    Value = value,
+                    LoginProvider = loginProvider
+                };
+                user.UserTokens.Add(userToken);
+                await session.SaveAsync(userToken, token);
+            }, cancellationToken);
+        }
+
+        private static UserToken GetExistingToken(User user, string loginProvider, string name)
+        {
+            return user.UserTokens.FirstOrDefault(x => x.LoginProvider == loginProvider && x.Name == name);
+        }
+
+        public async Task RemoveTokenAsync(User user, string loginProvider, string name,
+            CancellationToken cancellationToken)
+        {
+            await _session.TransactAsync(async (session, token) =>
+            {
+                var existingToken = GetExistingToken(user, loginProvider, name);
+                if (existingToken == null)
+                    return;
+                user.UserTokens.Remove(existingToken);
+                await session.DeleteAsync(existingToken, token);
+            }, cancellationToken);
+        }
+
+        public Task<string> GetTokenAsync(User user, string loginProvider, string name,
+            CancellationToken cancellationToken)
+        {
+            var existingToken = GetExistingToken(user, loginProvider, name);
+            return Task.FromResult(existingToken?.Value);
+        }
+
+        public Task SetSecurityStampAsync(User user, string stamp, CancellationToken cancellationToken)
+        {
+            user.SecurityStamp = stamp;
+            return Task.CompletedTask;
+        }
+
+        public Task<string> GetSecurityStampAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.SecurityStamp ?? string.Empty);
         }
     }
 }

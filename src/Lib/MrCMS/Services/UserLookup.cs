@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Principal;
-using System.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
 using MrCMS.Website;
@@ -15,61 +15,66 @@ namespace MrCMS.Services
         private readonly IGetDateTimeNow _getDateTimeNow;
         private readonly ISession _session;
 
-        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources, IGetDateTimeNow getDateTimeNow)
+        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources,
+            IGetDateTimeNow getDateTimeNow)
         {
             _session = session;
             _externalUserSources = externalUserSources;
             _getDateTimeNow = getDateTimeNow;
         }
 
-        public User GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
             var trimmedEmail = (email ?? string.Empty).Trim();
             var user =
-                _session.QueryOver<User>().Where(u => u.Email == trimmedEmail).Take(1).Cacheable().SingleOrDefault();
+                await _session.QueryOver<User>().Where(u => u.Email == trimmedEmail).Take(1).Cacheable()
+                    .SingleOrDefaultAsync();
             if (user != null)
                 return user;
 
+            //todo is this still required? Test external user auth with aspnetcore.Identity
             foreach (var source in _externalUserSources)
             {
-                user = source.SynchroniseUser(email);
+                user = await source.SynchroniseUser(email);
                 if (user != null)
                     return user;
             }
+
             return null;
         }
 
-        public User GetUserByResetGuid(Guid resetGuid)
+        //todo is this still required?
+        public async Task<User> GetUserByResetGuid(Guid resetGuid)
         {
-            return
+            return await
                 _session.QueryOver<User>()
                     .Where(
                         user =>
                             user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= _getDateTimeNow.UtcNow)
-                    .Cacheable().SingleOrDefault();
+                    .Cacheable().SingleOrDefaultAsync();
         }
 
-        public User GetUserByGuid(Guid guid)
+        public async Task<User> GetUserByGuid(Guid guid)
         {
-            return _session.QueryOver<User>()
-                    .Where(user => user.Guid == guid)
-                    .Cacheable().SingleOrDefault();
+            return await _session.QueryOver<User>()
+                .Where(user => user.Guid == guid)
+                .Cacheable().SingleOrDefaultAsync();
         }
 
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            return _session.Get<User>(id);
+            return await _session.GetAsync<User>(id);
         }
 
-        public User GetCurrentUser(HttpContext context)
+        public async Task<User> GetCurrentUser(HttpContext context)
         {
-            return GetCurrentUser(context?.User);
+            return await GetCurrentUser(context?.User);
         }
 
-        public User GetCurrentUser(IPrincipal principal)
+        public async Task<User> GetCurrentUser(IPrincipal principal)
         {
-            return principal!= null && !string.IsNullOrWhiteSpace(principal.Identity.Name)
-                ? GetUserByEmail(principal.Identity.Name)
+            return principal != null && !string.IsNullOrWhiteSpace(principal.Identity.Name)
+                ? await GetUserByEmail(principal.Identity.Name)
                 : null;
         }
     }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
-using MrCMS.DbConfiguration.Configuration;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -22,20 +21,11 @@ namespace MrCMS.Entities.Documents.Media
         [StringLength(450)]
         public virtual string Url { get; set; }
 
-        public virtual Size Size
-        {
-            get { return new Size(Width, Height); }
-        }
+        public virtual Size Size => new Size(Width, Height);
 
-        public virtual int Width
-        {
-            get { return Math.Max(Right - Left, 0); }
-        }
+        public virtual int Width => Math.Max(Right - Left, 0);
 
-        public virtual int Height
-        {
-            get { return Math.Max(Bottom - Top, 0); }
-        }
+        public virtual int Height => Math.Max(Bottom - Top, 0);
 
         public virtual string Title
         {

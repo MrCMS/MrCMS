@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
@@ -43,24 +44,25 @@ namespace MrCMS.Web.Admin.Services
             _mapper = mapper;
         }
 
-        public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            int mediaCategoryId)
+        public async Task<ViewDataUploadFilesResult> AddFile(Stream stream, string fileName, string contentType,
+            long contentLength,
+            int? mediaCategoryId)
         {
-            MediaFile mediaFile = _fileService.AddFile(stream, fileName, contentType, contentLength,
-                _session.Get<MediaCategory>(mediaCategoryId));
+            MediaFile mediaFile = await _fileService.AddFile(stream, fileName, contentType, contentLength,
+                mediaCategoryId.HasValue ? await _session.GetAsync<MediaCategory>(mediaCategoryId) : null);
             return mediaFile.GetUploadFilesResult();
         }
 
-        public void DeleteFile(MediaFile mediaFile)
+        public async Task DeleteFile(int id)
         {
-            _fileService.DeleteFile(mediaFile);
+            await _fileService.DeleteFile(id);
         }
 
-        public MediaFile UpdateSEO(UpdateFileSEOModel model)
+        public async Task<MediaFile> UpdateSEO(UpdateFileSEOModel model)
         {
-            var file = _session.Get<MediaFile>(model.Id);
+            var file = await _session.GetAsync<MediaFile>(model.Id);
             _mapper.Map(model, file);
-            _fileService.SaveFile(file);
+            await _fileService.SaveFile(file);
             return file;
         }
 
@@ -69,7 +71,7 @@ namespace MrCMS.Web.Admin.Services
             return _fileService.IsValidFileType(fileName);
         }
 
-        public IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel)
+        public async Task<IPagedList<MediaFile>> GetFilesForFolder(MediaCategorySearchModel searchModel)
         {
             IQueryOver<MediaFile, MediaFile> query = _session.QueryOver<MediaFile>();
             query = searchModel.Id.HasValue
@@ -83,14 +85,15 @@ namespace MrCMS.Web.Admin.Services
                     file.Title.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere)
                     ||
                     file.Description.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere)
-                    );
+                );
             }
+
             query = query.OrderBy(searchModel.SortBy);
 
-            return query.Paged(searchModel.Page, _mediaSettings.MediaPageSize);
+            return await query.PagedAsync(searchModel.Page, _mediaSettings.MediaPageSize);
         }
 
-        public List<ImageSortItem> GetFilesToSort(MediaCategory category = null)
+        public async Task<IList<ImageSortItem>> GetFilesToSort(MediaCategory category = null)
         {
             IQueryOver<MediaFile, MediaFile> query = _session.QueryOver<MediaFile>();
             query = category != null
@@ -99,7 +102,7 @@ namespace MrCMS.Web.Admin.Services
             query = query.OrderBy(x => x.DisplayOrder).Asc;
 
             ImageSortItem item = null;
-            return query.SelectList(builder =>
+            return (await query.SelectList(builder =>
                 {
                     builder.Select(file => file.FileName).WithAlias(() => item.Name);
                     builder.Select(file => file.Id).WithAlias(() => item.Id);
@@ -109,22 +112,24 @@ namespace MrCMS.Web.Admin.Services
                     return builder;
                 }).TransformUsing(Transformers.AliasToBean<ImageSortItem>())
                 .Cacheable()
-                .List<ImageSortItem>().ToList();
+                .ListAsync<ImageSortItem>());
         }
 
 
-
-        public void SetOrders(List<SortItem> items)
+        public async Task SetOrders(List<SortItem> items)
         {
-            _session.Transact(session => items.ForEach(item =>
+            await _session.TransactAsync(async session =>
             {
-                var mediaFile = session.Get<MediaFile>(item.Id);
-                mediaFile.DisplayOrder = item.Order;
-                session.Update(mediaFile);
-            }));
+                foreach (var item in items)
+                {
+                    var mediaFile = await session.GetAsync<MediaFile>(item.Id);
+                    mediaFile.DisplayOrder = item.Order;
+                    await session.UpdateAsync(mediaFile);
+                }
+            });
         }
 
-        public IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel)
+        public async Task<IList<MediaCategory>> GetSubFolders(MediaCategorySearchModel searchModel)
         {
             IQueryOver<MediaCategory, MediaCategory> queryOver =
                 _session.QueryOver<MediaCategory>().Where(x => !x.HideInAdminNav);
@@ -140,81 +145,90 @@ namespace MrCMS.Web.Admin.Services
 
             queryOver = queryOver.OrderBy(searchModel.SortBy);
 
-            return queryOver.Cacheable().List();
+            return await queryOver.Cacheable().ListAsync();
         }
 
-        public UpdateFileSEOModel GetEditModel(int id)
+        public async Task<UpdateFileSEOModel> GetEditModel(int id)
         {
-            var file = _session.Get<MediaFile>(id);
+            var file = await _session.GetAsync<MediaFile>(id);
 
             return _mapper.Map<UpdateFileSEOModel>(file);
         }
 
 
-        public string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null)
+        public async Task<string> MoveFolders(IEnumerable<int> folderIds, int? parentId = null)
         {
             string message = string.Empty;
-            if (folders != null)
+            if (folderIds != null)
             {
-                _session.Transact(s => folders.ForEach(item =>
+                await _session.TransactAsync(async session =>
                 {
-                    var mediaFolder = s.Get<MediaCategory>(item.Id);
-                    if (parent != null && mediaFolder.Id != parent.Id)
+                    foreach (var item in folderIds)
                     {
-                        mediaFolder.Parent = parent;
-                        s.Update(mediaFolder);
+                        var mediaFolder = await session.GetAsync<MediaCategory>(item);
+                        if (parentId != null && mediaFolder.Id != parentId)
+                        {
+                            mediaFolder.Parent = _session.Get<MediaCategory>(parentId.Value);
+                            await session.UpdateAsync(mediaFolder);
+                        }
+                        else if (parentId == null)
+                        {
+                            mediaFolder.Parent = null;
+                            await session.UpdateAsync(mediaFolder);
+                        }
+                        else
+                        {
+                            message = await _stringResourceProvider.GetValue("Cannot move folder to the same folder");
+                        }
                     }
-                    else if (parent == null)
-                    {
-                        mediaFolder.Parent = null;
-                        s.Update(mediaFolder);
-                    }
-                    else
-                    {
-                        message = _stringResourceProvider.GetValue("Cannot move folder to the same folder");
-                    }
-                }));
+                });
             }
+
             return message;
         }
 
-        public void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null)
+        public async Task MoveFiles(IEnumerable<int> files, int? parentId = null)
         {
             if (files != null)
             {
-                _session.Transact(session => files.ForEach(item =>
+                await _session.TransactAsync(async session =>
                 {
-                    var mediaFile = session.Get<MediaFile>(item.Id);
-                    mediaFile.MediaCategory = parent;
-                    session.Update(mediaFile);
-                }));
-            }
-        }
-
-        public void DeleteFoldersSoft(IEnumerable<MediaCategory> folders)
-        {
-            if (folders != null)
-            {
-                IEnumerable<MediaCategory> foldersRecursive = GetFoldersRecursive(folders);
-                _mediaCategoryRepository.Transact(repository =>
-                {
-                    foreach (MediaCategory f in foldersRecursive)
+                    foreach (var item in files)
                     {
-                        var folder = repository.Get(f.Id);
-                        List<MediaFile> files = folder.Files.ToList();
-                        foreach (MediaFile file in files)
-                            _fileService.DeleteFileSoft(file);
-
-                        repository.Delete(folder);
+                        var mediaFile = await session.GetAsync<MediaFile>(item);
+                        mediaFile.MediaCategory = parentId.HasValue ? _session.Get<MediaCategory>(parentId) : null;
+                        await session.UpdateAsync(mediaFile);
                     }
                 });
             }
         }
 
-        public MediaCategory GetCategory(MediaCategorySearchModel searchModel)
+        public async Task DeleteFoldersSoft(IEnumerable<int> folderIds)
+        {
+            if (folderIds != null)
+            {
+                var ids = folderIds.ToList();
+                var folders = await _session.Query<MediaCategory>().Where(x => ids.Contains(x.Id)).ToListAsync();
+                var foldersRecursive = await GetFoldersRecursive(folders);
+                await _mediaCategoryRepository.TransactAsync(async repository =>
+                {
+                    foreach (var f in foldersRecursive)
+                    {
+                        var folder = await repository.Get(f.Id);
+                        var files = folder.Files.ToList();
+                        foreach (var file in files)
+                            await _fileService.DeleteFileSoft(file.Id);
+
+                        await repository.Delete(folder);
+                    }
+                });
+            }
+        }
+
+        public async Task<MediaCategory> GetCategory(MediaCategorySearchModel searchModel)
         {
             return searchModel.Id.HasValue
-                ? _session.Get<MediaCategory>(searchModel.Id.Value)
+                ? await _session.GetAsync<MediaCategory>(searchModel.Id.Value)
                 : null;
         }
 
@@ -223,39 +237,40 @@ namespace MrCMS.Web.Admin.Services
             return EnumHelper<MediaCategorySortMethod>.GetOptions();
         }
 
-        public MediaFile GetFile(int id)
+        public async Task<MediaFile> GetFile(int id)
         {
-            return _session.Get<MediaFile>(id);
+            return await _session.GetAsync<MediaFile>(id);
         }
 
-        public void DeleteFilesSoft(IEnumerable<MediaFile> files)
+        public async Task DeleteFilesSoft(IEnumerable<int> fileIds)
         {
-            if (files != null)
+            if (fileIds != null)
             {
-                foreach (MediaFile file in files)
-                    _fileService.DeleteFileSoft(file);
+                foreach (int file in fileIds)
+                    await _fileService.DeleteFileSoft(file);
             }
         }
 
-        public void DeleteFilesHard(IEnumerable<MediaFile> files)
+        public async Task DeleteFilesHard(IEnumerable<int> fileIds)
         {
-            if (files != null)
+            if (fileIds != null)
             {
-                foreach (MediaFile file in files)
-                    _fileService.DeleteFile(file);
+                foreach (int file in fileIds)
+                    await _fileService.DeleteFile(file);
             }
         }
 
-        private IEnumerable<MediaCategory> GetFoldersRecursive(IEnumerable<MediaCategory> categories)
+        private async Task<IReadOnlyList<MediaCategory>> GetFoldersRecursive(IEnumerable<MediaCategory> categories)
         {
+            var list = new List<MediaCategory>();
             foreach (MediaCategory category in categories)
             {
-                foreach (MediaCategory child in GetFoldersRecursive(_getDocumentsByParent.GetDocuments(category)))
-                {
-                    yield return child;
-                }
-                yield return category;
+                list.AddRange(await GetFoldersRecursive(await _getDocumentsByParent.GetDocuments(category)));
+
+                list.Add(category);
             }
+
+            return list;
         }
     }
 }

@@ -1,36 +1,74 @@
+using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Installation.Services;
 using MrCMS.Website.PushNotifications;
 
 namespace MrCMS.Website.Controllers
 {
     public class PushNotificationSubscriptionsController : MrCMSUIController
     {
-        private readonly IPushNotificationSubscriptionManager _manager;
+        private readonly IServiceProvider _serviceProvider;
 
-        public PushNotificationSubscriptionsController(IPushNotificationSubscriptionManager manager)
+        public PushNotificationSubscriptionsController(
+            IServiceProvider serviceProvider
+            )
         {
-            _manager = manager;
+            _serviceProvider = serviceProvider;
+        }
+
+        public IPushNotificationSubscriptionManager Manager
+        {
+            get
+            {
+                var installed = _serviceProvider.GetRequiredService<IDatabaseCreationService>().IsDatabaseInstalled();
+                if (!installed)
+                    return NullManager;
+                return _serviceProvider.GetRequiredService<IPushNotificationSubscriptionManager>();
+            }
+        }
+
+        private static readonly IPushNotificationSubscriptionManager NullManager = new NullPushNotificationSubscriptionManager();
+
+        private class NullPushNotificationSubscriptionManager : IPushNotificationSubscriptionManager
+        {
+            public async Task<WebPushResult> CreateOrUpdateSubscription(PushNotificationSubscription subscription)
+            {
+                return new WebPushResult();
+            }
+
+            public async Task<WebPushResult> RemoveSubscription(string endpoint)
+            {
+                return new WebPushResult();
+            }
+
+            public async Task<string> GetServiceWorkerJavaScript()
+            {
+                return string.Empty;
+            }
         }
 
         [HttpGet("sw.js")]
-        public ContentResult ServiceWorkerJavaScript()
+        [Route("sw.js")]
+        public async Task<ContentResult> ServiceWorkerJavaScript()
         {
-            return Content(_manager.GetServiceWorkerJavaScript(), "text/javascript");
+            return Content(await Manager.GetServiceWorkerJavaScript(), "text/javascript");
         }
 
         [HttpPost("push-notifications")]
-        public IActionResult Create([FromBody] PushNotificationSubscription subscription)
+        public async Task<IActionResult> Create([FromBody] PushNotificationSubscription subscription)
         {
-            var result = _manager.CreateSubscription(subscription);
+            var result = await Manager.CreateOrUpdateSubscription(subscription);
 
             return GetResult(result);
         }
 
         [HttpDelete("push-notifications")]
-        public IActionResult Delete(string endpoint)
+        public async Task<IActionResult> Delete(string endpoint)
         {
-            var result = _manager.RemoveSubscription(endpoint);
+            var result = await Manager.RemoveSubscription(endpoint);
 
             return GetResult(result);
         }

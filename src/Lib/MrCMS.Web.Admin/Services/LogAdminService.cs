@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Logging;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using X.PagedList;
+using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -23,76 +22,74 @@ namespace MrCMS.Web.Admin.Services
         }
 
 
-        public void DeleteAllLogs()
+        public async Task DeleteAllLogs()
         {
             // we need to load these as the hql version doesn't remove from the queries and throws
             var logs = _session.Query<Log>().ToList();
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
-                logs.ForEach(session.Delete);
+                foreach (var log in logs)
+                {
+                    await session.DeleteAsync(log);
+                }
             });
         }
 
-        public void DeleteLog(int id)
+        public async Task DeleteLog(int id)
         {
-            _session.Transact(session => session.Delete(session.Get<Log>(id)));
+            await _session.TransactAsync(async session => await session.DeleteAsync(await session.GetAsync<Log>(id)));
         }
 
-        public List<SelectListItem> GetSiteOptions()
+        public async Task<List<SelectListItem>> GetSiteOptions()
         {
-            IList<Site> sites = _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.List();
-            return sites.Count == 1
-                ? new List<SelectListItem>()
-                : sites
-                    .BuildSelectItemList(site => site.Name, site => site.Id.ToString(),
-                        emptyItemText: "All sites");
+            IList<Site> sites = await _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.ListAsync();
+            return sites
+                .BuildSelectItemList(site => site.Name, site => site.Id.ToString(),
+                    emptyItemText: "All sites");
         }
 
-        public IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery)
+        public async Task<Log> Get(int id)
         {
-            using (new SiteFilterDisabler(_session))
+            return await _session.GetAsync<Log>(id);
+        }
+
+        public Task<IPagedList<Log>> GetEntriesPaged(LogSearchQuery searchQuery)
+        {
+            IQueryOver<Log, Log> query = BaseQuery();
+            if (searchQuery.Type.HasValue)
             {
-                IQueryOver<Log, Log> query = BaseQuery();
-                if (searchQuery.Type.HasValue)
-                {
-                    query = query.Where(log => log.Type == searchQuery.Type);
-                }
-
-                if (!string.IsNullOrWhiteSpace(searchQuery.Message))
-                {
-                    query =
-                        query.Where(
-                            log =>
-                                log.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
-                }
-
-                if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
-                {
-                    query = query.Where(log => log.Detail.IsInsensitiveLike(searchQuery.Detail, MatchMode.Anywhere));
-                }
-
-                if (searchQuery.SiteId.HasValue)
-                {
-                    query = query.Where(log => log.Site.Id == searchQuery.SiteId);
-                }
-
-                if (searchQuery.From.HasValue)
-                {
-                    query = query.Where(log => log.CreatedOn >= searchQuery.From);
-                }
-
-                if (searchQuery.To.HasValue)
-                {
-                    query = query.Where(log => log.CreatedOn <= searchQuery.To);
-                }
-
-                return query.Paged(searchQuery.Page);
+                query = query.Where(log => log.Type == searchQuery.Type);
             }
-        }
 
-        public IList<Log> GetAllLogEntries()
-        {
-            return BaseQuery().Cacheable().List();
+            if (!string.IsNullOrWhiteSpace(searchQuery.Message))
+            {
+                query =
+                    query.Where(
+                        log =>
+                            log.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
+            {
+                query = query.Where(log => log.Detail.IsInsensitiveLike(searchQuery.Detail, MatchMode.Anywhere));
+            }
+
+            if (searchQuery.SiteId.HasValue)
+            {
+                query = query.Where(log => log.Site.Id == searchQuery.SiteId);
+            }
+
+            if (searchQuery.From.HasValue)
+            {
+                query = query.Where(log => log.CreatedOn >= searchQuery.From);
+            }
+
+            if (searchQuery.To.HasValue)
+            {
+                query = query.Where(log => log.CreatedOn <= searchQuery.To);
+            }
+
+            return query.PagedAsync(searchQuery.Page);
         }
 
         private IQueryOver<Log, Log> BaseQuery()

@@ -12,15 +12,9 @@ namespace MrCMS.Helpers
         public TreeNode<T> Parent { get; set; }
         public ICollection<TreeNode<T>> Children { get; set; }
 
-        public Boolean IsRoot
-        {
-            get { return Parent == null; }
-        }
+        public Boolean IsRoot => Parent == null;
 
-        public Boolean IsLeaf
-        {
-            get { return Children.Count == 0; }
-        }
+        public Boolean IsLeaf => Children.Count == 0;
 
         public int Level
         {

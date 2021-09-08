@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Services
@@ -16,10 +17,10 @@ namespace MrCMS.Services
             _userManagementService = userManagementService;
         }
 
-        public void UpdateEncryption(User user, string password)
+        public async Task UpdateEncryption(User user, string password)
         {
             SetPassword(user, password);
-            _userManagementService.SaveUser(user);
+            await _userManagementService.SaveUser(user);
         }
 
         public virtual void SetPassword(User user, string password)

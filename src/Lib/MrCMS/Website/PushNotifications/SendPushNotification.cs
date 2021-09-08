@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using NHibernate.Linq;
 using WebPush;
 using PushSubscription = MrCMS.Entities.People.PushSubscription;
 
@@ -22,16 +24,17 @@ namespace MrCMS.Website.PushNotifications
         private readonly ICreateBatch _createBatch;
         private readonly IControlBatchRun _controlBatchRun;
 
-        public SendPushNotification(IUrlHelper urlHelper, IGetWebPushSettings getSettings, ISession session, ICreateBatch createBatch, IControlBatchRun controlBatchRun)
+        public SendPushNotification(IUrlHelper urlHelper, IGetWebPushSettings getSettings, ISession session,
+            ICreateBatch createBatch, IControlBatchRun controlBatchRun)
         {
             _urlHelper = urlHelper;
             _session = session;
             _createBatch = createBatch;
             _controlBatchRun = controlBatchRun;
-            _settings = getSettings.GetSettings();
+            _settings = getSettings.GetSettings().GetAwaiter().GetResult();
         }
 
-        public WebPushResult SendNotification(PushSubscription subscription, PushNotification notification)
+        public async Task<WebPushResult> SendNotification(PushSubscription subscription, PushNotification notification)
         {
             var vapidDetails = new VapidDetails(_settings.VapidSubject, _settings.VapidPublicKey,
                 _settings.VapidPrivateKey);
@@ -42,12 +45,12 @@ namespace MrCMS.Website.PushNotifications
 
             try
             {
-                webPushClient.SendNotification(ToWebPushNotification(subscription),
+                await webPushClient.SendNotificationAsync(ToWebPushNotification(subscription),
                     JsonConvert.SerializeObject(GetPayload(notification)), vapidDetails);
 
                 if (_settings.LogNotifications)
                 {
-                    _session.Transact(session => session.Save(new PushNotificationLog
+                    await _session.TransactAsync(session => session.SaveAsync(new PushNotificationLog
                     {
                         PushNotification = notification,
                         PushSubscription = subscription
@@ -57,40 +60,40 @@ namespace MrCMS.Website.PushNotifications
             catch (WebPushException exception)
             {
                 var statusCode = exception.StatusCode;
-                return new WebPushResult { StatusCode = statusCode };
+                return new WebPushResult {StatusCode = statusCode};
             }
 
             return new WebPushResult();
         }
 
-        public WebPushResult SendNotification(SendPushNotificationData data)
+        public async Task<WebPushResult> SendNotification(SendPushNotificationData data)
         {
-            PushSubscription subscription = _session.Get<PushSubscription>(data.SubscriptionId);
-            PushNotification notification = _session.Get<PushNotification>(data.NotificationId);
+            PushSubscription subscription = await _session.GetAsync<PushSubscription>(data.SubscriptionId);
+            PushNotification notification = await _session.GetAsync<PushNotification>(data.NotificationId);
 
             if (subscription == null || notification == null)
             {
-                return new WebPushResult { StatusCode = HttpStatusCode.BadRequest };
+                return new WebPushResult {StatusCode = HttpStatusCode.BadRequest};
             }
 
-            return SendNotification(subscription, notification);
+            return await SendNotification(subscription, notification);
         }
 
-        public WebPushResult SendNotification(PushSubscription subscription, string body,
+        public async Task<WebPushResult> SendNotification(PushSubscription subscription, string body,
             string url = null, string title = null,
-            string icon = null, string badge = null)
+            string icon = null, string badge = null, string image = null)
         {
-            var payload = GetPayload(body, url, title, icon, badge);
+            var payload = GetPayload(body, url, title, icon, badge, image);
 
-            var notification = CreatePushNotificationEntity(payload);
+            var notification = await CreatePushNotificationEntity(payload);
 
-            return SendNotification(subscription, notification);
+            return await SendNotification(subscription, notification);
         }
 
-        private PushNotification CreatePushNotificationEntity(PushNotificationPayload payload)
+        private async Task<PushNotification> CreatePushNotificationEntity(PushNotificationPayload payload)
         {
             var notification = GetNotification(payload);
-            _session.Transact(session => session.Save(notification));
+            await _session.TransactAsync(session => session.SaveAsync(notification));
             return notification;
         }
 
@@ -102,42 +105,60 @@ namespace MrCMS.Website.PushNotifications
                 Badge = payload.Badge,
                 Body = payload.Body,
                 Icon = payload.Icon,
-                Title = payload.Title
+                Title = payload.Title,
+                Image = payload.Image
             };
         }
+
         private PushNotificationPayload GetPayload(PushNotification notification)
         {
             return GetPayload(notification.Body, notification.ActionUrl, notification.Title, notification.Icon,
-                notification.Badge);
+                notification.Badge, notification.Image);
         }
 
-        public BatchRun SendNotificationToSelection(List<PushSubscription> subscriptions, string body, string url = null, string title = null,
-            string icon = null, string badge = null)
+        public async Task<BatchRun> SendNotificationToSelection(List<PushSubscription> subscriptions, string body,
+            string url = null, string title = null,
+            string icon = null, string badge = null, string image = null)
         {
-            var payload = GetPayload(body, url, title, icon, badge);
+            var payload = GetPayload(body, url, title, icon, badge, image);
 
-            var pushNotification = CreatePushNotificationEntity(payload);
+            var pushNotification = await CreatePushNotificationEntity(payload);
 
             var jobs = subscriptions.Select(subscription => new SendPushNotificationBatchJob
             {
                 Data = JsonConvert.SerializeObject(new SendPushNotificationData
-                { SubscriptionId = subscription.Id, NotificationId = pushNotification.Id })
+                    {SubscriptionId = subscription.Id, NotificationId = pushNotification.Id})
             });
 
-            var result = _createBatch.Create(jobs);
+            var result = await _createBatch.Create(jobs);
 
-            _controlBatchRun.Start(result.InitialBatchRun);
+            await _controlBatchRun.Start(result.InitialBatchRun);
 
             return result.InitialBatchRun;
         }
 
-        public BatchRun SendNotificationToAll(string body, string url = null, string title = null, string icon = null,
-            string badge = null)
+        public async Task<BatchRun> SendNotificationToAll(string body, string url = null, string title = null,
+            string icon = null,
+            string badge = null, string image = null)
         {
-            return SendNotificationToSelection(_session.Query<PushSubscription>().ToList(), body, url, title, icon, badge);
+            return await SendNotificationToSelection(await _session.Query<PushSubscription>().ToListAsync(), body, url, title, icon,
+                badge, image);
         }
 
-        private PushNotificationPayload GetPayload(string body, string url, string title, string icon, string badge)
+        public async Task<BatchRun> SendNotificationToRole(int roleId, string body, string url = null,
+            string title = null,
+            string icon = null,
+            string badge = null, string image = null)
+        {
+            var role = _session.Get<UserRole>(roleId);
+            var pushSubscriptions = await _session.Query<PushSubscription>()
+                .Where(x => x.User != null && x.User.Roles.Contains(role))
+                .ToListAsync();
+            return await SendNotificationToSelection(pushSubscriptions, body, url, title, icon, badge, image);
+        }
+
+        private PushNotificationPayload GetPayload(string body, string url, string title, string icon, string badge,
+            string image)
         {
             return new PushNotificationPayload
             {
@@ -145,7 +166,8 @@ namespace MrCMS.Website.PushNotifications
                 Title = title ?? _settings.DefaultNotificationTitle,
                 ActionUrl = url,
                 Icon = EnsureAbsolute(icon ?? _settings.DefaultNotificationIcon),
-                Badge = EnsureAbsolute(badge ?? _settings.DefaultNotificationBadge)
+                Badge = EnsureAbsolute(badge ?? _settings.DefaultNotificationBadge),
+                Image = string.IsNullOrWhiteSpace(image) ? null : EnsureAbsolute(image)
             };
         }
 
@@ -154,7 +176,7 @@ namespace MrCMS.Website.PushNotifications
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
                 var request = _urlHelper.ActionContext.HttpContext.Request;
-                var uriBuilder = new UriBuilder { Scheme = request.Scheme, Host = request.Host.Host, Path = url };
+                var uriBuilder = new UriBuilder {Scheme = request.Scheme, Host = request.Host.Host, Path = url};
                 if (request.Host.Port.HasValue)
                 {
                     uriBuilder.Port = request.Host.Port.Value;

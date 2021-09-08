@@ -9,10 +9,6 @@ namespace MrCMS.DbConfiguration.Overrides
         public void Override(AutoMapping<Widget> mapping)
         {
             mapping.DiscriminateSubClassesOnColumn("WidgetType");
-            mapping.HasManyToMany(widget => widget.ShownOn).Inverse().Table("ShownWidgets");
-            mapping.HasManyToMany(widget => widget.HiddenOn).Inverse().Table("HiddenWidgets");
-
-            mapping.HasMany(x => x.PageWidgetSorts).KeyColumn("WidgetId").Cascade.Delete();
         }
     }
 }

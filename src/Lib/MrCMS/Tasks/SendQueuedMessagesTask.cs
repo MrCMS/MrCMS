@@ -1,9 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Tasks
@@ -20,28 +20,24 @@ namespace MrCMS.Tasks
             _emailSender = emailSender;
         }
 
-        public override int Priority
-        {
-            get { return 5; }
-        }
-
-        protected override void OnExecute()
+        protected override async Task OnExecute()
         {
             using (new SiteFilterDisabler(_session))
             {
-                _session.Transact(session =>
+                await _session.TransactAsync(async session =>
                 {
                     foreach (
                         QueuedMessage queuedMessage in
-                            session.QueryOver<QueuedMessage>().Where(
+                        await session.QueryOver<QueuedMessage>().Where(
                                 message => message.SentOn == null && message.Tries < MAX_TRIES)
-                                .List())
+                            .ListAsync())
                     {
-                        if (_emailSender.CanSend(queuedMessage))
-                            _emailSender.SendMailMessage(queuedMessage);
+                        var message = queuedMessage;
+                        if (_emailSender.CanSend(message))
+                            message = await _emailSender.SendMailMessage(message);
                         else
-                            queuedMessage.SentOn = DateTime.UtcNow;
-                        session.SaveOrUpdate(queuedMessage);
+                            message.SentOn = DateTime.UtcNow;
+                        await session.SaveOrUpdateAsync(message);
                     }
                 });
             }

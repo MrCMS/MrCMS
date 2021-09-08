@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models.SEOAnalysis;
@@ -10,26 +11,38 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
 {
     public class BodyContentFirstParagraphContainsTerm : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override Task<IReadOnlyList<SEOAnalysisFacet>> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
+        {
+            return Task.FromResult(GetFacets(document, analysisTerm));
+        }
+
+        private IReadOnlyList<SEOAnalysisFacet> GetFacets(HtmlNode document, string analysisTerm)
         {
             var paragraphs = document.GetElementsOfType("p").ToList();
             if (!paragraphs.Any())
             {
-                yield return
+                return new List<SEOAnalysisFacet>
+                {
                     GetFacet("Body Content", SEOAnalysisStatus.Error,
-                        string.Format("Body content contains no paragraphs of text"));
-                yield break;
+                        string.Format("Body content contains no paragraphs of text"))
+                };
             }
+
             if (paragraphs[0].InnerText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
             {
-                yield return GetFacet("Body Content", SEOAnalysisStatus.Success,
-                    string.Format("The first paragraph contains the term '{0}'", analysisTerm));
+                return new List<SEOAnalysisFacet>
+                {
+                    GetFacet("Body Content", SEOAnalysisStatus.Success,
+                        $"The first paragraph contains the term '{analysisTerm}'")
+                };
             }
-            else
+
+            return new List<SEOAnalysisFacet>
             {
-                yield return GetFacet("Body Content", SEOAnalysisStatus.CanBeImproved,
-                    string.Format("The first paragraph does not contain the term '{0}'", analysisTerm));
-            }
+                GetFacet("Body Content", SEOAnalysisStatus.CanBeImproved,
+                    $"The first paragraph does not contain the term '{analysisTerm}'")
+            };
         }
     }
 }

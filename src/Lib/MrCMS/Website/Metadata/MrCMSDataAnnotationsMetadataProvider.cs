@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MrCMS.Helpers;
 
@@ -27,7 +25,7 @@ namespace MrCMS.Website.Metadata
         IDisplayMetadataProvider,
         IValidationMetadataProvider
     {
-        private readonly IServiceProvider _serviceProvider;
+        // private readonly IServiceProvider _serviceProvider;
         private readonly MvcDataAnnotationsLocalizationOptions _localizationOptions;
 
         public MrCMSDataAnnotationsMetadataProvider(
@@ -39,7 +37,7 @@ namespace MrCMS.Website.Metadata
                 throw new ArgumentNullException(nameof(options));
             }
 
-            _serviceProvider = serviceProvider;
+            // _serviceProvider = serviceProvider;
 
             _localizationOptions = options.Value;
         }
@@ -106,26 +104,20 @@ namespace MrCMS.Website.Metadata
             }
 
             var containerType = context.Key.ContainerType ?? context.Key.ModelType;
-            IStringLocalizer localizer = null;
-            if (_localizationOptions.DataAnnotationLocalizerProvider != null)
-            {
-                localizer = _localizationOptions.DataAnnotationLocalizerProvider(containerType,
-                    _serviceProvider.GetRequiredService<IStringLocalizerFactory>());
-            }
 
             // Description
             if (displayAttribute != null)
             {
-                if (localizer != null &&
-                    !string.IsNullOrEmpty(displayAttribute.Description) &&
-                    displayAttribute.ResourceType == null)
-                {
-                    displayMetadata.Description = () => localizer[displayAttribute.Description];
-                }
-                else
-                {
-                    displayMetadata.Description = () => displayAttribute.GetDescription();
-                }
+                // if (
+                //     !string.IsNullOrEmpty(displayAttribute.Description) &&
+                //     displayAttribute.ResourceType == null)
+                // {
+                //     displayMetadata.Description = () => GetDefaultResourceValue.GetDefaultValue(displayAttribute.)
+                // }
+                // else
+                // {
+                displayMetadata.Description = () => displayAttribute.GetDescription();
+                // }
             }
 
             // DisplayFormatString
@@ -138,40 +130,40 @@ namespace MrCMS.Website.Metadata
             // DisplayAttribute has precendence over DisplayNameAttribute.
             if (displayAttribute != null && displayAttribute.GetName() != null)
             {
-                if (localizer != null &&
-                    !string.IsNullOrEmpty(displayAttribute.Name) &&
-                    displayAttribute.ResourceType == null)
-                {
-                    displayMetadata.DisplayName = () => localizer[displayAttribute.Name];
-                }
-                else
-                {
-                    displayMetadata.DisplayName = () => displayAttribute.GetName();
-                }
+                // if (localizer != null &&
+                //     !string.IsNullOrEmpty(displayAttribute.Name) &&
+                //     displayAttribute.ResourceType == null)
+                // {
+                //     displayMetadata.DisplayName = () => localizer[displayAttribute.Name];
+                // }
+                // else
+                // {
+                displayMetadata.DisplayName = () => displayAttribute.GetName();
+                // }
             }
             else if (displayNameAttribute != null)
             {
-                if (localizer != null &&
-                    !string.IsNullOrEmpty(displayNameAttribute.DisplayName))
-                {
-                    displayMetadata.DisplayName = () => localizer[displayNameAttribute.DisplayName];
-                }
-                else
-                {
-                    displayMetadata.DisplayName = () => displayNameAttribute.DisplayName;
-                }
+                // if (localizer != null &&
+                //     !string.IsNullOrEmpty(displayNameAttribute.DisplayName))
+                // {
+                //     displayMetadata.DisplayName = () => localizer[displayNameAttribute.DisplayName];
+                // }
+                // else
+                // {
+                displayMetadata.DisplayName = () => displayNameAttribute.DisplayName;
+                // }
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(context.Key.Name))
-                    if (localizer != null)
-                    {
-                        displayMetadata.DisplayName = () => localizer[context.Key.Name];
-                    }
-                    else
-                    {
-                        displayMetadata.DisplayName = () => context.Key.Name.BreakUpString();
-                    }
+                // if (!string.IsNullOrWhiteSpace(context.Key.Name))
+                //     if (localizer != null)
+                //     {
+                //         displayMetadata.DisplayName = () => localizer[context.Key.Name];
+                //     }
+                //     else
+                //     {
+                displayMetadata.DisplayName = () => context.Key.Name.BreakUpString();
+                // }
             }
 
             // EditFormatString
@@ -199,17 +191,18 @@ namespace MrCMS.Website.Metadata
                 // Dictionary does not guarantee order will be preserved.
                 var groupedDisplayNamesAndValues = new List<KeyValuePair<EnumGroupAndName, string>>();
                 var namesAndValues = new Dictionary<string, string>();
-                var enumLocalizer = _serviceProvider.GetRequiredService<IStringLocalizerFactory>().Create(underlyingType);
+                // var enumLocalizer = _serviceProvider.GetRequiredService<IStringLocalizerFactory>()
+                //     .Create(underlyingType);
                 foreach (var name in Enum.GetNames(underlyingType))
                 {
                     var field = underlyingType.GetField(name);
                     var groupName = GetDisplayGroup(field);
-                    var value = ((Enum)field.GetValue(obj: null)).ToString("d");
+                    var value = ((Enum) field.GetValue(obj: null)).ToString("d");
 
                     groupedDisplayNamesAndValues.Add(new KeyValuePair<EnumGroupAndName, string>(
                         new EnumGroupAndName(
                             groupName,
-                            () => GetDisplayName(field, enumLocalizer)),
+                            () => GetDisplayName(field)),
                         value));
                     namesAndValues.Add(name, value);
                 }
@@ -269,16 +262,16 @@ namespace MrCMS.Website.Metadata
             // Placeholder
             if (displayAttribute != null)
             {
-                if (localizer != null &&
-                    !string.IsNullOrEmpty(displayAttribute.Prompt) &&
-                    displayAttribute.ResourceType == null)
-                {
-                    displayMetadata.Placeholder = () => localizer[displayAttribute.Prompt];
-                }
-                else
-                {
-                    displayMetadata.Placeholder = () => displayAttribute.GetPrompt();
-                }
+                // if (localizer != null &&
+                //     !string.IsNullOrEmpty(displayAttribute.Prompt) &&
+                //     displayAttribute.ResourceType == null)
+                // {
+                //     displayMetadata.Placeholder = () => localizer[displayAttribute.Prompt];
+                // }
+                // else
+                // {
+                displayMetadata.Placeholder = () => displayAttribute.GetPrompt();
+                // }
             }
 
             // ShowForDisplay
@@ -339,17 +332,13 @@ namespace MrCMS.Website.Metadata
             }
         }
 
-        private static string GetDisplayName(FieldInfo field, IStringLocalizer stringLocalizer)
+        private static string GetDisplayName(FieldInfo field)
         {
             var display = field.GetCustomAttribute<DisplayAttribute>(inherit: false);
             if (display != null)
             {
                 // Note [Display(Name = "")] is allowed but we will not attempt to localize the empty name.
                 var name = display.GetName();
-                if (stringLocalizer != null && !string.IsNullOrEmpty(name) && display.ResourceType == null)
-                {
-                    name = stringLocalizer[name];
-                }
 
                 return name ?? field.Name;
             }

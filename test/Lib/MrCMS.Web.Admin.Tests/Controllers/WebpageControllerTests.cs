@@ -1,3 +1,4 @@
+using System;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,8 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private readonly IWebpageAdminService _webpageAdminService;
         private IModelBindingHelperAdapter _modelBindingHelperAdapter;
         private ISetWebpageAdminViewData _setAdminViewData;
+        private IDocumentVersionsAdminService _documentVersionsAdminService;
+        private IServiceProvider _serviceProvider;
 
         public WebpageControllerTests()
         {
@@ -32,9 +35,11 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _setAdminViewData = A.Fake<ISetWebpageAdminViewData>();
             _webpageAdminService = A.Fake<IWebpageAdminService>();
             _modelBindingHelperAdapter = A.Fake<IModelBindingHelperAdapter>();
+            _documentVersionsAdminService = A.Fake<IDocumentVersionsAdminService>();
+            _serviceProvider = A.Fake<IServiceProvider>();
             _webpageController = new WebpageController(_webpageAdminService, _baseViewDataService,
                 _setAdminViewData,
-                _urlValidationService, _modelBindingHelperAdapter)
+                _urlValidationService, _modelBindingHelperAdapter, _documentVersionsAdminService, _serviceProvider)
             {
                 ViewData = ViewDataDictionaryHelper.GetNewDictionary(),
                 TempData = new MockTempDataDictionary(),
@@ -42,25 +47,25 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageController_AddGet_ShouldReturnAddWebpageModel()
+        public async Task WebpageController_AddGet_ShouldReturnAddWebpageModel()
         {
             var addPageModel = A.Dummy<AddWebpageModel>();
             A.CallTo(() => _webpageAdminService.GetAddModel(123)).Returns(addPageModel);
 
-            var actionResult = _webpageController.Add_Get(123);
+            var actionResult = await _webpageController.Add_Get(123);
 
             actionResult.Model.Should().Be(addPageModel);
         }
 
         [Fact]
-        public void WebpageController_AddGet_ShouldCallViewData()
+        public async Task WebpageController_AddGet_ShouldCallViewData()
         {
             var parent = new TextPage();
-            var addPageModel = new AddWebpageModel { ParentId = 123 };
+            var addPageModel = new AddWebpageModel {ParentId = 123};
             A.CallTo(() => _webpageAdminService.GetAddModel(123)).Returns(addPageModel);
             A.CallTo(() => _webpageAdminService.GetWebpage(123)).Returns(parent);
 
-            _webpageController.Add_Get(123);
+            await _webpageController.Add_Get(123);
 
             A.CallTo(() => _baseViewDataService.SetAddPageViewData(_webpageController.ViewData, parent))
                 .MustHaveHappened();
@@ -69,7 +74,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task WebpageController_AddPost_ShouldCallAdd()
         {
-            var model = new AddWebpageModel { UrlSegment = "test" };
+            var model = new AddWebpageModel {UrlSegment = "test"};
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("test", null)).Returns(true);
             var additionalModel = new object();
             A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType))
@@ -87,7 +92,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(true);
             var value = new object();
             A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType)).Returns(value);
-            A.CallTo(() => _webpageAdminService.Add(model,value)).Returns(new StubWebpage{Id=123});
+            A.CallTo(() => _webpageAdminService.Add(model, value)).Returns(new StubWebpage {Id = 123});
 
             var result = (await _webpageController.Add(model)) as RedirectToActionResult;
 
@@ -126,48 +131,48 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageController_EditGet_ShouldReturnWebpageAsViewModel()
+        public async Task WebpageController_EditGet_ShouldReturnWebpageAsViewModel()
         {
-            var webpage = new TextPage { Id = 1 };
+            var webpage = new TextPage {Id = 1};
             A.CallTo(() => _webpageAdminService.GetWebpage(123)).Returns(webpage);
 
-            var result = _webpageController.Edit_Get(123);
+            var result = await _webpageController.Edit_Get(123);
 
             result.Model.Should().Be(webpage);
         }
 
         [Fact]
-        public void WebpageController_EditGet_ShouldSetViewData()
+        public async Task WebpageController_EditGet_ShouldSetViewData()
         {
             var page = new TextPage();
             A.CallTo(() => _webpageAdminService.GetWebpage(123)).Returns(page);
 
-            _webpageController.Edit_Get(123);
+            await _webpageController.Edit_Get(123);
 
             A.CallTo(() => _baseViewDataService.SetEditPageViewData(_webpageController.ViewData, page))
                 .MustHaveHappened();
         }
 
         [Fact]
-        public void WebpageController_EditPost_ShouldCallSaveDocument()
+        public async Task WebpageController_EditPost_ShouldCallSaveDocument()
         {
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, 1)).Returns(true);
-            var textPage = new UpdateWebpageViewModel { Id = 1 };
+            var textPage = new UpdateWebpageViewModel {Id = 1};
 
-            _webpageController.Edit(textPage);
+            await _webpageController.Edit(textPage);
 
             A.CallTo(() => _webpageAdminService.Update(textPage)).MustHaveHappened();
         }
 
         [Fact]
-        public void WebpageController_EditPost_ShouldRedirectToEdit()
+        public async Task WebpageController_EditPost_ShouldRedirectToEdit()
         {
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, 1)).Returns(true);
             var model = new UpdateWebpageViewModel();
-            var stubWebpage = new StubWebpage{Id=123};
+            var stubWebpage = new StubWebpage {Id = 123};
             A.CallTo(() => _webpageAdminService.Update(model)).Returns(stubWebpage);
 
-            var actionResult = _webpageController.Edit(model);
+            var actionResult = await _webpageController.Edit(model);
 
             actionResult.ActionName.Should().Be("Edit");
             actionResult.RouteValues["id"].Should().Be(123);
@@ -209,79 +214,81 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageController_Delete_ReturnsRedirectToIndex()
+        public async Task WebpageController_Delete_ReturnsRedirectToIndex()
         {
-            var actionResult = _webpageController.Delete(123);
+            var actionResult = await _webpageController.Delete(123);
 
             actionResult.ActionName.Should().Be("Index");
         }
 
         [Fact]
-        public void WebpageController_Delete_CallsDeleteDocumentOnThePassedObject()
+        public async Task WebpageController_Delete_CallsDeleteDocumentOnThePassedObject()
         {
-            _webpageController.Delete(123);
+            await _webpageController.Delete(123);
 
             A.CallTo(() => _webpageAdminService.Delete(123)).MustHaveHappened();
         }
 
         [Fact]
-        public void WebpageController_PublishNow_ReturnsRedirectToRouteResult()
+        public async Task WebpageController_PublishNow_ReturnsRedirectToRouteResult()
         {
-            _webpageController.PublishNow(123).Should().BeOfType<RedirectToActionResult>();
+            (await _webpageController.PublishNow(123)).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
-        public void WebpageController_PublishNow_RedirectsToEditForId()
+        public async Task WebpageController_PublishNow_RedirectsToEditForId()
         {
-            var result = _webpageController.PublishNow(123);
+            var result = await _webpageController.PublishNow(123);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
-        public void WebpageController_PublishNow_CallsPublishNow()
+        public async Task WebpageController_PublishNow_CallsPublishNow()
         {
-            _webpageController.PublishNow(123);
+            await _webpageController.PublishNow(123);
 
             A.CallTo(() => _webpageAdminService.PublishNow(123)).MustHaveHappened();
         }
 
         [Fact]
-        public void WebpageController_Unpublish_ReturnsRedirectToRouteResult()
+        public async Task WebpageController_Unpublish_ReturnsRedirectToRouteResult()
         {
-            _webpageController.Unpublish(123).Should().BeOfType<RedirectToActionResult>();
+            var unpublish = await _webpageController.Unpublish(123);
+            unpublish.Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
-        public void WebpageController_Unpublish_RedirectsToEditForId()
+        public async Task WebpageController_Unpublish_RedirectsToEditForId()
         {
-            var result = _webpageController.Unpublish(123);
+            var result = await _webpageController.Unpublish(123);
 
             result.ActionName.Should().Be("Edit");
             result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
-        public void WebpageController_Unpublish_CallsUnpublishOnService()
+        public async Task WebpageController_Unpublish_CallsUnpublishOnService()
         {
-            _webpageController.Unpublish(123);
+            await _webpageController.Unpublish(123);
 
             A.CallTo(() => _webpageAdminService.Unpublish(123)).MustHaveHappened();
         }
 
         [Fact]
-        public void WebpageController_ViewChanges_ShouldReturnPartialViewResult()
+        public async Task WebpageController_ViewChanges_ShouldReturnPartialViewResult()
         {
             var documentVersion = new DocumentVersion();
 
-            _webpageController.ViewChanges(documentVersion).Should().BeOfType<PartialViewResult>();
+            var viewChanges = await _webpageController.ViewChanges(0);
+            viewChanges.Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
-        public void WebpageController_ViewChanges_NullDocumentVersionRedirectsToIndex()
+        public async Task WebpageController_ViewChanges_NullDocumentVersionRedirectsToIndex()
         {
-            var result = _webpageController.ViewChanges(null);
+            var result = await _webpageController.ViewChanges(0);
 
             result.Should().BeOfType<RedirectToActionResult>();
             result.As<RedirectToActionResult>().ActionName.Should().Be("Index");

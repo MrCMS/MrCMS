@@ -31,14 +31,14 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
             await html.RenderPartialAsync("Versions", webpage);
         }
 
-        public override string Name(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Webpage entity)
         {
-            return "Versions";
+            return Task.FromResult("Versions");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

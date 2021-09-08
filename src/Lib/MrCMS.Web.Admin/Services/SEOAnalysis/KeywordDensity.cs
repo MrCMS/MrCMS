@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models.SEOAnalysis;
@@ -10,7 +11,13 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
 {
     public class KeywordDensity : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override Task<IReadOnlyList<SEOAnalysisFacet>> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
+        {
+            return Task.FromResult<IReadOnlyList<SEOAnalysisFacet>>(Process(webpage, analysisTerm).ToList());
+        }
+
+        private IEnumerable<SEOAnalysisFacet> Process(Webpage webpage, string analysisTerm)
         {
             var text =
                 (HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty).Replace(
@@ -19,18 +26,19 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
             if (text.Count() < 10)
             {
                 yield return
-                    GetFacet("Keyword density", SEOAnalysisStatus.Error, "There is not enough content to calculate keyword density.");
+                    GetFacet("Keyword density", SEOAnalysisStatus.Error,
+                        "There is not enough content to calculate keyword density.");
             }
 
             var instances = Regex.Matches(text, analysisTerm, RegexOptions.IgnoreCase).Count;
 
-            var strings = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var strings = text.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
             var words = strings.Count();
             if (words == 0)
                 yield break;
-            var termWordCount = analysisTerm.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Count();
+            var termWordCount = analysisTerm.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries).Count();
 
-            var density = ((decimal)instances / (words - (termWordCount * (termWordCount - 1)))) * 100m;
+            var density = ((decimal) instances / (words - (termWordCount * (termWordCount - 1)))) * 100m;
             // (instances / (words - (instances * (decimal)termWordCount)) * 100m);
 
             if (density < 1)
@@ -50,7 +58,6 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
                 yield return
                     GetFacet("Keyword density", SEOAnalysisStatus.Success,
                         $"The current keyword density in your body content is {density:0.00}% , which is within the recommended 1-4.5% target.");
-
             }
         }
     }

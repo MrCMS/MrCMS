@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -27,9 +28,9 @@ namespace MrCMS.Tasks
 
         private MoveFileData FileData { get; set; }
 
-        protected override void OnExecute()
+        protected override async Task OnExecute()
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async (session, token) =>
             {
                 var file = _session.Get<MediaFile>(FileData.FileId);
                 var from = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.From);
@@ -40,21 +41,21 @@ namespace MrCMS.Tasks
                 {
                     // check for resized file having same url as the original - 
                     // do not delete from disc yet in that case, or else it will cause an error when copying
-                    if (resizedImage.Url != file.FileUrl) from.Delete(resizedImage.Url);
+                    if (resizedImage.Url != file.FileUrl) await @from.Delete(resizedImage.Url);
                     file.ResizedImages.Remove(resizedImage);
-                    session.Delete(resizedImage);
+                    await session.DeleteAsync(resizedImage, token);
                 }
 
                 var existingUrl = file.FileUrl;
-                using (var readStream = from.GetReadStream(existingUrl))
+                await using (var readStream = await from.GetReadStream(existingUrl))
                 {
-                    file.FileUrl = to.SaveFile(readStream, GetNewFilePath(file),
+                    file.FileUrl = await to.SaveFile(readStream, GetNewFilePath(file),
                         file.ContentType);
                 }
 
-                from.Delete(existingUrl);
+                await @from.Delete(existingUrl);
 
-                session.Update(file);
+                await session.UpdateAsync(file, token);
             });
         }
 

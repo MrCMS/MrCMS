@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Routing;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
 using System.Linq;
+using System.Threading.Tasks;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -17,17 +19,14 @@ namespace MrCMS.Services
             _getLiveUrl = getLiveUrl;
         }
 
-        public T GetUniquePage<T>()
-            where T : Webpage, IUniquePage
-        {
-            return _session.QueryOver<T>().Cacheable()
-                .List().FirstOrDefault();
-        }
+        public async Task<T> GetUniquePage<T>()
+            where T : Webpage, IUniquePage =>
+            await _session.Query<T>().WithOptions(options => options.SetCacheable(true)).FirstOrDefaultAsync();
 
-        public string GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage
+        public async Task<string> GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage
         {
-            var page = GetUniquePage<T>();
-            var url = _getLiveUrl.GetUrlSegment(page, true);
+            var page = await GetUniquePage<T>();
+            var url = await _getLiveUrl.GetUrlSegment(page, true);
             if (queryString != null)
             {
                 url +=
@@ -37,10 +36,10 @@ namespace MrCMS.Services
             return url;
         }
 
-        public string GetAbsoluteUrl<T>(object queryString = null) where T : Webpage, IUniquePage
+        public async Task<string> GetAbsoluteUrl<T>(object queryString = null) where T : Webpage, IUniquePage
         {
-            var page = GetUniquePage<T>();
-            var url = _getLiveUrl.GetAbsoluteUrl(page);
+            var page = await GetUniquePage<T>();
+            var url = await _getLiveUrl.GetAbsoluteUrl(page);
             if (queryString != null)
             {
                 url +=
@@ -50,19 +49,19 @@ namespace MrCMS.Services
             return url;
         }
 
-        public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        public Task<RedirectResult> RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
         {
             return GetRedirectResult<T>(routeValues, false);
         }
 
-        public RedirectResult PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        public async Task<RedirectResult> PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
         {
-            return GetRedirectResult<T>(routeValues, false);
+            return await GetRedirectResult<T>(routeValues, false);
         }
 
-        private RedirectResult GetRedirectResult<T>(object routeValues, bool isPermanent) where T : Webpage, IUniquePage
+        private async Task<RedirectResult> GetRedirectResult<T>(object routeValues, bool isPermanent) where T : Webpage, IUniquePage
         {
-            return new RedirectResult(GetUrl<T>(routeValues), isPermanent);
+            return new(await GetUrl<T>(routeValues), isPermanent);
         }
     }
 }

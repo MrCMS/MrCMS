@@ -1,7 +1,5 @@
 ﻿@using MrCMS.Batching.Entities
-@using MrCMS.Helpers
 @using MrCMS.Web.Admin.Helpers
-@using MrCMS.Web.Admin.Models
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.BatchSearchModel
@@ -12,68 +10,64 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@Html.Resource("admin-batches", "Batches")  "/>
+        <admin-header-title title="@await Html.Resource("admin - batches", "Batches")  "/>
 
         <admin-header-actions>
         </admin-header-actions>
     </row>
 </admin-header>
 
-<card>
-    <card-body>
-        @if (!batches.Any())
-        {
-            @Html.Resource("admin-batches-empty", "No batches have been created.")
-        }
-        else
-        {
-            <table class="table table-condensed table-striped">
-                <thead>
-                <tr>
-                    <th>
-                        Id
-                    </th>
-                    <th>
-                        # of Items
-                    </th>
-                    <th>
-                        Created On
-                    </th>
-                    <th>
-                        Status
-                    </th>
-                    <th>
-                        Actions
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in batches)
-                {
-                    <tr>
-                        <td>
-                            @item.Id
-                        </td>
-                        <td>
-                            @Html.GetBatchItemCount(item)
-                        </td>
-                        <td>
-                            @item.CreatedOn
-                        </td>
-                        <td>
-                            @Html.GetBatchStatus(item)
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                @Html.ActionLink("View Batch", "Show", "Batch", new {id = item.Id}, new {@class = "btn btn-sm btn-secondary"})
-                            </div>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-            @Html.PagedListPager(batches, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
-        }
 
-    </card-body>
-</card>
+@if (!batches.Any())
+{
+    @await Html.Resource("admin-batches-empty", "No batches have been created.")
+}
+else
+{
+    <table class="table table-condensed table-striped">
+        <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                # of Items
+            </th>
+            <th>
+                Created On
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in batches)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @await Html.GetBatchItemCount(item)
+                </td>
+                <td>
+                    @item.CreatedOn
+                </td>
+                <td>
+                    @await Html.GetBatchStatus(item)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink("View Batch", "Show", "Batch", new {id = item.Id}, new {@class = "btn btn-sm btn-secondary"})
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @Html.PagedListPager(batches, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+}

@@ -1,8 +1,7 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Infrastructure.Helpers
+﻿@using MrCMS.Web.Admin.Infrastructure.Helpers
 @model object
 @{
-    Type type = ViewData["type"] as Type;
+    var type = ViewData["type"] as Type;
 }
 @if (Model != null)
 {

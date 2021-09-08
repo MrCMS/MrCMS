@@ -1,15 +1,16 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Multisite.RedirectedDomain
+﻿@model MrCMS.Entities.Multisite.RedirectedDomain
 
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("Delete", "RedirectedDomain", new { id = Model.Id }, FormMethod.Post,false, new { style = "display:inline;" }))
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Delete", "RedirectedDomain", new {id = Model.Id}, FormMethod.Post, false, new {style = "display:inline;"}))
 {
+    @Html.AntiForgeryToken()
     <fieldset>
-        <legend>@Html.Resource("Admin Redirected Domain Delete Title", "Delete Redirected Domain")
-                 <span class="btn-group  d-inline  pull-right">
-                     <input type="submit" class="btn btn-danger" value="@Html.Resource("Delete")" />
-                 </span>
+        <legend>
+            @await Html.Resource("Admin Redirected Domain Delete Title", "Delete Redirected Domain")
+            <span class="btn-group  d-inline  pull-right">
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
+            </span>
         </legend>
-        @Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+        @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }

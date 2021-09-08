@@ -1,22 +1,25 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Web.Admin.Models;
+using X.PagedList;
 
 namespace MrCMS.Web.Admin.Services
 {
     public interface IWebpageAdminService
     {
-        Webpage GetWebpage(int? id);
+        Task<Webpage> GetWebpage(int? id);
         AddWebpageModel GetAddModel(int? id);
         object GetAdditionalPropertyModel(string type);
-        Webpage Add(AddWebpageModel model, object additionalPropertyModel = null);
-        Webpage Update(UpdateWebpageViewModel viewModel);
-        Webpage Delete(int id);
-        List<SortItem> GetSortItems(int? parent);
-        void SetOrders(List<SortItem> items);
-        void PublishNow(int id);
-        void Unpublish(int id);
+        Task<Webpage> Add(AddWebpageModel model, object additionalPropertyModel = null);
+        Task<Webpage> Update(UpdateWebpageViewModel viewModel);
+        Task<Webpage> Delete(int id);
+        Task<List<SortItem>> GetSortItems(int? parent);
+        Task SetOrders(List<SortItem> items);
+        Task PublishNow(int id);
+        Task Unpublish(int id);
         string GetServerDate();
+        Task<IPagedList<Select2LookupResult>> Search(string term, int page);
     }
 }

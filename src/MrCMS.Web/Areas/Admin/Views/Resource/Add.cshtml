@@ -1,5 +1,4 @@
 ﻿@using MrCMS.Entities.Multisite
-@using MrCMS.Helpers
 @using MrCMS.Web.Admin.Services
 @model MrCMS.Web.Admin.Models.AddStringResourceModel
 
@@ -8,16 +7,16 @@
     var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var site = ViewData["site"] as Site;
 }
-@using (Html.BeginForm("Add", "Resource", new { id = "" }, FormMethod.Post, null, new { target = "_parent" }))
+@using (Html.BeginForm("Add", "Resource", new {id = ""}, FormMethod.Post, null, new {target = "_parent"}))
 {
     <fieldset>
         <legend>
-            @Html.Resource("Admin Resources Add Override", "Add override")
+            @await Html.Resource("Admin Resources Add Override", "Add override")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@Html.Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
             </span>
         </legend>
-        <p>@Html.Resource("Default"): @StringResourceExtensions.GetDisplayKey(Model.Key)</p>
+        <p>@await Html.Resource("Default"): @StringResourceExtensions.GetDisplayKey(Model.Key)</p>
         @if (!string.IsNullOrWhiteSpace(Context.Request.Query["referrer"]))
         {
             @Html.ReturnTo(Context.Request.Query["referrer"])
@@ -30,20 +29,20 @@
         @if (site != null)
         {
             <div class="form-group">
-                @Html.LabelFor(resource => resource.SiteId, @Html.Resource("For Site:"))
+                @Html.LabelFor(resource => resource.SiteId, await Html.Resource("For Site:"))
                 @site.DisplayName
             </div>
         }
         <div class="form-group">
             @Html.LabelFor(resource => resource.Value)
-            @Html.TextBoxFor(resource => resource.Value, new { @class = "form-control" })
+            @Html.TextBoxFor(resource => resource.Value, new {@class = "form-control"})
             @Html.ValidationMessageFor(resource => resource.Value)
         </div>
         @if (languageOptions.Any())
         {
             <div class="form-group">
                 @Html.LabelFor(resource => resource.UICulture)
-                @Html.DropDownListFor(resource => resource.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture.", @class = "form-control" })
+                @Html.DropDownListFor(resource => resource.UICulture, languageOptions, new {@data_val = "true", data_val_required = "Please select a culture.", @class = "form-control"})
                 @Html.ValidationMessageFor(resource => resource.UICulture)
             </div>
         }

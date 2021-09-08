@@ -4,6 +4,6 @@ namespace MrCMS.Tasks
 {
     public class BatchExecutionResult
     {
-        public List<TaskExecutionResult> Results { get; set; }
+        public IReadOnlyCollection<TaskExecutionResult> Results { get; set; }
     }
 }

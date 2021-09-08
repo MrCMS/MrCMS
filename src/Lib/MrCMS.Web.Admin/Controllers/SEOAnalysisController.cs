@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Web;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models.SEOAnalysis;
 using MrCMS.Web.Admin.Services.SEOAnalysis;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -15,10 +15,10 @@ namespace MrCMS.Web.Admin.Controllers
             _seoAnalysisService = seoAnalysisService;
         }
 
-        public PartialViewResult Analyze(int id, string SEOTargetPhrase)
+        public async Task<PartialViewResult> Analyze(int id, string SEOTargetPhrase)
         {
-            var webpage = _seoAnalysisService.UpdateAnalysisTerm(id, SEOTargetPhrase);
-            SEOAnalysisResult result = _seoAnalysisService.Analyze(webpage, webpage.SEOTargetPhrase);
+            var webpage = await _seoAnalysisService.UpdateAnalysisTerm(id, SEOTargetPhrase);
+            SEOAnalysisResult result = await _seoAnalysisService.Analyze(webpage, webpage.SEOTargetPhrase);
             return PartialView(result);
         }
     }

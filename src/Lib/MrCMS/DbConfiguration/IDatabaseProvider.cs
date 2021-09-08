@@ -1,4 +1,5 @@
 using FluentNHibernate.Cfg.Db;
+using NHibernate.Cfg.Loquacious;
 
 namespace MrCMS.DbConfiguration
 {
@@ -7,5 +8,6 @@ namespace MrCMS.DbConfiguration
         string Type { get; }
         IPersistenceConfigurer GetPersistenceConfigurer();
         void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config);
+        void DebugDatabaseIntegration(DbIntegrationConfigurationProperties properties);
     }
 }

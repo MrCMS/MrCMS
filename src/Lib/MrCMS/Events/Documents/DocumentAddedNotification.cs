@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
@@ -16,19 +17,19 @@ namespace MrCMS.Events.Documents
             _documentModifiedUser = documentModifiedUser;
         }
 
-        public void PublishMessage(Document document)
+        public async Task PublishMessage(Document document)
         {
             var message = string.Format("<a href=\"/Admin/{2}/Edit/{1}\">{0}</a> has been added{3}.", document.Name,
-                document.Id, document.GetAdminController(), _documentModifiedUser.GetInfo());
-            _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
+                document.Id, document.GetAdminController(), await _documentModifiedUser.GetInfo());
+            await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
 
-        public void Execute(OnAddedArgs<Document> args)
+        public async Task Execute(OnAddedArgs<Document> args)
         {
             var document = args.Item;
             if (document != null)
             {
-                PublishMessage(document);
+                await PublishMessage(document);
             }
         }
     }

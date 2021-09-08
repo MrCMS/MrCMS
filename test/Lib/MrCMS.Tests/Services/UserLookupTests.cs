@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Web;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -25,21 +25,25 @@ namespace MrCMS.Tests.Services
             _getDateTimeNow = A.Fake<IGetDateTimeNow>();
             _userService = new UserLookup(Session, new List<IExternalUserSource>(), _getDateTimeNow);
         }
+
         [Fact]
-        public void UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
+        public async Task UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
         {
-            _userService.GetUserByEmail("test@example.com").Should().BeNull();
+            var userByEmail = await _userService.GetUserByEmail("test@example.com");
+            userByEmail.Should().BeNull();
         }
 
         [Fact]
-        public void UserService_GetUserByEmail_WithValidEmailReturnsTheCorrectUser()
+        public async Task UserService_GetUserByEmail_WithValidEmailReturnsTheCorrectUser()
         {
-            var user = new User { FirstName = "Test", LastName = "User", Email = "test@example.com" };
-            Session.Transact(session => Session.Save(user));
-            var user2 = new User { FirstName = "Test", LastName = "User2", Email = "test2@example.com" };
-            Session.Transact(session => Session.Save(user2));
+            var user = new User {FirstName = "Test", LastName = "User", Email = "test@example.com"};
+            await Session.TransactAsync(session => Session.SaveAsync(user));
+            var user2 = new User {FirstName = "Test", LastName = "User2", Email = "test2@example.com"};
+            await Session.TransactAsync(session => Session.SaveAsync(user2));
 
-            _userService.GetUserByEmail("test2@example.com").Should().Be(user2);
+            var userByEmail = await _userService.GetUserByEmail("test2@example.com");
+
+            userByEmail.Should().Be(user2);
         }
 
         [Fact]
@@ -49,7 +53,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_GetUserByResetGuid_ValidGuidButExpiryPassedReturnsNull()
+        public async Task UserService_GetUserByResetGuid_ValidGuidButExpiryPassedReturnsNull()
         {
             var resetPasswordGuid = Guid.NewGuid();
             var dateTime = DateTime.UtcNow;
@@ -62,13 +66,13 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = resetPasswordGuid,
                 ResetPasswordExpiry = dateTime.AddDays(-2)
             };
-            Session.Transact(session => Session.Save(user));
+            await Session.TransactAsync(session => Session.SaveAsync(user));
 
             _userService.GetUserByResetGuid(resetPasswordGuid).Should().BeNull();
         }
 
         [Fact]
-        public void UserService_GetUserByResetGuid_ValidGuidAndExpiryInTheFutureReturnsUser()
+        public async Task UserService_GetUserByResetGuid_ValidGuidAndExpiryInTheFutureReturnsUser()
         {
             var resetPasswordGuid = Guid.NewGuid();
             var dateTime = DateTime.UtcNow;
@@ -81,36 +85,42 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = resetPasswordGuid,
                 ResetPasswordExpiry = dateTime.AddDays(1)
             };
-            Session.Transact(session => Session.Save(user));
+            await Session.TransactAsync(session => Session.SaveAsync(user));
 
-            _userService.GetUserByResetGuid(resetPasswordGuid).Should().Be(user);
+            var userByResetGuid = await _userService.GetUserByResetGuid(resetPasswordGuid);
+            
+            userByResetGuid.Should().Be(user);
         }
 
         [Fact]
-        public void UserService_GetCurrentUser_HttpContextUserIsNullReturnsNull()
+        public async Task UserService_GetCurrentUser_HttpContextUserIsNullReturnsNull()
         {
             var httpContextBase = new DefaultHttpContext {User = null};
 
-            _userService.GetCurrentUser(httpContextBase).Should().BeNull();
+            var currentUser = await _userService.GetCurrentUser(httpContextBase);
+            
+            currentUser.Should().BeNull();
         }
 
         [Fact]
-        public void UserService_GetCurrentUser_HttpContextUserHasIdentityGetByEmail()
+        public async Task UserService_GetCurrentUser_HttpContextUserHasIdentityGetByEmail()
         {
-            var httpContextBase = new DefaultHttpContext {User = new ClaimsPrincipal(new List<ClaimsIdentity>
+            var httpContextBase = new DefaultHttpContext
             {
-                new GenericIdentity("test@example.com")
-            })};
+                User = new ClaimsPrincipal(new List<ClaimsIdentity>
+                {
+                    new GenericIdentity("test@example.com")
+                })
+            };
             var user = new User
             {
                 FirstName = "Test",
                 LastName = "User",
                 Email = "test@example.com",
             };
-            Session.Transact(session => Session.Save(user));
+            await Session.TransactAsync(session => Session.SaveAsync(user));
 
             _userService.GetCurrentUser(httpContextBase).Should().Be(user);
         }
-
     }
 }

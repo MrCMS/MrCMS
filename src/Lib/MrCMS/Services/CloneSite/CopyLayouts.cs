@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -17,28 +18,39 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var copies = GetLayoutCopies(@from, to, siteCloneContext);
+            var copies = await GetLayoutCopies(@from, to, siteCloneContext);
 
-            _session.Transact(session => copies.ForEach(layout =>
+            await _session.TransactAsync(async session =>
             {
-                session.Save(layout);
-                var layoutAreas = layout.LayoutAreas.ToList();
-                foreach (var layoutArea in layoutAreas)
+                foreach (var layout in copies)
                 {
-                    session.Save(layoutArea);
-                    layoutArea.Widgets.ForEach(widget => session.Save(widget));
+                    await session.SaveAsync(layout);
+                    var layoutAreas = layout.LayoutAreas.ToList();
+                    foreach (var layoutArea in layoutAreas)
+                    {
+                        await session.SaveAsync(layoutArea);
+                        foreach (var widget in layoutArea.Widgets)
+                        {
+                            await session.SaveAsync(widget);
+                        }
+                    }
                 }
-            }));
+            });
         }
-        private IEnumerable<Layout> GetLayoutCopies(Site @from, Site to, SiteCloneContext siteCloneContext, Layout fromParent = null, Layout toParent = null)
+
+        private async Task<IReadOnlyList<Layout>> GetLayoutCopies(Site @from, Site to,
+            SiteCloneContext siteCloneContext,
+            Layout fromParent = null, Layout toParent = null)
         {
             var queryOver = _session.QueryOver<Layout>().Where(layout => layout.Site.Id == @from.Id);
             queryOver = fromParent == null
                 ? queryOver.Where(layout => layout.Parent == null)
                 : queryOver.Where(layout => layout.Parent.Id == fromParent.Id);
-            var layouts = queryOver.List();
+            var layouts = await queryOver.ListAsync();
+
+            var list = new List<Layout>();
 
             foreach (var layout in layouts)
             {
@@ -50,7 +62,6 @@ namespace MrCMS.Services.CloneSite
                     siteCloneContext.AddEntry(area, areaCopy);
                     areaCopy.Layout = copy;
                     areaCopy.Widgets = area.Widgets
-                        .Where(widget => widget.Webpage == null)
                         .Select(widget =>
                         {
                             var widgetCopy = widget.GetCopyForSite(to);
@@ -62,12 +73,11 @@ namespace MrCMS.Services.CloneSite
                     return areaCopy;
                 }).ToList();
                 copy.Parent = toParent;
-                yield return copy;
-                foreach (var child in GetLayoutCopies(@from, to, siteCloneContext, layout, copy))
-                {
-                    yield return child;
-                }
+                list.Add(copy);
+                list.AddRange(await GetLayoutCopies(@from, to, siteCloneContext, layout, copy));
             }
+
+            return list;
         }
     }
 }

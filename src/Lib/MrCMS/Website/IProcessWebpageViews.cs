@@ -1,10 +1,13 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Website
 {
     public interface IProcessWebpageViews
     {
-        void Process(ViewResult result, Webpage webpage);
+        Task Process(ViewResult result, Webpage webpage);
+        Task ProcessForDefault(ViewDataDictionary viewData);
     }
 }

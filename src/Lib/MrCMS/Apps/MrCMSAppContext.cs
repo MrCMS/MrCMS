@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
 using MrCMS.DbConfiguration;
-using MrCMS.FileProviders;
 using MrCMS.Helpers;
 using MrCMS.Themes;
 using MrCMS.Website.CMS;
@@ -29,21 +27,16 @@ namespace MrCMS.Apps
         public ISet<Type> DatabaseProviders { get; }
         public IDictionary<Type, IMrCMSApp> Types { get; }
 
-        public IEnumerable<IFileProvider> ViewFileProviders =>
-            Themes.Select(app => new ThemeEmbeddedViewFileProvider(app.Assembly, app.ViewPrefix)).Concat(
-                Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly, app.ViewPrefix)));
-
-        public IEnumerable<IFileProvider> ContentFileProviders =>
-            Themes.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix)).Concat(
-                Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix)));
-
         public IEnumerable<Type> DbConventions => Apps.SelectMany(app => app.Conventions);
         public IEnumerable<Type> DbBaseTypes => Apps.SelectMany(app => app.BaseTypes);
 
         public IDictionary<Type, string> SignalRHubs =>
             Apps.SelectMany(app => app.SignalRHubs).ToDictionary(x => x.Key, x => x.Value);
 
-        public IEnumerable<RegistrationInfo> Registrations => Apps.SelectMany(app => app.Registrations);
+        public IEnumerable<ApplicationRegistrationInfo> Registrations => Apps.SelectMany(app => app.Registrations);
+
+        public IEnumerable<EndpointRegistrationInfo> EndpointRegistrations =>
+            Apps.SelectMany(app => app.EndpointRegistrations);
 
         public string AppSummary => string.Join(", ", Apps.Select(app => $"{app.Name}: {app.Version}"));
 
@@ -52,11 +45,6 @@ namespace MrCMS.Apps
             var appOptions = new MrCMSAppContextOptions();
             options?.Invoke(appOptions);
             var app = new TApp();
-            if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
-            {
-                app.ContentPrefix = appOptions.ContentPrefix;
-            }
-
             Apps.Add(app);
 
             // register apps
@@ -69,13 +57,10 @@ namespace MrCMS.Apps
             var appOptions = new MrCMSAppContextOptions();
             options?.Invoke(appOptions);
             var theme = new TTheme();
-            if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
-            {
-                theme.ContentPrefix = appOptions.ContentPrefix;
-            }
 
             Themes.Add(theme);
         }
+
         public void RegisterDatabaseProvider<TProvider>()
             where TProvider : IDatabaseProvider
         {
@@ -99,7 +84,7 @@ namespace MrCMS.Apps
 
         public void ConfigureAuthorization(AuthorizationOptions options)
         {
-            Apps.ForEach(app=>app.ConfigureAuthorization(options));
+            Apps.ForEach(app => app.ConfigureAuthorization(options));
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -14,15 +15,15 @@ namespace MrCMS.Web.Admin.Controllers
             _webpageAdminSearchService = webpageAdminSearchService;
         }
 
-        public ViewResult Search(WebpageSearchQuery searchQuery)
+        public async Task<ViewResult> Search(WebpageSearchQuery searchQuery)
         {
-            ViewData["results"] = _webpageAdminSearchService.Search(searchQuery);
+            ViewData["results"] = await _webpageAdminSearchService.Search(searchQuery);
             return View(searchQuery);
         }
 
-        public PartialViewResult Results(WebpageSearchQuery searchQuery)
+        public async Task<PartialViewResult> Results(WebpageSearchQuery searchQuery)
         {
-            ViewData["results"] = _webpageAdminSearchService.Search(searchQuery);
+            ViewData["results"] = await _webpageAdminSearchService.Search(searchQuery);
             return PartialView(searchQuery);
         }
     }

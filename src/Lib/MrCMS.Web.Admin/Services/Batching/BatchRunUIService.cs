@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
 using NHibernate;
@@ -18,27 +19,27 @@ namespace MrCMS.Web.Admin.Services.Batching
             _controlBatchRun = controlBatchRun;
         }
 
-        public IList<BatchRunResult> GetResults(BatchRun batchRun)
+        public async Task<IList<BatchRunResult>> GetResults(BatchRun batchRun)
         {
-            return GetResultsQuery(batchRun)
+            return await GetResultsQuery(batchRun)
                 .OrderBy(result => result.ExecutionOrder)
                 .Asc.Cacheable()
-                .List();
+                .ListAsync();
         }
 
-        public int? Start(int id)
+        public async Task<int?> Start(int id)
         {
-            var run = _session.Get<BatchRun>(id);
-            return _controlBatchRun.Start(run) ? run.Id : (int?) null;
+            var run = await Get(id);
+            return await _controlBatchRun.Start(run) ? run.Id : (int?) null;
         }
 
-        public bool Pause(int id)
+        public async Task<bool> Pause(int id)
         {
-            var run = _session.Get<BatchRun>(id);
-            return _controlBatchRun.Pause(run);
+            var run = await Get(id);
+            return await _controlBatchRun.Pause(run);
         }
 
-        public BatchCompletionStatus GetCompletionStatus(BatchRun batchRun)
+        public async Task<BatchCompletionStatus> GetCompletionStatus(BatchRun batchRun)
         {
             IFutureValue<decimal?> timeTaken =
                 GetResultsQuery(batchRun)
@@ -77,18 +78,24 @@ namespace MrCMS.Web.Admin.Services.Batching
                     .FutureValue<int>();
 
 
-            double averageTime = averageTimeTaken.Value.GetValueOrDefault();
-            int pendingNumber = pending.Value;
+            double averageTime = (await averageTimeTaken.GetValueAsync()).GetValueOrDefault();
+            int pendingNumber = await pending.GetValueAsync();
             return new BatchCompletionStatus
             {
-                Total = total.Value,
-                Failed = failed.Value,
+                Total = await total.GetValueAsync(),
+                Failed = await failed.GetValueAsync(),
                 Pending = pendingNumber,
-                Succeeded = succeeded.Value,
-                TimeTaken = TimeSpan.FromMilliseconds(Convert.ToDouble(timeTaken.Value.GetValueOrDefault())),
+                Succeeded = await succeeded.GetValueAsync(),
+                TimeTaken = TimeSpan.FromMilliseconds(
+                    Convert.ToDouble((await timeTaken.GetValueAsync()).GetValueOrDefault())).ToString("c"),
                 AverageTimeTaken = averageTime.ToString("0.00ms"),
-                EstimatedTimeRemaining = TimeSpan.FromMilliseconds(averageTime*pendingNumber)
+                EstimatedTimeRemaining = TimeSpan.FromMilliseconds(averageTime * pendingNumber).ToString("c")
             };
+        }
+
+        public async Task<BatchRun> Get(int id)
+        {
+            return await _session.GetAsync<BatchRun>(id);
         }
 
         private IQueryOver<BatchRunResult, BatchRunResult> GetResultsQuery(BatchRun batchRun)

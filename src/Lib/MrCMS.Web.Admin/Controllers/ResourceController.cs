@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Multisite;
-using MrCMS.Entities.Resources;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -16,42 +15,42 @@ namespace MrCMS.Web.Admin.Controllers
             _stringResourceAdminService = stringResourceAdminService;
         }
 
-        public ViewResult Index(StringResourceSearchQuery searchQuery)
+        public async Task<ViewResult> Index(StringResourceSearchQuery searchQuery)
         {
-            ViewData["results"] = _stringResourceAdminService.Search(searchQuery);
-            ViewData["language-options"] = _stringResourceAdminService.SearchLanguageOptions();
-            ViewData["site-options"] = _stringResourceAdminService.SearchSiteOptions();
+            ViewData["results"] = await _stringResourceAdminService.Search(searchQuery);
+            ViewData["language-options"] = await _stringResourceAdminService.SearchLanguageOptions();
+            ViewData["site-options"] = await _stringResourceAdminService.SearchSiteOptions();
             return View(searchQuery);
         }
 
         [HttpGet]
-        public ViewResult ChooseSite(ChooseSiteParams chooseSiteParams)
+        public async Task<ViewResult> ChooseSite(ChooseSiteParams chooseSiteParams)
         {
-            ViewData["site-options"] = _stringResourceAdminService.ChooseSiteOptions(chooseSiteParams);
+            ViewData["site-options"] = await _stringResourceAdminService.ChooseSiteOptions(chooseSiteParams);
             return View(chooseSiteParams);
         }
 
         [HttpGet]
-        public ViewResult Add(string key, int? id, bool language = false)
+        public async Task<ViewResult> Add(string key, int? id, bool language = false)
         {
             if (language)
-                ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key, id);
+                ViewData["language-options"] = await _stringResourceAdminService.GetLanguageOptions(key, id);
 
-            return View(_stringResourceAdminService.GetNewResource(key, id));
+            return View(await _stringResourceAdminService.GetNewResource(key, id));
         }
 
         [HttpPost]
         [ActionName("Add")]
-        public RedirectToActionResult Add_POST(AddStringResourceModel model)
+        public async Task<RedirectToActionResult> Add_POST(AddStringResourceModel model)
         {
-            _stringResourceAdminService.Add(model);
+            await _stringResourceAdminService.Add(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ViewResult Edit(int id)
+        public async Task<ViewResult> Edit(int id)
         {
-            var resource =  _stringResourceAdminService.GetResource(id);
+            var resource = await _stringResourceAdminService.GetResource(id);
             ViewData["resource"] = resource;
             var model = _stringResourceAdminService.GetEditModel(resource);
             return View(model);
@@ -59,23 +58,24 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public RedirectToActionResult Edit_POST(UpdateStringResourceModel model)
+        public async Task<RedirectToActionResult> Edit_POST(UpdateStringResourceModel model)
         {
-            _stringResourceAdminService.Update(model);
+            await _stringResourceAdminService.Update(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ViewResult Delete(StringResource resource)
+        public async Task<ViewResult> Delete(int id)
         {
+            var resource = await _stringResourceAdminService.GetResource(id);
             return View(resource);
         }
 
         [HttpPost]
         [ActionName("Delete")]
-        public RedirectToActionResult Delete_POST(int id)
+        public async Task<RedirectToActionResult> Delete_POST(int id)
         {
-            _stringResourceAdminService.Delete(id);
+            await _stringResourceAdminService.Delete(id);
             return RedirectToAction("Index");
         }
     }

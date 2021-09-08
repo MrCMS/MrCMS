@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Batching;
 using MrCMS.Batching.Services;
@@ -21,7 +22,8 @@ namespace MrCMS.Services.FileMigration
         private readonly ISession _session;
         private readonly IUrlHelper _urlHelper;
 
-        public FileMigrationService(IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings, ISession session,
+        public FileMigrationService(IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings,
+            ISession session,
             ICreateBatch createBatch, IUrlHelper urlHelper)
         {
             IEnumerable<IFileSystem> fileSystems = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>()
@@ -45,16 +47,18 @@ namespace MrCMS.Services.FileMigration
             }
         }
 
-        public FileMigrationResult MigrateFiles()
+        public async Task<FileMigrationResult> MigrateFiles()
         {
-            IList<MediaFile> mediaFiles = _session.QueryOver<MediaFile>().List();
+            IList<MediaFile> mediaFiles = await _session.QueryOver<MediaFile>().ListAsync();
 
-            List<Guid> guids =
-                mediaFiles.Where(
-                    mediaFile =>
-                        MediaFileExtensions.GetFileSystem(mediaFile, _allFileSystems.Values) !=
-                        CurrentFileSystem)
-                    .Select(file => file.Guid).ToList();
+            List<Guid> guids = new List<Guid>();
+            foreach (var file in mediaFiles)
+            {
+                if (await MediaFileExtensions.GetFileSystem(file, _allFileSystems.Values) != CurrentFileSystem)
+                {
+                    guids.Add(file.Guid);
+                }
+            }
 
             if (!guids.Any())
             {
@@ -65,7 +69,7 @@ namespace MrCMS.Services.FileMigration
                 };
             }
 
-            BatchCreationResult result = _createBatch.Create(guids.Chunk(10)
+            BatchCreationResult result = await _createBatch.Create(guids.Chunk(10)
                 .Select(set => new MigrateFilesBatchJob
                 {
                     Data = JsonConvert.SerializeObject(set.ToHashSet()),
@@ -75,7 +79,7 @@ namespace MrCMS.Services.FileMigration
             {
                 MigrationRequired = true,
                 Message = string.Format(
-                    "Batch created. Click <a target=\"_blank\" href=\"{0}\">here</a> to view and start.".AsResource(
+                    await "Batch created. Click <a target=\"_blank\" href=\"{0}\">here</a> to view and start.".AsResource(
                         _serviceProvider),
                     _urlHelper.Action("Show", "BatchRun", new {id = result.InitialBatchRun.Id}))
             };

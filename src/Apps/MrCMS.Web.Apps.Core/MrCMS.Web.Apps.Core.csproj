@@ -1,36 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Areas\Admin\Views\**" />
-    <EmbeddedResource Include="Views\**" />
-    <EmbeddedResource Include="wwwroot\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+        <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Views\Login\Facebook.cshtml" />
-    <None Remove="Views\Login\Google.cshtml" />
-    <None Remove="Views\Login\LinkedIn.cshtml" />
-    <None Remove="Views\Login\Providers.cshtml" />
-    <None Remove="Views\Pages\WebpagePasswordPage.cshtml" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\Scripts\recaptcha.js" />
-  </ItemGroup>
+    
 
 </Project>

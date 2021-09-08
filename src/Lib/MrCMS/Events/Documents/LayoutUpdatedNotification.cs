@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Notifications;
 using MrCMS.Services.Notifications;
@@ -15,13 +16,13 @@ namespace MrCMS.Events.Documents
             _notificationPublisher = notificationPublisher;
         }
 
-        public void Execute(OnUpdatedArgs<Layout> args)
+        public async Task Execute(OnUpdatedArgs<Layout> args)
         {
             var webpage = args.Item;
             string message = string.Format("<a href=\"/Admin/Layout/Edit/{1}\">{0}</a> has been updated{2}.",
                 webpage.Name,
-                webpage.Id, _documentModifiedUser.GetInfo());
-            _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
+                webpage.Id, await _documentModifiedUser.GetInfo());
+            await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
     }
 }

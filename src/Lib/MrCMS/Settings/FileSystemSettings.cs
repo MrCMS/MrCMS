@@ -28,9 +28,6 @@ namespace MrCMS.Settings
         [DisplayName("Azure CDN Domain")]
         public string AzureCdnDomain { get; set; }
 
-        [DisplayName("Use Azure for Lucene")]
-        public bool UseAzureForLucene { get; set; }
-
         public List<SelectListItem> StorageTypeOptions
         {
             get
@@ -42,6 +39,6 @@ namespace MrCMS.Settings
             }
         }
 
-        public override bool RenderInSettings { get { return false; } }
+        public override bool RenderInSettings => false;
     }
 }

@@ -2,164 +2,157 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MrCMS.DbConfiguration;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.Services.Resources
 {
     public class StringResourceProvider : IStringResourceProvider
     {
+        // private static readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
         private static Dictionary<string, HashSet<StringResource>> _allResources;
 
         private static readonly Dictionary<int, Dictionary<string, HashSet<StringResource>>> _resourcesBySite =
             new Dictionary<int, Dictionary<string, HashSet<StringResource>>>();
 
 
-        private static readonly object LockObject = new object();
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
         private readonly ILogger<StringResourceProvider> _logger;
         private readonly ISession _session;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
         private bool _retryingAllResources;
 
-        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo,
+        public StringResourceProvider(ISession session, ICurrentSiteLocator currentSiteLocator,
+            IGetCurrentUserCultureInfo getCurrentUserCultureInfo,
             ILogger<StringResourceProvider> logger)
         {
             _session = session;
-            _site = site;
+            _currentSiteLocator = currentSiteLocator;
             _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
             _logger = logger;
         }
 
-        private IEnumerable<StringResource> AllStringResources
+        private async Task<IEnumerable<StringResource>> GetAllStringResources()
         {
-            get { return AllResources.SelectMany(pair => pair.Value); }
+            return (await GetAllResources()).SelectMany(pair => pair.Value);
         }
 
         // retry added to try and help mitigate issues with duplicates being added and causing errors
-        private Dictionary<string, HashSet<StringResource>> AllResources
+        private async Task<Dictionary<string, HashSet<StringResource>>> GetAllResources()
         {
-            get
+            var allResources = _allResources ??= await GetAllResourcesFromDb();
+            if (!allResources.Any())
             {
-                var allResources =
-                    _allResources = _allResources ?? GetAllResourcesFromDb();
-                if (!allResources.Any())
+                try
                 {
-                    try
-                    {
-                        if (!_retryingAllResources)
-                        {
-                            _logger.Log(LogLevel.Information, "Resource list empty");
-                        }
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
                     if (!_retryingAllResources)
                     {
-                        _retryingAllResources = true;
-                        ResetResourceCache();
-                        return AllResources;
+                        _logger.Log(LogLevel.Information, "Resource list empty");
                     }
                 }
-
-                return allResources;
-            }
-        }
-
-
-        public Dictionary<string, HashSet<StringResource>> ResourcesForSite
-        {
-            get
-            {
-                return
-                    _resourcesBySite.ContainsKey(_site.Id)
-                        ? _resourcesBySite[_site.Id]
-                        : _resourcesBySite[_site.Id] =
-                            AllResources.Keys.ToDictionary(s => s,
-                                s =>
-                                    new HashSet<StringResource>(AllResources[s].Where(
-                                            resource => resource.Site == null || resource.Site.Id == _site.Id)
-                                        .OrderByDescending(resource => resource.Site != null ? 1 : 0)),
-                                StringComparer.OrdinalIgnoreCase);
-            }
-        }
-
-        public string GetValue(string key, string defaultValue = null)
-        {
-            return GetValueForCulture(key, _getCurrentUserCultureInfo.Get(), defaultValue);
-        }
-
-        public string GetValueForCulture(string key, CultureInfo cultureInfo, string defaultValue = null)
-        {
-            //using (MiniProfiler.Current.Step(string.Format("Getting resource - {0}", key)))
-            {
-                lock (LockObject)
+                catch
                 {
-                    string currentUserCulture;
-                    //using (MiniProfiler.Current.Step("culture check"))
-                    {
-                        currentUserCulture = cultureInfo.Name;
-                    }
-
-                    if (ResourcesForSite.ContainsKey(key))
-                    {
-                        var resources = ResourcesForSite[key];
-                        //using (MiniProfiler.Current.Step("Check for language"))
-                        {
-                            var languageValue =
-                                resources.FirstOrDefault(
-                                    resource => resource.UICulture == currentUserCulture);
-                            if (languageValue != null)
-                                return languageValue.Value;
-                        }
-
-                        //using (MiniProfiler.Current.Step("Check for default"))
-                        {
-                            var existingDefault =
-                                resources.FirstOrDefault(resource => resource.UICulture == null);
-                            if (existingDefault != null)
-                                return existingDefault.Value;
-                        }
-                    }
-
-                    //using (MiniProfiler.Current.Step("default resource"))
-                    {
-                        var defaultResource = new StringResource
-                        {
-                            Key = key,
-                            Value = defaultValue ?? key,
-                            //UICulture = currentUserCulture
-                        };
-                        _session.Transact(session => session.Save(defaultResource));
-                        //AllResources[key] = new HashSet<StringResource> {defaultResource};
-                        ResetResourceCache();
-                        return defaultResource.Value;
-                    }
+                    // ignored
                 }
+
+                if (!_retryingAllResources)
+                {
+                    _retryingAllResources = true;
+                    ResetResourceCache();
+                    return await GetAllResources();
+                }
+            }
+
+            return allResources;
+        }
+
+
+        public async Task<Dictionary<string, HashSet<StringResource>>> GetResourcesForCurrentSite()
+        {
+            var site = _currentSiteLocator.GetCurrentSite();
+            if (_resourcesBySite.ContainsKey(site.Id))
+                return _resourcesBySite[site.Id];
+            else
+            {
+                var allResources = await GetAllResources();
+                return _resourcesBySite[site.Id] =
+                    allResources.Keys.ToDictionary(s => s,
+                        s =>
+                            new HashSet<StringResource>(allResources[s].Where(
+                                    resource => resource.Site == null || resource.Site.Id == site.Id)
+                                .OrderByDescending(resource => resource.Site != null ? 1 : 0)),
+                        StringComparer.OrdinalIgnoreCase);
             }
         }
 
-        public IEnumerable<string> GetOverriddenLanguages()
+        public async Task<string> GetValue(string key, string defaultValue = null)
+        {
+            return await GetValueForCulture(key, await _getCurrentUserCultureInfo.Get(), defaultValue);
+        }
+
+        public async Task<string> GetValueForCulture(string key, CultureInfo cultureInfo, string defaultValue = null)
+        {
+            // await _semaphoreSlim.WaitAsync();
+            try
+            {
+                string currentUserCulture;
+                currentUserCulture = cultureInfo.Name;
+
+                var resourcesForSite = await GetResourcesForCurrentSite();
+                if (resourcesForSite.ContainsKey(key))
+                {
+                    var resources = resourcesForSite[key];
+
+                    var languageValue =
+                        resources.FirstOrDefault(
+                            resource => resource.UICulture == currentUserCulture);
+                    if (languageValue != null)
+                        return languageValue.Value;
+
+
+                    var existingDefault =
+                        resources.FirstOrDefault(resource => resource.UICulture == null);
+                    if (existingDefault != null)
+                        return existingDefault.Value;
+                }
+
+
+                var defaultResource = new StringResource
+                {
+                    Key = key,
+                    Value = defaultValue ?? key,
+                    //UICulture = currentUserCulture
+                };
+                await _session.TransactAsync(session => session.SaveAsync(defaultResource));
+                //AllResources[key] = new HashSet<StringResource> {defaultResource};
+                ResetResourceCache();
+                return defaultResource.Value;
+            }
+            finally
+            {
+                // _semaphoreSlim.Release();
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetOverriddenLanguages()
         {
             return
-                ResourcesForSite.SelectMany(x => x.Value)
-                    .Select(resource => resource.UICulture)
-                    .Distinct()
-                    .Where(s => !string.IsNullOrWhiteSpace(s));
+                (await GetResourcesForCurrentSite()).SelectMany(x => x.Value)
+                .Select(resource => resource.UICulture)
+                .Distinct()
+                .Where(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public IEnumerable<string> GetOverriddenLanguages(string key, int? siteId)
+        public async Task<IEnumerable<string>> GetOverriddenLanguages(string key, int? siteId)
         {
-            if (ResourcesForSite.ContainsKey(key))
+            var resourcesForSite = await GetResourcesForCurrentSite();
+            if (resourcesForSite.ContainsKey(key))
             {
-                var stringResources = ResourcesForSite[key];
+                var stringResources = resourcesForSite[key];
                 stringResources = siteId == null
                     ? stringResources.FindAll(resource => resource.Site == null)
                     : stringResources.FindAll(resource => resource.Site != null && resource.Site.Id == siteId);
@@ -171,45 +164,73 @@ namespace MrCMS.Services.Resources
             return new HashSet<string>();
         }
 
-        public void Insert(StringResource resource)
+        public async Task Insert(StringResource resource)
         {
-            lock (LockObject)
+            // await _semaphoreSlim.WaitAsync();
+            try
             {
-                _session.Transact(session => session.Save(resource));
+                var existingResource = await _session
+                    .Query<StringResource>().FirstOrDefaultAsync(stringResource => stringResource.Key == resource.Key);
+                if (existingResource == null)
+                    await _session.TransactAsync(session => session.SaveAsync(resource));
                 ResetResourceCache();
+            }
+            finally
+            {
+                // _semaphoreSlim.Release();
             }
         }
 
-        public void AddOverride(StringResource resource)
+        public async Task AddOverride(StringResource resource)
         {
-            lock (LockObject)
+            // await _semaphoreSlim.WaitAsync();
+            try
             {
                 if (resource.UICulture == null && resource.Site == null)
                     return;
-                _session.Transact(session => session.Save(resource));
+                await _session.TransactAsync(session => session.SaveAsync(resource));
                 ResetResourceCache();
             }
-        }
-
-        public void Update(StringResource resource)
-        {
-            lock (LockObject)
+            finally
             {
-                _session.Transact(session => session.Update(resource));
-                ResetResourceCache();
+                // _semaphoreSlim.Release();
             }
         }
 
-        public void Delete(StringResource resource)
+        public async Task Update(StringResource resource)
         {
-            lock (LockObject)
+            // await _semaphoreSlim.WaitAsync();
+            try
             {
-                _session.Transact(session => session.Delete(resource));
+                await _session.TransactAsync(session => session.UpdateAsync(resource));
                 ResetResourceCache();
+            }
+            finally
+            {
+                // _semaphoreSlim.Release();
             }
         }
 
-        IEnumerable<StringResource> IStringResourceProvider.AllResources => AllStringResources;
+        public async Task Delete(StringResource resource)
+        {
+            // await _semaphoreSlim.WaitAsync();
+            try
+            {
+                await _session.TransactAsync(session => session.DeleteAsync(resource));
+                ResetResourceCache();
+            }
+            finally
+            {
+                // _semaphoreSlim.Release();
+            }
+        }
+        //
+        // public IStringLocalizer GetLocalizer()
+        // {
+        // }
+
+        async Task<IEnumerable<StringResource>> IStringResourceProvider.GetAllResources() =>
+            await GetAllStringResources();
 
         public void ClearCache()
         {
@@ -222,19 +243,20 @@ namespace MrCMS.Services.Resources
             _resourcesBySite.Clear();
         }
 
-        private Dictionary<string, HashSet<StringResource>> GetAllResourcesFromDb()
+        private async Task<Dictionary<string, HashSet<StringResource>>> GetAllResourcesFromDb()
         {
-            lock (LockObject)
+            // await _semaphoreSlim.WaitAsync();
+            try
             {
-                using (new SiteFilterDisabler(_session))
-                {
-                    var allResourcesFromDb =
-                        _session.QueryOver<StringResource>().Cacheable().List().ToHashSet();
-                    var groupBy =
-                        allResourcesFromDb.GroupBy(resource => resource.Key,
-                            StringComparer.OrdinalIgnoreCase);
-                    return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
-                }
+                var allResourcesFromDb = await _session.QueryOver<StringResource>().Cacheable().ListAsync();
+                var groupBy =
+                    allResourcesFromDb.ToHashSet().GroupBy(resource => resource.Key,
+                        StringComparer.OrdinalIgnoreCase);
+                return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
+            }
+            finally
+            {
+                // _semaphoreSlim.Release();
             }
         }
     }

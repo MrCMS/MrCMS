@@ -1,5 +1,4 @@
-﻿@using MrCMS.Services.Resources
-@using MrCMS.Web.Admin.Helpers
+﻿@using MrCMS.Web.Admin.Helpers
 @using MrCMS.Web.Admin.Infrastructure.Dashboard
 @model MrCMS.Web.Admin.Models.Dashboard
 @{
@@ -10,7 +9,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col">
-                <h1>@Html.Resource("Dashboard")</h1>
+                <h1>@await Html.Resource("Dashboard")</h1>
             </div>
         </div>
     </div><!-- /.container-fluid -->

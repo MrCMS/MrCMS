@@ -1,38 +1,39 @@
-﻿using System;
-using MrCMS.Entities.Multisite;
+﻿using System.Threading.Tasks;
 using MrCMS.Messages;
+using MrCMS.Services;
 using MrCMS.Settings;
 
 namespace MrCMS.Web.Apps.Core.MessageTemplates
 {
     public class GetDefaultResetPasswordMessageTemplate : GetDefaultTemplate<ResetPasswordMessageTemplate>
     {
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
         private readonly MailSettings _mailSettings;
 
-        public GetDefaultResetPasswordMessageTemplate(Site site, MailSettings mailSettings)
+        public GetDefaultResetPasswordMessageTemplate(ICurrentSiteLocator currentSiteLocator, MailSettings mailSettings)
         {
-            _site = site;
+            _currentSiteLocator = currentSiteLocator;
             _mailSettings = mailSettings;
         }
 
-        public override ResetPasswordMessageTemplate Get()
+        public override Task<ResetPasswordMessageTemplate> Get()
         {
             var fromAddress = !string.IsNullOrWhiteSpace(_mailSettings.SystemEmailAddress)
                 ? _mailSettings.SystemEmailAddress
                 : "test@example.com";
-            return new ResetPasswordMessageTemplate
+            var site = _currentSiteLocator.GetCurrentSite();
+            return Task.FromResult(new ResetPasswordMessageTemplate
             {
                 FromAddress = fromAddress,
-                FromName = _site.Name,
+                FromName = site.Name,
                 ToAddress = "{Email}",
                 ToName = "{Name}",
-                Bcc = String.Empty,
-                Cc = String.Empty,
-                Subject = String.Format("{0} - Password Reset Request", _site.Name),
-                Body = string.Format("To reset your password please click <a href=\"{0}\">here</a>", "{ResetPasswordUrl}"),
+                Bcc = string.Empty,
+                Cc = string.Empty,
+                Subject = $"{site.Name} - Password Reset Request",
+                Body = "To reset your password please click <a href=\"{ResetPasswordUrl}\">here</a>",
                 IsHtml = true,
-            };
+            });
         }
     }
 }

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using MrCMS.ACL;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
-using MrCMS.Web.Admin.Helpers;
 using MrCMS.Web.Admin.Infrastructure.Routing;
 using MrCMS.Website;
 using MrCMS.Website.Auth;
@@ -18,7 +17,8 @@ namespace MrCMS.Web.Admin.Services
         private readonly IGetAllAdminDescriptors _getAllAdminDescriptors;
         private readonly IGetExplicitAclOperations _getExplicitAclOperations;
 
-        public GetAclOptions(IGetAllAdminDescriptors getAllAdminDescriptors, IGetExplicitAclOperations getExplicitAclOperations)
+        public GetAclOptions(IGetAllAdminDescriptors getAllAdminDescriptors,
+            IGetExplicitAclOperations getExplicitAclOperations)
         {
             _getAllAdminDescriptors = getAllAdminDescriptors;
             _getExplicitAclOperations = getExplicitAclOperations;
@@ -37,6 +37,7 @@ namespace MrCMS.Web.Admin.Services
             {
                 aclOptions.AddRange(GetControllerOptions(controller.Key, controller.AsEnumerable()));
             }
+
             return aclOptions;
         }
 
@@ -57,7 +58,8 @@ namespace MrCMS.Web.Admin.Services
             }
         }
 
-        private static IEnumerable<AclInfo> GetControllerOptions(string controllerName, IEnumerable<ControllerActionDescriptor> descriptors)
+        private static IEnumerable<AclInfo> GetControllerOptions(string controllerName,
+            IEnumerable<ControllerActionDescriptor> descriptors)
         {
             yield return new AclInfo
             {
@@ -89,18 +91,21 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly IServiceProvider _serviceProvider;
 
+        private static readonly HashSet<Type> ResolverTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(AclOperationResolver<>));
+
         public GetExplicitAclOperations(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
+
         public IEnumerable<string> GetOperations(Type type)
         {
-            if (!type.IsImplementationOf(typeof(ACLRule)))
+            if (!typeof(ACLRule).IsAssignableFrom(type))
                 return Enumerable.Empty<string>();
 
-            var customResolverType = TypeHelper
-                .GetAllConcreteTypesAssignableFrom(typeof(AclOperationResolver<>).MakeGenericType(type))
-                .FirstOrDefault();
+            var customResolverType = ResolverTypes.FirstOrDefault(x =>
+                typeof(AclOperationResolver<>).MakeGenericType(type).IsAssignableFrom(x));
             var resolver = customResolverType != null
                 ? _serviceProvider.GetService(customResolverType) as IAclOperationResolver
                 : _serviceProvider.GetService(typeof(DefaultAclOperationResolver<>).MakeGenericType(type)) as

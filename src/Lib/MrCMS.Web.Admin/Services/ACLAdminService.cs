@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.ACL;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
+using NHibernate.Linq;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Admin.Services
@@ -27,12 +29,12 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public List<AclInfo> GetOptions()
+        public async Task<List<AclInfo>> GetOptions()
         {
             var infos = _getAclInfos.GetInfos();
 
-            var roles = _roleManager.Roles.OrderBy(x => x.Name).ToList();
-            var aclRoles = _session.Query<ACLRole>().ToList();
+            var roles = await _roleManager.Roles.OrderBy(x => x.Name).ToListAsync();
+            var aclRoles = await _session.Query<ACLRole>().ToListAsync();
 
             foreach (var info in infos)
                 info.Roles = roles
@@ -48,27 +50,27 @@ namespace MrCMS.Web.Admin.Services
         }
 
 
-        public bool UpdateAcl(IFormCollection collection)
+        public async Task<bool> UpdateAcl(IFormCollection collection)
         {
             var records = GetUpdateRecords(collection["acl"]);
 
-            var aclRoles = _session.Query<ACLRole>().ToList(); 
+            var aclRoles = await _session.Query<ACLRole>().ToListAsync();
 
             var toAdd = records.Where(
                 x => !aclRoles.Any(aclRole => aclRole.UserRole?.Id == x.RoleId && aclRole.Name == x.Key));
             var toRemove =
                 aclRoles.Where(x => !records.Any(record => record.RoleId == x.UserRole?.Id && record.Key == x.Name));
 
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 foreach (var record in toAdd)
                 {
-                    session.Save(new ACLRole {Name = record.Key, UserRole = GetRole(record.RoleId)});
+                    await session.SaveAsync(new ACLRole {Name = record.Key, UserRole = GetRole(record.RoleId)});
                 }
 
                 foreach (var aclRole in toRemove)
                 {
-                    session.Delete(aclRole);
+                    await session.DeleteAsync(aclRole);
                 }
             });
             return true;

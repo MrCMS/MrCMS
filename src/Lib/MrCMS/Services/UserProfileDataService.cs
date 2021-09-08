@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.People;
+﻿using System.Threading.Tasks;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -13,28 +14,28 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public T Get<T>(int id) where T : UserProfileData
+        public async Task<T> Get<T>(int id) where T : UserProfileData
         {
-            return _session.Get<T>(id);
+            return await _session.GetAsync<T>(id);
         }
 
-        public void Add<T>(T data) where T : UserProfileData
+        public async Task Add<T>(T data) where T : UserProfileData
         {
             var user = data.User;
             if (user != null) user.UserProfileData.Add(data);
-            _session.Transact(session => session.Save(data));
+            await _session.TransactAsync(session => session.SaveAsync(data));
         }
 
-        public void Update<T>(T data) where T : UserProfileData
+        public async Task Update<T>(T data) where T : UserProfileData
         {
-            _session.Transact(session => session.Update(data));
+            await _session.TransactAsync(session => session.UpdateAsync(data));
         }
 
-        public void Delete<T>(T data) where T : UserProfileData
+        public async Task Delete<T>(T data) where T : UserProfileData
         {
             var user = data.User;
             if (user != null) user.UserProfileData.Remove(data);
-            _session.Transact(session => session.Delete(data));
+            await _session.TransactAsync(session => session.DeleteAsync(data));
         }
     }
 }

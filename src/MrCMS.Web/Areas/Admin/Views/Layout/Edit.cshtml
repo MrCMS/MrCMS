@@ -1,108 +1,116 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Layout
-@using MrCMS.Helpers
-@using MrCMS.Web.Admin.Models
+@using MrCMS.Website
 @model MrCMS.Web.Admin.Models.UpdateLayoutModel
+@inject IWidgetLoader WidgetLoader
 @{
     ViewBag.Title = Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    var layoutAreas = ViewData["layout-areas"] as List<LayoutArea>;
+    var layoutAreas = ViewData["layout-areas"] as List<LayoutArea> ?? new List<LayoutArea>();
 }
 
 <form asp-controller="Layout" asp-action="Edit" id="edit-document" method="post">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Model.Name" />
+            <admin-header-title title="@Model.Name"/>
 
             <admin-header-actions>
                 <span class="btn-group">
                     @if (Html.CanDeleteDocument(Model.Id))
                     {
-                        <a href="@Url.Action("Delete", "Layout", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
+                        <a href="@Url.Action("Delete", "Layout", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
                     }
 
-                    @Html.ActionLink(Html.Resource("Move"), "Set", "Layout", new {id = Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})
-                    <button class="btn btn-primary" id="save-edit">@Html.Resource("Save")</button>
+                    @Html.ActionLink(await Html.Resource("Move"), "Set", "Layout", new {id = Model.Id}, new {data_toggle = "fb-modal", @class = "btn btn-secondary"})
+                    <button class="btn btn-primary" id="save-edit">@await Html.Resource("Save")</button>
                 </span>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
 
-            @if (TempData["saved"] != null)
-            {
-                <div class="alert alert-success">
-                    <button type="button" class="close" data-dismiss="alert">×</button>
-                    @TempData["saved"]
-                </div>
-            }
+    @if (TempData["saved"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["saved"]
+        </div>
+    }
 
-            @Html.HiddenFor(x => x.Id)
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.Name)
-                        @Html.TextBoxFor(x => x.Name, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
-                    </div>
-                    @Html.EditorFor(x => x.UrlSegment)
+    @Html.HiddenFor(x => x.Id)
+    <div class="row">
+        <div class="col-lg-12">
 
-                    @Html.EditorFor(x => x.Hidden)
-                </div>
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input type="text" asp-for="Name" class="form-control"/>
+                <span asp-validation-for="Name"></span>
             </div>
-            
-        </card-body>
-    </card>
-    
+
+            <div class="form-group">
+                <label asp-for="UrlSegment"></label>
+                <input type="text" asp-for="UrlSegment" class="form-control"/>
+                <span asp-validation-for="UrlSegment"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="Hidden" type="checkbox" class="form-check-input"/>
+                    <label asp-for="Hidden" class="form-check-label"></label>
+                </div>
+                <span asp-validation-for="Hidden"></span>
+            </div>
+
+        </div>
+    </div>
+
+
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-layout-areas", "Layout Areas")"/>
+            <admin-header-title title="@await Html.Resource("admin-layout-areas", "Layout Areas")"/>
 
             <admin-header-actions>
                 <span class="btn-group">
-                    <a href="@Url.Action("Add", "LayoutArea", new {id = Model.Id})" class="btn btn-primary btn-sm" data-toggle="fb-modal">@Html.Resource("admin-layout-area-add", "Add layout area")</a>
+                    <a href="@Url.Action("Add", "LayoutArea", new {id = Model.Id})" class="btn btn-primary btn-sm" data-toggle="fb-modal">@await Html.Resource("admin-layout-area-add", "Add layout area")</a>
                 </span>
             </admin-header-actions>
         </row>
     </admin-header>
-    
-    <card>
-        <card-body>
-            <h4 class="light mt-3"></h4>
-            @{
-                if (layoutAreas.Any())
-                {
-                    <table class="table table-condensed table-striped">
-                        <tbody>
-                        @foreach (LayoutArea area in layoutAreas)
-                        {
-                            <tr>
-                                <td>
-                                    @area.AreaName
-                                    (@area.GetWidgets().Count())
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        @Html.ActionLink("Edit", "Edit", "LayoutArea", new {id = area.Id}, new {@class = "btn btn-secondary btn-sm"})
-                                        <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    @Html.Resource("admin-layout-add-info", "Click Add layout area to add the first area to this layout")
-                }
-            }
-            
 
-        </card-body>
-    </card>
+
+    <h4 class="light mt-3"></h4>
+    @{
+        if (layoutAreas.Any())
+        {
+            <table class="table table-condensed table-striped">
+                <tbody>
+                @foreach (LayoutArea area in layoutAreas.OrderBy(x=>x.AreaName).ToList())
+                {
+                    var widgets = await WidgetLoader.GetWidgets(area);
+                    <tr>
+                        <td>
+                            @area.AreaName (@widgets.Count)
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                @Html.ActionLink("Edit", "Edit", "LayoutArea", new {id = area.Id}, new {@class = "btn btn-secondary btn-sm"})
+                                <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.Resource("admin-layout-add-info", "Click Add layout area to add the first area to this layout")
+        }
+    }
+
+
+
+
 
 </form>

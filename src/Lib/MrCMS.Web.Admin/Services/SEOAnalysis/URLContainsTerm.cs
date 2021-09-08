@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
@@ -15,13 +16,19 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
         {
             _getLiveUrl = getLiveUrl;
         }
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+
+        public override async Task<IReadOnlyList<SEOAnalysisFacet>> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
-            string url = _getLiveUrl.GetAbsoluteUrl(webpage);
-            yield return
+            string url = await _getLiveUrl.GetAbsoluteUrl(webpage);
+            return new List<SEOAnalysisFacet>
+            {
                 url.Replace("-", " ").Contains(analysisTerm, StringComparison.OrdinalIgnoreCase)
-                    ? GetFacet("URL contains term", SEOAnalysisStatus.Success, "The URL contains '" + analysisTerm + "'")
-                    : GetFacet("URL contains term", SEOAnalysisStatus.Error, "The URL does not contain '" + analysisTerm + "'");
+                    ? GetFacet("URL contains term", SEOAnalysisStatus.Success,
+                        "The URL contains '" + analysisTerm + "'")
+                    : GetFacet("URL contains term", SEOAnalysisStatus.Error,
+                        "The URL does not contain '" + analysisTerm + "'")
+            };
         }
     }
 }

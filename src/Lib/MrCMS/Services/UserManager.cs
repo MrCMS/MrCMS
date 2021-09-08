@@ -11,7 +11,7 @@ namespace MrCMS.Services
 {
     public class UserManager : UserManager<User>, IUserPasswordManager, IUserClaimManager, IUserLoginManager,
         IUserRoleManager, IUserEmailManager, IUserPhoneNumberManager, IUserLockoutManager,
-        IUser2FAManager, IUserTokenManager, IGetUserFromClaims//, IUserLookup //IUserManager
+        IUser2FAManager, IUserTokenManager, IGetUserFromClaims //, IUserLookup //IUserManager
     {
         public UserManager(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<User> passwordHasher, IEnumerable<IUserValidator<User>> userValidators,
@@ -41,9 +41,13 @@ namespace MrCMS.Services
 
         public async Task<IdentityResult> SetPassword(User user, string password)
         {
-            var result = await RemovePasswordAsync(user);
-            if (!result.Succeeded)
-                return result;
+            if (await HasPasswordAsync(user))
+            {
+                var result = await RemovePasswordAsync(user);
+                if (!result.Succeeded)
+                    return result;
+            }
+
             return await AddPasswordAsync(user, password);
         }
     }

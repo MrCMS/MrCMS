@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Apps;
@@ -20,8 +21,10 @@ namespace MrCMS.Web.Admin.Services
         private readonly IMapper _mapper;
         private readonly MrCMSAppContext _appContext;
         private readonly ISession _session;
+        private static HashSet<Type> _webpageTypes;
 
-        public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions, IMapper mapper, MrCMSAppContext appContext)
+        public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions,
+            IMapper mapper, MrCMSAppContext appContext)
         {
             _session = session;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
@@ -29,57 +32,71 @@ namespace MrCMS.Web.Admin.Services
             _appContext = appContext;
         }
 
-        public IPagedList<PageTemplate> Search(PageTemplateSearchQuery query)
+        public async Task<IPagedList<PageTemplate>> Search(PageTemplateSearchQuery query)
         {
             IQueryOver<PageTemplate, PageTemplate> queryOver = _session.QueryOver<PageTemplate>();
 
-            return queryOver.Paged(query.Page);
+            return await queryOver.PagedAsync(query.Page);
         }
 
-        public void Add(AddPageTemplateModel model)
+        public async Task Add(AddPageTemplateModel model)
         {
             var template = _mapper.Map<PageTemplate>(model);
-            _session.Transact(session => session.Save(template));
+            await _session.TransactAsync(session => session.SaveAsync(template));
         }
 
-        public UpdatePageTemplateModel GetEditModel(int id)
+        public async Task<UpdatePageTemplateModel> GetEditModel(int id)
         {
-            var template = GetTemplate(id);
+            var template = await GetTemplate(id);
             return _mapper.Map<UpdatePageTemplateModel>(template);
         }
 
-        public void Update(UpdatePageTemplateModel model)
+        public async Task Update(UpdatePageTemplateModel model)
         {
-            var template = GetTemplate(model.Id);
+            var template = await GetTemplate(model.Id);
             _mapper.Map(model, template);
-            _session.Transact(session => session.Update(template));
+            await _session.TransactAsync(session => session.UpdateAsync(template));
         }
 
-        private PageTemplate GetTemplate(int id)
+        public async Task Delete(int id)
         {
-            return _session.Get<PageTemplate>(id);
+            var template = await GetTemplate(id);
+            await _session.TransactAsync(session => session.DeleteAsync(template));
+        }
+
+        private async Task<PageTemplate> GetTemplate(int id)
+        {
+            return await _session.GetAsync<PageTemplate>(id);
         }
 
         public List<SelectListItem> GetPageTypeOptions()
         {
             List<SelectListItem> selectListItems = GetNewList();
-            selectListItems.AddRange(
-                TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
-                    .Select(type => new { typeName = type.FullName, displayName = type.Name.BreakUpString(), app = _appContext.Types.ContainsKey(type) ? _appContext.Types[type].Name : "System" })
-                    .OrderBy(x => x.app)
-                    .ThenBy(x => x.displayName)
-                    .Select(info => new SelectListItem
-                    {
-                        Text = string.Format("{0} ({1})", info.displayName, info.app),
-                        Value = info.typeName
-                    }));
+            selectListItems.AddRange(GetWebpageTypes()
+                .Select(type => new
+                {
+                    typeName = type.FullName, displayName = type.Name.BreakUpString(),
+                    app = _appContext.Types.ContainsKey(type) ? _appContext.Types[type].Name : "System"
+                })
+                .OrderBy(x => x.app)
+                .ThenBy(x => x.displayName)
+                .Select(info => new SelectListItem
+                {
+                    Text = $"{info.displayName} ({info.app})",
+                    Value = info.typeName
+                }));
             return selectListItems;
         }
 
-        public List<SelectListItem> GetLayoutOptions()
+        private static HashSet<Type> GetWebpageTypes()
         {
-            IEnumerable<Layout> layouts =
-                _session.QueryOver<Layout>().Where(x => x.Hidden == false).Cacheable().List();
+            return _webpageTypes ??= TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>();
+        }
+
+        public async Task<List<SelectListItem>> GetLayoutOptions()
+        {
+            var layouts =
+                await _session.QueryOver<Layout>().Where(x => x.Hidden == false).Cacheable().ListAsync();
 
             return layouts.BuildSelectItemList(layout => layout.Name,
                 layout => layout.Id.ToString(CultureInfo.InvariantCulture),
@@ -90,7 +107,7 @@ namespace MrCMS.Web.Admin.Services
         {
             var type = TypeHelper.GetTypeByName(typeName);
             List<SelectListItem> urlGeneratorOptions = _getUrlGeneratorOptions.Get(type);
-            urlGeneratorOptions.Insert(0, new SelectListItem { Text = "Please select...", Value = "" });
+            urlGeneratorOptions.Insert(0, new SelectListItem {Text = "Please select...", Value = ""});
             return urlGeneratorOptions;
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using NHibernate;
@@ -11,35 +12,35 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly IImageProcessor _imageProcessor;
-        private readonly IFileSystem _fileSystem;
+        private readonly IFileSystemFactory _fileSystemFactory;
 
-        public CropService(ISession session, IImageProcessor imageProcessor, IFileSystem fileSystem)
+        public CropService(ISession session, IImageProcessor imageProcessor, IFileSystemFactory fileSystemFactory)
         {
             _session = session;
             _imageProcessor = imageProcessor;
-            _fileSystem = fileSystem;
+            _fileSystemFactory = fileSystemFactory;
         }
 
-        public Crop CreateCrop(MediaFile file, CropType cropType, Rectangle details)
+        public async Task<Crop> CreateCrop(MediaFile file, CropType cropType, Rectangle details)
         {
             if (!file.IsImage())
                 throw new ArgumentException("file is not an image");
 
-            var existing =
-                _session.QueryOver<Crop>()
-                    .Where(c => c.MediaFile.Id == file.Id && c.CropType.Id == cropType.Id)
-                    .Cacheable()
-                    .List();
+            var existing = await _session.QueryOver<Crop>()
+                .Where(c => c.MediaFile.Id == file.Id && c.CropType.Id == cropType.Id)
+                .Cacheable()
+                .ListAsync();
             if (existing.Any())
                 return existing.First();
 
 
             var filePath = file.FileUrl;
-            if (!_fileSystem.Exists(filePath))
-                throw new Exception(string.Format("Cannot find {0} on filesystem", filePath));
-            var bytes = _fileSystem.ReadAllBytes(filePath);
+            var fileSystem = _fileSystemFactory.GetForCurrentSite();
+            if (!await fileSystem.Exists(filePath))
+                throw new Exception($"Cannot find {filePath} on filesystem");
+            var bytes = await fileSystem.ReadAllBytes(filePath);
             var cropUrl = ImageProcessor.RequestedCropUrl(file, cropType);
-            _imageProcessor.SaveCrop(file, cropType, details, bytes, cropUrl);
+            await _imageProcessor.SaveCrop(file, cropType, details, bytes, cropUrl);
             var crop = new Crop
             {
                 MediaFile = file,
@@ -50,7 +51,7 @@ namespace MrCMS.Services
                 Top = details.Top,
                 Url = cropUrl
             };
-            _session.Transact(session => session.Save(crop));
+            await _session.TransactAsync(session => session.SaveAsync(crop));
             return crop;
         }
     }

@@ -6,6 +6,7 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Services
@@ -15,13 +16,27 @@ namespace MrCMS.Web.Admin.Services
         private readonly ISession _session;
         private readonly IMapper _mapper;
 
+        private static readonly HashSet<Type> FormPropertyTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>();
+
+        private static readonly List<Type> OrderedTypes = new List<Type>
+        {
+            typeof(TextBox),
+            typeof(Email),
+            typeof(DropDownList),
+            typeof(TextArea),
+            typeof(CheckboxList),
+            typeof(RadioButtonList),
+            typeof(FileUpload)
+        };
+
         public FormPropertyAdminService(ISession session, IMapper mapper)
         {
             _session = session;
             _mapper = mapper;
         }
 
-        public void Add(AddFormPropertyModel model)
+        public async Task Add(AddFormPropertyModel model)
         {
             var type = TypeHelper.GetTypeByName(model.PropertyType);
             var property = Activator.CreateInstance(type) as FormProperty;
@@ -34,64 +49,52 @@ namespace MrCMS.Web.Admin.Services
 
             property.Form?.FormProperties.Add(property);
 
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 if (property.Form.FormProperties != null)
                 {
                     property.DisplayOrder = property.Form.FormProperties.Count;
                 }
 
-                session.Save(property);
+                await session.SaveAsync(property);
             });
         }
 
-        public void Update(UpdateFormPropertyModel model)
+        public async Task Update(UpdateFormPropertyModel model)
         {
-            var property = GetFormProperty(model.Id);
+            var property = await GetFormProperty(model.Id);
             _mapper.Map(model, property);
-            _session.Transact(session => session.Update(property));
+            await _session.TransactAsync(session => session.UpdateAsync(property));
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var property = GetFormProperty(id);
+            var property = await GetFormProperty(id);
             property.Form.FormProperties.Remove(property);
-            _session.Transact(session => session.Delete(property));
+            await _session.TransactAsync(session => session.DeleteAsync(property));
         }
 
         public List<SelectListItem> GetPropertyTypeOptions()
         {
-            // this is intentionally a static list so that they can be ordered correctly,
-            var orderedTypes = new List<Type>
-            {
-                typeof(TextBox),
-                typeof(Email),
-                typeof(DropDownList),
-                typeof(TextArea),
-                typeof(CheckboxList),
-                typeof(RadioButtonList),
-                typeof(FileUpload)
-            };
-
             // but we still want to load all in case any custom types have been added
-            return TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>()
-                .OrderBy(type => orderedTypes.Contains(type))
-                .ThenBy(type => orderedTypes.IndexOf(type))
+            return FormPropertyTypes
+                .OrderBy(type => OrderedTypes.Contains(type))
+                .ThenBy(type => OrderedTypes.IndexOf(type))
                 .ThenBy(type => type.Name)
                 .BuildSelectItemList(type => type.Name.BreakUpString(),
                     type => type.FullName,
                     emptyItemText: null);
         }
 
-        public UpdateFormPropertyModel GetUpdateModel(int id)
+        public async Task<UpdateFormPropertyModel> GetUpdateModel(int id)
         {
-            var formProperty = GetFormProperty(id);
+            var formProperty = await GetFormProperty(id);
             return _mapper.Map<UpdateFormPropertyModel>(formProperty);
         }
 
-        private FormProperty GetFormProperty(int id)
+        private async Task<FormProperty> GetFormProperty(int id)
         {
-            return _session.Get<FormProperty>(id);
+            return await _session.GetAsync<FormProperty>(id);
         }
     }
 }

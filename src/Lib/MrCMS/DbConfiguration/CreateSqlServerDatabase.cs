@@ -2,7 +2,6 @@ using System;
 using System.Data.SqlClient;
 using System.Threading;
 using MrCMS.Apps;
-using MrCMS.Installation;
 using MrCMS.Installation.Models;
 
 namespace MrCMS.DbConfiguration

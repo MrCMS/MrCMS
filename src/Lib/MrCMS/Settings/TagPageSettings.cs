@@ -13,9 +13,6 @@ namespace MrCMS.Settings
 
         public string TagPagesName { get; set; }
 
-        public string TagPrefix
-        {
-            get { return $"{TagPagesURLPrefix}{TagPagesName}"; }
-        }
+        public string TagPrefix => $"{TagPagesURLPrefix}{TagPagesName}";
     }
 }

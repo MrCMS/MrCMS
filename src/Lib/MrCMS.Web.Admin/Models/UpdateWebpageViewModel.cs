@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Admin.Models

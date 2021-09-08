@@ -10,16 +10,15 @@ namespace MrCMS.Tasks.Entities
         {
             FrequencyInSeconds = 60;
         }
+
         public virtual bool Enabled { get; set; }
         public virtual int FrequencyInSeconds { get; set; }
+        public virtual string CronSchedule { get; set; }
         public virtual DateTime? LastStarted { get; set; }
         public virtual DateTime? LastCompleted { get; set; }
         public virtual TaskExecutionStatus Status { get; set; }
         public virtual string TypeName { get; set; }
 
-        public virtual Type Type
-        {
-            get { return TypeHelper.GetTypeByName(TypeName); }
-        }
+        public virtual Type Type => TypeHelper.GetTypeByName(TypeName);
     }
 }

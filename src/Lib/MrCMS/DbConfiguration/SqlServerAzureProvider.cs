@@ -1,6 +1,4 @@
-using System.ComponentModel;
-using FluentNHibernate.Cfg.Db;
-using MrCMS.Settings;
+
 // using NHibernate.SqlAzure;
 
 namespace MrCMS.DbConfiguration

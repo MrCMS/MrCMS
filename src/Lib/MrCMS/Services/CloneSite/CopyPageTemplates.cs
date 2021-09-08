@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -17,21 +18,21 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             using (new SiteFilterDisabler(_session))
             {
-                var existingTemplates =
-                    _session.QueryOver<PageTemplate>().Where(template => template.Site.Id == @from.Id).List();
+                var existingTemplates = await
+                    _session.QueryOver<PageTemplate>().Where(template => template.Site.Id == @from.Id).ListAsync();
 
-                _session.Transact(session =>
+                await _session.TransactAsync(async session =>
                 {
                     foreach (var template in existingTemplates)
                     {
                         var copy = template.GetCopyForSite(to);
                         if (template.Layout != null)
                             copy.Layout = siteCloneContext.FindNew<Layout>(template.Layout.Id);
-                        session.Save(copy);
+                        await session.SaveAsync(copy);
                         siteCloneContext.AddEntry(template, copy);
                     }
                 });

@@ -7,6 +7,7 @@ using MrCMS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Helpers
 {
@@ -15,13 +16,19 @@ namespace MrCMS.Helpers
         public static readonly HashSet<string> JpegExtensions = new HashSet<string> { ".jpg", ".jpeg" };
         public static readonly List<string> ImageExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".bmp" };
 
-        public static IFileSystem GetFileSystem(MediaFile file, IEnumerable<IFileSystem> possibleFileSystems)
+        public static async Task<IFileSystem> GetFileSystem(MediaFile file, IEnumerable<IFileSystem> possibleFileSystems)
         {
-            return GetFileSystem(file?.FileUrl, possibleFileSystems);
+            return await GetFileSystem(file?.FileUrl, possibleFileSystems);
         }
-        public static IFileSystem GetFileSystem(string fileUrl, IEnumerable<IFileSystem> possibleFileSystems)
+        public static async Task<IFileSystem> GetFileSystem(string fileUrl, IEnumerable<IFileSystem> possibleFileSystems)
         {
-            return possibleFileSystems.FirstOrDefault(system => system.Exists(fileUrl));
+            foreach (var fileSystem in possibleFileSystems)
+            {
+                if (await fileSystem.Exists(fileUrl))
+                    return fileSystem;
+            }
+
+            return null;
         }
 
         public static bool IsImage(this MediaFile file)

@@ -3,12 +3,14 @@ using System.IO;
 using MrCMS.Services.ImportExport.DTOs;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using ClosedXML.Excel;
 using Microsoft.Extensions.Logging;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Messages;
 using MrCMS.Models;
-using OfficeOpenXml;
+using NHibernate.Linq;
 
 namespace MrCMS.Services.ImportExport
 {
@@ -34,18 +36,17 @@ namespace MrCMS.Services.ImportExport
             _logger = logger;
         }
 
-        public ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true)
+        public async Task<ImportDocumentsResult> ImportDocumentsFromExcel(Stream file, bool autoStart = true)
         {
-            var spreadsheet = new ExcelPackage(file);
+            var spreadsheet = new XLWorkbook(file);
 
-            Dictionary<string, List<string>> parseErrors;
-            var items = GetDocumentsFromSpreadSheet(spreadsheet, out parseErrors);
+            var (items, parseErrors) = await GetDocumentsFromSpreadSheet(spreadsheet);
             if (parseErrors.Any())
                 return ImportDocumentsResult.Failure(parseErrors);
-            var businessLogicErrors = _importDocumentsValidationService.ValidateBusinessLogic(items);
+            var businessLogicErrors = await _importDocumentsValidationService.ValidateBusinessLogic(items);
             if (businessLogicErrors.Any())
                 return ImportDocumentsResult.Failure(businessLogicErrors);
-            var batch = _importDocumentService.CreateBatch(items, autoStart);
+            var batch = await _importDocumentService.CreateBatch(items, autoStart);
             //_importDocumentService.ImportDocumentsFromDTOs(items);
             return ImportDocumentsResult.Successful(batch);
         }
@@ -57,19 +58,20 @@ namespace MrCMS.Services.ImportExport
         /// <param name="spreadsheet"></param>
         /// <param name="parseErrors"></param>
         /// <returns></returns>
-        private List<DocumentImportDTO> GetDocumentsFromSpreadSheet(ExcelPackage spreadsheet, out Dictionary<string, List<string>> parseErrors)
+        private async Task<(List<DocumentImportDTO> data, Dictionary<string, List<string>> parseErrors)>
+            GetDocumentsFromSpreadSheet(XLWorkbook spreadsheet)
         {
-            parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
-            return parseErrors.Any()
-                       ? new List<DocumentImportDTO>()
-                       : _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet, ref parseErrors);
+            var parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
+            if (parseErrors.Any())
+                return (new List<DocumentImportDTO>(), parseErrors);
+            return await _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet);
         }
 
-        public byte[] ExportDocumentsToExcel()
+        public async Task<byte[]> ExportDocumentsToExcel()
         {
             try
             {
-                var webpages = _webpageRepository.Query().ToList();
+                var webpages = await _webpageRepository.Query().ToListAsync();
                 var package = _exportDocumentsService.GetExportExcelPackage(webpages);
                 return _exportDocumentsService.ConvertPackageToByteArray(package);
             }
@@ -80,22 +82,22 @@ namespace MrCMS.Services.ImportExport
             }
         }
 
-        public ExportDocumentsResult ExportDocumentsToEmail(ExportDocumentsModel model)
+        public async Task<ExportDocumentsResult> ExportDocumentsToEmail(ExportDocumentsModel model)
         {
             try
             {
-                var queuedMessage = _messageParser.GetMessage(toAddress: model.Email);
-                _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
-            {
-                new AttachmentData
+                var queuedMessage = await _messageParser.GetMessage(toAddress: model.Email);
+                await _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
                 {
-                    Data = ExportDocumentsToExcel(),
-                    ContentType = XlsxContentType,
-                    FileName = "Documents.xlsx"
-                }
-            });
+                    new AttachmentData
+                    {
+                        Data = await ExportDocumentsToExcel(),
+                        ContentType = XlsxContentType,
+                        FileName = "Documents.xlsx"
+                    }
+                });
 
-                return new ExportDocumentsResult { Success = true };
+                return new ExportDocumentsResult {Success = true};
             }
             catch (Exception exception)
             {

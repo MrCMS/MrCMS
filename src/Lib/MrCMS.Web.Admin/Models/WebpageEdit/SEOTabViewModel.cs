@@ -1,12 +1,30 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Admin.Models.WebpageEdit
 {
     public class SEOTabViewModel
     {
         public int Id { get; set; }
+        
+        public Webpage.WebpagePublishStatus PublishStatus
+        {
+            get
+            {
+                Webpage.WebpagePublishStatus status = Published
+                    ? Webpage.WebpagePublishStatus.Published
+                    : PublishOn.HasValue
+                        ? Webpage.WebpagePublishStatus.Scheduled
+                        : Webpage.WebpagePublishStatus.Unpublished;
+                return status;
+            }
+        }
+
+        public DateTime? PublishOn { get; set; }
+        public bool Published { get; set; }
 
         [Required]
         [MaxLength(450)]

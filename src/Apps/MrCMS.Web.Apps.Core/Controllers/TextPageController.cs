@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
@@ -16,9 +17,9 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [CanonicalLinks]
-        public ActionResult Show(int id)
+        public async Task<ActionResult> Show(int id)
         {
-            var page = _uiService.GetPage<TextPage>(id);
+            var page = await _uiService.GetPage<TextPage>(id);
             return View(page);
         }
     }

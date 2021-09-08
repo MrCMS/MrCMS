@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Services.WebsiteManagement
@@ -16,26 +15,27 @@ namespace MrCMS.Services.WebsiteManagement
         static CompleteMergeBatchJobExecutor()
         {
             CompleteMergeTypes = new Dictionary<Type, HashSet<Type>>();
+            var executorTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(OnMergingWebpagesBase<>));
 
-            foreach (Type type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>().Where(type => !type.ContainsGenericParameters))
+            foreach (Type type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                .Where(type => !type.ContainsGenericParameters))
             {
                 var hashSet = new HashSet<Type>();
 
                 var thisType = type;
                 while (typeof(Webpage).IsAssignableFrom(thisType))
                 {
-                    foreach (var assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(OnMergingWebpagesBase<>).MakeGenericType(thisType)))
+                    foreach (var assignType in executorTypes.FindAll(x =>
+                        typeof(OnMergingWebpagesBase<>).MakeGenericType(thisType).IsAssignableFrom(x)))
                     {
                         hashSet.Add(assignType);
                     }
-                    thisType = thisType.BaseType;
 
+                    thisType = thisType.BaseType;
                 }
 
                 CompleteMergeTypes.Add(type, hashSet);
             }
-
         }
 
         private readonly ISession _session;
@@ -43,7 +43,8 @@ namespace MrCMS.Services.WebsiteManagement
         private readonly INotificationDisabler _notificationDisabler;
         private static readonly Dictionary<Type, HashSet<Type>> CompleteMergeTypes;
 
-        public CompleteMergeBatchJobExecutor(ISession session, IServiceProvider serviceProvider, INotificationDisabler notificationDisabler)
+        public CompleteMergeBatchJobExecutor(ISession session, IServiceProvider serviceProvider,
+            INotificationDisabler notificationDisabler)
         {
             _session = session;
             _serviceProvider = serviceProvider;
@@ -51,38 +52,41 @@ namespace MrCMS.Services.WebsiteManagement
         }
 
 
-        protected override BatchJobExecutionResult OnExecute(CompleteMergeBatchJob batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(CompleteMergeBatchJob batchJob)
         {
             using (_notificationDisabler.Disable())
             {
                 var webpage = _session.Get<Webpage>(batchJob.WebpageId);
                 if (webpage == null)
                 {
-                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
+                    return await Task.FromResult(
+                        BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId));
                 }
+
                 var mergeInto = _session.Get<Webpage>(batchJob.MergedIntoId);
                 if (mergeInto == null)
                 {
-                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.MergedIntoId);
+                    return await Task.FromResult(BatchJobExecutionResult.Failure(
+                        "Could not find the webpage with id " + batchJob.MergedIntoId));
                 }
 
-                _session.Transact(session =>
+                await _session.TransactAsync(async session =>
                 {
                     ApplyCustomMergeLogic(webpage, mergeInto);
 
                     var urlSegment = webpage.UrlSegment;
-                    session.Delete(webpage);
+                    await session.DeleteAsync(webpage);
                     var urlHistory = new UrlHistory
                     {
                         UrlSegment = urlSegment,
                         Webpage = mergeInto,
                     };
                     mergeInto.Urls.Add(urlHistory);
-                    session.Save(urlHistory);
+                    await session.SaveAsync(urlHistory);
                 });
 
 
-                return BatchJobExecutionResult.Success();
+                return await Task.FromResult(BatchJobExecutionResult.Success());
             }
         }
 
@@ -95,16 +99,12 @@ namespace MrCMS.Services.WebsiteManagement
                 return;
             }
 
-            foreach (var binderType in CompleteMergeTypes[type].Select(assignViewDataType => _serviceProvider.GetService(assignViewDataType)))
+            foreach (var binderType in CompleteMergeTypes[type]
+                .Select(assignViewDataType => _serviceProvider.GetService(assignViewDataType)))
             {
                 var completedBase = binderType as OnMergingWebpagesBase;
                 completedBase?.MergeCompleted(webpage, mergeInto);
             }
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(CompleteMergeBatchJob batchJob)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

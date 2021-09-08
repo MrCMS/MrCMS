@@ -5,7 +5,6 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -35,11 +34,12 @@ namespace MrCMS.Services.Caching
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
-        public IHtmlContent GetContent(IViewComponentHelper helper, CachingInfo cachingInfo, Func<IViewComponentHelper, Task<IHtmlContent>> func)
+        public async Task<IHtmlContent> GetContent(IViewComponentHelper helper, CachingInfo cachingInfo,
+            Func<IViewComponentHelper, Task<IHtmlContent>> func)
         {
-            return _cacheManager.GetOrCreate(cachingInfo.CacheKey, () =>
+            return await _cacheManager.GetOrCreateAsync(cachingInfo.CacheKey, async () =>
                 {
-                    var htmlContent = func(helper).ExecuteSync();
+                    var htmlContent = await func(helper);
                     var stringBuilder = new StringBuilder();
                     TextWriter writer = new StringWriter(stringBuilder);
                     htmlContent.WriteTo(writer, HtmlEncoder.Default);

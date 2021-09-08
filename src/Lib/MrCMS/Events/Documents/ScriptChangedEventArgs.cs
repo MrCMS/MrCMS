@@ -1,6 +1,4 @@
-﻿using MrCMS.Entities.Documents.Web;
-
-namespace MrCMS.Events.Documents
+﻿namespace MrCMS.Events.Documents
 {
     public class ScriptChangedEventArgs<T>
     {

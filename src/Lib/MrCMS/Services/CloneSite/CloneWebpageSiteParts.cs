@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 
@@ -14,6 +15,7 @@ namespace MrCMS.Services.CloneSite
         static CloneWebpageSiteParts()
         {
             CloneWebpagePartTypes = new Dictionary<Type, HashSet<Type>>();
+            var allCloneParts = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(CloneWebpagePart<>));
 
             foreach (Type type in
                 TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
@@ -22,13 +24,14 @@ namespace MrCMS.Services.CloneSite
                 var hashSet = new HashSet<Type>();
 
                 Type thisType = type;
-                while (thisType != null && typeof (Webpage).IsAssignableFrom(thisType))
+                while (thisType != null && typeof(Webpage).IsAssignableFrom(thisType))
                 {
-                    foreach (Type assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof (CloneWebpagePart<>).MakeGenericType(thisType)))
+                    foreach (Type assignType in allCloneParts.FindAll(x =>
+                        typeof(CloneWebpagePart<>).MakeGenericType(thisType).IsAssignableFrom(x)))
                     {
                         hashSet.Add(assignType);
                     }
+
                     thisType = thisType.BaseType;
                 }
 
@@ -41,22 +44,22 @@ namespace MrCMS.Services.CloneSite
             _kernel = kernel;
         }
 
-        public void Clone(Webpage @from, Webpage to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Webpage @from, Webpage to, SiteCloneContext siteCloneContext)
         {
             if (from == null || to == null)
             {
                 return;
             }
+
             Type type = from.GetType();
             if (CloneWebpagePartTypes.ContainsKey(type))
             {
-                foreach (
-                    object cloneWebpagePart in
-                        CloneWebpagePartTypes[type].Select(service => _kernel.GetService(service))
-                    )
+                foreach (var cloneWebpagePart in
+                    CloneWebpagePartTypes[type].Select(service => _kernel.GetService(service))
+                )
                 {
-                    var part = cloneWebpagePart as CloneWebpagePart;
-                    if (part != null) part.ClonePartBase(from, to, siteCloneContext);
+                    if (cloneWebpagePart is CloneWebpagePart part)
+                        await part.ClonePartBase(from, to, siteCloneContext);
                 }
             }
         }

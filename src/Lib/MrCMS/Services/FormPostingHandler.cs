@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -28,7 +28,8 @@ namespace MrCMS.Services
 
         public const string GDPRConsent = nameof(GDPRConsent);
 
-        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload, IHttpContextAccessor contextAccessor, IGetWebpageForPath getWebpageForPath)
+        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload,
+            IHttpContextAccessor contextAccessor, IGetWebpageForPath getWebpageForPath)
         {
             _session = session;
             _saveFormFileUpload = saveFormFileUpload;
@@ -42,23 +43,24 @@ namespace MrCMS.Services
             return _session.Get<Form>(id);
         }
 
-        public List<string> SaveFormData(Form form, HttpRequest request)
+        public async Task<List<string>> SaveFormData(Form form, HttpRequest request)
         {
             var formProperties = form.FormProperties;
             var errors = new List<string>();
             if (!form.SendByEmailOnly)
             {
-                //todo add webpageId to form rendering so dont need to look up on request.ref
                 var referer = new Uri(request?.Referer() ?? "/");
-                var page = _getWebpageForPath.GetWebpage(referer.AbsolutePath);
+                var page = await _getWebpageForPath.GetWebpage(referer.AbsolutePath);
+                if (page != null)
+                    page = await _session.GetAsync<Webpage>(page.Id);
                 var files = new List<IFormFile>();
-                var formPosting = new FormPosting { Form = form, Webpage = page};
-                _session.Transact(session =>
+                var formPosting = new FormPosting {Form = form, Webpage = page};
+                await _session.TransactAsync(async session =>
                 {
                     form.FormPostings.Add(formPosting);
-                    session.SaveOrUpdate(formPosting);
+                    await session.SaveOrUpdateAsync(formPosting);
                 });
-                _session.Transact(session =>
+                await _session.TransactAsync(async (session) =>
                 {
                     foreach (var formProperty in formProperties)
                     {
@@ -72,11 +74,11 @@ namespace MrCMS.Services
                                     throw new RequiredFieldException("No file was attached to the " +
                                                                      formProperty.Name + " field");
 
-                                files.Add(file);
 
                                 if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
                                 {
-                                    var value = _saveFormFileUpload.SaveFile(form, formPosting, file);
+                                    files.Add(file);
+                                    var value = await _saveFormFileUpload.SaveFile(form, formPosting, file);
 
                                     formPosting.FormValues.Add(new FormValue
                                     {
@@ -118,13 +120,13 @@ namespace MrCMS.Services
 
                     if (errors.Any())
                     {
-                        session.Delete(formPosting);
+                        await session.DeleteAsync(formPosting);
                     }
                     else
                     {
-                        foreach (var value in formPosting.FormValues) session.Save(value);
+                        foreach (var value in formPosting.FormValues) await session.SaveAsync(value);
 
-                        SendFormMessages(form, formPosting, files);
+                        await SendFormMessages(form, formPosting, files);
                     }
                 });
             }
@@ -170,13 +172,13 @@ namespace MrCMS.Services
                 if (form.ShowGDPRConsentBox)
                 {
                     var value = SanitizeValue(null, request.Form[GDPRConsent]);
-                    if  (string.IsNullOrWhiteSpace(value))
+                    if (string.IsNullOrWhiteSpace(value))
                         errors.Add("GDPR consent is required");
                 }
 
                 if (!errors.Any())
                 {
-                    SendFormMessages(form, new FormPosting { FormValues = values }, files);
+                    await SendFormMessages(form, new FormPosting {FormValues = values}, files);
                 }
             }
 
@@ -205,56 +207,63 @@ namespace MrCMS.Services
             return value;
         }
 
-        private void SendFormMessages(Form form, FormPosting formPosting, List<IFormFile> files)
+        private async Task SendFormMessages(Form form, FormPosting formPosting, List<IFormFile> files)
         {
             if (form.SendFormTo == null) return;
 
             var sendTo = form.SendFormTo.Split(',');
             if (sendTo.Any())
-                _session.Transact(session =>
+                await _session.TransactAsync(async session =>
                 {
                     foreach (var email in sendTo)
                     {
-                        var formMessage = ParseFormMessage(form.FormMessage, form,
-                            formPosting);
-                        var formTitle = ParseFormMessage(form.FormEmailTitle, form,
-                            formPosting);
+                        var formFormMessage = form.FormMessage ?? "[form]";
+                        var formMessage = ParseFormMessage(formFormMessage, form, formPosting);
+                        var formTitle = form.FormEmailTitle ?? $"A new post to your form #{form.Name} has been made";
 
-                        session.Save(new QueuedMessage
+                        var attachments = new List<QueuedMessageAttachment>();
+                        foreach (var file in files)
+                        {
+                            attachments.Add(new QueuedMessageAttachment
+                            {
+                                ContentType = file.ContentType,
+                                Data = await GetData(file),
+                                FileSize = file.Length,
+                                FileName = file.FileName,
+                            });
+                        }
+
+                        await session.SaveAsync(new QueuedMessage
                         {
                             Subject = formTitle,
                             Body = formMessage,
                             FromAddress = _mailSettings.SystemEmailAddress,
                             ToAddress = email,
                             IsHtml = true,
-                            QueuedMessageAttachments = files.Select(x => new QueuedMessageAttachment
-                            {
-                                ContentType = x.ContentType,
-                                Data = GetData(x),
-                                FileSize = x.Length,
-                                FileName = x.FileName,
-                            }).ToList()
+                            QueuedMessageAttachments = attachments
                         });
                     }
                 });
         }
 
-        private byte[] GetData(IFormFile formFile)
+        private async Task<byte[]> GetData(IFormFile formFile)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                formFile.OpenReadStream().CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
+            await using var memoryStream = new MemoryStream();
+            var readStream = formFile.OpenReadStream();
+            await readStream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
         }
 
         private static string ParseFormMessage(string formMessage, Form form, FormPosting formPosting)
         {
             var formRegex = new Regex(@"\[form\]");
-            var pageRegex = new Regex(@"{{page.(.*)}}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            var messageRegex = new Regex(@"{{(.*)}}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            
+            if (!formRegex.IsMatch(formMessage))
+            {
+                formMessage = "[form]" + formMessage;
+            }
 
-            formMessage = formRegex.Replace(formMessage, match =>
+            return formRegex.Replace(formMessage, match =>
             {
                 var list = new TagBuilder("ul");
 
@@ -265,37 +274,12 @@ namespace MrCMS.Services
                     var title = new TagBuilder("b");
                     title.InnerHtml.AppendHtml(formValue.Key + ":");
                     listItem.InnerHtml.AppendHtml(title.GetString() + " " +
-                                          formValue.GetMessageValue());
+                                                  formValue.GetMessageValue());
 
                     list.InnerHtml.AppendHtml(listItem.GetString());
                 }
 
                 return list.GetString();
-            });
-
-            formMessage = pageRegex.Replace(formMessage, match =>
-            {
-                var propertyInfo =
-                    typeof(Webpage).GetProperties().FirstOrDefault(
-                        info =>
-                            info.Name.Equals(match.Value.Replace("{", "").Replace("}", "").Replace("page.", ""),
-                                StringComparison.OrdinalIgnoreCase));
-
-                return propertyInfo == null
-                    ? string.Empty
-                    : propertyInfo.GetValue(form, null).ToString();
-            });
-            return messageRegex.Replace(formMessage, match =>
-            {
-                var formValue =
-                    formPosting.FormValues.FirstOrDefault(
-                        value =>
-                            value.Key.Equals(
-                                match.Value.Replace("{", "").Replace("}", ""),
-                                StringComparison.OrdinalIgnoreCase));
-                return formValue == null
-                    ? string.Empty
-                    : formValue.GetMessageValue();
             });
         }
     }

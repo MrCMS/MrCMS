@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Controllers
@@ -9,18 +10,20 @@ namespace MrCMS.Website.Controllers
     public class SEOController : MrCMSUIController
     {
         private readonly SEOSettings _seoSettings;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
-        public SEOController(SEOSettings seoSettings, Site site)
+        public SEOController(SEOSettings seoSettings, ICurrentSiteLocator siteLocator)
         {
             _seoSettings = seoSettings;
-            _site = site;
+            _siteLocator = siteLocator;
         }
 
+        [Route("robots.txt"), HttpGet]
         public ActionResult Robots()
         {
+            var site = _siteLocator.GetCurrentSite();
             return Content(
-                Request.Host.Host.Equals(_site.StagingUrl, StringComparison.InvariantCultureIgnoreCase)
+                Request.Host.Host.Equals(site.StagingUrl, StringComparison.InvariantCultureIgnoreCase)
                     ? _seoSettings.RobotsTextStaging
                     : _seoSettings.RobotsText, "text/plain", Encoding.UTF8);
         }

@@ -1,80 +1,95 @@
-﻿@using System
-@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
+﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @using MrCMS.Web.Admin.Models
 @using MrCMS.Web.Admin.Services
+@using MrCMS.Web.Apps.Core.Pages
 @model Webpage
 @inject IGetEditTabsService TabsService
 @inject IGetLiveUrl GetLiveUrl
 @{
     ViewBag.Title = "Edit | " + Model.Name;
     ViewData["webpage"] = Model;
-    var tabs = TabsService.GetEditTabs(Html, Model);
+    var tabs = await TabsService.GetEditTabs(Html, Model);
 }
 
-<form asp-controller="Webpage" asp-action="edit" id="edit-document" data-are-you-sure="@Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post">
+<form asp-controller="Webpage" asp-action="Edit" id="edit-document" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post" data-edit-webpage autocomplete="off">
     <admin-header>
         <row>
             <admin-header-title title="@Model.Name"/>
 
             <admin-header-actions>
-                <div class="input-group" id="edit-webpage-options">
-                    <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
+                <div id="edit-webpage-options">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                More
+                            </button>
+                            <div class="dropdown-menu">
+                                @if (Html.CanDelete())
+                                {
+                                    <a class="dropdown-item" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@await Html.Resource("Delete")</a>
+                                }
+                                @Html.ActionLink(await Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                @if (Html.AnyChildren())
+                                {
+                                    @Html.ActionLink(await Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                }
+                                <a class="dropdown-item"
+                                   asp-action="SendToRole"
+                                   asp-controller="PushNotification"
+                                   asp-route-title="@await Html.Resource($"Latest from {Model.Site.Name}")"
+                                   asp-route-body="@Model.Name"
+                                   asp-route-url="@await GetLiveUrl.GetAbsoluteUrl(Model)"
+                                   asp-route-image="@(Model is TextPage a1 ? a1.FeatureImage : null)"
+                                   data-toggle="fb-modal">
+                                    @await Html.Resource("Send push to role")
+                                </a>
+                                <a class="dropdown-item"
+                                   asp-action="SendToAll"
+                                   asp-controller="PushNotification"
+                                   asp-route-title="@await Html.Resource($"Latest from {Model.Site.Name}")"
+                                   asp-route-body="@Model.Name"
+                                   asp-route-url="@await GetLiveUrl.GetAbsoluteUrl(Model)"
+                                   asp-route-image="@(Model is TextPage a2 ? a2.FeatureImage : null)"
+                                   data-toggle="fb-modal">
+                                    @await Html.Resource("Send push to all")
+                                </a>
 
-                    <input type="text" asp-for="PublishOn" class="form-control date-time-picker"/>
-                    @Html.ValidationMessageFor(x => x.PublishOn)
-
-                    <div class="input-group-append">
-                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                            @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
-
-                            <a href="@(GetLiveUrl.GetUrlSegment(Model, true))" class="btn btn-secondary">View</a>
-
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    More
-                                </button>
-                                <div class="dropdown-menu">
-                                    @if (Html.CanDelete())
-                                    {
-                                        <a class="dropdown-item" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@Html.Resource("Delete")</a>
-                                    }
-                                    @Html.ActionLink(Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
-                                    @if (Html.AnyChildren())
-                                    {
-                                        @Html.ActionLink(Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
-                                    }
-                                </div>
                             </div>
-                            <button class="btn btn-primary">@Html.Resource("Save")</button>
                         </div>
+                        <a href="@await GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
+                        @if (Model.PublishStatus != Webpage.WebpagePublishStatus.Scheduled)
+                        {
+                            @(Model.PublishOn == null ? Html.ActionLink(await Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(await Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
+                        }
+
+                        <button class="btn btn-primary" type="submit">@await Html.Resource("Save")</button>
                     </div>
                 </div>
             </admin-header-actions>
         </row>
     </admin-header>
+    @if (Model.PublishStatus == Webpage.WebpagePublishStatus.Scheduled && Model.PublishOn.HasValue)
+    {
+        <div class="alert alert-warning">
+            @string.Format(await Html.Resource("admin-webpage-published-noticed-info", "This webpage is due to be published on {0}"),  Model.PublishOn.Value.ToString("f"))
+        </div>
+    }
 
-    <card>
-        <card-body>
-            <ul class="nav nav-tabs" data-stickytabs="webpage-@Model.Id" role="tablist">
-                @foreach (var tab in tabs)
-                {
-                    ViewData["is-first"] = tab == tabs.First();
-                    <partial name="Tab" model="tab" view-data="ViewData"/>
-                }
-            </ul>
-            <div class="tab-content mt-3">
-                @foreach (var tab in tabs)
-                {
-                    ViewData["is-first"] = tab == tabs.First();
-                    <partial name="TabContent" model="tab" view-data="ViewData"/>
-                }
-            </div>
-        </card-body>
-    </card>
+    <ul class="nav nav-tabs" data-stickytabs="webpage-@Model.Id" role="tablist">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData"/>
+        }
+    </ul>
+    <div class="tab-content mt-3">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="TabContent" model="tab" view-data="ViewData"/>
+        }
+    </div>
+
+
 </form>
-
-@{
-    Html.IncludeScript("~/Areas/Admin/scripts/edit-webpage.js");
-}

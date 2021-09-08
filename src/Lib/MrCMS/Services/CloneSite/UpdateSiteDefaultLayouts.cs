@@ -1,24 +1,24 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-65)]
     public class UpdateSiteDefaultLayouts : ICloneSiteParts
     {
-        private readonly ISession _session;
+        private readonly IConfigurationProviderFactory _factory;
 
-        public UpdateSiteDefaultLayouts(ISession session)
+        public UpdateSiteDefaultLayouts(IConfigurationProviderFactory factory)
         {
-            _session = session;
+            _factory = factory;
         }
 
-        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
+        public async Task Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var toProvider = new SqlConfigurationProvider(_session, @to);
+            var toProvider = _factory.GetForSite(to);
             var pageDefaultsSettings = toProvider.GetSiteSettings<PageDefaultsSettings>();
 
             var keys = pageDefaultsSettings.Layouts.Keys.ToList();
@@ -29,7 +29,7 @@ namespace MrCMS.Services.CloneSite
                     pageDefaultsSettings.Layouts[key] = layout.Id;
             }
 
-            toProvider.SaveSettings(pageDefaultsSettings);
+            await toProvider.SaveSettings(pageDefaultsSettings);
         }
     }
 }

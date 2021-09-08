@@ -1,10 +1,10 @@
-using MrCMS.Entities.Documents.Web;
+using System.Threading.Tasks;
 using MrCMS.Models;
 
 namespace MrCMS.Services
 {
     public interface IWebpageUrlService
     {
-        string Suggest(SuggestParams suggestParams);
+        Task<string> Suggest(SuggestParams suggestParams);
     }
 }

@@ -8,9 +8,6 @@ namespace MrCMS.Entities.People
     {
         public virtual User User { get; set; }
 
-        public static IEnumerable<Type> Types
-        {
-            get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<UserProfileData>(); }
-        }
+        public static IEnumerable<Type> Types => TypeHelper.GetAllConcreteMappedClassesAssignableFrom<UserProfileData>();
     }
 }

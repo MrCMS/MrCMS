@@ -1,5 +1,4 @@
-﻿@using MrCMS.Helpers
-@model System.Collections.Generic.List<MrCMS.Models.SortItem>
+﻿@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Pages";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -25,31 +24,27 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <h1>@Html.Resource("admin-sort", "Sort")</h1>
+                    <h1>@await Html.Resource("admin-sort", "Sort")</h1>
                 </div>
                 <div class="col">
                     <span class="btn-group pull-right">
-                        <a asp-controller="Webpage" asp-action="Index" class="btn btn-secondary">@Html.Resource("admin-back", "Back")</a>
-                        <input type="submit" class="btn btn-primary" value="@Html.Resource("admin-save", "Save")"/>
+                        <a asp-controller="Webpage" asp-action="Index" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
+                        <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save")"/>
                     </span>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="card">
-        <div class="card-body">
-            <ul id="sortable" class="list-group">
-                @for (int i = 0; i < Model.Count; i++)
-                {
-                    <li class="list-group-item">
-                        @Html.HiddenFor(model => model[i].Id)
-                        @Html.HiddenFor(model => model[i].Order)
-                        <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
-                        @Model[i].Name
-                    </li>
-                }
-            </ul>
-        </div>
-    </div>
+    <ul id="sortable" class="list-group">
+        @for (var i = 0; i < Model.Count; i++)
+        {
+            <li class="list-group-item">
+                @Html.HiddenFor(model => model[i].Id)
+                @Html.HiddenFor(model => model[i].Order)
+                <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
+                @Model[i].Name
+            </li>
+        }
+    </ul>
 </form>

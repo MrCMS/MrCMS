@@ -2,6 +2,9 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
 using System.Linq;
+using System.Threading.Tasks;
+using MrCMS.Entities.People;
+using NHibernate.Linq;
 
 namespace MrCMS.Website.PushNotifications
 {
@@ -10,42 +13,73 @@ namespace MrCMS.Website.PushNotifications
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly ISession _session;
         private readonly ISendPushNotification _sendPushNotification;
-        private readonly WebPushSettings _settings;
+        private IGetWebPushSettings _getSettings;
 
-        public PushNotificationSubscriptionManager(IGetCurrentUser getCurrentUser, ISession session, IGetWebPushSettings getSettings, ISendPushNotification sendPushNotification)
+        public PushNotificationSubscriptionManager(IGetCurrentUser getCurrentUser, ISession session,
+            IGetWebPushSettings getSettings, ISendPushNotification sendPushNotification)
         {
             _getCurrentUser = getCurrentUser;
             _session = session;
-            _settings = getSettings.GetSettings();
+            _getSettings = getSettings;
             _sendPushNotification = sendPushNotification;
         }
 
-        public WebPushResult CreateSubscription(PushNotificationSubscription subscription)
+        public async Task<WebPushResult> CreateOrUpdateSubscription(PushNotificationSubscription subscription)
         {
+            var existing = await _session.Query<PushSubscription>().WithOptions(options => options.SetCacheable(true))
+                .FirstOrDefaultAsync(x => x.Key == subscription.Key);
+
+            if (existing != null)
+            {
+                // we'll check if the user needs setting and try to do so   
+                if (existing.User != null)
+                    return new WebPushResult();
+
+                var currentUser = await _getCurrentUser.Get();
+                if (currentUser != null)
+                {
+                    existing.User = currentUser;
+                    await _session.TransactAsync(session => session.UpdateAsync(existing));
+                }
+
+                return new WebPushResult();
+            }
+
+
             var pushSubscription = new Entities.People.PushSubscription
             {
                 AuthSecret = subscription.AuthSecret,
                 Endpoint = subscription.Endpoint,
                 Key = subscription.Key,
-                User = _getCurrentUser.Get()
+                User = await _getCurrentUser.Get()
             };
 
-            _session.Transact(session => session.Save(pushSubscription));
+            await _session.TransactAsync(session => session.SaveAsync(pushSubscription));
 
-            return _sendPushNotification.SendNotification(pushSubscription, _settings.SubscriptionConfirmationMessage);
+            var settings = await _getSettings.GetSettings();
+            return await _sendPushNotification.SendNotification(pushSubscription,
+                settings.SubscriptionConfirmationMessage);
         }
 
 
-        public WebPushResult RemoveSubscription(string endpoint)
+        public async Task<WebPushResult> RemoveSubscription(string endpoint)
         {
-            var pushSubscriptions = _session.Query<Entities.People.PushSubscription>().Where(x => x.Endpoint == endpoint).ToList();
-            _session.Transact(session => pushSubscriptions.ForEach(session.Delete));
+            var pushSubscriptions = await _session.Query<Entities.People.PushSubscription>()
+                .Where(x => x.Endpoint == endpoint).ToListAsync();
+            await _session.TransactAsync(async session =>
+            {
+                foreach (var subscription in pushSubscriptions)
+                {
+                    await session.DeleteAsync(subscription);
+                }
+            });
 
             return new WebPushResult();
         }
 
-        public string GetServiceWorkerJavaScript()
+        public async Task<string> GetServiceWorkerJavaScript()
         {
+            var settings = await _getSettings.GetSettings();
             return @"
 'use strict';
 
@@ -114,7 +148,7 @@ self.addEventListener('pushsubscriptionchange', function(event)
     console.log('[Service Worker] New subscription: ', newSubscription);
     })
   );
-});".Replace("PUBLIC_KEY", _settings.VapidPublicKey);
+});".Replace("PUBLIC_KEY", settings.VapidPublicKey);
         }
     }
 }

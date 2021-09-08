@@ -9,12 +9,12 @@ namespace MrCMS.Website.CMS
     {
         public static bool IsCMSRequest(this ActionContext context)
         {
-            return context.RouteData.DataTokens.ContainsKey(CmsRouter.RouteName);
+            return context.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsCMSRequest);
         }
 
         public static bool IsCMSRequest(this IHtmlHelper helper)
         {
-            return helper.ViewContext.RouteData.DataTokens.ContainsKey(CmsRouter.RouteName);
+            return helper.ViewContext.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsCMSRequest);
         }
 
         public static void MakeCMSRequest(this HttpContext context)
@@ -26,17 +26,17 @@ namespace MrCMS.Website.CMS
         public static void MakeCMSRequest(this RouteData routeData)
         {
             if (routeData != null)
-                routeData.DataTokens[CmsRouter.RouteName] = true;
+                routeData.DataTokens[MrCMSRouteTransformer.IsCMSRequest] = true;
         }
 
         public static bool IsPreview(this ActionContext context)
         {
-            return context.RouteData.DataTokens.ContainsKey(CmsRouter.IsPreview);
+            return context.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsPreview);
         }
 
         public static bool IsPreview(this IHtmlHelper helper)
         {
-            return helper.ViewContext.RouteData.DataTokens.ContainsKey(CmsRouter.IsPreview);
+            return helper.ViewContext.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsPreview);
         }
 
         public static void MakePreview(this HttpContext context)
@@ -48,7 +48,7 @@ namespace MrCMS.Website.CMS
         public static void MakePreview(this RouteData routeData)
         {
             if (routeData != null)
-                routeData.DataTokens[CmsRouter.IsPreview] = true;
+                routeData.DataTokens[MrCMSRouteTransformer.IsPreview] = true;
         }
     }
 }

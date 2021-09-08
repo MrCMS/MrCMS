@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
 using NHibernate.Criterion;
@@ -11,20 +12,21 @@ namespace MrCMS.Web.Admin.Services
     public class AdminPageStatsService : IAdminPageStatsService
     {
         private readonly ISession _session;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
-        public AdminPageStatsService(ISession session, Site site)
+        public AdminPageStatsService(ISession session, ICurrentSiteLocator siteLocator)
         {
             _session = session;
-            _site = site;
+            _siteLocator = siteLocator;
         }
 
         public IList<WebpageStats> GetSummary()
         {
             WebpageStats countAlias = null;
             Webpage webpageAlias = null;
+            var site = _siteLocator.GetCurrentSite();
             return _session.QueryOver(() => webpageAlias)
-                .Where(x => x.Site.Id == _site.Id)
+                .Where(x => x.Site.Id == site.Id)
                 .SelectList(
                     builder =>
                         builder.SelectGroup(() => webpageAlias.DocumentType)
@@ -35,7 +37,7 @@ namespace MrCMS.Web.Admin.Services
                                 QueryOver.Of<Webpage>()
                                     .Where(
                                         webpage =>
-                                            webpage.Site.Id == _site.Id &&
+                                            webpage.Site.Id == site.Id &&
                                             webpage.DocumentType == webpageAlias.DocumentType &&
                                            !webpage.Published && !webpage.IsDeleted)
                                     .ToRowCountQuery())

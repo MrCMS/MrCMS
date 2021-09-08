@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using MrCMS.ACL;
 using MrCMS.Entities.People;
-using MrCMS.Settings;
-using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
@@ -28,7 +25,7 @@ namespace MrCMS.Helpers
 
         public static T Get<T>(this User user) where T : UserProfileData
         {
-            return user.UserProfileData.OfType<T>().FirstOrDefault();
+            return user?.UserProfileData.OfType<T>().FirstOrDefault();
         }
 
         public static T2 Get<T1, T2>(this User user, Func<T1, T2> func) where T1 : UserProfileData

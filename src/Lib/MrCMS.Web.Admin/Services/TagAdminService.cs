@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Models;
 using NHibernate;
@@ -16,10 +17,10 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public IEnumerable<AutoCompleteResult> Search(string term)
+        public async Task<IEnumerable<AutoCompleteResult>> Search(string term)
         {
             AutoCompleteResult alias = null;
-            return
+            return await
                 _session.QueryOver<Tag>()
                     .Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start))
                     .OrderBy(tag => tag.Name).Asc
@@ -31,8 +32,9 @@ namespace MrCMS.Web.Admin.Services
                         return builder;
                     })
                     .TransformUsing(Transformers.AliasToBean<AutoCompleteResult>())
+                    .Take(10)
                     .Cacheable()
-                    .List<AutoCompleteResult>();
+                    .ListAsync<AutoCompleteResult>();
         }
 
         public IEnumerable<Tag> GetTags(Document document)

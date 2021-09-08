@@ -1,17 +1,12 @@
 ﻿@using System.Drawing
-@using MrCMS.Entities.Documents.Media
-@using MrCMS.Helpers
 @using MrCMS.Web.Admin.Helpers
-@using MrCMS.Web.Admin.Models
 @using MrCMS.Web.Admin.Services
-@using X.PagedList
-@using X.PagedList.Mvc
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
 @{
-    var files = FileAdminService.GetFilesForFolder(Model);
-    var folders = FileAdminService.GetSubFolders(Model);
+    var files = await FileAdminService.GetFilesForFolder(Model);
+    var folders = await FileAdminService.GetSubFolders(Model);
 }
 <div data-update-media-folder="@Url.Action("Directory", "MediaCategory", Model)">
     <div id="folder-container">
@@ -36,7 +31,7 @@
                             <a title="@file.FileName">
                                 @if (file.IsImage())
                                 {
-                                    @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                                    @await Html.RenderImage(file.FileUrl, new Size(100, 100))
                                 }
                                 else
                                 {
@@ -54,7 +49,7 @@
             }
             else
             {
-                @Html.InfoBlock("", Html.Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
+                @Html.InfoBlock("", await Html.Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
             }
         </div>
         <div class="clearfix"> </div>

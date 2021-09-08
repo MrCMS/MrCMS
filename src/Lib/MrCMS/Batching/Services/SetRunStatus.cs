@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
 using NHibernate;
@@ -13,22 +14,22 @@ namespace MrCMS.Batching.Services
             _session = session;
         }
 
-        public void Complete(BatchRun batchRun)
+        public async Task Complete(BatchRun batchRun)
         {
-            SetStatus(batchRun, BatchRunStatus.Complete);
+            await SetStatus(batchRun, BatchRunStatus.Complete);
         }
 
-        public void Paused(BatchRun batchRun)
+        public async Task Paused(BatchRun batchRun)
         {
-            SetStatus(batchRun, BatchRunStatus.Paused);
+            await SetStatus(batchRun, BatchRunStatus.Paused);
         }
 
-        private void SetStatus(BatchRun batchRun, BatchRunStatus status)
+        private async Task SetStatus(BatchRun batchRun, BatchRunStatus status)
         {
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
                 batchRun.Status = status;
-                session.Update(batchRun);
+                await session.UpdateAsync(batchRun);
             });
         }
     }

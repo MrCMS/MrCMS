@@ -4,19 +4,17 @@ namespace MrCMS.Website.PushNotifications
 {
     public class PushNotificationPayload
     {
-        [JsonProperty("title")]
-        public string Title { get; set; }
+        [JsonProperty("title")] public string Title { get; set; }
 
-        [JsonProperty("body")]
-        public string Body { get; set; }
+        [JsonProperty("body")] public string Body { get; set; }
 
-        [JsonProperty("icon")]
-        public string Icon { get; set; }
+        [JsonProperty("icon")] public string Icon { get; set; }
 
-        [JsonProperty("badge")]
-        public string Badge { get; set; }
+        [JsonProperty("badge")] public string Badge { get; set; }
 
-        [JsonProperty("actionUrl")]
-        public string ActionUrl { get; set; }
+        [JsonProperty("actionUrl")] public string ActionUrl { get; set; }
+
+        [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
+        public string Image { get; set; }
     }
 }

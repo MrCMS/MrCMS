@@ -1,13 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Html
-@using MrCMS.Web.Admin.Models
 @model List<MrCMS.Web.Admin.Models.AdminTreeNode>
 
 <ul>
-    @foreach (AdminTreeNode node in Model)
+    @foreach (var node in Model)
     {
-        string cssClass = "";
+        var cssClass = "";
 
-        if (node.IsMoreLink) { }
+        if (node.IsMoreLink)
+        {
+        }
         else if (!node.IsPublished)
         {
             cssClass = "text-warning";

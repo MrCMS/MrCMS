@@ -22,10 +22,7 @@ namespace MrCMS.Entities.Multisite
         
         public virtual IList<RedirectedDomain> RedirectedDomains { get; set; }
 
-        public virtual string DisplayName
-        {
-            get { return string.Format("{0} ({1})", Name, BaseUrl); }
-        }
+        public virtual string DisplayName => $"{Name} ({BaseUrl})";
 
         public virtual bool IsValidForSite(SiteEntity entity)
         {

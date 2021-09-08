@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Models;
 using MrCMS.Website.Caching;
-using NHibernate;
 
 namespace MrCMS.Settings
 {

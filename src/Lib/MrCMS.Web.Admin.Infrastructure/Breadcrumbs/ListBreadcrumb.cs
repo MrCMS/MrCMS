@@ -12,6 +12,6 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
         public override string Controller => typeof(T).Name;
         public override string Action => "Index";
         public override bool IsNav => true;
-        public override int Order { get; }
+        public override decimal Order { get; }
     }
 }

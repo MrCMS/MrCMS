@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using MrCMS.Entities.People;
-
 namespace MrCMS.Models
 {
     public class UserSearchQuery

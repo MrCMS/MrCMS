@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website.Caching;
 
@@ -12,10 +13,10 @@ namespace MrCMS.Events.Documents
             _cacheManager = cacheManager;
         }
 
-        public void Execute(OnUpdatedArgs<Webpage> args)
+        public Task Execute(OnUpdatedArgs<Webpage> args)
         {
-            var cacheKey = "Webpage." + args.Item.Id;
-            _cacheManager.Clear(cacheKey);
+            _cacheManager.Clear();
+            return Task.CompletedTask;
         }
     }
 }

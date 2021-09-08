@@ -17,6 +17,16 @@ namespace MrCMS.Entities.Documents.Metadata
         public string WebGetAction { get; set; }
         public string WebPostController { get; set; }
         public string WebPostAction { get; set; }
+        
+        public string WebGetControllerUnauthorized { get; set; }
+        public string WebGetActionUnauthorized { get; set; }
+        public string WebPostControllerUnauthorized { get;set;  }
+        public string WebPostActionUnauthorized { get; set; }
+
+        public string WebGetControllerForbidden { get; set; }
+        public string WebGetActionForbidden { get; set; }
+        public string WebPostControllerForbidden { get;set;  }
+        public string WebPostActionForbidden { get; set; }
 
         public int MaxChildNodes { get; set; }
 

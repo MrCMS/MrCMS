@@ -7,6 +7,6 @@ namespace MrCMS.Web.Admin.Breadcrumbs.System.Security
         public override string Controller => "SecurityOptions";
         public override string Action => "Index";
         public override bool IsNav => true;
-        public override int Order => 1;
+        public override decimal Order => 1;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Helpers;
@@ -15,11 +15,12 @@ namespace MrCMS.Tasks
         private readonly ITaskExecutor _taskExecutor;
         private readonly ITaskQueuer _taskQueuer;
         private readonly IUrlHelper _urlHelper;
+        private readonly IConfigurationProviderFactory _factory;
         private readonly ITriggerUrls _triggerUrls;
 
         public QueuedTaskRunner(ITaskQueuer taskQueuer,
             ITaskBuilder taskBuilder, ITaskExecutor taskExecutor,
-            ISession session, ITriggerUrls triggerUrls, IUrlHelper urlHelper)
+            ISession session, ITriggerUrls triggerUrls, IUrlHelper urlHelper, IConfigurationProviderFactory factory)
         {
             _taskQueuer = taskQueuer;
             _taskBuilder = taskBuilder;
@@ -27,36 +28,29 @@ namespace MrCMS.Tasks
             _session = session;
             _triggerUrls = triggerUrls;
             _urlHelper = urlHelper;
+            _factory = factory;
         }
 
-        public void TriggerPendingTasks()
+        public async Task TriggerPendingTasks()
         {
-            var sites = _taskQueuer.GetPendingQueuedTaskSites();
-            _triggerUrls.Trigger(sites.Select(site =>
+            var sites = await _taskQueuer.GetPendingQueuedTaskSites();
+            await _triggerUrls.Trigger(sites.Select(site =>
             {
-                var siteSettings = new SqlConfigurationProvider(_session, site).GetSiteSettings<SiteSettings>();
+                var siteSettings = _factory.GetForSite(site).GetSiteSettings<SiteSettings>();
 
                 return _urlHelper.AbsoluteAction("ExecuteQueuedTasks", "TaskExecution",
-                    new RouteValueDictionary {[siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword}, site);
+                    new RouteValueDictionary
+                        {[siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword}, site);
             }));
         }
 
-        public BatchExecutionResult ExecutePendingTasks()
+        public async Task<BatchExecutionResult> ExecutePendingTasks()
         {
-            var pendingQueuedTasks = _taskQueuer.GetPendingQueuedTasks();
+            var pendingQueuedTasks = await _taskQueuer.GetPendingQueuedTasks();
 
-            var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks);
+            var tasksToExecute = await _taskBuilder.GetTasksToExecute(pendingQueuedTasks);
 
-            return _taskExecutor.Execute(tasksToExecute);
-        }
-
-        public BatchExecutionResult ExecuteLuceneTasks()
-        {
-            var pendingQueuedTasks = _taskQueuer.GetPendingLuceneTasks();
-
-            var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks);
-
-            return _taskExecutor.Execute(tasksToExecute);
+            return await _taskExecutor.Execute(tasksToExecute);
         }
     }
 }

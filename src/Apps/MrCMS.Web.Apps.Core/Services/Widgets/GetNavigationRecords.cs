@@ -1,48 +1,61 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Html;
+using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models.Navigation;
-using MrCMS.Web.Apps.Core.Widgets;
+using MrCMS.Website.Caching;
 using NHibernate;
-using NHibernate.Criterion;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
 {
-    public class GetNavigationRecords : GetWidgetModelBase<Navigation>
+    public class GetNavigationRecords : IGetNavigationRecords
     {
         private readonly ISession _session;
         private readonly IGetLiveUrl _getLiveUrl;
+        private readonly ICacheManager _cacheManager;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
+        public const string NavigationCacheKey = "NavigationCaheKey";
 
-        public GetNavigationRecords(ISession session, IGetLiveUrl getLiveUrl)
+        public GetNavigationRecords(ISession session, IGetLiveUrl getLiveUrl, ICacheManager cacheManager,
+            ICurrentSiteLocator currentSiteLocator)
         {
             _session = session;
             _getLiveUrl = getLiveUrl;
+            _cacheManager = cacheManager;
+            _currentSiteLocator = currentSiteLocator;
         }
 
-        public override object GetModel(Navigation widget)
+        public async Task<NavigationList> GetRootNavigation(bool includeChildren)
         {
-            var rootPages = GetPages(null);
-            var childPages = widget.IncludeChildren ? GetPages(rootPages) : new List<Webpage>();
-            var navigationRecords =
-                rootPages.Where(webpage => webpage.Published).OrderBy(webpage => webpage.DisplayOrder)
-                    .Select(webpage => new NavigationRecord
-                    (webpage.Name, _getLiveUrl.GetUrlSegment(webpage, true),
-                        webpage.Unproxy().GetType(), childPages.Where(y => y.ParentId == webpage.Id)
-                            .Select(child =>
-                                new NavigationRecord(child.Name, _getLiveUrl.GetUrlSegment(child, true),
-                                    child.Unproxy().GetType()))
-                    )).ToList();
+            var siteId = _currentSiteLocator.GetCurrentSite().Id;
+            return await _cacheManager.GetOrCreateAsync(
+                $"GetNavigationRecords.GetRootNavigation.{siteId}.{includeChildren}",
+                async () =>
+                {
+                    var rootPages = await GetPages(null);
+                    var childPages = includeChildren ? await GetPages(rootPages) : new List<NavigationDto>();
+                    var navigationRecords =
+                        rootPages
+                            .Select(webpage => new NavigationRecord
+                            (webpage.Name, webpage.Url,
+                                webpage.GetType(), childPages.Where(y => y.ParentId == webpage.Id)
+                                    .Select(child =>
+                                        new NavigationRecord(child.Name, child.Url,
+                                            child.PageType)
+                                    ).ToList()));
 
-            return new NavigationList(navigationRecords.ToList());
+                    var navigationList = new NavigationList(navigationRecords.ToList());
+                    return navigationList;
+                }, TimeSpan.FromMinutes(10), CacheExpiryType.Absolute);
         }
 
-        private IList<Webpage> GetPages(IList<Webpage> parents)
+        private async Task<IList<NavigationDto>> GetPages(IList<NavigationDto> parents)
         {
-            var queryOver = _session.QueryOver<Webpage>();
+            var queryOver = _session.Query<Webpage>();
             if (parents == null)
             {
                 queryOver = queryOver.Where(webpage => webpage.Parent == null);
@@ -50,14 +63,29 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             else
             {
                 var parentIds = parents.Select(p => p.Id).ToList();
-                queryOver = queryOver.Where(webpage => webpage.Parent.Id.IsIn(parentIds));
+                queryOver = queryOver.Where(webpage => parentIds.Contains(webpage.Parent.Id));
             }
 
-            return
-                queryOver.Where(webpage => webpage.RevealInNavigation)
-                    .OrderBy(webpage => webpage.DisplayOrder).Asc
-                    .Cacheable()
-                    .List().ToList(x => x.Published);
+            var pages = await queryOver.Where(webpage => webpage.RevealInNavigation && webpage.Published)
+                .OrderBy(webpage => webpage.DisplayOrder).ToListAsync();
+
+            return pages.Select(x => new NavigationDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                ParentId = x.ParentId,
+                Url = x.UrlSegment.GetRelativeUrl(),
+                PageType = x.GetType()
+            }).ToList();
+        }
+
+        private class NavigationDto
+        {
+            public int Id { get; init; }
+            public string Name { get; init; }
+            public int ParentId { get; init; }
+            public string Url { get; init; }
+            public Type PageType { get; init; }
         }
     }
 }

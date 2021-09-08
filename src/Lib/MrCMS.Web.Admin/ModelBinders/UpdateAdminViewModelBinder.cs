@@ -8,6 +8,7 @@ using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using MrCMS.Web.Admin.Infrastructure.ModelBinding;
+using MrCMS.Web.Admin.Infrastructure.Models;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 using MrCMS.Website;
 using NHibernate;
@@ -56,7 +57,7 @@ namespace MrCMS.Web.Admin.ModelBinders
             model.Models = new List<object>();
 
             var getEditTabsService = serviceProvider.GetRequiredService<IGetEditTabsService>();
-            var tabs = getEditTabsService.GetEditTabs(serviceProvider, modelType, id.Value)
+            var tabs = (await getEditTabsService.GetEditTabs(serviceProvider, modelType, id.Value))
                 .OfType<IAdminTab>()
                 .ToList();
 
@@ -73,19 +74,24 @@ namespace MrCMS.Web.Admin.ModelBinders
             // add implementation view models
             var entity = await serviceProvider.GetRequiredService<ISession>().GetAsync(modelType, id);
 
-            var implementationModelTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(
-                typeof(IUpdatePropertiesViewModel<>).MakeGenericType(entity.GetType()));
+            var implementationModelTypes = ViewModelTypes.FindAll(x =>
+                typeof(IUpdatePropertiesViewModel<>).MakeGenericType(entity.GetType()).IsAssignableFrom(x));
 
             foreach (var viewModelType in implementationModelTypes)
             {
-                var boundModel = await BindModelType(bindingContext, metadataProvider.GetMetadataForType(viewModelType));
+                var boundModel =
+                    await BindModelType(bindingContext, metadataProvider.GetMetadataForType(viewModelType));
                 model.Models.Add(boundModel);
             }
 
             bindingContext.Result = ModelBindingResult.Success(model);
         }
 
-        private async Task<IEnumerable<object>> BindTabModel(ModelBindingContext bindingContext, IModelMetadataProvider metadataProvider,
+        private readonly static HashSet<Type> ViewModelTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(IUpdatePropertiesViewModel<>));
+
+        private async Task<IEnumerable<object>> BindTabModel(ModelBindingContext bindingContext,
+            IModelMetadataProvider metadataProvider,
             IAdminTab tab)
         {
             var objects = new List<object>();

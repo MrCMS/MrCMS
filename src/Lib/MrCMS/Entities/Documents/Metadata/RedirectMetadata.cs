@@ -4,9 +4,13 @@ namespace MrCMS.Entities.Documents.Metadata
 {
     public class RedirectMetadata : DocumentMetadataMap<Redirect>
     {
-        public override string IconClass { get { return "fa fa-forward"; } }
-        public override int DisplayOrder { get { return 6; } }
+        public override string IconClass => "fa fa-forward";
+
+        public override int DisplayOrder => 6;
+
         //public override string EditPartialView { get { return "RedirectEdit"; } }
-        public override bool HasBodyContent { get { return false; }}
+        public override bool HasBodyContent => false;
+
+        public override string WebGetController => "Redirect";
     }
 }

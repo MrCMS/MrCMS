@@ -1,0 +1,70 @@
+@model SystemInfo
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    var timezones = TimeZoneInfo.GetSystemTimeZones().Select(x => x.Id).ToList();
+    ViewBag.Title = "Edit Settings";
+}
+<h1>System Info</h1>
+<table>
+    <tr>
+        <td>Environment</td>
+        <td>@Model.Environment</td>
+    </tr>
+    <tr>
+        <td>DateTime</td>
+        <td>@Model.DateTime</td>
+    </tr>
+    <tr>
+        <td>UtcDateTime</td>
+        <td>@Model.UtcDateTime</td>
+    </tr>
+    <tr>
+        <td>MrCMSDataTimeUtcNow</td>
+        <td>@Model.MrCMSDataTimeUtcNow</td>
+    </tr>
+    <tr>
+        <td>MrCMSDateTimeLocalNow</td>
+        <td>@Model.MrCMSDateTimeLocalNow</td>
+    </tr>
+    <tr>
+        <td>ServerTimeZone</td>
+        <td>@Model.ServerTimeZone</td>
+    </tr>
+    <tr>
+        <td>OperatingSystemName</td>
+        <td>@Model.OperatingSystemName</td>
+    </tr>
+</table>
+<h2>Loaded Assemblies</h2>
+<ul>
+    @foreach (var assembly in Model.LoadedAssemblies)
+    {
+        <li>
+            <div>
+                <strong>@assembly.FullName</strong>
+                @if (assembly.IsDebug)
+                {
+                    <span class="text-warning">Debug</span>
+                }
+                else
+                {
+                    <span class="text-success">Release</span>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(assembly.Location))
+            {
+                <div style="white-space:nowrap;overflow:auto;">
+                    @assembly.Location
+                </div>
+            }
+        </li>
+    }
+</ul>
+<h2>Timezones</h2>
+<ul>
+    @foreach (var timezone in timezones)
+    {
+        <li>@timezone</li>
+    }
+</ul>

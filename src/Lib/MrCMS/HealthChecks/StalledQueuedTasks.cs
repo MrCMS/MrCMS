@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
 using MrCMS.Website;
@@ -19,14 +20,14 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName => "Stalled Queued Tasks";
 
-        public override HealthCheckResult PerformCheck()
+        public override async Task<HealthCheckResult> PerformCheck()
         {
             var checkDate = _getDateTimeNow.LocalNow.AddMinutes(-30);
-            var any = _session.QueryOver<QueuedTask>()
+            var any = await _session.QueryOver<QueuedTask>()
                 .Where(
                     task => task.Status == TaskExecutionStatus.Pending &&
                             task.CreatedOn <= checkDate)
-                .Any();
+                .AnyAsync();
             return any
                 ? new HealthCheckResult
                 {

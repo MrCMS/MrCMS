@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using MrCMS.Website;
 
 namespace MrCMS.Tasks
@@ -17,16 +16,17 @@ namespace MrCMS.Tasks
 
         public List<TaskInfo> GetTasks()
         {
-            var startTime = _getDateTimeNow.LocalNow;
-            var scheduledTasks =
-                _taskSettingManager.GetInfo()
-                    .Where(task =>
-                        task.Enabled && task.Status == TaskExecutionStatus.Pending &&
-                        (task.LastCompleted < startTime.AddSeconds(-task.FrequencyInSeconds) ||
-                         task.LastCompleted == null))
-                    .ToList();
-            _taskSettingManager.StartTasks(scheduledTasks, startTime);
-            return scheduledTasks;
+            // var startTime = _getDateTimeNow.LocalNow;
+            // var scheduledTasks =
+            //     _taskSettingManager.GetInfo()
+            //         .Where(task =>
+            //             task.Enabled && task.Status == TaskExecutionStatus.Pending &&
+            //             (task.LastCompleted < startTime.AddSeconds(-task.FrequencyInSeconds) ||
+            //              task.LastCompleted == null))
+            //         .ToList();
+            // _taskSettingManager.StartTasks(scheduledTasks, startTime);
+            // return scheduledTasks;
+            return new();
         }
     }
 }

@@ -3,7 +3,7 @@
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject IDocumentVersionsAdminService AdminService
 @{
-    var versionsModel = AdminService.GetVersions(Model, ViewData["page"] as int? ?? 1);
+    var versionsModel = await AdminService.GetVersions(Model, ViewData["page"] as int? ?? 1);
 }
 <div class="content-item">
     @if (versionsModel.Items.Any())
@@ -13,13 +13,13 @@
                 <thead>
                 <tr>
                     <th>
-                        @Html.Resource("Created On")
+                        @await Html.Resource("Created On")
                     </th>
                     <th>
-                        @Html.Resource("User")
+                        @await Html.Resource("User")
                     </th>
                     <th>
-                        @Html.Resource("Actions")
+                        @await Html.Resource("Actions")
                     </th>
                 </tr>
                 </thead>
@@ -31,31 +31,24 @@
                             @version.CreatedOn
                         </td>
                         <td>
-                            @(version.User != null ? version.User.Email : "")
+                            @version.FirstName @version.LastName
                         </td>
                         <td>
                             <div class="btn-group">
-                                @if (version.AnyDifferencesFromCurrent())
-                                {
-                                    @Html.ActionLink(Html.Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-sm"})
-                                    @Html.ActionLink(Html.Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-sm"})
-                                }
-                                else
-                                {
-                                    <span>Same as current</span>
-                                }
+
+                                @Html.ActionLink(await Html.Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-sm"})
                             </div>
                         </td>
                     </tr>
                 }
                 </tbody>
             </table>
-            @Html.PagedListPager(versionsModel.Items, i => Url.Action("Versions", "Webpage", new {Model.Id, page = i}))
+            @Html.PagedListPager(versionsModel.Items, i => Url.Action("Versions", "Webpage", new {Model.Id, page = i}), MrCMSPagedListRenderOptions.Bootstrap4)
         </div>
     }
     else
     {
-        <p>@Html.Resource("Admin Webpage Versions None", "No document versions available").</p>
+        <p>@await Html.Resource("Admin Webpage Versions None", "No document versions available").</p>
     }
 
 </div>

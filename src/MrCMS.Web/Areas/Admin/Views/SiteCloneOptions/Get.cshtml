@@ -5,34 +5,34 @@
 
 <table class="table table-condensed table-striped">
     <thead>
-        <tr>
-            <th>
-                Option
-            </th>
-            <th>
-                Copy From
-            </th>
-        </tr>
+    <tr>
+        <th>
+            Option
+        </th>
+        <th>
+            Copy From
+        </th>
+    </tr>
     </thead>
     <tbody>
+    <tr>
+        <td>
+            <strong>Copy all from:</strong>
+        </td>
+        <td>
+            @Html.DropDownList("copy-all", otherSites, new {@class = "form-control"})
+        </td>
+    </tr>
+    @foreach (var option in Model)
+    {
         <tr>
             <td>
-                <strong>Copy all from:</strong>
+                @option.DisplayName
             </td>
             <td>
-                @Html.DropDownList("copy-all", otherSites, new { @class = "form-control" })
+                @Html.DropDownList("sco-" + option.TypeName, otherSites, new {@class = "form-control input-sm"})
             </td>
         </tr>
-        @foreach (var option in Model)
-        {
-            <tr>
-                <td>
-                    @option.DisplayName
-                </td>
-                <td>
-                    @Html.DropDownList("sco-" + option.TypeName, otherSites, new { @class = "form-control input-sm" })
-                </td>
-            </tr>
-        }
+    }
     </tbody>
 </table>

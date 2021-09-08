@@ -6,15 +6,15 @@
 {
     <fieldset>
         <legend>
-            @Html.Resource("Delete Content Block")
+            @await Html.Resource("Delete Content Block")
             <span class="btn-group pull-right">
-                <button type="submit" class="btn btn-danger">@Html.Resource("Delete")</button>
+                <button type="submit" class="btn btn-danger">@await Html.Resource("Delete")</button>
             </span>
         </legend>
         @Html.HiddenFor(block => block.Id)
 
         <p>
-            @Html.Resource("Content Block - Delete", "Are you sure you wish to delete this content block? This can not be undone!")
+            @await Html.Resource("Content Block - Delete", "Are you sure you wish to delete this content block? This can not be undone!")
         </p>
 
     </fieldset>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using MrCMS.DbConfiguration;
+using MrCMS.Entities.People;
 
 namespace MrCMS.Entities
 {
@@ -16,10 +17,7 @@ namespace MrCMS.Entities
         public virtual int Id { get; set; }
 
         [DbNotNullable, ShouldMap]
-        public virtual Guid Guid
-        {
-            get { return _guid; }
-        }
+        public virtual Guid Guid => _guid;
 
         [DisplayName("Created On")]
         public virtual DateTime CreatedOn { get; set; }
@@ -37,5 +35,8 @@ namespace MrCMS.Entities
         {
             _guid = guid;
         }
+        
+        public virtual User CreatedBy { get; set; }
+        public virtual User UpdatedBy { get; set; }
     }
 }

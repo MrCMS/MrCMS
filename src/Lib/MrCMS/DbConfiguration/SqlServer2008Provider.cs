@@ -1,9 +1,8 @@
 using System.ComponentModel;
-using System.Linq;
 using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.Options;
 using MrCMS.Settings;
-using NHibernate.Mapping;
+using NHibernate.Cfg.Loquacious;
 
 namespace MrCMS.DbConfiguration
 {
@@ -27,9 +26,13 @@ namespace MrCMS.DbConfiguration
             SqlServerGuidHelper.SetGuidToUniqueWithDefaultValue(config);
         }
 
-        public string Type
+        public void DebugDatabaseIntegration(DbIntegrationConfigurationProperties properties)
         {
-            get { return GetType().FullName; }
+            var logQueries = _databaseSettings.Value.LogQueries;
+            properties.LogFormattedSql = logQueries;
+            properties.LogSqlInConsole = logQueries;
         }
+
+        public string Type => GetType().FullName;
     }
 }

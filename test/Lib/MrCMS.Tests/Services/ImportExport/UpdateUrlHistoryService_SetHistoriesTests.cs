@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Services.ImportExport;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Tests.Stubs;
 using MrCMS.TestSupport;
-using NHibernate.Linq;
 using Xunit;
 
 namespace MrCMS.Tests.Services.ImportExport
@@ -24,11 +23,11 @@ namespace MrCMS.Tests.Services.ImportExport
         }
 
         [Fact]
-        public void AddsANewUrlHistory()
+        public async Task AddsANewUrlHistory()
         {
             GetAllHistories().Should().HaveCount(0);
 
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
                 new BasicMappedWebpage());
 
             GetAllHistories().Should().HaveCount(1);
@@ -36,64 +35,64 @@ namespace MrCMS.Tests.Services.ImportExport
         }
 
         [Fact]
-        public void AssignsAddedUrlHistoryToTheWebpage()
+        public async Task AssignsAddedUrlHistoryToTheWebpage()
         {
             GetAllHistories().Should().HaveCount(0);
             var basicMappedWebpage = new BasicMappedWebpage();
 
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
                 basicMappedWebpage);
 
             GetAllHistories().ElementAt(0).Webpage.Should().Be(basicMappedWebpage);
         }
 
         [Fact]
-        public void UnAssigningAUrlHistoryShouldSetTheWebpageToNull()
+        public async Task UnAssigningAUrlHistoryShouldSetTheWebpageToNull()
         {
             var urlHistory = new UrlHistory {UrlSegment = "test"};
             var basicMappedWebpage = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage;
-            _urlHistoryRepository.Add(urlHistory);
+            await _urlHistoryRepository.Add(urlHistory);
 
             GetAllHistories().Should().HaveCount(1);
 
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage);
 
             GetAllHistories().ElementAt(0).Webpage.Should().BeNull();
         }
 
         [Fact]
-        public void UnAssigningAUrlHistoryRemoveTheItemFromTheWebpageUrlList()
+        public async Task UnAssigningAUrlHistoryRemoveTheItemFromTheWebpageUrlList()
         {
             var urlHistory = new UrlHistory {UrlSegment = "test"};
             var basicMappedWebpage = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage;
-            _urlHistoryRepository.Add(urlHistory);
+            await _urlHistoryRepository.Add(urlHistory);
 
             basicMappedWebpage.Urls.Should().HaveCount(1);
 
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage);
 
             basicMappedWebpage.Urls.Should().HaveCount(0);
         }
 
         [Fact]
-        public void MovesTheUrlHistoryBetweenPagesIfTheyAreChanged()
+        public async Task MovesTheUrlHistoryBetweenPagesIfTheyAreChanged()
         {
             var urlHistory = new UrlHistory {UrlSegment = "test"};
             var basicMappedWebpage1 = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage1;
             var basicMappedWebpage2 = new BasicMappedWebpage {Urls = new List<UrlHistory>()};
-            _urlHistoryRepository.Add(urlHistory);
+            await _urlHistoryRepository.Add(urlHistory);
 
             basicMappedWebpage1.Urls.Should().HaveCount(1);
             basicMappedWebpage2.Urls.Should().HaveCount(0);
 
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage1);
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
                 basicMappedWebpage2);
 
             basicMappedWebpage1.Urls.Should().HaveCount(0);
@@ -101,19 +100,19 @@ namespace MrCMS.Tests.Services.ImportExport
         }
 
         [Fact]
-        public void ShouldNotCreateNewUrlHistoryWhileMovingUrls()
+        public async Task ShouldNotCreateNewUrlHistoryWhileMovingUrls()
         {
             var urlHistory = new UrlHistory {UrlSegment = "test"};
             var basicMappedWebpage1 = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage1;
             var basicMappedWebpage2 = new BasicMappedWebpage {Urls = new List<UrlHistory>()};
-            _urlHistoryRepository.Add(urlHistory);
+            await _urlHistoryRepository.Add(urlHistory);
 
             GetAllHistories().Should().HaveCount(1);
 
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage1);
-            _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
                 basicMappedWebpage2);
 
             GetAllHistories().Should().HaveCount(1);

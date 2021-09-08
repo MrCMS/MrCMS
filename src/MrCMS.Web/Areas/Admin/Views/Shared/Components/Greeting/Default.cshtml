@@ -1,12 +1,16 @@
 ﻿@using MrCMS.Entities.Multisite
 @using MrCMS.Services
 @model dynamic
-@inject IGetCurrentUser GetCurrentUser
-@inject Site Site
+@inject IGetCurrentUser _getCurrentUser
+@inject ICurrentSiteLocator _siteLocator
 
 <div class="card">
     <div class="card-body">
-        @string.Format(Html.Resource("Admin Dashboard Greeting", "Hello {0}, you are currently administering web site {1}"), GetCurrentUser.Get().Name, Site.DisplayName).
+
+        @{
+            var user = await _getCurrentUser.Get();
+            var currentSite = _siteLocator.GetCurrentSite();
+        }
+        @(string.Format(await Html.Resource("admin-dashboard-greeting", "Welcome {0}, you are currently administering web site {1}"), user.Name, currentSite.DisplayName)).
     </div>
 </div>
-

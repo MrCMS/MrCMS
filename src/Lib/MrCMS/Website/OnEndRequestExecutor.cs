@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
@@ -15,11 +16,12 @@ namespace MrCMS.Website
 
         static OnEndRequestExecutor()
         {
-            foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(EndRequestTask<>)).Where(type => !type.ContainsGenericParameters))
+            var executors = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(ExecuteEndRequestBase<,>));
+            foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(EndRequestTask<>)).Where(type => !type.ContainsGenericParameters))
             {
-                var executorType = TypeHelper.GetAllConcreteTypesAssignableFrom(
-                    typeof(ExecuteEndRequestBase<,>).MakeGenericType(type, type.BaseType.GenericTypeArguments[0])).FirstOrDefault();
-
+                var executorType = executors.FirstOrDefault(x =>
+                    typeof(ExecuteEndRequestBase<,>).MakeGenericType(type, type.BaseType.GenericTypeArguments[0])
+                        .IsAssignableFrom(x));
 
                 OnRequestExecutionTypes.Add(type, executorType);
             }
@@ -29,7 +31,7 @@ namespace MrCMS.Website
             _serviceProvider = serviceProvider;
         }
 
-        public void ExecuteTasks(HashSet<EndRequestTask> tasks)
+        public async Task ExecuteTasks(HashSet<EndRequestTask> tasks)
         {
             var tasksGroupedByType = tasks.GroupBy(task => task.GetType())
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
@@ -42,7 +44,7 @@ namespace MrCMS.Website
                     if (requestBase != null)
                     {
                         var data = tasksGroupedByType[type].Select(task => task.BaseData).ToHashSet();
-                        requestBase.Execute(data);
+                        await requestBase.Execute(data);
                         continue;
 
                     }

@@ -14,20 +14,20 @@ namespace MrCMS.Helpers
             }
             return set;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="equalityComparer">Use this to allow non-standard comparers for the set</param>
-        /// <returns></returns>
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection, IEqualityComparer<T> equalityComparer = null)
-        {
-            return equalityComparer != null
-                ? new HashSet<T>(collection, equalityComparer)
-                : new HashSet<T>(collection);
-        }
+        //
+        // /// <summary>
+        // /// 
+        // /// </summary>
+        // /// <typeparam name="T"></typeparam>
+        // /// <param name="collection"></param>
+        // /// <param name="equalityComparer">Use this to allow non-standard comparers for the set</param>
+        // /// <returns></returns>
+        // public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection, IEqualityComparer<T> equalityComparer = null)
+        // {
+        //     return equalityComparer != null
+        //         ? new HashSet<T>(collection, equalityComparer)
+        //         : new HashSet<T>(collection);
+        // }
 
         public static HashSet<T> FindAll<T>(this HashSet<T> collection, Func<T, bool> predicate)
         {

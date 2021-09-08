@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.TestSupport;
@@ -21,10 +22,10 @@ namespace MrCMS.Web.Admin.Tests.Services
         private readonly InMemoryRepository<Document> _inMemoryRepository;
 
         [Fact]
-        public void DocumentVersionService_GetDocumentVersion_GetsTheVersionWithTheRequestedId()
+        public async Task DocumentVersionService_GetDocumentVersion_GetsTheVersionWithTheRequestedId()
         {
             var documentVersion = new DocumentVersion();
-            _documentVersionRepository.Add(documentVersion);
+            await _documentVersionRepository.Add(documentVersion);
 
             var version = _documentVersionsAdminService.GetDocumentVersion(documentVersion.Id);
 

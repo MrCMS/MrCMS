@@ -1,5 +1,3 @@
-using System;
-
 namespace MrCMS.Web.Apps.Core.Models
 {
     public class UnlockPageResult

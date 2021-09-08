@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using MrCMS.FileProviders;
 

@@ -1,7 +1,9 @@
-﻿namespace MrCMS.Tasks
+﻿using System.Threading.Tasks;
+
+namespace MrCMS.Tasks
 {
     public interface ITaskResetter
     {
-        void ResetHungTasks();
+        Task ResetHungTasks();
     }
 }

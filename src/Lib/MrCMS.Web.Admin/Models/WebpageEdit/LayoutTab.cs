@@ -28,14 +28,14 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
             return html.RenderPartialAsync("Layout", mapper.Map<LayoutTabViewModel>(webpage));
         }
 
-        public override string Name(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<string> Name(IServiceProvider serviceProvider, Webpage entity)
         {
-            return "Layout";
+            return Task.FromResult("Layout");
         }
 
-        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

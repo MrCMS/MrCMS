@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Settings;
 using WebPush;
 
@@ -8,16 +10,17 @@ namespace MrCMS.Website.PushNotifications
     {
         private readonly IConfigurationProvider _configurationProvider;
         private readonly ISystemConfigurationProvider _systemConfigurationProvider;
-        private readonly Site _site;
+        private readonly ICurrentSiteLocator _siteLocator;
 
-        public GetWebPushSettings(IConfigurationProvider configurationProvider, ISystemConfigurationProvider systemConfigurationProvider, Site site)
+        public GetWebPushSettings(IConfigurationProvider configurationProvider,
+            ISystemConfigurationProvider systemConfigurationProvider, ICurrentSiteLocator siteLocator)
         {
             _configurationProvider = configurationProvider;
             _systemConfigurationProvider = systemConfigurationProvider;
-            _site = site;
+            _siteLocator = siteLocator;
         }
 
-        public WebPushSettings GetSettings()
+        public async Task<WebPushSettings> GetSettings()
         {
             var settings = _configurationProvider.GetSiteSettings<WebPushSettings>();
 
@@ -28,9 +31,11 @@ namespace MrCMS.Website.PushNotifications
                 settings.VapidPrivateKey = keys.PrivateKey;
                 settings.VapidPublicKey = keys.PublicKey;
                 settings.VapidSubject = $"mailto:{mailSettings.SystemEmailAddress}";
-                settings.DefaultNotificationTitle = _site.Name;
-                _configurationProvider.SaveSettings(settings);
+                var site = _siteLocator.GetCurrentSite();
+                settings.DefaultNotificationTitle = site.Name;
+                await _configurationProvider.SaveSettings(settings);
             }
+
             return settings;
         }
     }

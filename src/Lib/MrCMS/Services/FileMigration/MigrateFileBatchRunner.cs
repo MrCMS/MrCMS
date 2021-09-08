@@ -39,7 +39,7 @@ namespace MrCMS.Services.FileMigration
             }
         }
 
-        protected override BatchJobExecutionResult OnExecute(MigrateFilesBatchJob batchJob)
+        protected override async Task<BatchJobExecutionResult> OnExecuteAsync(MigrateFilesBatchJob batchJob)
         {
             var guids = JsonConvert.DeserializeObject<HashSet<Guid>>(batchJob.Data).ToList();
 
@@ -48,12 +48,12 @@ namespace MrCMS.Services.FileMigration
 
             foreach (var mediaFile in mediaFiles)
             {
-                var from = MediaFileExtensions.GetFileSystem(mediaFile, _fileSystems);
+                var from = await MediaFileExtensions.GetFileSystem(mediaFile, _fileSystems);
                 var to = CurrentFileSystem;
                 if (from.GetType() == to.GetType())
                     continue;
 
-                _session.Transact(session =>
+                await _session.TransactAsync(async (session, token) =>
                 {
                     // remove resized images (they will be regenerated on the to system)
                     foreach (var resizedImage in mediaFile.ResizedImages.ToList())
@@ -62,21 +62,23 @@ namespace MrCMS.Services.FileMigration
                         // do not delete from disc yet in that case, or else it will cause an error when copying
                         if (resizedImage.Url != mediaFile.FileUrl)
                         {
-                            from.Delete(resizedImage.Url);
+                            await @from.Delete(resizedImage.Url);
                         }
+
                         mediaFile.ResizedImages.Remove(resizedImage);
-                        session.Delete(resizedImage);
+                        await session.DeleteAsync(resizedImage, token);
                     }
 
                     var existingUrl = mediaFile.FileUrl;
-                    using (var readStream = @from.GetReadStream(existingUrl))
+                    await using (var readStream = await @from.GetReadStream(existingUrl))
                     {
-                        mediaFile.FileUrl = to.SaveFile(readStream, GetNewFilePath(mediaFile),
+                        mediaFile.FileUrl = await to.SaveFile(readStream, GetNewFilePath(mediaFile),
                             mediaFile.ContentType);
                     }
-                    from.Delete(existingUrl);
 
-                    session.Update(mediaFile);
+                    await @from.Delete(existingUrl);
+
+                    await session.UpdateAsync(mediaFile, token);
                 });
             }
 
@@ -88,14 +90,9 @@ namespace MrCMS.Services.FileMigration
         {
             var fileUrl = file.FileUrl;
             var id = file.Site.Id;
-            var indexOf = file.FileUrl.IndexOf(string.Format("/{0}/", id), StringComparison.OrdinalIgnoreCase);
+            var indexOf = file.FileUrl.IndexOf($"/{id}/", StringComparison.OrdinalIgnoreCase);
             var newFilePath = fileUrl.Substring(indexOf + 1);
             return newFilePath;
-        }
-
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(MigrateFilesBatchJob batchJob)
-        {
-            throw new NotImplementedException();
         }
     }
 }

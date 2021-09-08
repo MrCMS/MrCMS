@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using AutoMapper;
 using MrCMS.Entities.Documents.Web;
  using MrCMS.Web.Admin.Infrastructure.Mapping;

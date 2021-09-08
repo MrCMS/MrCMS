@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MrCMS.DbConfiguration;
+using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings.Events;
-using MrCMS.Website;
+using MrCMS.Website.Caching;
 using Newtonsoft.Json;
 using NHibernate;
 
@@ -15,18 +15,24 @@ namespace MrCMS.Settings
 {
     public class SqlConfigurationProvider : IConfigurationProvider
     {
-        private readonly ISession _session;
-        private readonly Site _site;
+        public const string SettingsDbCacheKey = "SiteSettingsDbCacheKey-{0}-{1}";
+        private readonly IStatelessSession _session;
 
-        /// <summary>
-        ///     Ctor
-        /// </summary>
-        /// <param name="session">NHibernate session</param>
-        /// <param name="site">Current site</param>
-        public SqlConfigurationProvider(ISession session, Site site)
+        private readonly ICurrentSiteLocator _siteLocator;
+
+        // private readonly Site _site;
+        private readonly ICacheManager _cacheManager;
+        private readonly IEventContext _eventContext;
+
+        public SqlConfigurationProvider(IStatelessSession session, ICurrentSiteLocator siteLocator,
+            ICacheManager cacheManager,
+            IEventContext eventContext)
         {
             _session = session;
-            _site = site;
+            _siteLocator = siteLocator;
+            // _site = site;
+            _cacheManager = cacheManager;
+            _eventContext = eventContext;
         }
 
         /// <summary>
@@ -36,9 +42,12 @@ namespace MrCMS.Settings
         /// <returns></returns>
         public virtual TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            //using (MiniProfiler.Current.Step($"Get site settings: {typeof(TSettings).FullName}"))
+            var site = _siteLocator.GetCurrentSite();
+            var settingsDbCacheKey = string.Format(SettingsDbCacheKey, typeof(TSettings).FullName, site.Id);
+            return _cacheManager.GetOrCreate(settingsDbCacheKey, () =>
             {
                 var settings = Activator.CreateInstance<TSettings>();
+                settings.SetSiteId(site.Id);
 
                 var dbSettings = GetDbSettings<TSettings>();
 
@@ -58,14 +67,14 @@ namespace MrCMS.Settings
                 }
 
                 return settings;
-            }
+            }, TimeSpan.FromMinutes(10), CacheExpiryType.Absolute);
         }
 
-        public void SaveSettings(SiteSettingsBase settings)
+        public async Task SaveSettings(SiteSettingsBase settings)
         {
             var methodInfo = GetType().GetMethods().First(x => (x.Name == "SaveSettings") && x.IsGenericMethod);
             var genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
-            genericMethod.Invoke(this, new object[] { settings });
+            await genericMethod.InvokeVoidAsync(this, new object[] { settings });
         }
 
         public List<SiteSettingsBase> GetAllSiteSettings()
@@ -82,15 +91,15 @@ namespace MrCMS.Settings
         /// </summary>
         /// <typeparam name="TSettings">Type</typeparam>
         /// <param name="settings">Setting instance</param>
-        public virtual void SaveSettings<TSettings>(TSettings settings) where TSettings : SiteSettingsBase, new()
+        public virtual async Task SaveSettings<TSettings>(TSettings settings) where TSettings : SiteSettingsBase, new()
         {
             var existing = GetSiteSettings<TSettings>();
             var existingInDb = GetDbSettings<TSettings>();
-            _session.Transact(session =>
+            await _session.TransactAsync(async session =>
             {
-            /* We do not clear cache after each setting update.
-             * This behavior can increase performance because cached settings will not be cleared 
-             * and loaded from database after each update */
+                /* We do not clear cache after each setting update.
+                 * This behavior can increase performance because cached settings will not be cleared 
+                 * and loaded from database after each update */
                 foreach (var prop in typeof(TSettings).GetProperties())
                 {
                     // get properties we can read and write to
@@ -99,23 +108,28 @@ namespace MrCMS.Settings
 
                     var typeName = typeof(TSettings).FullName;
                     dynamic value = prop.GetValue(settings, null);
-                    SetSetting(existingInDb, typeName, prop.Name, value ?? "");
+                    await SetSetting(session, existingInDb, typeName, prop.Name, value ?? "");
                 }
             });
-            _session.GetService<IEventContext>().Publish<IOnSavingSiteSettings<TSettings>, OnSavingSiteSettingsArgs<TSettings>>(
-                new OnSavingSiteSettingsArgs<TSettings>(settings, existing));
+            ClearCache();
+            if (_eventContext != null)
+                await _eventContext.Publish<IOnSavingSiteSettings<TSettings>, OnSavingSiteSettingsArgs<TSettings>>(
+                    new OnSavingSiteSettingsArgs<TSettings>(settings, existing));
         }
 
         /// <summary>
         ///     Delete all settings
         /// </summary>
         /// <typeparam name="TSettings">Type</typeparam>
-        public virtual void DeleteSettings<TSettings>(TSettings settings) where TSettings : SiteSettingsBase, new()
+        public virtual async Task DeleteSettings<TSettings>(TSettings settings)
+            where TSettings : SiteSettingsBase, new()
         {
             var allSettings = GetDbSettings<TSettings>().Values;
 
             foreach (var setting in allSettings)
-                DeleteSetting(setting);
+                await DeleteSetting(setting);
+
+            ClearCache();
         }
 
         /// <summary>
@@ -123,51 +137,50 @@ namespace MrCMS.Settings
         /// </summary>
         public virtual void ClearCache()
         {
+            _cacheManager.Clear();
         }
 
 
         private IDictionary<string, Setting> GetDbSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            //using (MiniProfiler.Current.Step($"Get from db: {typeof(TSettings).FullName}"))
-            {
-                var typeName = typeof(TSettings).FullName.ToLower();
-                var settings = _session.QueryOver<Setting>()
-                    .Where(x => x.SettingType == typeName && x.Site.Id == _site.Id)
-                    .Cacheable()
-                    .List();
-                return settings.GroupBy(setting => setting.PropertyName)
-                    .ToDictionary(x => x.Key, x => x.Select(y => y).First());
-            }
+            var site = _siteLocator.GetCurrentSite();
+            var typeName = typeof(TSettings).FullName.ToLower();
+            var settings = _session.QueryOver<Setting>()
+                .Where(x => x.SettingType == typeName && x.Site.Id == site.Id)
+                .List();
+            return settings.GroupBy(setting => setting.PropertyName)
+                .ToDictionary(x => x.Key, x => x.Select(y => y).First());
         }
 
         /// <summary>
         ///     Adds a setting
         /// </summary>
+        /// <param name="session"></param>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void InsertSetting(Setting setting)
+        protected virtual async Task InsertSetting(IStatelessSession session, Setting setting)
         {
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            _session.Transact(session =>
-            {
-                setting.Site = _site;
-                return session.Save(setting);
-            });
+            setting.Site = _siteLocator.GetCurrentSite();
+            await session.InsertAsync(setting);
+            ClearCache();
         }
 
         /// <summary>
         ///     Updates a setting
         /// </summary>
+        /// <param name="session1"></param>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void UpdateSetting(Setting setting)
+        protected virtual async Task UpdateSetting(IStatelessSession session, Setting setting)
         {
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            _session.Transact(session => session.Update(setting));
+            await session.UpdateAsync(setting);
+            ClearCache();
         }
 
         /// <summary>
@@ -175,12 +188,13 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected virtual void DeleteSetting(Setting setting)
+        protected virtual async Task DeleteSetting(Setting setting)
         {
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            _session.Delete(setting);
+            await _session.TransactAsync(session => session.DeleteAsync(setting));
+            ClearCache();
         }
 
         /// <summary>
@@ -208,7 +222,9 @@ namespace MrCMS.Settings
             return defaultValue;
         }
 
-        protected virtual void SetSetting<T>(IDictionary<string, Setting> existingSettings, string typeName,
+        protected virtual async Task SetSetting<T>(IStatelessSession session,
+            IDictionary<string, Setting> existingSettings,
+            string typeName,
             string propertyName, T value)
         {
             typeName = Standardise(typeName);
@@ -221,22 +237,25 @@ namespace MrCMS.Settings
                 //update
                 setting.Value = valueStr;
                 setting.UpdatedOn = DateTime.UtcNow;
-                UpdateSetting(setting);
+                await UpdateSetting(session, setting);
             }
             else
             {
                 //insert
+                var site = _siteLocator.GetCurrentSite();
                 setting = new Setting
                 {
                     SettingType = typeName,
                     PropertyName = propertyName,
                     Value = valueStr,
-                    Site = _site,
+                    Site = site,
                     CreatedOn = DateTime.UtcNow,
                     UpdatedOn = DateTime.UtcNow
                 };
-                InsertSetting(setting);
+                await InsertSetting(session, setting);
             }
+
+            ClearCache();
         }
 
         private string Standardise(string value)

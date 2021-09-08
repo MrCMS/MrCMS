@@ -5,17 +5,21 @@
     <thead>
     <tr>
         <th></th>
-        <th>@Html.Resource("Admin Seo Analysis Check", "Check")
+        <th>
+            @await Html.Resource("Admin Seo Analysis Check", "Check")
         </th>
-        <th>@Html.Resource("Messages")
+        <th>
+            @await Html.Resource("Messages")
         </th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var facet in Model.OrderByDescending(facet => facet.Status).ThenBy(facet => facet.Importance).ThenBy(x=>x.Name))
+    @foreach (var facet in Model.OrderByDescending(facet => facet.Status).ThenBy(facet => facet.Importance).ThenBy(x => x.Name))
     {
         <tr class="@facet.Status.GetTableClass()">
-            <td data-status="true" class="text-center"><i class="fa @facet.Status.GetIconClass()"></i></td>
+            <td data-status="true" class="text-center">
+                <i class="fa @facet.Status.GetIconClass()"></i>
+            </td>
             <td>
                 @facet.Name
             </td>

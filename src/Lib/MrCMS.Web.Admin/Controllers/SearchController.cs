@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Web.Admin.Models.Search;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.TextSearch.Services;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Services.Search;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -15,9 +16,10 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(AdminSearchQuery model)
+        public async Task<ActionResult> Index(ITextSearcher.PagedTextSearcherQuery model)
         {
-            ViewData["results"] = _adminSearchService.Search(model);
+            ViewData["results"] = await _adminSearchService.Search(model);
+            ViewData["type-options"] = _adminSearchService.GetTypeOptions();
 
             return View(model);
         }

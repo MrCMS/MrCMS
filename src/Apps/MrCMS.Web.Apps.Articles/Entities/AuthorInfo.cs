@@ -1,4 +1,4 @@
-﻿using MrCMS.Entities.People;
+using MrCMS.Entities.People;
 
 namespace MrCMS.Web.Apps.Articles.Entities
 {

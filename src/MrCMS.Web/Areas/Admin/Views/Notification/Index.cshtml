@@ -1,122 +1,111 @@
 ﻿@using MrCMS.Entities.Notifications
-@using MrCMS.Helpers
 @using MrCMS.Web.Admin.ACL
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.NotificationSearchQuery
 @{
-    var results = ViewData["results"] as IPagedList<Notification>;
+    var results = ViewData["results"] as IPagedList<Notification> ?? PagingHelper.EmptyList<Notification>();
     var notificationTypeOptions = ViewData["notification-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 <form asp-controller="Notification" asp-action="Index" method="get">
 
     <admin-header>
         <row>
-            <admin-header-title title="@Html.Resource("admin-notifications", "Notifications") "/>
-
+            <admin-header-title title="@await Html.Resource("admin-notifications", "Notifications") " />
             <admin-header-actions>
                 <span class="btn-group">
-                    @Html.ActionLink(Html.Resource("Admin Notifications Push", "Push"), "Push", "Notification", new {}, new {@class = "btn btn-secondary", data_toggle = "fb-modal"})
-                    <input type="submit" class="btn btn-primary" value="Search"/>
+                    @Html.ActionLink(await Html.Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-secondary", data_toggle = "fb-modal" })
+                    <input type="submit" class="btn btn-primary" value="Search" />
                 </span>
             </admin-header-actions>
         </row>
     </admin-header>
 
-    <card>
-        <card-body>
-
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.Message)
-                        @Html.TextBoxFor(query => query.Message, new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.NotificationType)
-                        @Html.DropDownListFor(query => query.NotificationType, notificationTypeOptions, new {@class = "form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.From)
-                        @Html.TextBoxFor(query => query.From, new {@class = "date-time-picker form-control"})
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.To)
-                        @Html.TextBoxFor(query => query.To, new {@class = "date-time-picker form-control"})
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label asp-for="Message"></label>
+                <input asp-for="Message" type="text" class="form-control" />
+                <span asp-validation-for="Message"></span>
             </div>
-
-        </card-body>
-    </card>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label asp-for="NotificationType"></label>
+                <select asp-for="NotificationType" asp-items="@notificationTypeOptions" class="form-control"></select>
+                <span asp-validation-for="NotificationType"></span>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label asp-for="From"></label>
+                <input asp-for="From" type="text" class="date-time-picker form-control" />
+                <span asp-validation-for="From"></span>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label asp-for="To"></label>
+                <input asp-for="To" type="text" class="date-time-picker form-control" />
+                <span asp-validation-for="To"></span>
+            </div>
+        </div>
+    </div>
 
 </form>
-
-<card>
-    <card-body>
-        @if (results.Count == 0)
-        {
-            @Html.Resource("admin-notifications-none", "No notifications")
-        }
-        else
-        {
-            <table class="table table-striped table-condensed" style="overflow: scroll">
-                <thead>
+@if (!results.Any())
+{
+    @await Html.Resource("admin-notifications-none", "No notifications")
+}
+else
+{
+    <table class="table table-striped table-condensed mt-3" style="overflow: scroll">
+        <thead>
+            <tr>
+                <th>
+                    @await Html.Resource("admin-date", "Date")
+                </th>
+                <th>
+                    @await Html.Resource("admin-notification-type", "Notification Type")
+                </th>
+                <th>
+                    @await Html.Resource("admin-message", "Message")
+                </th>
+                <th>
+                    @await Html.Resource("admin-user", "User")
+                </th>
+                <th>
+                    @await Html.Resource("admin-actions", "Actions")
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var notification in results)
+            {
                 <tr>
-                    <th>
-                        @Html.Resource("admin-date", "Date")
-                    </th>
-                    <th>
-                        @Html.Resource("admin-notification-type", "Notification Type")
-                    </th>
-                    <th>
-                        @Html.Resource("admin-message", "Message")
-                    </th>
-                    <th>
-                        @Html.Resource("admin-user", "User")
-                    </th>
-                    <th>
-                        @Html.Resource("admin-actions", "Actions")
-                    </th>
+                    <td>
+                        @notification.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td>
+                        @notification.NotificationType.ToString().BreakUpString()
+                    </td>
+                    <td>
+                        @Html.Raw(notification.Message)
+                    </td>
+                    <td>
+                        @notification.UserName
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @if (await Html.CanAccess<NotificationACL>(NotificationACL.Delete))
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Notification", new { id = notification.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
+                            }
+                        </div>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                @foreach (var notification in results)
-                {
-                    <tr>
-                        <td>
-                            @notification.CreatedOn.ToString("dd/MM/yyyy HH:mm")
-                        </td>
-                        <td>
-                            @notification.NotificationType.ToString().BreakUpString()
-                        </td>
-                        <td>
-                            @Html.Raw(notification.Message)
-                        </td>
-                        <td>
-                            @notification.UserName
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                @if (Html.CanAccess<NotificationACL>(NotificationACL.Delete))
-                                {
-                                    @Html.ActionLink("Delete", "Delete", "Notification", new {id = notification.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
-                                }
-                            </div>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-            @Html.PagedListPager(results, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
-        }
-
-
-    </card-body>
-</card>
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager(results, page => Url.Action("Index", new { page }), MrCMSPagedListRenderOptions.Bootstrap4)
+}

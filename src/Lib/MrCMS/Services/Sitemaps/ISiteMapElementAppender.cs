@@ -1,11 +1,10 @@
-using System.Xml;
+using System.Threading.Tasks;
 using System.Xml.Linq;
-using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Services.Sitemaps
 {
     public interface ISitemapElementAppender
     {
-        void AddSiteMapData(SitemapData webpage, XElement urlset, XDocument xmlDocument);
+        Task AddSiteMapData(SitemapData webpage, XElement urlset, XDocument xmlDocument);
     }
 }

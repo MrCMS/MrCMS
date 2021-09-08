@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -14,9 +15,9 @@ namespace MrCMS.Web.Admin.Controllers
             _adminService = adminService;
         }
 
-        public ActionResult Index(CustomScriptPagesSearchModel searchModel)
+        public async Task<ActionResult> Index(CustomScriptPagesSearchModel searchModel)
         {
-            ViewData["results"] = _adminService.Search(searchModel);
+            ViewData["results"] = await _adminService.Search(searchModel);
 
             return View(searchModel);
         }

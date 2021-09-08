@@ -17,11 +17,6 @@ namespace MrCMS.Entities.Settings
         /// </summary>
         public virtual string PropertyName { get; set; }
 
-        ///// <summary>
-        /////     Gets or sets the name
-        ///// </summary>
-        //public virtual string Name { get; set; }
-
         /// <summary>
         ///     Gets or sets the value
         /// </summary>

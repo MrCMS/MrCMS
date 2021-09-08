@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MrCMS.Helpers;
+using System.Threading.Tasks;
 using MrCMS.Services.ImportExport.DTOs;
 
 namespace MrCMS.Services.ImportExport.Rules
@@ -13,11 +13,13 @@ namespace MrCMS.Services.ImportExport.Rules
             _documentMetadataService = documentMetadataService;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
+        public Task<IReadOnlyList<string>> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
         {
+            var list = new List<string>();
             if (string.IsNullOrWhiteSpace(item.DocumentType) ||
                 _documentMetadataService.GetTypeByName(item.DocumentType) == null)
-                yield return "Document Type is not valid MrCMS type.";
+                list.Add("Document Type is not valid MrCMS type.");
+            return Task.FromResult<IReadOnlyList<string>>(list);
         }
     }
 }

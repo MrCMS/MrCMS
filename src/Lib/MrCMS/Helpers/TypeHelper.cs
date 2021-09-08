@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using NHibernate;
 
 namespace MrCMS.Helpers
 {
@@ -17,15 +18,20 @@ namespace MrCMS.Helpers
         private static HashSet<Type> _allTypes;
         static HashSet<Assembly> _mrCMSAssemblies;
         private static bool _initialized = false;
-        private static readonly ConcurrentDictionary<string, Assembly> _loadedAssemblies = new ConcurrentDictionary<string, Assembly>();
-        private static readonly ConcurrentDictionary<string, AssemblyName[]> _referencedAssemblies = new ConcurrentDictionary<string, AssemblyName[]>();
+
+        private static readonly ConcurrentDictionary<string, Assembly> _loadedAssemblies = new();
+
+        private static readonly ConcurrentDictionary<string, AssemblyName[]> _referencedAssemblies = new();
+
+        private static Func<(Type type, Type baseType), bool> _isImplementationOf;
+        private static Func<Type, HashSet<Type>> _concreteTypesFunc;
 
 
         public static void Initialize(Assembly assembly)
         {
             var assemblyName = assembly.GetName();
 
-            LoadAssemblies(new List<AssemblyName> { assemblyName });
+            LoadAssemblies(new List<AssemblyName> {assemblyName});
 
             _mrCMSAssemblies = GetMrCMSAssemblies(assemblyName);
 
@@ -130,11 +136,15 @@ namespace MrCMS.Helpers
                 throw new InvalidOperationException("Must be initialized before use");
             }
 
-            return _allTypes ?? (_allTypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToHashSet());
+            return _allTypes ??= GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct()
+                .Where(x => !x.Name.Contains("__")) // try and clear out system generated classes
+                .Where(x => !x.Name.Contains("<>")) // try and clear out system generated classes
+                .ToHashSet();
         }
 
         public static HashSet<Type> MappedClasses => GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type =>
-                                                                       !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any());
+            type.IsPublic &&
+            !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any());
 
         public static HashSet<Type> GetMappedClassesAssignableFrom<T>()
         {
@@ -148,7 +158,7 @@ namespace MrCMS.Helpers
 
         public static HashSet<Type> GetAllTypesAssignableFrom<T>()
         {
-            return GetAllTypes().FindAll(type => typeof(T).IsAssignableFrom(type));
+            return GetAllTypesAssignableFrom(typeof(T));
         }
 
         public static HashSet<Type> GetAllConcreteTypesAssignableFrom<T>()
@@ -156,12 +166,19 @@ namespace MrCMS.Helpers
             return GetAllTypesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
         }
 
-        public static HashSet<Type> GetAllTypesAssignableFrom(Type type)
+        public static HashSet<Type> GetAllTypesAssignableFromGeneric(Type type)
+        {
+            GenericCheck(type);
+            return GetAllTypesAssignableFrom(type);
+        }
+
+        private static HashSet<Type> GetAllTypesAssignableFrom(Type type)
         {
             return GetAllTypes().FindAll(t => t.IsImplementationOf(type));
         }
 
-        public static IsImplementationOfOpenGenericResult TypeIsImplementationOfOpenGeneric(Type type, Type implementationOfType)
+        public static IsImplementationOfOpenGenericResult TypeIsImplementationOfOpenGeneric(Type type,
+            Type implementationOfType)
         {
             if (type == null)
             {
@@ -175,7 +192,8 @@ namespace MrCMS.Helpers
 
             if (!implementationOfType.GetTypeInfo().IsGenericTypeDefinition)
             {
-                throw new ArgumentException("Implementation of type is not an open generic", nameof(implementationOfType));
+                throw new ArgumentException("Implementation of type is not an open generic",
+                    nameof(implementationOfType));
             }
 
             var genericType = GetGenericType(type, implementationOfType);
@@ -215,30 +233,55 @@ namespace MrCMS.Helpers
         }
 
 
-        public static bool IsImplementationOf(this Type type, Type baseType)
+        private static bool IsImplementationOf(this Type type, Type baseType)
         {
-            if (baseType.IsGenericTypeDefinition)
-            {
-                return baseType.IsInterface
-                           ? type.GetBaseTypes(true)
-                              .Any(
-                                  t2 => t2.GetInterfaces().Any(
-                                      tInt => tInt.IsGenericType
-                                              &&
-                                              tInt.GetGenericTypeDefinition() ==
-                                              baseType))
-                           : type.GetBaseTypes()
-                              .Any(
-                                  t2 =>
-                                  t2.IsGenericType &&
-                                  t2.GetGenericTypeDefinition() == baseType);
-            }
-            return baseType.IsAssignableFrom(type);
+            var func = _isImplementationOf ??= GetIsAssignableFunc();
+            return func((type, baseType));
         }
 
-        public static HashSet<Type> GetAllConcreteTypesAssignableFrom(Type t)
+        private static Func<(Type type, Type baseType), bool> GetIsAssignableFunc()
         {
-            return GetAllTypesAssignableFrom(t).FindAll(type => !type.IsAbstract);
+            Func<(Type type, Type baseType), bool> func = tup =>
+            {
+                var (type1, baseType1) = tup;
+                if (baseType1.IsGenericTypeDefinition)
+                {
+                    return baseType1.IsInterface
+                        ? type1.GetBaseTypes(true)
+                            .Any(t2 => t2.GetInterfaces().Any(tInt =>
+                                tInt.IsGenericType && tInt.GetGenericTypeDefinition() == baseType1))
+                        : type1.GetBaseTypes()
+                            .Any(t2 => t2.IsGenericType && t2.GetGenericTypeDefinition() == baseType1);
+                }
+
+                return baseType1.IsAssignableFrom(type1);
+            };
+            return func.ThreadSafeMemoize();
+        }
+
+        public static HashSet<Type> GetAllConcreteTypesAssignableFromGeneric(Type t)
+        {
+            var func = _concreteTypesFunc ??= GetConcreteTypesFunc();
+            return func(t);
+        }
+
+        private static Func<Type, HashSet<Type>> GetConcreteTypesFunc()
+        {
+            Func<Type, HashSet<Type>> func = (ty) =>
+            {
+                GenericCheck(ty);
+
+                return GetAllTypesAssignableFrom(ty).FindAll(type => !type.IsAbstract);
+            };
+            return func.ThreadSafeMemoize();
+        }
+
+        private static void GenericCheck(Type ty)
+        {
+            if (!ty.IsGenericType)
+            {
+                throw new InvalidOperationException($"Type '{ty.FullName}' must be a generic type");
+            }
         }
 
         private static HashSet<Type> GetLoadableTypes(this Assembly assembly)
@@ -257,8 +300,10 @@ namespace MrCMS.Helpers
             {
                 loadableTypes.AddRange(e.Types.Where(t => t != null));
             }
+
             return loadableTypes.FindAll(type => !typeof(INHibernateProxy).IsAssignableFrom(type));
         }
+
         /// <summary>
         /// Search for a method by name and parameter types.  Unlike GetMethod(), does 'loose' matching on generic
         /// parameter types, and searches base interfaces.
@@ -266,7 +311,9 @@ namespace MrCMS.Helpers
         /// <exception cref="AmbiguousMatchException"/>
         public static MethodInfo GetMethodExt(this Type thisType, string name, params Type[] parameterTypes)
         {
-            return GetMethodExt(thisType, name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy, parameterTypes);
+            return GetMethodExt(thisType, name,
+                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.FlattenHierarchy, parameterTypes);
         }
 
         /// <summary>
@@ -274,7 +321,8 @@ namespace MrCMS.Helpers
         /// parameter types, and searches base interfaces.
         /// </summary>
         /// <exception cref="AmbiguousMatchException"/>
-        public static MethodInfo GetMethodExt(this Type thisType, string name, BindingFlags bindingFlags, params Type[] parameterTypes)
+        public static MethodInfo GetMethodExt(this Type thisType, string name, BindingFlags bindingFlags,
+            params Type[] parameterTypes)
         {
             MethodInfo matchingMethod = null;
 
@@ -293,7 +341,8 @@ namespace MrCMS.Helpers
             return matchingMethod;
         }
 
-        private static void GetMethodExt(ref MethodInfo matchingMethod, Type type, string name, BindingFlags bindingFlags, params Type[] parameterTypes)
+        private static void GetMethodExt(ref MethodInfo matchingMethod, Type type, string name,
+            BindingFlags bindingFlags, params Type[] parameterTypes)
         {
             // Check all methods with the specified name, including in base classes
             foreach (MethodInfo methodInfo in type.GetMember(name, MemberTypes.Method, bindingFlags))
@@ -310,6 +359,7 @@ namespace MrCMS.Helpers
                             break;
                         }
                     }
+
                     if (i == parameterInfos.Length)
                     {
                         if (matchingMethod == null)
@@ -329,7 +379,8 @@ namespace MrCMS.Helpers
         /// Special type used to match any generic parameter type in GetMethodExt().
         /// </summary>
         public class T
-        { }
+        {
+        }
 
         /// <summary>
         /// Determines if the two types are either identical, or are both generic parameters or generic types
@@ -356,7 +407,8 @@ namespace MrCMS.Helpers
             }
 
             // If the types are identical, or they're both generic parameters or the special 'T' type, treat as a match
-            if (thisType == type || ((thisType.IsGenericParameter || thisType == typeof(T)) && (type.IsGenericParameter || type == typeof(T))))
+            if (thisType == type || ((thisType.IsGenericParameter || thisType == typeof(T)) &&
+                                     (type.IsGenericParameter || type == typeof(T))))
             {
                 return true;
             }
@@ -375,6 +427,7 @@ namespace MrCMS.Helpers
                             return false;
                         }
                     }
+
                     return true;
                 }
             }
@@ -387,7 +440,16 @@ namespace MrCMS.Helpers
             var proxy = document as INHibernateProxy;
             if (proxy != null)
             {
-                return (T)proxy.HibernateLazyInitializer.GetImplementation();
+                try
+                {
+                    var entity = (T) proxy.HibernateLazyInitializer.GetImplementation();
+                    if (entity is null) return null;
+                    return entity.IsDeleted ? default : entity;
+                }
+                catch (WrongClassException)
+                {
+                    return default;
+                }
             }
 
             return document;
@@ -431,7 +493,7 @@ namespace MrCMS.Helpers
 
                 if (destinationType.IsEnum && value is int)
                 {
-                    return Enum.ToObject(destinationType, (int)value);
+                    return Enum.ToObject(destinationType, (int) value);
                 }
 
                 if (!destinationType.IsInstanceOfType(value))
@@ -439,6 +501,7 @@ namespace MrCMS.Helpers
                     return Convert.ChangeType(value, destinationType, culture);
                 }
             }
+
             return value;
         }
 
@@ -450,7 +513,7 @@ namespace MrCMS.Helpers
         /// <returns>The converted value.</returns>
         public static T To<T>(this object value)
         {
-            return (T)To(value, typeof(T));
+            return (T) To(value, typeof(T));
         }
 
         public static TypeConverter GetCustomTypeConverter(this Type type)
@@ -498,24 +561,24 @@ namespace MrCMS.Helpers
             return GetAllTypes().FirstOrDefault(type => type.FullName == typeName);
         }
 
-        public static Type GetTypeByClassName(string typeName)
-        {
-            return GetAllTypes().FirstOrDefault(type => type.Name == typeName);
-        }
-
         public static Type GetGenericTypeByName(string type)
         {
             return
                 _mrCMSAssemblies.Select(mrCMSAssembly => mrCMSAssembly.GetType(type))
-                                .FirstOrDefault(type1 => type1 != null);
+                    .FirstOrDefault(type1 => type1 != null);
         }
+
         public static Dictionary<Type, Type> GetSimpleInterfaceImplementationPairings()
         {
-            var interfaces = GetAllTypes().Where(x => x.GetTypeInfo().IsInterface).Where(x => !x.IsGenericTypeDefinition);
+            var allTypes = GetAllTypes();
+            var interfaces = allTypes.Where(x => x.GetTypeInfo().IsInterface)
+                .Where(x => !x.IsGenericTypeDefinition);
 
-            var singleImplementationInterfaces = interfaces.Where(x => GetAllConcreteTypesAssignableFrom(x).Count(y => !y.IsGenericTypeDefinition) == 1);
+            var interfaceCountDictionary = interfaces.ToDictionary(x => x,
+                x => allTypes.FindAll(y => x.IsAssignableFrom(y) && !y.IsAbstract && !y.IsGenericTypeDefinition));
 
-            return singleImplementationInterfaces.ToDictionary(x => x, x => GetAllConcreteTypesAssignableFrom(x).First());
+            return interfaceCountDictionary.Where(x => x.Value.Count == 1).ToDictionary(x => x.Key,
+                x => x.Value.First());
         }
 
         public static HashSet<Type> GetAllOpenGenericInterfaces()

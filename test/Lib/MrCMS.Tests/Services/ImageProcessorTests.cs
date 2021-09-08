@@ -3,7 +3,6 @@ using System.Drawing;
 using FluentAssertions;
 using MrCMS.Services;
 using Xunit;
-using Xunit.Extensions;
 
 namespace MrCMS.Tests.Services
 {

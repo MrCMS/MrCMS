@@ -45,6 +45,6 @@ namespace MrCMS.Shortcodes.Forms
             return AppendElement(formProperty as DropDownList, existingValue, formRenderingType);
         }
 
-        public bool IsSelfClosing { get { return false; } }
+        public bool IsSelfClosing => false;
     }
 }

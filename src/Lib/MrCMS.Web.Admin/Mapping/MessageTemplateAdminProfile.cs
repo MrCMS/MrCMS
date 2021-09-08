@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MrCMS.Messages;
 
 namespace MrCMS.Web.Admin.Mapping
 {

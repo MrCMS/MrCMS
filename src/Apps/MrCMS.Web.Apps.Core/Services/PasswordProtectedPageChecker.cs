@@ -1,7 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
-using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
@@ -18,9 +18,11 @@ namespace MrCMS.Web.Apps.Core.Services
         {
             return $"MrCMS.PasswordProtectedPage.{webpage.Id}";
         }
-        public bool CanAccessPage(Webpage webpage, IRequestCookieCollection cookies)
+
+        public async Task<bool> CanAccessPage(Webpage webpage, IRequestCookieCollection cookies)
         {
-            if (_getCurrentUser.Get()?.IsAdmin == true)
+            var user = await _getCurrentUser.Get();
+            if (user?.IsAdmin == true)
                 return true;
             if (webpage == null)
                 return false;

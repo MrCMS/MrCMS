@@ -1,10 +1,9 @@
-﻿using System;
-using System.Web;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.TestSupport;
 using Xunit;
@@ -14,8 +13,9 @@ namespace MrCMS.Tests.Services
     public class CurrentSiteLocatorTests
     {
         //private HttpRequestBase _httpRequestBase;
-        private CurrentSiteLocator _currentSiteLocator;
+        private ContextCurrentSiteLocator _contextCurrentSiteLocator;
         private InMemoryRepository<Site> _inMemoryRepository;
+        private InMemoryRepository<RedirectedDomain> _domainRepository;
         private readonly Site CurrentSite;
         private IHttpContextAccessor _contextAccessor;
 
@@ -25,32 +25,35 @@ namespace MrCMS.Tests.Services
             //_httpRequestBase = A.Fake<HttpRequestBase>();
             _contextAccessor = A.Fake<IHttpContextAccessor>();
             _inMemoryRepository = new InMemoryRepository<Site>();
-            _currentSiteLocator = new CurrentSiteLocator(_inMemoryRepository, _contextAccessor);
-            _inMemoryRepository.Add(CurrentSite);
+            _domainRepository = new InMemoryRepository<RedirectedDomain>();
+            _contextCurrentSiteLocator = new ContextCurrentSiteLocator(_inMemoryRepository,
+                _domainRepository, _contextAccessor);
         }
 
         [Fact]
-        public void CurrentSiteLocator_GetCurrentSite_ReturnsFirstIfNoneMatch()
+        public async Task CurrentSiteLocator_GetCurrentSite_ReturnsFirstIfNoneMatch()
         {
+            await _inMemoryRepository.Add(CurrentSite);
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "test2" };
-            _inMemoryRepository.Add(site1);
-            _inMemoryRepository.Add(site2);
+            await _inMemoryRepository.Add(site1);
+            await _inMemoryRepository.Add(site2);
             A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
 
-            _currentSiteLocator.GetCurrentSite().Should().Be(CurrentSite);
+            _contextCurrentSiteLocator.GetCurrentSite().Should().Be(CurrentSite);
         }
 
         [Fact]
-        public void CurrentSiteLocator_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()
+        public async Task CurrentSiteLocator_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()
         {
+            await _inMemoryRepository.Add(CurrentSite);
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "www.example.com" };
-            _inMemoryRepository.Add(site1);
-            _inMemoryRepository.Add(site2);
+            await _inMemoryRepository.Add(site1);
+            await _inMemoryRepository.Add(site2);
             A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
 
-            _currentSiteLocator.GetCurrentSite().Should().Be(site2);
+            _contextCurrentSiteLocator.GetCurrentSite().Should().Be(site2);
         }
     }
 }

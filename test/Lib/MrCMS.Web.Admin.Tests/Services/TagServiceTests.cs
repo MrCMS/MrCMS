@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
@@ -13,7 +14,7 @@ namespace MrCMS.Web.Admin.Tests.Services
     public class TagAdminServiceTests : InMemoryDatabaseTest
     {
         [Fact]
-        public void TagAdminService_Search_ShouldReturnTagsStartingWithTerm()
+        public async Task TagAdminService_Search_ShouldReturnTagsStartingWithTerm()
         {
             var tagService = new TagAdminService(Session);
 
@@ -21,14 +22,14 @@ namespace MrCMS.Web.Admin.Tests.Services
             var tag2 = new Tag {Name = "tag-2", Site = CurrentSite};
             var tag3 = new Tag {Name = "not-the-same", Site = CurrentSite};
 
-            Session.Transact(session =>
+            await Session.TransactAsync(async session =>
             {
-                Session.SaveOrUpdate(tag1);
-                Session.SaveOrUpdate(tag2);
-                Session.SaveOrUpdate(tag3);
+                await Session.SaveOrUpdateAsync(tag1);
+                await Session.SaveOrUpdateAsync(tag2);
+                await Session.SaveOrUpdateAsync(tag3);
             });
 
-            IEnumerable<AutoCompleteResult> tags = tagService.Search("tag");
+            IEnumerable<AutoCompleteResult> tags = await tagService.Search("tag");
 
             tags.Should().HaveCount(2);
             tags.First().label.Should().Be("tag-1");

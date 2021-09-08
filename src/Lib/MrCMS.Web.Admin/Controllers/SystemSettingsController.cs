@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Models;
@@ -6,10 +7,9 @@ using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Admin.ModelBinders;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -37,11 +37,14 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpPost]
         [ActionName("Index")]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
-        public RedirectToActionResult Index_Post(
+        public async Task<RedirectToActionResult> Index_Post(
             [ModelBinder(typeof(SystemSettingsModelBinder))]
             List<SystemSettingsBase> settings)
         {
-            settings.ForEach(s => _configurationProvider.SaveSettings(s));
+            foreach (var setting in settings)
+            {
+                await _configurationProvider.SaveSettings(setting);
+            }
             TempData["settings-saved"] = true;
             return RedirectToAction("Index");
         }
@@ -56,22 +59,22 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
-        public RedirectToActionResult Mail(MailSettings settings)
+        public async Task<RedirectToActionResult> Mail(MailSettings settings)
         {
-            _configurationProvider.SaveSettings(settings);
-            TempData.SuccessMessages().Add("Mail settings saved.");
+            await _configurationProvider.SaveSettings(settings);
+            TempData.AddSuccessMessage("Mail settings saved.");
             return RedirectToAction("Mail");
         }
 
         [HttpPost]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
-        public RedirectToActionResult TestMailSettings(TestEmailInfo info)
+        public async Task<RedirectToActionResult> TestMailSettings(TestEmailInfo info)
         {
-            var result = _testSmtpSettings.TestSettings(_configurationProvider.GetSystemSettings<MailSettings>(), info);
+            var result = await _testSmtpSettings.TestSettings(_configurationProvider.GetSystemSettings<MailSettings>(), info);
             if (result)
-                TempData.SuccessMessages().Add(_resourceProvider.GetValue("Admin - Test email - Success", "Email sent."));
+                TempData.AddSuccessMessage(await _resourceProvider.GetValue("Admin - Test email - Success", "Email sent."));
             else
-                TempData.ErrorMessages().Add(_resourceProvider.GetValue("Admin - Test email - Failure", "An error occurred, check the log for details."));
+                TempData.AddErrorMessage(await _resourceProvider.GetValue("Admin - Test email - Failure", "An error occurred, check the log for details."));
             return RedirectToAction("Mail");
         }
     }

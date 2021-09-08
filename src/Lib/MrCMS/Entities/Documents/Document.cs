@@ -14,9 +14,7 @@ namespace MrCMS.Entities.Documents
             Tags = new HashSet<Tag>();
         }
 
-        [Required]
-        [StringLength(255)]
-        public virtual string Name { get; set; }
+        [Required] [StringLength(255)] public virtual string Name { get; set; }
 
         public virtual Document Parent { get; set; }
 
@@ -33,26 +31,19 @@ namespace MrCMS.Entities.Documents
             get { return string.Join(",", Tags.Select(x => x.Name)); }
         }
 
-        public virtual int ParentId
-        {
-            get { return Parent == null ? 0 : Parent.Id; }
-        }
+        public virtual int ParentId => Parent?.Id ?? 0;
 
-        public virtual string DocumentType
-        {
-            get { return GetType().Name; }
-        }
+        public virtual string DocumentType => GetType().Name;
 
         protected internal virtual IList<DocumentVersion> Versions { get; set; }
 
         public virtual bool HideInAdminNav { get; set; }
-        
+
         public virtual ISet<TagPage> TagPages { get; set; }
 
         public virtual string TagPageList
         {
-            get { return string.Join(",", TagPages.Select(x => x.Name)); }
+            get { return string.Join(",", TagPages?.Select(x => x.Name) ?? new List<string>()); }
         }
-
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models.SEOAnalysis;
@@ -9,28 +10,30 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
 {
     public class TitleContainsTerm : BaseSEOAnalysisFacetProvider
     {
-        public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
+        public override Task<IReadOnlyList<SEOAnalysisFacet>> GetFacets(Webpage webpage, HtmlNode document,
+            string analysisTerm)
         {
+            var facets = new List<SEOAnalysisFacet>();
             string titleText = document.GetElementText("title");
             if (titleText != null && titleText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
             {
                 if (titleText.StartsWith(analysisTerm))
-                    yield return
+                    facets.Add(
                         GetFacet("Title contains term", SEOAnalysisStatus.Success,
-                            string.Format("The title starts with the term '{0}', which is considered to improve rankings", analysisTerm));
+                            $"The title starts with the term '{analysisTerm}', which is considered to improve rankings")
+                    );
                 else
                 {
-                    yield return
+                    facets.Add(
                         GetFacet("Title contains term", SEOAnalysisStatus.CanBeImproved,
-                            string.Format(
-                                "The title contains the term '{0}'. To improve this, consider moving it to the start of the title, as this is considered to improve rankings",
-                                analysisTerm));
+                            $"The title contains the term '{analysisTerm}'. To improve this, consider moving it to the start of the title, as this is considered to improve rankings"));
                 }
             }
             else
-                yield return
+                facets.Add(
                     GetFacet("Title contains term", SEOAnalysisStatus.Error,
-                        string.Format("The title does not contain '{0}'", analysisTerm));
+                        $"The title does not contain '{analysisTerm}'"));
+            return Task.FromResult<IReadOnlyList<SEOAnalysisFacet>>(facets);
         }
     }
 }

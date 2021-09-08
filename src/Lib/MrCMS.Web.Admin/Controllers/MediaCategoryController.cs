@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Web.Admin.ACL;
 using MrCMS.Web.Admin.ModelBinders;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.Helpers;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -18,78 +17,86 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly IMediaCategoryAdminService _mediaCategoryAdminService;
         private readonly IFileAdminService _fileAdminService;
 
-        public MediaCategoryController(IMediaCategoryAdminService mediaCategoryAdminService, IFileAdminService fileAdminService)
+        public MediaCategoryController(IMediaCategoryAdminService mediaCategoryAdminService,
+            IFileAdminService fileAdminService)
         {
             _mediaCategoryAdminService = mediaCategoryAdminService;
             _fileAdminService = fileAdminService;
         }
 
         [HttpGet, ActionName("Add")]
-        public ViewResult Add_Get(int? id)
+        public async Task<ViewResult> Add_Get(int? id)
         {
             //Build list 
             var model = _mediaCategoryAdminService.GetNewCategoryModel(id);
-            ViewData["parent"] = _mediaCategoryAdminService.GetCategory(id);
+            ViewData["parent"] = await _mediaCategoryAdminService.GetCategory(id);
 
             return View(model);
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(AddMediaCategoryModel model)
+        public async Task<RedirectToActionResult> Add(AddMediaCategoryModel model)
         {
-            var doc = _mediaCategoryAdminService.Add(model);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
-            return RedirectToAction("Show", new { id = doc.Id });
+            var canAdd = await _mediaCategoryAdminService.CanAdd(model);
+            if (!canAdd.Success)
+            {
+                TempData.AddErrorMessage(canAdd.ErrorMessage);
+                return RedirectToAction("Add", new {id = model.ParentId});
+            }
+
+            var doc = await _mediaCategoryAdminService.Add(model);
+            TempData.AddSuccessMessage($"{doc.Name} successfully added");
+            return RedirectToAction("Show", new {id = (int?) doc.Id});
         }
 
         [HttpGet, ActionName("Edit")]
-        public ViewResult Edit_Get(int id)
+        public async Task<ViewResult> Edit_Get(int id)
         {
-            return View(_mediaCategoryAdminService.GetEditModel(id));
+            return View(await _mediaCategoryAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(UpdateMediaCategoryModel model)
+        public async Task<RedirectToActionResult> Edit(UpdateMediaCategoryModel model)
         {
-            var category = _mediaCategoryAdminService.Update(model);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", category.Name));
-            return RedirectToAction("Show", new { id = category.Id });
+            var category = await _mediaCategoryAdminService.Update(model);
+            TempData.AddSuccessMessage($"{category.Name} successfully saved");
+            return RedirectToAction("Show", new {id = category.Id});
         }
 
         [HttpGet, ActionName("Delete")]
-        public ActionResult Delete_Get(int id)
+        public async Task<ActionResult> Delete_Get(int id)
         {
-            return PartialView(_mediaCategoryAdminService.GetEditModel(id));
+            return PartialView(await _mediaCategoryAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var category = _mediaCategoryAdminService.Delete(id);
-            TempData.InfoMessages().Add(string.Format("{0} deleted", category.Name));
+            var category = await _mediaCategoryAdminService.Delete(id);
+            TempData.AddInfoMessage($"{category.Name} deleted");
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult Sort(int id)
+        public async Task<ActionResult> Sort(int id)
         {
-            List<SortItem> sortItems = _mediaCategoryAdminService.GetSortItems(id);
+            List<SortItem> sortItems = await _mediaCategoryAdminService.GetSortItems(id);
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort(int id, List<SortItem> items)
+        public async Task<ActionResult> Sort(int id, List<SortItem> items)
         {
-            _mediaCategoryAdminService.SetOrders(items);
-            return RedirectToAction("Sort", new { id });
+            await _mediaCategoryAdminService.SetOrders(items);
+            return RedirectToAction("Sort", new {id});
         }
 
-        public ActionResult Show(MediaCategorySearchModel searchModel)
+        public async Task<ActionResult> Show(MediaCategorySearchModel searchModel)
         {
             if (searchModel == null || searchModel.Id == null)
                 return RedirectToAction("Index");
-            ViewData["category"] = _fileAdminService.GetCategory(searchModel);
+            ViewData["category"] = await _fileAdminService.GetCategory(searchModel);
 
             return View(searchModel);
         }
@@ -100,26 +107,28 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult ShowFilesSimple(MediaCategory category)
+        public async Task<ActionResult> ShowFilesSimple(int id)
         {
+            var category = await _mediaCategoryAdminService.Get(id);
             return PartialView(category);
         }
 
 
         [HttpGet]
-        public ActionResult SortFiles(MediaCategory category)
+        public async Task<ActionResult> SortFiles(int id)
         {
-            ViewData["categoryId"] = category.Id;
-            List<ImageSortItem> sortItems = _fileAdminService.GetFilesToSort(category);
+            ViewData["categoryId"] = id;
+            var category = await _mediaCategoryAdminService.Get(id);
+            IList<ImageSortItem> sortItems = await _fileAdminService.GetFilesToSort(category);
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult SortFiles(int? id, List<SortItem> items)
+        public async Task<ActionResult> SortFiles(int? id, List<SortItem> items)
         {
-            _fileAdminService.SetOrders(items);
-            return RedirectToAction("SortFiles", new { id });
+            await _fileAdminService.SetOrders(items);
+            return RedirectToAction("SortFiles", new {id});
         }
 
         /// <summary>
@@ -128,31 +137,32 @@ namespace MrCMS.Web.Admin.Controllers
         /// <param name="urlSegment">The URL Segment entered</param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
+        public async Task<ActionResult> ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_mediaCategoryAdminService.UrlIsValidForMediaCategory(urlSegment, id)
+            return !await _mediaCategoryAdminService.UrlIsValidForMediaCategory(urlSegment, id)
                 ? Json("Please choose a different Path as this one is already used.")
                 : Json(true);
         }
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Cut)]
-        public JsonResult MoveFilesAndFolders(
-            [ModelBinder(typeof(MoveFilesModelBinder))]MoveFilesAndFoldersModel model)
+        public async Task<JsonResult> MoveFilesAndFolders(
+            [ModelBinder(typeof(MoveFilesModelBinder))]
+            MoveFilesAndFoldersModel model)
         {
-            _fileAdminService.MoveFiles(model.Files, model.Folder);
-            string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
-            return Json(new FormActionResult { success = true, message = message });
+            await _fileAdminService.MoveFiles(model.Files, model.Folder);
+            string message = await _fileAdminService.MoveFolders(model.Folders, model.Folder);
+            return Json(new FormActionResult {success = true, message = message});
         }
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Delete)]
-        public JsonResult DeleteFilesAndFolders(
+        public async Task<JsonResult> DeleteFilesAndFolders(
             [ModelBinder(typeof(DeleteFilesModelBinder))]
             DeleteFilesAndFoldersModel model)
         {
-            _fileAdminService.DeleteFilesSoft(model.Files);
-            _fileAdminService.DeleteFoldersSoft(model.Folders);
+            await _fileAdminService.DeleteFilesSoft(model.Files);
+            await _fileAdminService.DeleteFoldersSoft(model.Folders);
 
-            return Json(new FormActionResult { success = true, message = "" });
+            return Json(new FormActionResult {success = true, message = ""});
         }
 
         public ActionResult Directory(MediaCategorySearchModel searchModel)

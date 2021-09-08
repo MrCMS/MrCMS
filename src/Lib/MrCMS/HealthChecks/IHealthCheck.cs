@@ -1,9 +1,11 @@
-﻿namespace MrCMS.HealthChecks
+﻿using System.Threading.Tasks;
+
+namespace MrCMS.HealthChecks
 {
     public interface IHealthCheck
     {
         string DisplayName { get; }
         string TypeName { get; }
-        HealthCheckResult PerformCheck();
+        Task<HealthCheckResult> PerformCheck();
     }
 }

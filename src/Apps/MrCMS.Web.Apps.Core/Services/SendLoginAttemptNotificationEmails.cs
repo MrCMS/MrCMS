@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Events;
@@ -28,7 +28,8 @@ namespace MrCMS.Web.Apps.Core.Services
             _successParser = successParser;
             _failureParser = failureParser;
         }
-        public void Execute(OnAddedArgs<LoginAttempt> args)
+
+        public async Task Execute(OnAddedArgs<LoginAttempt> args)
         {
             if (!_settings.SendLoginNotificationEmails)
                 return;
@@ -45,12 +46,12 @@ namespace MrCMS.Web.Apps.Core.Services
             switch (loginAttempt.Status)
             {
                 case LoginAttemptStatus.Failure:
-                    message = _failureParser.GetMessage(loginAttempt);
-                    _failureParser.QueueMessage(message);
+                    message = await _failureParser.GetMessage(loginAttempt);
+                    await _failureParser.QueueMessage(message);
                     break;
                 case LoginAttemptStatus.Success:
-                    message = _successParser.GetMessage(loginAttempt);
-                    _successParser.QueueMessage(message);
+                    message = await _successParser.GetMessage(loginAttempt);
+                    await _successParser.QueueMessage(message);
                     break;
             }
         }
