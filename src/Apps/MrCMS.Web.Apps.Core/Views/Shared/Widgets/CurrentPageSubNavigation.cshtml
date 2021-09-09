@@ -1,0 +1,32 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Services
+@using MrCMS.Web.Apps.Core.Services.Widgets
+@using MrCMS.Web.Apps.Core.Widgets
+@model WidgetData
+@inject IGetCurrentPage GetCurrentPage
+@inject IWidgetUIService WidgetUIService
+@inject IGetLiveUrl GetLiveUrl
+@inject IGetPageSubNavigation GetPageSubNavigation
+@{
+    var currentPage = GetCurrentPage.GetPage();
+    var activePages = new List<string>();
+    foreach (var webpage in currentPage?.ActivePages ?? new List<Webpage>())
+    {
+        activePages.Add(await GetLiveUrl.GetUrlSegment(webpage, true));
+    }
+    var widget = await WidgetUIService.GetWidgetAsync<CurrentPageSubNavigation>(Model.Id);
+    var list = await GetPageSubNavigation.GetChildNavigationRecords(currentPage);
+}
+@if (widget.ShowNameAsTitle)
+{
+    <h4>@widget.Name</h4>
+}
+<ul class="nav nav-pills nav-stacked">
+    @foreach (var item in list)
+    {
+        <li class="@(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
+            <a href="@item.Url">@item.Text</a>
+        </li>
+    }
+</ul>

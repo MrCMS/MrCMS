@@ -14,7 +14,7 @@ namespace MrCMS.TestSupport
         {
             return SQLiteConfiguration.Standard.Dialect<SQLiteDialect>()
                 .InMemory()
-                .Raw(Environment.ReleaseConnections, "on_close");
+                .Raw(NHibernate.Cfg.Environment.ReleaseConnections, "on_close");
         }
 
         public void AddProviderSpecificConfiguration(Configuration config)

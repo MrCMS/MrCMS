@@ -9,7 +9,6 @@
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Articles.Pages.ArticleList
 @inject IGetLiveUrl GetLiveUrl
-@inject IGetCurrentPageUrl GetCurrentPageUrl
 
 @{
     var results = ViewData["paged-articles"] as IPagedList<Article> ?? PagingHelper.EmptyList<Article>();
@@ -47,8 +46,9 @@
     </div>
     <hr />
 }
-
+@*
 @if (Model.AllowPaging)
 {
-    @Html.PagedListPager(results, page => GetCurrentPageUrl.GetUrl(new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page =>  GetCurrentPageUrl.GetUrl(new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCMSPagedListRenderOptions.Bootstrap4)
 }
+*@

@@ -1,0 +1,10 @@
+﻿@using MrCMS.Services
+@using MrCMS.Web.Apps.Core.Widgets
+@inject IWidgetUIService WidgetUIService
+@model WidgetData
+@{
+    var widget = await WidgetUIService.GetWidgetAsync<LinkedImage>(Model.Id);
+}
+<a href="@widget.Link">
+    @await Html.RenderImage(widget.Image, attributes: new {@class = "img-responsive"})
+</a>

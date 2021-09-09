@@ -14,7 +14,7 @@ namespace MrCMS.Website.Controllers
 
         public PushNotificationSubscriptionsController(
             IServiceProvider serviceProvider
-            )
+        )
         {
             _serviceProvider = serviceProvider;
         }
@@ -25,28 +25,8 @@ namespace MrCMS.Website.Controllers
             {
                 var installed = _serviceProvider.GetRequiredService<IDatabaseCreationService>().IsDatabaseInstalled();
                 if (!installed)
-                    return NullManager;
+                    return null;
                 return _serviceProvider.GetRequiredService<IPushNotificationSubscriptionManager>();
-            }
-        }
-
-        private static readonly IPushNotificationSubscriptionManager NullManager = new NullPushNotificationSubscriptionManager();
-
-        private class NullPushNotificationSubscriptionManager : IPushNotificationSubscriptionManager
-        {
-            public async Task<WebPushResult> CreateOrUpdateSubscription(PushNotificationSubscription subscription)
-            {
-                return new WebPushResult();
-            }
-
-            public async Task<WebPushResult> RemoveSubscription(string endpoint)
-            {
-                return new WebPushResult();
-            }
-
-            public async Task<string> GetServiceWorkerJavaScript()
-            {
-                return string.Empty;
             }
         }
 
@@ -54,12 +34,18 @@ namespace MrCMS.Website.Controllers
         [Route("sw.js")]
         public async Task<ContentResult> ServiceWorkerJavaScript()
         {
-            return Content(await Manager.GetServiceWorkerJavaScript(), "text/javascript");
+            if (Manager == null)
+                return Content(string.Empty, "text/javascript");
+
+            return Content(await (Manager.GetServiceWorkerJavaScript()), "text/javascript");
         }
 
         [HttpPost("push-notifications")]
         public async Task<IActionResult> Create([FromBody] PushNotificationSubscription subscription)
         {
+            if (Manager == null)
+                return new EmptyResult();
+
             var result = await Manager.CreateOrUpdateSubscription(subscription);
 
             return GetResult(result);
@@ -68,6 +54,9 @@ namespace MrCMS.Website.Controllers
         [HttpDelete("push-notifications")]
         public async Task<IActionResult> Delete(string endpoint)
         {
+            if (Manager == null)
+                return new EmptyResult();
+            
             var result = await Manager.RemoveSubscription(endpoint);
 
             return GetResult(result);
@@ -75,7 +64,7 @@ namespace MrCMS.Website.Controllers
 
         private static IActionResult GetResult(WebPushResult result)
         {
-            return new StatusCodeResult((int) result.StatusCode.GetValueOrDefault(HttpStatusCode.OK));
+            return new StatusCodeResult((int)result.StatusCode.GetValueOrDefault(HttpStatusCode.OK));
         }
     }
 }

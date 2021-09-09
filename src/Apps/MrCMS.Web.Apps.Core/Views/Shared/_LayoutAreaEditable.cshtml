@@ -1,0 +1,14 @@
+@inject ILogger<WidgetDisplayInfo> Logger
+@using Microsoft.Extensions.Logging
+@model MrCMS.Website.WidgetDisplayInfo
+
+<div data-layout-area-id="@Model.Id" data-layout-area-name="@Model.Name" class="layout-area">
+    @foreach (var info in Model.Widgets)
+    {
+        <div data-widget-id="@info.Id" data-widget-name="@info.Name" class="widget">
+            @{
+                await Html.RenderPartialAsync($"Widgets/{info.ViewName}", info);
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,53 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Services
+@using MrCMS.Web.Apps.Core.Services.Widgets
+@using MrCMS.Web.Apps.Core.Widgets
+@model WidgetData
+@inject IWidgetUIService WidgetUIService
+@inject IGetNavigationRecords GetNavigationRecords
+@inject IGetCurrentPage GetCurrentPage
+@inject IGetLiveUrl GetLiveUrl
+@{
+    var widget = await WidgetUIService.GetWidgetAsync<Navigation>(Model.Id);
+    var records = await GetNavigationRecords.GetRootNavigation(widget.IncludeChildren);
+    var currentPage = GetCurrentPage.GetPage();
+    var activePages = new List<string>();
+    foreach (var webpage in currentPage?.ActivePages ?? new List<Webpage>())
+    {
+        activePages.Add(await GetLiveUrl.GetUrlSegment(webpage, true));
+    }
+}
+<ul class="navbar-nav mr-auto">
+    @foreach (var item in records)
+    {
+        if (@item.Children != null && @item.Children.Any())
+        {
+            var dropdownId = item.Text.ToString()?.Trim().Replace(' ', '-').ToLowerInvariant();
+            <li class="nav-item dropdown @(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
+                <a class="nav-link dropdown-toggle" href="#" id="dd-@(dropdownId)" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @item.Text
+                </a>
+                @if (item.Children.Any())
+                {
+                    <div class="dropdown-menu" aria-labelledby="dd-@(dropdownId)">
+                        @foreach (var record in item.Children)
+                        {
+                            <a class="dropdown-item @(activePages.Contains(record.Url.ToString(), StringComparer.OrdinalIgnoreCase) ? "active" : "")" href="@record.Url">
+                                @record.Text
+                            </a>
+                        }
+                    </div>
+                }
+            </li>
+        }
+        else
+        {
+            <li class="nav-item @(activePages.Any(s => s == item.Url.ToString()) ? "active" : "")">
+                <a class="nav-link" href="@item.Url">
+                    @item.Text
+                </a>
+            </li>
+        }
+    }
+</ul>

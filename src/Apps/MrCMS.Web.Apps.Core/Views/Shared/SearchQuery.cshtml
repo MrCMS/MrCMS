@@ -1,0 +1,19 @@
+﻿@using MrCMS.Services
+@using MrCMS.Web.Apps.Core.Models.Search
+@using MrCMS.Web.Apps.Core.Pages
+@model WebpageSearchQuery
+@inject IUniquePageService UniquePageService
+@{
+    var url = await UniquePageService.GetUrl<SearchPage>();
+}
+
+<form action="@url" method="GET">
+    <div class="input-group">
+        @Html.TextBoxFor(x => x.Term, new {@class = "form-control"})
+        <span class="input-group-btn">
+            <button class="btn btn-secondary" type="submit">
+                <span class="fa fa-search"></span>
+            </button>
+        </span>
+    </div>
+</form>

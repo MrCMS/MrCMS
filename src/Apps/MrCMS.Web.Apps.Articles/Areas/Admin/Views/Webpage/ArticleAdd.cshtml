@@ -2,7 +2,8 @@
 @using MrCMS.Web.Apps.Articles.Areas.Admin.Services
 @model MrCMS.Web.Apps.Articles.Areas.Admin.Models.ArticleViewModel
 @inject IGetArticleAdminAuthorOptions GetAuthorOptions
-@{ Html.IncludeScript("~/Areas/Admin/Apps/Articles/scripts/article.js"); }
+@*{ Html.IncludeScript("~/Areas/Admin/Apps/Articles/scripts/article.js"); }
+*@
 @{
     var userOptions = await GetAuthorOptions.GetUsers();
 }

@@ -65,6 +65,7 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
         private async Task<HtmlNode> GetDocument(Webpage webpage)
         {
             string absoluteUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
+            // todo - replace with HttpClient
             WebRequest request = WebRequest.Create(absoluteUrl);
 
             var document = new HtmlDocument();

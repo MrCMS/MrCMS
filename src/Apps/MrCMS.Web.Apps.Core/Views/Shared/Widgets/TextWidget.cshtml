@@ -1,0 +1,9 @@
+﻿@using MrCMS.Services
+@using MrCMS.Web.Apps.Core.Widgets
+@model MrCMS.Website.WidgetData
+@inject IWidgetUIService WidgetUIService
+@{
+    var textWidget = await WidgetUIService.GetWidgetAsync<TextWidget>(Model.Id);
+}
+
+@await Html.Editable(textWidget, widget => widget.Text, true)

@@ -17,17 +17,17 @@ namespace MrCMS.Helpers
             return list.Where(predicate).ToList();
         }
 
-        /// <summary>
-        ///     Break a list of items into chunks of a specific size
-        /// </summary>
-        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunksize)
-        {
-            while (source.Any())
-            {
-                yield return source.Take(chunksize);
-                source = source.Skip(chunksize).ToList();
-            }
-        }
+        // /// <summary>
+        // ///     Break a list of items into chunks of a specific size
+        // /// </summary>
+        // public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunksize)
+        // {
+        //     while (source.Any())
+        //     {
+        //         yield return source.Take(chunksize);
+        //         source = source.Skip(chunksize).ToList();
+        //     }
+        // }
 
         public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int page, int? pageSize = null)
         {

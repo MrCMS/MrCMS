@@ -54,6 +54,7 @@ namespace MrCMS.Helpers
         {
             container.AddScoped<ICurrentSiteLocator, ContextCurrentSiteLocator>();
         }
+
         public static void RegisterSettings(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())
@@ -99,7 +100,9 @@ namespace MrCMS.Helpers
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IShortcodeRenderer>())
             {
-                container.AddScoped(typeof(IShortcodeRenderer), type);
+                // don't double add 
+                if (!container.Any(x => x.ServiceType == typeof(IShortcodeRenderer) && x.ImplementationType == type))
+                    container.AddScoped(typeof(IShortcodeRenderer), type);
             }
         }
 
