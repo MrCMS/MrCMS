@@ -1,0 +1,7 @@
+{
+  "name": "MrCMS.Web.Apps.Core",
+  "version": "1.0.0",
+  "dependencies": {
+    "parcel": "^2.0.1"
+  }
+}

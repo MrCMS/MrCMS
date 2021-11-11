@@ -48,6 +48,7 @@ _ReSharper*/
 
 #Project files
 [Bb]uild/
+node_modules
 
 #Subversion files
 .svn
