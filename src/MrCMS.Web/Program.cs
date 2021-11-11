@@ -18,6 +18,7 @@ namespace MrCMS.Web
                     config.AddJsonFile(
                         "connectionstrings.json", optional: true, reloadOnChange: true);
                 })
+                .UseStaticWebAssets()
                 .UseStartup<Startup>();
     }
 }

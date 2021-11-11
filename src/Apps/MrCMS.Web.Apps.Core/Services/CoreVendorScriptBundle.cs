@@ -16,11 +16,11 @@ namespace MrCMS.Web.Apps.Core.Services
         {
             get
             {
-                yield return "/Content/lib/jquery/jquery-3.3.1.js";
-                yield return "/Content/lib/jquery/validate/jquery.validate.js";
-                yield return "/Content/lib/jquery/validate/jquery.validate.unobtrusive.js";
-                yield return "/Content/lib/jquery/validate/additional-methods.min.js";
-                yield return "/Content/lib/bootstrap/dist/js/bootstrap.bundle.js";
+                yield return "/assets/lib/jquery/jquery-3.3.1.min.js";
+                yield return "/assets/lib/jquery/validate/jquery.validate.js";
+                yield return "/assets/lib/jquery/validate/jquery.validate.unobtrusive.js";
+                yield return "/assets/lib/jquery/validate/additional-methods.min.js";
+                yield return "/assets/lib/bootstrap/dist/js/bootstrap.bundle.js";
             }
         }
     }

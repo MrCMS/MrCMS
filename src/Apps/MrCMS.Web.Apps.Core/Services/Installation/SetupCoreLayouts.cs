@@ -129,11 +129,6 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation")
             };
 
-            yield return new UserLinks
-            {
-                Name = "User Links",
-                LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Right")
-            };
 
             yield return new TextWidget
             {

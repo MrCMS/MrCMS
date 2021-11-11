@@ -18,6 +18,7 @@
     },
     "MrCMS.Web": {
       "commandName": "Project",
+      "hotReloadProfile": "aspnetcore",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:44301;http://localhost:44300",
       "environmentVariables": {

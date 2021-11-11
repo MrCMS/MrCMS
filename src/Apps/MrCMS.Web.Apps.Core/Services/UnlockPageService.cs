@@ -15,12 +15,14 @@ namespace MrCMS.Web.Apps.Core.Services
         private readonly IUniquePageService _uniquePageService;
         private readonly IPasswordProtectedPageChecker _checker;
 
-        public UnlockPageService(ISession session, IUniquePageService uniquePageService, IPasswordProtectedPageChecker checker)
+        public UnlockPageService(ISession session, IUniquePageService uniquePageService,
+            IPasswordProtectedPageChecker checker)
         {
             _session = session;
             _uniquePageService = uniquePageService;
             _checker = checker;
         }
+
         public async Task<Webpage> GetLockedPage(int id)
         {
             return await _session.GetAsync<Webpage>(id);
@@ -46,7 +48,7 @@ namespace MrCMS.Web.Apps.Core.Services
             if (isMatch)
             {
                 _checker.GiveAccessToPage(page, cookies);
-                return new UnlockPageResult { Success = true, LockedPageId = page.Id};
+                return new UnlockPageResult { Success = true, LockedPageId = page.Id };
             }
 
             return new UnlockPageResult { Success = false, LockedPageId = page.Id };
@@ -56,12 +58,11 @@ namespace MrCMS.Web.Apps.Core.Services
         {
             var page = await GetLockedPage(id);
             return new RedirectResult($"~/{page.UrlSegment}");
-
         }
 
         public async Task<RedirectResult> RedirectBackToPage(UnlockPageModel model)
         {
-            return await _uniquePageService.RedirectTo<WebpagePasswordPage>(new {lockedPage = model.LockedPage});
+            return await _uniquePageService.RedirectTo<WebpagePasswordPage>(new { lockedPage = model.LockedPage });
         }
     }
 }
