@@ -1,0 +1,25 @@
+﻿.file-result {
+    float: left;
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    border-top: none;
+    .header {
+        cursor: pointer;
+        padding: 5px;
+    }
+    .content {
+        padding: 5px;
+        border-top: 1px solid #e7e7e7;
+    }
+    &:first-child {
+        border-top: 1px solid #e7e7e7;
+    }
+}
+#media-selector {
+    .modal-body {
+        max-height: none;
+    }
+    label {
+        display: inline;
+    }
+}
