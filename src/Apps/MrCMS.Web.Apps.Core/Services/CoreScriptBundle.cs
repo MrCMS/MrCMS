@@ -9,8 +9,8 @@ namespace MrCMS.Web.Apps.Core.Services
         public int Priority { get; }
         public Task<bool> ShouldShow(string theme) => Task.FromResult(true);
 
-        public string Url => "/Content/core.js";
-        public string MinifiedUrl => "/Content/core.min.js";
+        public string Url => "/assets/core.js";
+        public string MinifiedUrl => "/assets/core.min.js";
 
         public IEnumerable<string> VendorFiles
         {

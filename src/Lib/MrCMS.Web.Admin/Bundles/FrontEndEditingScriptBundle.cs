@@ -25,8 +25,8 @@ namespace MrCMS.Web.Admin.Bundles
             return await _accessChecker.CanAccess<AdminBarACL>("Show") && _siteSettings.EnableInlineEditing;
         }
 
-        public string Url => "/Areas/Admin/Content/front-end-editing.js";
-        public string MinifiedUrl => "/Areas/Admin/Content/front-end-editing.min.js";
+        public string Url => "/assets/front-end-editing.js";
+        public string MinifiedUrl => "/assets/front-end-editing.min.js";
 
         public IEnumerable<string> VendorFiles
         {

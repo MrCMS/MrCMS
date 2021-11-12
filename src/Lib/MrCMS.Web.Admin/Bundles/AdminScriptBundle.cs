@@ -13,8 +13,8 @@ namespace MrCMS.Web.Admin.Bundles
             return Task.FromResult(true);
         }
 
-        public string Url => "/Areas/Admin/Content/admin.js";
-        public string MinifiedUrl => "/Areas/Admin/Content/admin.min.js";
+        public string Url => "/assets/admin.js";
+        public string MinifiedUrl => "/assets/admin.min.js";
 
         public IEnumerable<string> VendorFiles
         {

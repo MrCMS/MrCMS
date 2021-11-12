@@ -49,6 +49,7 @@ _ReSharper*/
 #Project files
 [Bb]uild/
 node_modules
+.parcel-cache
 
 #Subversion files
 .svn
@@ -86,9 +87,6 @@ packages/
 *mrcms.config
 
 #Media files
-*MrCMS\.Web/media*
-*MrCMS\.Web/content/upload*
-*MrCMS\.Web/wwwroot/Content/upload*
 src/MrCMS\.Web/wwwroot/content/upload*
 *.orig
 src/MrCMS.Web/App_Data*
@@ -113,3 +111,4 @@ appsettings.Development.json
 
 
 src/MrCMS.Web/connectionstrings.json
+
