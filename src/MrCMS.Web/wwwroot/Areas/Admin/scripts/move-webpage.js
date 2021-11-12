@@ -1,6 +1,0 @@
-﻿
-$(function () {
-    $("#parentVal").select2({
-      
-    });
-});

@@ -13,8 +13,8 @@ namespace MrCMS.Web.Admin.Bundles
             return Task.FromResult(true);
         }
 
-        public string Url => "/Areas/Admin/Content/admin.css";
-        public string MinifiedUrl => "/Areas/Admin/Content/admin.min.css";
+        public string Url => "/assets/admin.css";
+        public string MinifiedUrl => "/assets/admin.min.css";
 
         public IEnumerable<string> VendorFiles
         {
@@ -25,6 +25,7 @@ namespace MrCMS.Web.Admin.Bundles
                 // yield return "/Areas/Admin/Content/lib/sweetalert-master/lib/sweet-alert.css";
                 yield return "/Areas/Admin/Content/lib/select2-3.4.5/select2.css";
                 yield return "/Areas/Admin/Content/lib/spectrum/spectrum.css";
+                yield return "https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.css";
             }
         }
     }

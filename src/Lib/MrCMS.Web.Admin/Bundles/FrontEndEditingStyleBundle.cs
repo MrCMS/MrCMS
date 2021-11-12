@@ -25,14 +25,14 @@ namespace MrCMS.Web.Admin.Bundles
             return await _accessChecker.CanAccess<AdminBarACL>("Show") && _siteSettings.EnableInlineEditing;
         }
 
-        public string Url => "/Areas/Admin/Content/front-end-editing.css";
-        public string MinifiedUrl => "/Areas/Admin/Content/front-end-editing.min.css";
+        public string Url => "/assets/front-end-editing.css";
+        public string MinifiedUrl => "/assets/front-end-editing.min.css";
 
         public IEnumerable<string> VendorFiles
         {
             get
             {
-                yield break;
+                yield return "https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.css";
                 // yield return "/Areas/Admin/Content/lib/ckeditor/ckeditor.js";
                 // yield return "/Areas/Admin/Content/lib/jquery/jquery-ui-1.12.1/jquery-ui.js";
             }

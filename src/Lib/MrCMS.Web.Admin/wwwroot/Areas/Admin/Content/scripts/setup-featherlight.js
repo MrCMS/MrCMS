@@ -18,10 +18,10 @@ const MrCMSFeatherlightSettings = {
 };
 
 export function setCloseButtonPosition(contents) {
-    const offset = contents.find(".featherlight-content").offset();
-    const scrollTop = $(document).scrollTop();
-    contents.find(".featherlight-close-icon").css('top', offset.top - scrollTop);
-    contents.find(".featherlight-close-icon").css('right', offset.left - 20);
+    // const offset = contents.find(".featherlight-content").offset();
+    // const scrollTop = $(document).scrollTop();
+    // contents.find(".featherlight-close-icon").css('top', offset.top - scrollTop);
+    // contents.find(".featherlight-close-icon").css('right', offset.left - 20);
 }
 
 export function getRemoteModel(href) {

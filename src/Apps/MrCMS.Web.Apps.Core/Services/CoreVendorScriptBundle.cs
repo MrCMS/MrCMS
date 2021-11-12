@@ -6,7 +6,7 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public class CoreVendorScriptBundle : IUIScriptBundle
     {
-        public int Priority { get; }
+        public int Priority => int.MaxValue;
         public Task<bool> ShouldShow(string theme) => Task.FromResult(string.IsNullOrWhiteSpace(theme));
 
         public string Url { get; }
@@ -16,11 +16,11 @@ namespace MrCMS.Web.Apps.Core.Services
         {
             get
             {
-                yield return "/assets/lib/jquery/jquery-3.3.1.min.js";
-                yield return "/assets/lib/jquery/validate/jquery.validate.js";
-                yield return "/assets/lib/jquery/validate/jquery.validate.unobtrusive.js";
-                yield return "/assets/lib/jquery/validate/additional-methods.min.js";
-                yield return "/assets/lib/bootstrap/dist/js/bootstrap.bundle.js";
+                yield return "/Content/lib/jquery/jquery-3.3.1.min.js";
+                yield return "/Content/lib/jquery/validate/jquery.validate.js";
+                yield return "/Content/lib/jquery/validate/jquery.validate.unobtrusive.js";
+                yield return "/Content/lib/jquery/validate/additional-methods.min.js";
+                yield return "/Content/lib/bootstrap/dist/js/bootstrap.bundle.js";
             }
         }
     }

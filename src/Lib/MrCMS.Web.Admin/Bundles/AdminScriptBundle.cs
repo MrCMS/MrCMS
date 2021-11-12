@@ -41,7 +41,8 @@ namespace MrCMS.Web.Admin.Bundles
                 yield return "/Areas/Admin/Content/lib/jquery.noty.packaged.js";
                 yield return "/Areas/Admin/Content/lib/jstree/jstree.js";
                 yield return "/Areas/Admin/Content/lib/dropzone.js";
-                yield return "/Areas/Admin/Content/lib/featherlight.js";
+                // yield return "/Areas/Admin/Content/lib/featherlight.js";
+                yield return "https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.js";
                 yield return "/Areas/Admin/Content/lib/jquery.are-you-sure.js";
                 yield return "/Areas/Admin/Content/Lib/select2-3.4.5/select2.min.js";
                 yield return "/Areas/Admin/Content/lib/spectrum/spectrum.js";
