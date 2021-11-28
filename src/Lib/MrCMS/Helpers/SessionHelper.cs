@@ -263,7 +263,7 @@ namespace MrCMS.Helpers
         }
 
         public static async Task<IPagedList<TResult>> PagedAsync<TResult>(this IQueryable<TResult> queryable,
-            int pageNumber,
+            int pageNumber, 
             int? pageSize = null)
         {
             var size = pageSize ?? DefaultPageSize;

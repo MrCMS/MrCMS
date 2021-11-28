@@ -31,14 +31,8 @@ namespace MrCMS.Web.Admin.Bundles
         public IEnumerable<string> VendorFiles
         {
             get
-            {
-                // yield return "/Areas/Admin/Content/lib/jquery/jquery-3.3.1.min.js";
-                // yield return "https://code.jquery.com/jquery-1.7.2.min.js";
-                // yield return "/Areas/Admin/Content/lib/featherlight.js";
-                yield return "https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.js";
+            { 
                 yield return "/Areas/Admin/Content/lib/ckeditor/ckeditor.js";
-                yield return "/Areas/Admin/Content/lib/jquery/jquery-ui-1.12.1/jquery-ui.js";
-                yield return "/Areas/Admin/Content/lib/store.js";
             }
         }
     }

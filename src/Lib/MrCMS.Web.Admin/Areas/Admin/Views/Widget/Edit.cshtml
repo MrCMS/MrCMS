@@ -4,7 +4,6 @@
 @{
     var widget = ViewData["widget"] as Widget;
     ViewBag.Title = "Edit | " + widget.WidgetTypeFormatted;
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var cacheExpiryOptions = ViewData["cache-expiry-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @using (Html.BeginForm("Edit", "Widget", new {}, FormMethod.Post, null, new {id = "edit-widget"}))

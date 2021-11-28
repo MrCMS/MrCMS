@@ -1,12 +1,13 @@
 ﻿@using MrCMS.Web.Admin.Services
 @using X.PagedList.Mvc.Core
+@using MrCMS.Web.Admin.Models
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject IDocumentVersionsAdminService AdminService
 @{
-    var versionsModel = await AdminService.GetVersions(Model, ViewData["page"] as int? ?? 1);
+    var versionsModel = await AdminService.GetVersions(Model, ViewData["page"] as int? ?? 1) ?? new VersionsModel(null, Model.Id);
 }
 <div class="content-item">
-    @if (versionsModel.Items.Any())
+    @if (versionsModel?.Items != null && versionsModel.Items.Any())
     {
         <div data-paging-type="async">
             <table class="table table-striped table-condensed">

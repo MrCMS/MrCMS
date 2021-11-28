@@ -19,12 +19,6 @@
         <ProjectReference Include="..\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Areas\Admin" />
-      <Folder Include="wwwroot" />
-
-    </ItemGroup>
-
     <!--
           1. Install npm packages
           "Inputs" and "Outputs" are used for incremental builds. If all output items are up-to-date, MSBuild skips the target.
@@ -40,11 +34,11 @@
               <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
             </PropertyGroup>
          -->
-        <Exec Command="npm ci" Condition="$(RestorePackagesWithLockFile) == 'true'"/>
-        <Exec Command="npm install" Condition="$(RestorePackagesWithLockFile) != 'true'"/>
+        <Exec Command="npm ci" Condition="$(RestorePackagesWithLockFile) == 'true'" />
+        <Exec Command="npm install" Condition="$(RestorePackagesWithLockFile) != 'true'" />
 
         <!-- Write the stamp file, so incremental builds work -->
-        <Touch Files="node_modules/.install-stamp" AlwaysCreate="true"/>
+        <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
     </Target>
 
     <!--
@@ -52,7 +46,7 @@
         MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.
      -->
     <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
-        <Exec Command="npm run build"/>
+        <Exec Command="npm run build" />
     </Target>
 
 

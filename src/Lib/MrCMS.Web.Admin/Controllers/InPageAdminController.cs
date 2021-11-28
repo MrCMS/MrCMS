@@ -26,7 +26,7 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SaveContent(UpdatePropertyData updatePropertyData)
+        public async Task<JsonResult> SaveContent([FromBody] UpdatePropertyData updatePropertyData)
         {
             return Json(await _inPageAdminService.SaveContent(updatePropertyData));
         }

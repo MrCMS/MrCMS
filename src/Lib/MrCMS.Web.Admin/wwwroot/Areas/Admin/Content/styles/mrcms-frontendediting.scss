@@ -17,7 +17,6 @@ html {
     z-index: 9999;
     font-family: arial, sans-serif;
     font-size: 13px;
-    min-width: 600px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -178,6 +177,7 @@ fieldset[disabled] {
         box-shadow: none;
     }
     .mrcms-btn-secondary {
+        color:white;
         background-color: #474949;
         border-color: #474949;
         &:hover {
@@ -312,7 +312,7 @@ fieldset[disabled] {
     }
 }
 .mrcms-btn-secondary {
-    color: #ffffff;
+    color: #ffffff!important;
     background-color: #474949;
     border-color: #474949;
     &:hover {
@@ -748,3 +748,8 @@ fieldset[disabled] {
         }
     }
 }
+
+@media screen and (max-width: 600px) {
+    .hidden-small {display: none;}
+}
+

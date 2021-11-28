@@ -1,10 +1,10 @@
 /**
  * Featherlight - ultra slim jQuery lightbox
- * Version 1.2.0 - http://noelboss.github.io/featherlight/
+ * Version 1.3.1 - http://noelboss.github.io/featherlight/
  *
  * Copyright 2015, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
-**/
+ **/
 (function ($) {
     "use strict";
 
@@ -47,18 +47,18 @@
     }
 
     var opened = [],
-		pruneOpened = function (remove) {
-		    opened = $.grep(opened, function (fl) {
-		        return fl !== remove && fl.$instance.closest('body').length > 0;
-		    });
-		    return opened;
-		};
+        pruneOpened = function (remove) {
+            opened = $.grep(opened, function (fl) {
+                return fl !== remove && fl.$instance.closest('body').length > 0;
+            });
+            return opened;
+        };
 
     // structure({iframeMinHeight: 44, foo: 0}, 'iframe')
     //   #=> {min-height: 44}
     var structure = function (obj, prefix) {
         var result = {},
-			regex = new RegExp('^' + prefix + '([A-Z])(.*)');
+            regex = new RegExp('^' + prefix + '([A-Z])(.*)');
         for (var key in obj) {
             var match = key.match(regex);
             if (match) {
@@ -109,6 +109,7 @@
         closeOnEsc: true,                   /* Close lightbox when pressing esc */
         closeIcon: '&#10005;',             /* Close icon */
         loading: '',                     /* Content to show while initial content is loading */
+        persist: false,									/* If set, the content persist and will be shown again when opened again. 'shared' is a special value when binding multiple elements for them to share the same content */
         otherClose: null,                   /* Selector for alternate close buttons (e.g. "a.close") */
         beforeOpen: $.noop,                 /* Called before open. can return false to prevent opening of lightbox. Gets event as parameter, this contains all data */
         beforeContent: $.noop,                /* Called when content is loaded. Gets event as parameter, this contains all data */
@@ -131,17 +132,17 @@
             }
 
             var self = $.extend(this, config, { target: target }),
-				css = !self.resetCss ? self.namespace : self.namespace + '-reset', /* by adding -reset to the classname, we reset all the default css */
-				$background = $(self.background || [
-					'<div class="' + css + '-loading ' + css + '">',
+                css = !self.resetCss ? self.namespace : self.namespace + '-reset', /* by adding -reset to the classname, we reset all the default css */
+                $background = $(self.background || [
+                    '<div class="' + css + '-loading ' + css + '">',
+                    '<div class="' + css + '-content">',
                     '<span class="' + css + '-close-icon ' + self.namespace + '-close">',
-								self.closeIcon,
-							'</span>',
-						'<div class="' + css + '-content">',
-							'<div class="' + self.namespace + '-inner">' + self.loading + '</div>',
-						'</div>',
-					'</div>'].join('')),
-				closeButtonSelector = '.' + self.namespace + '-close' + (self.otherClose ? ',' + self.otherClose : '');
+                    self.closeIcon,
+                    '</span>',
+                    '<div class="' + self.namespace + '-inner">' + self.loading + '</div>',
+                    '</div>',
+                    '</div>'].join('')),
+                closeButtonSelector = '.' + self.namespace + '-close' + (self.otherClose ? ',' + self.otherClose : '');
 
             self.$instance = $background.clone().addClass(self.variant); /* clone DOM for the background, wrapper and the close button */
 
@@ -149,8 +150,8 @@
             self.$instance.on(self.closeTrigger + '.' + self.namespace, function (event) {
                 var $target = $(event.target);
                 if (('background' === self.closeOnClick && $target.is('.' + self.namespace))
-					|| 'anywhere' === self.closeOnClick
-					|| $target.closest(closeButtonSelector).length) {
+                    || 'anywhere' === self.closeOnClick
+                    || $target.closest(closeButtonSelector).length) {
                     event.preventDefault();
                     self.close();
                 }
@@ -161,11 +162,14 @@
 
         /* this method prepares the content and converts it into a jQuery object or a promise */
         getContent: function () {
+            if (this.persist !== false && this.$content) {
+                return this.$content;
+            }
             var self = this,
-				filters = this.constructor.contentFilters,
-				readTargetAttr = function (name) { return self.$currentTarget && self.$currentTarget.attr(name); },
-				targetValue = readTargetAttr(self.targetAttr),
-				data = self.target || targetValue || '';
+                filters = this.constructor.contentFilters,
+                readTargetAttr = function (name) { return self.$currentTarget && self.$currentTarget.attr(name); },
+                targetValue = readTargetAttr(self.targetAttr),
+                data = self.target || targetValue || '';
 
             /* Find which filter applies */
             var filter = filters[self.type]; /* check explicit type like {type: 'image'} */
@@ -224,19 +228,22 @@
 			   this insures that featherlight-inner remain at the same relative
 				 position to any other items added to featherlight-content */
             self.$instance.find('.' + self.namespace + '-inner')
-				.slice(1).remove().end()			/* In the unexpected event where there are many inner elements, remove all but the first one */
-				.replaceWith($.contains(self.$instance[0], $content[0]) ? '' : $content);
+                .not($content)                /* excluded new content, important if persisted */
+                .slice(1).remove().end()			/* In the unexpected event where there are many inner elements, remove all but the first one */
+                .replaceWith($.contains(self.$instance[0], $content[0]) ? '' : $content);
 
             self.$content = $content.addClass(self.namespace + '-inner');
 
             return self;
         },
 
-        /* opens the lightbox. "this" contains $instance with the lightbox, and with the config */
+        /* opens the lightbox. "this" contains $instance with the lightbox, and with the config.
+			Returns a promise that is resolved after is successfully opened. */
         open: function (event) {
             var self = this;
+            self.$instance.hide().appendTo(self.root);
             if ((!event || !event.isDefaultPrevented())
-				&& self.beforeOpen(event) !== false) {
+                && self.beforeOpen(event) !== false) {
 
                 if (event) {
                     event.preventDefault();
@@ -248,39 +255,45 @@
 
                     toggleGlobalEvents(true);
 
-                    self.$instance.appendTo(self.root).fadeIn(self.openSpeed);
+                    self.$instance.fadeIn(self.openSpeed);
                     self.beforeContent(event);
 
                     /* Set content and show */
-                    $.when($content).always(function ($content) {
-                        self.setContent($content);
-                        self.afterContent(event);
+                    return $.when($content)
+                        .always(function ($content) {
+                            self.setContent($content);
+                            self.afterContent(event);
+                        })
+                        .then(self.$instance.promise())
                         /* Call afterOpen after fadeIn is done */
-                        $.when(self.$instance.promise()).done(function () {
-                            self.afterOpen(event);
-                        });
-                    });
-                    return self;
+                        .done(function () { self.afterOpen(event); });
                 }
             }
-            return false;
+            self.$instance.detach();
+            return $.Deferred().reject().promise();
         },
 
-        /* closes the lightbox. "this" contains $instance with the lightbox, and with the config */
+        /* closes the lightbox. "this" contains $instance with the lightbox, and with the config
+			returns a promise, resolved after the lightbox is successfully closed. */
         close: function (event) {
-            var self = this;
+            var self = this,
+                deferred = $.Deferred();
+
             if (self.beforeClose(event) === false) {
-                return false;
-            }
+                deferred.reject();
+            } else {
 
-            if (0 === pruneOpened(self).length) {
-                toggleGlobalEvents(false);
-            }
+                if (0 === pruneOpened(self).length) {
+                    toggleGlobalEvents(false);
+                }
 
-            self.$instance.fadeOut(self.closeSpeed, function () {
-                self.$instance.detach();
-                self.afterClose(event);
-            });
+                self.$instance.fadeOut(self.closeSpeed, function () {
+                    self.$instance.detach();
+                    self.afterClose(event);
+                    deferred.resolve();
+                });
+            }
+            return deferred.promise();
         },
 
         /* Utility function to chain callbacks
@@ -306,15 +319,15 @@
             jquery: {
                 regex: /^[#.]\w/,         /* Anything that starts with a class name or identifiers */
                 test: function (elem) { return elem instanceof $ && elem; },
-                process: function (elem) { return $(elem).clone(true); }
+                process: function (elem) { return this.persist !== false ? $(elem) : $(elem).clone(true); }
             },
             image: {
                 regex: /\.(png|jpg|jpeg|gif|tiff|bmp)(\?\S*)?$/i,
                 process: function (url) {
                     var self = this,
-						deferred = $.Deferred(),
-						img = new Image(),
-						$img = $('<img src="' + url + '" alt="" class="' + self.namespace + '-image" />');
+                        deferred = $.Deferred(),
+                        img = new Image(),
+                        $img = $('<img src="' + url + '" alt="" class="' + self.namespace + '-image" />');
                     img.onload = function () {
                         /* Store naturalWidth & height for IE8 */
                         $img.naturalWidth = img.width; $img.naturalHeight = img.height;
@@ -333,7 +346,7 @@
                 regex: /./,            /* At this point, any content is assumed to be an URL */
                 process: function (url) {
                     var self = this,
-						deferred = $.Deferred();
+                        deferred = $.Deferred();
                     /* we are using load so one can specify a target with: url.html #targetelement */
                     var $container = $('<div></div>').load(url, function (response, status) {
                         if (status !== "error") {
@@ -348,14 +361,13 @@
                 process: function (url) {
                     var deferred = new $.Deferred();
                     var $content = $('<iframe/>')
-						.hide()
-						.attr('src', url)
-                        .attr('referrerpolicy', 'same-origin')
+                        .hide()
+                        .attr('src', url)
                         .css(structure(this, 'iframe'))
-						.on('load', function () { deferred.resolve($content.show()); })
-						// We can't move an <iframe> and avoid reloading it,
-						// so let's put it in place ourselves right now:
-						.appendTo(this.$instance.find('.' + this.namespace + '-content'));
+                        .on('load', function () { deferred.resolve($content.show()); })
+                        // We can't move an <iframe> and avoid reloading it,
+                        // so let's put it in place ourselves right now:
+                        .appendTo(this.$instance.find('.' + this.namespace + '-content'));
                     return deferred.promise();
                 }
             },
@@ -368,15 +380,16 @@
 
         /*** class methods ***/
         /* read element's attributes starting with data-featherlight- */
-        readElementConfig: function (element) {
+        readElementConfig: function (element, namespace) {
             var Klass = this,
-				config = {};
+                regexp = new RegExp('^data-' + namespace + '-(.*)'),
+                config = {};
             if (element && element.attributes) {
                 $.each(element.attributes, function () {
-                    var match = this.name.match(/^data-featherlight-(.*)/);
+                    var match = this.name.match(regexp);
                     if (match) {
                         var val = this.value,
-							name = $.camelCase(match[1]);
+                            name = $.camelCase(match[1]);
                         if ($.inArray(name, Klass.functionAttributes) >= 0) {  /* jshint -W054 */
                             val = new Function(val);                           /* jshint +W054 */
                         } else {
@@ -422,12 +435,24 @@
             config = $.extend({}, config);
 
             /* Only for openTrigger and namespace... */
-            var tempConfig = $.extend({}, Klass.defaults, Klass.readElementConfig($source[0]), config);
+            var namespace = config.namespace || Klass.defaults.namespace,
+                tempConfig = $.extend({}, Klass.defaults, Klass.readElementConfig($source[0], namespace), config),
+                sharedPersist;
 
             $source.on(tempConfig.openTrigger + '.' + tempConfig.namespace, tempConfig.filter, function (event) {
                 /* ... since we might as well compute the config on the actual target */
-                var elemConfig = $.extend({ $source: $source, $currentTarget: $(this) }, Klass.readElementConfig($source[0]), Klass.readElementConfig(this), config);
-                new Klass($content, elemConfig).open(event);
+                var elemConfig = $.extend(
+                    { $source: $source, $currentTarget: $(this) },
+                    Klass.readElementConfig($source[0], tempConfig.namespace),
+                    Klass.readElementConfig(this, tempConfig.namespace),
+                    config);
+                var fl = sharedPersist || $(this).data('featherlight-persisted') || new Klass($content, elemConfig);
+                if (fl.persist === 'shared') {
+                    sharedPersist = fl;
+                } else if (fl.persist !== false) {
+                    $(this).data('featherlight-persisted', fl);
+                }
+                fl.open(event);
             });
             return $source;
         },
@@ -445,7 +470,7 @@
 
         close: function () {
             var cur = this.current();
-            if (cur) { cur.close(); }
+            if (cur) { return cur.close(); }
         },
 
         /* Does the auto binding on startup.
@@ -487,8 +512,8 @@
                     this.$content.css('width', '').css('height', '');
                     /* Calculate the worst ratio so that dimensions fit */
                     var ratio = Math.max(
-						w / parseInt(this.$content.parent().css('width'), 10),
-						h / parseInt(this.$content.parent().css('height'), 10));
+                        w / parseInt(this.$content.parent().css('width'), 10),
+                        h / parseInt(this.$content.parent().css('height'), 10));
                     /* Resize content */
                     if (ratio > 1) {
                         this.$content.css('width', '' + w / ratio + 'px').css('height', '' + h / ratio + 'px');
@@ -522,8 +547,8 @@ $.featherlight.prototype.afterContent = function () {
     if (this.$content.is('iframe')) {
         this.autoHeight = !this.iframeHeight;
         this.$content.contents().find('form')
-          .attr('target', '_parent')
-          .css('margin', '0');
+            .attr('target', '_parent')
+            .css('margin', '0');
 
     }
 }
@@ -531,7 +556,7 @@ $.featherlight.prototype.afterContent = function () {
 // Set Featherlight default 'onResize':
 $.featherlight.prototype.onResize = function () {
     if (this.autoHeight) {
-        // Shrink:
+        // Shrink: 
         this.$content.css('height', '10px');
         // Then set to the full height:
         this.$content.css('height', this.$content.contents().find('body')[0].scrollHeight);

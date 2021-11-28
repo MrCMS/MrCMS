@@ -33,26 +33,26 @@ namespace MrCMS.Web.Admin.Services
         public async Task<SaveResult> SaveContent(UpdatePropertyData updatePropertyData)
         {
             HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
-            Type entityType = types.FirstOrDefault(t => t.Name == updatePropertyData.Type);
+            Type entityType = types.FirstOrDefault(t => t.Name == updatePropertyData.EntityType);
             if (entityType == null)
                 return new SaveResult(false,
                     string.Format(
                         await _stringResourceProvider.GetValue("Admin Inline Editing Save Entity Not Found",
-                            "Could not find entity type '{0}'"), updatePropertyData.Type));
+                            "Could not find entity type '{0}'"), updatePropertyData.EntityType));
             object entity = _session.Get(entityType, updatePropertyData.Id);
             if (entity == null)
                 return new SaveResult(false,
                     string.Format(
                         await _stringResourceProvider.GetValue("Admin InlineEditing Save Not Found",
-                            "Could not find entity of type '{0}' with id {1}"), updatePropertyData.Type,
+                            "Could not find entity of type '{0}' with id {1}"), updatePropertyData.EntityType,
                         updatePropertyData.Id));
             PropertyInfo propertyInfo =
-                entityType.GetProperties().FirstOrDefault(info => info.Name == updatePropertyData.Property);
+                entityType.GetProperties().FirstOrDefault(info => info.Name == updatePropertyData.EntityProperty);
             if (propertyInfo == null)
                 return new SaveResult(false,
                     string.Format(
                         await _stringResourceProvider.GetValue("Admin InlineEditing Save NotFound",
-                            "Could not find entity of type '{0}' with id {1}"), updatePropertyData.Type,
+                            "Could not find entity of type '{0}' with id {1}"), updatePropertyData.EntityType,
                         updatePropertyData.Id));
             if (propertyInfo.GetCustomAttributes(true).FirstOrDefault(x => x.GetType() == typeof(StringLengthAttribute))
                     is StringLengthAttribute stringLengthAttribute &&
@@ -74,7 +74,7 @@ namespace MrCMS.Web.Admin.Services
                 return new SaveResult(false,
                     string.Format(
                         await _stringResourceProvider.GetValue("Admin InlineEditing Save Required",
-                            "Could not edit '{0}' as it is required"), updatePropertyData.Property));
+                            "Could not edit '{0}' as it is required"), updatePropertyData.EntityProperty));
             }
 
             try
@@ -90,7 +90,7 @@ namespace MrCMS.Web.Admin.Services
                     string.Format(
                         await _stringResourceProvider.GetValue("Admin InlineEditing Save Error",
                             "Could not save to database '{0}' due to unknown error. Please check log."),
-                        updatePropertyData.Property));
+                        updatePropertyData.EntityProperty));
             }
 
             return new SaveResult();

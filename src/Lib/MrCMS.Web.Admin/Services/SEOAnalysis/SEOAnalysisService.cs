@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
@@ -61,16 +62,14 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
             return allConcreteTypesAssignableFrom
                 .Select(type => _serviceProvider.GetService(type)).Cast<ISEOAnalysisFacetProvider>();
         }
+        static readonly HttpClient Client = new HttpClient();
 
         private async Task<HtmlNode> GetDocument(Webpage webpage)
         {
             string absoluteUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
-            // todo - replace with HttpClient
-            WebRequest request = WebRequest.Create(absoluteUrl);
-
+            var request = await Client.GetAsync(absoluteUrl);
             var document = new HtmlDocument();
-            var response = await request.GetResponseAsync();
-            document.Load(response.GetResponseStream());
+            document.Load(await request.Content.ReadAsStreamAsync()); 
 
             HtmlNode htmlNode = document.DocumentNode;
             return htmlNode;

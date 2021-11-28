@@ -17,7 +17,7 @@ namespace MrCMS.Services
 
         public async Task<T> GetWidgetAsync<T>(int id, CancellationToken token = default) where T : Widget
         {
-            return (await _session.GetAsync<T>(id, token)).Unproxy();
+            return (await _session.GetAsync<T>(id, token)).Unproxy(); 
         }
     }
 }

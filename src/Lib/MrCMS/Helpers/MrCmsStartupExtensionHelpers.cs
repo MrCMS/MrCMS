@@ -62,7 +62,8 @@ namespace MrCMS.Helpers
         {
             try
             {
-                SessionHelper.DefaultPageSize = configuration.GetValue<int>("DefaultPageSize");
+                var defaultPageSize = configuration.GetValue<int>("DefaultPageSize");
+                SessionHelper.DefaultPageSize = defaultPageSize > 0 ? defaultPageSize : 25;
             }
             catch
             {

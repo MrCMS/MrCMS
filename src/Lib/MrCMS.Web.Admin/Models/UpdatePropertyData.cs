@@ -4,7 +4,7 @@ namespace MrCMS.Web.Admin.Models
     {
         public string Content { get; set; }
         public int Id { get; set; }
-        public string Type { get; set; }
-        public string Property { get; set; }
+        public string EntityType { get; set; }
+        public string EntityProperty { get; set; }
     }
 }

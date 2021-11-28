@@ -24,13 +24,7 @@ namespace MrCMS.Installation
                 return new KnownSiteLocator(site);
             });
 
-            services.AddMvc(options => { }).AddApplicationPart(Assembly.GetAssembly(typeof(InstallationExtensions)))
-                .AddRazorRuntimeCompilation(options =>
-                {
-                    var fileProvider = new InstallationViewFileProvider();
-                    options.FileProviders.Insert(0, fileProvider);
-                })
-                ;
+            services.AddMvc();
 
             return services;
         }
@@ -64,7 +58,7 @@ namespace MrCMS.Installation
 
             public VirtualPathData GetVirtualPath(VirtualPathContext context)
             {
-                return null;
+                return null; 
             }
         }
     }

@@ -20,16 +20,16 @@
         <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
         @if (currentPage != null)
         {
-            if (canEditPage)
+            if (canEditPage) 
             {
                 <a href="@Url.Action("Edit", "Webpage", new {currentPage.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
             }
             if (await Html.CanAccess<InlineEditingACL>("Allowed"))
             {
-                <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline Editing: On</a>
+                <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline: Off</a>
             }
 
-            if (postingCountForWebpage.Count > 0)
+            if (postingCountForWebpage.Count > 0) 
             {
                 <a href="/Admin/Form/Edit/@postingCountForWebpage.FormId#form-postings-tab" class="mrcms-btn mrcms-btn-xs mrcms-btn-info" target="_parent">
                     @postingCountForWebpage.Count
@@ -38,31 +38,25 @@
             }
             @if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published || currentPage.PublishStatus == Webpage.WebpagePublishStatus.Scheduled)
             {
-                var s = ((DateTime) currentPage.PublishOn).ToString("dddd, dd MMMM yyyy HH:mm tt");
+                var s = ((DateTime) currentPage.PublishOn).ToString("dd MMMM yyyy HH:mm tt");
                 if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published)
                 {
-                    <span class="admin-success">@($"Published {s}")</span>
+                    <span class="admin-success hidden-small">@($"Published {s}")</span>
                 }
                 else if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Scheduled)
                 {
-                    <span class="admin-success">@($"Publish scheduled for {s}")</span>
+                    <span class="admin-success hidden-small">@($"Publish scheduled for {s}")</span>
                 }
             }
             else
             {
-                <span class="admin-warning">Unpublished</span>
+                <span class="admin-warning hidden-small">Unpublished</span>
             }
+            
+            <span class="admin-success" id="save-content-msg" style="display: none;">Saving...</span>
         }
     </div>
     <div class="items-right">
         <a href="/Identity/Account/Logout" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Logout</a>
-        @if (SiteSettings.SiteIsLive)
-        {
-            <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-success">Site is set live</a>
-        }
-        else
-        {
-            <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning">Site is not set live</a>
-        }
     </div>
 </div>

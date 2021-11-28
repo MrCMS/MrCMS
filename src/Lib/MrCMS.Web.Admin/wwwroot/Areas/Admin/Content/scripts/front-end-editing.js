@@ -1,291 +1,263 @@
 ﻿import {setCloseButtonPosition} from "./setup-featherlight";
 
-(function ($) {
+let layoutAreas;
+let documentBody;
+let editableSelector;
+let enableEditingBtn;
+let editLayoutIndicators;
+let editWidgetIndicators;
+let editWidgetMenuIndicators;
+let editLayoutMenuIndicators;
+
+document.addEventListener("DOMContentLoaded",function(){
+    initEditing()
+});
+
+function initEditing() {
+    layoutAreas = document.querySelectorAll(".layout-area");
+    documentBody = document.getElementsByTagName("body")[0];
+    editableSelector = ".editable";
+    enableEditingBtn = document.getElementById("enable-editing");
     CKEDITOR.config.allowedContent = true;
-    let settings;
-    const methods = {
-        init: function (options) {
-            settings = {
-                editableSelector: '.editable'
-            };
-            if (options) {
-                $.extend(settings, options);
-            }
-            parent.CKEDITOR.disableAutoInline = true;
-            parent.CKEDITOR.on('instanceCreated', function (event) {
-                const editor = event.editor;
-                editor.on('configLoaded', function () {
-                    editor.config.toolbar = 'Basic';
-                });
+    parent.CKEDITOR.disableAutoInline = true;
+    parent.CKEDITOR.on('instanceCreated', function (event) {
+        const editor = event.editor;
+        editor.on('configLoaded', function () {
+            editor.config.toolbar = 'Basic';
+        });
+    });
+    enableEditingBtn.addEventListener("click", function () {
+        if (!getEditingEnabled()) {
+            enableEditors();
+        } else {
+            disableEditing();
+        }
+    });
 
+    if (getEditingEnabled() === true)
+        enableEditors();
+
+    documentBody.classList.add('mrcms-admin-bar-on');
+}
+
+function enableEditors() {
+    documentBody.classList.add("editing-on");
+    setEditingEnabled(true);
+    enableEditingBtn.innerText = "Inline: On";
+    enableEditingBtn.classList.add("mrcms-btn-warning");
+
+    layoutAreas.forEach(x => x.classList.add('layout-area-enabled'));
+
+    let editors = document.querySelectorAll(editableSelector);
+    editors.forEach(x => {
+        let original;
+        const el = x;
+        if (el.getAttribute('contenteditable') !== 'true')
+            el.setAttribute('contenteditable', 'true');
+
+        if (el.dataset.isHtml) {
+            const editor = parent.CKEDITOR.inline(el);
+            original = null;
+
+            editor.on('focus', function (e) {
+                fetch('/Admin/InPageAdmin/GetUnformattedContent/?' + new URLSearchParams({
+                    id: el.dataset.id,
+                    property: el.dataset.property,
+                    type: el.dataset.type
+                })).then(response => response.text()).then(data => {
+                    e.editor.setData(data);
+                    original = e.editor.getData();
+                })
             });
 
-            $("#enable-editing").click(function () {
-                $(this).mrcmsinline(!getEditingEnabled() ? 'enable' : 'disable');
-            });
-            $(this).mrcmsinline(getEditingEnabled() ? 'enable' : 'disable', true);
-
-            $('body').addClass('mrcms-admin-bar-on');
-
-            return this;
-        },
-
-        enable: function () {
-            $("body").addClass("editing-on");
-            setEditingEnabled(true);
-            $("#enable-editing").text("Inline Editing: On").addClass("mrcms-btn-warning");
-            $(".layout-area").addClass('layout-area-enabled');
-            $(settings.editableSelector, document).each(function (index, element) {
-                const el = $(element);
-                if (el.attr('contenteditable') != 'true')
-                    el.attr('contenteditable', 'true');
-                if (el.data("is-html") == true) {
-                    const editor = parent.CKEDITOR.inline(element);
-                    var original = null;
-                    editor.on('focus', function (e) {
-                        $.get('/Admin/InPageAdmin/GetUnformattedContent/', {
-                            id: el.data('id'),
-                            property: el.data('property'),
-                            type: el.data('type')
-                        }, function (response) {
-                            e.editor.setData(response);
-                            original = e.editor.getData();
-                        });
-                    });
-                    editor.on('blur', function (e) {
-                        if (original != e.editor.getData()) {
-                            $.ajax({
-                                type: "POST",
-                                url: "/Admin/InPageAdmin/SaveContent",
-                                headers: {
-                                    AntiForgeryToken: $('body').data('antiforgery-token')
-                                },
-                                data: {
-                                    id: el.data('id'),
-                                    property: el.data('property'),
-                                    type: el.data('type'),
-                                    content: el.html()
-                                },
-                                success: function (msg) {
-                                    if (msg.success == false) {
-                                        alert(msg.message);
-                                    } else {
-                                        showLiveForm(el);
-                                    }
-                                }
-                            });
-                        } else {
-                            showLiveForm(el);
-                        }
-                    });
+            editor.on('blur', function (e) {
+                if (original !== e.editor.getData()) {
+                    const data = {
+                        id: el.dataset.id,
+                        entityProperty: el.dataset.property,
+                        entityType: el.dataset.type,
+                        content: el.innerHTML
+                    }
+                    saveInlineEdit(data, el)
                 } else {
-                    el.focus(function () {
-                        original = el.html();
-                    });
-                    el.blur(function () {
-                        const html = stripHtml(el.html());
-                        if (original != html) {
-                            $.ajax({
-                                type: "POST",
-                                url: "/Admin/InPageAdmin/SaveContent",
-                                data: {
-                                    id: el.data('id'),
-                                    property: el.data('property'),
-                                    type: el.data('type'),
-                                    content: html
-                                },
-                                success: function (msg) {
-                                    if (msg.success == false) {
-                                        alert(msg.message);
-                                    } else {
-                                        showLiveForm(el);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-            //foreach widget add edit indicator
-            $("div[data-widget-id]", document).each(function () {
-                $(this).prepend("<div class='edit-indicator-widget' style='diaply:none;'><img src='/Areas/Admin/Content/img/pencil.png' /></div>");
-            });
-            //foreach layout area add edit indicator
-            $("div[data-layout-area-id]", document).each(function (element) {
-                if ($(this).height() == 0) {
-                    $(this).prepend("<div class='edit-indicator-layout corner'><img src='/Areas/Admin/Content/img/layout-2.png' /></div>");
-                } else {
-                    $(this).prepend("<div class='edit-indicator-layout'><img src='/Areas/Admin/Content/img/layout-1.png' /></div>");
-                }
-
-            });
-
-            $(".edit-indicator-layout", document).show();
-            $(".edit-indicator-widget", document).show();
-
-            //create menu for widget editing
-            $('.edit-indicator-widget', document).click(function () {
-                const widgetId = $(this).parent().data('widget-id');
-                const name = $(this).parent().data('widget-name');
-                const menu = `<div class="mrcms-edit-menu mrcms-edit-widget">
-                                <h4>${name}</h4>
-                                <ul>
-                                    <li>
-                                        <a id="" data-toggle="fb-modal" href="/Admin/Widget/Edit/${widgetId}?returnUrl=${window.top.location}" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Edit</a>
-                                    </li>
-                                    <li>
-                                        <a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/${widgetId}" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-danger">Delete</a>
-                                    </li>
-                                </ul>
-                            </div>`;
-                $(this).parent().prepend(menu);
-                $(".mrcms-edit-widget", document).fadeIn(400);
-
-                //if click outside hide the menu
-                $(document).mouseup(function (e) {
-                    const container = $(".mrcms-edit-widget", document);
-                    if (container.has(e.target).length === 0) {
-                        container.remove();
-                    }
-                });
-            });
-
-            //create menu for layout editing
-            $('.edit-indicator-layout', document).click(function () {
-                const areaId = $(this).parent().data('layout-area-id');
-                const areaName = $(this).parent().data('layout-area-name');
-                const pageId = $('[data-webpage-id]').data('webpage-id');
-
-                const menu = `<div class="mrcms-edit-menu mrcms-edit-layout-area">
-                                <h4>${areaName}</h4>
-                                <ul>
-                                    <li>
-                                        <a tab-index="1" href="/Admin/Widget/Add?pageId=${pageId}&id=${areaId}" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Add widget</a>
-                                    </li>
-                                    <li>
-                                        <a tab-index="3" href="/Admin/LayoutArea/SortWidgets/${areaId}?returnUrl=${top.location.href}" class="mrcms-btn mrcms-btn-mini mrcms-btn-secondary" data-toggle="fb-modal">Sort widgets</a>
-                                    </li>
-                                </ul>
-                            </div>`;
-
-                $(this).parent().prepend(menu);
-                $(".mrcms-edit-layout-area", document).fadeIn(400);
-                //if click outside hide the menu
-                $(document).mouseup(function (e) {
-                    const container = $(".mrcms-edit-layout-area", document);
-                    if (container.has(e.target).length === 0) {
-                        container.remove();
-                    }
-                });
-
-                $('[data-action=post-link]').on('click', function (e) {
-                    e.preventDefault();
-                    const self = $(this);
-                    const url = self.attr('href') || self.data('link');
-                    if (url != null) {
-                        window.postToUrl(url, {});
-                    }
-                });
-
-            });
-        },
-        disable: function (init) {
-            setEditingEnabled(false);
-            $("body").removeClass("editing-on");
-            $(".layout-area").removeClass('layout-area-enabled');
-            $("#enable-editing").text("Inline Editing: Off").removeClass("mrcms-btn-warning");
-            //remove all edit tools
-            $(".edit-indicator-layout", document).remove();
-            $(".edit-indicator-widget", document).remove();
-            $(".edit-widget-menu", document).remove();
-            $(".edit-layout-area-menu", document).remove();
-
-            $(settings.editableSelector, document).each(function (index, element) {
-                const el = $(element);
-                if (el.data("is-html") == true && !init) {
                     showLiveForm(el);
                 }
             });
-            $(settings.editableSelector, document).attr("contenteditable", "false");
-            //kill all ckeditors
-            let instances = parent.CKEDITOR.instances;
-            if (instances) {
-                for (let k in instances) {
-                    const instance = parent.CKEDITOR.instances[k];
-                    instance.destroy(true);
-                }
-            }
-        }
-    };
-
-    $.fn.mrcmsinline = function (method) {
-        // Method calling logic
-        if (methods[method]) {
-            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (typeof method === 'object' || !method) {
-            return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' + method + ' does not exist on jQuery.mrcms-mrcmsinline');
+            el.focus(function () {
+                original = el.innerHTML
+            });
+            el.blur(function () {
+                const html = stripHtml(el.innerHTML);
+                if (original !== html) {
+                    const data = {
+                        id: el.dataset.id,
+                        entityProperty: el.dataset.property,
+                        entityType: el.dataset.type,
+                        content: html
+                    }
+                    saveInlineEdit(data, el)
+                }
+            });
         }
-    };
+    })
+    
+    function saveInlineEdit(data, el){
+        fetch('/Admin/InPageAdmin/SaveContent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(data => {
+                let msgEl = document.getElementById("save-content-msg");
+                if (data.success === false) {
+                    msgEl.innerText = "An error occured."
+                    alert(data.message);
+                } else {
+                    showLiveForm(el);
+                    msgEl.innerText = "Saved."
+                    msgEl.style.display = 'inline-block';
 
-    function showLiveForm(el) {
-        $.get('/Admin/InPageAdmin/GetFormattedContent/', {
-            id: el.data('id'),
-            property: el.data('property'),
-            type: el.data('type')
-        }, function (response) {
-            el.html(response);
-            $.validator.unobtrusive.parse(el.find('form'));
+                    setTimeout( function(){
+                        msgEl.style.display = 'none';
+                    }, 500)
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    //foreach widget add edit indicator
+    document.querySelectorAll("div[data-widget-id]").forEach(x => {
+        let html = "<div class='edit-indicator-widget' style='diaply:none;'><img src='/Areas/Admin/Content/img/pencil.png' /></div>";
+        x.insertAdjacentHTML('afterbegin', html);
+    })
+    //foreach layout area add edit indicator
+    document.querySelectorAll("div[data-layout-area-id]").forEach(x => {
+        let html = "";
+        if (x.offsetHeight === 0) {
+            html = "<div class='edit-indicator-layout corner'><img src='/Areas/Admin/Content/img/layout-2.png' /></div>";
+        } else {
+            html = "<div class='edit-indicator-layout'><img src='/Areas/Admin/Content/img/layout-1.png' /></div>";
+        }
+        x.insertAdjacentHTML('afterbegin', html);
+    })
+
+    editWidgetIndicators = document.querySelectorAll('.edit-indicator-widget');
+    editWidgetMenuIndicators = document.querySelectorAll('.edit-widget-menu');
+    editLayoutMenuIndicators = document.querySelectorAll('.edit-layout-area-menu');
+    editLayoutIndicators = document.querySelectorAll('.edit-indicator-layout');
+    editWidgetIndicators.forEach(x => x.style.display = 'block');
+    editLayoutIndicators.forEach(x => x.style.display = 'block');
+
+    //create menu for widget editing
+    editWidgetIndicators.forEach(x => x.addEventListener('click', function (x) {
+        let el = x.target.parentElement.parentElement;
+        const widgetId = el.dataset.widgetId;
+        const name = el.dataset.widgetName;
+        const menu = `<div class="mrcms-edit-menu mrcms-edit-widget"><h4>${name}</h4><ul><li><a id="" href="/Admin/Widget/Edit/${widgetId}?returnUrl=${window.top.location}" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Edit</a></li><li><a id="" href="/Admin/Widget/Delete/${widgetId}" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-danger">Delete</a></li></ul></div>`;
+
+        el.parentElement.insertAdjacentHTML('afterbegin', menu);
+        let menuElement = document.querySelectorAll('.mrcms-edit-widget')[0];
+
+        menuElement.style.display = 'block';
+        x.stopPropagation();
+
+        document.addEventListener('click', function (e) {
+            if (menuElement && !menuElement.contains(e.target)) {
+                menuElement.remove();
+            }
         });
-    };
+    }));
 
-    function getEditingEnabled() {
-        return store.get('mrcms-inline-edit') === true;
-    }
-
-    function setEditingEnabled(value) {
-        return store.set('mrcms-inline-edit', value);
-    }
-
-    function stripHtml(str) {
-        return jQuery('<div />', {html: str}).text();
-    }
-
-
-})(jQuery);
-const MrCMSFeatherlightSettings = {
-    type: 'iframe',
-    iframeWidth: 800,
-    afterOpen: function () {
-        setCloseButtonPosition(this.$instance);
-    },
-    beforeOpen: function () {
-        $(".mrcms-edit-menu", document).hide();
-    },
-    onResize: function () {
-        if (this.autoHeight) {
-            // Shrink:
-            this.$content.css('height', '10px');
-            // Then set to the full height:
-            this.$content.css('height', this.$content.contents().find('body')[0].scrollHeight);
+    editLayoutIndicators.forEach(x => x.addEventListener('click', function (x) {
+        let el = x.target.parentElement.parentElement;
+        const areaId = el.dataset.layoutAreaId;
+        const areaName = el.dataset.layoutAreaName;
+        const pageId = document.querySelectorAll("[data-webpage-id]")[0].dataset.webpageId;
+        const menu = `<div class="mrcms-edit-menu mrcms-edit-layout-area"><h4>${areaName}</h4><ul><li><a tab-index="1" href="/Admin/Widget/Add?pageId=${pageId}&id=${areaId}" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Add widget</a></li><li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/${areaId}?returnUrl=${top.location.href}" class="mrcms-btn mrcms-btn-mini mrcms-btn-secondary" data-toggle="fb-modal">Sort widgets</a></li></ul></div>`;
+        el.insertAdjacentHTML('afterbegin', menu);
+        let menuElement = document.querySelectorAll('.mrcms-edit-layout-area')[0];
+        menuElement.style.display = 'block';
+        x.stopPropagation();
+        document.addEventListener('click', function (e) {
+            if (menuElement && !menuElement.contains(e.target)) {
+                menuElement.remove();
+            }
+        });
+        let postLinkElement = document.querySelectorAll("[data-action=post-link]")[0];
+        if (postLinkElement) {
+            postLinkElement.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const self = $(this);
+                const url = self.attr('href') || self.data('link');
+                if (url != null) {
+                    window.postToUrl(url, {});
+                }
+            });
         }
-        setCloseButtonPosition(this.$instance);
-    }
-};
+    }));
+}
 
-
-$(function () {
-    $('.editable', document).mrcmsinline();
-
-    const featherlightSettings = $.extend({}, MrCMSFeatherlightSettings, {
-        filter: '[data-toggle="fb-modal"]'
+function disableEditing() {
+    setEditingEnabled(false);
+    documentBody.classList.remove("editing-on");
+    layoutAreas.forEach(x => x.classList.remove('layout-area-enabled'));
+    enableEditingBtn.innerText = "Inline: Off";
+    enableEditingBtn.classList.remove("mrcms-btn-warning");
+    editLayoutIndicators.forEach(x => x.remove());
+    editWidgetIndicators.forEach(x => x.remove());
+    editWidgetMenuIndicators.forEach(x => x.remove());
+    editLayoutMenuIndicators.forEach(x => x.remove());
+    document.querySelectorAll(editableSelector).forEach(x => {
+        if (x.dataset.isHtml === true) {
+            showLiveForm(x);
+        }
     });
-    $(document).featherlight(featherlightSettings);
+    document.querySelectorAll(editableSelector).forEach(e => e.setAttribute("contenteditable", "false"))
+    killCkeditors()
+}
 
-});
+function killCkeditors() {
+    //kill all ckeditors
+    let instances = parent.CKEDITOR.instances;
+    if (instances) {
+        for (let k in instances) {
+            const instance = parent.CKEDITOR.instances[k];
+            instance.destroy(true);
+        }
+    }
+}
 
+function showLiveForm(el) {
+    $.get('/Admin/InPageAdmin/GetFormattedContent/', {
+        id: el.dataset.id,
+        property: el.dataset.property,
+        type: el.dataset.type
+    }, function (response) {
+        el.innerHTML = response;
+        let forms = el.querySelectorAll('form');
+        $.validator.unobtrusive.parse(forms[0]);
+    });
+}
 
+function getEditingEnabled() {
+    return localStorage.getItem('mrcms-inline-edit') === 'true';
+}
+
+function setEditingEnabled(value) {
+    localStorage.setItem('mrcms-inline-edit', value);
+}
+
+function stripHtml(str) {
+    return str.replace(/(<([^>]+)>)/gi, "");
+}
+
+/*
 function post_to_url(path, params, method) {
     method = method || "post"; // Set method to post by default, if not specified.
 
@@ -306,4 +278,4 @@ function post_to_url(path, params, method) {
 
     document.body.appendChild(form);
     form.submit();
-}
+}*/

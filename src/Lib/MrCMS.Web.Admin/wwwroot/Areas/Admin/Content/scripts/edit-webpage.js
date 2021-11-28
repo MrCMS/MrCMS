@@ -102,18 +102,8 @@ export function setupEditWebpage(){
         customPermissions.find('[data-custom-permissions-type="' + permissionTypeValue + '"]').show();
     }
 
-    setPermissionVisibility();
-
-
-    scope.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        if (e.currentTarget.innerHTML === "Versions") {
-            $.get('/Admin/Versions/Show/' + scope.find('#Id').val(), function (data) {
-                scope.find("#versions").html(data);
-            });
-        }
-    });
-
-
+    setPermissionVisibility(); 
+    
     $(document).on('keypress',
         function (event) {
             if (event.which === 13) {

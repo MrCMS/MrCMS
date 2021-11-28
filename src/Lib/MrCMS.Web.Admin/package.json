@@ -18,12 +18,20 @@
     "build:js:front-end": "parcel build wwwroot/Areas/Admin/Content/scripts/front-end-editing.js --target front-end-js",
     "build:css": "npm run build:css:admin && npm run build:css:front-end",
     "build:css:admin": "parcel build wwwroot/Areas/Admin/Content/styles/mrcms-admin.scss --target admin-css",
-    "build:css:front-end": "parcel build wwwroot/Areas/Admin/Content/styles/mrcms-frontendediting.scss --target front-end-css"
+    "build:css:front-end": "parcel build wwwroot/Areas/Admin/Content/styles/mrcms-frontendediting.scss --target front-end-css",
+    "watch": "concurrently --kill-others \"npm:watch:js\" \"npm:watch:css\"",
+    "watch:js": "concurrently \"npm:watch:js:admin\" \"npm:watch:js:front-end\"",
+    "watch:js:admin": "parcel watch wwwroot/Areas/Admin/Content/scripts/admin.js --target admin-js -p 1234",
+    "watch:js:front-end": "parcel watch wwwroot/Areas/Admin/Content/scripts/front-end-editing.js --target front-end-js -p 1235",
+    "watch:css": "concurrently \"npm:watch:css:admin\" \"npm:watch:css:front-end\"",
+    "watch:css:admin": "parcel watch wwwroot/Areas/Admin/Content/styles/mrcms-admin.scss --target admin-css -p 1236",
+    "watch:css:front-end": "parcel watch wwwroot/Areas/Admin/Content/styles/mrcms-frontendediting.scss --target front-end-css -p 1237"
   },
   "dependencies": {
     "parcel": "^2.0.1"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.1"
+    "@parcel/transformer-sass": "^2.0.1",
+    "concurrently": "^6.4.0"
   }
 }

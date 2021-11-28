@@ -5,7 +5,7 @@ namespace MrCMS.Services
     public class SHA512HashAlgorithm : IHashAlgorithm
     {
         public const string Name = "SHA512";
-        private readonly SHA512Managed _algorithm = new SHA512Managed();
+        private readonly SHA512Managed _algorithm = new();
         
         public byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
         {

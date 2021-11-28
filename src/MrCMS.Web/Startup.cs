@@ -209,7 +209,7 @@ namespace MrCMS.Web
                 builder.UseStaticFiles();
                 builder.UseStaticFiles(new StaticFileOptions
                 {
-                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "static")),
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
                     OnPrepareResponse = (context) =>
                     {
                         var headers = context.Context.Response.GetTypedHeaders();

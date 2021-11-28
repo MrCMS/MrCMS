@@ -8,13 +8,6 @@
         <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
     </PropertyGroup>
 
-
-    <ItemGroup>
-        <Compile Remove="App_Data\**" />
-        <EmbeddedResource Remove="App_Data\**" />
-        <None Remove="App_Data\**" />
-    </ItemGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\Lib\MrCMS.Web.Admin\MrCMS.Web.Admin.csproj" />
         <ProjectReference Include="..\Themes\MrCMS.Themes.Red\MrCMS.Themes.Red.csproj" />
@@ -41,5 +34,4 @@
         <PackageReference Include="Quartz.Extensions.Hosting" Version="3.2.4" />
         <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.2.4" />
     </ItemGroup>
-
 </Project>

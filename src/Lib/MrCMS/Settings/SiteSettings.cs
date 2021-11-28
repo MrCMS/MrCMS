@@ -38,8 +38,6 @@ namespace MrCMS.Settings
         [DisplayName("Home Page"), DropDownSelection("HomePageOptions")]
         public int HomePageId { get; set; }
 
-        [DisplayName("Site is live")] public bool SiteIsLive { get; set; }
-
         [DisplayName("Enable inline editing")] public bool EnableInlineEditing { get; set; }
 
         [DisplayName("Log 404 in admin logs")] public bool Log404s { get; set; }
