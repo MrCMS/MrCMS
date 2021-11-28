@@ -103,8 +103,16 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        public async Task<ActionResult> Delete_Get(int id)
+        public async Task<ActionResult> Delete_Get(int id, string returnUrl = "")
         {
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                ViewData["return-url"] = Request.Referer();
+            }
+            else
+            {
+                ViewData["return-url"] = returnUrl;
+            }
             return PartialView(await _widgetService.GetEditModel(id));
         }
 

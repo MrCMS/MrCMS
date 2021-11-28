@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Mvc.Rendering
-@model MrCMS.Web.Admin.Models.AddWidgetModel
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
-
+﻿@model MrCMS.Web.Admin.Models.AddWidgetModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
 <form asp-controller="Widget" asp-action="Add" asp-route-id="" method="post" data-add-widget-form>
     <fieldset style="min-height: 500px">
         <legend>

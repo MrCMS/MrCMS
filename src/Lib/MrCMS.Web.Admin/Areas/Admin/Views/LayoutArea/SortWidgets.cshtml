@@ -1,8 +1,6 @@
 ﻿@model MrCMS.Models.WidgetSortModel
 @{
     ViewBag.Title = "Sort Webpage";
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
-
 }
 
 @using (Html.BeginForm("SortWidgetsAction", "LayoutArea", FormMethod.Post, new {id = "edit-sort"}))

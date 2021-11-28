@@ -1,7 +1,10 @@
 ﻿@model MrCMS.Web.Admin.Models.UpdateWidgetModel
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
-@using (Html.BeginForm("Delete", "Widget", new {id = Model.Id}, FormMethod.Post, null, new {style = "display:inline;", @target = "_top"}))
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Delete", "Widget", new {id = Model.Id}, FormMethod.Post))
 {
+    @Html.Hidden("ReturnUrl", ViewData["return-url"])
     <fieldset>
         <legend>
             @await Html.Resource("Admin Widget Confirm Delete", "Confirm Delete")
@@ -10,12 +13,6 @@
                 <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
             </span>
         </legend>
-        @if (Context.Request.Referer() != null)
-        {
-            <text>
-                @Html.Hidden("returnUrl", Context.Request.Referer())
-            </text>
-        }
 
         @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>

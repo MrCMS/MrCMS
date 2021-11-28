@@ -87,7 +87,7 @@ namespace MrCMS.Web.Admin.Services
         public async Task<Widget> DeleteWidget(int id)
         {
             var widget = await GetWidget(id);
-
+            widget.LayoutArea.Widgets.Remove(widget);
             await _session.TransactAsync(session => session.DeleteAsync(widget));
 
             return widget;
