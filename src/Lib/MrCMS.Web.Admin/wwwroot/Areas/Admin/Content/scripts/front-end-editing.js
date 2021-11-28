@@ -1,6 +1,4 @@
-﻿import {setCloseButtonPosition} from "./setup-featherlight";
-
-let layoutAreas;
+﻿let layoutAreas;
 let documentBody;
 let editableSelector;
 let enableEditingBtn;
