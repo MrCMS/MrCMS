@@ -22,26 +22,4 @@
         <textarea asp-for="BodyContent" class="ckedit-enabled"></textarea>
     </div>
 }
-
-<div class="form-group">
-    <label asp-for="CampaignName"></label>
-    <input type="text" asp-for="CampaignName" class="form-control"/>
-    <span asp-validation-for="CampaignName"></span>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <div class="form-group">
-            @Html.LabelFor(x => x.PageType, "pagetype")
-            @Html.TextBoxFor(x => x.PageType, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.PageType)
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="checkbox" style="margin-top: 30px;">
-            <label>
-                @Html.CheckBoxFor(model => model.OnlyAtLandingPage) @await Html.Resource("Exclude query strings")
-            </label>
-        </div>
-    </div>
-</div>
-@await Html.RenderUpdateCustomAdminProperties(webpage)
+@await Html.RenderUpdateCustomAdminProperties(webpage) 
