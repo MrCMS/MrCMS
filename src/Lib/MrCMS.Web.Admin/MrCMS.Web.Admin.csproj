@@ -19,6 +19,15 @@
         <ProjectReference Include="..\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushSubscription\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushSubscription\_Query.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\SendToAll.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\SendToRole.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\_Query.cshtml" />
+    </ItemGroup>
+
     <!--
           1. Install npm packages
           "Inputs" and "Outputs" are used for incremental builds. If all output items are up-to-date, MSBuild skips the target.

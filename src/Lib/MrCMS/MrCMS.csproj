@@ -33,7 +33,6 @@
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.2.4" />
     <PackageReference Include="Quartz.Serialization.Json" Version="3.2.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
-    <PackageReference Include="WebPush" Version="1.0.11" />
     <PackageReference Include="X.PagedList" Version="8.0.7" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7" />
   </ItemGroup>

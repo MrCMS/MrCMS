@@ -21,5 +21,5 @@ namespace MrCMS.Web.Admin.Controllers
 
             return View(searchModel);
         }
-    }
+    } 
 }
