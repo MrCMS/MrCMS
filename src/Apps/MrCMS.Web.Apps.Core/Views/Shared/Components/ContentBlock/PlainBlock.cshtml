@@ -1,11 +1,2 @@
 ﻿@model MrCMS.Web.Apps.Core.ContentBlocks.PlainBlock
-
-<div class="row">
-    <div class="col">
-        <div class="mb-5">
-            <div class="p-5">
-                @await Html.Editable(x => x.Text)
-            </div>
-        </div>
-    </div>
-</div>
+@await Html.Editable(x => x.Text)  

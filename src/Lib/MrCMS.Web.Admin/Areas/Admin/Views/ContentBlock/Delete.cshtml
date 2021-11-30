@@ -4,6 +4,7 @@
 }
 @using (Html.BeginForm("Delete", "ContentBlock", FormMethod.Post))
 {
+    @Html.ReturnToReferrer()
     <fieldset>
         <legend>
             @await Html.Resource("Delete Content Block")

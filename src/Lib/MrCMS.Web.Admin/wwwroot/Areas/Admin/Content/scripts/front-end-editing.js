@@ -6,6 +6,7 @@ let editLayoutIndicators;
 let editWidgetIndicators;
 let editWidgetMenuIndicators;
 let editLayoutMenuIndicators;
+let editContentBlockIndicators;
 
 document.addEventListener("DOMContentLoaded",function(){
     initEditing()
@@ -53,7 +54,7 @@ function enableEditors() {
         if (el.getAttribute('contenteditable') !== 'true')
             el.setAttribute('contenteditable', 'true');
 
-        if (el.dataset.isHtml) {
+        if (el.dataset.isHtml === true) {
             const editor = parent.CKEDITOR.inline(el);
             original = null;
 
@@ -145,12 +146,31 @@ function enableEditors() {
         x.insertAdjacentHTML('afterbegin', html);
     })
 
+    document.querySelectorAll("div[data-content-block-id]").forEach(x => {
+        let html = "<div class='edit-indicator-content-block' style='position: absolute;cursor: pointer;z-index: 9999;'><img src='/Areas/Admin/Content/img/pencil.png' /></div>";
+        x.insertAdjacentHTML('afterbegin', html);
+    })
+    
     editWidgetIndicators = document.querySelectorAll('.edit-indicator-widget');
     editWidgetMenuIndicators = document.querySelectorAll('.edit-widget-menu');
     editLayoutMenuIndicators = document.querySelectorAll('.edit-layout-area-menu');
     editLayoutIndicators = document.querySelectorAll('.edit-indicator-layout');
+    editContentBlockIndicators = document.querySelectorAll('.edit-indicator-content-block');
     editWidgetIndicators.forEach(x => x.style.display = 'block');
     editLayoutIndicators.forEach(x => x.style.display = 'block');
+
+    editContentBlockIndicators.forEach(x=> x.addEventListener('click', function(event){
+        let blockId = x.parentElement.dataset.contentBlockId;
+        let menuSelector = "[data-content-block-menu='"+blockId+"']";
+        let menu = document.querySelectorAll(menuSelector)[0];
+        menu.style.display = 'block';
+        event.stopPropagation();
+        document.addEventListener('click', function (e) {
+            if (menu && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    }));
 
     //create menu for widget editing
     editWidgetIndicators.forEach(x => x.addEventListener('click', function (x) {
@@ -211,6 +231,7 @@ function disableEditing() {
     editWidgetIndicators.forEach(x => x.remove());
     editWidgetMenuIndicators.forEach(x => x.remove());
     editLayoutMenuIndicators.forEach(x => x.remove());
+    editContentBlockIndicators.forEach(x=>x.remove());
     document.querySelectorAll(editableSelector).forEach(x => {
         if (x.dataset.isHtml === true) {
             showLiveForm(x);
