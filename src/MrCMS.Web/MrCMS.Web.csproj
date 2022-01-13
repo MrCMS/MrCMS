@@ -34,4 +34,9 @@
         <PackageReference Include="Quartz.Extensions.Hosting" Version="3.2.4" />
         <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.2.4" />
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Views\Install\Setup.cshtml" />
+      <EmbeddedResource Include="Views\Install\Success.cshtml" />
+    </ItemGroup>
 </Project>
