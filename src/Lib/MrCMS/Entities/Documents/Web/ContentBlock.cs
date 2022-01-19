@@ -1,18 +1,12 @@
 using System;
-using System.Collections.Generic;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
 
 namespace MrCMS.Entities.Documents.Web;
 
-public interface IContentRow
+public class ContentBlock : SiteEntity
 {
-    IReadOnlyList<ContentArea> Areas { get; }
-}
-
-public class ContentRow : SiteEntity
-{
-    private static readonly JsonSerializerSettings ContentRowSerializerSettings = new();
+    private static readonly JsonSerializerSettings ContentBlockSerializerSettings = new();
     
     public virtual string Name { get; set; }
     public virtual int Order { get; set; }
@@ -25,7 +19,7 @@ public class ContentRow : SiteEntity
         var type = TypeHelper.GetTypeByName(Type);
         if (type == null)
             return;
-        Data = JsonConvert.SerializeObject(model, type, Formatting.None, ContentRowSerializerSettings);
+        Data = JsonConvert.SerializeObject(model, type, Formatting.None, ContentBlockSerializerSettings);
     }
 
     public virtual object DeserializeData()
@@ -33,13 +27,13 @@ public class ContentRow : SiteEntity
         var type = TypeHelper.GetTypeByName(Type);
         if (type == null)
             return null;
-        return JsonConvert.DeserializeObject(Data, type, ContentRowSerializerSettings);
+        return JsonConvert.DeserializeObject(Data, type, ContentBlockSerializerSettings);
     }
 }
 
-public class ContentRowMetadataAttribute : Attribute
+public class ContentBlockMetadataAttribute : Attribute
 {
-    public ContentRowMetadataAttribute(string displayName, string editorType)
+    public ContentBlockMetadataAttribute(string displayName, string editorType)
     {
         DisplayName = displayName;
         EditorType = editorType;

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
@@ -40,6 +41,7 @@ public class ContentVersionController : MrCMSAdminController
     public async Task<ViewResult> AddSection(int id)
     {
         ViewData["section-options"] = await _contentRowAdminService.GetContentRowOptions();
-        return View(await _adminService.GetAddSectionModel(id));
+        throw new NotImplementedException();
+        // return View(await _adminService.GetAddSectionModel(id));
     }
 }

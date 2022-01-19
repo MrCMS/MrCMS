@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models.Content;
-using NHibernate.Mapping;
 
 namespace MrCMS.Web.Admin.Services.Content;
 
@@ -14,11 +13,11 @@ public class ContentRowAdminService : IContentRowAdminService
 
     static ContentRowAdminService()
     {
-        var rowTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<IContentRow>();
+        var rowTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<IContentBlock>();
         var rowOptions = new List<ContentRowOption>();
         foreach (var rowType in rowTypes)
         {
-            var attribute = rowType.GetCustomAttribute<ContentRowMetadataAttribute>();
+            var attribute = rowType.GetCustomAttribute<ContentBlockMetadataAttribute>();
             if (attribute == null)
                 continue;
             rowOptions.Add(new ContentRowOption

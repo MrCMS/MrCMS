@@ -26,6 +26,10 @@
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\SendToAll.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\SendToRole.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\_Query.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Add.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Sort.cshtml" />
     </ItemGroup>
 
     <!--

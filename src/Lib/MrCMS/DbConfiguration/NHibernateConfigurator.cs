@@ -184,8 +184,6 @@ namespace MrCMS.DbConfiguration
                 .IncludeBase<FormProperty>()
                 .IncludeBase<FormPropertyWithOptions>()
                 .IncludeBase<BatchJob>()
-                .IncludeBase<ContentBlock>()
-                .IncludeBase<ContentRow>()
                 .UseOverridesFromAssemblies(assemblies)
                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                 .IncludeAppBases(_appContext)

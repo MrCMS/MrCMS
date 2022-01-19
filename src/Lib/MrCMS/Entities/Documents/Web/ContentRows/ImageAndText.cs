@@ -6,12 +6,12 @@ using Newtonsoft.Json;
 
 namespace MrCMS.Entities.Documents.Web.ContentRows;
 
-[ContentRowMetadata("Image and Text", "image-and-text")]
-public class ImageAndText : IContentRow
+[ContentBlockMetadata("Image and Text", "image-and-text")]
+public class ImageAndText : IContentBlock
 {
     public ImageAndTextLayout Layout { get; set; }
 
-    public IReadOnlyList<ContentArea> Areas => new ContentArea[] { Image, Text };
+    public IReadOnlyList<BlockItem> Items => new BlockItem[] { Image, Text };
 
     public ContentImage Image { get; set; }
     
@@ -22,12 +22,4 @@ public class ImageAndText : IContentRow
         ImageLeft,
         ImageRight
     }
-    
-    // public class ImageAndTextData
-    // {
-    //     public ImageAndTextLayout Layout { get; set; }
-    //     public ContentImage Image { get; set; }
-    //     public ContentText Text { get; set; }
-    // }
-
 }
