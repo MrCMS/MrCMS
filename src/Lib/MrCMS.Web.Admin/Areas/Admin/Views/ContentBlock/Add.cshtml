@@ -1,0 +1,28 @@
+@using MrCMS.Web.Admin.Models.Content
+@model MrCMS.Web.Admin.Models.Content.AddContentBlockModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var blockOptions = ViewData["block-options"] as List<ContentBlockOption>;
+    var selectListItems = blockOptions.BuildSelectItemList(x => x.Name, x => x.TypeName, emptyItem: null);
+}
+
+<form method="post" asp-controller="ContentBlock" asp-action="Add" asp-route-contentversionid="@Model.ContentVersionId">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Add Content Block", "Add Content Block")
+            <span class="btn-group d-inline pull-right">
+                <button type="submit" class="btn-primary btn">@await Html.Resource("Save")</button>
+            </span>
+        </legend>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.BlockType)
+            @Html.DropDownListFor(x => x.BlockType, selectListItems, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.BlockType)
+        </div>
+    </fieldset>
+</form>

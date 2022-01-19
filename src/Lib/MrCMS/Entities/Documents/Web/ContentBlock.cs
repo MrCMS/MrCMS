@@ -6,20 +6,23 @@ namespace MrCMS.Entities.Documents.Web;
 
 public class ContentBlock : SiteEntity
 {
-    private static readonly JsonSerializerSettings ContentBlockSerializerSettings = new();
-    
+    private static readonly JsonSerializerSettings SerializerSettings = new()
+    {
+        ContractResolver = new WritablePropertiesOnlyResolver()
+    };
+
     public virtual string Name { get; set; }
     public virtual int Order { get; set; }
 
     public virtual string Type { get; set; }
     public virtual string Data { get; set; }
+    public virtual ContentVersion ContentVersion { get; set; }
 
     public virtual void SerializeData(object model)
     {
-        var type = TypeHelper.GetTypeByName(Type);
-        if (type == null)
-            return;
-        Data = JsonConvert.SerializeObject(model, type, Formatting.None, ContentBlockSerializerSettings);
+        var type = model.GetType();
+        Type = type.FullName;
+        Data = JsonConvert.SerializeObject(model, type, Formatting.None, SerializerSettings);
     }
 
     public virtual object DeserializeData()
@@ -27,7 +30,7 @@ public class ContentBlock : SiteEntity
         var type = TypeHelper.GetTypeByName(Type);
         if (type == null)
             return null;
-        return JsonConvert.DeserializeObject(Data, type, ContentBlockSerializerSettings);
+        return JsonConvert.DeserializeObject(Data, type, SerializerSettings);
     }
 }
 

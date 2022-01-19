@@ -8,14 +8,14 @@ namespace MrCMS.Web.Admin.Controllers;
 
 public class ContentRowController : MrCMSAdminController
 {
-    private readonly IContentRowAdminService _service;
+    private readonly IContentBlockAdminService _service;
 
-    public ContentRowController(IContentRowAdminService service)
+    public ContentRowController(IContentBlockAdminService service)
     {
         _service = service;
     }
 
-    public async Task<IReadOnlyList<ContentRowOption>> Options()
+    public async Task<IReadOnlyList<ContentBlockOption>> Options()
     {
         return await _service.GetContentRowOptions();
     }

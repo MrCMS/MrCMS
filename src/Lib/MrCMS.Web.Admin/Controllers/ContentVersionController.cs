@@ -11,13 +11,13 @@ namespace MrCMS.Web.Admin.Controllers;
 public class ContentVersionController : MrCMSAdminController
 {
     private readonly IContentVersionAdminService _adminService;
-    private readonly IContentRowAdminService _contentRowAdminService;
+    private readonly IContentBlockAdminService _contentBlockAdminService;
 
     public ContentVersionController(IContentVersionAdminService adminService,
-        IContentRowAdminService contentRowAdminService)
+        IContentBlockAdminService contentBlockAdminService)
     {
         _adminService = adminService;
-        _contentRowAdminService = contentRowAdminService;
+        _contentBlockAdminService = contentBlockAdminService;
     }
 
     public ViewResult AddInitial(int webpageId)
@@ -36,12 +36,5 @@ public class ContentVersionController : MrCMSAdminController
     public async Task<ViewResult> Edit(int id)
     {
         return View(await _adminService.GetEditModel(id));
-    }
-
-    public async Task<ViewResult> AddSection(int id)
-    {
-        ViewData["section-options"] = await _contentRowAdminService.GetContentRowOptions();
-        throw new NotImplementedException();
-        // return View(await _adminService.GetAddSectionModel(id));
     }
 }

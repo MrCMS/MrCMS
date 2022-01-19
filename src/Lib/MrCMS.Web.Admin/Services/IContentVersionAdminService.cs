@@ -10,5 +10,4 @@ public interface IContentVersionAdminService
     Task<IReadOnlyList<ContentVersion>> GetVersions(int webpageId);
     Task<ContentVersion> AddInitialContentVersion(AddInitialContentVersionModel model);
     Task<ContentVersionModel> GetEditModel(int id);
-    // Task<AddContentSectionModel> GetAddSectionModel(int id);
 }

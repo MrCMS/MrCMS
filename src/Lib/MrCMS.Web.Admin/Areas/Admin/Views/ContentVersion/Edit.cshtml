@@ -14,9 +14,15 @@
                 Blocks
             </h3>
             <div class="content">
+                <ul class="list-group">
+                    @foreach (var block in Model.Blocks)
+                    {
+                        <li class="list-group-item">@block.Name</li>
+                    }
+                </ul>
             </div>
             <div class="actions">
-                <button class="btn btn-block btn-success">Add section</button>
+                <a class="btn btn-block btn-success" asp-controller="ContentBlock" asp-action="Add" asp-route-id="@Model.Id" data-toggle="fb-modal">Add section</a>
             </div>
         </div>
         <main class="preview">
