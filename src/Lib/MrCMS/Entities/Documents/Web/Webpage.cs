@@ -23,22 +23,18 @@ namespace MrCMS.Entities.Documents.Web
             Urls = new List<UrlHistory>();
             FrontEndAllowedRoles = new HashSet<UserRole>();
             ContentBlocks = new List<ContentBlock>();
+            ContentVersions = new List<ContentVersion>();
         }
 
-        [Required]
-        public override string UrlSegment { get; set; }
+        [Required] public override string UrlSegment { get; set; }
 
-        [StringLength(250)]
-        public virtual string SEOTargetPhrase { get; set; }
+        [StringLength(250)] public virtual string SEOTargetPhrase { get; set; }
 
-        [StringLength(250)]
-        public virtual string MetaTitle { get; set; }
+        [StringLength(250)] public virtual string MetaTitle { get; set; }
 
-        [StringLength(250)]
-        public virtual string MetaDescription { get; set; }
+        [StringLength(250)] public virtual string MetaDescription { get; set; }
 
-        [StringLength(250)]
-        public virtual string MetaKeywords { get; set; }
+        [StringLength(250)] public virtual string MetaKeywords { get; set; }
 
         public virtual string ExplicitCanonicalLink { get; set; }
 
@@ -46,11 +42,9 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual bool IncludeInSitemap { get; set; }
 
-        [StringLength(8000)]
-        public virtual string CustomHeaderScripts { get; set; }
+        [StringLength(8000)] public virtual string CustomHeaderScripts { get; set; }
 
-        [StringLength(8000)]
-        public virtual string CustomFooterScripts { get; set; }
+        [StringLength(8000)] public virtual string CustomFooterScripts { get; set; }
 
         public virtual bool Published { get; set; }
 
@@ -103,11 +97,12 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<UrlHistory> Urls { get; set; }
 
         public virtual PageTemplate PageTemplate { get; set; }
-        
 
-        [DisplayName("Do not cache?")]
-        public virtual bool DoNotCache { get; set; }
+
+        [DisplayName("Do not cache?")] public virtual bool DoNotCache { get; set; }
 
         public virtual IList<ContentBlock> ContentBlocks { get; set; }
+
+        public virtual IList<ContentVersion> ContentVersions { get; set; }
     }
 }

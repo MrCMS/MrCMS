@@ -3,20 +3,30 @@
 @import "featherlight";
 @import "jquery.mrcms-mediaselector";
 @import "jquery.tagit";
+@import "content-admin";
 @import url("../lib/font-awesome/css/font-awesome.css");
 @import url("../lib/jstree/themes/default/style.css");
 @import url("../lib/sweetalert-master/lib/sweet-alert.scss");
 @import url("../lib/cropper/cropper.css");
 
-h1 {font-size: 1.8em; }  
+h1 {
+  font-size: 1.8em;
+}
 
-#loading { position: fixed; bottom: 5px; right: 5px; z-index: 9999999; }
+#loading {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  z-index: 9999999;
+}
 
-.ui-autocomplete {z-index: 2035;}
+.ui-autocomplete {
+  z-index: 2035;
+}
 
 .mrcms-content-header {
   border-bottom: 1px solid $gray-200;
-  margin-bottom: 1rem;  
+  margin-bottom: 1rem;
   margin-right: 0;
   margin-left: 0;
   padding-left: 0;
@@ -207,4 +217,6 @@ label > input[type="checkbox"] {
   }
 }
 
-ul#sidebar-nav > li > ul.nav > li > ul.nav  {margin-left: 1rem;}
+ul#sidebar-nav > li > ul.nav > li > ul.nav {
+  margin-left: 1rem;
+}

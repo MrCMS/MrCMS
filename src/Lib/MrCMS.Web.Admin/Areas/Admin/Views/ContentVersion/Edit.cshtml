@@ -1,0 +1,29 @@
+@model MrCMS.Web.Admin.Models.Content.ContentVersionModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml"; }
+
+<div class="content-admin">
+    <div class="header">
+        <h1>Content Editor</h1>
+        <div class="btn-group">
+            <a class="btn btn-secondary" asp-controller="Webpage" asp-action="Edit" asp-route-id="@Model.WebpageId">Back to Page</a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="left-nav">
+            <h3>
+                Sections
+            </h3>
+            <div class="content">
+            </div>
+            <div class="actions">
+                <button class="btn btn-block btn-success">Add section</button>
+            </div>
+        </div>
+        <main class="preview">
+            <iframe src="@Model.PreviewUrl"></iframe>
+        </main>
+        <div class="right-nav">
+
+        </div>
+    </div>
+</div>

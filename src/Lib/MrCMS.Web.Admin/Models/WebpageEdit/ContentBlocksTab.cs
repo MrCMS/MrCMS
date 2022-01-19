@@ -28,4 +28,25 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
             return helper.RenderPartialAsync("ContentBlocks", entity);
         }
     }
+    public class ContentAreasTab : AdminTab<Webpage>
+    {
+        public override int Order => 40;
+        public override Type ParentType => null;
+        public override Type ModelType => null;
+        public override Task<string> Name(IServiceProvider serviceProvider, Webpage entity)
+        {
+            return Task.FromResult("Content");
+        }
+
+        public override Task<bool> ShouldShow(IServiceProvider serviceProvider, Webpage entity)
+        {
+            return Task.FromResult(true);
+        }
+
+        public override string TabHtmlId => "content-versions";
+        public override Task RenderTabPane(IHtmlHelper helper, IMapper mapper, Webpage entity)
+        {
+            return helper.RenderPartialAsync("ContentVersions", entity);
+        }
+    }
 }
