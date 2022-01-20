@@ -5,21 +5,19 @@
 @model dynamic
 @{
     var rules = ViewData["acl-rules"] as List<AclInfo>;
-    var roles = rules.SelectMany(x => x.Roles).Select(x => new {x.Id, x.Name}).Distinct().OrderBy(x => x.Name).ToList();
+    var roles = rules.SelectMany(x => x.Roles).Select(x => new { x.Id, x.Name }).Distinct().OrderBy(x => x.Name).ToList();
 }
 <form asp-controller="ACL" asp-action="Index" method="post">
-
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls") "/>
+            <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls") " />
 
             <admin-header-actions>
                 <div class="btn-group">
-                    <button class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
                     @if (ACLSettings.ACLEnabled)
                     {
-
                         <a asp-controller="ACL" asp-action="Disable" class="btn btn-danger">@await Html.Resource("admin-acl-disable", "Disable")</a>
+                        <button class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
                     }
                     else
                     {
@@ -30,53 +28,60 @@
         </row>
     </admin-header>
 
-
-    @foreach (var group in rules.GroupBy(x => x.Rule).OrderBy(x => x.Key))
+    @if (ACLSettings.ACLEnabled)
     {
-        <h3 class="pl-2 mt-2">@group.Key.BreakUpString()</h3>
-        <table class="table table-condensed">
-            <thead>
-            <tr>
-                <th>
-                    Operation
-                </th>
-                @foreach (var role in roles)
-                {
-                    <th>
-                        @role.Name
-                    </th>
-                }
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var rule in group.OrderBy(x => x.Type).ThenBy(x => x.Operation))
-            {
-                <tr>
-                    <td>
-                        @rule.Operation.BreakUpString()
-                    </td>
-                    @foreach (var role in rule.Roles)
+        foreach (var group in rules.GroupBy(x => x.Rule).OrderBy(x => x.Key))
+        {
+            <h3 class="pl-2 mt-2">@group.Key.BreakUpString()</h3>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            Operation
+                        </th>
+                        @foreach (var role in roles)
+                        {
+                            <th>
+                                @role.Name
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rule in group.OrderBy(x => x.Type).ThenBy(x => x.Operation))
                     {
-                        var key = $"{role.Id}-{rule.Key}";
-                        if (role.Name != UserRole.Administrator)
-                        {
+                        <tr>
                             <td>
-
-                                <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "")/>
-
+                                @rule.Operation.BreakUpString()
                             </td>
-                        }
-                        else
-                        {
-                            <td>
-                                <input type="checkbox" checked="checked" disabled="disabled"/>
-                            </td>
-                        }
+                            @foreach (var role in rule.Roles)
+                            {
+                                var key = $"{role.Id}-{rule.Key}";
+                                if (role.Name != UserRole.Administrator)
+                                {
+                                    <td>
+
+                                        <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "") />
+
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="checkbox" checked="checked" disabled="disabled" />
+                                    </td>
+                                }
+                            }
+                        </tr>
                     }
-                </tr>
-            }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        }
     }
-
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            @await Html.Resource("Admin ACL Disabled", "ACL is disabled")
+        </div>
+    }
 </form>
