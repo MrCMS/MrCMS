@@ -25,23 +25,34 @@ public class ContentBlock : SiteEntity
         Data = JsonConvert.SerializeObject(model, type, Formatting.None, SerializerSettings);
     }
 
-    public virtual object DeserializeData()
+    public virtual IContentBlock DeserializeData()
     {
         var type = TypeHelper.GetTypeByName(Type);
         if (type == null)
             return null;
-        return JsonConvert.DeserializeObject(Data, type, SerializerSettings);
+        return JsonConvert.DeserializeObject(Data, type, SerializerSettings) as IContentBlock;
     }
 }
 
-public class ContentBlockMetadataAttribute : Attribute
-{
-    public ContentBlockMetadataAttribute(string displayName, string editorType)
-    {
-        DisplayName = displayName;
-        EditorType = editorType;
-    }
-
-    public string DisplayName { get; }
-    public string EditorType { get; }
-}
+// public class ContentBlockMetadataAttribute : Attribute
+// {
+//     public ContentBlockMetadataAttribute(string displayName, string editorType)
+//     {
+//         DisplayName = displayName;
+//         EditorType = editorType;
+//     }
+//
+//     public string DisplayName { get; }
+//     public string EditorType { get; }
+// }
+// public class ContentBlockItemMetadataAttribute : Attribute
+// {
+//     public ContentBlockItemMetadataAttribute(string displayName, string editorType)
+//     {
+//         DisplayName = displayName;
+//         EditorType = editorType;
+//     }
+//
+//     public string DisplayName { get; }
+//     public string EditorType { get; }
+// }

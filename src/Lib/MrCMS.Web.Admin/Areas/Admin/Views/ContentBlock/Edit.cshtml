@@ -1,0 +1,16 @@
+@using MrCMS.Entities.Documents.Web
+@model dynamic
+
+@{
+    var name = ViewData["name"] as string;
+    var block = ViewData["block"] as IContentBlock;
+}
+<h2>Editor</h2>
+@if (name != null)
+{
+    <h3>@name</h3>
+}
+@if (block != null)
+{
+    <h4>@block.GetType().Name</h4>
+}

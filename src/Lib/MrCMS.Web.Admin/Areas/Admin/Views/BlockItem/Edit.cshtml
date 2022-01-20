@@ -1,0 +1,12 @@
+@using MrCMS.Entities.Documents.Web
+@model dynamic
+
+@{
+    var blockItem = ViewData["item"] as BlockItem;
+}
+
+<h2>Item Editor</h2>
+@if (blockItem != null)
+{
+    <h3>@blockItem.Name</h3>
+}

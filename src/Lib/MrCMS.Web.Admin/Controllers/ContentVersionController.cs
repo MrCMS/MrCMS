@@ -37,4 +37,12 @@ public class ContentVersionController : MrCMSAdminController
     {
         return View(await _adminService.GetEditModel(id));
     }
+    
+
+    public async Task<PartialViewResult> Blocks(int id, Guid? selected, Guid? open)
+    {
+        ViewData["selected"] = selected;
+        ViewData["open"] = open;
+        return PartialView(await _adminService.GetEditModel(id));
+    }
 }

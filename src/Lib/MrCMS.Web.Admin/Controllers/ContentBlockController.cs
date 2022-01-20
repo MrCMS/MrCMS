@@ -14,7 +14,6 @@ public class ContentBlockController : MrCMSAdminController
     {
         _adminService = adminService;
     }
-    
 
     public async Task<ViewResult> Add(int id)
     {
@@ -27,5 +26,12 @@ public class ContentBlockController : MrCMSAdminController
     {
         await _adminService.AddBlock(model);
         return RedirectToAction("Edit", "ContentVersion", new { id = model.ContentVersionId });
+    }
+
+    public async Task<PartialViewResult> Edit(int id)
+    {
+        ViewData["name"] = await _adminService.GetName(id);
+        ViewData["block"] = await _adminService.GetBlock(id);
+        return PartialView();
     }
 }

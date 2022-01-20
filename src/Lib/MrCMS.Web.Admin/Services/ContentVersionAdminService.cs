@@ -47,11 +47,23 @@ public class ContentVersionAdminService : IContentVersionAdminService
             Id = version.Id,
             WebpageId = version.Webpage.Id,
             PreviewUrl = $"/{version.Webpage.UrlSegment}?version={version.Id}",
-            Blocks = version.Blocks.Select(x => new ContentVersionBlockSummaryModel
+            Blocks = version.Blocks.Select(x =>
             {
-                Id = x.Id,
-                Type = x.Type,
-                Name = x.Name
+                var blockModel = x.DeserializeData();
+                var contentVersionBlockSummaryModel = new ContentVersionBlockSummaryModel
+                {
+                    Id = x.Id,
+                    Type = x.Type,
+                    Guid = x.Guid,
+                    Name = x.Name,
+                    Items = blockModel.Items.Select(y=> new ContentVersionBlockItemSummaryModel
+                    {
+                        Id = y.Id,
+                        Name = y.Name,
+                        Type = y.GetType().FullName
+                    }).ToList()
+                };
+                return contentVersionBlockSummaryModel;
             }).ToList()
         };
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -14,27 +15,28 @@ public class ContentBlockAdminService : IContentBlockAdminService
 {
     private readonly ISession _session;
     private static readonly List<ContentBlockOption> RowOptions;
-    private static readonly IReadOnlyDictionary<string, Type> RowTypes;
+    public static readonly IReadOnlyDictionary<string, Type> RowTypes;
+    public static readonly IReadOnlyDictionary<string, Type> BlockTypes;
 
     static ContentBlockAdminService()
     {
         RowTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<IContentBlock>().ToDictionary(x => x.FullName);
+        BlockTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<BlockItem>().ToDictionary(x => x.FullName);
+
         var rowOptions = new List<ContentBlockOption>();
         foreach (var (fullName, rowType) in RowTypes)
         {
-            var attribute = rowType.GetCustomAttribute<ContentBlockMetadataAttribute>();
-            if (attribute == null)
-                continue;
+            var attribute = rowType.GetCustomAttribute<DisplayAttribute>();
             rowOptions.Add(new ContentBlockOption
             {
-                Name = attribute.DisplayName,
+                Name = attribute?.Name ?? rowType.Name.BreakUpString(),
                 TypeName = fullName,
-                EditorType = attribute.EditorType
             });
         }
 
         RowOptions = rowOptions;
     }
+
 
     public ContentBlockAdminService(ISession session)
     {
@@ -77,5 +79,17 @@ public class ContentBlockAdminService : IContentBlockAdminService
         await _session.TransactAsync(session => session.SaveAsync(contentBlock));
 
         return contentBlock;
+    }
+
+    public async Task<string> GetName(int id)
+    {
+        var contentBlock = await _session.GetAsync<ContentBlock>(id);
+        return contentBlock?.Name;
+    }
+
+    public async Task<IContentBlock> GetBlock(int id)
+    {
+        var contentBlock = await _session.GetAsync<ContentBlock>(id);
+        return contentBlock?.DeserializeData();
     }
 }

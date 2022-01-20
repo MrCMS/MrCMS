@@ -38,6 +38,7 @@ import {setupSiteCopyOptions} from "./add-site"
 import {setupBatchFunctions} from "./batch.js"
 import {setupResourceChooseSite} from "./choose-site";
 import {setupWebpageSelect2} from "./webpage-search";
+import {setupContentAdmin} from "./content-admin";
 ajaxSetup();
 $(() => {
     registerPlugins();
@@ -96,4 +97,6 @@ $(() => {
     initializePlugins();
     
     setupSimpleFiles();
+    
+    setupContentAdmin();
 })

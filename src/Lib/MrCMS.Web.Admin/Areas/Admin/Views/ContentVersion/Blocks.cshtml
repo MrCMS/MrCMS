@@ -1,0 +1,55 @@
+@model MrCMS.Web.Admin.Models.Content.ContentVersionModel
+@{
+    var selected = ViewData["selected"] as Guid?;
+    var open = ViewData["open"] as Guid?;
+}
+<ul class="list-group list-group-flush">
+    @foreach (var block in Model.Blocks)
+    {
+        var isOpen = open == block.Guid;
+        var isSelected = selected == block.Guid;
+        <li class="list-group-item @(isSelected ? "list-group-item-primary" : "")">
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <a href="#" class="selection-link"
+                       data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = block.Guid })"
+                       data-content-admin-editor="@Url.Action("Edit", "ContentBlock", new { id = block.Id })">
+                        @block.Name
+                    </a>
+                    @if (block.ShowCaret)
+                    {
+                        if (isOpen)
+                        {
+                            <a href="#" class="close-block" data-content-admin-block-close="@Url.Action("Blocks", "ContentVersion", new { selected })">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" class="open-block" data-content-admin-block-open="@Url.Action("Blocks", "ContentVersion", new { selected, open = block.Guid })">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        }
+                    }
+                </div>
+
+                @if (isOpen)
+                {
+                    <ul class="list-group mt-3">
+                        @foreach (var item in block.Items)
+                        {
+                            var itemSelected = selected == item.Id;
+                            <li class="list-group-item @(itemSelected ? "list-group-item-primary" : "")">
+                                <a href="#" class="selection-link"
+                                   data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = item.Id })"
+                                   data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })">
+                                    @item.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </li>
+    }
+</ul>
