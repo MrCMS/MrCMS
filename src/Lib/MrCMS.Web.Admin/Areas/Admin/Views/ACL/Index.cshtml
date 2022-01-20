@@ -1,5 +1,7 @@
-﻿@using MrCMS.Entities.People
+﻿@using MrCMS.ACL
+@using MrCMS.Entities.People
 @using MrCMS.Web.Admin.Models
+@inject ACLSettings ACLSettings
 @model dynamic
 @{
     var rules = ViewData["acl-rules"] as List<AclInfo>;
@@ -12,7 +14,18 @@
             <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls") "/>
 
             <admin-header-actions>
-                <button class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
+                <div class="btn-group">
+                    <button class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
+                    @if (ACLSettings.ACLEnabled)
+                    {
+
+                        <a asp-controller="ACL" asp-action="Disable" class="btn btn-danger">@await Html.Resource("admin-acl-disable", "Disable")</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="ACL" asp-action="Enable" class="btn btn-success">@await Html.Resource("admin-acl-enable", "Enable")</a>
+                    }
+                </div>
             </admin-header-actions>
         </row>
     </admin-header>
