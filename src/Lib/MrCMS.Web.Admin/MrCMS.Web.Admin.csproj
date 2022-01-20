@@ -28,6 +28,72 @@
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\PushNotification\_Query.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\af.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ar.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\az.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\bg.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\bn.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\bs.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ca.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\cs.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\da.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\de.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\dsb.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\el.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\en.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\es.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\et.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\eu.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\fa.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\fi.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\fr.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\gl.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\he.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\hi.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\hr.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\hsb.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\hu.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\hy.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\id.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\is.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\it.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ja.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ka.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\km.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ko.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\lt.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\lv.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\mk.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ms.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\nb.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ne.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\nl.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\pl.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ps.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\pt-BR.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\pt.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ro.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\ru.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\sk.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\sl.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\sq.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\sr-Cyrl.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\sr.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\sv.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\th.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\tk.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\tr.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\uk.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\vi.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\zh-CN.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\i18n\zh-TW.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\select2.full.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\select2.full.min.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\select2.js" />
+      <None Include="wwwroot\Areas\Admin\Content\lib\select2-4.0.13\js\select2.min.js" />
+    </ItemGroup>
+
     <!--
           1. Install npm packages
           "Inputs" and "Outputs" are used for incremental builds. If all output items are up-to-date, MSBuild skips the target.
