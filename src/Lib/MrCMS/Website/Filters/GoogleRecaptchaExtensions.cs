@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
+using System;
 
 namespace MrCMS.Website.Filters
 {
@@ -23,10 +23,14 @@ namespace MrCMS.Website.Filters
             if (!settings.Enabled)
                 return HtmlString.Empty;
             var recaptchaDiv = new TagBuilder("div");
-            recaptchaDiv.AddCssClass("g-recaptcha");
+            if (settings.IsCheckboxType)
+            {
+                recaptchaDiv.AddCssClass("g-recaptcha");
+            }
             recaptchaDiv.AddCssClass("mb-3");
             recaptchaDiv.Attributes["data-recaptcha-holder"] = "true";
             recaptchaDiv.Attributes["data-sitekey"] = settings.SiteKey;
+            recaptchaDiv.Attributes["data-ischeckbox"] = settings.IsCheckboxType.ToString();
             id ??= Guid.NewGuid().ToString();
             recaptchaDiv.Attributes["id"] = id;
 
