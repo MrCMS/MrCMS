@@ -26,13 +26,13 @@ public class ContentBlockAdminService : IContentBlockAdminService
         return Task.FromResult<IReadOnlyList<ContentBlockOption>>(ContentEditorTypeMappings.BlockOptions);
     }
 
-    public async Task<AddContentBlockModel> GetAddModel(int id)
+    public Task<AddContentBlockModel> GetAddModel(int id)
     {
-        return new AddContentBlockModel
+        return Task.FromResult(new AddContentBlockModel
         {
             ContentVersionId = id,
             BlockType = string.Empty
-        };
+        });
     }
 
     public async Task<ContentBlock> AddBlock(AddContentBlockModel model)

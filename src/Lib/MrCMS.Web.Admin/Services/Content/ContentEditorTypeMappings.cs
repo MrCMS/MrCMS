@@ -14,14 +14,14 @@ public static class ContentEditorTypeMappings
     public static readonly List<ContentBlockOption> BlockOptions;
     public static readonly IReadOnlyDictionary<string, Type> BlockTypes;
     public static readonly IReadOnlyDictionary<string, string> BlockNames;
-    public static readonly IReadOnlyDictionary<string, Type> ItemTypes;
     public static readonly IReadOnlyDictionary<string, Type> BlockConfigurations;
+
+    public static readonly IReadOnlyDictionary<string, Type> BlockItemTypes;
+    public static readonly IReadOnlyDictionary<string, Type> BlockItemConfigurations;
 
     static ContentEditorTypeMappings()
     {
         var blockTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<IContentBlock>();
-        var itemTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<BlockItem>();
-
         var blockConfigTypes =
             TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(ContentBlockAdminConfigurationBase<,>));
 
@@ -40,8 +40,6 @@ public static class ContentEditorTypeMappings
                 $"Cannot start without configs for: {string.Join(", ", missingBlockTypeConfigs)}");
         }
 
-        ItemTypes = itemTypes.ToDictionary(x => x.FullName);
-
         var blockOptions = new List<ContentBlockOption>();
         var blockNames = new Dictionary<string, string>();
         foreach (var (fullName, rowType) in BlockTypes)
@@ -58,5 +56,24 @@ public static class ContentEditorTypeMappings
 
         BlockOptions = blockOptions;
         BlockNames = blockNames;
+
+        var itemTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<BlockItem>();
+        var blockItemConfigTypes =
+            TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(BlockItemAdminConfigurationBase<,>));
+        BlockItemTypes = itemTypes.ToDictionary(x => x.FullName);
+        BlockItemConfigurations = blockItemConfigTypes.Select(x =>
+            new
+            {
+                baseType = x.GetBaseTypes().First(y =>
+                    y.IsGenericType && y.GetGenericTypeDefinition() == typeof(BlockItemAdminConfigurationBase<,>)),
+                type = x
+            }).ToDictionary(x => x.baseType.GetGenericArguments()[0].FullName, x => x.type);
+        var missingBlockItemTypeConfigs =
+            BlockItemTypes.Keys.Where(x => !BlockItemConfigurations.ContainsKey(x)).ToList();
+        if (missingBlockItemTypeConfigs.Any())
+        {
+            throw new InvalidOperationException(
+                $"Cannot start without configs for: {string.Join(", ", missingBlockItemTypeConfigs)}");
+        }
     }
 }

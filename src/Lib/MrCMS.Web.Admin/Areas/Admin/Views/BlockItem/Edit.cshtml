@@ -1,12 +1,20 @@
 @using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Services.Content
+@inject IContentBlockItemAdminService _adminService
 @model dynamic
 
 @{
+    var id = ViewData["id"] as int? ?? 0;
     var blockItem = ViewData["item"] as BlockItem;
 }
 
 <h2>Item Editor</h2>
 @if (blockItem != null)
 {
-    <h3>@blockItem.Name</h3>
+    <form asp-action="Edit" asp-controller="BlockItem" asp-route-id="@id" asp-route-itemId="@blockItem.Id" data-content-admin-save-editor>
+        @{
+            await Html.RenderPartialAsync($"Editors/{blockItem.GetType().Name}", await _adminService.GetUpdateModel(id, blockItem.Id));
+        }
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
 }

@@ -16,7 +16,20 @@ public class BlockItemController : MrCMSAdminController
     }
     public async Task<ActionResult> Edit(int id, Guid itemId)
     {
+        ViewData["id"] = id;
         ViewData["item"] = await _adminService.GetBlockItem(id, itemId);
         return PartialView();
+    }
+    
+    [HttpPost, ActionName("Edit")]
+    public async Task<ActionResult> Edit_POST(int id, Guid itemId)
+    {
+        var model = await _adminService.GetUpdateModel(id,itemId);
+        if (await TryUpdateModelAsync(model, model.GetType(), ""))
+        {
+            await _adminService.UpdateBlockItem(id,itemId, model);
+        }
+
+        return Ok();
     }
 }
