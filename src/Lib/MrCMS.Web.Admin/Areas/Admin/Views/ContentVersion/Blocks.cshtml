@@ -14,7 +14,7 @@
                     <a href="#" class="selection-link"
                        data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = block.Guid })"
                        data-content-admin-editor="@Url.Action("Edit", "ContentBlock", new { id = block.Id })">
-                        @block.Name
+                        @block.TypeName
                     </a>
                     @if (block.ShowCaret)
                     {

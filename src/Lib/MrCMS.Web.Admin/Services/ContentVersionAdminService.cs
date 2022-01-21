@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models.Content;
+using MrCMS.Web.Admin.Services.Content;
 using NHibernate;
 using NHibernate.Linq;
 
@@ -53,10 +54,10 @@ public class ContentVersionAdminService : IContentVersionAdminService
                 var contentVersionBlockSummaryModel = new ContentVersionBlockSummaryModel
                 {
                     Id = x.Id,
-                    Type = x.Type,
+                    Type = ContentEditorTypeMappings.BlockTypes[x.Type],
+                    TypeName = ContentEditorTypeMappings.BlockNames[x.Type],
                     Guid = x.Guid,
-                    Name = x.Name,
-                    Items = blockModel.Items.Select(y=> new ContentVersionBlockItemSummaryModel
+                    Items = blockModel.Items.Select(y => new ContentVersionBlockItemSummaryModel
                     {
                         Id = y.Id,
                         Name = y.Name,

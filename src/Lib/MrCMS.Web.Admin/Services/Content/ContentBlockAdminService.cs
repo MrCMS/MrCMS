@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -14,38 +12,18 @@ namespace MrCMS.Web.Admin.Services.Content;
 public class ContentBlockAdminService : IContentBlockAdminService
 {
     private readonly ISession _session;
-    private static readonly List<ContentBlockOption> RowOptions;
-    public static readonly IReadOnlyDictionary<string, Type> RowTypes;
-    public static readonly IReadOnlyDictionary<string, Type> BlockTypes;
-
-    static ContentBlockAdminService()
-    {
-        RowTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<IContentBlock>().ToDictionary(x => x.FullName);
-        BlockTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<BlockItem>().ToDictionary(x => x.FullName);
-
-        var rowOptions = new List<ContentBlockOption>();
-        foreach (var (fullName, rowType) in RowTypes)
-        {
-            var attribute = rowType.GetCustomAttribute<DisplayAttribute>();
-            rowOptions.Add(new ContentBlockOption
-            {
-                Name = attribute?.Name ?? rowType.Name.BreakUpString(),
-                TypeName = fullName,
-            });
-        }
-
-        RowOptions = rowOptions;
-    }
+    private readonly IServiceProvider _serviceProvider;
 
 
-    public ContentBlockAdminService(ISession session)
+    public ContentBlockAdminService(ISession session, IServiceProvider serviceProvider)
     {
         _session = session;
+        _serviceProvider = serviceProvider;
     }
 
     public Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions()
     {
-        return Task.FromResult<IReadOnlyList<ContentBlockOption>>(RowOptions);
+        return Task.FromResult<IReadOnlyList<ContentBlockOption>>(ContentEditorTypeMappings.BlockOptions);
     }
 
     public async Task<AddContentBlockModel> GetAddModel(int id)
@@ -59,17 +37,16 @@ public class ContentBlockAdminService : IContentBlockAdminService
 
     public async Task<ContentBlock> AddBlock(AddContentBlockModel model)
     {
-        if (!RowTypes.ContainsKey(model.BlockType))
+        if (!ContentEditorTypeMappings.BlockTypes.ContainsKey(model.BlockType))
             return null;
 
-        var type = RowTypes[model.BlockType];
+        var type = ContentEditorTypeMappings.BlockTypes[model.BlockType];
 
         var version = await _session.GetAsync<ContentVersion>(model.ContentVersionId);
         var instance = Activator.CreateInstance(type);
 
         var contentBlock = new ContentBlock
         {
-            Name = model.Name,
             Order = version.Blocks.Any() ? version.Blocks.Max(x => x.Order) + 1 : 1,
             ContentVersion = version
         };
@@ -81,15 +58,48 @@ public class ContentBlockAdminService : IContentBlockAdminService
         return contentBlock;
     }
 
-    public async Task<string> GetName(int id)
-    {
-        var contentBlock = await _session.GetAsync<ContentBlock>(id);
-        return contentBlock?.Name;
-    }
-
     public async Task<IContentBlock> GetBlock(int id)
     {
-        var contentBlock = await _session.GetAsync<ContentBlock>(id);
+        var contentBlock = await GetContentBlock(id);
         return contentBlock?.DeserializeData();
+    }
+
+
+    public async Task<object> GetUpdateModel(int id)
+    {
+        var contentBlock = await GetContentBlock(id);
+        var configuration = GetAdminConfiguration(contentBlock);
+        return configuration.GetEditModel(contentBlock.DeserializeData());
+    }
+
+    public async Task UpdateBlock(int id, object model)
+    {
+        var contentBlock = await GetContentBlock(id);
+        var configuration = GetAdminConfiguration(contentBlock);
+        if (model.GetType() != configuration.EditModelType)
+            return;
+        var block = contentBlock?.DeserializeData();
+
+        configuration.UpdateBlock(block, model);
+        contentBlock!.SerializeData(block);
+
+        await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
+    }
+
+    private async Task<ContentBlock> GetContentBlock(int id)
+    {
+        return await _session.GetAsync<ContentBlock>(id);
+    }
+
+    private async Task<IContentBlockAdminConfiguration> GetAdminConfiguration(int id)
+    {
+        var contentBlock = await _session.GetAsync<ContentBlock>(id);
+        return GetAdminConfiguration(contentBlock);
+    }
+
+    private IContentBlockAdminConfiguration GetAdminConfiguration(ContentBlock contentBlock)
+    {
+        return _serviceProvider.GetService(ContentEditorTypeMappings.BlockConfigurations[contentBlock.Type]) as
+            IContentBlockAdminConfiguration;
     }
 }

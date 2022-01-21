@@ -11,7 +11,6 @@ public class ContentBlock : SiteEntity
         ContractResolver = new WritablePropertiesOnlyResolver()
     };
 
-    public virtual string Name { get; set; }
     public virtual int Order { get; set; }
 
     public virtual string Type { get; set; }

@@ -1,0 +1,11 @@
+@using MrCMS.Entities.Documents.Web.ContentRows
+@model MrCMS.Web.Admin.Models.Content.UpdateImageAndTextModel
+@{
+    var options = EnumHelper<ImageAndText.ImageAndTextLayout>.GetOptions();
+}
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Layout)
+    @Html.DropDownListFor(x => x.Layout, options, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.Layout)
+</div>

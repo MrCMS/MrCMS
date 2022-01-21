@@ -11,6 +11,8 @@ public interface IContentBlockAdminService
     Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions();
     Task<AddContentBlockModel> GetAddModel(int id);
     Task<ContentBlock> AddBlock(AddContentBlockModel model);
-    Task<string> GetName    (int id);
     Task<IContentBlock> GetBlock(int id);
+    // Task<IContentBlockAdminConfiguration> GetAdminConfiguration(int contentBlock);
+    Task UpdateBlock(int id, object model);
+    Task<object> GetUpdateModel(int id);
 }

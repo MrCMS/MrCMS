@@ -6,7 +6,5 @@ public class AddContentBlockModel
 {
     public int ContentVersionId { get; set; }
     [Required]
-    public string Name { get; set; }
-    [Required]
     public string BlockType { get; set; }
 }

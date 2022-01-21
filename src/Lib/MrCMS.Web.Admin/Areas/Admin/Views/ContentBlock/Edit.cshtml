@@ -1,16 +1,18 @@
 @using MrCMS.Entities.Documents.Web
-@model dynamic
+@using MrCMS.Web.Admin.Services.Content
+@inject IContentBlockAdminService _adminService
+@model int
 
 @{
-    var name = ViewData["name"] as string;
     var block = ViewData["block"] as IContentBlock;
 }
 <h2>Editor</h2>
-@if (name != null)
-{
-    <h3>@name</h3>
-}
 @if (block != null)
 {
-    <h4>@block.GetType().Name</h4>
+    <form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model" data-content-admin-save-block>
+        @{
+            await Html.RenderPartialAsync($"Editors/{block.GetType().Name}", await _adminService.GetUpdateModel(Model));
+        }
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
 }

@@ -9,8 +9,8 @@ public class ContentVersionBlockSummaryModel
 {
     public int Id { get; set; }
     public Guid Guid { get; set; }
-    public string Name { get; set; }
-    public string Type { get; set; }
+    public Type Type { get; set; }
     public List<ContentVersionBlockItemSummaryModel> Items { get; set; }
     public bool ShowCaret => Items.Any();
+    public string TypeName { get; set; }
 }

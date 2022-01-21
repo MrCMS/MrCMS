@@ -20,7 +20,7 @@ public class ContentBlockController : MrCMSAdminController
         ViewData["block-options"] = await _adminService.GetContentRowOptions();
         return View(await _adminService.GetAddModel(id));
     }
-    
+
     [HttpPost]
     public async Task<RedirectToActionResult> Add(AddContentBlockModel model)
     {
@@ -30,8 +30,19 @@ public class ContentBlockController : MrCMSAdminController
 
     public async Task<PartialViewResult> Edit(int id)
     {
-        ViewData["name"] = await _adminService.GetName(id);
         ViewData["block"] = await _adminService.GetBlock(id);
-        return PartialView();
+        return PartialView(id);
+    }
+
+    [HttpPost, ActionName("Edit")]
+    public async Task<ActionResult> Edit_POST(int id)
+    {
+        var model = await _adminService.GetUpdateModel(id);
+        if (await TryUpdateModelAsync(model, model.GetType(), ""))
+        {
+            await _adminService.UpdateBlock(id, model);
+        }
+
+        return Ok();
     }
 }

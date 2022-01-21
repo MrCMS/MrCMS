@@ -68,10 +68,26 @@ function selectBlock(event) {
     return false;
 }
 
+function saveBlock(event) {
+
+    const form = $(event.currentTarget);
+    const obj = form.serializeArray().reduceRight((prev, arr) => {
+        prev[arr.name] = arr.value;
+        return prev;
+    }, {});
+    const url = form.attr('action');
+    $.post(url, obj, function(){
+        alert('success');
+    })
+
+    return false;
+}
+
 export function setupContentAdmin() {
     loadBlocks();
 
     $(document).on('click', '[data-content-admin-block-open]', openBlock)
     $(document).on('click', '[data-content-admin-block-close]', closeBlock)
     $(document).on('click', '[data-content-admin-block-select]', selectBlock)
+    $(document).on('submit', '[data-content-admin-save-block]', saveBlock)
 }
