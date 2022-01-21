@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace MrCMS.Website.Filters
 {
     public interface ICheckGoogleRecaptcha
     {
-        GoogleRecaptchaCheckResult CheckToken(string token);
+        Task<GoogleRecaptchaCheckResult> CheckTokenAsync(string token);
     }
 }

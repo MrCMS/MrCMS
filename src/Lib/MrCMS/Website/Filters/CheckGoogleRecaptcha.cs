@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Specialized;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
+using MrCMS.Models;
 using MrCMS.Settings;
 using Newtonsoft.Json;
 
@@ -16,7 +19,7 @@ namespace MrCMS.Website.Filters
             _settings = settings;
         }
 
-        public GoogleRecaptchaCheckResult CheckToken(string token)
+        public async Task<GoogleRecaptchaCheckResult> CheckTokenAsync(string token)
         {
             if (!_settings.Enabled)
             {
@@ -26,27 +29,31 @@ namespace MrCMS.Website.Filters
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                // var contentResult = new ContentResult {Content = "Please Complete Recaptcha"};
                 return GoogleRecaptchaCheckResult.Missing;
             }
 
-            var data = new NameValueCollection
-            {
-                {"response", token},
-                {"secret", _settings.Secret}
-            };
+            var json = JsonConvert.SerializeObject(new { @event = new { token = token, siteKey = _settings.SiteKey } });
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var googleResponse =
-                new WebClient().UploadValues(new Uri("https://www.google.com/recaptcha/api/siteverify"),
-                    "POST", data);
-            var jsonString = Encoding.Default.GetString(googleResponse);
-            var json = JsonConvert.DeserializeObject<GoogleRecaptchaResponse>(jsonString);
-            if (!json.Success)
+            using var client = new HttpClient();
+            var response = await client.PostAsync(new Uri($"https://recaptchaenterprise.googleapis.com/v1beta1/projects/{_settings.ProjectId}/assessments?key={_settings.ApiKey}"), data);
+            string googleResponse = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<GoogleRecaptchaAssessmentModel>(googleResponse);
+
+            //Check token is valid
+            if (!(result?.TokenProperties?.Valid ?? false))
             {
-                return GoogleRecaptchaCheckResult.Failed;
+                return GoogleRecaptchaCheckResult.Missing;
             }
 
-            return GoogleRecaptchaCheckResult.Success;
+            //Check score
+            if (result.Score >= _settings.ByPassScore)
+            {
+                return GoogleRecaptchaCheckResult.Success;
+            }
+            return GoogleRecaptchaCheckResult.Failed;
+
         }
     }
 }

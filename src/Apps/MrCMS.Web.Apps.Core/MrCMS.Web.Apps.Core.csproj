@@ -23,19 +23,6 @@
         <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\assets\.DS_Store" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\core.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\core.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\core.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\core.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\style.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\style.css.map" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\PlainBlock.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\PlainBlockAdd.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\PlainBlockFields.cshtml" />
-    </ItemGroup>
-
     <!--
           1. Install npm packages
           "Inputs" and "Outputs" are used for incremental builds. If all output items are up-to-date, MSBuild skips the target.

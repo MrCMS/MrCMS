@@ -38,7 +38,6 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
 
-        [HttpPost]
         [Acl(typeof(AclAdminACL), AclAdminACL.Edit)]
         public async Task<ActionResult> Disable()
         {
@@ -47,7 +46,6 @@ namespace MrCMS.Web.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
         [Acl(typeof(AclAdminACL), AclAdminACL.Edit)]
         public async Task<ActionResult> Enable()
         {

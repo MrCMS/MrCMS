@@ -1,38 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website.Filters
 {
-    public class GoogleRecaptchaFilter : IActionFilter
+    public class GoogleRecaptchaFilter : IAsyncActionFilter
     {
-        // private readonly ICheckGoogleRecaptcha _checkGoogleRecaptcha;
-        //
-        // public GoogleRecaptchaFilter(ICheckGoogleRecaptcha checkGoogleRecaptcha)
-        // {
-        //     _checkGoogleRecaptcha = checkGoogleRecaptcha;
-        // }
-
-        public void OnActionExecuting(ActionExecutingContext filterContext)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context,
+                                         ActionExecutionDelegate next)
         {
-            if ((filterContext.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo
+            if ((context.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo
                 .GetCustomAttributes(typeof(GoogleRecaptchaAttribute), true).Any() != true)
             {
+                await next();
                 return;
             }
 
-            if (!filterContext.HttpContext.Request.HasFormContentType)
+            if (!context.HttpContext.Request.HasFormContentType)
             {
+                await next();
                 return;
             }
 
-            string googleToken = filterContext.HttpContext.Request.Form["g-recaptcha-response"];
+            string googleToken = context.HttpContext.Request.Form["g-recaptcha-response"];
 
-            var result = filterContext.HttpContext.RequestServices.GetRequiredService<ICheckGoogleRecaptcha>()
-                .CheckToken(googleToken);
+            var result = await context.HttpContext.RequestServices.GetRequiredService<ICheckGoogleRecaptcha>()
+                .CheckTokenAsync(googleToken);
             switch (result)
             {
                 case GoogleRecaptchaCheckResult.NotEnabled:
@@ -40,18 +37,14 @@ namespace MrCMS.Website.Filters
                     // continue
                     break;
                 case GoogleRecaptchaCheckResult.Missing:
-                    filterContext.Result = new ContentResult { Content = "Please Complete Recaptcha" };
+                    context.Result = new ContentResult { Content = "Please Complete Recaptcha" };
                     break;
                 case GoogleRecaptchaCheckResult.Failed:
-                    filterContext.Result = new EmptyResult();
+                    context.Result = new EmptyResult();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        public void OnActionExecuted(ActionExecutedContext filterContext)
-        {
         }
     }
 }

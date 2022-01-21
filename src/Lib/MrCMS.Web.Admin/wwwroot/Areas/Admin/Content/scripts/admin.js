@@ -80,7 +80,10 @@ $(() => {
     setupBatchFunctions();
     setupResourceChooseSite();
     setupWebpageSelect2();
-    
+
+    //Default theme for select2 (Bootstrap 4)
+    $.fn.select2.defaults.set("theme", "bootstrap4");
+
     if (Dropzone) {
         Dropzone.autoDiscover = false;
     }
