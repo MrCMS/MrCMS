@@ -101,5 +101,8 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Do not cache?")] public virtual bool DoNotCache { get; set; }
 
         public virtual IList<ContentVersion> ContentVersions { get; set; }
+
+        public virtual ContentVersion LiveContentVersion =>
+            ContentVersions.OrderByDescending(x => x.CreatedOn).FirstOrDefault(x => x.IsLive);
     }
 }

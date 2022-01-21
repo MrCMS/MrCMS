@@ -4,3 +4,5 @@
 @inject IFrontEndEditingChecker _frontEndEditingChecker
 
 @await Html.Editable(page => page.BodyContent, true)
+
+@{ await Html.RenderContent(Model); }

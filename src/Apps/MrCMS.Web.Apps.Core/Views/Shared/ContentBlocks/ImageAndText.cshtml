@@ -1,0 +1,15 @@
+@using MrCMS.Entities.Documents.Web.ContentRows
+@model MrCMS.Entities.Documents.Web.ContentRows.ImageAndText
+@{
+    var imageOrder = Model.Layout == ImageAndText.ImageAndTextLayout.ImageLeft ? 0 : 1;
+    var textOrder = Model.Layout == ImageAndText.ImageAndTextLayout.ImageLeft ? 1 : 0;
+}
+
+<div class="row">
+    <div class="col order-@(imageOrder)">
+        @{ await Html.RenderPartialAsync("BlockItems/ContentImage", Model.Image); }
+    </div>
+    <div class="col order-@(textOrder)">
+        @{ await Html.RenderPartialAsync("BlockItems/ContentText", Model.Text); }
+    </div>
+</div>

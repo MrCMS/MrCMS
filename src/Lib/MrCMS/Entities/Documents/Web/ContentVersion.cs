@@ -9,4 +9,5 @@ public class ContentVersion : SiteEntity
 
     public virtual IList<ContentBlock> Blocks { get; set; } = new List<ContentBlock>();
     public virtual bool IsDraft => Status == ContentVersionStatus.Draft;
+    public virtual bool IsLive => Status == ContentVersionStatus.Live;
 }

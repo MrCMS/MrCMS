@@ -69,6 +69,10 @@ function selectBlock(event) {
     return false;
 }
 
+function reloadPreview() {
+    document.getElementById('content-admin-preview-pane').contentWindow.location.reload();
+}
+
 function saveEditor(event) {
     const form = $(event.currentTarget);
     const obj = form.serializeArray().reduceRight((prev, arr) => {
@@ -79,6 +83,7 @@ function saveEditor(event) {
     $.post(url, obj, function () {
         loadBlocks();
         loadEditor();
+        reloadPreview();
         alert('success');
     });
 

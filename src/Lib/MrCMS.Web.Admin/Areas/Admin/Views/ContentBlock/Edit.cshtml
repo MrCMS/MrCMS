@@ -9,7 +9,7 @@
 <h2>Editor</h2>
 @if (block != null)
 {
-    <form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model" data-content-admin-save-block>
+    <form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model" data-content-admin-save-editor>
         @{
             await Html.RenderPartialAsync($"Editors/{block.GetType().Name}", await _adminService.GetUpdateModel(Model));
         }
