@@ -45,6 +45,7 @@ namespace MrCMS.Website.Filters
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            await next();
         }
     }
 }
