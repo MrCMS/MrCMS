@@ -25,7 +25,7 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<ActionResult> Add(AddFormListOptionModel model)
         {
             await _adminService.Add(model);
-            return Json(new FormActionResult {success = true});
+            return Json(new FormActionResult { success = true });
         }
 
         [HttpGet]
@@ -39,7 +39,7 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<ActionResult> Edit_POST(UpdateFormListOptionModel model)
         {
             await _adminService.Update(model);
-            return Json(new FormActionResult {success = true});
+            return Json(new FormActionResult { success = true });
         }
 
         [HttpGet]
@@ -53,7 +53,17 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<ActionResult> Delete_POST(int id)
         {
             await _adminService.Delete(id);
-            return Json(new FormActionResult {success = true});
+            return Json(new FormActionResult { success = true });
+        }
+
+        public async Task<JsonResult> CheckValueIsNotEnteredAdd(string value, int formPropertyId)
+        {
+            return Json(await _adminService.CheckValueIsNotEnteredAdd(value, formPropertyId));
+        }
+
+        public async Task<JsonResult> CheckValueIsNotEnteredEdit(string value, int id)
+        {
+            return Json(await _adminService.CheckValueIsNotEnteredEdit(value, id));
         }
     }
 }

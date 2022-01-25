@@ -63,12 +63,23 @@ namespace MrCMS.Web.Admin.Services
 
         public AddFormListOptionModel GetAddModel(int formPropertyId)
         {
-            return new AddFormListOptionModel {FormPropertyId = formPropertyId};
+            return new AddFormListOptionModel { FormPropertyId = formPropertyId };
         }
 
         public async Task<UpdateFormListOptionModel> GetUpdateModel(int id)
         {
             return _mapper.Map<UpdateFormListOptionModel>(await GetFormListOption(id));
+        }
+
+        public async Task<bool> CheckValueIsNotEnteredAdd(string value, int formPropertyId)
+        {
+            return (await _session.QueryOver<FormListOption>().Where(f => f.Value == value && f.FormProperty.Id == formPropertyId).RowCountAsync()) == 0;
+        }
+
+        public async Task<bool> CheckValueIsNotEnteredEdit(string value, int id)
+        {
+            var formListOption = await GetFormListOption(id);
+            return (await _session.QueryOver<FormListOption>().Where(f => f.Value == value && f.Id != id && f.FormProperty.Id == formListOption.FormProperty.Id).RowCountAsync()) == 0;
         }
     }
 }

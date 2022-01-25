@@ -1,6 +1,7 @@
 ﻿@model MrCMS.Web.Admin.Models.UpdateFormListOptionModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 <form asp-action="Edit" asp-controller="FormListOption" method="post" class="form-update-form">
+    @Html.HiddenFor(m=>m.Id)
     <fieldset>
         <legend>
             @await Html.Resource("Admin Form Edit Option Title", "Edit option")

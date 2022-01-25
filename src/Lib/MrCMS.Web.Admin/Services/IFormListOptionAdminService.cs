@@ -10,5 +10,7 @@ namespace MrCMS.Web.Admin.Services
         Task Delete(int formListOption);
         AddFormListOptionModel GetAddModel(int formPropertyId);
         Task<UpdateFormListOptionModel> GetUpdateModel(int id);
+        Task<bool> CheckValueIsNotEnteredAdd(string value, int formPropertyId);
+        Task<bool> CheckValueIsNotEnteredEdit(string value, int id);
     }
 }
