@@ -20,7 +20,6 @@ import {setupMediaCategoryPage} from "./media-category";
 import {setupLayoutTree} from "./layout";
 import {setupMenu} from "./menu";
 import {setupStickyTabs} from "./sticky-tabs";
-import {handlePushNotifications} from "./push-notifications";
 import {setupUserAvatar} from "./user-avatar";
 import {setupTransientNotifications} from "./transient-notifications";
 import {setupNotificationBar} from "./persistent-notifications";
@@ -57,7 +56,6 @@ $(() => {
     setupWebpageTree();
     setupLayoutTree();
     setupMediaCategory();
-    handlePushNotifications();
     setupDatePickers();
     setupMediaCategoryPage();
     registerGlobalFunctions();
