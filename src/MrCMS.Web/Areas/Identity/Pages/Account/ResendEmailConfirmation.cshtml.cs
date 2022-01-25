@@ -1,15 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using MrCMS.Entities.People;
+using MrCMS.Services;
+using MrCMS.Web.Apps.Core.MessageTemplates;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Areas.Identity.Pages.Account
 {
@@ -17,12 +16,14 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
     public class ResendEmailConfirmationModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> _confirmEmailMessageParser;
+        private readonly ISiteUrlResolver _siteUrlResolver;
 
-        public ResendEmailConfirmationModel(UserManager<User> userManager, IEmailSender emailSender)
+        public ResendEmailConfirmationModel(UserManager<User> userManager, ISiteUrlResolver siteUrlResolver, IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> confirmEmailMessageParser)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _confirmEmailMessageParser = confirmEmailMessageParser;
+            _siteUrlResolver = siteUrlResolver;
         }
 
         [BindProperty]
@@ -56,15 +57,16 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { userId = userId, code = code },
-                protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            var queuedMessage = await _confirmEmailMessageParser.GetMessage(new ConfirmEmailEmailModel
+            {
+                UserId = userId,
+                Code = code,
+                Name = user.Name,
+                Email = user.Email,
+                SiteUrl = _siteUrlResolver.GetCurrentSiteUrl()
+            });
+            await _confirmEmailMessageParser.QueueMessage(queuedMessage, trySendImmediately: true);
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();
