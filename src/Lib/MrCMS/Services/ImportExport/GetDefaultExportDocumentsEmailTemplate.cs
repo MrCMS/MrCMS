@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
 using MrCMS.Settings;
 

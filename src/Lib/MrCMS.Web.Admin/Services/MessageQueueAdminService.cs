@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;

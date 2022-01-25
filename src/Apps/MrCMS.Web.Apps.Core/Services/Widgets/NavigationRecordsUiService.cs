@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models.Navigation;
 using NHibernate;
 using NHibernate.Linq;
@@ -13,12 +12,10 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
     public class NavigationRecordsUiService : INavigationRecordsUiService
     {
         private readonly ISession _session;
-        private readonly IGetLiveUrl _getLiveUrl;
 
-        public NavigationRecordsUiService(ISession session, IGetLiveUrl getLiveUrl)
+        public NavigationRecordsUiService(ISession session)
         {
             _session = session;
-            _getLiveUrl = getLiveUrl;
         }
 
         public NavigationList GetNavigationList()

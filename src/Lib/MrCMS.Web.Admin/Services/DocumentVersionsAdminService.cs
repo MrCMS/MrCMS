@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;

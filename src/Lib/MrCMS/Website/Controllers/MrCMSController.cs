@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities;
-using MrCMS.Entities.Multisite;
 using MrCMS.Website.Filters;
 using System.Collections.Generic;
 using System.Linq;

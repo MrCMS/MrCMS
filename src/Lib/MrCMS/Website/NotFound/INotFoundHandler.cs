@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Website.NotFound
 {

@@ -15,16 +15,14 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
     public class GetNavigationRecords : IGetNavigationRecords
     {
         private readonly ISession _session;
-        private readonly IGetLiveUrl _getLiveUrl;
         private readonly ICacheManager _cacheManager;
         private readonly ICurrentSiteLocator _currentSiteLocator;
         public const string NavigationCacheKey = "NavigationCaheKey";
 
-        public GetNavigationRecords(ISession session, IGetLiveUrl getLiveUrl, ICacheManager cacheManager,
+        public GetNavigationRecords(ISession session, ICacheManager cacheManager,
             ICurrentSiteLocator currentSiteLocator)
         {
             _session = session;
-            _getLiveUrl = getLiveUrl;
             _cacheManager = cacheManager;
             _currentSiteLocator = currentSiteLocator;
         }

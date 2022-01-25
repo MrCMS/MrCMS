@@ -39,4 +39,8 @@
       <EmbeddedResource Include="Views\Install\Setup.cshtml" />
       <EmbeddedResource Include="Views\Install\Success.cshtml" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
 </Project>

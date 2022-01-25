@@ -11,14 +11,12 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
     public class GetPageSubNavigation : IGetPageSubNavigation
     {
         private readonly ISession _session;
-        private readonly IGetCurrentPage _getCurrentPage;
         private readonly IGetLiveUrl _getLiveUrl;
 
-        public GetPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage,
+        public GetPageSubNavigation(ISession session,
             IGetLiveUrl getLiveUrl)
         {
             _session = session;
-            _getCurrentPage = getCurrentPage;
             _getLiveUrl = getLiveUrl;
         }
 

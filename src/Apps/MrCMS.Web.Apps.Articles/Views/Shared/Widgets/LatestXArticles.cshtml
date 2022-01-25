@@ -1,0 +1,30 @@
+﻿@using MrCMS.Services
+@using MrCMS.Web.Apps.Core.Services.Widgets
+@using MrCMS.Website
+@using MrCMS.Web.Apps.Articles.Services.Widgets
+@using MrCMS.Web.Apps.Articles.Widgets
+
+@model WidgetData
+@inject IWidgetUIService WidgetUIService
+@inject IGetLatestXArticles GetLatestXArticles
+
+@{
+    var widget = await WidgetUIService.GetWidgetAsync<LatestXArticles>(Model.Id);
+    var articles = await GetLatestXArticles.GetArticlesAsync(widget.RelatedNewsList?.Id, widget.NumberOfArticles);
+}
+@if (articles?.Any() ?? false)
+{
+    if (!string.IsNullOrEmpty(widget.Name))
+    {
+        <h4>@widget.Name</h4>
+    }
+
+    foreach (var article in articles)
+    {
+        <h4>
+            <a href="/@article.UrlSegment">
+                @article.Name
+            </a>
+        </h4>
+    }
+}

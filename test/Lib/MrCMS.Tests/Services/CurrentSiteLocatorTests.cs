@@ -2,7 +2,6 @@
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.TestSupport;
