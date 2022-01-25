@@ -15,16 +15,16 @@
     var searchModel = ViewData["article-search-model"] as ArticleSearchModel ?? new ArticleSearchModel();
 }
 
-<h1>@Html.Editable(page => page.Name, false)</h1>
+<h1>@await Html.Editable(page => page.Name, false)</h1>
 
-@Html.Editable(page => page.BodyContent, true)
+@await Html.Editable(page => page.BodyContent, true)
 
 @foreach (var item in results)
 {
     <div class="row mb-3">
         <div class="col">
             <h2>
-                <a href="@GetLiveUrl.GetUrlSegment(item, true)">
+                <a href="@await GetLiveUrl.GetUrlSegment(item, true)">
                     @item.Name
                 </a>
             </h2>
@@ -35,8 +35,8 @@
             </div>
             @if (!string.IsNullOrWhiteSpace(item.FeatureImage))
             {
-                <a href="@GetLiveUrl.GetUrlSegment(item, true)">
-                    @Html.RenderImage(item.FeatureImage, new Size { Width = 250 }, attributes: new { @class = "img-responsive mb-3" })
+                <a href="@await GetLiveUrl.GetUrlSegment(item, true)">
+                    @await Html.RenderImage(item.FeatureImage, new Size { Width = 250 }, attributes: new { @class = "img-responsive mb-3" })
                 </a>
             }
             <div>

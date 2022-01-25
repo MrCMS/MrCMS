@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col">
 
-            <h1 itemprop="name">@Html.Editable(page => page.Name, false)</h1>
+            <h1 itemprop="name">@await Html.Editable(page => page.Name, false)</h1>
 
             <a href="/@Model.Parent.UrlSegment" class="btn btn-secondary">Back</a>
 
@@ -17,12 +17,12 @@
             @if (!string.IsNullOrEmpty(Model.FeatureImage))
             {
                 <a href="/@Model.UrlSegment">
-                    @Html.RenderImage(Model.FeatureImage, attributes: new { @class = "img-responsive mb-3" })
+                    @await Html.RenderImage(Model.FeatureImage, attributes: new { @class = "img-responsive mb-3" })
                 </a>
             }
 
             <div itemprop="articleBody">
-                @Html.Editable(page => page.BodyContent, true)
+                @await Html.Editable(page => page.BodyContent, true)
             </div>
 
             @if (Model.User != null)
