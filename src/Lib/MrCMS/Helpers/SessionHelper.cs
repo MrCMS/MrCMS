@@ -287,10 +287,9 @@ namespace MrCMS.Helpers
             return await query.RowCountAsync() > 0;
         }
 
-        public static T GetByGuid<T>(this ISession session, Guid guid) where T : SystemEntity
+        public static async Task<T> GetByGuidAsync<T>(this ISession session, Guid guid) where T : SystemEntity
         {
-            // we use list here, as it seems to cache more performantly than .SingleOrDefault()
-            return session.QueryOver<T>().Where(x => x.Guid == guid).Cacheable().List().FirstOrDefault();
+            return await session.Query<T>().Where(f => f.Guid == guid).WithOptions(options => options.SetCacheable(true)).FirstOrDefaultAsync();
         }
     }
 }
