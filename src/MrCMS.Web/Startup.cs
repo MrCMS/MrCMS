@@ -90,7 +90,7 @@ namespace MrCMS.Web
             services.AddCultureInfo(Configuration);
             Configuration.SetDefaultPageSize();
 
-            var appContext = services.AddMrCMSApps(context =>
+            var appContext = services.AddMrCMSApps(Configuration, context =>
             {
                 context.RegisterApp<MrCMSAdmin>();
                 context.RegisterApp<MrCMSCoreApp>();

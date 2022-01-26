@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using MrCMS.Apps;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Web.Admin.Filters;
 using MrCMS.Web.Admin.Hubs;
@@ -37,10 +38,11 @@ namespace MrCMS.Web.Admin
             return endpointRouteBuilder;
         }
 
-        public override IServiceCollection RegisterServices(IServiceCollection serviceCollection)
+        public override IServiceCollection RegisterServices(IServiceCollection serviceCollection,
+            IConfiguration configuration)
         {
             serviceCollection.RegisterBreadcrumbs();
-            return base.RegisterServices(serviceCollection);
+            return base.RegisterServices(serviceCollection, configuration);
         }
 
         public override void SetupMvcOptions(MvcOptions options)
