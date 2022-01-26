@@ -42,7 +42,7 @@
   configuration: Debug
   install:
     - ps: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-    - ps: choco install nodejs-lts
+    - ps: choco install nodejs-lts --no-progress
 #    - ps: choco install dotnet-sdk --version=6.0.101 --no-progress
 #    - ps: choco install vcredist140 --no-progress
     - dotnet restore
