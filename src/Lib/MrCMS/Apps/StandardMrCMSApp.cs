@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace MrCMS.Apps
 {
@@ -29,7 +30,8 @@ namespace MrCMS.Apps
             Enumerable.Empty<EndpointRegistrationInfo>();
 
 
-        public virtual IServiceCollection RegisterServices(IServiceCollection serviceCollection)
+        public virtual IServiceCollection RegisterServices(IServiceCollection serviceCollection,
+            IConfiguration configuration)
         {
             return serviceCollection;
         }

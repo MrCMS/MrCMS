@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
 using MrCMS.Website.CMS;
@@ -26,7 +27,7 @@ namespace MrCMS.Tests.Helpers
         public IEnumerable<ApplicationRegistrationInfo> Registrations { get; }
         public IEnumerable<EndpointRegistrationInfo> EndpointRegistrations { get; }
 
-        public IServiceCollection RegisterServices(IServiceCollection serviceCollection)
+        public IServiceCollection RegisterServices(IServiceCollection serviceCollection, IConfiguration configuration)
         {
             return serviceCollection;
         }
