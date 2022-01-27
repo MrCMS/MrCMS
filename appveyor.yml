@@ -41,8 +41,6 @@
   version: 1.0.{build}-{branch}
   configuration: Debug
   install:
-    - ps: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-    - ps: choco install nodejs-lts --no-progress
     - dotnet restore
   image: Visual Studio 2022    
   build:
