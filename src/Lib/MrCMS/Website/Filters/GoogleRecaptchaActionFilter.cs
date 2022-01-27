@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MrCMS.Website.Filters
 {
-    public class GoogleRecaptchaFilter : IAsyncActionFilter
+    public class GoogleRecaptchaActionFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context,
                                          ActionExecutionDelegate next)
@@ -48,4 +48,5 @@ namespace MrCMS.Website.Filters
             await next();
         }
     }
+
 }

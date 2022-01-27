@@ -75,6 +75,7 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
+        [GoogleRecaptcha]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             //Check recaptch

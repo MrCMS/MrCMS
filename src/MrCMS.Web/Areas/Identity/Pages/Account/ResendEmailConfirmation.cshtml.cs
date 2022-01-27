@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.MessageTemplates;
+using MrCMS.Website.Filters;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,7 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
         {
         }
 
+        [GoogleRecaptcha]
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

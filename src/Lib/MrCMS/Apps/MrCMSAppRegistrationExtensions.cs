@@ -44,7 +44,8 @@ namespace MrCMS.Apps
             return services.AddMvc(options =>
                 {
                     //options.Filters.Add<EndRequestHandlerFilter>(); //todo is needed with Quartz?
-                    options.Filters.Add<GoogleRecaptchaFilter>();
+                    options.Filters.Add<GoogleRecaptchaActionFilter>();
+                    options.Filters.Add<GoogleRecaptchaPageFilter>();
                     options.Filters.Add<ReturnUrlFilter>();
                     options.Filters.Add<CanonicalLinksFilter>();
                     options.Filters.Add<AddWebpageViewsData>();
