@@ -29,7 +29,7 @@
                     </td>
                     <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? new HtmlString("<br />" + file.Description) : null)</td>
                     <th>
-                        <a href="@Url.Action("Delete", "File", new {Id = file.Id})" class="btn btn-danger btn-sm delete-file-simple">Delete</a>
+                        <button data-value="@Url.Action("Delete", "File", new {Id = file.Id})" data-id="@file.Id" data-placement="bottom" class="btn btn-danger btn-sm delete-file-simple" type="button">Delete</button>
                     </th>
                 </tr>
             }
