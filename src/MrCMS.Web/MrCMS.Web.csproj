@@ -6,6 +6,7 @@
         <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
 
     <ItemGroup>
