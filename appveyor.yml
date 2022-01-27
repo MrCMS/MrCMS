@@ -43,19 +43,15 @@
   install:
     - ps: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     - ps: choco install nodejs-lts --no-progress
-#    - ps: choco install dotnet-sdk --version=6.0.101 --no-progress
-#    - ps: choco install vcredist140 --no-progress
     - dotnet restore
-  image: Visual Studio 2022
+  image: Visual Studio 2022    
   build:
-    parallel: true
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
     verbosity: minimal
-  after_build:
-    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
-  artifacts:
-   - path: '\src\MrCMS.Web\bin\Debug\netcoreapp3.1\publish'
-     name: MrCMS.Web
-     type: WebDeployPackage
+    parallel: true
+  environment:
+    ASPNETCORE_ENVIRONMENT: Staging
 -
   branches:
     only:
