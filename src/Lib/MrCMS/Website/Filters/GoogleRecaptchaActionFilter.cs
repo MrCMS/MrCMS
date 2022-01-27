@@ -34,7 +34,7 @@ namespace MrCMS.Website.Filters
             {
                 case GoogleRecaptchaCheckResult.NotEnabled:
                 case GoogleRecaptchaCheckResult.Success:
-                    // continue
+                    await next();
                     break;
                 case GoogleRecaptchaCheckResult.Missing:
                     context.Result = new ContentResult { Content = "Please Complete Recaptcha" };
@@ -45,7 +45,6 @@ namespace MrCMS.Website.Filters
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            await next();
         }
     }
 
