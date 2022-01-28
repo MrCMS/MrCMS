@@ -11,7 +11,6 @@ import {postToUrlHelper} from "./post-to-url";
 import {setupResizeModal} from "./resize-modal";
 import {registerDelayKeyup} from "./delay-keyup";
 import {registerPlugins} from './media-selector';
-import { initMediaUploader, MediaUploader } from './media-uploader';
 import {setupHealthChecks} from "./health-checks";
 import {registerUpdateArea} from "./update-area";
 import {setupAddWebpage} from "./add-webpage";
