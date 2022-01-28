@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using NHibernate.Linq;
 
 namespace MrCMS.Services

@@ -25,7 +25,7 @@ namespace MrCMS.Tests.Services
         private readonly IRepository<Tag> _tagRepository;
         private readonly IDocumentTagsUpdateService _sut;
         private readonly IRepository<Document> _documentRepository;
-        private readonly List<string> _tags = new List<string> {"test"};
+        private readonly List<string> _tags = new List<string> { "test" };
         private readonly IGetExistingTag _getExistingTag;
 
         [Fact]
@@ -33,7 +33,7 @@ namespace MrCMS.Tests.Services
         {
             var webpage = new BasicMappedWebpage();
             webpage.Tags.Should().HaveCount(0);
-            A.CallTo(() => _getExistingTag.GetTag("test")).Returns((Tag) null);
+            A.CallTo(() => _getExistingTag.GetTag("test")).Returns((Tag)null);
 
             await _sut.SetTags(_tags,
                 webpage);
@@ -47,7 +47,7 @@ namespace MrCMS.Tests.Services
         {
             var webpage = new BasicMappedWebpage();
             webpage.Tags.Should().HaveCount(0);
-            A.CallTo(() => _getExistingTag.GetTag("test")).Returns((Tag) null);
+            A.CallTo(() => _getExistingTag.GetTag("test")).Returns((Tag)null);
 
             await _sut.SetTags(_tags,
                 webpage);
@@ -72,8 +72,8 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task ShouldRemoveTagIfItIsNoLongerAssignedWebpage()
         {
-            var tag = new Tag {Name = "Test"};
-            var webpage = new BasicMappedWebpage {Tags = new HashSet<Tag> {tag}};
+            var tag = new Tag { Name = "Test" };
+            var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
 
             await _sut.SetTags(new List<string>(),
                 webpage);
@@ -84,9 +84,9 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task ShouldRemoveTheWebpageFromTheTagsWebpages()
         {
-            var tag = new Tag {Name = "Test"};
+            var tag = new Tag { Name = "Test" };
             await _tagRepository.Add(tag);
-            var webpage = new BasicMappedWebpage {Tags = new HashSet<Tag> {tag}};
+            var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
             tag.Documents.Add(webpage);
             tag.Documents.Should().HaveCount(1);
 
@@ -96,9 +96,10 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void DocumentTagsAdminService_SetTags_IfDocumentIsNullThrowArgumentNullException()
+        public async Task DocumentTagsAdminService_SetTags_IfDocumentIsNullThrowArgumentNullException()
         {
-            _sut.Invoking(service => service.SetTags((string) null, null)).Should().Throw<ArgumentNullException>();
+            await _sut.Invoking(service => service.SetTags((string)null, null)).Should()
+                .ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
@@ -106,7 +107,7 @@ namespace MrCMS.Tests.Services
         {
             var textPage = new StubWebpage();
 
-            await _sut.SetTags((string) null, textPage);
+            await _sut.SetTags((string)null, textPage);
 
             textPage.Tags.Should().HaveCount(0);
         }
@@ -135,7 +136,7 @@ namespace MrCMS.Tests.Services
         public async Task DocumentTagsAdminService_SetTags_ShouldTrimTagNamesOnNewTags()
         {
             var textPage = new StubWebpage();
-            A.CallTo(() => _getExistingTag.GetTag(A<string>.Ignored)).Returns((Tag) null);
+            A.CallTo(() => _getExistingTag.GetTag(A<string>.Ignored)).Returns((Tag)null);
 
             await _sut.SetTags("test 1, test 2", textPage);
 
@@ -156,12 +157,12 @@ namespace MrCMS.Tests.Services
         public async Task DocumentTagsAdminService_SetTags_ShouldNotRecreateTags()
         {
             var textPage = new StubWebpage();
-            var tag1 = new Tag {Name = "test 1"};
-            var tag2 = new Tag {Name = "test 2"};
+            var tag1 = new Tag { Name = "test 1" };
+            var tag2 = new Tag { Name = "test 2" };
             A.CallTo(() => _getExistingTag.GetTag("test 1")).Returns(tag1);
             A.CallTo(() => _getExistingTag.GetTag("test 2")).Returns(tag2);
 
-            await _sut.SetTags(new List<string> {"test 1", "test 2"}, textPage);
+            await _sut.SetTags(new List<string> { "test 1", "test 2" }, textPage);
 
             textPage.Tags.Should().OnlyContain(x => x == tag1 || x == tag2);
         }
@@ -170,8 +171,8 @@ namespace MrCMS.Tests.Services
         public async Task DocumentTagsAdminService_SetTags_ShouldNotReaddSetTags()
         {
             var textPage = new StubWebpage();
-            var tag1 = new Tag {Name = "test 1"};
-            var tag2 = new Tag {Name = "test 2"};
+            var tag1 = new Tag { Name = "test 1" };
+            var tag2 = new Tag { Name = "test 2" };
             textPage.Tags.Add(tag1);
             textPage.Tags.Add(tag2);
 
@@ -188,8 +189,8 @@ namespace MrCMS.Tests.Services
         public async Task DocumentTagsAdminService_SetTags_ShouldRemoveTagsNotIncluded()
         {
             var textPage = new StubWebpage();
-            var tag1 = new Tag {Name = "test 1"};
-            var tag2 = new Tag {Name = "test 2"};
+            var tag1 = new Tag { Name = "test 1" };
+            var tag2 = new Tag { Name = "test 2" };
             textPage.Tags.Add(tag1);
             textPage.Tags.Add(tag2);
 
@@ -219,8 +220,8 @@ namespace MrCMS.Tests.Services
         public async Task DocumentTagsAdminService_SetTags_ShouldRemoveTheDocumentFromTags()
         {
             var textPage = new StubWebpage();
-            var tag1 = new Tag {Name = "test 1"};
-            var tag2 = new Tag {Name = "test 2"};
+            var tag1 = new Tag { Name = "test 1" };
+            var tag2 = new Tag { Name = "test 2" };
             textPage.Tags.Add(tag1);
             textPage.Tags.Add(tag2);
             tag1.Documents.Add(textPage);
