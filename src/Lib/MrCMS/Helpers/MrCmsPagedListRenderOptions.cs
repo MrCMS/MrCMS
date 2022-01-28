@@ -1,11 +1,11 @@
-using X.PagedList.Mvc.Core.Common;
+using X.PagedList.Web.Common;
 
 namespace MrCMS.Helpers
 {
     public static class MrCMSPagedListRenderOptions
     {
         public static PagedListRenderOptions Bootstrap4 =>
-            new PagedListRenderOptions
+            new()
             {
                 LiElementClasses = new string[] {"page-item"},
                 PageClasses = new string[] {"page-link"},
