@@ -1,4 +1,4 @@
-using MrCMS.Entities.Documents.Web.ContentRows;
+using MrCMS.Entities.Documents.Web.ContentBlocks;
 
 namespace MrCMS.Web.Admin.Models.Content;
 
