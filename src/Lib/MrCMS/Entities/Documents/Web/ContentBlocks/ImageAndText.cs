@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using MrCMS.Entities.Documents.Web.ContentAreas;
-using Newtonsoft.Json;
+using MrCMS.Entities.Documents.Web.BlockItems;
 
-namespace MrCMS.Entities.Documents.Web.ContentRows;
+namespace MrCMS.Entities.Documents.Web.ContentBlocks;
 
 [Display( Name="Image and Text")]
 public class ImageAndText : IContentBlock
