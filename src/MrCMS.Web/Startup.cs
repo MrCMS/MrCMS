@@ -70,7 +70,7 @@ namespace MrCMS.Web
                 services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
                 services.AddQuartz(q =>
                 {
-                    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+                    q.UseMicrosoftDependencyInjectionJobFactory();
 
                     q.UsePersistentStore(options =>
                     {
