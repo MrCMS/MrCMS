@@ -1,4 +1,4 @@
-namespace MrCMS.Web.Admin.Models.Content;
+namespace MrCMS.Web.Apps.Core.Areas.Admin.Models.Content;
 
 public class UpdateContentTextAdminModel
 {

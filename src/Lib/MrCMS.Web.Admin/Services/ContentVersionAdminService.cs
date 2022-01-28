@@ -51,16 +51,18 @@ public class ContentVersionAdminService : IContentVersionAdminService
             Blocks = version.Blocks.Select(x =>
             {
                 var blockModel = x.DeserializeData();
+                var metadata = ContentBlockMappings.BlockMetadata[x.Type];
                 var contentVersionBlockSummaryModel = new ContentVersionBlockSummaryModel
                 {
                     Id = x.Id,
-                    Type = ContentEditorTypeMappings.BlockTypes[x.Type],
-                    TypeName = ContentEditorTypeMappings.BlockNames[x.Type],
+                    Type = metadata.Type,
+                    TypeName = metadata.Name,
+                    CanAddChildren = metadata.CanAddChildren,
                     Guid = x.Guid,
                     Items = blockModel.Items.Select(y => new ContentVersionBlockItemSummaryModel
                     {
                         Id = y.Id,
-                        Name = y.Name,
+                        Name = y.GetDisplayName(blockModel),
                         Type = y.GetType().FullName
                     }).ToList()
                 };

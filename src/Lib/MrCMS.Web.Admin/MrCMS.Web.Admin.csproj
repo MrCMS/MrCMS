@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
+<!--        <ProjectReference Include="..\..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />-->
         <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
         <ProjectReference Include="..\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
     </ItemGroup>
@@ -30,6 +30,9 @@
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Delete.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Edit.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Sort.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ContentBlock\Editors\ImageAndText.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\BlockItem\Editors\ContentImage.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\BlockItem\Editors\ContentText.cshtml" />
     </ItemGroup>
 
     <!--

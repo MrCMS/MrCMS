@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Admin.Infrastructure.Services.Content;
 using MrCMS.Web.Admin.Models.Content;
 using NHibernate;
 
@@ -23,7 +24,12 @@ public class ContentBlockAdminService : IContentBlockAdminService
 
     public Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions()
     {
-        return Task.FromResult<IReadOnlyList<ContentBlockOption>>(ContentEditorTypeMappings.BlockOptions);
+        return Task.FromResult<IReadOnlyList<ContentBlockOption>>(
+            ContentBlockMappings.BlockMetadata
+                .OrderBy(x => x.Value.Name)
+                .Select(x => new ContentBlockOption { Name = x.Value.Name, TypeName = x.Key })
+                .ToList()
+        );
     }
 
     public Task<AddContentBlockModel> GetAddModel(int id)
@@ -64,6 +70,30 @@ public class ContentBlockAdminService : IContentBlockAdminService
         return contentBlock?.DeserializeData();
     }
 
+    public async Task RemoveBlock(int id)
+    {
+        var contentBlock = await GetContentBlock(id);
+        if (contentBlock == null)
+            return;
+        contentBlock.ContentVersion?.Blocks.Remove(contentBlock);
+        await _session.TransactAsync(session => session.DeleteAsync(contentBlock));
+    }
+
+
+    public async Task AddChild(int id)
+    {
+        var contentBlock = await GetContentBlock(id);
+        var block = contentBlock?.DeserializeData();
+
+        if (block is not IContentBlockWithChildCollection withChildCollection)
+            return;
+
+        withChildCollection.AddChild();
+
+        contentBlock!.SerializeData(withChildCollection);
+
+        await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
+    }
 
     public async Task<object> GetUpdateModel(int id)
     {

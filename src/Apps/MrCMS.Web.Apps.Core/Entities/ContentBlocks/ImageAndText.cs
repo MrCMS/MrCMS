@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using MrCMS.Entities.Documents.Web.BlockItems;
+using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Apps.Core.Entities.BlockItems;
 
-namespace MrCMS.Entities.Documents.Web.ContentBlocks;
+namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
 [Display( Name="Image and Text")]
 public class ImageAndText : IContentBlock

@@ -11,7 +11,7 @@ function loadBlocks(url) {
     if (!blocks.length) {
         return;
     }
-    url = url ?? blocks.data('content-admin-blocks');
+    url = url ?? $('[data-content-admin-blocks-current]').data('content-admin-blocks-current') ?? blocks.data('content-admin-blocks');
     $.get(url, function (response) {
         blocks.html(response);
     })
@@ -69,6 +69,30 @@ function selectBlock(event) {
     return false;
 }
 
+function removeBlock(event) {
+    const link = $(event.currentTarget);
+    if (confirm('Are you sure you want to delete this block?')) {
+        const url = link.data('content-admin-block-remove');
+        $.post(url, function () {
+            loadBlocks();
+            loadEditor();
+            reloadPreview();
+        });
+    }
+    return false;
+}
+
+function addChild(event) {
+    const link = $(event.currentTarget);
+    const url = link.data('content-admin-add-child');
+    $.post(url, function () {
+        loadBlocks();
+        loadEditor();
+        reloadPreview();
+    });
+    return false;
+}
+
 function reloadPreview() {
     document.getElementById('content-admin-preview-pane').contentWindow.location.reload();
 }
@@ -96,5 +120,7 @@ export function setupContentAdmin() {
     $(document).on('click', '[data-content-admin-block-open]', openBlock)
     $(document).on('click', '[data-content-admin-block-close]', closeBlock)
     $(document).on('click', '[data-content-admin-block-select]', selectBlock)
+    $(document).on('click', '[data-content-admin-block-remove]', removeBlock)
+    $(document).on('click', '[data-content-admin-add-child]', addChild)
     $(document).on('submit', '[data-content-admin-save-editor]', saveEditor)
 }

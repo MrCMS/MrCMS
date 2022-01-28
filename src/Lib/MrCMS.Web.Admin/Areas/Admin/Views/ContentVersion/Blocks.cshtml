@@ -3,7 +3,7 @@
     var selected = ViewData["selected"] as Guid?;
     var open = ViewData["open"] as Guid?;
 }
-<ul class="list-group list-group-flush">
+<ul class="list-group list-group-flush" data-content-admin-blocks-current="@Url.Action("Blocks", "ContentVersion", new { Model.Id, open, selected })">
     @foreach (var block in Model.Blocks)
     {
         var isOpen = open == block.Guid;
@@ -11,26 +11,33 @@
         <li class="list-group-item @(isSelected ? "list-group-item-primary" : "")">
             <div class="d-flex flex-column">
                 <div class="d-flex justify-content-between">
+
                     <a href="#" class="selection-link"
                        data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = block.Guid })"
                        data-content-admin-editor="@Url.Action("Edit", "ContentBlock", new { id = block.Id })">
                         @block.TypeName
                     </a>
-                    @if (block.ShowCaret)
-                    {
-                        if (isOpen)
+                    <div>
+                        <a class="text-danger" href="#" data-content-admin-block-remove="@Url.Action("Remove", "ContentBlock", new { block.Id })">
+                            <i class="fa fa-minus"></i>
+                        </a>
+                        @if (block.ShowCaret)
                         {
-                            <a href="#" class="close-block" data-content-admin-block-close="@Url.Action("Blocks", "ContentVersion", new { selected })">
-                                <i class="fa fa-caret-up"></i>
-                            </a>
+                            <br/>
+                            if (isOpen)
+                            {
+                                <a href="#" class="close-block" data-content-admin-block-close="@Url.Action("Blocks", "ContentVersion", new { selected })">
+                                    <i class="fa fa-caret-up"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" class="open-block" data-content-admin-block-open="@Url.Action("Blocks", "ContentVersion", new { selected, open = block.Guid })">
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            }
                         }
-                        else
-                        {
-                            <a href="#" class="open-block" data-content-admin-block-open="@Url.Action("Blocks", "ContentVersion", new { selected, open = block.Guid })">
-                                <i class="fa fa-caret-down"></i>
-                            </a>
-                        }
-                    }
+                    </div>
                 </div>
 
                 @if (isOpen)
@@ -40,13 +47,30 @@
                         {
                             var itemSelected = selected == item.Id;
                             <li class="list-group-item @(itemSelected ? "list-group-item-primary" : "")">
-                                <a href="#" class="selection-link"
-                                   data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = item.Id })"
-                                   data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })">
-                                    @item.Name
+                                <div class="d-flex justify-content-between">
+                                    <a href="#" class="selection-link"
+                                       data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = item.Id })"
+                                       data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })">
+                                        @item.Name
+                                    </a>
+                                    <a class="text-danger" href="#" data-content-admin-block-remove="@Url.Action("Remove", "BlockItem", new { block.Id, itemId = item.Id })">
+                                        <i class="fa fa-minus"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                        @if (block.CanAddChildren)
+                        {
+                            <li class="list-group-item ">
+                                <a href="#" class="add-child"
+                                   data-content-admin-add-child="@Url.Action("AddChild", "ContentBlock", new { block.Id })"
+                                   data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open })"
+                                   @* data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })" *@>
+                                    Add Item
                                 </a>
                             </li>
                         }
+
                     </ul>
                 }
             </div>

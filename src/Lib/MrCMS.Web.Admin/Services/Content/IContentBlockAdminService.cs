@@ -12,7 +12,8 @@ public interface IContentBlockAdminService
     Task<AddContentBlockModel> GetAddModel(int id);
     Task<ContentBlock> AddBlock(AddContentBlockModel model);
     Task<IContentBlock> GetBlock(int id);
-    // Task<IContentBlockAdminConfiguration> GetAdminConfiguration(int contentBlock);
     Task UpdateBlock(int id, object model);
+    Task RemoveBlock(int id);
+    Task AddChild(int id);
     Task<object> GetUpdateModel(int id);
 }

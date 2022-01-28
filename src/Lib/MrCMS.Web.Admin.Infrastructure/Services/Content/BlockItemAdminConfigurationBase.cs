@@ -1,7 +1,8 @@
 using System;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Admin.Services.Content;
 
-namespace MrCMS.Web.Admin.Services.Content;
+namespace MrCMS.Web.Admin.Infrastructure.Services.Content;
 
 public abstract class BlockItemAdminConfigurationBase<TBlockItem, TEditModel> : IBlockItemAdminConfiguration
     where TBlockItem : BlockItem, new()

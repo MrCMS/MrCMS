@@ -1,3 +1,4 @@
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
@@ -35,7 +36,7 @@ public class ContentBlockController : MrCMSAdminController
     }
 
     [HttpPost, ActionName("Edit")]
-    public async Task<ActionResult> Edit_POST(int id)
+    public async Task<IActionResult> Edit_POST(int id)
     {
         var model = await _adminService.GetUpdateModel(id);
         if (await TryUpdateModelAsync(model, model.GetType(), ""))
@@ -43,6 +44,20 @@ public class ContentBlockController : MrCMSAdminController
             await _adminService.UpdateBlock(id, model);
         }
 
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddChild(int id)
+    {
+        await _adminService.AddChild(id);
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Remove(int id)
+    {
+        await _adminService.RemoveBlock(id);
         return Ok();
     }
 }

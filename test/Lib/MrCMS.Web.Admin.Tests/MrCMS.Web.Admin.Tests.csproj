@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
     <ProjectReference Include="..\..\..\src\Lib\MrCMS.Web.Admin\MrCMS.Web.Admin.csproj" />
     <ProjectReference Include="..\MrCMS.TestSupport\MrCMS.TestSupport.csproj" />
   </ItemGroup>

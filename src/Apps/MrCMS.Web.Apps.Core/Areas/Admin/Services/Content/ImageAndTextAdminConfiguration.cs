@@ -1,7 +1,8 @@
-using MrCMS.Entities.Documents.Web.ContentBlocks;
-using MrCMS.Web.Admin.Models.Content;
+using MrCMS.Web.Admin.Infrastructure.Services.Content;
+using MrCMS.Web.Apps.Core.Areas.Admin.Models.Content;
+using MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-namespace MrCMS.Web.Admin.Services.Content;
+namespace MrCMS.Web.Apps.Core.Areas.Admin.Services.Content;
 
 public class ImageAndTextAdminConfiguration : ContentBlockAdminConfigurationBase<ImageAndText, UpdateImageAndTextModel> 
 {

@@ -50,6 +50,24 @@ public class ContentBlockItemAdminService : IContentBlockItemAdminService
         await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
     }
 
+    public async Task RemoveBlockItem(int blockId, Guid itemId)
+    {
+        var contentBlock = await GetContentBlock(blockId);
+        if (contentBlock == null)
+            return;
+
+        var block = contentBlock.DeserializeData();
+        if (block is not IContentBlockWithChildCollection withChildCollection)
+            return;
+        var blockItem = withChildCollection.Items.FirstOrDefault(x => x.Id == itemId);
+        if (blockItem == null)
+            return;
+        withChildCollection.Remove(blockItem);
+
+        contentBlock.SerializeData(withChildCollection);
+        await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
+    }
+
     private async Task<ContentBlock> GetContentBlock(int id)
     {
         return await _session.GetAsync<ContentBlock>(id);

@@ -9,10 +9,10 @@ using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Controllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Apps.Core.Pages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Web.Admin.Tests.Stubs;
+using MrCMS.Web.Apps.Core.Pages;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Controllers

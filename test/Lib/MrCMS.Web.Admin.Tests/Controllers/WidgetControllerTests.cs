@@ -6,9 +6,9 @@ using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Controllers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Apps.Core.Widgets;
 using System.Threading.Tasks;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Widgets;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Controllers
