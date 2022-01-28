@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;

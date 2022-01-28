@@ -1,9 +1,7 @@
-using System.Linq;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Website.Caching;
 using NHibernate;
-using NHibernate.Util;
 
 namespace MrCMS.Settings
 {

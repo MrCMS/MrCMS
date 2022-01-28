@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;

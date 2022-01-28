@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MrCMS.Website.Optimization;
-
 namespace MrCMS.Web.Admin.Services
 {
     // public class CoreAdminStyles : IAdminStyleBundle

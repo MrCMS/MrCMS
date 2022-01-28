@@ -6,6 +6,7 @@
         <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
 
     <ItemGroup>
@@ -38,5 +39,9 @@
     <ItemGroup>
       <EmbeddedResource Include="Views\Install\Setup.cshtml" />
       <EmbeddedResource Include="Views\Install\Success.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\.editorconfig" Link=".editorconfig" />
     </ItemGroup>
 </Project>

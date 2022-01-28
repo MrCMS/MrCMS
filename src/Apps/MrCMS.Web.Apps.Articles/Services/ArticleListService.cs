@@ -4,6 +4,7 @@ using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
 using NHibernate;
 using NHibernate.Criterion;
+using System.Threading.Tasks;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Articles.Services
@@ -17,7 +18,7 @@ namespace MrCMS.Web.Apps.Articles.Services
             _session = session;
         }
 
-        public IPagedList<Article> GetArticles(ArticleList page, ArticleSearchModel model)
+        public async Task<IPagedList<Article>> GetArticlesAsync(ArticleList page, ArticleSearchModel model)
         {
             var query = _session.QueryOver<Article>()
                 .Where(a => a.Parent == page && a.Published);
@@ -41,7 +42,7 @@ namespace MrCMS.Web.Apps.Articles.Services
                         article => article.PublishOn != null && article.PublishOn.Value.Year == model.Year);
             }
 
-            return query.OrderBy(x => x.PublishOn).Desc.Paged(model.Page, page.PageSize);
+            return await query.OrderBy(x => x.PublishOn).Desc.PagedAsync(model.Page, page.PageSize);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Entities.Messaging;
-using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
 
 namespace MrCMS.Services

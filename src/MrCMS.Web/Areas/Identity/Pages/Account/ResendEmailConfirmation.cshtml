@@ -16,6 +16,7 @@
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
+            @Html.RenderRecaptcha()
             <button type="submit" class="btn btn-primary">Resend</button>
         </form>
     </div>

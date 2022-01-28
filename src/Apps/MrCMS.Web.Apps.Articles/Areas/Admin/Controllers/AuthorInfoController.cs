@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.People;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Models;
 using MrCMS.Web.Admin.Infrastructure.Services;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Entities;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 {

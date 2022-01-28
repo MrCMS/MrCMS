@@ -1,24 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MrCMS.Website.Filters
 {
-    public class GoogleRecaptchaFilter : IAsyncActionFilter
+    public class GoogleRecaptchaPageFilter : IAsyncPageFilter
     {
-        public async Task OnActionExecutionAsync(ActionExecutingContext context,
-                                         ActionExecutionDelegate next)
+        public Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
         {
-            if ((context.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo
-                .GetCustomAttributes(typeof(GoogleRecaptchaAttribute), true).Any() != true)
+            return Task.CompletedTask;
+        }
+
+        public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context,
+                                                  PageHandlerExecutionDelegate next)
+        {
+            var attribute = context.HandlerMethod?.MethodInfo.GetCustomAttribute<GoogleRecaptchaAttribute>();
+            if (attribute is null)
             {
                 await next();
                 return;
-            }
+            };
 
             if (!context.HttpContext.Request.HasFormContentType)
             {
@@ -34,7 +38,7 @@ namespace MrCMS.Website.Filters
             {
                 case GoogleRecaptchaCheckResult.NotEnabled:
                 case GoogleRecaptchaCheckResult.Success:
-                    // continue
+                    await next();
                     break;
                 case GoogleRecaptchaCheckResult.Missing:
                     context.Result = new ContentResult { Content = "Please Complete Recaptcha" };

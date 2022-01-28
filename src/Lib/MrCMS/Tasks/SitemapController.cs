@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Services.Sitemaps;
 using MrCMS.Website.Controllers;

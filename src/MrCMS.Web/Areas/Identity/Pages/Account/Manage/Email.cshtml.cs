@@ -1,33 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using MrCMS.Entities.People;
+using MrCMS.Services;
+using MrCMS.Web.Apps.Core.MessageTemplates;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Areas.Identity.Pages.Account.Manage
 {
     public partial class EmailModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly
+            IMessageParser<ConfirmEmailChangeMessageTemplate, ConfirmEmailChangeEmailModel>
+            _confirmEmailChangeMessageParser;
+
+        private readonly IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> _confirmEmailMessageParser;
+        private readonly ISiteUrlResolver _siteUrlResolver;
 
         public EmailModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            IEmailSender emailSender)
+            IMessageParser<ConfirmEmailChangeMessageTemplate, ConfirmEmailChangeEmailModel>
+            confirmEmailChangeMessageParser,
+            IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> confirmEmailMessageParser,
+            ISiteUrlResolver siteUrlResolver
+            )
         {
             _userManager = userManager;
-            _signInManager = signInManager;
-            _emailSender = emailSender;
+            _confirmEmailChangeMessageParser = confirmEmailChangeMessageParser;
+            _confirmEmailMessageParser = confirmEmailMessageParser;
+            _siteUrlResolver = siteUrlResolver;
         }
 
         public string Username { get; set; }
@@ -94,16 +97,17 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account.Manage
             {
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { userId = userId, email = Input.NewEmail, code = code },
-                    protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                var message = await _confirmEmailChangeMessageParser.GetMessage(new ConfirmEmailChangeEmailModel
+                {
+                    Email = user.Email,
+                    NewEmail = Input.NewEmail,
+                    Code = code,
+                    Name = user.Name,
+                    UserId = userId,
+                    SiteUrl = _siteUrlResolver.GetCurrentSiteUrl()
+                });
+                await _confirmEmailChangeMessageParser.QueueMessage(message, trySendImmediately: true);
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
                 return RedirectToPage();
@@ -130,16 +134,16 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account.Manage
             var userId = await _userManager.GetUserIdAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code },
-                protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            var queuedMessage = await _confirmEmailMessageParser.GetMessage(new ConfirmEmailEmailModel
+            {
+                UserId = userId,
+                Code = code,
+                Name = user.Name,
+                Email = email,
+                SiteUrl = _siteUrlResolver.GetCurrentSiteUrl()
+            });
+            await _confirmEmailMessageParser.QueueMessage(queuedMessage, trySendImmediately: true);
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();

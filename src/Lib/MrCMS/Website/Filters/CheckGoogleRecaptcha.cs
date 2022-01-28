@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Specialized;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,9 +40,10 @@ namespace MrCMS.Website.Filters
             var result = JsonConvert.DeserializeObject<GoogleRecaptchaAssessmentModel>(googleResponse);
 
             //Check token is valid
+            //Todo: Should we have seperated result for unvalid token?
             if (!(result?.TokenProperties?.Valid ?? false))
             {
-                return GoogleRecaptchaCheckResult.Missing;
+                return GoogleRecaptchaCheckResult.Failed;
             }
 
             //Check score

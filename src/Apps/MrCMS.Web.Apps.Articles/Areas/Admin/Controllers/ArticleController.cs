@@ -3,7 +3,6 @@ using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Apps.Articles.Pages;
-using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 {

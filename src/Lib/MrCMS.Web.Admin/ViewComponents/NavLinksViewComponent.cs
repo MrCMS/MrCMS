@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.Breadcrumbs;
-using MrCMS.Web.Admin.Services;
 
 namespace MrCMS.Web.Admin.ViewComponents
 {
