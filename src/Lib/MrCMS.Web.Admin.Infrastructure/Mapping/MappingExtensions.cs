@@ -27,7 +27,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Mapping
                             return;
                         }
 
-                        var session = context.Options.CreateInstance<ISession>();
+                        var session = context.Options.ServiceCtor(typeof(ISession)) as ISession;
                         var entityPropertyInfo = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo;
                         var idFunc = selector.Compile();
                         var id = idFunc(source);
@@ -45,7 +45,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Mapping
                     configurationExpression => configurationExpression.Ignore()).AfterMap(
                     (source, destination, context) =>
                     {
-                        var session = context.Options.CreateInstance<ISession>();
+                        var session = context.Options.ServiceCtor(typeof(ISession)) as ISession;
                         var sourceProperty = source?.GetType().GetProperties()
                             .FirstOrDefault(x => x.Name == sourcePropertyName);
                         var destinationProperty = destination?.GetType().GetProperties()

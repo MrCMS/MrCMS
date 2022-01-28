@@ -70,7 +70,7 @@ namespace MrCMS.Web
                 services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
                 services.AddQuartz(q =>
                 {
-                    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+                    q.UseMicrosoftDependencyInjectionJobFactory();
 
                     q.UsePersistentStore(options =>
                     {
@@ -90,7 +90,7 @@ namespace MrCMS.Web
             services.AddCultureInfo(Configuration);
             Configuration.SetDefaultPageSize();
 
-            var appContext = services.AddMrCMSApps(context =>
+            var appContext = services.AddMrCMSApps(Configuration, context =>
             {
                 context.RegisterApp<MrCMSAdmin>();
                 context.RegisterApp<MrCMSCoreApp>();

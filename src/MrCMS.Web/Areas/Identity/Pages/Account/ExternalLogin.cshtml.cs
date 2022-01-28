@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.People;
+using MrCMS.Services;
+using MrCMS.Web.Apps.Core.MessageTemplates;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Areas.Identity.Pages.Account
 {
@@ -22,19 +17,24 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly IEmailSender _emailSender;
+
         private readonly ILogger<ExternalLoginModel> _logger;
+
+        private readonly IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> _confirmEmailMessageParser;
+        private readonly ISiteUrlResolver _siteUrlResolver;
 
         public ExternalLoginModel(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
-            ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> confirmEmailMessageParser,
+            ISiteUrlResolver siteUrlResolver,
+            ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _siteUrlResolver = siteUrlResolver;
+            _confirmEmailMessageParser = confirmEmailMessageParser;
         }
 
         [BindProperty]
@@ -73,7 +73,7 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -83,7 +83,7 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -122,7 +122,7 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new User {  Email = Input.Email };
+                var user = new User { Email = Input.Email };
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
@@ -134,15 +134,16 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
-                            protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        var queuedMessage = await _confirmEmailMessageParser.GetMessage(new ConfirmEmailEmailModel
+                        {
+                            UserId = userId,
+                            Code = code,
+                            Name = user.Name,
+                            Email = user.Email,
+                            SiteUrl = _siteUrlResolver.GetCurrentSiteUrl()
+                        });
+                        await _confirmEmailMessageParser.QueueMessage(queuedMessage, trySendImmediately: true);
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)

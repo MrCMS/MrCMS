@@ -166,6 +166,11 @@ namespace MrCMS.Helpers
             return GetAllTypesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
         }
 
+        public static HashSet<Type> GetAllConcreteTypesAssignableFrom(Type type)
+        {
+            return GetAllTypesAssignableFrom(type).FindAll(t => !t.IsAbstract);
+        }
+
         public static HashSet<Type> GetAllTypesAssignableFromGeneric(Type type)
         {
             GenericCheck(type);

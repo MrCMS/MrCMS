@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
-using MrCMS.Entities.Multisite;
 using MrCMS.Installation.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Tasks;
-using NHibernate;
 
 namespace MrCMS.Installation.Services
 {

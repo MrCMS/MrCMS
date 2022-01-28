@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 
 namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders

@@ -20,9 +20,7 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
-            output.AddClass("d-flex", HtmlEncoder.Default);
-            output.AddClass("justify-content-between", HtmlEncoder.Default);
-            output.AddClass("flex-end", HtmlEncoder.Default);
+            output.AddClass("row", HtmlEncoder.Default);
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }
@@ -33,6 +31,7 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
+            output.AddClass("col", HtmlEncoder.Default);
             output.Content.SetHtmlContent($@"<h1>{Title}</h1>");
             output.TagMode = TagMode.StartTagAndEndTag;
         }
@@ -44,7 +43,7 @@ namespace MrCMS.Web.Admin.Infrastructure.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
-            
+            output.AddClass("col-auto", HtmlEncoder.Default);
             output.TagMode = TagMode.StartTagAndEndTag;
         }
     }

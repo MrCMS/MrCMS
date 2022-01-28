@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
 using NHibernate;

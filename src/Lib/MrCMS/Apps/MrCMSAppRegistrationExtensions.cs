@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Attributes;
 using MrCMS.Services.Resources;
@@ -16,14 +17,14 @@ namespace MrCMS.Apps
     public static class MrCMSAppRegistrationExtensions
     {
         public static MrCMSAppContext AddMrCMSApps(this IServiceCollection serviceCollection,
-            Action<MrCMSAppContext> action)
+            IConfiguration configuration, Action<MrCMSAppContext> action)
         {
             var appContext = new MrCMSAppContext();
 
             action(appContext);
 
             foreach (var app in appContext.Apps)
-                serviceCollection = app.RegisterServices(serviceCollection);
+                serviceCollection = app.RegisterServices(serviceCollection, configuration);
 
             serviceCollection.AddSingleton(appContext);
 
@@ -43,7 +44,8 @@ namespace MrCMS.Apps
             return services.AddMvc(options =>
                 {
                     //options.Filters.Add<EndRequestHandlerFilter>(); //todo is needed with Quartz?
-                    options.Filters.Add<GoogleRecaptchaFilter>();
+                    options.Filters.Add<GoogleRecaptchaActionFilter>();
+                    options.Filters.Add<GoogleRecaptchaPageFilter>();
                     options.Filters.Add<ReturnUrlFilter>();
                     options.Filters.Add<CanonicalLinksFilter>();
                     options.Filters.Add<AddWebpageViewsData>();

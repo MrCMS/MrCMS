@@ -1,19 +1,19 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using MrCMS.Entities.People;
+using MrCMS.Services;
+using MrCMS.Settings;
+using MrCMS.Web.Apps.Core.MessageTemplates;
+using MrCMS.Website.Filters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using MrCMS.Entities.People;
 
 namespace MrCMS.Web.Areas.Identity.Pages.Account
 {
@@ -23,18 +23,24 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> _confirmEmailMessageParser;
+        private readonly ISiteUrlResolver _siteUrlResolver;
+        private readonly ICheckGoogleRecaptcha _checkGoogleRecaptcha;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IMessageParser<ConfirmEmailMessageTemplate, ConfirmEmailEmailModel> confirmEmailMessageParser,
+            ISiteUrlResolver siteUrlResolver,
+            ICheckGoogleRecaptcha checkGoogleRecaptcha,
+            ILogger<RegisterModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _confirmEmailMessageParser = confirmEmailMessageParser;
+            _siteUrlResolver = siteUrlResolver;
+            _checkGoogleRecaptcha = checkGoogleRecaptcha;
         }
 
         [BindProperty]
@@ -69,28 +75,48 @@ namespace MrCMS.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
+        [GoogleRecaptcha]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            //Check recaptch
+            //todo: IAsyncPageFilter should be implemented for it.
+            var recaptchaResult = await _checkGoogleRecaptcha.CheckTokenAsync(this.Request.Form["g-recaptcha-response"]);
+            switch (recaptchaResult)
+            {
+                case GoogleRecaptchaCheckResult.NotEnabled:
+                case GoogleRecaptchaCheckResult.Success:
+                    // continue
+                    break;
+                case GoogleRecaptchaCheckResult.Missing:
+                    return Content("Please Complete Recaptcha");
+                case GoogleRecaptchaCheckResult.Failed:
+                    return Content("");
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User {  Email = Input.Email };
+                var user = new User { Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var queuedMessage = await _confirmEmailMessageParser.GetMessage(new ConfirmEmailEmailModel
+                    {
+                        UserId = userId,
+                        Code = code,
+                        Name = user.Name,
+                        Email = user.Email,
+                        SiteUrl = _siteUrlResolver.GetCurrentSiteUrl()
+                    });
+                    await _confirmEmailMessageParser.QueueMessage(queuedMessage, trySendImmediately: true);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Installation.Services;
 using MrCMS.Services;

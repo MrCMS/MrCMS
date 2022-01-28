@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
@@ -30,8 +29,8 @@ namespace MrCMS.Web.Admin.Services
                 {
                     Id = item.Id,
                     CreatedOn = item.CreatedOn,
-                    FirstName = item.User.FirstName,
-                    LastName = item.User.LastName
+                    FirstName = item.User == null ? "System" : string.IsNullOrWhiteSpace(item.User.FirstName + item.User.LastName) ? item.User.Email : item.User.FirstName,
+                    LastName = string.IsNullOrWhiteSpace(item.User.FirstName + item.User.LastName) ? "" : item.User.LastName
                 })
                 .PagedAsync(page);
 

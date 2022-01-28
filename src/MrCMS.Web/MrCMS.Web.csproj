@@ -6,6 +6,7 @@
         <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,26 +18,30 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
+        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.2.4" />
-        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.2.4" />
-        <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.2.4" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.3.3" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.3.3" />
+        <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.3.3" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Views\Install\Setup.cshtml" />
       <EmbeddedResource Include="Views\Install\Success.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\.editorconfig" Link=".editorconfig" />
     </ItemGroup>
 </Project>

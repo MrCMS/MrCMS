@@ -64,6 +64,7 @@ namespace MrCMS.DbConfiguration
                 //raw connection string
                 return model.DatabaseConnectionString;
             }
+
             return CreateConnectionString(model);
         }
 
@@ -82,7 +83,8 @@ namespace MrCMS.DbConfiguration
                 //now create connection string to 'master' dabatase. It always exists.
                 builder.InitialCatalog = "master";
                 string masterCatalogConnectionString = builder.ToString();
-                string query = string.Format("CREATE DATABASE [{0}] COLLATE SQL_Latin1_General_CP1_CI_AS", databaseName);
+                string query = string.Format("CREATE DATABASE [{0}] COLLATE SQL_Latin1_General_CP1_CI_AS",
+                    databaseName);
 
                 using (var conn = new SqlConnection(masterCatalogConnectionString))
                 {
@@ -115,6 +117,7 @@ namespace MrCMS.DbConfiguration
                 {
                     conn.Open();
                 }
+
                 return true;
             }
             catch
@@ -135,8 +138,10 @@ namespace MrCMS.DbConfiguration
                 builder.UserID = model.SqlServerUsername;
                 builder.Password = model.SqlServerPassword;
             }
+
             builder.PersistSecurityInfo = false;
             builder.MultipleActiveResultSets = true;
+            builder.TrustServerCertificate = true;
             return builder.ConnectionString;
         }
     }

@@ -34,26 +34,6 @@
                                 {
                                     @Html.ActionLink(await Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
                                 }
-                                <a class="dropdown-item"
-                                   asp-action="SendToRole"
-                                   asp-controller="PushNotification"
-                                   asp-route-title="@await Html.Resource($"Latest from {Model.Site.Name}")"
-                                   asp-route-body="@Model.Name"
-                                   asp-route-url="@await GetLiveUrl.GetAbsoluteUrl(Model)"
-                                   asp-route-image="@(Model is TextPage a1 ? a1.FeatureImage : null)"
-                                   data-toggle="fb-modal">
-                                    @await Html.Resource("Send push to role")
-                                </a>
-                                <a class="dropdown-item"
-                                   asp-action="SendToAll"
-                                   asp-controller="PushNotification"
-                                   asp-route-title="@await Html.Resource($"Latest from {Model.Site.Name}")"
-                                   asp-route-body="@Model.Name"
-                                   asp-route-url="@await GetLiveUrl.GetAbsoluteUrl(Model)"
-                                   asp-route-image="@(Model is TextPage a2 ? a2.FeatureImage : null)"
-                                   data-toggle="fb-modal">
-                                    @await Html.Resource("Send push to all")
-                                </a>
 
                             </div>
                         </div>

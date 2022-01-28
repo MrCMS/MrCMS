@@ -20,7 +20,6 @@ import {setupMediaCategoryPage} from "./media-category";
 import {setupLayoutTree} from "./layout";
 import {setupMenu} from "./menu";
 import {setupStickyTabs} from "./sticky-tabs";
-import {handlePushNotifications} from "./push-notifications";
 import {setupUserAvatar} from "./user-avatar";
 import {setupTransientNotifications} from "./transient-notifications";
 import {setupNotificationBar} from "./persistent-notifications";
@@ -58,7 +57,6 @@ $(() => {
     setupWebpageTree();
     setupLayoutTree();
     setupMediaCategory();
-    handlePushNotifications();
     setupDatePickers();
     setupMediaCategoryPage();
     registerGlobalFunctions();
@@ -81,6 +79,11 @@ $(() => {
     setupResourceChooseSite();
     setupWebpageSelect2();
 
+    var mediaUploader = new MediaUploader($(document), {
+
+    });
+    mediaUploader.init();
+
     //Default theme for select2 (Bootstrap 4)
     $.fn.select2.defaults.set("theme", "bootstrap4");
 
@@ -98,7 +101,7 @@ $(() => {
 
 
     initializePlugins();
-    
+
     setupSimpleFiles();
     
     setupContentAdmin();

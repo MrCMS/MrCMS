@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace MrCMS.Themes.Red
+﻿namespace MrCMS.Themes.Red
 {
     public class RedTheme : StandardMrCMSTheme
     {

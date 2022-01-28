@@ -2,7 +2,6 @@ using System;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;

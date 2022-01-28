@@ -6,24 +6,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Areas\Admin\Views\**"/>
-        <EmbeddedResource Include="Areas\Admin\wwwroot\**"/>
-        <EmbeddedResource Include="Views\**"/>
-        <EmbeddedResource Include="wwwroot\**"/>
+        <EmbeddedResource Include="Areas\Admin\Views\**" />
+        <EmbeddedResource Include="Areas\Admin\wwwroot\**" />
+        <EmbeddedResource Include="Views\**" />
+        <EmbeddedResource Include="wwwroot\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0"/>
+        <PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj"/>
-        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj"/>
-        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin\MrCMS.Web.Admin.csproj"/>
-        <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj"/>
+        <ProjectReference Include="..\..\Apps\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
+        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin\MrCMS.Web.Admin.csproj" />
+        <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
     </ItemGroup>
 
 
