@@ -53,9 +53,12 @@
                                        data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })">
                                         @item.Name
                                     </a>
-                                    <a class="text-danger" href="#" data-content-admin-block-remove="@Url.Action("Remove", "BlockItem", new { block.Id, itemId = item.Id })">
-                                        <i class="fa fa-minus"></i>
-                                    </a>
+                                    @if (block.CanAddChildren)
+                                    {
+                                        <a class="text-danger" href="#" data-content-admin-block-remove="@Url.Action("Remove", "BlockItem", new { block.Id, itemId = item.Id })">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    }
                                 </div>
                             </li>
                         }
