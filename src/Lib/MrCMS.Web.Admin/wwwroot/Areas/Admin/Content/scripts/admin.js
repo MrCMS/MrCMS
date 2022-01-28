@@ -16,7 +16,8 @@ import {registerUpdateArea} from "./update-area";
 import {setupAddWebpage} from "./add-webpage";
 import {setupWebpageTree} from "./pages";
 import {setupEditWebpage} from "./edit-webpage";
-import {setupMediaCategoryPage} from "./media-category";
+import {setupMediaCategoryPage } from "./media-category";
+import {initMediaUploader, MediaUploader } from './media-uploader';
 import {setupLayoutTree} from "./layout";
 import {setupMenu} from "./menu";
 import {setupStickyTabs} from "./sticky-tabs";
@@ -57,6 +58,7 @@ $(() => {
     setupWebpageTree();
     setupLayoutTree();
     setupMediaCategory();
+    initMediaUploader();
     setupDatePickers();
     setupMediaCategoryPage();
     registerGlobalFunctions();
