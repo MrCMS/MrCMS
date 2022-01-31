@@ -8,13 +8,19 @@
     var blockItem = ViewData["item"] as BlockItem;
 }
 
-<h2>Item Editor</h2>
-@if (blockItem != null)
-{
-    <form asp-action="Edit" asp-controller="BlockItem" asp-route-id="@id" asp-route-itemId="@blockItem.Id" data-content-admin-save-editor>
-        @{
-            await Html.RenderPartialAsync($"Editors/{blockItem.GetType().Name}", await _adminService.GetUpdateModel(id, blockItem.Id));
+<div class="card m-0 border-0 shadow-none">
+    <h3 class="card-header px-0">
+        Item Editor
+    </h3>
+    <div class="card-body px-0">
+        @if (blockItem != null)
+        {
+            <form asp-action="Edit" asp-controller="BlockItem" asp-route-id="@id" asp-route-itemId="@blockItem.Id" data-content-admin-save-editor>
+                @{
+                    await Html.RenderPartialAsync($"Editors/{blockItem.GetType().Name}", await _adminService.GetUpdateModel(id, blockItem.Id));
+                }
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
         }
-        <button class="btn btn-primary" type="submit">Save</button>
-    </form>
-}
+    </div>
+</div>

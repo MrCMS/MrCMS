@@ -1,5 +1,5 @@
-﻿import {setCloseButtonPosition} from "./setup-featherlight";
-import {MediaUploader} from "./media-uploader";
+﻿import { setCloseButtonPosition } from "./setup-featherlight";
+import { MediaUploader } from "./media-uploader";
 
 function MediaSelector(options) {
     let element;
@@ -73,7 +73,7 @@ function MediaSelector(options) {
         const fileValue = element.find('input[data-file]').filter(':checked').val();
         if (fileValue !== '') {
             if (settings.onSelected) {
-                $.get('/Admin/MediaSelector/GetFileInfo/', {value: fileValue}, function (info) {
+                $.get('/Admin/MediaSelector/GetFileInfo/', { value: fileValue }, function (info) {
                     settings.onSelected(info);
                 });
             }
@@ -180,7 +180,7 @@ function MediaSelectorWrapper(el, options) {
         altFormGroup.append(altInput);
         const altFeedback = $('<span class="fa fa-ok form-control-feedback hide" aria-hidden="true"></span>');
         altFormGroup.append(altFeedback);
-        $.get(settings.altUrl, {url: value}, function (response) {
+        $.get(settings.altUrl, { url: value }, function (response) {
             altInput.val(response.alt);
             altFormGroup.removeClass('hide');
             altInput.on('blur', updateAlt);
@@ -201,7 +201,7 @@ function MediaSelectorWrapper(el, options) {
 
     function updateAlt(event) {
         const input = $(event.target);
-        $.post(settings.updateAltUrl, {url: input.data('url'), value: input.val()}, function (response) {
+        $.post(settings.updateAltUrl, { url: input.data('url'), value: input.val() }, function (response) {
             if (response) {
                 showSaved(input);
             }
@@ -210,7 +210,7 @@ function MediaSelectorWrapper(el, options) {
 
     function updateDescription(event) {
         const input = $(event.target);
-        $.post(settings.updateDescriptionUrl, {url: input.data('url'), value: input.val()}, function (response) {
+        $.post(settings.updateDescriptionUrl, { url: input.data('url'), value: input.val() }, function (response) {
             if (response) {
                 showSaved(input);
             }
@@ -227,7 +227,7 @@ function MediaSelectorWrapper(el, options) {
 
         const descriptionFeedback = $('<span class="fa fa-ok form-control-feedback hide" aria-hidden="true"></span>');
         descriptionFormGroup.append(descriptionFeedback);
-        $.get(settings.descriptionUrl, {url: value}, function (response) {
+        $.get(settings.descriptionUrl, { url: value }, function (response) {
             descriptionInput.val(response.description);
             descriptionFormGroup.removeClass('hide');
             descriptionInput.on('blur', updateDescription);
@@ -239,12 +239,12 @@ function MediaSelectorWrapper(el, options) {
         if (valueIsSet()) {
             const value = getValue();
             if (isImage(value)) {
-                const holder = $('<div>').addClass('row');
-                const imageCol = $('<div>').addClass('col-sm-5 col-md-3');
-                imageCol.append($('<img src="' + value + '"  class=\"img-fluid img-thumbnail\" />'));
+                const holder = $('<div>').addClass('row media-preview');
+                const imageCol = $('<div>').addClass('col-auto pt-3');
+                imageCol.append($('<img src="' + value + '" class=\"img-fluid img-thumbnail\" />'));
                 imageCol.append(buttonHolder);
                 holder.append(imageCol);
-                const dataCol = $('<div>').addClass('col-sm-7 col-md-9');
+                const dataCol = $('<div>').addClass('col pt-3');
 
                 const altFormGroup = getAltInput(value);
                 dataCol.append(altFormGroup);
@@ -280,7 +280,7 @@ function MediaSelectorWrapper(el, options) {
             self = this;
             if (element.is("input")) {
                 const para = $('<p>').attr('data-media-selector-holder-' + el.attr('id'), 'true');
-                buttonHolder = $('<div>').addClass("d-block mt-1").appendTo(para);
+                buttonHolder = $('<div>').addClass("d-flex mt-1").appendTo(para);
                 preview = $('<div>');
                 element.before(preview);
                 selectButton = $('<button>').addClass(settings.selectClasses).html(settings.selectMessage).attr('data-media', 'select')
@@ -344,28 +344,28 @@ function MediaSelectorWrapper(el, options) {
     };
 };
 MediaSelectorWrapper.defaults =
-    {
-        noImageSelectedImage: '/Areas/Admin/Content/img/no-media-selected.jpg',
-        previewStyle: 'max-height: 200px; max-width:200px;',
-        selectClasses: 'btn btn-sm btn-success ',
-        selectMessage: 'Select media...',
-        removeClasses: 'btn btn-sm btn-danger ',
-        removeMessage: 'Remove media...',
-        altUrl: '/admin/mediaselector/alt',
-        updateAltUrl: '/admin/mediaselector/updatealt',
-        descriptionUrl: '/admin/mediaselector/description',
-        updateDescriptionUrl: '/admin/mediaselector/updatedescription'
-    };
+{
+    noImageSelectedImage: '/Areas/Admin/Content/img/no-media-selected.jpg',
+    previewStyle: 'max-height: 200px; max-width:200px;',
+    selectClasses: 'btn btn-sm btn-success ',
+    selectMessage: 'Select media...',
+    removeClasses: 'btn btn-sm btn-danger ',
+    removeMessage: 'Remove media...',
+    altUrl: '/admin/mediaselector/alt',
+    updateAltUrl: '/admin/mediaselector/updatealt',
+    descriptionUrl: '/admin/mediaselector/description',
+    updateDescriptionUrl: '/admin/mediaselector/updatedescription'
+};
 MediaSelector.defaults =
-    {
-        selectorUrl: '/Admin/MediaSelector/Show',
-        formSelector: '#search-form',
-        resultsHolderSelector: '#results',
-        mediaResultSelector: '[data-media-result]',
-        mediaToggleSelector: '[data-media-toggle]',
-        onSelected: function (info) {
-        }
-    };
+{
+    selectorUrl: '/Admin/MediaSelector/Show',
+    formSelector: '#search-form',
+    resultsHolderSelector: '#results',
+    mediaResultSelector: '[data-media-result]',
+    mediaToggleSelector: '[data-media-toggle]',
+    onSelected: function (info) {
+    }
+};
 
 export function registerPlugins() {
     window.MediaSelector = MediaSelector;

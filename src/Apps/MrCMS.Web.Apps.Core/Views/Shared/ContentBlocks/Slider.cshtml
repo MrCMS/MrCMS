@@ -5,13 +5,16 @@
 
 @if (Model.Slides?.Any() ?? false)
 {
-    <div id="@(sliderId)" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            @for (var i = 0; i < Model.Slides.Count; i++)
-            {
-                <li data-target="#@(sliderId)" data-slide-to="@i" class="@(i==0 ? "active" : "")"></li>
-            }
-        </ol>
+    <div id="@(sliderId)" class="carousel slide my-3" data-ride="carousel" data-interval="@Model.Interval" data-pause="@(Model.PauseOnHover ? "hover" : "false")">
+        @if (Model.ShowIndicator)
+        {
+            <ol class="carousel-indicators">
+                @for (var i = 0; i < Model.Slides.Count; i++)
+                {
+                    <li data-target="#@(sliderId)" data-slide-to="@i" class="@(i==0 ? "active" : "")"></li>
+                }
+            </ol>
+        }
         <div class="carousel-inner">
             @for (var i = 0; i < Model.Slides.Count; i++)
             {

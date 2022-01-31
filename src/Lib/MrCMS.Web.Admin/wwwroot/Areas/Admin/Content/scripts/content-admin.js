@@ -14,7 +14,57 @@ function loadBlocks(url) {
     url = url ?? $('[data-content-admin-blocks-current]').data('content-admin-blocks-current') ?? blocks.data('content-admin-blocks');
     $.get(url, function (response) {
         blocks.html(response);
+        InitSortBlocks();
+        InitToggleHideBlock();
     })
+}
+
+function InitSortBlocks() {
+    const blocks = getBlockHolder();
+    if (!blocks.length) {
+        return;
+    }
+    blocks.children("ul").sortable({
+        handle: ".sort-handle",
+        update: function (event, ui) {
+            console.log(event, ui);
+            var sortList = [];
+            blocks.children("ul").children("li[data-order]").each(function (index, domElement) {
+                var order = index + 1;
+                $(domElement).data("order", order);
+                sortList.push({
+                    id: $(domElement).data("id"),
+                    order: order
+                });
+            });
+            console.log(sortList);
+            var url = blocks.children("ul").data("admin-blocks-order");
+            $.post(url, { list: sortList })
+                .done(function (data) {
+                    reloadPreview();
+                })
+                .fail(function () {
+                    loadBlocks();
+                });
+        }
+    });
+}
+
+function InitToggleHideBlock() {
+    const blocks = getBlockHolder();
+    if (!blocks.length) {
+        return;
+    }
+
+    blocks.find("[data-content-admin-block-hide]").on("click", function () {
+        var self = $(this);
+        var url = self.data("content-admin-block-hide");
+        $.post(url, { id: self.data("id") })
+        .done(function (data) {
+            loadBlocks();
+            reloadPreview();
+        });
+    });
 }
 
 function loadEditor(url) {
@@ -23,13 +73,23 @@ function loadEditor(url) {
         return;
     }
     if (url) {
+        editor.closest("[data-content-parent]").removeClass("open")
         $.get(url, function (response) {
             editor.html(response);
             window.admin.initializePlugins();
+            editor.closest("[data-content-parent]").addClass("open");
         })
     } else {
-        editor.html('');
+        editor.closest("[data-content-parent]").removeClass("open")
     }
+}
+
+function hideEditor() {
+    const editor = getEditorHolder();
+    if (!editor.length) {
+        return;
+    }
+    editor.closest("[data-content-parent]").removeClass("open");
 }
 
 function loadEditorFromDataKeyUrl(link, dataKey) {
@@ -108,7 +168,7 @@ function saveEditor(event) {
         loadBlocks();
         loadEditor();
         reloadPreview();
-        alert('success');
+        /*alert('success');*/
     });
 
     return false;
@@ -123,4 +183,5 @@ export function setupContentAdmin() {
     $(document).on('click', '[data-content-admin-block-remove]', removeBlock)
     $(document).on('click', '[data-content-admin-add-child]', addChild)
     $(document).on('submit', '[data-content-admin-save-editor]', saveEditor)
+    $(document).on('click', '[data-content-admin-hide-editor]', hideEditor)
 }

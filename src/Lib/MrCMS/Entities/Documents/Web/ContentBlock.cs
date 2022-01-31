@@ -13,6 +13,8 @@ public class ContentBlock : SiteEntity
 
     public virtual int Order { get; set; }
 
+    public virtual bool IsHidden { get; set; }
+
     public virtual string Type { get; set; }
     public virtual string Data { get; set; }
     public virtual ContentVersion ContentVersion { get; set; }

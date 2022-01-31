@@ -116,6 +116,29 @@ public class ContentBlockAdminService : IContentBlockAdminService
         await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
     }
 
+    public async Task SetBlockOrders(List<ContentBlockSortModel> contentBlockSortModel)
+    {
+        await _session.TransactAsync(async session =>
+        {
+            foreach (var model in contentBlockSortModel)
+            {
+                var contentBlock = await session.GetAsync<ContentBlock>(model.Id);
+                contentBlock.Order = model.Order;
+                await session.UpdateAsync(contentBlock);
+            };
+        });
+    }
+
+    public async Task ToggleBlockHidden(int id)
+    {
+        await _session.TransactAsync(async session =>
+        {
+            var contentBlock = await session.GetAsync<ContentBlock>(id);
+            contentBlock.IsHidden = !contentBlock.IsHidden;
+            await session.UpdateAsync(contentBlock);
+        });
+    }
+
     private async Task<ContentBlock> GetContentBlock(int id)
     {
         return await _session.GetAsync<ContentBlock>(id);

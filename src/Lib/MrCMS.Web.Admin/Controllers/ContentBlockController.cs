@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Models.Content;
 using MrCMS.Web.Admin.Services.Content;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Admin.Controllers;
 
@@ -58,6 +58,20 @@ public class ContentBlockController : MrCMSAdminController
     public async Task<IActionResult> Remove(int id)
     {
         await _adminService.RemoveBlock(id);
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Sort(List<ContentBlockSortModel> list)
+    {
+        await _adminService.SetBlockOrders(list);
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ToggleHidden(int id)
+    {
+        await _adminService.ToggleBlockHidden(id);
         return Ok();
     }
 }

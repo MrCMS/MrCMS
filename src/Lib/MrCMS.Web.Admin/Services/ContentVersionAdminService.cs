@@ -48,13 +48,15 @@ public class ContentVersionAdminService : IContentVersionAdminService
             Id = version.Id,
             WebpageId = version.Webpage.Id,
             PreviewUrl = $"/{version.Webpage.UrlSegment}?version={version.Id}",
-            Blocks = version.Blocks.Select(x =>
+            Blocks = version.Blocks.OrderBy(f => f.Order).Select(x =>
             {
                 var blockModel = x.DeserializeData();
                 var metadata = ContentBlockMappings.BlockMetadata[x.Type];
                 var contentVersionBlockSummaryModel = new ContentVersionBlockSummaryModel
                 {
                     Id = x.Id,
+                    Order = x.Order,
+                    IsHidden = x.IsHidden,
                     Type = metadata.Type,
                     TypeName = metadata.Name,
                     CanAddChildren = metadata.CanAddChildren,

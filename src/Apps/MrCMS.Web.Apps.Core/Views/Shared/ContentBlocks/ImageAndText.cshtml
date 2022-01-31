@@ -5,11 +5,11 @@
     var textOrder = Model.Layout == ImageAndText.ImageAndTextLayout.ImageLeft ? 1 : 0;
 }
 
-<div class="row">
+<div class="row align-items-center my-3">
     <div class="col order-@(imageOrder)">
         @{ await Html.RenderPartialAsync("BlockItems/ContentImage", Model.Image); }
     </div>
-    <div class="col order-@(textOrder)">
+    <div class="col-auto order-@(textOrder)">
         @{ await Html.RenderPartialAsync("BlockItems/ContentText", Model.Text); }
     </div>
 </div>
