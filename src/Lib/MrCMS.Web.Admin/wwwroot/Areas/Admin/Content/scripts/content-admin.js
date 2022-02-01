@@ -60,10 +60,10 @@ function InitToggleHideBlock() {
         var self = $(this);
         var url = self.data("content-admin-block-hide");
         $.post(url, { id: self.data("id") })
-        .done(function (data) {
-            loadBlocks();
-            reloadPreview();
-        });
+            .done(function (data) {
+                loadBlocks();
+                reloadPreview();
+            });
     });
 }
 
@@ -81,6 +81,8 @@ function loadEditor(url) {
         })
     } else {
         editor.closest("[data-content-parent]").removeClass("open")
+        let blocks = getBlockHolder();
+        blocks.find('li.list-group-item-primary').removeClass('list-group-item-primary');
     }
 }
 
@@ -90,6 +92,9 @@ function hideEditor() {
         return;
     }
     editor.closest("[data-content-parent]").removeClass("open");
+
+    let blocks = getBlockHolder();
+    blocks.find('li.list-group-item-primary').removeClass('list-group-item-primary');
 }
 
 function loadEditorFromDataKeyUrl(link, dataKey) {

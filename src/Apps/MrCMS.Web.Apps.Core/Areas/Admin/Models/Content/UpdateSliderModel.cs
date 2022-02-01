@@ -5,12 +5,6 @@ namespace MrCMS.Web.Apps.Core.Areas.Admin.Models.Content;
 
 public class UpdateSliderModel
 {
-    public UpdateSliderModel()
-    {
-        Interval = 5000;
-        ShowIndicator = true;
-    }
-
     [DisplayName("Slider interval"), Range(500, int.MaxValue)]
     public int Interval { get; set; }
 

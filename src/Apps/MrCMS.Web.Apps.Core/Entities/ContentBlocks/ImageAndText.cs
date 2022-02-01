@@ -5,7 +5,7 @@ using MrCMS.Web.Apps.Core.Entities.BlockItems;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-[Display( Name="Image and Text")]
+[Display(Name = "Image and Text")]
 public class ImageAndText : IContentBlock
 {
     public ImageAndTextLayout Layout { get; set; }
@@ -18,7 +18,7 @@ public class ImageAndText : IContentBlock
 
     public enum ImageAndTextLayout
     {
-        ImageLeft,
-        ImageRight
+        ImageStart,
+        ImageEnd
     }
 }

@@ -16,16 +16,20 @@
                         @if (isOpen)
                         {
                             <a href="#" class="close-block" data-content-admin-block-close="@Url.Action("Blocks", "ContentVersion", new { selected })" title="@await Html.Resource("admin-blocks-close","Close")">
-                                <i class="fa fa-chevron-up"></i>
+                                <i class="fa fa-caret-up"></i>
                             </a>
                         }
                         else
                         {
                             <a href="#" class="open-block" data-content-admin-block-open="@Url.Action("Blocks", "ContentVersion", new { selected, open = block.Guid })" title="@await Html.Resource("admin-blocks-open","Open")">
-                                <i class="fa fa-chevron-down"></i>
+                                <i class="fa fa-caret-right"></i>
                             </a>
                         }
                     </div>
+                }
+                else
+                {
+                    <div class="col-auto pr-4 pl-0"></div>
                 }
                 <div class="col">
                     <a href="#" class="d-block selection-link"

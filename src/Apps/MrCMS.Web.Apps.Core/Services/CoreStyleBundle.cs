@@ -14,7 +14,10 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public IEnumerable<string> VendorFiles
         {
-            get { yield return "/Content/lib/bootstrap/dist/css/bootstrap.min.css"; }
+            get { 
+                yield return "/Content/lib/bootstrap/dist/css/bootstrap.min.css";
+                yield return "/Content/lib/glightbox/css/glightbox.min.css";
+            }
         }
     }
 }

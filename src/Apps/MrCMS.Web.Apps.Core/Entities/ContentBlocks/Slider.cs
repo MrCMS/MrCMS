@@ -1,15 +1,18 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Web.Apps.Core.Areas.Admin.Services.Content;
 using MrCMS.Web.Apps.Core.Entities.BlockItems;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
 [Display(Name = "Slider")]
 public class Slider : IContentBlockWithChildCollection
 {
+    public Slider()
+    {
+        ShowIndicator = true;
+        Interval = 5000;
+    }
     public IReadOnlyList<BlockItem> Items => Slides;
     public List<Slide> Slides { get; set; } = new();
 

@@ -1,0 +1,13 @@
+@using MrCMS.Web.Apps.Core.Entities.ContentBlocks
+@model MrCMS.Web.Apps.Core.Entities.ContentBlocks.Video
+
+<div class="embed-responsive embed-responsive-16by9 my-3">
+    @if (Model.ActiveType == Video.VideoType.EmbedVideo)
+    {
+        await Html.RenderPartialAsync("BlockItems/EmbedVideo", Model.Embed);
+    }
+    else
+    {
+        await Html.RenderPartialAsync("BlockItems/YoutubeVideo", Model.Youtube);
+    }
+</div>
