@@ -206,17 +206,15 @@ namespace MrCMS.Web
             app.UseMrCMS(builder =>
             {
                 builder.UseRequestLocalization();
-                builder.UseStaticFiles();
                 builder.UseStaticFiles(new StaticFileOptions
                 {
-                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
                     OnPrepareResponse = (context) =>
                     {
                         var headers = context.Context.Response.GetTypedHeaders();
                         headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
                         {
                             Public = true,
-                            MaxAge = env.IsDevelopment() ? TimeSpan.FromDays(-1) : TimeSpan.FromDays(30)
+                            MaxAge = env.IsDevelopment() ? TimeSpan.FromDays(0) : TimeSpan.FromDays(30)
                         };
                     }
                 });
