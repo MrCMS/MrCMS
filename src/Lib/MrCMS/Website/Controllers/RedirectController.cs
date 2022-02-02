@@ -28,7 +28,8 @@ namespace MrCMS.Website.Controllers
 
         public RedirectResult HomePage()
         {
-            return RedirectPermanent("/");
+            var queryString = HttpContext.Request.QueryString;
+            return RedirectPermanent($"/{queryString}");
         }
     }
 }
