@@ -4,7 +4,7 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.Documents.Metadata
 {
-    public class TagPageMetadata : DocumentMetadataMap<TagPage>
+    public class TagPageMetadata : WebpageMetadataMap<TagPage>
     {
         public override string WebGetController => "TagPage";
 

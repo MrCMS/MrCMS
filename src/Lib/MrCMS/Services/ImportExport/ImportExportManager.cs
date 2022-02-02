@@ -16,39 +16,39 @@ namespace MrCMS.Services.ImportExport
 {
     public class ImportExportManager : IImportExportManager
     {
-        private readonly IImportDocumentsValidationService _importDocumentsValidationService;
-        private readonly IImportDocumentsService _importDocumentService;
-        private readonly IExportDocumentsService _exportDocumentsService;
+        private readonly IImportWebpagesValidationService _importWebpagesValidationService;
+        private readonly IImportWebpagesService _importWebpageService;
+        private readonly IExportWebpagesService _exportWebpagesService;
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly ILogger<ImportExportManager> _logger;
-        private readonly IMessageParser<ExportDocumentsEmailTemplate> _messageParser;
+        private readonly IMessageParser<ExportWebpagesEmailTemplate> _messageParser;
 
-        public ImportExportManager(IImportDocumentsValidationService importDocumentsValidationService,
-            IImportDocumentsService importDocumentsService, IExportDocumentsService exportDocumentsService,
-            IMessageParser<ExportDocumentsEmailTemplate> messageParser, IRepository<Webpage> webpageRepository,
+        public ImportExportManager(IImportWebpagesValidationService importWebpagesValidationService,
+            IImportWebpagesService importWebpagesService, IExportWebpagesService exportWebpagesService,
+            IMessageParser<ExportWebpagesEmailTemplate> messageParser, IRepository<Webpage> webpageRepository,
             ILogger<ImportExportManager> logger)
         {
-            _importDocumentsValidationService = importDocumentsValidationService;
-            _importDocumentService = importDocumentsService;
-            _exportDocumentsService = exportDocumentsService;
+            _importWebpagesValidationService = importWebpagesValidationService;
+            _importWebpageService = importWebpagesService;
+            _exportWebpagesService = exportWebpagesService;
             _messageParser = messageParser;
             _webpageRepository = webpageRepository;
             _logger = logger;
         }
 
-        public async Task<ImportDocumentsResult> ImportDocumentsFromExcel(Stream file, bool autoStart = true)
+        public async Task<ImportWebpagesResult> ImportWebpagesFromExcel(Stream file, bool autoStart = true)
         {
             var spreadsheet = new XLWorkbook(file);
 
-            var (items, parseErrors) = await GetDocumentsFromSpreadSheet(spreadsheet);
+            var (items, parseErrors) = await GetWebpagesFromSpreadSheet(spreadsheet);
             if (parseErrors.Any())
-                return ImportDocumentsResult.Failure(parseErrors);
-            var businessLogicErrors = await _importDocumentsValidationService.ValidateBusinessLogic(items);
+                return ImportWebpagesResult.Failure(parseErrors);
+            var businessLogicErrors = await _importWebpagesValidationService.ValidateBusinessLogic(items);
             if (businessLogicErrors.Any())
-                return ImportDocumentsResult.Failure(businessLogicErrors);
-            var batch = await _importDocumentService.CreateBatch(items, autoStart);
+                return ImportWebpagesResult.Failure(businessLogicErrors);
+            var batch = await _importWebpageService.CreateBatch(items, autoStart);
             //_importDocumentService.ImportDocumentsFromDTOs(items);
-            return ImportDocumentsResult.Successful(batch);
+            return ImportWebpagesResult.Successful(batch);
         }
 
 
@@ -58,22 +58,22 @@ namespace MrCMS.Services.ImportExport
         /// <param name="spreadsheet"></param>
         /// <param name="parseErrors"></param>
         /// <returns></returns>
-        private async Task<(List<DocumentImportDTO> data, Dictionary<string, List<string>> parseErrors)>
-            GetDocumentsFromSpreadSheet(XLWorkbook spreadsheet)
+        private async Task<(List<WebpageImportDTO> data, Dictionary<string, List<string>> parseErrors)>
+            GetWebpagesFromSpreadSheet(XLWorkbook spreadsheet)
         {
-            var parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
+            var parseErrors = _importWebpagesValidationService.ValidateImportFile(spreadsheet);
             if (parseErrors.Any())
-                return (new List<DocumentImportDTO>(), parseErrors);
-            return await _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet);
+                return (new List<WebpageImportDTO>(), parseErrors);
+            return await _importWebpagesValidationService.ValidateAndImportDocuments(spreadsheet);
         }
 
-        public async Task<byte[]> ExportDocumentsToExcel()
+        public async Task<byte[]> ExportWebpagesToExcel()
         {
             try
             {
                 var webpages = await _webpageRepository.Query().ToListAsync();
-                var package = _exportDocumentsService.GetExportExcelPackage(webpages);
-                return _exportDocumentsService.ConvertPackageToByteArray(package);
+                var package = _exportWebpagesService.GetExportExcelPackage(webpages);
+                return _exportWebpagesService.ConvertPackageToByteArray(package);
             }
             catch (Exception exception)
             {
@@ -82,7 +82,7 @@ namespace MrCMS.Services.ImportExport
             }
         }
 
-        public async Task<ExportDocumentsResult> ExportDocumentsToEmail(ExportDocumentsModel model)
+        public async Task<ExportWebpagesResult> ExportWebpagesToEmail(ExportWebpagesModel model)
         {
             try
             {
@@ -91,13 +91,13 @@ namespace MrCMS.Services.ImportExport
                 {
                     new AttachmentData
                     {
-                        Data = await ExportDocumentsToExcel(),
+                        Data = await ExportWebpagesToExcel(),
                         ContentType = XlsxContentType,
                         FileName = "Documents.xlsx"
                     }
                 });
 
-                return new ExportDocumentsResult {Success = true};
+                return new ExportWebpagesResult {Success = true};
             }
             catch (Exception exception)
             {

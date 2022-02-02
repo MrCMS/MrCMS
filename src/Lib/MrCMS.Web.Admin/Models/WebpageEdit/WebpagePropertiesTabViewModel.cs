@@ -5,7 +5,7 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
     public class WebpagePropertiesTabViewModel
     {
         public int Id { get; set; }
-        public string DocumentType { get; set; }
+        public string WebpageType { get; set; }
 
         [Required]
         [StringLength(255)]

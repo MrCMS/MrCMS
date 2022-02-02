@@ -20,7 +20,7 @@ namespace MrCMS.Services
             _webpageMetadataService = webpageMetadataService;
         }
 
-        public async Task<IReadOnlyCollection<WebpageMetadata>> GetValidWebpageDocumentTypes(Webpage webpage,
+        public async Task<IReadOnlyCollection<WebpageMetadata>> GetValidWebpageTypes(Webpage webpage,
             Func<WebpageMetadata, Task<bool>> predicate)
         {
             var documentTypeDefinitions = new HashSet<WebpageMetadata>();
@@ -66,9 +66,9 @@ namespace MrCMS.Services
             return documentTypeDefinitions;
         }
 
-        public async Task<bool> AnyValidWebpageDocumentTypes(Webpage webpage, Func<WebpageMetadata, Task<bool>> predicate)
+        public async Task<bool> AnyValidWebpageTypes(Webpage webpage, Func<WebpageMetadata, Task<bool>> predicate)
         {
-            return (await GetValidWebpageDocumentTypes(webpage, predicate)).Any();
+            return (await GetValidWebpageTypes(webpage, predicate)).Any();
         }
     }
 }

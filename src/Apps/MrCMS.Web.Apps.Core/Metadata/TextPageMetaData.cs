@@ -3,7 +3,7 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Metadata
 {
-    public class TextPageMetaData : DocumentMetadataMap<TextPage>
+    public class TextPageMetaData : WebpageMetadataMap<TextPage>
     {
         public override string IconClass => "fa fa-book";
         public override string WebGetController => "TextPage";

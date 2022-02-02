@@ -14,7 +14,7 @@ namespace MrCMS.Web.Admin.Services
         IPagedList<Webpage> Search(AdminWebpageSearchQuery model);
         IEnumerable<QuickSearchResult> QuickSearch(AdminWebpageSearchQuery model);
         Task<IReadOnlyList<Webpage>> GetBreadCrumb(int? parentId);
-        Task<List<SelectListItem>> GetDocumentTypes(string type);
+        Task<List<SelectListItem>> GetWebpageTypes(string type);
         Task<IList<SelectListItem>> GetParentsList();
     }
 }

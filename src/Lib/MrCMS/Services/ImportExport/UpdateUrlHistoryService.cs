@@ -18,17 +18,17 @@ namespace MrCMS.Services.ImportExport
             _urlHistoryRepository = urlHistoryRepository;
         }
 
-        public async Task SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
+        public async Task SetUrlHistory(WebpageImportDTO webpageDto, Webpage webpage)
         {
             List<string> urlsToAdd =
-                documentDto.UrlHistory.Where(
+                webpageDto.UrlHistory.Where(
                     s =>
                         !webpage.Urls.Select(history => history.UrlSegment)
                             .Contains(s, StringComparer.InvariantCultureIgnoreCase)).ToList();
             List<UrlHistory> urlsToRemove =
                 webpage.Urls.Where(
                         history =>
-                            !documentDto.UrlHistory.Contains(history.UrlSegment,
+                            !webpageDto.UrlHistory.Contains(history.UrlSegment,
                                 StringComparer.InvariantCultureIgnoreCase))
                     .ToList();
             if (!urlsToAdd.Any() && !urlsToRemove.Any())

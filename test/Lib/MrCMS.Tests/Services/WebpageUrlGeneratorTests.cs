@@ -38,7 +38,7 @@ namespace MrCMS.Tests.Services
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
-                DocumentType = typeof(BasicMappedWebpage).FullName,
+                WebpageType = typeof(BasicMappedWebpage).FullName,
                 UseHierarchy = true
             });
 
@@ -56,7 +56,7 @@ namespace MrCMS.Tests.Services
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
-                DocumentType = typeof(BasicMappedWebpage).FullName,
+                WebpageType = typeof(BasicMappedWebpage).FullName,
                 UseHierarchy = false
             });
 
@@ -86,7 +86,7 @@ namespace MrCMS.Tests.Services
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
-                DocumentType = typeof(BasicMappedWebpage).FullName,
+                WebpageType = typeof(BasicMappedWebpage).FullName,
                 UseHierarchy = true
             });
 
@@ -119,7 +119,7 @@ namespace MrCMS.Tests.Services
             {
                 PageName = "Nested Page",
                 ParentId = textPage.Id,
-                DocumentType = typeof(BasicMappedWebpage).FullName,
+                WebpageType = typeof(BasicMappedWebpage).FullName,
                 UseHierarchy = true
             });
 

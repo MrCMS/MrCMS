@@ -6,6 +6,6 @@ namespace MrCMS.Services.ImportExport
 {
     public interface IUpdateUrlHistoryService
     {
-        Task SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage);
+        Task SetUrlHistory(WebpageImportDTO webpageDto, Webpage webpage);
     }
 }

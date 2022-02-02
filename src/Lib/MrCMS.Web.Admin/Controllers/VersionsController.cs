@@ -17,7 +17,7 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpGet]
         public async Task<PartialViewResult> Revert(int id)
         {
-            return PartialView(await _service.GetDocumentVersion(id));
+            return PartialView(await _service.GetWebpageVersion(id));
         }
 
         [HttpPost]

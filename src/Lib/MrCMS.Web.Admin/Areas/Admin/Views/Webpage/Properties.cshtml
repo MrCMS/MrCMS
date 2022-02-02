@@ -6,7 +6,7 @@
 @{
     var webpage = ViewData["webpage"] as Webpage;
 }
-<input type="hidden" asp-for="DocumentType"/>
+<input type="hidden" asp-for="WebpageType"/>
 <input type="hidden" asp-for="Id"/>
 
 <div class="form-group">
@@ -15,7 +15,7 @@
     <span asp-validation-for="Name"></span>
 </div>
 
-@if (_webpageMetadataService.GetDocumentMetadata(Html, Model.Id).HasBodyContent)
+@if (_webpageMetadataService.GetWebpageMetadata(Html, Model.Id).HasBodyContent)
 {
     <div class="body-content mb-3" data-body-content>
         <!-- leave this class here for fixing the bar to top only for body content -->

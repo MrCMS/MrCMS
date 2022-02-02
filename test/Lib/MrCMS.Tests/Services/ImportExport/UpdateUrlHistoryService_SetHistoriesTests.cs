@@ -27,7 +27,7 @@ namespace MrCMS.Tests.Services.ImportExport
         {
             GetAllHistories().Should().HaveCount(0);
 
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string> {"test"}},
                 new BasicMappedWebpage());
 
             GetAllHistories().Should().HaveCount(1);
@@ -40,7 +40,7 @@ namespace MrCMS.Tests.Services.ImportExport
             GetAllHistories().Should().HaveCount(0);
             var basicMappedWebpage = new BasicMappedWebpage();
 
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string> {"test"}},
                 basicMappedWebpage);
 
             GetAllHistories().ElementAt(0).Webpage.Should().Be(basicMappedWebpage);
@@ -56,7 +56,7 @@ namespace MrCMS.Tests.Services.ImportExport
 
             GetAllHistories().Should().HaveCount(1);
 
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage);
 
             GetAllHistories().ElementAt(0).Webpage.Should().BeNull();
@@ -72,7 +72,7 @@ namespace MrCMS.Tests.Services.ImportExport
 
             basicMappedWebpage.Urls.Should().HaveCount(1);
 
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage);
 
             basicMappedWebpage.Urls.Should().HaveCount(0);
@@ -90,9 +90,9 @@ namespace MrCMS.Tests.Services.ImportExport
             basicMappedWebpage1.Urls.Should().HaveCount(1);
             basicMappedWebpage2.Urls.Should().HaveCount(0);
 
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage1);
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string> {"test"}},
                 basicMappedWebpage2);
 
             basicMappedWebpage1.Urls.Should().HaveCount(0);
@@ -110,9 +110,9 @@ namespace MrCMS.Tests.Services.ImportExport
 
             GetAllHistories().Should().HaveCount(1);
 
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string>()},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string>()},
                 basicMappedWebpage1);
-            await _updateUrlHistoryService.SetUrlHistory(new DocumentImportDTO {UrlHistory = new List<string> {"test"}},
+            await _updateUrlHistoryService.SetUrlHistory(new WebpageImportDTO {UrlHistory = new List<string> {"test"}},
                 basicMappedWebpage2);
 
             GetAllHistories().Should().HaveCount(1);

@@ -30,22 +30,22 @@ namespace MrCMS.Services
 
         public List<WebpageMetadata> GetWebpageMetadata()
         {
-            return _webpageMetadata ??= DocumentMetadataInfos.Select(GetMetadata).ToList();
+            return _webpageMetadata ??= WebpageMetadataInfos.Select(GetMetadata).ToList();
         }
 
-        public List<WebpageMetadataInfo> DocumentMetadataInfos => _webpageMetadataInfos ??= GetDocumentMetadataInfo();
+        public List<WebpageMetadataInfo> WebpageMetadataInfos => _webpageMetadataInfos ??= GetWebpageMetadataInfo();
 
-        public WebpageMetadata GetDocumentMetadata(IHtmlHelper helper, int id)
+        public WebpageMetadata GetWebpageMetadata(IHtmlHelper helper, int id)
         {
             var webpage = helper.GetRequiredService<ISession>().Get<Webpage>(id);
 
             return GetMetadata(webpage);
         }
 
-        private List<WebpageMetadataInfo> GetDocumentMetadataInfo()
+        private List<WebpageMetadataInfo> GetWebpageMetadataInfo()
         {
             var list = new List<WebpageMetadataInfo>();
-            var allMaps = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(DocumentMetadataMap<>));
+            var allMaps = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(WebpageMetadataMap<>));
 
             foreach (
                 Type type in
@@ -53,17 +53,17 @@ namespace MrCMS.Services
                     .Where(type => !type.ContainsGenericParameters))
             {
                 var types = allMaps.FindAll(
-                    x => typeof(DocumentMetadataMap<>).MakeGenericType(type).IsAssignableFrom(x));
+                    x => typeof(WebpageMetadataMap<>).MakeGenericType(type).IsAssignableFrom(x));
                 if (types.Any())
                 {
-                    var definition = _serviceProvider.GetRequiredService(types.First()) as IGetDocumentMetadataInfo;
+                    var definition = _serviceProvider.GetRequiredService(types.First()) as IGetWebpageMetadataInfo;
                     list.Add(definition.Metadata);
                 }
                 else
                 {
                     var definition =
-                        _serviceProvider.GetRequiredService(typeof(DefaultDocumentMetadata<>).MakeGenericType(type)) as
-                            IGetDocumentMetadataInfo;
+                        _serviceProvider.GetRequiredService(typeof(DefaultWebpageMetadata<>).MakeGenericType(type)) as
+                            IGetWebpageMetadataInfo;
                     list.Add(definition.Metadata);
                 }
             }
@@ -78,7 +78,7 @@ namespace MrCMS.Services
             {
                 case ChildrenListType.BlackList:
                     validChildrenTypes.AddRange(
-                        DocumentMetadataInfos.Where(
+                        WebpageMetadataInfos.Where(
                                 metadata => !info.ChildrenList.Contains(metadata.Type) && !metadata.AutoBlacklist)
                             .Select(metadata => metadata.Type));
                     break;

@@ -11,22 +11,22 @@ namespace MrCMS.Web.Admin.Services
 {
     public class WebpageVersionsAdminService : IWebpageVersionsAdminService
     {
-        private readonly IRepository<WebpageVersion> _documentVersionRepository;
+        private readonly IRepository<WebpageVersion> _webpageVersionRepository;
         private readonly IRepository<Webpage> _webpageRepository;
 
-        public WebpageVersionsAdminService(IRepository<WebpageVersion> documentVersionRepository,
+        public WebpageVersionsAdminService(IRepository<WebpageVersion> webpageVersionRepository,
             IRepository<Webpage> webpageRepository)
         {
-            _documentVersionRepository = documentVersionRepository;
+            _webpageVersionRepository = webpageVersionRepository;
             _webpageRepository = webpageRepository;
         }
 
         public async Task<VersionsModel> GetVersions(Webpage webpage, int page)
         {
-            IPagedList<DocumentVersionViewModel> versions = await _documentVersionRepository.Query()
+            IPagedList<WebpageVersionViewModel> versions = await _webpageVersionRepository.Query()
                 .Where(version => version.Webpage.Id == webpage.Id)
                 .OrderByDescending(version => version.Id)//id faster than createdon for ordering
-                .Select(item => new DocumentVersionViewModel
+                .Select(item => new WebpageVersionViewModel
                 {
                     Id = item.Id,
                     CreatedOn = item.CreatedOn,
@@ -38,14 +38,14 @@ namespace MrCMS.Web.Admin.Services
             return new VersionsModel(versions, webpage.Id);
         }
 
-        public async Task<WebpageVersion> GetDocumentVersion(int id)
+        public async Task<WebpageVersion> GetWebpageVersion(int id)
         {
-            return await _documentVersionRepository.Get(id);
+            return await _webpageVersionRepository.Get(id);
         }
 
         public async Task<WebpageVersion> RevertToVersion(int id)
         {
-            var documentVersion = await GetDocumentVersion(id);
+            var documentVersion = await GetWebpageVersion(id);
 
             var currentVersion = documentVersion.Webpage.Unproxy();
             var previousVersion = currentVersion.GetVersion(documentVersion.Id);

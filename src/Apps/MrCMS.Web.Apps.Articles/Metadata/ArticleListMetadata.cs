@@ -6,7 +6,7 @@ using MrCMS.Web.Apps.Articles.Pages;
 
 namespace MrCMS.Web.Apps.Articles.Metadata
 {
-    public class ArticleListMetadata : DocumentMetadataMap<ArticleList>
+    public class ArticleListMetadata : WebpageMetadataMap<ArticleList>
     {
         public override string WebGetController => "ArticleList";
 

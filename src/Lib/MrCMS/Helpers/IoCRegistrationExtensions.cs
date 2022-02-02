@@ -145,11 +145,11 @@ namespace MrCMS.Helpers
 
         public static void RegisterDocumentMetadata(this IServiceCollection container)
         {
-            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IGetDocumentMetadataInfo>())
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IGetWebpageMetadataInfo>())
             {
                 if (!type.IsGenericType)
                 {
-                    container.AddSingleton(typeof(IGetDocumentMetadataInfo), type);
+                    container.AddSingleton(typeof(IGetWebpageMetadataInfo), type);
                     container.AddSingleton(type, type);
                 }
                 else

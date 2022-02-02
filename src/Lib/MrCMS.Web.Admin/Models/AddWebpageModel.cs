@@ -6,7 +6,7 @@ namespace MrCMS.Web.Admin.Models
 {
     public class AddWebpageModel
     {
-        public string DocumentType { get; set; }
+        public string WebpageType { get; set; }
         public int? PageTemplateId { get; set; }
         public int? ParentId { get; set; }
         [Required]

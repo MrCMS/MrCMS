@@ -13,7 +13,7 @@ namespace MrCMS.Web.Admin.Models
 
     public class WebpageStats
     {
-        public string DocumentType { get; set; }
+        public string WebpageType { get; set; }
         public int NumberOfPages { get; set; }
         public int NumberOfUnPublishedPages { get; set; }
     }

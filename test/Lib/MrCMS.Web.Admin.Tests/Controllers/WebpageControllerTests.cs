@@ -77,7 +77,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             var model = new AddWebpageModel {UrlSegment = "test"};
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("test", null)).Returns(true);
             var additionalModel = new object();
-            A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType))
+            A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.WebpageType))
                 .Returns(additionalModel);
 
             await _webpageController.Add(model);
@@ -91,7 +91,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             var model = new AddWebpageModel();
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(true);
             var value = new object();
-            A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType)).Returns(value);
+            A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.WebpageType)).Returns(value);
             A.CallTo(() => _webpageAdminService.Add(model, value)).Returns(new StubWebpage {Id = 123});
 
             var result = (await _webpageController.Add(model)) as RedirectToActionResult;

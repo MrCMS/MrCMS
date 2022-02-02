@@ -2,7 +2,7 @@
 
 namespace MrCMS.Entities.Documents.Metadata
 {
-    public class SitemapPlaceholderMetadata : DocumentMetadataMap<SitemapPlaceholder>
+    public class SitemapPlaceholderMetadata : WebpageMetadataMap<SitemapPlaceholder>
     {
         public override string IconClass => "fa fa-forward";
         public override int DisplayOrder => 99;

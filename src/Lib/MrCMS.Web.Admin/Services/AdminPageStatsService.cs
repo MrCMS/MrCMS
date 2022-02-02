@@ -29,7 +29,7 @@ namespace MrCMS.Web.Admin.Services
                 .SelectList(
                     builder =>
                         builder.SelectGroup(() => webpageAlias.WebpageType)
-                            .WithAlias(() => countAlias.DocumentType)
+                            .WithAlias(() => countAlias.WebpageType)
                             .SelectCount(() => webpageAlias.Id)
                             .WithAlias(() => countAlias.NumberOfPages)
                             .SelectSubQuery(

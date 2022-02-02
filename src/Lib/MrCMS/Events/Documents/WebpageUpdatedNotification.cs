@@ -7,14 +7,14 @@ namespace MrCMS.Events.Documents
 {
     public class WebpageUpdatedNotification : IOnUpdated<Webpage>
     {
-        private readonly IDocumentModifiedUser _documentModifiedUser;
+        private readonly IGetNotificationModifiedUserInfo _getNotificationModifiedUserInfo;
         private readonly INotificationPublisher _notificationPublisher;
 
         public WebpageUpdatedNotification(INotificationPublisher notificationPublisher,
-            IDocumentModifiedUser documentModifiedUser)
+            IGetNotificationModifiedUserInfo getNotificationModifiedUserInfo)
         {
             _notificationPublisher = notificationPublisher;
-            _documentModifiedUser = documentModifiedUser;
+            _getNotificationModifiedUserInfo = getNotificationModifiedUserInfo;
         }
 
         public async Task Execute(OnUpdatedArgs<Webpage> args)
@@ -36,7 +36,7 @@ namespace MrCMS.Events.Documents
 
             string message = string.Format("<a href=\"/Admin/Webpage/Edit/{1}\">{0}</a> has been {2}{3}.",
                 current.Name,
-                current.Id, action, await _documentModifiedUser.GetInfo());
+                current.Id, action, await _getNotificationModifiedUserInfo.GetInfo());
             await _notificationPublisher.PublishNotification(message, PublishType.Both, NotificationType.AdminOnly);
         }
     }

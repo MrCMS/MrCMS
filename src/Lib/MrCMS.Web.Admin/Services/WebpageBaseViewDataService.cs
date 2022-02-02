@@ -41,7 +41,7 @@ namespace MrCMS.Web.Admin.Services
 
             var user = await _getCurrentUser.Get();
             var webpageDocumentTypes = await _validWebpageChildrenService
-                .GetValidWebpageDocumentTypes(parent,
+                .GetValidWebpageTypes(parent,
                     metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"),
                         user));
             var validWebpageDocumentTypes =
@@ -49,13 +49,13 @@ namespace MrCMS.Web.Admin.Services
 
             var templates = _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);
 
-            var documentTypeToAdds = new List<DocumentTypeToAdd>();
+            var documentTypeToAdds = new List<WebpageTypeToAdd>();
 
             foreach (WebpageMetadata type in validWebpageDocumentTypes)
             {
                 if (templates.Any(template => template.PageType == type.Type.FullName))
                 {
-                    documentTypeToAdds.Add(new DocumentTypeToAdd
+                    documentTypeToAdds.Add(new WebpageTypeToAdd
                     {
                         Type = type,
                         DisplayName = $"Default {type.Name}"
@@ -63,7 +63,7 @@ namespace MrCMS.Web.Admin.Services
                     WebpageMetadata typeCopy = type;
                     documentTypeToAdds.AddRange(
                         templates.Where(template => template.PageType == typeCopy.Type.FullName)
-                            .Select(pageTemplate => new DocumentTypeToAdd
+                            .Select(pageTemplate => new WebpageTypeToAdd
                             {
                                 Type = type,
                                 DisplayName = pageTemplate.Name,
@@ -72,7 +72,7 @@ namespace MrCMS.Web.Admin.Services
                 }
                 else
                 {
-                    documentTypeToAdds.Add(new DocumentTypeToAdd {Type = type, DisplayName = type.Name});
+                    documentTypeToAdds.Add(new WebpageTypeToAdd {Type = type, DisplayName = type.Name});
                 }
             }
 

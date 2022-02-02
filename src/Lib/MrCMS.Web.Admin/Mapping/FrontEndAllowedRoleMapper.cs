@@ -9,11 +9,11 @@ namespace MrCMS.Web.Admin.Mapping
 {
     public class FrontEndAllowedRoleMapper : IValueResolver<PermissionsTabViewModel, Webpage, ISet<UserRole>>
     {
-        private readonly IDocumentRolesAdminService _documentRolesAdminService;
+        private readonly IWebpageRolesAdminService _webpageRolesAdminService;
 
-        public FrontEndAllowedRoleMapper(IDocumentRolesAdminService documentRolesAdminService)
+        public FrontEndAllowedRoleMapper(IWebpageRolesAdminService webpageRolesAdminService)
         {
-            _documentRolesAdminService = documentRolesAdminService;
+            _webpageRolesAdminService = webpageRolesAdminService;
         }
 
         public ISet<UserRole> Resolve(PermissionsTabViewModel source, Webpage destination, ISet<UserRole> destMember, ResolutionContext context)
@@ -24,7 +24,7 @@ namespace MrCMS.Web.Admin.Mapping
                 // return empty collection
                 return new HashSet<UserRole>();
             }
-            return _documentRolesAdminService.GetFrontEndRoles(source.FrontEndRoles);
+            return _webpageRolesAdminService.GetFrontEndRoles(source.FrontEndRoles);
         }
     }
 }

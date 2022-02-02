@@ -13,9 +13,9 @@ namespace MrCMS.Services.ImportExport
             _webpageTagsUpdateService = webpageTagsUpdateService;
         }
 
-        public async Task SetTags(DocumentImportDTO documentDto, Webpage webpage)
+        public async Task SetTags(WebpageImportDTO webpageDto, Webpage webpage)
         {
-            var tags = documentDto.Tags;
+            var tags = webpageDto.Tags;
             await _webpageTagsUpdateService.SetTags(tags, webpage);
         }
     }

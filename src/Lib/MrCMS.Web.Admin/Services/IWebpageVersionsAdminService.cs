@@ -9,7 +9,7 @@ namespace MrCMS.Web.Admin.Services
     {
         Task<VersionsModel> GetVersions(Webpage webpage, int page);
 
-        Task<WebpageVersion> GetDocumentVersion(int id);
+        Task<WebpageVersion> GetWebpageVersion(int id);
         Task<WebpageVersion> RevertToVersion(int id);
     }
 }

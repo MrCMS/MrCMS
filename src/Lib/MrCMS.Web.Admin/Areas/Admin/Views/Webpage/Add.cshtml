@@ -7,10 +7,10 @@
     ViewBag.Title = "Add Webpage";
     var parent = ViewData["parent"] as Webpage;
     //pre select radio if there is only one option
-    var types = ViewData["DocumentTypes"] as List<DocumentTypeToAdd>;
+    var types = ViewData["DocumentTypes"] as List<WebpageTypeToAdd>;
     if (types.Count == 1)
     {
-        Model.DocumentType = types.First().DocumentType;
+        Model.WebpageType = types.First().WebpageType;
     }
 
 }
@@ -33,9 +33,9 @@
                 <div class="col-md-3">
                     @foreach (var documentType in types)
                     {
-                        var inputId = documentType.DocumentType + documentType.TemplateId;
+                        var inputId = documentType.WebpageType + documentType.TemplateId;
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="DocumentType" id="dt-@inputId" value="@documentType.DocumentType" data-page-template-id="@documentType.TemplateId">
+                            <input class="form-check-input" type="radio" name="DocumentType" id="dt-@inputId" value="@documentType.WebpageType" data-page-template-id="@documentType.TemplateId">
                             <label class="form-check-label" for="dt-@inputId">
                                 <i class="@documentType.Type.IconClass"></i>
                                 @documentType.DisplayName

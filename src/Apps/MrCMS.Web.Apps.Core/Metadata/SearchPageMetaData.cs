@@ -3,7 +3,7 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Metadata
 {
-    public class SearchPageMetaData : DocumentMetadataMap<SearchPage>
+    public class SearchPageMetaData : WebpageMetadataMap<SearchPage>
     {
         public override string IconClass
         {

@@ -26,15 +26,15 @@ namespace MrCMS.Services
 
         public async Task<string> Suggest(SuggestParams suggestParams)
         {
-            var documentType = suggestParams.DocumentType;
+            var documentType = suggestParams.WebpageType;
             var parts = documentType.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
-                suggestParams.DocumentType = parts[0];
+                suggestParams.WebpageType = parts[0];
                 suggestParams.Template = int.TryParse(parts[1], out var id) ? id : (int?)null;
             }
 
-            IWebpageUrlGenerator generator = GetGenerator(suggestParams.DocumentType, suggestParams.Template);
+            IWebpageUrlGenerator generator = GetGenerator(suggestParams.WebpageType, suggestParams.Template);
             var parent = suggestParams.ParentId.HasValue ? _session.Get<Webpage>(suggestParams.ParentId.Value) : null;
 
             string url = generator.GetUrl(suggestParams.PageName, parent, suggestParams.UseHierarchy);

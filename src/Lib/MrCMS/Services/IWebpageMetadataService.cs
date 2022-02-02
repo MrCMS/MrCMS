@@ -10,7 +10,7 @@ namespace MrCMS.Services
     {
         IEnumerable<WebpageMetadata> WebpageMetadata { get; }
         List<WebpageMetadata> GetWebpageMetadata();
-        WebpageMetadata GetDocumentMetadata(IHtmlHelper helper, int id);
+        WebpageMetadata GetWebpageMetadata(IHtmlHelper helper, int id);
         Type GetTypeByName(string name);
         string GetIconClass(Webpage webpage);
         WebpageMetadata GetMetadata(Type type);

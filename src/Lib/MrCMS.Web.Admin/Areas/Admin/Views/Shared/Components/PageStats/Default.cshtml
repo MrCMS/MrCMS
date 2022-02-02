@@ -23,7 +23,7 @@
             @foreach (var stat in Model)
             {
                 <tr>
-                    <td>@_webpageMetadataService.GetMetadataByTypeName(stat.DocumentType).Name</td>
+                    <td>@_webpageMetadataService.GetMetadataByTypeName(stat.WebpageType).Name</td>
                     <td>
                         @stat.NumberOfPages
                     </td>

@@ -54,7 +54,7 @@ namespace MrCMS.Web.Admin.Services
                     Type = webpageMetadata.Type.FullName,
                     HasChildren = await _treeNavService.WebpageHasChildren(doc.Id),
                     Sortable = webpageMetadata.Sortable,
-                    CanAddChild = await _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
+                    CanAddChild = await _validWebpageChildrenService.AnyValidWebpageTypes(doc),
                     IsPublished = doc.Published,
                     RevealInNavigation = doc.RevealInNavigation,
                     Url = _urlHelper.Action("Edit", "Webpage", new {id = doc.Id})

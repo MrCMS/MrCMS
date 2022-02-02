@@ -12,23 +12,23 @@ namespace MrCMS.Web.Admin.Tests.Services
     {
         public WebpageVersionsAdminServiceTests()
         {
-            _documentVersionRepository = new InMemoryRepository<WebpageVersion>();
+            _webpageVersionRepository = new InMemoryRepository<WebpageVersion>();
             _inMemoryRepository = new InMemoryRepository<Webpage>();
-            _webpageVersionsAdminService = new WebpageVersionsAdminService(_documentVersionRepository,
+            _webpageVersionsAdminService = new WebpageVersionsAdminService(_webpageVersionRepository,
                 _inMemoryRepository);
         }
 
         private readonly WebpageVersionsAdminService _webpageVersionsAdminService;
-        private readonly InMemoryRepository<WebpageVersion> _documentVersionRepository;
+        private readonly InMemoryRepository<WebpageVersion> _webpageVersionRepository;
         private readonly InMemoryRepository<Webpage> _inMemoryRepository;
 
         [Fact]
         public async Task WebpageVersionService_GetDocumentVersion_GetsTheVersionWithTheRequestedId()
         {
             var documentVersion = new WebpageVersion();
-            await _documentVersionRepository.Add(documentVersion);
+            await _webpageVersionRepository.Add(documentVersion);
 
-            var version = _webpageVersionsAdminService.GetDocumentVersion(documentVersion.Id);
+            var version = _webpageVersionsAdminService.GetWebpageVersion(documentVersion.Id);
 
             version.Should().Be(documentVersion);
         }

@@ -6,7 +6,7 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Metadata
 {
-    public class WebpagePasswordPageMetadata : DocumentMetadataMap<WebpagePasswordPage>
+    public class WebpagePasswordPageMetadata : WebpageMetadataMap<WebpagePasswordPage>
     {
         public override string WebGetController => nameof(WebpagePasswordPage);
 

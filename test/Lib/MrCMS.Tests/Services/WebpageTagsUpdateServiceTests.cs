@@ -97,14 +97,14 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_IfDocumentIsNullThrowArgumentNullException()
+        public async Task WebpageTagsAdminService_SetTags_IfDocumentIsNullThrowArgumentNullException()
         {
             await _sut.Invoking(service => service.SetTags((string)null, null)).Should()
                 .ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_IfTagsIsNullForANewDocumentTheTagListShouldBeEmpty()
+        public async Task WebpageTagsAdminService_SetTags_IfTagsIsNullForANewDocumentTheTagListShouldBeEmpty()
         {
             var textPage = new StubWebpage();
 
@@ -114,7 +114,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_IfTagsHasOneStringTheTagListShouldHave1Tag()
+        public async Task WebpageTagsAdminService_SetTags_IfTagsHasOneStringTheTagListShouldHave1Tag()
         {
             var textPage = new StubWebpage();
 
@@ -124,7 +124,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_IfTagsHasTwoCommaSeparatedTagsTheTagListShouldHave2Tags()
+        public async Task WebpageTagsAdminService_SetTags_IfTagsHasTwoCommaSeparatedTagsTheTagListShouldHave2Tags()
         {
             var textPage = new StubWebpage();
 
@@ -134,7 +134,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldTrimTagNamesOnNewTags()
+        public async Task WebpageTagsAdminService_SetTags_ShouldTrimTagNamesOnNewTags()
         {
             var textPage = new StubWebpage();
             A.CallTo(() => _getExistingTag.GetTag(A<string>.Ignored)).Returns((Tag)null);
@@ -145,7 +145,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldAddTagsToDocument()
+        public async Task WebpageTagsAdminService_SetTags_ShouldAddTagsToDocument()
         {
             var textPage = new StubWebpage();
 
@@ -155,7 +155,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldNotRecreateTags()
+        public async Task WebpageTagsAdminService_SetTags_ShouldNotRecreateTags()
         {
             var textPage = new StubWebpage();
             var tag1 = new Tag { Name = "test 1" };
@@ -169,7 +169,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldNotReaddSetTags()
+        public async Task WebpageTagsAdminService_SetTags_ShouldNotReaddSetTags()
         {
             var textPage = new StubWebpage();
             var tag1 = new Tag { Name = "test 1" };
@@ -187,7 +187,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldRemoveTagsNotIncluded()
+        public async Task WebpageTagsAdminService_SetTags_ShouldRemoveTagsNotIncluded()
         {
             var textPage = new StubWebpage();
             var tag1 = new Tag { Name = "test 1" };
@@ -205,7 +205,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldAssignDocumentToTag()
+        public async Task WebpageTagsAdminService_SetTags_ShouldAssignDocumentToTag()
         {
             var textPage = new StubWebpage();
             await _webpageRepository.Add(textPage);
@@ -218,7 +218,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldRemoveTheDocumentFromTags()
+        public async Task WebpageTagsAdminService_SetTags_ShouldRemoveTheDocumentFromTags()
         {
             var textPage = new StubWebpage();
             var tag1 = new Tag { Name = "test 1" };
@@ -239,7 +239,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldNotCreateTagsWithEmptyNames()
+        public async Task WebpageTagsAdminService_SetTags_ShouldNotCreateTagsWithEmptyNames()
         {
             var textPage = new StubWebpage();
 
@@ -249,7 +249,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task DocumentTagsAdminService_SetTags_ShouldNotCreateTagsWithEmptyNamesForTrailingComma()
+        public async Task WebpageTagsAdminService_SetTags_ShouldNotCreateTagsWithEmptyNamesForTrailingComma()
         {
             var textPage = new StubWebpage();
 

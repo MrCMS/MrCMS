@@ -71,7 +71,7 @@ namespace MrCMS.Web.Admin.Services
 
         public async Task<Webpage> Add(AddWebpageModel model, object additionalPropertyModel)
         {
-            var type = TypeHelper.GetTypeByName(model.DocumentType);
+            var type = TypeHelper.GetTypeByName(model.WebpageType);
             var instance = Activator.CreateInstance(type) as Webpage;
             var revealInNavigation = _webpageMetadataService.GetMetadata(instance).RevealInNavigation;
             _mapper.Map(model, instance);

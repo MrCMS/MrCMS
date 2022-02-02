@@ -2,7 +2,7 @@
 
 namespace MrCMS.Entities.Documents.Metadata
 {
-    public class RedirectMetadata : DocumentMetadataMap<Redirect>
+    public class RedirectMetadata : WebpageMetadataMap<Redirect>
     {
         public override string IconClass => "fa fa-forward";
 

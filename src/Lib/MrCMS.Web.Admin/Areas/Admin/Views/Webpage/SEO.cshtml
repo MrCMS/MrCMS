@@ -135,7 +135,7 @@
     @* } *@
     <hr />
 
-    <strong>@await Html.Resource("Page type"):</strong> @_webpageMetadataService.GetDocumentMetadata(Html, Model.Id).Name
+    <strong>@await Html.Resource("Page type"):</strong> @_webpageMetadataService.GetWebpageMetadata(Html, Model.Id).Name
     <br />
     <strong>@await Html.Resource("Created On"): </strong>@webpage.CreatedOn
     <br />

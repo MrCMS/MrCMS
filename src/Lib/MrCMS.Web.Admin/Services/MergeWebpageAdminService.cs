@@ -157,7 +157,7 @@ namespace MrCMS.Web.Admin.Services
             {
                 return await _webpageUrlService.Suggest(new SuggestParams
                 {
-                    DocumentType = page.WebpageType,
+                    WebpageType = page.WebpageType,
                     PageName = page.Name,
                     Template = page.PageTemplate?.Id,
                     UseHierarchy = true,
@@ -168,7 +168,7 @@ namespace MrCMS.Web.Admin.Services
 
             return await _webpageUrlService.Suggest(new SuggestParams
             {
-                DocumentType = page.WebpageType,
+                WebpageType = page.WebpageType,
                 PageName = $"{parentModel.NewUrl}/{page.Name}",
                 Template = page.PageTemplate?.Id,
                 UseHierarchy = false,

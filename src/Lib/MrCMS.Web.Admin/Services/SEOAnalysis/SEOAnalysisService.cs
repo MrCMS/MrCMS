@@ -31,7 +31,7 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
             await using (var publisher = new TemporaryPublisher(_session, webpage))
             {
                 await publisher.Publish();
-                htmlNode = await GetDocument(webpage);
+                htmlNode = await GetWebpage(webpage);
             }
 
             var providers = GetProviders();
@@ -63,7 +63,7 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
         }
         static readonly HttpClient Client = new HttpClient();
 
-        private async Task<HtmlNode> GetDocument(Webpage webpage)
+        private async Task<HtmlNode> GetWebpage(Webpage webpage)
         {
             string absoluteUrl = await _getLiveUrl.GetAbsoluteUrl(webpage);
             var request = await Client.GetAsync(absoluteUrl);

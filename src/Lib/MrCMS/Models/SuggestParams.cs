@@ -7,7 +7,7 @@ namespace MrCMS.Models
 
         public string PageName { get; set; }
 
-        public string DocumentType { get; set; }
+        public string WebpageType { get; set; }
 
         public int? Template { get; set; }
 

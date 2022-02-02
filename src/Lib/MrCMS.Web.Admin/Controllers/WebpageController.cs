@@ -71,7 +71,7 @@ namespace MrCMS.Web.Admin.Controllers
                 return View(model);
             }
 
-            var additionalPropertyModel = _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType);
+            var additionalPropertyModel = _webpageAdminService.GetAdditionalPropertyModel(model.WebpageType);
             if (additionalPropertyModel != null)
             {
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel,
@@ -154,7 +154,7 @@ namespace MrCMS.Web.Admin.Controllers
 
         public async Task<ActionResult> ViewChanges(int id)
         {
-            var documentVersion = await _webpageVersionsAdminService.GetDocumentVersion(id);
+            var documentVersion = await _webpageVersionsAdminService.GetWebpageVersion(id);
             if (documentVersion == null)
             {
                 return RedirectToAction("Index");

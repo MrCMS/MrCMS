@@ -61,7 +61,7 @@ namespace MrCMS.Web.Admin.Services
             return await _getBreadcrumbs.Get(parentId);
         }
 
-        public async Task<List<SelectListItem>> GetDocumentTypes(string type)
+        public async Task<List<SelectListItem>> GetWebpageTypes(string type)
         {
             return _webpageMetadataService.GetWebpageMetadata()
                 .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,

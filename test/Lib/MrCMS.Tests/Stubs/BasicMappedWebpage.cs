@@ -12,7 +12,7 @@ namespace MrCMS.Tests.Stubs
         
     }
 
-    public class BasicMappedNoChildrenInNavWebpageMetadataMap : DocumentMetadataMap<BasicMappedNoChildrenInNavWebpage>
+    public class BasicMappedNoChildrenInNavWebpageMetadataMap : WebpageMetadataMap<BasicMappedNoChildrenInNavWebpage>
     {
         public override bool ShowChildrenInAdminNav
         {

@@ -12,32 +12,32 @@ namespace MrCMS.Tests.Services.ImportExport
 {
     public class ImportExportManagerTests
     {
-        private readonly IImportDocumentsValidationService _importDocumentsValidationService;
-        private readonly IImportDocumentsService _importDocumentsService;
+        private readonly IImportWebpagesValidationService _importWebpagesValidationService;
+        private readonly IImportWebpagesService _importWebpagesService;
         private readonly ImportExportManager _importExportManager;
-        private readonly IExportDocumentsService _exportDocumentsService;
+        private readonly IExportWebpagesService _exportWebpagesService;
 
-        private readonly IMessageParser<ExportDocumentsEmailTemplate> _messageParser =
-            A.Fake<IMessageParser<ExportDocumentsEmailTemplate>>();
+        private readonly IMessageParser<ExportWebpagesEmailTemplate> _messageParser =
+            A.Fake<IMessageParser<ExportWebpagesEmailTemplate>>();
 
         private readonly InMemoryRepository<Webpage> _inMemoryRepository;
         private readonly ILogger<ImportExportManager> _logger;
 
         public ImportExportManagerTests()
         {
-            _importDocumentsValidationService = A.Fake<IImportDocumentsValidationService>();
-            _importDocumentsService = A.Fake<IImportDocumentsService>();
+            _importWebpagesValidationService = A.Fake<IImportWebpagesValidationService>();
+            _importWebpagesService = A.Fake<IImportWebpagesService>();
 
-            _exportDocumentsService = A.Fake<IExportDocumentsService>();
+            _exportWebpagesService = A.Fake<IExportWebpagesService>();
             _inMemoryRepository = new InMemoryRepository<Webpage>();
             _logger = A.Fake<ILogger<ImportExportManager>>();
-            _importExportManager = new ImportExportManager(_importDocumentsValidationService, _importDocumentsService, _exportDocumentsService, _messageParser, _inMemoryRepository, _logger);
+            _importExportManager = new ImportExportManager(_importWebpagesValidationService, _importWebpagesService, _exportWebpagesService, _messageParser, _inMemoryRepository, _logger);
         }
 
         [Fact]
         public void ImportExportManager_ExportDocumentsToExcel_ShouldReturnByteArray()
         {
-            var result = _importExportManager.ExportDocumentsToExcel();
+            var result = _importExportManager.ExportWebpagesToExcel();
 
             result.Should().BeOfType<byte[]>();
         }

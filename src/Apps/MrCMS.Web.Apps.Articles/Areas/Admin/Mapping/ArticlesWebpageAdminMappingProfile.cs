@@ -11,13 +11,13 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
         {
             CreateMap<ArticleList, ArticleListViewModel>()
                 .ReverseMap()
-                .ForMember(document => document.Tags, expression => expression.MapFrom<DocumentTagsMapper>())
+                .ForMember(document => document.Tags, expression => expression.MapFrom<WebpageTagsMapper>())
                 ;
             CreateMap<Article, ArticleViewModel>()
                 .ReverseMap()
                 .MapEntityLookup(x => x.UserId, x => x.User)
                 .ForMember(document => document.Tags,
-                    expression => expression.MapFrom<DocumentTagsMapper>());
+                    expression => expression.MapFrom<WebpageTagsMapper>());
         }
     }
 }

@@ -22,10 +22,10 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Documents()
+        public ActionResult Webpages()
         {
             //if (TempData.ContainsKey("messages"))
-            ViewBag.Messages = TempData.Get<ImportDocumentsResult>("messages");
+            ViewBag.Messages = TempData.Get<ImportWebpagesResult>("messages");
             if (TempData.ContainsKey("import-status"))
                 ViewBag.ImportStatus = TempData["import-status"];
             if (TempData.ContainsKey("export-status"))
@@ -34,11 +34,11 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> ExportDocuments()
+        public async Task<ActionResult> ExportWebpages()
         {
             try
             {
-                byte[] file = await _importExportManager.ExportDocumentsToExcel();
+                byte[] file = await _importExportManager.ExportWebpagesToExcel();
                 TempData["export-status"] = "Documents successfully exported.";
                 return File(file, ImportExportManager.XlsxContentType,
                     "MrCMS-Documents-" + DateTime.UtcNow + ".xlsx");
@@ -48,28 +48,28 @@ namespace MrCMS.Web.Admin.Controllers
                 _logger.LogError(exception, "Error exporting documents");
                 TempData["export-status"] =
                     "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
-                return RedirectToAction("Documents");
+                return RedirectToAction("Webpages");
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> ImportDocuments(IFormFile document)
+        public async Task<ActionResult> ImportWebpages(IFormFile document)
         {
             if (document != null && document.Length > 0 &&
                 document.ContentType == ImportExportManager.XlsxContentType)
-                TempData.Set(await _importExportManager.ImportDocumentsFromExcel(document.OpenReadStream()),
+                TempData.Set(await _importExportManager.ImportWebpagesFromExcel(document.OpenReadStream()),
                     "messages");
             else
                 TempData["import-status"] = "Please choose non-empty Excel (.xslx) file before uploading.";
-            return RedirectToAction("Documents");
+            return RedirectToAction("Webpages");
         }
 
         [HttpPost]
-        public async Task<ActionResult> ExportDocumentsToEmail(ExportDocumentsModel model)
+        public async Task<ActionResult> ExportWebpagesToEmail(ExportWebpagesModel model)
         {
             try
             {
-                await _importExportManager.ExportDocumentsToEmail(model);
+                await _importExportManager.ExportWebpagesToEmail(model);
                 TempData["export-status"] = "Documents successfully exported.";
             }
             catch
@@ -78,7 +78,7 @@ namespace MrCMS.Web.Admin.Controllers
                     "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
             }
 
-            return RedirectToAction("Documents");
+            return RedirectToAction("Webpages");
         }
     }
 }

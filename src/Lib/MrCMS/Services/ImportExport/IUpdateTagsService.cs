@@ -6,6 +6,6 @@ namespace MrCMS.Services.ImportExport
 {
     public interface IUpdateTagsService
     {
-        Task SetTags(DocumentImportDTO documentDto, Webpage webpage);
+        Task SetTags(WebpageImportDTO webpageDto, Webpage webpage);
     }
 }

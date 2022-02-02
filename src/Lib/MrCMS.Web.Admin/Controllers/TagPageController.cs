@@ -21,7 +21,7 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<PartialViewResult> Documents(int id)
+        public async Task<PartialViewResult> Webpages(int id)
         {
             var page = await _webpageAdminService.GetWebpage(id);
             ViewData["webpages"] = await _adminService.GetWebpages(page as TagPage);
