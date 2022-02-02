@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -25,10 +26,14 @@ namespace MrCMS.Services
 
         private async Task<int> GetMaxParentDisplayOrder(Webpage parent, ISession session)
         {
-            return await session.QueryOver<Webpage>()
-                .Where(doc => doc.Parent.Id == parent.Id)
-                .Select(Projections.Max<Webpage>(d => d.DisplayOrder))
-                .SingleOrDefaultAsync<int>();
+            if (await session.QueryOver<Webpage>()
+                    .Where(doc => doc.Parent.Id == parent.Id)
+                    .AnyAsync())
+                return await session.QueryOver<Webpage>()
+                    .Where(doc => doc.Parent.Id == parent.Id)
+                    .Select(Projections.Max<Webpage>(d => d.DisplayOrder))
+                    .SingleOrDefaultAsync<int>() + 1;
+            return 0;
         }
     }
 }
