@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Settings;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
 using NHibernate.Criterion;
@@ -20,14 +21,16 @@ namespace MrCMS.Web.Admin.Services
         private readonly IFileService _fileService;
         private readonly IImageProcessor _imageProcessor;
         private readonly ICurrentSiteLocator _siteLocator;
+        private readonly MediaSettings _mediaSettings;
 
         public MediaSelectorService(ISession session, IFileService fileService, IImageProcessor imageProcessor,
-            ICurrentSiteLocator siteLocator)
+            ICurrentSiteLocator siteLocator, MediaSettings mediaSettings)
         {
             _session = session;
             _fileService = fileService;
             _imageProcessor = imageProcessor;
             _siteLocator = siteLocator;
+            _mediaSettings = mediaSettings;
         }
 
         public async Task<IPagedList<MediaFile>> Search(MediaSelectorSearchQuery searchQuery)
@@ -47,7 +50,7 @@ namespace MrCMS.Web.Admin.Services
                             file.Description.IsLike(term, MatchMode.Anywhere));
             }
 
-            return await queryOver.OrderBy(file => file.CreatedOn).Desc.PagedAsync(searchQuery.Page);
+            return await queryOver.OrderBy(file => file.CreatedOn).Desc.PagedAsync(searchQuery.Page, _mediaSettings.MediaSelectorPageSize);
         }
 
         public async Task<List<SelectListItem>> GetCategories()

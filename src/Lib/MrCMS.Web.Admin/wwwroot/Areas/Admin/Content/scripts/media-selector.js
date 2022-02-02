@@ -23,7 +23,6 @@ function MediaSelector(options) {
         } else {
             thisElement.find(settings.mediaResultSelector).slideDown();
             thisElement.data('content-shown', true);
-            link.html('Hide');
         }
     };
 
@@ -31,7 +30,6 @@ function MediaSelector(options) {
         const shown = result.data('content-shown');
         if (shown) {
             result.find(settings.mediaResultSelector).slideUp();
-            result.find(settings.mediaToggleSelector).html('Show');
             deselectAll(result);
             result.data('content-shown', false);
         }

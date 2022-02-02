@@ -24,6 +24,7 @@ namespace MrCMS.Settings
             MaxImageSizeHeight = 1200;
             MaxImageSizeWidth = 1200;
             MediaPageSize = 72;
+            MediaSelectorPageSize = 20;
         }
 
         [DisplayName("Thumbnail Image Height")]
@@ -149,6 +150,9 @@ namespace MrCMS.Settings
 
         [DisplayName("Media Page Size")]
         public int MediaPageSize { get; set; }
+
+        [DisplayName("Media Selector Page Size")]
+        public int MediaSelectorPageSize { get; set; }
 
         public override void SetViewData(IServiceProvider serviceProvider, ViewDataDictionary viewDataDictionary)
         {
