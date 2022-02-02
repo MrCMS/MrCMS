@@ -6,10 +6,10 @@ namespace MrCMS.Website
 {
     public class GetWebpageForPath : IGetWebpageForPath
     {
-        private readonly IGetDocumentByUrl<Webpage> _getWebpageByUrl;
+        private readonly IGetWebpageByUrl<Webpage> _getWebpageByUrl;
         private readonly IGetHomePage _getHomePage;
 
-        public GetWebpageForPath(IGetDocumentByUrl<Webpage> getWebpageByUrl, IGetHomePage getHomePage)
+        public GetWebpageForPath(IGetWebpageByUrl<Webpage> getWebpageByUrl, IGetHomePage getHomePage)
         {
             _getWebpageByUrl = getWebpageByUrl;
             _getHomePage = getHomePage;

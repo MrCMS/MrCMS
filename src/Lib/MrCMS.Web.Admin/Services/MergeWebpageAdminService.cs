@@ -21,18 +21,18 @@ namespace MrCMS.Web.Admin.Services
         private readonly IStringResourceProvider _resourceProvider;
         private readonly IWebpageUrlService _webpageUrlService;
         private readonly ICreateMergeBatch _createMergeBatch;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
         public MergeWebpageAdminService(IRepository<Webpage> webpageRepository,
             IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService,
             ICreateMergeBatch createMergeBatch,
-            IDocumentMetadataService documentMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _webpageRepository = webpageRepository;
             _resourceProvider = resourceProvider;
             _webpageUrlService = webpageUrlService;
             _createMergeBatch = createMergeBatch;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public async Task<List<SelectListItem>> GetValidParents(Webpage webpage)
@@ -49,22 +49,22 @@ namespace MrCMS.Web.Admin.Services
                 .Where(x => x != webpage && potentialParents.All(y => y.Contains(x))).ToHashSet();
 
             var items = validForAll.BuildSelectItemList(
-                page => $"{page.Name} ({_documentMetadataService.GetMetadata(page).Name})",
+                page => $"{page.Name} ({_webpageMetadataService.GetMetadata(page).Name})",
                 page => page.Id.ToString(),
-                webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
+                webpage1 => webpage.Parent != null && webpage.Parent.Id == webpage1.Id, emptyItem: null);
 
             return items;
         }
 
         private async Task<IReadOnlyList<Webpage>> GetValidParentWebpages(Webpage webpage)
         {
-            List<DocumentMetadata> validParentTypes = _documentMetadataService.GetValidParentTypes(webpage);
+            List<WebpageMetadata> validParentTypes = _webpageMetadataService.GetValidParentTypes(webpage);
 
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
                 await _webpageRepository.Query()
-                    .Where(page => validParentTypeNames.Contains(page.DocumentType))
+                    .Where(page => validParentTypeNames.Contains(page.WebpageType))
                     .ToListAsync();
 
             var webpages = potentialParents.Distinct()
@@ -157,7 +157,7 @@ namespace MrCMS.Web.Admin.Services
             {
                 return await _webpageUrlService.Suggest(new SuggestParams
                 {
-                    DocumentType = page.DocumentType,
+                    DocumentType = page.WebpageType,
                     PageName = page.Name,
                     Template = page.PageTemplate?.Id,
                     UseHierarchy = true,
@@ -168,7 +168,7 @@ namespace MrCMS.Web.Admin.Services
 
             return await _webpageUrlService.Suggest(new SuggestParams
             {
-                DocumentType = page.DocumentType,
+                DocumentType = page.WebpageType,
                 PageName = $"{parentModel.NewUrl}/{page.Name}",
                 Template = page.PageTemplate?.Id,
                 UseHierarchy = false,

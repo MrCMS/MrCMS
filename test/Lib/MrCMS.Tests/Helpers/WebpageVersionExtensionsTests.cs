@@ -5,12 +5,12 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Tests.Helpers
 {
-    public class DocumentExtensionsTests
+    public class WebpageVersionExtensionsTests
     {
         [Fact]
-        public void DocumentExtensions_GetVersion_ReturnsNullIfThereIsNoMatchingVersionInCollection()
+        public void WebpageVersionExtensions_GetVersion_ReturnsNullIfThereIsNoMatchingVersionInCollection()
         {
-            var doc = new StubDocument();
+            var doc = new StubWebpage();
 
             doc.GetVersion(1).Should().Be(null);
         }

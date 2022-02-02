@@ -11,40 +11,40 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public class DocumentMetadataService : IDocumentMetadataService
+    public class WebpageMetadataService : IWebpageMetadataService
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public DocumentMetadataService(IServiceProvider serviceProvider)
+        public WebpageMetadataService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        private List<DocumentMetadataInfo> _documentMetadataInfos;
-        private List<DocumentMetadata> _documentMetadata;
+        private List<WebpageMetadataInfo> _webpageMetadataInfos;
+        private List<WebpageMetadata> _webpageMetadata;
 
-        public IEnumerable<DocumentMetadata> WebpageMetadata
+        public IEnumerable<WebpageMetadata> WebpageMetadata
         {
-            get { return GetDocumentMetadatas().Where(x => x.Type != null && x.Type.IsSubclassOf(typeof(Webpage))); }
+            get { return GetWebpageMetadata().Where(x => x.Type != null && x.Type.IsSubclassOf(typeof(Webpage))); }
         }
 
-        public List<DocumentMetadata> GetDocumentMetadatas()
+        public List<WebpageMetadata> GetWebpageMetadata()
         {
-            return _documentMetadata ??= DocumentMetadataInfos.Select(GetMetadata).ToList();
+            return _webpageMetadata ??= DocumentMetadataInfos.Select(GetMetadata).ToList();
         }
 
-        public List<DocumentMetadataInfo> DocumentMetadataInfos => _documentMetadataInfos ??= GetDocumentMetadataInfo();
+        public List<WebpageMetadataInfo> DocumentMetadataInfos => _webpageMetadataInfos ??= GetDocumentMetadataInfo();
 
-        public DocumentMetadata GetDocumentMetadata(IHtmlHelper helper, int id)
+        public WebpageMetadata GetDocumentMetadata(IHtmlHelper helper, int id)
         {
             var webpage = helper.GetRequiredService<ISession>().Get<Webpage>(id);
 
             return GetMetadata(webpage);
         }
 
-        private List<DocumentMetadataInfo> GetDocumentMetadataInfo()
+        private List<WebpageMetadataInfo> GetDocumentMetadataInfo()
         {
-            var list = new List<DocumentMetadataInfo>();
+            var list = new List<WebpageMetadataInfo>();
             var allMaps = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(DocumentMetadataMap<>));
 
             foreach (
@@ -71,7 +71,7 @@ namespace MrCMS.Services
             return list.OrderBy(x => x.DisplayOrder).ToList();
         }
 
-        private DocumentMetadata GetMetadata(DocumentMetadataInfo info)
+        private WebpageMetadata GetMetadata(WebpageMetadataInfo info)
         {
             var validChildrenTypes = new List<Type>();
             switch (info.ChildrenListType)
@@ -87,7 +87,7 @@ namespace MrCMS.Services
                     break;
             }
 
-            return new DocumentMetadata(
+            return new WebpageMetadata(
                 info.Name,
                 info.IconClass,
                 info.WebGetController,
@@ -124,45 +124,45 @@ namespace MrCMS.Services
 
         public Type GetTypeByName(string name)
         {
-            return GetDocumentMetadatas().Where(x => x.TypeName == name).Select(x => x.Type).FirstOrDefault();
+            return GetWebpageMetadata().Where(x => x.TypeName == name).Select(x => x.Type).FirstOrDefault();
         }
 
-        public string GetIconClass(Document document)
+        public string GetIconClass(Webpage webpage)
         {
-            DocumentMetadata documentTypeDefinition =
-                GetDocumentMetadatas().FirstOrDefault(
-                    x => document.GetType().Name.Equals(x.TypeName, StringComparison.OrdinalIgnoreCase));
+            WebpageMetadata webpageTypeDefinition =
+                GetWebpageMetadata().FirstOrDefault(
+                    x => webpage.GetType().Name.Equals(x.TypeName, StringComparison.OrdinalIgnoreCase));
 
-            return documentTypeDefinition.IconClass;
+            return webpageTypeDefinition.IconClass;
         }
 
-        public DocumentMetadata GetMetadata(Type getType)
+        public WebpageMetadata GetMetadata(Type type)
         {
-            return GetDocumentMetadatas().FirstOrDefault(x => x.Type.Name == getType.Name);
+            return GetWebpageMetadata().FirstOrDefault(x => x.Type.Name == type.Name);
         }
 
-        public DocumentMetadata GetMetadata(Document document)
+        public WebpageMetadata GetMetadata(Webpage webpage)
         {
-            return GetDocumentMetadatas().FirstOrDefault(x => x.Type.Name == document.DocumentType);
+            return GetWebpageMetadata().FirstOrDefault(x => x.Type.Name == webpage.WebpageType);
         }
 
-        public int? GetMaxChildNodes(Document document)
+        public int? GetMaxChildNodes(Webpage webpage)
         {
-            DocumentMetadata documentTypeDefinition = GetMetadata(document);
-            return documentTypeDefinition.MaxChildNodes > 0
-                ? documentTypeDefinition.MaxChildNodes
+            WebpageMetadata webpageTypeDefinition = GetMetadata(webpage);
+            return webpageTypeDefinition.MaxChildNodes > 0
+                ? webpageTypeDefinition.MaxChildNodes
                 : (int?) null;
         }
 
-        public List<DocumentMetadata> GetValidParentTypes(Webpage webpage)
+        public List<WebpageMetadata> GetValidParentTypes(Webpage webpage)
         {
             Type type = webpage.Unproxy().GetType();
-            return GetDocumentMetadatas().FindAll(metadata => metadata.ValidChildrenTypes.Contains(type));
+            return GetWebpageMetadata().FindAll(metadata => metadata.ValidChildrenTypes.Contains(type));
         }
 
-        public DocumentMetadata GetMetadataByTypeName(string name)
+        public WebpageMetadata GetMetadataByTypeName(string name)
         {
-            return GetDocumentMetadatas().FirstOrDefault(x => x.Type.FullName == name);
+            return GetWebpageMetadata().FirstOrDefault(x => x.Type.FullName == name);
         }
     }
 }

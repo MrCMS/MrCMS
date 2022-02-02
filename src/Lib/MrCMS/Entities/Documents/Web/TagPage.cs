@@ -6,8 +6,8 @@ namespace MrCMS.Entities.Documents.Web
     {
         public TagPage()
         {
-            Documents = new HashSet<Document>();
+            Webpages = new HashSet<Webpage>();
         }
-        public virtual ISet<Document> Documents { get; set; }
+        public virtual ISet<Webpage> Webpages { get; set; }
     }
 }

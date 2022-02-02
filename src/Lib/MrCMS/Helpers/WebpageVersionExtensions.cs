@@ -8,59 +8,23 @@ using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using Newtonsoft.Json;
 using NHibernate;
 
 namespace MrCMS.Helpers
 {
-    public static class DocumentExtensions
+    public static class WebpageVersionExtensions
     {
-        public static bool CanDeleteDocument(this IHtmlHelper helper, int id)
-        {
-            return !helper.AnyChildren(id);
-        }
-
-        public static bool AnyChildren(this IHtmlHelper helper, int id)
-        {
-            var document = helper.GetRequiredService<ISession>().Get<Document>(id);
-            if (document == null)
-                return false;
-            return AnyChildren(helper, document);
-        }
-
-        private static bool AnyChildren(this IHtmlHelper helper, Document document)
-        {
-            return helper.GetRequiredService<ISession>()
-                .QueryOver<Document>()
-                .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
-                .Cacheable()
-                .Any();
-        }
-
-        public static bool CanDelete<T>(this IHtmlHelper<T> helper) where T : Document
-        {
-            return !helper.AnyChildren(helper.ViewData.Model);
-        }
-
-        public static bool AnyChildren<T>(this IHtmlHelper<T> helper) where T : Document
-        {
-            return helper.AnyChildren(helper.ViewData.Model);
-        }
-
-        public static string GetAdminController(this Document document)
-        {
-            return document is Layout ? "Layout" : document is MediaCategory ? "MediaCategory" : "Webpage";
-        }
-
-        public static T GetVersion<T>(this T doc, int id) where T : Document
+        public static T GetVersion<T>(this T doc, int id) where T : Webpage
         {
             var documentVersion = doc.Versions.FirstOrDefault(version => version.Id == id).Unproxy();
 
             return documentVersion != null ? DeserializeVersion(documentVersion, doc) : null;
         }
 
-        private static T DeserializeVersion<T>(DocumentVersion version, T doc) where T : Document
+        private static T DeserializeVersion<T>(WebpageVersion version, T doc) where T : Webpage
         {
             // use null handling ignore so that properties that didn't exist in previous versions are defaulted
             return JsonConvert.DeserializeObject(version.Data, doc.GetType(), new JsonSerializerSettings
@@ -69,7 +33,7 @@ namespace MrCMS.Helpers
             }) as T;
         }
 
-        private static List<VersionChange> GetVersionChanges(Document currentVersion, Document previousVersion)
+        private static List<VersionChange> GetVersionChanges(Webpage currentVersion, Webpage previousVersion)
         {
             var changes = new List<VersionChange>();
 
@@ -96,17 +60,17 @@ namespace MrCMS.Helpers
             return changes;
         }
 
-        public static bool AnyDifferencesFromCurrent(this DocumentVersion currentVersion)
+        public static bool AnyDifferencesFromCurrent(this WebpageVersion currentVersion)
         {
             return GetComparisonToCurrent(currentVersion).Any(change => change.AnyChange);
         }
 
-        public static List<VersionChange> GetComparisonToCurrent(this DocumentVersion currentVersion)
+        public static List<VersionChange> GetComparisonToCurrent(this WebpageVersion currentVersion)
         {
-            var document = currentVersion.Document.Unproxy();
-            var previousVersion = DeserializeVersion(currentVersion, document);
+            var webpage = currentVersion.Webpage.Unproxy();
+            var previousVersion = DeserializeVersion(currentVersion, webpage);
 
-            return GetVersionChanges(document, previousVersion);
+            return GetVersionChanges(webpage, previousVersion);
         }
 
         public static List<PropertyInfo> GetVersionProperties(this Type type)

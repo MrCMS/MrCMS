@@ -8,7 +8,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    public abstract class Webpage : Document
+    public abstract class Webpage : SiteEntity
     {
         public enum WebpagePublishStatus
         {
@@ -23,10 +23,20 @@ namespace MrCMS.Entities.Documents.Web
             Urls = new List<UrlHistory>();
             FrontEndAllowedRoles = new HashSet<UserRole>();
             ContentVersions = new List<ContentVersion>();
+            Versions = new List<WebpageVersion>();
+            Tags = new HashSet<Tag>();
         }
+        [Required] [StringLength(255)] public virtual string Name { get; set; }
+        public virtual Webpage Parent { get; set; }
 
-        [Required] public override string UrlSegment { get; set; }
+        [Required] public virtual string UrlSegment { get; set; }
+        
+        [Required]
+        [DisplayName("Display Order")]
+        public virtual int DisplayOrder { get; set; }
 
+        public virtual bool HideInAdminNav { get; set; }
+        
         [StringLength(250)] public virtual string SEOTargetPhrase { get; set; }
 
         [StringLength(250)] public virtual string MetaTitle { get; set; }
@@ -104,5 +114,21 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual ContentVersion LiveContentVersion =>
             ContentVersions.OrderByDescending(x => x.CreatedOn).FirstOrDefault(x => x.IsLive);
+        
+        public virtual ISet<Tag> Tags { get; set; }
+
+        public virtual string TagList
+        {
+            get { return string.Join(",", Tags.Select(x => x.Name)); }
+        }
+        public virtual string WebpageType => GetType().Name;
+
+        protected internal virtual IList<WebpageVersion> Versions { get; set; }
+        public virtual ISet<TagPage> TagPages { get; set; }
+
+        public virtual string TagPageList
+        {
+            get { return string.Join(",", TagPages?.Select(x => x.Name) ?? new List<string>()); }
+        }
     }
 }

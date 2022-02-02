@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace MrCMS.Web.Admin.Helpers
 {
-    public static class DocumentVersionRenderingExtensions
+    public static class WebpageVersionRenderingExtensions
     {
         public static IHtmlContent RenderValue(this IHtmlHelper htmlHelper, object value)
         {

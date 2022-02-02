@@ -30,7 +30,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 baseLayout = new Layout
                 {
                     Name = "Base Layout",
-                    UrlSegment = "_BaseLayout",
+                    Path = "_BaseLayout",
                     LayoutAreas = new List<LayoutArea>()
                 };
 

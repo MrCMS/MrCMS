@@ -101,8 +101,8 @@ namespace MrCMS.Installation.Services
             };
             using (ITransaction transaction = statelessSession.BeginTransaction())
             {
-                statelessSession.Insert(site);
-                transaction.Commit();
+                await statelessSession.InsertAsync(site);
+                await transaction.CommitAsync();
             }
             context.Items["override-site"] = site;
             //CurrentRequestData.CurrentSite = site;

@@ -17,7 +17,7 @@ namespace MrCMS.Web.Admin.Services
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly IAccessChecker _accessChecker;
         private readonly IGetAdminActionDescriptor _getDescriptor;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService,
@@ -25,14 +25,14 @@ namespace MrCMS.Web.Admin.Services
             IGetCurrentUser getCurrentUser,
             IAccessChecker accessChecker,
             IGetAdminActionDescriptor getDescriptor,
-            IDocumentMetadataService documentMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
             _getCurrentUser = getCurrentUser;
             _accessChecker = accessChecker;
             _getDescriptor = getDescriptor;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public async Task SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
@@ -51,7 +51,7 @@ namespace MrCMS.Web.Admin.Services
 
             var documentTypeToAdds = new List<DocumentTypeToAdd>();
 
-            foreach (DocumentMetadata type in validWebpageDocumentTypes)
+            foreach (WebpageMetadata type in validWebpageDocumentTypes)
             {
                 if (templates.Any(template => template.PageType == type.Type.FullName))
                 {
@@ -60,7 +60,7 @@ namespace MrCMS.Web.Admin.Services
                         Type = type,
                         DisplayName = $"Default {type.Name}"
                     });
-                    DocumentMetadata typeCopy = type;
+                    WebpageMetadata typeCopy = type;
                     documentTypeToAdds.AddRange(
                         templates.Where(template => template.PageType == typeCopy.Type.FullName)
                             .Select(pageTemplate => new DocumentTypeToAdd
@@ -81,8 +81,8 @@ namespace MrCMS.Web.Admin.Services
 
         public Task SetEditPageViewData(ViewDataDictionary viewData, Webpage page)
         {
-            DocumentMetadata documentMetadata = _documentMetadataService.GetMetadata(page);
-            viewData["EditView"] = documentMetadata.EditPartialView;
+            WebpageMetadata webpageMetadata = _webpageMetadataService.GetMetadata(page);
+            viewData["EditView"] = webpageMetadata.EditPartialView;
             return Task.CompletedTask;
         }
     }

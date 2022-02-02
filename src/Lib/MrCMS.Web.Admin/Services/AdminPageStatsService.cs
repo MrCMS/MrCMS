@@ -28,7 +28,7 @@ namespace MrCMS.Web.Admin.Services
                 .Where(x => x.Site.Id == site.Id)
                 .SelectList(
                     builder =>
-                        builder.SelectGroup(() => webpageAlias.DocumentType)
+                        builder.SelectGroup(() => webpageAlias.WebpageType)
                             .WithAlias(() => countAlias.DocumentType)
                             .SelectCount(() => webpageAlias.Id)
                             .WithAlias(() => countAlias.NumberOfPages)
@@ -37,7 +37,7 @@ namespace MrCMS.Web.Admin.Services
                                     .Where(
                                         webpage =>
                                             webpage.Site.Id == site.Id &&
-                                            webpage.DocumentType == webpageAlias.DocumentType &&
+                                            webpage.WebpageType == webpageAlias.WebpageType &&
                                            !webpage.Published && !webpage.IsDeleted)
                                     .ToRowCountQuery())
                             .WithAlias(() => countAlias.NumberOfUnPublishedPages))

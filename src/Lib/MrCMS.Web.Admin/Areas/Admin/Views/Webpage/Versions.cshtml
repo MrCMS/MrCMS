@@ -2,7 +2,7 @@
 @using X.PagedList.Mvc.Core
 @using MrCMS.Web.Admin.Models
 @model MrCMS.Entities.Documents.Web.Webpage
-@inject IDocumentVersionsAdminService AdminService
+@inject IWebpageVersionsAdminService AdminService
 @{
     var versionsModel = await AdminService.GetVersions(Model, ViewData["page"] as int? ?? 1) ?? new VersionsModel(null, Model.Id);
 }

@@ -6,26 +6,27 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
 using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class DocumentTagsUpdateServiceTests
+    public class WebpageTagsUpdateServiceTests
     {
-        public DocumentTagsUpdateServiceTests()
+        public WebpageTagsUpdateServiceTests()
         {
             _tagRepository = A.Fake<IRepository<Tag>>();
-            _documentRepository = A.Fake<IRepository<Document>>();
+            _webpageRepository = A.Fake<IRepository<Webpage>>();
             _getExistingTag = A.Fake<IGetExistingTag>();
-            _sut = new DocumentTagsUpdateService(_documentRepository, _tagRepository, _getExistingTag);
+            _sut = new WebpageTagsUpdateService(_webpageRepository, _tagRepository, _getExistingTag);
         }
 
         private readonly IRepository<Tag> _tagRepository;
-        private readonly IDocumentTagsUpdateService _sut;
-        private readonly IRepository<Document> _documentRepository;
-        private readonly List<string> _tags = new List<string> { "test" };
+        private readonly IWebpageTagsUpdateService _sut;
+        private readonly IRepository<Webpage> _webpageRepository;
+        private readonly List<string> _tags = new() { "test" };
         private readonly IGetExistingTag _getExistingTag;
 
         [Fact]
@@ -65,8 +66,8 @@ namespace MrCMS.Tests.Services
             await _sut.SetTags(_tags,
                 webpage);
 
-            webpage.Tags.ElementAt(0).Documents.Should().HaveCount(1);
-            webpage.Tags.ElementAt(0).Documents.ElementAt(0).Should().Be(webpage);
+            webpage.Tags.ElementAt(0).Webpages.Should().HaveCount(1);
+            webpage.Tags.ElementAt(0).Webpages.ElementAt(0).Should().Be(webpage);
         }
 
         [Fact]
@@ -87,12 +88,12 @@ namespace MrCMS.Tests.Services
             var tag = new Tag { Name = "Test" };
             await _tagRepository.Add(tag);
             var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
-            tag.Documents.Add(webpage);
-            tag.Documents.Should().HaveCount(1);
+            tag.Webpages.Add(webpage);
+            tag.Webpages.Should().HaveCount(1);
 
             await _sut.SetTags(new List<string>(), webpage);
 
-            tag.Documents.Should().HaveCount(0);
+            tag.Webpages.Should().HaveCount(0);
         }
 
         [Fact]
@@ -176,7 +177,7 @@ namespace MrCMS.Tests.Services
             textPage.Tags.Add(tag1);
             textPage.Tags.Add(tag2);
 
-            await _documentRepository.Add(textPage);
+            await _webpageRepository.Add(textPage);
             await _tagRepository.Add(tag1);
             await _tagRepository.Add(tag2);
 
@@ -194,7 +195,7 @@ namespace MrCMS.Tests.Services
             textPage.Tags.Add(tag1);
             textPage.Tags.Add(tag2);
 
-            await _documentRepository.Add(textPage);
+            await _webpageRepository.Add(textPage);
             await _tagRepository.Add(tag1);
             await _tagRepository.Add(tag2);
 
@@ -207,13 +208,13 @@ namespace MrCMS.Tests.Services
         public async Task DocumentTagsAdminService_SetTags_ShouldAssignDocumentToTag()
         {
             var textPage = new StubWebpage();
-            await _documentRepository.Add(textPage);
+            await _webpageRepository.Add(textPage);
 
             await _sut.SetTags("test 1", textPage);
 
             var tags = textPage.Tags;
             tags.Should().HaveCount(1);
-            tags.First().Documents.Should().HaveCount(1);
+            tags.First().Webpages.Should().HaveCount(1);
         }
 
         [Fact]
@@ -224,17 +225,17 @@ namespace MrCMS.Tests.Services
             var tag2 = new Tag { Name = "test 2" };
             textPage.Tags.Add(tag1);
             textPage.Tags.Add(tag2);
-            tag1.Documents.Add(textPage);
-            tag2.Documents.Add(textPage);
+            tag1.Webpages.Add(textPage);
+            tag2.Webpages.Add(textPage);
 
-            await _documentRepository.Add(textPage);
+            await _webpageRepository.Add(textPage);
             await _tagRepository.Add(tag1);
             await _tagRepository.Add(tag2);
 
             await _sut.SetTags("test 1", textPage);
 
-            tag1.Documents.Should().HaveCount(1);
-            tag2.Documents.Should().HaveCount(0);
+            tag1.Webpages.Should().HaveCount(1);
+            tag2.Webpages.Should().HaveCount(0);
         }
 
         [Fact]

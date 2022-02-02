@@ -24,12 +24,12 @@
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                @if (Html.CanDelete())
+                                @if (Html.CanDeleteWebpage(Model.Id))
                                 {
                                     <a class="dropdown-item" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@await Html.Resource("Delete")</a>
                                 }
                                 @Html.ActionLink(await Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
-                                @if (Html.AnyChildren())
+                                @if (!Html.CanDeleteWebpage(Model.Id))
                                 {
                                     @Html.ActionLink(await Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
                                 }

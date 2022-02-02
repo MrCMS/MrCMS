@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using NHibernate;
 using NHibernate.Criterion;
@@ -37,17 +38,9 @@ namespace MrCMS.Web.Admin.Services
                     .ListAsync<AutoCompleteResult>();
         }
 
-        public IEnumerable<Tag> GetTags(Document document)
+        public IEnumerable<Tag> GetTags(Webpage webpage)
         {
-            ISet<Tag> parentCategories = new HashSet<Tag>();
-
-            if (document != null)
-            {
-                if (document.Parent != null)
-                    parentCategories = document.Parent.Tags;
-            }
-
-            return parentCategories;
+            return webpage?.Parent != null ? webpage.Parent.Tags : new HashSet<Tag>();
         }
     }
 }

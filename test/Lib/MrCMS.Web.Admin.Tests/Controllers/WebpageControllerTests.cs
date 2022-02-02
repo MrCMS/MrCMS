@@ -25,7 +25,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private readonly IWebpageAdminService _webpageAdminService;
         private IModelBindingHelperAdapter _modelBindingHelperAdapter;
         private ISetWebpageAdminViewData _setAdminViewData;
-        private IDocumentVersionsAdminService _documentVersionsAdminService;
+        private IWebpageVersionsAdminService _webpageVersionsAdminService;
         private IServiceProvider _serviceProvider;
 
         public WebpageControllerTests()
@@ -35,11 +35,11 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _setAdminViewData = A.Fake<ISetWebpageAdminViewData>();
             _webpageAdminService = A.Fake<IWebpageAdminService>();
             _modelBindingHelperAdapter = A.Fake<IModelBindingHelperAdapter>();
-            _documentVersionsAdminService = A.Fake<IDocumentVersionsAdminService>();
+            _webpageVersionsAdminService = A.Fake<IWebpageVersionsAdminService>();
             _serviceProvider = A.Fake<IServiceProvider>();
             _webpageController = new WebpageController(_webpageAdminService, _baseViewDataService,
                 _setAdminViewData,
-                _urlValidationService, _modelBindingHelperAdapter, _documentVersionsAdminService, _serviceProvider)
+                _urlValidationService, _modelBindingHelperAdapter, _webpageVersionsAdminService, _serviceProvider)
             {
                 ViewData = ViewDataDictionaryHelper.GetNewDictionary(),
                 TempData = new MockTempDataDictionary(),
@@ -279,7 +279,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task WebpageController_ViewChanges_ShouldReturnPartialViewResult()
         {
-            var documentVersion = new DocumentVersion();
+            var documentVersion = new WebpageVersion();
 
             var viewChanges = await _webpageController.ViewChanges(0);
             viewChanges.Should().BeOfType<PartialViewResult>();

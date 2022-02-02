@@ -7,9 +7,9 @@ namespace MrCMS.Web.Admin.Controllers
 {
     public class VersionsController : MrCMSAdminController
     {
-        private readonly IDocumentVersionsAdminService _service;
+        private readonly IWebpageVersionsAdminService _service;
 
-        public VersionsController(IDocumentVersionsAdminService service)
+        public VersionsController(IWebpageVersionsAdminService service)
         {
             _service = service;
         }
@@ -25,7 +25,7 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<RedirectToActionResult> Revert_POST(int id)
         {
             var version = await _service.RevertToVersion(id);
-            return RedirectToAction("Edit", "Webpage", new {id = version.Document.Id});
+            return RedirectToAction("Edit", "Webpage", new { id = version.Webpage.Id });
         }
     }
 }

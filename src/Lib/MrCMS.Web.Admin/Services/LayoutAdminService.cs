@@ -16,16 +16,16 @@ namespace MrCMS.Web.Admin.Services
     public class LayoutAdminService : ILayoutAdminService
     {
         private readonly IRepository<Layout> _layoutRepository;
-        private readonly IGetDocumentsByParent<Layout> _getDocumentsByParent;
+        private readonly IGetLayoutsByParent _getLayoutsByParent;
         private readonly IUrlValidationService _urlValidationService;
         private readonly IMapper _mapper;
 
         public LayoutAdminService(IRepository<Layout> layoutRepository,
-            IGetDocumentsByParent<Layout> getDocumentsByParent, IUrlValidationService urlValidationService,
+            IGetLayoutsByParent getLayoutsByParent, IUrlValidationService urlValidationService,
             IMapper mapper)
         {
             _layoutRepository = layoutRepository;
-            _getDocumentsByParent = getDocumentsByParent;
+            _getLayoutsByParent = getLayoutsByParent;
             _urlValidationService = urlValidationService;
             _mapper = mapper;
         }
@@ -76,10 +76,10 @@ namespace MrCMS.Web.Admin.Services
         public async Task<List<SortItem>> GetSortItems(int? parent)
         {
             var layout = await GetLayout(parent);
-            var documents = await _getDocumentsByParent.GetDocuments(layout);
+            var documents = await _getLayoutsByParent.GetLayouts(layout);
             return documents
                 .Select(
-                    arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
+                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                 .OrderBy(x => x.Order)
                 .ToList();
         }
@@ -109,11 +109,11 @@ namespace MrCMS.Web.Admin.Services
             IList<Layout> potentialParents = await _layoutRepository.Query().ToListAsync();
             List<SelectListItem> result = potentialParents.Distinct()
                 .Where(page => page.Id != layout.Id)
-                .OrderBy(x => x.Name).BuildSelectItemList(page => page.Name, page => page.Id.ToString(),
-                    webpage1 => layout.Parent != null && layout.ParentId == webpage1.Id, emptyItem: null);
+                .OrderBy(x => x.Name).BuildSelectItemList(x => x.Name, x => x.Id.ToString(),
+                    x => layout.Parent != null && layout.Parent.Id == x.Id, emptyItem: null);
 
             return result.Prepend(new SelectListItem
-                {Value = string.Empty, Text = "Root", Selected = layout.Parent == null});
+                { Value = string.Empty, Text = "Root", Selected = layout.Parent == null });
         }
 
         public async Task SetParent(int id, int? parentId)

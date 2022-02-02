@@ -17,7 +17,7 @@
 
             <admin-header-actions>
                 <span class="btn-group">
-                    @if (Html.CanDeleteDocument(Model.Id))
+                    @if (Html.CanDeleteLayout(Model.Id))
                     {
                         <a href="@Url.Action("Delete", "Layout", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
                     }

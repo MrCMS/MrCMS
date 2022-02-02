@@ -5,15 +5,15 @@ namespace MrCMS.Services
 {
     public class WebpageChildrenChecker : IWebpageChildrenChecker
     {
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
-        public WebpageChildrenChecker(IDocumentMetadataService documentMetadataService)
+        public WebpageChildrenChecker(IWebpageMetadataService webpageMetadataService)
         {
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
         public bool CanAddChildren(Webpage webpage)
         {
-            return _documentMetadataService.GetMetadata(webpage).ValidChildrenTypes.Any();
+            return _webpageMetadataService.GetMetadata(webpage).ValidChildrenTypes.Any();
         }
     }
 }

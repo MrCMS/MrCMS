@@ -32,7 +32,7 @@ namespace MrCMS.Services
             IList<WebpageCount> webpageCounts = _session.QueryOver(() => webpageAlias)
                 .SelectList(
                     builder =>
-                        builder.SelectGroup(() => webpageAlias.DocumentType)
+                        builder.SelectGroup(() => webpageAlias.WebpageType)
                             .WithAlias(() => countAlias.Type)
                             .SelectCount(() => webpageAlias.Id)
                             .WithAlias(() => countAlias.Count)

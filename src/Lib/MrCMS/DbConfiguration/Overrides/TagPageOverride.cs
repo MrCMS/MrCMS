@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<TagPage> mapping)
         {
-            mapping.HasManyToMany(x => x.Documents).Table("DocumentTagPages")
+            mapping.HasManyToMany(x => x.Webpages).Table("DocumentTagPages")
                 .Inverse().Cascade.SaveUpdate()
                 .ChildWhere(x => x.IsDeleted == false);
         }

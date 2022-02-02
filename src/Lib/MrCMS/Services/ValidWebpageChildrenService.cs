@@ -11,22 +11,22 @@ namespace MrCMS.Services
     public class ValidWebpageChildrenService : IValidWebpageChildrenService
     {
         private readonly IExistAnyWebpageService _existAnyWebpageService;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
         public ValidWebpageChildrenService(IExistAnyWebpageService existAnyWebpageService,
-            IDocumentMetadataService documentMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _existAnyWebpageService = existAnyWebpageService;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
-        public async Task<IReadOnlyCollection<DocumentMetadata>> GetValidWebpageDocumentTypes(Webpage webpage,
-            Func<DocumentMetadata, Task<bool>> predicate)
+        public async Task<IReadOnlyCollection<WebpageMetadata>> GetValidWebpageDocumentTypes(Webpage webpage,
+            Func<WebpageMetadata, Task<bool>> predicate)
         {
-            var documentTypeDefinitions = new HashSet<DocumentMetadata>();
-            var webpageMetadata = _documentMetadataService.WebpageMetadata.ToHashSet();
+            var documentTypeDefinitions = new HashSet<WebpageMetadata>();
+            var webpageMetadata = _webpageMetadataService.WebpageMetadata.ToHashSet();
             if (webpage == null)
-                documentTypeDefinitions = new HashSet<DocumentMetadata>(
+                documentTypeDefinitions = new HashSet<WebpageMetadata>(
                     webpageMetadata.Where(definition => !definition.RequiresParent));
             else
             {
@@ -34,12 +34,12 @@ namespace MrCMS.Services
                     webpageMetadata.FirstOrDefault(
                         definition => definition.TypeName == webpage.Unproxy().GetType().Name);
 
-                IEnumerable<DocumentMetadata> metadatas =
-                    documentTypeDefinition.ChildrenList.Select(_documentMetadataService.GetMetadata);
+                IEnumerable<WebpageMetadata> metadatas =
+                    documentTypeDefinition.ChildrenList.Select(_webpageMetadataService.GetMetadata);
                 switch (documentTypeDefinition.ChildrenListType)
                 {
                     case ChildrenListType.BlackList:
-                        IEnumerable<DocumentMetadata> documentMetadatas =
+                        IEnumerable<WebpageMetadata> documentMetadatas =
                             webpageMetadata.Except(metadatas).Where(def => !def.AutoBlacklist);
                         documentMetadatas.ForEach(item => documentTypeDefinitions.Add(item));
                         break;
@@ -66,7 +66,7 @@ namespace MrCMS.Services
             return documentTypeDefinitions;
         }
 
-        public async Task<bool> AnyValidWebpageDocumentTypes(Webpage webpage, Func<DocumentMetadata, Task<bool>> predicate)
+        public async Task<bool> AnyValidWebpageDocumentTypes(Webpage webpage, Func<WebpageMetadata, Task<bool>> predicate)
         {
             return (await GetValidWebpageDocumentTypes(webpage, predicate)).Any();
         }

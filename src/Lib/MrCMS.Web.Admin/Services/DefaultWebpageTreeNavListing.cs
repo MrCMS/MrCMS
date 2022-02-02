@@ -14,18 +14,18 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly ISession _session;
         private readonly ITreeNavService _treeNavService;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IUrlHelper _urlHelper;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session,
-            IUrlHelper urlHelper, ITreeNavService treeNavService, IDocumentMetadataService documentMetadataService)
+            IUrlHelper urlHelper, ITreeNavService treeNavService, IWebpageMetadataService webpageMetadataService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
             _urlHelper = urlHelper;
             _treeNavService = treeNavService;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public async Task<AdminTree> GetTree(int? id)
@@ -36,24 +36,24 @@ namespace MrCMS.Web.Admin.Services
                 RootContoller = "Webpage",
                 IsRootRequest = parent == null
             };
-            int maxChildNodes = parent == null ? 1000 : _documentMetadataService.GetMetadata(parent).MaxChildNodes;
+            int maxChildNodes = parent == null ? 1000 : _webpageMetadataService.GetMetadata(parent).MaxChildNodes;
             IQueryOver<Webpage, Webpage> query = GetQuery(parent);
 
             int rowCount = await GetRowCount(query);
             var webpages = await query.Take(maxChildNodes).Cacheable().ListAsync();
             foreach (var doc in webpages)
             {
-                DocumentMetadata documentMetadata = _documentMetadataService.GetMetadata(doc);
+                WebpageMetadata webpageMetadata = _webpageMetadataService.GetMetadata(doc);
                 var node = new AdminTreeNode
                 {
                     Id = doc.Id,
-                    ParentId = doc.ParentId,
+                    ParentId = doc.Parent?.Id,
                     Name = doc.Name,
-                    IconClass = documentMetadata.IconClass,
+                    IconClass = webpageMetadata.IconClass,
                     NodeType = "Webpage",
-                    Type = documentMetadata.Type.FullName,
+                    Type = webpageMetadata.Type.FullName,
                     HasChildren = await _treeNavService.WebpageHasChildren(doc.Id),
-                    Sortable = documentMetadata.Sortable,
+                    Sortable = webpageMetadata.Sortable,
                     CanAddChild = await _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
                     IsPublished = doc.Published,
                     RevealInNavigation = doc.RevealInNavigation,
@@ -96,7 +96,7 @@ namespace MrCMS.Web.Admin.Services
             if (parent != null)
             {
                 query = query.Where(x => x.Parent.Id == parent.Id);
-                DocumentMetadata metaData = _documentMetadataService.GetMetadata(parent);
+                WebpageMetadata metaData = _webpageMetadataService.GetMetadata(parent);
                 query = ApplySort(metaData, query);
             }
             else
@@ -108,7 +108,7 @@ namespace MrCMS.Web.Admin.Services
             return query;
         }
 
-        private static IQueryOver<Webpage, Webpage> ApplySort(DocumentMetadata metaData,
+        private static IQueryOver<Webpage, Webpage> ApplySort(WebpageMetadata metaData,
             IQueryOver<Webpage, Webpage> query)
         {
             switch (metaData.SortBy)

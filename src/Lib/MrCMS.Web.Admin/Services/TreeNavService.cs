@@ -27,8 +27,8 @@ namespace MrCMS.Web.Admin.Services
             var allTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(typeof(WebpageTreeNavListing<>));
 
             foreach (Type type in
-                TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
-                    .Where(type => !type.ContainsGenericParameters))
+                     TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                         .Where(type => !type.ContainsGenericParameters))
             {
                 var types = allTypes.FindAll(x =>
                     typeof(WebpageTreeNavListing<>).MakeGenericType(type).IsAssignableFrom(x));
@@ -60,14 +60,14 @@ namespace MrCMS.Web.Admin.Services
 
         public async Task<AdminTree> GetMediaCategoryNodes(int? id)
         {
-            AdminTree adminTree = await GetSimpleAdminTree<MediaCategory>(id, "fa fa-picture");
+            AdminTree adminTree = await GetMediaCategoryAdminTree(id);
             adminTree.RootContoller = "MediaCategory";
             return adminTree;
         }
 
         public async Task<AdminTree> GetLayoutNodes(int? id)
         {
-            AdminTree adminTree = await GetSimpleAdminTree<Layout>(id, "fa fa-th-large");
+            AdminTree adminTree = await GetLayoutAdminTree(id);
             adminTree.RootContoller = "Layout";
             return adminTree;
         }
@@ -86,7 +86,7 @@ namespace MrCMS.Web.Admin.Services
             return listing ?? _serviceProvider.GetRequiredService<DefaultWebpageTreeNavListing>();
         }
 
-        private async Task<AdminTree> GetSimpleAdminTree<T>(int? id, string iconClass) where T : Document
+        private async Task<AdminTree> GetMediaCategoryAdminTree(int? id)
         {
             var adminTree = new AdminTree();
             if (!id.HasValue)
@@ -94,29 +94,67 @@ namespace MrCMS.Web.Admin.Services
                 adminTree.IsRootRequest = true;
             }
 
-            IList<T> query =
-                await _session.QueryOver<T>()
+            IList<MediaCategory> query =
+                await _session.QueryOver<MediaCategory>()
                     .Where(x => x.Parent.Id == id && (x.HideInAdminNav != true))
                     .OrderBy(x => x.Name)
                     .Asc.Cacheable()
                     .ListAsync();
             foreach (var doc in query)
             {
-                var type = typeof(T);
+                var type = typeof(MediaCategory);
                 var node = new AdminTreeNode
                 {
                     Id = doc.Id,
-                    ParentId = doc.ParentId,
+                    ParentId = doc.Parent?.Id,
                     Name = doc.Name,
-                    IconClass = iconClass,
+                    IconClass = "fa fa-picture",
                     NodeType = type.Name,
                     Type = type.FullName,
-                    HasChildren = await _session.QueryOver<T>().Where(arg => arg.Parent.Id == doc.Id).Cacheable()
+                    HasChildren = await _session.QueryOver<MediaCategory>().Where(arg => arg.Parent.Id == doc.Id).Cacheable()
                         .AnyAsync(),
                     CanAddChild = true,
                     IsPublished = true,
                     RevealInNavigation = true,
-                    Url = _urlHelper.Action(typeof(T) == typeof(Layout) ? "Edit" : "Show", type.Name, new {id = doc.Id})
+                    Url = _urlHelper.Action("Show", type.Name, new { id = doc.Id })
+                };
+                adminTree.Nodes.Add(node);
+            }
+
+            return adminTree;
+        }
+
+        private async Task<AdminTree> GetLayoutAdminTree(int? id)
+        {
+            var adminTree = new AdminTree();
+            if (!id.HasValue)
+            {
+                adminTree.IsRootRequest = true;
+            }
+
+            IList<Layout> query =
+                await _session.QueryOver<Layout>()
+                    .Where(x => x.Parent.Id == id && (x.HideInAdminNav != true))
+                    .OrderBy(x => x.Name)
+                    .Asc.Cacheable()
+                    .ListAsync();
+            foreach (var doc in query)
+            {
+                var type = typeof(Layout);
+                var node = new AdminTreeNode
+                {
+                    Id = doc.Id,
+                    ParentId = doc.Parent?.Id,
+                    Name = doc.Name,
+                    IconClass = "fa fa-th-large",
+                    NodeType = type.Name,
+                    Type = type.FullName,
+                    HasChildren = await _session.QueryOver<Layout>().Where(arg => arg.Parent.Id == doc.Id).Cacheable()
+                        .AnyAsync(),
+                    CanAddChild = true,
+                    IsPublished = true,
+                    RevealInNavigation = true,
+                    Url = _urlHelper.Action("Show", type.Name, new { id = doc.Id })
                 };
                 adminTree.Nodes.Add(node);
             }

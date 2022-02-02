@@ -8,9 +8,9 @@ namespace MrCMS.Services
 {
     public interface IValidWebpageChildrenService
     {
-        Task<IReadOnlyCollection<DocumentMetadata>> GetValidWebpageDocumentTypes(Webpage webpage,
-            Func<DocumentMetadata, Task<bool>> predicate);
+        Task<IReadOnlyCollection<WebpageMetadata>> GetValidWebpageDocumentTypes(Webpage webpage,
+            Func<WebpageMetadata, Task<bool>> predicate);
 
-        Task<bool> AnyValidWebpageDocumentTypes(Webpage webpage, Func<DocumentMetadata, Task<bool>> predicate = null);
+        Task<bool> AnyValidWebpageDocumentTypes(Webpage webpage, Func<WebpageMetadata, Task<bool>> predicate = null);
     }
 }

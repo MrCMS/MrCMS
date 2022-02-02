@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-lg-12">
             <input type="hidden" asp-for="ParentId" />
-            @Html.Hidden("ParentUrl", parent?.UrlSegment)
+            @Html.Hidden("ParentUrl", parent?.Path)
             <div class="form-group">
                 <label asp-for="Name"></label>
                 <input type="text" asp-for="Name" class="form-control" />

@@ -24,7 +24,7 @@ namespace MrCMS.Website
 
             if (webpage != null)
             {
-                context.Values[Key] = context.ViewName ?? webpage.DocumentType;
+                context.Values[Key] = context.ViewName ?? webpage.WebpageType;
             }
         }
 

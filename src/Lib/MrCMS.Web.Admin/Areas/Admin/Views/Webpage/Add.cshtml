@@ -2,7 +2,7 @@
 @using MrCMS.Services
 @using MrCMS.Web.Admin.Models
 @model AddWebpageModel
-@inject IDocumentMetadataService DocumentMetadataService
+@inject IWebpageMetadataService _webpageMetadataService
 @{
     ViewBag.Title = "Add Webpage";
     var parent = ViewData["parent"] as Webpage;
@@ -59,7 +59,7 @@
                     </div>
                     <div class="checkbox">
                         <label>
-                            @if (parent != null && DocumentMetadataService.GetMetadata(parent).ChildrenMaintainHierarchy == true)
+                            @if (parent != null && _webpageMetadataService.GetMetadata(parent).ChildrenMaintainHierarchy == true)
                             {
                                 <input type="checkbox" name="mode" id="mode" value="1" checked/>
                             }

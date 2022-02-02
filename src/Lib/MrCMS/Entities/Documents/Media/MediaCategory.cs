@@ -6,14 +6,23 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Documents.Media
 {
-    public class MediaCategory : Document
+    public class MediaCategory : SiteEntity
     {
+        [Required] [StringLength(255)] public virtual string Name { get; set; }
+        public virtual MediaCategory Parent { get; set; }
+
+        
+        [Required]
+        [DisplayName("Display Order")]
+        public virtual int DisplayOrder { get; set; }
+
+        public virtual bool HideInAdminNav { get; set; }
         [Required]
         [Remote("ValidateUrlIsAllowed", "MediaCategory", AdditionalFields = "Id")]
         [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$", ErrorMessage =
             "Path must alphanumeric characters only with dashes or underscore for spaces.")]
         [DisplayName("Path")]
-        public override string UrlSegment { get; set; }
+        public virtual string Path { get; set; }
 
         public virtual string MetaTitle { get; set; }
         public virtual string MetaDescription { get; set; }
@@ -31,7 +40,7 @@ namespace MrCMS.Entities.Documents.Media
                 while (page != null)
                 {
                     yield return page;
-                    page = page.Parent.Unproxy() as MediaCategory;
+                    page = page.Parent.Unproxy();
                 }
             }
         }

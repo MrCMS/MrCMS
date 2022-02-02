@@ -7,11 +7,11 @@ namespace MrCMS.Web.Admin.Services
 {
     public class PageTemplateService : IPageTemplateService
     {
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
-        public PageTemplateService(IDocumentMetadataService documentMetadataService)
+        public PageTemplateService(IWebpageMetadataService webpageMetadataService)
         {
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         private Type GetPageType(PageTemplate template)
@@ -31,7 +31,7 @@ namespace MrCMS.Web.Admin.Services
             var pageType = GetPageType(template);
             if (pageType == null) return string.Empty;
 
-            var metadata = _documentMetadataService.GetMetadata(pageType);
+            var metadata = _webpageMetadataService.GetMetadata(pageType);
 
             return metadata.Name;
         }

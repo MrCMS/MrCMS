@@ -9,16 +9,16 @@ namespace MrCMS.Website.CMS
     {
         private readonly IGetWebpageForPath _getWebpageForPath;
         private readonly ICanPreviewWebpage _canPreview;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IUserUIPermissionsService _userUIPermissionsService;
 
         public CmsRouteMatcher(IUserUIPermissionsService userUIPermissionsService, IGetWebpageForPath getWebpageForPath,
-            ICanPreviewWebpage canPreview, IDocumentMetadataService documentMetadataService)
+            ICanPreviewWebpage canPreview, IWebpageMetadataService webpageMetadataService)
         {
             _userUIPermissionsService = userUIPermissionsService;
             _getWebpageForPath = getWebpageForPath;
             _canPreview = canPreview;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public async Task<CmsMatchData> TryMatch(string path, string method)
@@ -86,7 +86,7 @@ namespace MrCMS.Website.CMS
                 };
             }
 
-            var metadata = _documentMetadataService.GetMetadata(webpage);
+            var metadata = _webpageMetadataService.GetMetadata(webpage);
 
             return new PageData
             {

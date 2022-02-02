@@ -14,17 +14,17 @@ namespace MrCMS.Web.Admin.Services
     public class MediaCategoryAdminService : IMediaCategoryAdminService
     {
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
-        private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
+        private readonly IGetMediaCategoriesByParent _getMediaCategoriesByParent;
         private readonly IUrlValidationService _urlValidationService;
         private readonly IMapper _mapper;
 
         public MediaCategoryAdminService(IRepository<MediaCategory> mediaCategoryRepository,
-            IGetDocumentsByParent<MediaCategory> getDocumentsByParent,
+            IGetMediaCategoriesByParent getMediaCategoriesByParent,
             IUrlValidationService urlValidationService,
             IMapper mapper)
         {
             _mediaCategoryRepository = mediaCategoryRepository;
-            _getDocumentsByParent = getDocumentsByParent;
+            _getMediaCategoriesByParent = getMediaCategoriesByParent;
             _urlValidationService = urlValidationService;
             _mapper = mapper;
         }
@@ -46,10 +46,10 @@ namespace MrCMS.Web.Admin.Services
         {
             var mediaCategory = _mapper.Map<MediaCategory>(model);
             if (await _mediaCategoryRepository.Query()
-                .AnyAsync(x => x.UrlSegment == mediaCategory.UrlSegment))
+                    .AnyAsync(x => x.Path == mediaCategory.Path))
                 return new IMediaCategoryAdminService.CanAddCategoryResult
-                    {Success = false, ErrorMessage = "Category already exists at this location"};
-            return new IMediaCategoryAdminService.CanAddCategoryResult {Success = true};
+                    { Success = false, ErrorMessage = "Category already exists at this location" };
+            return new IMediaCategoryAdminService.CanAddCategoryResult { Success = true };
         }
 
         public async Task<MediaCategory> Add(AddMediaCategoryModel model)
@@ -77,9 +77,9 @@ namespace MrCMS.Web.Admin.Services
         public async Task<List<SortItem>> GetSortItems(int id)
         {
             return
-                (await _getDocumentsByParent.GetDocuments(await GetCategory(id)))
+                (await _getMediaCategoriesByParent.GetMediaCategories(await GetCategory(id)))
                 .Select(
-                    arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
+                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                 .OrderBy(x => x.Order)
                 .ToList();
         }

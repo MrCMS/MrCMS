@@ -60,7 +60,7 @@ namespace MrCMS.Services
             if (id.HasValue)
             {
                 var document = await _session.GetAsync<MediaCategory>(id.Value);
-                if (url.Trim() == document.UrlSegment.Trim())
+                if (url.Trim() == document.Path.Trim())
                     return true;
                 return !await MediaCategoryExists(url);
             }
@@ -76,7 +76,7 @@ namespace MrCMS.Services
             if (id.HasValue)
             {
                 var document = await _session.GetAsync<Layout>(id.Value);
-                if (url.Trim() == document.UrlSegment.Trim())
+                if (url.Trim() == document.Path.Trim())
                     return true;
                 return !await LayoutExists(url);
             }
@@ -120,7 +120,7 @@ namespace MrCMS.Services
         private Task<bool> MediaCategoryExists(string url)
         {
             return _session.QueryOver<MediaCategory>()
-                .Where(doc => doc.UrlSegment == url)
+                .Where(doc => doc.Path == url)
                 .Cacheable()
                 .AnyAsync();
         }
@@ -133,7 +133,7 @@ namespace MrCMS.Services
         private Task<bool> LayoutExists(string url)
         {
             return _session.QueryOver<Layout>()
-                .Where(doc => doc.UrlSegment == url)
+                .Where(doc => doc.Path == url)
                 .Cacheable()
                 .AnyAsync();
         }

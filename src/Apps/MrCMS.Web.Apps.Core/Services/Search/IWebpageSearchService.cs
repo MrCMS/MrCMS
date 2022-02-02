@@ -10,6 +10,6 @@ namespace MrCMS.Web.Apps.Core.Services.Search
     public interface IWebpageSearchService
     {
         Task<IPagedList<Webpage>> Search(WebpageSearchQuery model);
-        Task<IReadOnlyList<Document>> GetBreadCrumb(int? parentId);
+        Task<IReadOnlyList<Webpage>> GetBreadCrumb(int? parentId);
     }
 }

@@ -63,7 +63,7 @@ namespace MrCMS.Web.Admin.Services
         public async Task<IList<Webpage>> GetWebpages(TagPage page)
         {
             var webpages = new List<Webpage>();
-            foreach (var item in page.Documents)
+            foreach (var item in page.Webpages)
                 webpages.Add(await _session.GetAsync<Webpage>(item.Id));
             return webpages.OrderByDescending(x => x.PublishOn).ToList();
         }

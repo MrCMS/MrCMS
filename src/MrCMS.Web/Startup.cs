@@ -121,7 +121,7 @@ namespace MrCMS.Web
             services.RegisterTokenProviders();
             services.RegisterDocumentMetadata();
             services.RegisterRouteTransformers();
-            services.AddSingleton<IDocumentMetadataService, DocumentMetadataService>();
+            services.AddSingleton<IWebpageMetadataService, WebpageMetadataService>();
             services.RegisterTasks();
 
             services.AddMvcForMrCMS(appContext);

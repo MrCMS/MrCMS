@@ -14,13 +14,13 @@ namespace MrCMS.Web.Admin.Services
     public class WebpageParentAdminService : IWebpageParentAdminService
     {
         private readonly IRepository<Webpage> _webpageRepository;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
         public WebpageParentAdminService(IRepository<Webpage> webpageRepository,
-            IDocumentMetadataService documentMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _webpageRepository = webpageRepository;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public async Task<Webpage> GetWebpage(int id)
@@ -30,24 +30,24 @@ namespace MrCMS.Web.Admin.Services
 
         public async Task<IEnumerable<SelectListItem>> GetValidParents(Webpage webpage)
         {
-            List<DocumentMetadata> validParentTypes = _documentMetadataService.GetValidParentTypes(webpage);
+            List<WebpageMetadata> validParentTypes = _webpageMetadataService.GetValidParentTypes(webpage);
 
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
                 await _webpageRepository.Query()
-                    .Where(page => validParentTypeNames.Contains(page.DocumentType))
+                    .Where(page => validParentTypeNames.Contains(page.WebpageType))
                     .ToListAsync();
 
             List<SelectListItem> result = potentialParents.Distinct()
                 .Where(page => !page.ActivePages.Contains(webpage))
                 .OrderBy(x => x.Name)
                 .BuildSelectItemList(
-                    page => $"{page.Name} ({_documentMetadataService.GetMetadata(page).Name})",
+                    page => $"{page.Name} ({_webpageMetadataService.GetMetadata(page).Name})",
                     page => page.Id.ToString(),
-                    webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
+                    webpage1 => webpage.Parent != null && webpage.Parent.Id == webpage1.Id, emptyItem: null);
 
-            if (!_documentMetadataService.GetMetadata(webpage).RequiresParent)
+            if (!_webpageMetadataService.GetMetadata(webpage).RequiresParent)
                 result.Insert(0, SelectListItemHelper.EmptyItem("Root"));
 
             return result;

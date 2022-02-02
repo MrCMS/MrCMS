@@ -6,17 +6,17 @@ namespace MrCMS.Services.ImportExport
 {
     public class UpdateTagsService : IUpdateTagsService
     {
-        private readonly IDocumentTagsUpdateService _documentTagsUpdateService;
+        private readonly IWebpageTagsUpdateService _webpageTagsUpdateService;
 
-        public UpdateTagsService(IDocumentTagsUpdateService documentTagsUpdateService)
+        public UpdateTagsService(IWebpageTagsUpdateService webpageTagsUpdateService)
         {
-            _documentTagsUpdateService = documentTagsUpdateService;
+            _webpageTagsUpdateService = webpageTagsUpdateService;
         }
 
         public async Task SetTags(DocumentImportDTO documentDto, Webpage webpage)
         {
             var tags = documentDto.Tags;
-            await _documentTagsUpdateService.SetTags(tags, webpage);
+            await _webpageTagsUpdateService.SetTags(tags, webpage);
         }
     }
 }

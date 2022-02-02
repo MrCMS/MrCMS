@@ -17,7 +17,7 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public List<PageTemplate> Get(IEnumerable<DocumentMetadata> validWebpageDocumentTypes)
+        public List<PageTemplate> Get(IEnumerable<WebpageMetadata> validWebpageDocumentTypes)
         {
             List<string> typeNames = validWebpageDocumentTypes.Select(metadata => metadata.Type.FullName).ToList();
 

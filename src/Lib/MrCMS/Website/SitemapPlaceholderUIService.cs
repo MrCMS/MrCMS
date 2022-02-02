@@ -48,7 +48,7 @@ namespace MrCMS.Website
             if (child == null)
                 return string.Empty;
 
-            if (child.DocumentType == typeof(SitemapPlaceholder).FullName)
+            if (child.WebpageType == typeof(SitemapPlaceholder).FullName)
                 return await GetTheLastRedirectChildLink(child);
 
             return await _getLiveUrl.GetAbsoluteUrl(child);

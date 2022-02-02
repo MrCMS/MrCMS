@@ -22,7 +22,7 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly ISetWebpageAdminViewData _setWebpageAdminViewData;
         private readonly IUrlValidationService _urlValidationService;
         private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
-        private readonly IDocumentVersionsAdminService _documentVersionsAdminService;
+        private readonly IWebpageVersionsAdminService _webpageVersionsAdminService;
         private readonly IServiceProvider _serviceProvider;
 
         public WebpageController(IWebpageAdminService webpageAdminService,
@@ -30,7 +30,7 @@ namespace MrCMS.Web.Admin.Controllers
             ISetWebpageAdminViewData setWebpageAdminViewData,
             IUrlValidationService urlValidationService,
             IModelBindingHelperAdapter modelBindingHelperAdapter,
-            IDocumentVersionsAdminService documentVersionsAdminService,
+            IWebpageVersionsAdminService webpageVersionsAdminService,
             IServiceProvider serviceProvider)
         {
             _webpageAdminService = webpageAdminService;
@@ -38,7 +38,7 @@ namespace MrCMS.Web.Admin.Controllers
             _setWebpageAdminViewData = setWebpageAdminViewData;
             _urlValidationService = urlValidationService;
             _modelBindingHelperAdapter = modelBindingHelperAdapter;
-            _documentVersionsAdminService = documentVersionsAdminService;
+            _webpageVersionsAdminService = webpageVersionsAdminService;
             _serviceProvider = serviceProvider;
         }
 
@@ -154,7 +154,7 @@ namespace MrCMS.Web.Admin.Controllers
 
         public async Task<ActionResult> ViewChanges(int id)
         {
-            var documentVersion = await _documentVersionsAdminService.GetDocumentVersion(id);
+            var documentVersion = await _webpageVersionsAdminService.GetDocumentVersion(id);
             if (documentVersion == null)
             {
                 return RedirectToAction("Index");

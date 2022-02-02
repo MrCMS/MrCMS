@@ -71,7 +71,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             {
                 Id = x.Id,
                 Name = x.Name,
-                ParentId = x.ParentId,
+                ParentId = x.Parent?.Id,
                 Url = x.UrlSegment.GetRelativeUrl(),
                 PageType = x.GetType()
             }).ToList();
@@ -81,7 +81,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
         {
             public int Id { get; init; }
             public string Name { get; init; }
-            public int ParentId { get; init; }
+            public int? ParentId { get; init; }
             public string Url { get; init; }
             public Type PageType { get; init; }
         }

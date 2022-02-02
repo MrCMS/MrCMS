@@ -4,32 +4,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Services
 {
-    public class DocumentTagsUpdateService : IDocumentTagsUpdateService
+    public class WebpageTagsUpdateService : IWebpageTagsUpdateService
     {
-        private readonly IRepository<Document> _documentRepository;
+        private readonly IRepository<Webpage> _webpageRepository;
         private readonly IRepository<Tag> _tagRepository;
         private readonly IGetExistingTag _getExistingTag;
 
-        public DocumentTagsUpdateService(IRepository<Document> documentRepository, IRepository<Tag> tagRepository,
+        public WebpageTagsUpdateService(IRepository<Webpage> webpageRepository, IRepository<Tag> tagRepository,
             IGetExistingTag getExistingTag)
         {
-            _documentRepository = documentRepository;
+            _webpageRepository = webpageRepository;
             _tagRepository = tagRepository;
             _getExistingTag = getExistingTag;
         }
 
         public async Task SetTags(string taglist, int id)
         {
-            var document = await _documentRepository.Get(id);
+            var document = await _webpageRepository.Get(id);
             await SetTags(taglist, document);
         }
 
-        public async Task SetTags(string taglist, Document document)
+        public async Task SetTags(string taglist, Webpage webpage)
         {
-            if (document == null) throw new ArgumentNullException(nameof(document));
+            if (webpage == null) throw new ArgumentNullException(nameof(webpage));
 
             if (taglist == null)
                 taglist = string.Empty;
@@ -38,18 +39,18 @@ namespace MrCMS.Services
                 taglist.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
                     x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-            await SetTags(tagNames, document);
+            await SetTags(tagNames, webpage);
         }
 
-        public async Task SetTags(List<string> taglist, Document document)
+        public async Task SetTags(List<string> taglist, Webpage webpage)
         {
             var tagsToAdd =
                 taglist.Where(
-                        s => !document.Tags.Select(tag => tag.Name)
+                        s => !webpage.Tags.Select(tag => tag.Name)
                             .Contains(s, StringComparer.InvariantCultureIgnoreCase))
                     .ToList();
             var tagsToRemove =
-                document.Tags.Where(
+                webpage.Tags.Where(
                     tag => !taglist.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
             foreach (var item in tagsToAdd)
             {
@@ -61,18 +62,18 @@ namespace MrCMS.Services
                     await _tagRepository.Add(tag);
                 }
 
-                if (!document.Tags.Contains(tag))
-                    document.Tags.Add(tag);
+                if (!webpage.Tags.Contains(tag))
+                    webpage.Tags.Add(tag);
 
-                if (!tag.Documents.Contains(document))
-                    tag.Documents.Add(document);
+                if (!tag.Webpages.Contains(webpage))
+                    tag.Webpages.Add(webpage);
                 await _tagRepository.Update(tag);
             }
 
             foreach (var tag in tagsToRemove)
             {
-                document.Tags.Remove(tag);
-                tag.Documents.Remove(document);
+                webpage.Tags.Remove(tag);
+                tag.Webpages.Remove(webpage);
                 await _tagRepository.Update(tag);
             }
         }

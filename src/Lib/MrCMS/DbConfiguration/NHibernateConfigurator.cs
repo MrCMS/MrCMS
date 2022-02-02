@@ -177,7 +177,6 @@ namespace MrCMS.DbConfiguration
             return AutoMap.Assemblies(new MrCMSMappingConfiguration(), assemblies)
                 .IgnoreBase<SystemEntity>()
                 .IgnoreBase<SiteEntity>()
-                .IncludeBase<Document>()
                 .IncludeBase<Webpage>()
                 .IncludeBase<UserProfileData>()
                 .IncludeBase<Widget>()

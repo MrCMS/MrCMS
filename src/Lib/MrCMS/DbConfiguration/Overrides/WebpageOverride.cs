@@ -8,6 +8,13 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<Webpage> mapping)
         {
+            mapping.DiscriminateSubClassesOnColumn("WebpageType");
+            mapping.HasManyToMany(document => document.Tags).Table("WebpageTags").Cascade.SaveUpdate();
+            mapping.HasMany(document => document.Versions).KeyColumn("WebpageId").Cascade.All();
+            mapping.Map(x => x.WebpageType).Formula("WebpageType").Access.ReadOnly();
+            mapping.HasManyToMany(x => x.TagPages).Table("WebpageTagPages").Cascade.SaveUpdate()
+                .ChildWhere(x => x.IsDeleted == false);
+            
             mapping.Map(webpage => webpage.BodyContent).MakeVarCharMax();
             mapping.Map(webpage => webpage.MetaTitle).MakeVarCharMax();
             mapping.Map(webpage => webpage.MetaKeywords).MakeVarCharMax();

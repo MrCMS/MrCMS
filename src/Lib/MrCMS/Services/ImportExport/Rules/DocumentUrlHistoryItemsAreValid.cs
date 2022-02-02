@@ -8,10 +8,10 @@ namespace MrCMS.Services.ImportExport.Rules
 {
     public class DocumentUrlHistoryItemsAreValid : IDocumentImportValidationRule
     {
-        private readonly IGetDocumentByUrl<Webpage> _getWebpageByUrl;
+        private readonly IGetWebpageByUrl<Webpage> _getWebpageByUrl;
         private readonly IUrlHistoryImportService _urlHistoryService;
 
-        public DocumentUrlHistoryItemsAreValid(IGetDocumentByUrl<Webpage> getWebpageByUrl,
+        public DocumentUrlHistoryItemsAreValid(IGetWebpageByUrl<Webpage> getWebpageByUrl,
             IUrlHistoryImportService urlHistoryService)
         {
             _getWebpageByUrl = getWebpageByUrl;

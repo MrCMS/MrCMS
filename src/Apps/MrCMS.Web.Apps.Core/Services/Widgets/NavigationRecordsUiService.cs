@@ -58,7 +58,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    ParentId = x.ParentId,
+                    ParentId = x.Parent != null ? x.Parent.Id : null,
                     Url = x.UrlSegment.GetRelativeUrl(),
                     PageType = x.GetType()
                 }).WithOptions(options => options.SetCacheable(true)).ToList();
@@ -68,7 +68,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
         {
             public int Id { get; init; }
             public string Name { get; init; }
-            public int ParentId { get; init; }
+            public int? ParentId { get; init; }
             public string Url { get; init; }
             public Type PageType { get; init; }
         }

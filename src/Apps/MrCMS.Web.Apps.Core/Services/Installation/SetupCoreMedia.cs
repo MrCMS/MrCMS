@@ -28,7 +28,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 var defaultMediaCategory = new MediaCategory
                 {
                     Name = "Default",
-                    UrlSegment = "default",
+                    Path = "default",
                 };
                 await session.SaveAsync(defaultMediaCategory, token);
 

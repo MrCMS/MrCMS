@@ -38,7 +38,7 @@ namespace MrCMS.Web.Admin.Services
         async Task<int> GetUserAvatarCategoryModel()
         {
             var userAvatarCategoryModel = await _session.QueryOver<MediaCategory>()
-                .Where(x => x.UrlSegment == UserAvatarUrl)
+                .Where(x => x.Path == UserAvatarUrl)
                 .SingleOrDefaultAsync();
             return userAvatarCategoryModel?.Id ?? await CreateUserAvatarModel();
         }
@@ -48,7 +48,7 @@ namespace MrCMS.Web.Admin.Services
             var avatarFolder = new MediaCategory
             {
                 Name = "User Avatars",
-                UrlSegment = UserAvatarUrl,
+                Path = UserAvatarUrl,
                 HideInAdminNav = true
             };
             await _session.TransactAsync(x => x.SaveAsync(avatarFolder));

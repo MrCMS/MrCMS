@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.Documents
 {
@@ -6,11 +7,11 @@ namespace MrCMS.Entities.Documents
     {
         public Tag()
         {
-            Documents = new HashSet<Document>();
+            Webpages = new HashSet<Webpage>();
         }
 
         public virtual string Name { get; set; }
 
-        public virtual ISet<Document> Documents { get; set; }
+        public virtual ISet<Webpage> Webpages { get; set; }
     }
 }

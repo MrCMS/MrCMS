@@ -59,7 +59,7 @@ namespace MrCMS.Tests.Services
 
         private static MediaCategory GetDefaultMediaCategory()
         {
-            return new MediaCategory {Name = "test-category", UrlSegment = "test-category"};
+            return new MediaCategory {Name = "test-category", Path = "test-category"};
         }
 
         [Fact]

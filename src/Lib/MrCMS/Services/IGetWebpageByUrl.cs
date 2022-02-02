@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Services
 {
-    public interface IGetDocumentByUrl<T> where T : Document
+    public interface IGetWebpageByUrl<T> where T : Webpage
     {
         Task<T> GetByUrl(string url);
     }

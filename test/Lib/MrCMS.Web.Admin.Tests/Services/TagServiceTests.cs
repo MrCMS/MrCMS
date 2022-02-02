@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.TestSupport;
@@ -36,7 +37,7 @@ namespace MrCMS.Web.Admin.Tests.Services
             tags.Skip(1).First().label.Should().Be("tag-2");
         }
 
-        public class FakeContainer : Document
+        public class FakeContainer : Webpage
         {
             public virtual void SetTags(ISet<Tag> tags)
             {
@@ -44,7 +45,7 @@ namespace MrCMS.Web.Admin.Tests.Services
             }
         }
 
-        public class FakeContainerItem : Document
+        public class FakeContainerItem : Webpage
         {
         }
     }

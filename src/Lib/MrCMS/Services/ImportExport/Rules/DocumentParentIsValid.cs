@@ -8,9 +8,9 @@ namespace MrCMS.Services.ImportExport.Rules
 {
     public class DocumentParentIsValid : IDocumentImportValidationRule
     {
-        private readonly IGetDocumentByUrl<Webpage> _getWebpageByUrl;
+        private readonly IGetWebpageByUrl<Webpage> _getWebpageByUrl;
 
-        public DocumentParentIsValid(IGetDocumentByUrl<Webpage> getWebpageByUrl)
+        public DocumentParentIsValid(IGetWebpageByUrl<Webpage> getWebpageByUrl)
         {
             _getWebpageByUrl = getWebpageByUrl;
         }

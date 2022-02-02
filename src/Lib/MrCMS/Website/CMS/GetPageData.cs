@@ -6,14 +6,14 @@ namespace MrCMS.Website.CMS
     {
         private readonly IGetWebpageForPath _getWebpageForPath;
         private readonly ICanPreviewWebpage _canPreview;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
         public GetPageData(IGetWebpageForPath getWebpageForPath, ICanPreviewWebpage canPreview,
-            IDocumentMetadataService documentMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _getWebpageForPath = getWebpageForPath;
             _canPreview = canPreview;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
     }

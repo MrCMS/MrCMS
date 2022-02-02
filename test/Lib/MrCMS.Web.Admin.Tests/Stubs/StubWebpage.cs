@@ -6,7 +6,7 @@ namespace MrCMS.Web.Admin.Tests.Stubs
 {
     public class StubWebpage : Webpage
     {
-        public virtual void SetVersions(List<DocumentVersion> versions)
+        public virtual void SetVersions(List<WebpageVersion> versions)
         {
             Versions = versions;
         }

@@ -3,20 +3,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
-    public class GetDocumentsByParent<T> : IGetDocumentsByParent<T> where T : Document
+    public class GetWebpagesByParent : IGetWebpagesByParent
     {
-        private readonly IRepository<T> _repository;
+        private readonly IRepository<Webpage> _repository;
 
-        public GetDocumentsByParent(IRepository<T> repository)
+        public GetWebpagesByParent(IRepository<Webpage> repository)
         {
             _repository = repository;
         }
 
-        public async Task<IReadOnlyList<T>> GetDocuments(T parent)
+        public async Task<IReadOnlyList<Webpage>> GetWebpages(Webpage parent)
         {
             var queryable = _repository.Query();
             queryable = parent != null

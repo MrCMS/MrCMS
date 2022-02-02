@@ -5,9 +5,9 @@ using MrCMS.Services;
 
 namespace MrCMS.Entities.Documents
 {
-    public readonly struct DocumentMetadata
+    public readonly struct WebpageMetadata
     {
-        public DocumentMetadata(string name, string iconClass,
+        public WebpageMetadata(string name, string iconClass,
             string webGetController, string webGetAction, string webPostController, string webPostAction,
             string webGetControllerUnauthorized, string webGetActionUnauthorized, string webPostControllerUnauthorized,
             string webPostActionUnauthorized,

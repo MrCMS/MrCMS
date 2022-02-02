@@ -185,7 +185,7 @@ namespace MrCMS.Services
         public async Task RemoveFolder(MediaCategory mediaCategory)
         {
             var currentSite = _siteLocator.GetCurrentSite();
-            var folderLocation = $"{currentSite.Id}/{mediaCategory.UrlSegment}/";
+            var folderLocation = $"{currentSite.Id}/{mediaCategory.Path}/";
 
             var fileSystem = GetFileSystem();
             await fileSystem.Delete(folderLocation);
@@ -194,7 +194,7 @@ namespace MrCMS.Services
         public async Task CreateFolder(MediaCategory mediaCategory)
         {
             var currentSite = _siteLocator.GetCurrentSite();
-            var folderLocation = $"{currentSite.Id}/{mediaCategory.UrlSegment}/";
+            var folderLocation = $"{currentSite.Id}/{mediaCategory.Path}/";
 
             var fileSystem = GetFileSystem();
             await fileSystem.CreateDirectory(folderLocation);
@@ -223,7 +223,7 @@ namespace MrCMS.Services
 
             var urlSegment = "root";
             if (mediaCategory != null)
-                urlSegment = mediaCategory.UrlSegment;
+                urlSegment = mediaCategory.Path;
 
             var currentSite = _siteLocator.GetCurrentSite();
             var folderLocation = $"{currentSite.Id}/{urlSegment}/";

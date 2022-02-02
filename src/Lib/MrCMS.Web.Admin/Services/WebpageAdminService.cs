@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -21,19 +22,19 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IMapper _mapper;
-        private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IGetWebpagesByParent _getWebpagesByParent;
+        private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IOptions<SystemConfig> _config;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
             IMapper mapper,
-            IGetDocumentsByParent<Webpage> getDocumentsByParent,
-            IDocumentMetadataService documentMetadataService, IOptions<SystemConfig> config)
+            IGetWebpagesByParent getWebpagesByParent,
+            IWebpageMetadataService webpageMetadataService, IOptions<SystemConfig> config)
         {
             _webpageRepository = webpageRepository;
             _mapper = mapper;
-            _getDocumentsByParent = getDocumentsByParent;
-            _documentMetadataService = documentMetadataService;
+            _getWebpagesByParent = getWebpagesByParent;
+            _webpageMetadataService = webpageMetadataService;
             _config = config;
         }
 
@@ -72,7 +73,7 @@ namespace MrCMS.Web.Admin.Services
         {
             var type = TypeHelper.GetTypeByName(model.DocumentType);
             var instance = Activator.CreateInstance(type) as Webpage;
-            var revealInNavigation = _documentMetadataService.GetMetadata(instance).RevealInNavigation;
+            var revealInNavigation = _webpageMetadataService.GetMetadata(instance).RevealInNavigation;
             _mapper.Map(model, instance);
 
             if (revealInNavigation)
@@ -111,7 +112,7 @@ namespace MrCMS.Web.Admin.Services
         public async Task<List<SortItem>> GetSortItems(int? id)
         {
             var parent = await GetWebpage(id);
-            return (await _getDocumentsByParent.GetDocuments(parent))
+            return (await _getWebpagesByParent.GetWebpages(parent))
                 .Select(
                     arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
                 .OrderBy(x => x.Order)
@@ -158,7 +159,7 @@ namespace MrCMS.Web.Admin.Services
         public string GetServerDate()
         {
             var now = DateTime.UtcNow;
-            return now.Add(_config.Value.TimeZoneInfo.GetUtcOffset(now)).ToString();
+            return now.Add(_config.Value.TimeZoneInfo.GetUtcOffset(now)).ToString(CultureInfo.InvariantCulture);
         }
 
         public async Task<IPagedList<Select2LookupResult>> Search(string term, int page)

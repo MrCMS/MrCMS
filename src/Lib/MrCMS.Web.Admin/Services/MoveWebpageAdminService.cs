@@ -20,17 +20,17 @@ namespace MrCMS.Web.Admin.Services
         private readonly IStringResourceProvider _resourceProvider;
         private readonly IWebpageUrlService _webpageUrlService;
         private readonly ICreateUpdateUrlBatch _createUpdateUrlBatch;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
 
         public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider,
             IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch,
-            IDocumentMetadataService documentMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _webpageRepository = webpageRepository;
             _resourceProvider = resourceProvider;
             _webpageUrlService = webpageUrlService;
             _createUpdateUrlBatch = createUpdateUrlBatch;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public async Task<List<SelectListItem>> GetValidParents(Webpage webpage)
@@ -38,9 +38,9 @@ namespace MrCMS.Web.Admin.Services
             var webpages = await GetValidParentWebpages(webpage);
             List<SelectListItem> result = webpages
                 .BuildSelectItemList(
-                    page => $"{page.Name} ({_documentMetadataService.GetMetadata(page).Name})",
+                    page => $"{page.Name} ({_webpageMetadataService.GetMetadata(page).Name})",
                     page => page.Id.ToString(),
-                    webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
+                    webpage1 => webpage.Parent != null && webpage.Parent.Id == webpage1.Id, emptyItem: null);
 
             if (IsRootAllowed(webpage))
             {
@@ -52,13 +52,13 @@ namespace MrCMS.Web.Admin.Services
 
         private async Task<IReadOnlyList<Webpage>> GetValidParentWebpages(Webpage webpage)
         {
-            List<DocumentMetadata> validParentTypes = _documentMetadataService.GetValidParentTypes(webpage);
+            List<WebpageMetadata> validParentTypes = _webpageMetadataService.GetValidParentTypes(webpage);
 
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
                 await _webpageRepository.Query()
-                    .Where(page => validParentTypeNames.Contains(page.DocumentType))
+                    .Where(page => validParentTypeNames.Contains(page.WebpageType))
                     .ToListAsync();
 
             var webpages = potentialParents.Distinct()
@@ -120,7 +120,7 @@ namespace MrCMS.Web.Admin.Services
 
         private bool IsRootAllowed(Webpage webpage)
         {
-            return !_documentMetadataService.GetMetadata(webpage).RequiresParent;
+            return !_webpageMetadataService.GetMetadata(webpage).RequiresParent;
         }
 
         public async Task<MoveWebpageConfirmationModel> GetConfirmationModel(MoveWebpageModel model)
@@ -168,7 +168,8 @@ namespace MrCMS.Web.Admin.Services
             return models;
         }
 
-        private async Task<string> GetNewUrl(MoveWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent,
+        private async Task<string> GetNewUrl(MoveWebpageModel model, Webpage parent, Webpage page,
+            Webpage immediateParent,
             MoveWebpageChangedPageModel parentModel)
         {
             if (!model.UpdateUrls)
@@ -180,7 +181,7 @@ namespace MrCMS.Web.Admin.Services
             {
                 return await _webpageUrlService.Suggest(new SuggestParams
                 {
-                    DocumentType = page.DocumentType,
+                    DocumentType = page.WebpageType,
                     PageName = page.Name,
                     Template = page.PageTemplate?.Id,
                     UseHierarchy = true,
@@ -192,7 +193,7 @@ namespace MrCMS.Web.Admin.Services
             return await _webpageUrlService.Suggest(
                 new SuggestParams
                 {
-                    DocumentType = page.DocumentType,
+                    DocumentType = page.WebpageType,
                     PageName = $"{parentModel.NewUrl}/{page.Name}",
                     Template = page.PageTemplate?.Id,
                     UseHierarchy = false,
@@ -208,7 +209,7 @@ namespace MrCMS.Web.Admin.Services
 
         private async Task<IReadOnlyList<Webpage>> GetWebpageHierarchy(Webpage webpage)
         {
-            var result = new List<Webpage> {webpage};
+            var result = new List<Webpage> { webpage };
             var descendants = await _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id)
                 .OrderBy(x => x.DisplayOrder)
                 .ToListAsync();

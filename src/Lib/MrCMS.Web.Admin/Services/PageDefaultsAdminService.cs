@@ -20,19 +20,19 @@ namespace MrCMS.Web.Admin.Services
         private readonly IGetLayoutOptions _getLayoutOptions;
         private readonly ISession _session;
         private readonly MrCMSAppContext _appContext;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IConfigurationProvider _configurationProvider;
 
         public PageDefaultsAdminService(IConfigurationProvider configurationProvider,
             IGetUrlGeneratorOptions getUrlGeneratorOptions, IGetLayoutOptions getLayoutOptions, ISession session,
-            MrCMSAppContext appContext, IDocumentMetadataService documentMetadataService)
+            MrCMSAppContext appContext, IWebpageMetadataService webpageMetadataService)
         {
             _configurationProvider = configurationProvider;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
             _getLayoutOptions = getLayoutOptions;
             _session = session;
             _appContext = appContext;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
 
@@ -57,7 +57,7 @@ namespace MrCMS.Web.Admin.Services
         private string GetDisplayName(Type key)
         {
             var appName = _appContext.Types.ContainsKey(key) ? _appContext.Types[key].Name : "System";
-            return $"{_documentMetadataService.GetMetadata(key).Name} ({appName})";
+            return $"{_webpageMetadataService.GetMetadata(key).Name} ({appName})";
         }
 
         private string GetLayoutName(List<SelectListItem> layoutOptions, Type key, string defaultLayoutName)

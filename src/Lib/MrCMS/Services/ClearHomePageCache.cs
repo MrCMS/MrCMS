@@ -16,10 +16,11 @@ namespace MrCMS.Services
 
         public Task Execute(OnUpdatedArgs<Webpage> args)
         {
-            if (args.Item.ParentId == 0) // top level so clear homepage cache
+            if (args.Item.Parent?.Id == null) // top level so clear homepage cache
             {
                 _cacheManager.Clear();
             }
+
             return Task.CompletedTask;
         }
     }

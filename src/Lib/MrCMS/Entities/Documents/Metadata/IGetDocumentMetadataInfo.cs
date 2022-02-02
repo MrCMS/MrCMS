@@ -5,10 +5,10 @@ namespace MrCMS.Entities.Documents.Metadata
 {
     public interface IGetDocumentMetadataInfo
     {
-        DocumentMetadataInfo Metadata { get; }
+        WebpageMetadataInfo Metadata { get; }
     }
 
-    public class DocumentMetadataInfo
+    public class WebpageMetadataInfo
     {
         public string Name { get; set; }
         public string IconClass { get; set; }

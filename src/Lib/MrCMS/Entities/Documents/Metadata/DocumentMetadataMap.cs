@@ -166,8 +166,8 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public virtual bool HasBodyContent => true;
 
-        public DocumentMetadataInfo Metadata =>
-            new DocumentMetadataInfo
+        public WebpageMetadataInfo Metadata =>
+            new WebpageMetadataInfo
             {
                 Name = Name,
                 IconClass = IconClass,

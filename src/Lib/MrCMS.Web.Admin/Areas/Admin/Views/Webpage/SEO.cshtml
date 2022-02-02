@@ -2,7 +2,7 @@
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @model MrCMS.Web.Admin.Models.WebpageEdit.SEOTabViewModel
-@inject IDocumentMetadataService DocumentMetadataService
+@inject IWebpageMetadataService _webpageMetadataService
 @{
     var webpage = ViewData["webpage"] as Webpage;
 }
@@ -135,7 +135,7 @@
     @* } *@
     <hr />
 
-    <strong>@await Html.Resource("Page type"):</strong> @DocumentMetadataService.GetDocumentMetadata(Html, Model.Id).Name
+    <strong>@await Html.Resource("Page type"):</strong> @_webpageMetadataService.GetDocumentMetadata(Html, Model.Id).Name
     <br />
     <strong>@await Html.Resource("Created On"): </strong>@webpage.CreatedOn
     <br />

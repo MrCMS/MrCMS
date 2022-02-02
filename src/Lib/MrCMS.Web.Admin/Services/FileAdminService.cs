@@ -24,7 +24,7 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly IFileService _fileService;
         private readonly MediaSettings _mediaSettings;
-        private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
+        private readonly IGetMediaCategoriesByParent _getMediaCategoriesByParent;
         private readonly IMapper _mapper;
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
@@ -32,7 +32,7 @@ namespace MrCMS.Web.Admin.Services
 
         public FileAdminService(IFileService fileService, ISession session,
             IStringResourceProvider stringResourceProvider, IRepository<MediaCategory> mediaCategoryRepository,
-            MediaSettings mediaSettings, IGetDocumentsByParent<MediaCategory> getDocumentsByParent,
+            MediaSettings mediaSettings, IGetMediaCategoriesByParent getMediaCategoriesByParent,
             IMapper mapper)
         {
             _fileService = fileService;
@@ -40,7 +40,7 @@ namespace MrCMS.Web.Admin.Services
             _stringResourceProvider = stringResourceProvider;
             _mediaCategoryRepository = mediaCategoryRepository;
             _mediaSettings = mediaSettings;
-            _getDocumentsByParent = getDocumentsByParent;
+            _getMediaCategoriesByParent = getMediaCategoriesByParent;
             _mapper = mapper;
         }
 
@@ -265,7 +265,8 @@ namespace MrCMS.Web.Admin.Services
             var list = new List<MediaCategory>();
             foreach (MediaCategory category in categories)
             {
-                list.AddRange(await GetFoldersRecursive(await _getDocumentsByParent.GetDocuments(category)));
+                list.AddRange(
+                    await GetFoldersRecursive(await _getMediaCategoriesByParent.GetMediaCategories(category)));
 
                 list.Add(category);
             }

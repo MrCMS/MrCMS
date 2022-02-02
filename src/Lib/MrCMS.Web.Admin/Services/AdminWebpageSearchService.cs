@@ -11,7 +11,6 @@ using MrCMS.Web.Admin.Models.Search;
 using NHibernate;
 using NHibernate.Criterion;
 using X.PagedList;
-using Document = MrCMS.Entities.Documents.Document;
 using QuickSearchResult = MrCMS.Web.Admin.Models.QuickSearchResult;
 
 namespace MrCMS.Web.Admin.Services
@@ -20,7 +19,7 @@ namespace MrCMS.Web.Admin.Services
     {
         private readonly IGetBreadcrumbs _getBreadcrumbs;
         private readonly IGetLiveUrl _getLiveUrl;
-        private readonly IDocumentMetadataService _documentMetadataService;
+        private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly ISession _session;
         private readonly ICurrentSiteLocator _siteLocator;
         private readonly IStringResourceProvider _stringResourceProvider;
@@ -28,14 +27,14 @@ namespace MrCMS.Web.Admin.Services
         public AdminWebpageSearchService(
             IGetBreadcrumbs getBreadcrumbs, ISession session, ICurrentSiteLocator siteLocator,
             IStringResourceProvider stringResourceProvider,
-            IGetLiveUrl getLiveUrl, IDocumentMetadataService documentMetadataService)
+            IGetLiveUrl getLiveUrl, IWebpageMetadataService webpageMetadataService)
         {
             _getBreadcrumbs = getBreadcrumbs;
             _session = session;
             _siteLocator = siteLocator;
             _stringResourceProvider = stringResourceProvider;
             _getLiveUrl = getLiveUrl;
-            _documentMetadataService = documentMetadataService;
+            _webpageMetadataService = webpageMetadataService;
         }
 
         public IPagedList<Webpage> Search(AdminWebpageSearchQuery model)
@@ -57,14 +56,14 @@ namespace MrCMS.Web.Admin.Services
         }
 
 
-        public async Task<IReadOnlyList<Document>> GetBreadCrumb(int? parentId)
+        public async Task<IReadOnlyList<Webpage>> GetBreadCrumb(int? parentId)
         {
             return await _getBreadcrumbs.Get(parentId);
         }
 
         public async Task<List<SelectListItem>> GetDocumentTypes(string type)
         {
-            return _documentMetadataService.GetDocumentMetadatas()
+            return _webpageMetadataService.GetWebpageMetadata()
                 .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
                     definition => definition.TypeName == type,
                     await _stringResourceProvider.GetValue("Admin Select Type", "Select type"));

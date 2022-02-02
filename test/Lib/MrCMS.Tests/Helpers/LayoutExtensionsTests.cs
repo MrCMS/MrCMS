@@ -28,7 +28,7 @@ namespace MrCMS.Tests.Helpers
         [Fact]
         public void GetLayoutName_IfUrlSegmentIsSetThatIsUsed()
         {
-            new Layout {Name = "Layout", UrlSegment = "_LayoutOverride"}.GetLayoutName().Should().Be("_LayoutOverride");
+            new Layout {Name = "Layout", Path = "_LayoutOverride"}.GetLayoutName().Should().Be("_LayoutOverride");
         }
     }
 }
