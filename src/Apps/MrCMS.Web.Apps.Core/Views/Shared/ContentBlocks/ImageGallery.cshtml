@@ -1,0 +1,23 @@
+@model MrCMS.Web.Apps.Core.Entities.ContentBlocks.ImageGallery
+
+@{
+    var galleryId = $"gallery-{Guid.NewGuid()}";
+}
+
+@if (Model.Images?.Any() ?? false)
+{
+    <div class="row my-3 g-2">
+        @for (var i = 0; i < Model.Images.Count; i++)
+        {
+            <div class="@Model.ResponsiveClasses">
+                <div class="embed-responsive embed-responsive-1by1">
+                    <div class="embed-responsive-item">
+                        <a href="@Model.Images[i].Url" class="glightbox" data-gallery="galleryId">
+                            @await Html.RenderImage(Model.Images[i].Url,new System.Drawing.Size{Width=250}, attributes: new {@class="object-fit-cover", height="100%", width="100%"})
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

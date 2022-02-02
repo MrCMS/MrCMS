@@ -172,9 +172,9 @@ namespace MrCMS.DbConfiguration
             }
         }
 
-        private AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)
+        private AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> assemblies)
         {
-            return AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
+            return AutoMap.Assemblies(new MrCMSMappingConfiguration(), assemblies)
                 .IgnoreBase<SystemEntity>()
                 .IgnoreBase<SiteEntity>()
                 .IncludeBase<Document>()
@@ -184,8 +184,7 @@ namespace MrCMS.DbConfiguration
                 .IncludeBase<FormProperty>()
                 .IncludeBase<FormPropertyWithOptions>()
                 .IncludeBase<BatchJob>()
-                .IncludeBase<ContentBlock>()
-                .UseOverridesFromAssemblies(finalAssemblies)
+                .UseOverridesFromAssemblies(assemblies)
                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                 .IncludeAppBases(_appContext)
                 .IncludeAppConventions(_appContext);

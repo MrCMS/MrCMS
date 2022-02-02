@@ -1,0 +1,9 @@
+@model MrCMS.Web.Apps.Core.Entities.ContentBlocks.Text
+
+@if (!string.IsNullOrWhiteSpace(Model.Heading))
+{
+    <h2>
+        @Model.Heading
+    </h2>
+}
+@Html.Raw(Model.Subtext)

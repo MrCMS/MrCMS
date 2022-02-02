@@ -1,110 +1,77 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Models;
-using MrCMS.Services;
+using MrCMS.Web.Admin.Infrastructure.BaseControllers;
+using MrCMS.Web.Admin.Models.Content;
+using MrCMS.Web.Admin.Services.Content;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MrCMS.Web.Admin.Infrastructure.BaseControllers;
-using MrCMS.Web.Admin.Models.ContentBlocks;
-using MrCMS.Web.Admin.Services;
 
-namespace MrCMS.Web.Admin.Controllers
+namespace MrCMS.Web.Admin.Controllers;
+
+public class ContentBlockController : MrCMSAdminController
 {
-    public class ContentBlockController : MrCMSAdminController
+    private readonly IContentBlockAdminService _adminService;
+
+    public ContentBlockController(IContentBlockAdminService adminService)
     {
-        private readonly IContentBlockAdminService _contentBlockAdminService;
-        private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
+        _adminService = adminService;
+    }
 
-        public ContentBlockController(IContentBlockAdminService contentBlockAdminService,
-            IModelBindingHelperAdapter modelBindingHelperAdapter)
+    public async Task<ViewResult> Add(int id)
+    {
+        ViewData["block-options"] = await _adminService.GetContentRowOptions();
+        return View(await _adminService.GetAddModel(id));
+    }
+
+    [HttpPost]
+    public async Task<RedirectToActionResult> Add(AddContentBlockModel model)
+    {
+        await _adminService.AddBlock(model);
+        return RedirectToAction("Edit", "ContentVersion", new { id = model.ContentVersionId });
+    }
+
+    public async Task<PartialViewResult> Edit(int id)
+    {
+        ViewData["block"] = await _adminService.GetBlock(id);
+        return PartialView(id);
+    }
+
+    [HttpPost, ActionName("Edit")]
+    public async Task<IActionResult> Edit_POST(int id)
+    {
+        var model = await _adminService.GetUpdateModel(id);
+        if (await TryUpdateModelAsync(model, model.GetType(), ""))
         {
-            _contentBlockAdminService = contentBlockAdminService;
-            _modelBindingHelperAdapter = modelBindingHelperAdapter;
+            await _adminService.UpdateBlock(id, model);
         }
 
-        [HttpGet]
-        public ViewResult Add(AddContentBlockViewModel addModel)
-        {
-            ViewData["additional-property-model"] =
-                _contentBlockAdminService.GetAdditionalPropertyModel(addModel.BlockType);
-            return View(addModel);
-        }
+        return Ok();
+    }
 
-        [HttpPost, ActionName(nameof(Add))]
-        public async Task<RedirectToActionResult> Add_POST(AddContentBlockViewModel addModel)
-        {
-            var additionalPropertyModel = _contentBlockAdminService.GetAdditionalPropertyModel(addModel.BlockType);
-            if (additionalPropertyModel != null)
-            {
-                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel,
-                    additionalPropertyModel.GetType(), string.Empty);
-            }
+    [HttpPost]
+    public async Task<IActionResult> AddChild(int id)
+    {
+        await _adminService.AddChild(id);
+        return Ok();
+    }
 
-            var id = await _contentBlockAdminService.Add(addModel, additionalPropertyModel);
+    [HttpPost]
+    public async Task<IActionResult> Remove(int id)
+    {
+        await _adminService.RemoveBlock(id);
+        return Ok();
+    }
 
-            if (id != null)
-            {
-                return RedirectToAction("Edit", "Webpage", new {id});
-            }
+    [HttpPost]
+    public async Task<IActionResult> Sort(List<ContentBlockSortModel> list)
+    {
+        await _adminService.SetBlockOrders(list);
+        return Ok();
+    }
 
-            return RedirectToAction("Index", "Webpage");
-        }
-
-        [HttpGet]
-        public async Task<ViewResult> Edit(int id)
-        {
-            ViewData["block"] = await _contentBlockAdminService.GetEntity(id);
-            return View(await _contentBlockAdminService.GetUpdateModel(id));
-        }
-
-        [HttpPost]
-        public async Task<RedirectToActionResult> Edit(UpdateContentBlockViewModel updateModel)
-        {
-            var additionalPropertyModel = await _contentBlockAdminService.GetAdditionalPropertyModel(updateModel.Id);
-            if (additionalPropertyModel != null)
-            {
-                await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel,
-                    additionalPropertyModel.GetType(), string.Empty);
-            }
-
-            var id = await _contentBlockAdminService.Update(updateModel, additionalPropertyModel);
-
-            if (id != null)
-            {
-                return RedirectToAction("Edit", "Webpage", new {id});
-            }
-
-            return RedirectToAction("Index", "Webpage");
-        }
-
-        [HttpPost]
-        public async Task<RedirectToActionResult> Delete(int id)
-        {
-            var webpageId = await _contentBlockAdminService.Delete(id);
-
-            if (webpageId != null)
-            {
-                return RedirectToAction("Edit", "Webpage", new {id = webpageId});
-            }
-
-            return RedirectToAction("Index", "Webpage");
-        }
-
-
-        [HttpGet]
-        public async Task<ViewResult> Sort(int id)
-        {
-            var sortItems = await _contentBlockAdminService.GetSortItems(id);
-            ViewData["web-page"] = id;
-
-            return View(sortItems);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Sort(IList<SortItem> sortItems, int webpageId)
-        {
-            await _contentBlockAdminService.Sort(sortItems);
-
-            return RedirectToAction("Edit", "Webpage", new {id = webpageId});
-        }
+    [HttpPost]
+    public async Task<IActionResult> ToggleHidden(int id)
+    {
+        await _adminService.ToggleBlockHidden(id);
+        return Ok();
     }
 }

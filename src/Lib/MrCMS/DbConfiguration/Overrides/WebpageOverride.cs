@@ -20,7 +20,6 @@ namespace MrCMS.DbConfiguration.Overrides
 
 
             mapping.HasMany(webpage => webpage.Urls).Cascade.Delete();
-            mapping.HasMany(x => x.ContentBlocks).Cascade.Delete().Cache.ReadWrite();
 
             //Permission mappings
             mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles).Table("FrontEndWebpageRoles")

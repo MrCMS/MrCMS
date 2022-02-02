@@ -1,0 +1,14 @@
+@model MrCMS.Web.Admin.Models.Content.AddInitialContentVersionModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+
+<form method="post" asp-controller="ContentVersion" asp-action="AddInitial" asp-route-webpageId="@Model.WebpageId">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Initial Content Version", "Add Initial Content Version")
+            <span class="btn-group d-inline pull-right">
+                <button type="submit" class="btn-primary btn">@await Html.Resource("Save")</button>
+            </span>
+        </legend>
+    </fieldset>
+</form>
+

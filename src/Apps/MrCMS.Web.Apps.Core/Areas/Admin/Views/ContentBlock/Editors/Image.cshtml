@@ -1,0 +1,23 @@
+@using MrCMS.Web.Apps.Core.Entities.ContentBlocks
+@model MrCMS.Web.Apps.Core.Areas.Admin.Models.Content.UpdateImageAdminModel
+@{
+    var options = EnumHelper<Image.ImageAligment>.GetOptions();
+}
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Url)
+    @Html.TextBoxFor(x => x.Url, new { @class = "form-control",data_type="media-selector" })
+    @Html.ValidationMessageFor(x => x.Url)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Aligment)
+    @Html.DropDownListFor(x => x.Aligment, options, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.Aligment)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.cssClasses)
+    @Html.TextBoxFor(x => x.cssClasses, new { @class = "form-control"})
+    @Html.ValidationMessageFor(x => x.cssClasses)
+</div>

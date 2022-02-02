@@ -66,9 +66,9 @@ namespace MrCMS.Services
 
         public async Task<IHtmlContent> RenderImage(IHtmlHelper helper, string imageUrl, Size targetSize = new Size(),
             string alt = null,
-            string title = null, object attributes = null)
+            string title = null, bool enableCaption = false, object attributes = null)
         {
-            var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, attributes);
+            var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, enableCaption, attributes);
 
             return await _cacheManager.GetOrCreateAsync(cachingInfo.CacheKey, async () =>
             {
@@ -81,7 +81,7 @@ namespace MrCMS.Services
                     if (imageInfo == null)
                         return HtmlString.Empty;
 
-                    return ReturnTag(imageInfo, alt, title, attributes);
+                    return ReturnTag(imageInfo, alt, title, enableCaption, attributes);
                 }
             }, cachingInfo.TimeToCache, cachingInfo.ExpiryType);
         }
@@ -97,7 +97,7 @@ namespace MrCMS.Services
         }
 
 
-        private IHtmlContent ReturnTag(ImageInfo imageInfo, string alt, string title, object attributes)
+        private IHtmlContent ReturnTag(ImageInfo imageInfo, string alt, string title, bool enableCaption, object attributes)
         {
             var tagBuilder = new TagBuilder("img");
             tagBuilder.Attributes.Add("src", imageInfo.ImageUrl);
@@ -112,6 +112,21 @@ namespace MrCMS.Services
             }
 
             tagBuilder.TagRenderMode = TagRenderMode.SelfClosing;
+
+            if (enableCaption && !string.IsNullOrWhiteSpace(imageInfo.Description))
+            {
+                var figureBuilder = new TagBuilder("figure");
+                figureBuilder.Attributes.Add("class", "figure");
+                var figCaptionBuilder = new TagBuilder("figCaption");
+                figCaptionBuilder.Attributes.Add("class", "figure-caption py-2");
+                figCaptionBuilder.InnerHtml.Append(imageInfo.Description);
+
+                figureBuilder.InnerHtml.AppendHtml(tagBuilder);
+                figureBuilder.InnerHtml.AppendHtml(figCaptionBuilder);
+
+                return figureBuilder;
+            }
+
             return tagBuilder;
         }
     }

@@ -1,47 +1,25 @@
-﻿@using MrCMS.Entities.Documents
-@using MrCMS.Web.Admin.Infrastructure.Helpers
-@using Microsoft.AspNetCore.Http
-@model MrCMS.Web.Admin.Models.ContentBlocks.UpdateContentBlockViewModel
-@inject IHttpContextAccessor _httpContextAccessor
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Services.Content
+@inject IContentBlockAdminService _adminService
+@model int
+
 @{
-    var contentBlock = ViewData["block"] as ContentBlock;
-    var editWebpageUrl = Url.Action("Edit", "Webpage", new { Id = Model.WebpageId });
-    var editUrl = Url.Action("Edit", "ContentBlock", new { Id = Model.Id });
-    var referer = _httpContextAccessor.HttpContext?.Request?.Referer().Replace(($"{Context.Request.Scheme}://{Context.Request.Host}"), "");
-    var url = referer == editUrl ? editWebpageUrl : referer; 
+    var block = ViewData["block"] as IContentBlock;
 }
-<form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model.Id" method="post">
-    @Html.ReturnToReferrer()
-    <input type="hidden" asp-for="WebpageId"/>
 
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h1>@await Html.Resource("admin-update", "Update") @Model.Name</h1>
-                </div>
-                <div class="col">
-                    <span class="btn-group pull-right">
-                        <a href="@url" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
-                        <button type="submit" class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="card">
-        <div class="card-body">
-            <fieldset>
-                <div class="form-group">
-                    <label asp-for="Name"></label>
-                    <input type="text" asp-for="Name" class="form-control"/>
-                    <span asp-validation-for="Name"></span>
-                </div>
-
-                @await Html.RenderUpdateCustomAdminProperties(contentBlock)
-
-            </fieldset>
-        </div>
+<div class="card m-0 border-0 shadow-none">
+    <h3 class="card-header px-0">
+        Editor
+    </h3>
+    <div class="card-body px-0">
+        @if (block != null)
+        {
+            <form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model" data-content-admin-save-editor>
+                @{
+                    await Html.RenderPartialAsync($"Editors/{block.GetType().Name}", await _adminService.GetUpdateModel(Model));
+                }
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+        }
     </div>
-</form>
+</div>

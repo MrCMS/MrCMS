@@ -1,0 +1,8 @@
+@using MrCMS.Web.Apps.Core.Entities.ContentBlocks
+@model MrCMS.Web.Apps.Core.Areas.Admin.Models.Content.UpdateLineBreakAdminModel
+
+<div class="form-group">
+    @Html.LabelFor(x => x.CssClasses)
+    @Html.TextBoxFor(x => x.CssClasses, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.CssClasses)
+</div>

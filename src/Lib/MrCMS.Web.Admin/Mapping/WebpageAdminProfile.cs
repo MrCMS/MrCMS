@@ -1,8 +1,8 @@
 ﻿using System;
 using AutoMapper;
 using MrCMS.Entities.Documents.Web;
- using MrCMS.Web.Admin.Infrastructure.Mapping;
- using MrCMS.Web.Admin.Models;
+using MrCMS.Web.Admin.Infrastructure.Mapping;
+using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Models.WebpageEdit;
 using MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages;
 
@@ -37,6 +37,7 @@ namespace MrCMS.Web.Admin.Mapping
                                 // keep it the same
                                 return webpage.PasswordAccessToken;
                             }
+
                             // otherwise get a new one
                             return Guid.NewGuid();
                         }
@@ -55,7 +56,6 @@ namespace MrCMS.Web.Admin.Mapping
                         // otherwise return null
                         return null;
                     }))
-
                 ;
             CreateMap<Webpage, WebpagePropertiesTabViewModel>().ReverseMap();
             CreateMap<Webpage, SEOTabViewModel>().ReverseMap();

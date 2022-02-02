@@ -1,0 +1,105 @@
+@model MrCMS.Web.Admin.Models.Content.ContentVersionModel
+@{
+    var selected = ViewData["selected"] as Guid?;
+    var open = ViewData["open"] as Guid?;
+}
+<ul class="list-group list-group-flush" data-content-admin-blocks-current="@Url.Action("Blocks", "ContentVersion", new { Model.Id, open, selected })" data-admin-blocks-order="@Url.Action("Sort", "ContentBlock")">
+    @foreach (var block in Model.Blocks)
+    {
+        var isOpen = open == block.Guid;
+        var isSelected = selected == block.Guid;
+        <li class="list-group-item list-group-item-action @(isSelected ? "list-group-item-primary" : "")" data-order="@block.Order" data-id="@block.Id">
+            <div class="row">
+                @if (block.ShowCaret)
+                {
+                    <div class="col-auto">
+                        @if (isOpen)
+                        {
+                            <a href="#" class="close-block" data-content-admin-block-close="@Url.Action("Blocks", "ContentVersion", new { selected })" title="@await Html.Resource("admin-blocks-close","Close")">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" class="open-block" data-content-admin-block-open="@Url.Action("Blocks", "ContentVersion", new { selected, open = block.Guid })" title="@await Html.Resource("admin-blocks-open","Open")">
+                                <i class="fa fa-caret-right"></i>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="col-auto pr-4 pl-0"></div>
+                }
+                <div class="col">
+                    <a href="#" class="d-block selection-link"
+                   data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = block.Guid })"
+                   data-content-admin-editor="@Url.Action("Edit", "ContentBlock", new { id = block.Id })">
+                        @block.TypeName
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="#" data-content-admin-block-hide="@Url.Action("ToggleHidden", "ContentBlock")" data-id="@block.Id" title="@(block.IsHidden ?  await Html.Resource("admin-blocks-show","Show") : await Html.Resource("admin-blocks-hide","Hide"))">
+                        @if (block.IsHidden)
+                        {
+                            <i class="fa fa-eye-slash text-success"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-eye text-secondary"></i>
+                        }
+                    </a>
+                </div>
+                <div class="col-auto sort-handle">
+                    <a class="text-dark" href="#" title="@await Html.Resource("admin-blocks-sort","Drag to sort")">
+                        <i class="fa fa-sort"></i>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a class="text-danger" href="#" data-content-admin-block-remove="@Url.Action("Remove", "ContentBlock", new { block.Id })" title="@await Html.Resource("admin-blocks-remove","Remove")">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            @if (isOpen)
+            {
+                <ul class="list-group list-group-flush mt-3">
+                    @foreach (var item in block.Items)
+                    {
+                        var itemSelected = selected == item.Id;
+                        <li class="list-group-item list-group-item-action @(itemSelected ? "list-group-item-primary" : "")">
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#" class="d-block selection-link"
+                           data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open, selected = item.Id })"
+                           data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })">
+                                        @item.Name
+                                    </a>
+                                </div>
+                                @if (block.CanAddChildren)
+                                {
+                                    <div class="col-auto">
+                                        <a class="text-danger" href="#" data-content-admin-block-remove="@Url.Action("Remove", "BlockItem", new { block.Id, itemId = item.Id })" title="@await Html.Resource("admin-blocks-remove","Remove")">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </li>
+                    }
+                </ul>
+                @if (block.CanAddChildren)
+                {
+                    <div class="text-center">
+                        <a href="#" class="btn btn-primary add-child mt-3"
+               data-content-admin-add-child="@Url.Action("AddChild", "ContentBlock", new { block.Id })"
+               data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { open })"
+               @* data-content-admin-editor="@Url.Action("Edit", "BlockItem", new { id = block.Id, itemId = item.Id })" *@>
+                            Add Item
+                        </a>
+                    </div>
+                }
+            }
+        </li>
+    }
+</ul>
