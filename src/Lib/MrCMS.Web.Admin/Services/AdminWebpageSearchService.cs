@@ -18,7 +18,6 @@ namespace MrCMS.Web.Admin.Services
     public class AdminWebpageSearchService : IAdminWebpageSearchService
     {
         private readonly IGetBreadcrumbs _getBreadcrumbs;
-        private readonly IGetLiveUrl _getLiveUrl;
         private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly ISession _session;
         private readonly ICurrentSiteLocator _siteLocator;
@@ -27,13 +26,12 @@ namespace MrCMS.Web.Admin.Services
         public AdminWebpageSearchService(
             IGetBreadcrumbs getBreadcrumbs, ISession session, ICurrentSiteLocator siteLocator,
             IStringResourceProvider stringResourceProvider,
-            IGetLiveUrl getLiveUrl, IWebpageMetadataService webpageMetadataService)
+            IWebpageMetadataService webpageMetadataService)
         {
             _getBreadcrumbs = getBreadcrumbs;
             _session = session;
             _siteLocator = siteLocator;
             _stringResourceProvider = stringResourceProvider;
-            _getLiveUrl = getLiveUrl;
             _webpageMetadataService = webpageMetadataService;
         }
 

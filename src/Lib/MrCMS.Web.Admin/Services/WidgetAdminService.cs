@@ -30,11 +30,11 @@ namespace MrCMS.Web.Admin.Services
             if (string.IsNullOrWhiteSpace(type))
                 return null;
 
-            var documentType = TypeHelper.GetTypeByName(type);
-            if (documentType == null)
+            var webpageType = TypeHelper.GetTypeByName(type);
+            if (webpageType == null)
                 return null;
             var additionalPropertyType = AddPropertiesTypes.FirstOrDefault(x =>
-                typeof(IAddPropertiesViewModel<>).MakeGenericType(documentType).IsAssignableFrom(x));
+                typeof(IAddPropertiesViewModel<>).MakeGenericType(webpageType).IsAssignableFrom(x));
             if (additionalPropertyType == null)
                 return null;
 

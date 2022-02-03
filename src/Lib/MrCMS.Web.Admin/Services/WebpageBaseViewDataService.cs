@@ -40,28 +40,28 @@ namespace MrCMS.Web.Admin.Services
             viewData["parent"] = parent;
 
             var user = await _getCurrentUser.Get();
-            var webpageDocumentTypes = await _validWebpageChildrenService
+            var webpageWebpageTypes = await _validWebpageChildrenService
                 .GetValidWebpageTypes(parent,
                     metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"),
                         user));
-            var validWebpageDocumentTypes =
-                webpageDocumentTypes.OrderBy(metadata => metadata.DisplayOrder).ToList();
+            var validWebpageWebpageTypes =
+                webpageWebpageTypes.OrderBy(metadata => metadata.DisplayOrder).ToList();
 
-            var templates = _getValidPageTemplatesToAdd.Get(validWebpageDocumentTypes);
+            var templates = _getValidPageTemplatesToAdd.Get(validWebpageWebpageTypes);
 
-            var documentTypeToAdds = new List<WebpageTypeToAdd>();
+            var webpageTypeToAdds = new List<WebpageTypeToAdd>();
 
-            foreach (WebpageMetadata type in validWebpageDocumentTypes)
+            foreach (WebpageMetadata type in validWebpageWebpageTypes)
             {
                 if (templates.Any(template => template.PageType == type.Type.FullName))
                 {
-                    documentTypeToAdds.Add(new WebpageTypeToAdd
+                    webpageTypeToAdds.Add(new WebpageTypeToAdd
                     {
                         Type = type,
                         DisplayName = $"Default {type.Name}"
                     });
                     WebpageMetadata typeCopy = type;
-                    documentTypeToAdds.AddRange(
+                    webpageTypeToAdds.AddRange(
                         templates.Where(template => template.PageType == typeCopy.Type.FullName)
                             .Select(pageTemplate => new WebpageTypeToAdd
                             {
@@ -72,11 +72,11 @@ namespace MrCMS.Web.Admin.Services
                 }
                 else
                 {
-                    documentTypeToAdds.Add(new WebpageTypeToAdd {Type = type, DisplayName = type.Name});
+                    webpageTypeToAdds.Add(new WebpageTypeToAdd {Type = type, DisplayName = type.Name});
                 }
             }
 
-            viewData["DocumentTypes"] = documentTypeToAdds;
+            viewData["WebpageTypes"] = webpageTypeToAdds;
         }
 
         public Task SetEditPageViewData(ViewDataDictionary viewData, Webpage page)

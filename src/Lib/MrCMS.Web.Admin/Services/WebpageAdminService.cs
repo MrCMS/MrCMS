@@ -57,11 +57,11 @@ namespace MrCMS.Web.Admin.Services
 
         public object GetAdditionalPropertyModel(string type)
         {
-            var documentType = TypeHelper.GetTypeByName(type);
-            if (documentType == null)
+            var webpageType = TypeHelper.GetTypeByName(type);
+            if (webpageType == null)
                 return null;
             var additionalPropertyType = AddPropertiesTypes.FirstOrDefault(x =>
-                typeof(IAddPropertiesViewModel<>).MakeGenericType(documentType).IsAssignableFrom(x));
+                typeof(IAddPropertiesViewModel<>).MakeGenericType(webpageType).IsAssignableFrom(x));
             if (additionalPropertyType == null)
                 return null;
 
