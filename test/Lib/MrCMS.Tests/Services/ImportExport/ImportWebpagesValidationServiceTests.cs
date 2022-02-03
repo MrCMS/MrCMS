@@ -67,11 +67,14 @@ namespace MrCMS.Tests.Services.ImportExport
         public async Task
             ImportDocumentsValidationService_ValidateAndImportDocuments_ShouldReturnListOfDocumentsAndNoErrors()
         {
-            var (items, errors) = await _importWebpagesValidationService.ValidateAndImportDocuments(GetSpreadsheet());
+            var (items, errors) =
+                await _importWebpagesValidationService.ValidateAndImportDocuments(SiteId, GetSpreadsheet());
 
             items.Count.Should().Be(1);
             errors.Count.Should().Be(0);
         }
+
+        private const int SiteId = 1;
 
         [Fact]
         public async Task
@@ -80,7 +83,7 @@ namespace MrCMS.Tests.Services.ImportExport
         {
             DateTime currentTime = DateTime.Parse("2013-07-19 15:18:20");
             var (items, parseErrors) =
-                await _importWebpagesValidationService.ValidateAndImportDocuments(GetSpreadsheet());
+                await _importWebpagesValidationService.ValidateAndImportDocuments(SiteId, GetSpreadsheet());
 
             items.First().UrlSegment.Should().BeEquivalentTo("test-url");
             items.First().Name.Should().BeEquivalentTo("Test Document");
@@ -98,7 +101,8 @@ namespace MrCMS.Tests.Services.ImportExport
         public async Task
             ImportDocumentsValidationService_ValidateAndImportDocumentsWithVariants_ShouldReturnDocumentWithTagsSet()
         {
-            var (items, errors) = await _importWebpagesValidationService.ValidateAndImportDocuments(GetSpreadsheet());
+            var (items, errors) =
+                await _importWebpagesValidationService.ValidateAndImportDocuments(SiteId, GetSpreadsheet());
 
             items.First().Tags.Should().HaveCount(1);
         }
@@ -108,7 +112,8 @@ namespace MrCMS.Tests.Services.ImportExport
             ImportDocumentsValidationService_ValidateAndImportDocumentsWithVariants_ShouldReturnDocumentWithUrlHistorySet
             ()
         {
-            var (items, errors) = await _importWebpagesValidationService.ValidateAndImportDocuments(GetSpreadsheet());
+            var (items, errors) =
+                await _importWebpagesValidationService.ValidateAndImportDocuments(SiteId, GetSpreadsheet());
 
             items.First().UrlHistory.Should().HaveCount(1);
         }
@@ -128,9 +133,9 @@ namespace MrCMS.Tests.Services.ImportExport
                 RevealInNavigation = true,
                 PublishOn = currentTime
             };
-            document.Tags.Add(new Tag {Id = 1, Name = "Test"});
-            document.Urls.Add(new UrlHistory {UrlSegment = "test-url-old"});
-            var items = new List<Webpage> {document};
+            document.Tags.Add(new Tag { Id = 1, Name = "Test" });
+            document.Urls.Add(new UrlHistory { UrlSegment = "test-url-old" });
+            var items = new List<Webpage> { document };
 
             var exportExcelPackage = new ExportWebpagesService().GetExportExcelPackage(items);
 

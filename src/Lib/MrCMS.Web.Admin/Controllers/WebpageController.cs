@@ -24,6 +24,7 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly IModelBindingHelperAdapter _modelBindingHelperAdapter;
         private readonly IWebpageVersionsAdminService _webpageVersionsAdminService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
 
         public WebpageController(IWebpageAdminService webpageAdminService,
             IWebpageBaseViewDataService webpageBaseViewDataService,
@@ -31,7 +32,8 @@ namespace MrCMS.Web.Admin.Controllers
             IUrlValidationService urlValidationService,
             IModelBindingHelperAdapter modelBindingHelperAdapter,
             IWebpageVersionsAdminService webpageVersionsAdminService,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ICurrentSiteLocator currentSiteLocator)
         {
             _webpageAdminService = webpageAdminService;
             _webpageBaseViewDataService = webpageBaseViewDataService;
@@ -40,6 +42,7 @@ namespace MrCMS.Web.Admin.Controllers
             _modelBindingHelperAdapter = modelBindingHelperAdapter;
             _webpageVersionsAdminService = webpageVersionsAdminService;
             _serviceProvider = serviceProvider;
+            _currentSiteLocator = currentSiteLocator;
         }
 
         public ViewResult Index()
@@ -64,7 +67,8 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Add(AddWebpageModel model)
         {
-            if (!await _urlValidationService.UrlIsValidForWebpage(model.UrlSegment, null))
+            if (!await _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id,
+                    model.UrlSegment, null))
             {
                 Webpage parent = await _webpageAdminService.GetWebpage(model.ParentId);
                 await _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
@@ -80,7 +84,7 @@ namespace MrCMS.Web.Admin.Controllers
 
             var webpage = await _webpageAdminService.Add(model, additionalPropertyModel);
             TempData.AddSuccessMessage($"{webpage.Name} successfully added");
-            return RedirectToAction("Edit", new {id = webpage.Id});
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         [HttpGet]
@@ -98,7 +102,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             var result = await _webpageAdminService.Update(model);
             TempData.AddSuccessMessage($"{result.Name} successfully saved");
-            return RedirectToAction("Edit", new {id = result.Id});
+            return RedirectToAction("Edit", new { id = result.Id });
         }
 
         [HttpGet]
@@ -133,7 +137,7 @@ namespace MrCMS.Web.Admin.Controllers
                 await _serviceProvider.GetRequiredService<ISetHomepage>().Set();
             }
 
-            return RedirectToAction("Sort", new {id});
+            return RedirectToAction("Sort", new { id });
         }
 
         [HttpPost]
@@ -141,7 +145,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             await _webpageAdminService.PublishNow(id);
 
-            return RedirectToAction("Edit", new {id});
+            return RedirectToAction("Edit", new { id });
         }
 
         [HttpPost]
@@ -149,7 +153,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             await _webpageAdminService.Unpublish(id);
 
-            return RedirectToAction("Edit", new {id});
+            return RedirectToAction("Edit", new { id });
         }
 
         public async Task<ActionResult> ViewChanges(int id)
@@ -171,7 +175,8 @@ namespace MrCMS.Web.Admin.Controllers
         /// <returns></returns>
         public async Task<ActionResult> ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !await _urlValidationService.UrlIsValidForWebpage(urlSegment, id)
+            return !await _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id, urlSegment,
+                id)
                 ? Json("Please choose a different URL as this one is already used.")
                 : Json(true);
         }

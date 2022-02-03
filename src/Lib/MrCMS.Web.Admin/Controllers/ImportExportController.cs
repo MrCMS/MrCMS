@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Services;
 using MrCMS.Services.ImportExport;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 
@@ -13,11 +14,14 @@ namespace MrCMS.Web.Admin.Controllers
     public class ImportExportController : MrCMSAdminController
     {
         private readonly IImportExportManager _importExportManager;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
         private readonly ILogger<ImportExportController> _logger;
 
-        public ImportExportController(IImportExportManager importExportManager, ILogger<ImportExportController> logger)
+        public ImportExportController(IImportExportManager importExportManager, ICurrentSiteLocator currentSiteLocator,
+            ILogger<ImportExportController> logger)
         {
             _importExportManager = importExportManager;
+            _currentSiteLocator = currentSiteLocator;
             _logger = logger;
         }
 
@@ -57,7 +61,10 @@ namespace MrCMS.Web.Admin.Controllers
         {
             if (document != null && document.Length > 0 &&
                 document.ContentType == ImportExportManager.XlsxContentType)
-                TempData.Set(await _importExportManager.ImportWebpagesFromExcel(document.OpenReadStream()),
+                TempData.Set(
+                    await _importExportManager.ImportWebpagesFromExcel(
+                        _currentSiteLocator.GetCurrentSite().Id,
+                        document.OpenReadStream()),
                     "messages");
             else
                 TempData["import-status"] = "Please choose non-empty Excel (.xslx) file before uploading.";

@@ -11,12 +11,14 @@ namespace MrCMS.Web.Admin.Controllers
     {
         private readonly IUrlHistoryAdminService _urlHistoryAdminService;
         private readonly IUrlValidationService _urlValidationService;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
 
         public UrlHistoryController(IUrlHistoryAdminService urlHistoryAdminService,
-            IUrlValidationService urlValidationService)
+            IUrlValidationService urlValidationService, ICurrentSiteLocator currentSiteLocator)
         {
             _urlHistoryAdminService = urlHistoryAdminService;
             _urlValidationService = urlValidationService;
+            _currentSiteLocator = currentSiteLocator;
         }
 
         [HttpGet]
@@ -31,7 +33,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             var history = await _urlHistoryAdminService.Delete(id);
 
-            return RedirectToAction("Edit", "Webpage", new {id = history.Webpage.Id});
+            return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }
 
         [HttpGet]
@@ -48,12 +50,13 @@ namespace MrCMS.Web.Admin.Controllers
         {
             await _urlHistoryAdminService.Add(model);
 
-            return RedirectToAction("Edit", "Webpage", new {id = model.WebpageId});
+            return RedirectToAction("Edit", "Webpage", new { id = model.WebpageId });
         }
 
         public async Task<ActionResult> ValidateUrlIsAllowed(string urlsegment)
         {
-            return !await _urlValidationService.UrlIsValidForWebpageUrlHistory(urlsegment)
+            return !await _urlValidationService.UrlIsValidForWebpageUrlHistory(_currentSiteLocator.GetCurrentSite().Id,
+                urlsegment)
                 ? Json("Please choose a different URL as this one is already used.")
                 : Json(true);
         }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
@@ -97,9 +98,9 @@ namespace MrCMS.Web.Admin.Services
             });
         }
 
-        public async Task<bool> UrlIsValidForMediaCategory(string urlSegment, int? id)
+        public async Task<bool> UrlIsValidForMediaCategory(int siteId, string urlSegment, int? id)
         {
-            return await _urlValidationService.UrlIsValidForMediaCategory(urlSegment, id);
+            return await _urlValidationService.UrlIsValidForMediaCategory(siteId, urlSegment, id);
         }
 
         public async Task<UpdateMediaCategoryModel> GetEditModel(int id)

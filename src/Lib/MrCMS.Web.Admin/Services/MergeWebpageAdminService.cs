@@ -155,7 +155,7 @@ namespace MrCMS.Web.Admin.Services
 
             if (immediateParent == null)
             {
-                return await _webpageUrlService.Suggest(new SuggestParams
+                return await _webpageUrlService.Suggest(page.Site.Id, new SuggestParams
                 {
                     WebpageType = page.WebpageType,
                     PageName = page.Name,
@@ -166,7 +166,7 @@ namespace MrCMS.Web.Admin.Services
                 });
             }
 
-            return await _webpageUrlService.Suggest(new SuggestParams
+            return await _webpageUrlService.Suggest(page.Site.Id, new SuggestParams
             {
                 WebpageType = page.WebpageType,
                 PageName = $"{parentModel.NewUrl}/{page.Name}",

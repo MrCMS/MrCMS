@@ -62,7 +62,7 @@ namespace MrCMS.Services.ImportExport.BatchJobs
 
                 if (!string.IsNullOrWhiteSpace(documentImportDto.UrlSegment) && isNew)
                 {
-                    webpage.UrlSegment = await _webpageUrlService.Suggest(new SuggestParams
+                    webpage.UrlSegment = await _webpageUrlService.Suggest(batchJob.Site.Id, new SuggestParams
                     {
                         WebpageType = documentImportDto.WebpageType,
                         ParentId = webpage.Parent?.Id,

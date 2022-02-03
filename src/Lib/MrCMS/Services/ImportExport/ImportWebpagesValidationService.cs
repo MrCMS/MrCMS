@@ -51,10 +51,11 @@ namespace MrCMS.Services.ImportExport
         /// <summary>
         /// Parse and Import to DTOs
         /// </summary>
+        /// <param name="siteId"></param>
         /// <param name="spreadsheet"></param>
         /// <returns></returns>
         public async Task<(List<WebpageImportDTO> data, Dictionary<string, List<string>> parseErrors)>
-            ValidateAndImportDocuments(XLWorkbook spreadsheet)
+            ValidateAndImportDocuments(int siteId, XLWorkbook spreadsheet)
         {
             Dictionary<string, List<string>> parseErrors = new Dictionary<string, List<string>>();
             var items = new List<WebpageImportDTO>();
@@ -82,7 +83,7 @@ namespace MrCMS.Services.ImportExport
                         ? parseErrors[handle]
                         : new List<string>();
 
-                    var (item, itemErrors) = await GetDocumentImportDataTransferObject(worksheet, rowId, name);
+                    var (item, itemErrors) = await GetDocumentImportDataTransferObject(siteId, worksheet, rowId, name);
                     errors.AddRange(itemErrors);
                     parseErrors[handle] = errors;
 
@@ -101,7 +102,7 @@ namespace MrCMS.Services.ImportExport
             return (items, parseErrors);
         }
 
-        private async Task<(WebpageImportDTO item, List<string> errors)> GetDocumentImportDataTransferObject(
+        private async Task<(WebpageImportDTO item, List<string> errors)> GetDocumentImportDataTransferObject(int siteId,
             IXLWorksheet worksheet, int rowId,
             string name)
         {
@@ -113,8 +114,8 @@ namespace MrCMS.Services.ImportExport
                 item.WebpageType = worksheet.Cell(rowId, 3).GetValue<string>();
                 item.UrlSegment = worksheet.Cell(rowId, 1).GetValue<string>().HasValue()
                     ? worksheet.Cell(rowId, 1).GetValue<string>()
-                    : await _webpageUrlService.Suggest(new SuggestParams
-                        {PageName = name, WebpageType = item.WebpageType});
+                    : await _webpageUrlService.Suggest(siteId, new SuggestParams
+                        { PageName = name, WebpageType = item.WebpageType });
             }
             else
                 parseErrors.Add("Document Type is required.");
@@ -215,7 +216,7 @@ namespace MrCMS.Services.ImportExport
         /// <returns></returns>
         public Dictionary<string, List<string>> ValidateImportFile(XLWorkbook spreadsheet)
         {
-            var parseErrors = new Dictionary<string, List<string>> {{"file", new List<string>()}};
+            var parseErrors = new Dictionary<string, List<string>> { { "file", new List<string>() } };
 
             if (spreadsheet == null)
                 parseErrors["file"].Add("No import file");

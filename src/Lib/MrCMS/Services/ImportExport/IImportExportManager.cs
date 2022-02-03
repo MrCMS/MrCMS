@@ -7,7 +7,7 @@ namespace MrCMS.Services.ImportExport
     public interface IImportExportManager
     {
         Task<byte[]> ExportWebpagesToExcel();
-        Task<ImportWebpagesResult> ImportWebpagesFromExcel(Stream file, bool autoStart = true);
+        Task<ImportWebpagesResult> ImportWebpagesFromExcel(int siteId, Stream file, bool autoStart = true);
         Task<ExportWebpagesResult> ExportWebpagesToEmail(ExportWebpagesModel model);
     }
 }
