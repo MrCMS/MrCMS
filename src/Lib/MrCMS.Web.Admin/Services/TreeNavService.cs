@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Admin.Services
 {
@@ -154,7 +153,7 @@ namespace MrCMS.Web.Admin.Services
                     CanAddChild = true,
                     IsPublished = true,
                     RevealInNavigation = true,
-                    Url = _urlHelper.Action("Show", type.Name, new { id = doc.Id })
+                    Url = _urlHelper.Action("Edit", type.Name, new { id = doc.Id })
                 };
                 adminTree.Nodes.Add(node);
             }
