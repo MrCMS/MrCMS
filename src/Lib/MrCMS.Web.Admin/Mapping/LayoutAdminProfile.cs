@@ -10,10 +10,15 @@ namespace MrCMS.Web.Admin.Mapping
     {
         public LayoutAdminProfile()
         {
-            CreateMap<Layout, UpdateLayoutModel>().ReverseMap();
-            CreateMap<Layout, AddLayoutModel>().ReverseMap()
-                .MapEntityLookup(x => x.ParentId, x => x.Parent)
-                ;
+            CreateMap<Layout, UpdateLayoutModel>()
+                .ForMember(destinationMember => destinationMember.UrlSegment, x => x.MapFrom(sourceMember => sourceMember.Path))
+                .ReverseMap()
+            .ForMember(destinationMember => destinationMember.Path, x => x.MapFrom(sourceMember => sourceMember.UrlSegment));
+            CreateMap<Layout, AddLayoutModel>()
+                .ForMember(destinationMember => destinationMember.UrlSegment, x => x.MapFrom(sourceMember => sourceMember.Path))
+                .ReverseMap()
+                .ForMember(destinationMember => destinationMember.Path, x => x.MapFrom(sourceMember => sourceMember.UrlSegment))
+                .MapEntityLookup(x => x.ParentId, x => x.Parent);
         }
     }
     public class MediaCategoryAdminProfile : Profile
