@@ -42,7 +42,7 @@
                     <a href="#" data-content-admin-block-hide="@Url.Action("ToggleHidden", "ContentBlock")" data-id="@block.Id" title="@(block.IsHidden ?  await Html.Resource("admin-blocks-show","Show") : await Html.Resource("admin-blocks-hide","Hide"))">
                         @if (block.IsHidden)
                         {
-                            <i class="fa fa-eye-slash text-success"></i>
+                            <i class="fa fa-eye-slash text-danger"></i>
                         }
                         else
                         {
