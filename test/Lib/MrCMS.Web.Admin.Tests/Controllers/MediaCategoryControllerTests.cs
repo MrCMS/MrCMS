@@ -9,6 +9,7 @@ using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MrCMS.Services;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Controllers
@@ -18,12 +19,16 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private readonly IFileAdminService _fileAdminService;
         private readonly MediaCategoryController _mediaCategoryController;
         private readonly IMediaCategoryAdminService _mediaCategoryAdminService;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
 
         public MediaCategoryControllerTests()
         {
             _fileAdminService = A.Fake<IFileAdminService>();
             _mediaCategoryAdminService = A.Fake<IMediaCategoryAdminService>();
-            _mediaCategoryController = new MediaCategoryController(_mediaCategoryAdminService, _fileAdminService) { TempData = new MockTempDataDictionary() };
+            _currentSiteLocator = A.Fake<ICurrentSiteLocator>();
+            _mediaCategoryController =
+                new MediaCategoryController(_mediaCategoryAdminService, _fileAdminService, _currentSiteLocator)
+                    { TempData = new MockTempDataDictionary() };
         }
 
         [Fact]
@@ -93,7 +98,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task MediaCategoryController_EditPost_ShouldRedirectToShow()
         {
             var model = new UpdateMediaCategoryModel { };
-            var category = new MediaCategory {Id = 1};
+            var category = new MediaCategory { Id = 1 };
             A.CallTo(() => _mediaCategoryAdminService.Update(model)).Returns(category);
 
             var result = await _mediaCategoryController.Edit(model);

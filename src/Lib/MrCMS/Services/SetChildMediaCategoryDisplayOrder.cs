@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -24,9 +25,13 @@ public class SetChildMediaCategoryDisplayOrder : IOnAdding<MediaCategory>
 
     private async Task<int> GetMaxParentDisplayOrder(MediaCategory parent, ISession session)
     {
-        return await session.QueryOver<MediaCategory>()
-            .Where(doc => doc.Parent.Id == parent.Id)
-            .Select(Projections.Max<MediaCategory>(d => d.DisplayOrder))
-            .SingleOrDefaultAsync<int>();
+        if (await session.QueryOver<MediaCategory>()
+                .Where(doc => doc.Parent.Id == parent.Id)
+                .AnyAsync())
+            return await session.QueryOver<MediaCategory>()
+                .Where(doc => doc.Parent.Id == parent.Id)
+                .Select(Projections.Max<MediaCategory>(d => d.DisplayOrder))
+                .SingleOrDefaultAsync<int>() + 1;
+        return 0;
     }
 }

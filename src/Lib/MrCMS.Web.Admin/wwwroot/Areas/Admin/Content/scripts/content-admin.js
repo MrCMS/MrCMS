@@ -2,6 +2,10 @@ function getBlockHolder() {
     return $('[data-content-admin-blocks]');
 }
 
+function getItemBlocks() {
+    return $('[data-admin-item-blocks-order]');
+}
+
 function getEditorHolder() {
     return $('[data-content-admin-editor]');
 }
@@ -16,6 +20,7 @@ function loadBlocks(url) {
         blocks.html(response);
         InitSortBlocks();
         InitToggleHideBlock();
+        InitSortItemBlocks();
     })
 }
 
@@ -27,7 +32,6 @@ function InitSortBlocks() {
     blocks.children("ul").sortable({
         handle: ".sort-handle",
         update: function (event, ui) {
-            console.log(event, ui);
             var sortList = [];
             blocks.children("ul").children("li[data-order]").each(function (index, domElement) {
                 var order = index + 1;
@@ -37,7 +41,6 @@ function InitSortBlocks() {
                     order: order
                 });
             });
-            console.log(sortList);
             var url = blocks.children("ul").data("admin-blocks-order");
             $.post(url, { list: sortList })
                 .done(function (data) {
@@ -48,6 +51,42 @@ function InitSortBlocks() {
                 });
         }
     });
+}
+
+function InitSortItemBlocks() {
+    const itemBlocks = getItemBlocks();
+    if (!itemBlocks.length) {
+        return;
+    }
+
+    itemBlocks.each(function () {
+        var itemBlock = $(this);
+        itemBlock.sortable({
+            handle: ".child-sort-handle",
+            update: function (event, ui) {
+                var sortList = [];
+                var blockId = $(event.target).closest('[data-id]').data("id");
+                $(event.target).children("li[data-id]").each(function (index, domElement) {
+                    var order = index + 1;
+                    sortList.push({
+                        id: $(domElement).data("id"),
+                        order: order
+                    });
+                });
+                var url = $(event.target).data("admin-item-blocks-order");
+                $.post(url, { id: blockId, list: sortList })
+                    .done(function (data) {
+                        reloadPreview();
+                        /*loadBlocks();*/ //uncomment for re-order ui again
+                    })
+                    .fail(function () {
+                        loadBlocks();
+                    });
+            }
+        });
+    });
+
+
 }
 
 function InitToggleHideBlock() {

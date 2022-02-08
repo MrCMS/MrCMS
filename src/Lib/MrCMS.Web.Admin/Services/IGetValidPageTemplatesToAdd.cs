@@ -6,6 +6,6 @@ namespace MrCMS.Web.Admin.Services
 {
     public interface IGetValidPageTemplatesToAdd
     {
-        List<PageTemplate> Get(IEnumerable<WebpageMetadata> validWebpageDocumentTypes);
+        List<PageTemplate> Get(IEnumerable<WebpageMetadata> validWebpageWebpageTypes);
     }
 }

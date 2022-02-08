@@ -72,11 +72,11 @@ namespace MrCMS.Web.Admin.Services
 
         public async Task SetViewDataForAdd(ViewDataDictionary viewData, string type)
         {
-            var documentType = TypeHelper.GetTypeByName(type);
-            if (documentType.IsAbstract || !typeof(Webpage).IsAssignableFrom(documentType))
+            var webpageType = TypeHelper.GetTypeByName(type);
+            if (webpageType.IsAbstract || !typeof(Webpage).IsAssignableFrom(webpageType))
                 return;
 
-            await SetViewData(viewData, Activator.CreateInstance(documentType) as Webpage);
+            await SetViewData(viewData, Activator.CreateInstance(webpageType) as Webpage);
         }
     }
 }

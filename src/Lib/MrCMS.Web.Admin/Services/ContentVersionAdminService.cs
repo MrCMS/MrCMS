@@ -69,6 +69,7 @@ public class ContentVersionAdminService : IContentVersionAdminService
                     Type = metadata.Type,
                     TypeName = metadata.Name,
                     CanAddChildren = metadata.CanAddChildren,
+                    CanOrderChildren = metadata.CanOrderChildren,
                     Guid = x.Guid,
                     Items = blockModel.Items.Select(y => new ContentVersionBlockItemSummaryModel
                     {

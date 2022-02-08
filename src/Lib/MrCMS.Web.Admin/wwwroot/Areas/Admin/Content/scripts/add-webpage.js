@@ -8,7 +8,7 @@ function getCurrentValue() {
     return {
         name: scope.find('#Name').val(),
         mode: scope.find('#mode').is(':checked'),
-        documentType: scope.find("[name=DocumentType]").val(),
+        webpageType: scope.find("[name=WebpageType]:checked").val(),
         template: scope.find("#PageTemplate_Id").val()
     };
 };
@@ -16,15 +16,16 @@ function getCurrentValue() {
 function suggestUrl() {
     const scope = $('[data-add-webpage]')
     const pageName = scope.find("#Name").val(),
-        documentType = scope.find("[name=DocumentType]").val(),
+        webpageType = scope.find("[name=WebpageType]:checked").val(),
         parentId = scope.find("#ParentId").val(),
         template = scope.find("#PageTemplate_Id").val(),
         useHierarchy = scope.find("#mode").is(':checked');
+    console.log(scope.find("[name=WebpageType]:checked"));
     if (pageName !== "") {
         $.get('/Admin/WebpageUrl/Suggest', {
             pageName: pageName,
             parentId: parentId,
-            documentType: documentType,
+            webpageType: webpageType,
             template: template,
             useHierarchy: useHierarchy
         }, function (data) {
@@ -56,7 +57,7 @@ function areValuesChanged() {
     if (value === null)
         return true;
 
-    return value.documentType !== currentValue.documentType
+    return value.webpageType !== currentValue.webpageType
         || value.mode !== currentValue.mode
         || value.name !== currentValue.name
         || value.template !== currentValue.template;
@@ -76,7 +77,7 @@ function updateAdditionalProperties(event) {
     const scope = $('[data-add-webpage]')
     scope.find(".hide-until-document-selected").show();
     scope.find("#message-choose-document").hide();
-    const element = scope.find(':radio[name=DocumentType]:checked');
+    const element = scope.find(':radio[name=WebpageType]:checked');
     const webpageType = element.val();
     $.get('/Admin/Webpage/AddProperties', {type: webpageType, parentId: scope.find("#Parent_Id").val()}, function (data) {
         $("[data-additional-properties]").html(data);
@@ -92,11 +93,11 @@ export function setupAddWebpage() {
     $(document).on('blur', '[data-add-webpage] #Name', triggerKeyUp);
     $(document).on('keyup', '[data-add-webpage] #Name', delayedUpdateUrl);
     $(document).on('change', '[data-add-webpage] #mode', delayedUpdateUrl);
-    $(document).on('change', '[data-add-webpage] [name=DocumentType]', delayedUpdateUrl);
+    $(document).on('change', '[data-add-webpage] [name=WebpageType]', delayedUpdateUrl);
     $(document).on('change', '[data-add-webpage] #PageTemplate_Id', delayedUpdateUrl);
-    $(document).on('change', '[data-add-webpage] :radio[name=DocumentType]', updateAdditionalProperties);
+    $(document).on('change', '[data-add-webpage] :radio[name=WebpageType]', updateAdditionalProperties);
     const scope = $('[data-add-webpage]')
-    if (scope.find(':radio[name=DocumentType]:checked').length) {
+    if (scope.find(':radio[name=WebpageType]:checked').length) {
         updateAdditionalProperties();
     }
 }

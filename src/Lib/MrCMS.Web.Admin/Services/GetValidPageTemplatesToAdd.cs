@@ -17,9 +17,9 @@ namespace MrCMS.Web.Admin.Services
             _session = session;
         }
 
-        public List<PageTemplate> Get(IEnumerable<WebpageMetadata> validWebpageDocumentTypes)
+        public List<PageTemplate> Get(IEnumerable<WebpageMetadata> validWebpageTypes)
         {
-            List<string> typeNames = validWebpageDocumentTypes.Select(metadata => metadata.Type.FullName).ToList();
+            List<string> typeNames = validWebpageTypes.Select(metadata => metadata.Type.FullName).ToList();
 
             List<PageTemplate> templates =
                 _session.QueryOver<PageTemplate>().Where(template => template.PageType.IsIn(typeNames))

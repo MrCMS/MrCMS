@@ -27,6 +27,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private ISetWebpageAdminViewData _setAdminViewData;
         private IWebpageVersionsAdminService _webpageVersionsAdminService;
         private IServiceProvider _serviceProvider;
+        private ICurrentSiteLocator _currentSiteLocator;
 
         public WebpageControllerTests()
         {
@@ -37,9 +38,11 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _modelBindingHelperAdapter = A.Fake<IModelBindingHelperAdapter>();
             _webpageVersionsAdminService = A.Fake<IWebpageVersionsAdminService>();
             _serviceProvider = A.Fake<IServiceProvider>();
+            _currentSiteLocator = A.Fake<ICurrentSiteLocator>();
             _webpageController = new WebpageController(_webpageAdminService, _baseViewDataService,
                 _setAdminViewData,
-                _urlValidationService, _modelBindingHelperAdapter, _webpageVersionsAdminService, _serviceProvider)
+                _urlValidationService, _modelBindingHelperAdapter, _webpageVersionsAdminService, _serviceProvider,
+                _currentSiteLocator)
             {
                 ViewData = ViewDataDictionaryHelper.GetNewDictionary(),
                 TempData = new MockTempDataDictionary(),
@@ -75,7 +78,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task WebpageController_AddPost_ShouldCallAdd()
         {
             var model = new AddWebpageModel {UrlSegment = "test"};
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("test", null)).Returns(true);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id ,"test", null)).Returns(true);
             var additionalModel = new object();
             A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.WebpageType))
                 .Returns(additionalModel);
@@ -89,7 +92,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task WebpageController_AddPost_ShouldRedirectToEdit()
         {
             var model = new AddWebpageModel();
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(true);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id ,null, null)).Returns(true);
             var value = new object();
             A.CallTo(() => _webpageAdminService.GetAdditionalPropertyModel(model.WebpageType)).Returns(value);
             A.CallTo(() => _webpageAdminService.Add(model, value)).Returns(new StubWebpage {Id = 123});
@@ -104,7 +107,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task WebpageController_AddPost_IfIsValidForWebpageIsFalseShouldReturnViewResult()
         {
             var model = new AddWebpageModel { };
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(false);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id ,null, null)).Returns(false);
 
             var result = await _webpageController.Add(model);
 
@@ -115,7 +118,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task WebpageController_AddPost_IfIsValidForWebpageIsFalseShouldReturnPassedObjectAsModel()
         {
             var model = new AddWebpageModel { };
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(false);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id ,null, null)).Returns(false);
 
             var result = await _webpageController.Add(model);
 
@@ -156,7 +159,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task WebpageController_EditPost_ShouldCallSaveDocument()
         {
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, 1)).Returns(true);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id ,null, 1)).Returns(true);
             var textPage = new UpdateWebpageViewModel {Id = 1};
 
             await _webpageController.Edit(textPage);
@@ -167,7 +170,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task WebpageController_EditPost_ShouldRedirectToEdit()
         {
-            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, 1)).Returns(true);
+            A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(_currentSiteLocator.GetCurrentSite().Id ,null, 1)).Returns(true);
             var model = new UpdateWebpageViewModel();
             var stubWebpage = new StubWebpage {Id = 123};
             A.CallTo(() => _webpageAdminService.Update(model)).Returns(stubWebpage);

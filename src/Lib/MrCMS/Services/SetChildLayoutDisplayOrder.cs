@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -24,9 +25,13 @@ public class SetChildLayoutDisplayOrder : IOnAdding<Layout>
 
     private async Task<int> GetMaxParentDisplayOrder(Layout parent, ISession session)
     {
-        return await session.QueryOver<Layout>()
-            .Where(doc => doc.Parent.Id == parent.Id)
-            .Select(Projections.Max<Layout>(d => d.DisplayOrder))
-            .SingleOrDefaultAsync<int>();
+        if (await session.QueryOver<Layout>()
+                .Where(doc => doc.Parent.Id == parent.Id)
+                .AnyAsync())
+            return await session.QueryOver<Layout>()
+                .Where(doc => doc.Parent.Id == parent.Id)
+                .Select(Projections.Max<Layout>(d => d.DisplayOrder))
+                .SingleOrDefaultAsync<int>() + 1;
+        return 0;
     }
 }

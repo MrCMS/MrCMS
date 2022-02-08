@@ -8,6 +8,7 @@ using ClosedXML.Excel;
 using Microsoft.Extensions.Logging;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
 using MrCMS.Models;
 using NHibernate.Linq;
@@ -36,11 +37,11 @@ namespace MrCMS.Services.ImportExport
             _logger = logger;
         }
 
-        public async Task<ImportWebpagesResult> ImportWebpagesFromExcel(Stream file, bool autoStart = true)
+        public async Task<ImportWebpagesResult> ImportWebpagesFromExcel(int siteId, Stream file, bool autoStart = true)
         {
             var spreadsheet = new XLWorkbook(file);
 
-            var (items, parseErrors) = await GetWebpagesFromSpreadSheet(spreadsheet);
+            var (items, parseErrors) = await GetWebpagesFromSpreadSheet(siteId, spreadsheet);
             if (parseErrors.Any())
                 return ImportWebpagesResult.Failure(parseErrors);
             var businessLogicErrors = await _importWebpagesValidationService.ValidateBusinessLogic(items);
@@ -55,16 +56,16 @@ namespace MrCMS.Services.ImportExport
         /// <summary>
         /// Try and get data out of the spreadsheet into the DTOs with parse and type checks
         /// </summary>
+        /// <param name="siteId"></param>
         /// <param name="spreadsheet"></param>
-        /// <param name="parseErrors"></param>
         /// <returns></returns>
         private async Task<(List<WebpageImportDTO> data, Dictionary<string, List<string>> parseErrors)>
-            GetWebpagesFromSpreadSheet(XLWorkbook spreadsheet)
+            GetWebpagesFromSpreadSheet(int siteId, XLWorkbook spreadsheet)
         {
             var parseErrors = _importWebpagesValidationService.ValidateImportFile(spreadsheet);
             if (parseErrors.Any())
                 return (new List<WebpageImportDTO>(), parseErrors);
-            return await _importWebpagesValidationService.ValidateAndImportDocuments(spreadsheet);
+            return await _importWebpagesValidationService.ValidateAndImportDocuments(siteId, spreadsheet);
         }
 
         public async Task<byte[]> ExportWebpagesToExcel()
@@ -97,7 +98,7 @@ namespace MrCMS.Services.ImportExport
                     }
                 });
 
-                return new ExportWebpagesResult {Success = true};
+                return new ExportWebpagesResult { Success = true };
             }
             catch (Exception exception)
             {

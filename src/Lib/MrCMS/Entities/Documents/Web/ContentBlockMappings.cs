@@ -24,12 +24,14 @@ public static class ContentBlockMappings
 
             var name = attribute?.Name ?? type.Name.BreakUpString();
             var canAddChildren = type.IsAssignableTo(typeof(IContentBlockWithChildCollection));
-                blockMetadata.Add(type.FullName!, new ContentBlockMetadata
-                {
-                    Name = name,
-                    Type = type,
-                    CanAddChildren = canAddChildren
-                });
+            var canOrderChildren = type.IsAssignableTo(typeof(IContentBlockWithSortableChildCollection));
+            blockMetadata.Add(type.FullName!, new ContentBlockMetadata
+            {
+                Name = name,
+                Type = type,
+                CanAddChildren = canAddChildren,
+                CanOrderChildren = canOrderChildren
+            });
         }
 
         BlockMetadata = blockMetadata;
@@ -40,5 +42,6 @@ public static class ContentBlockMappings
         public Type Type { get; set; }
         public string Name { get; set; }
         public bool CanAddChildren { get; set; }
+        public bool CanOrderChildren { get; set; }
     }
 }

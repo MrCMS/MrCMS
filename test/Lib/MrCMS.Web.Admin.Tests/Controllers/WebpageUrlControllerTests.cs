@@ -12,11 +12,13 @@ namespace MrCMS.Web.Admin.Tests.Controllers
     {
         private readonly IWebpageUrlService _webpageUrlService;
         private readonly WebpageUrlController _webpageUrlController;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
 
         public WebpageUrlControllerTests()
         {
             _webpageUrlService = A.Fake<IWebpageUrlService>();
-            _webpageUrlController = new WebpageUrlController(_webpageUrlService);
+            _currentSiteLocator = A.Fake<ICurrentSiteLocator>();
+            _webpageUrlController = new WebpageUrlController(_webpageUrlService, _currentSiteLocator);
         }
 
 
@@ -26,19 +28,20 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             var suggestParams = new SuggestParams();
             await _webpageUrlController.Suggest(suggestParams);
 
-            A.CallTo(() => _webpageUrlService.Suggest(suggestParams)).MustHaveHappened();
+            A.CallTo(() => _webpageUrlService.Suggest(_currentSiteLocator.GetCurrentSite().Id, suggestParams))
+                .MustHaveHappened();
         }
 
         [Fact]
         public async Task WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
             var suggestParams = new SuggestParams();
-            A.CallTo(() => _webpageUrlService.Suggest(suggestParams)).Returns("test/result");
+            A.CallTo(() => _webpageUrlService.Suggest(_currentSiteLocator.GetCurrentSite().Id, suggestParams))
+                .Returns("test/result");
 
             string url = await _webpageUrlController.Suggest(suggestParams);
 
             url.Should().BeEquivalentTo("test/result");
         }
-
     }
 }

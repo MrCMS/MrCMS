@@ -16,4 +16,5 @@ public class ContentVersionBlockSummaryModel
     public bool ShowCaret => Items.Any() || CanAddChildren;
     public string TypeName { get; set; }
     public bool CanAddChildren { get; set; }
+    public bool CanOrderChildren { get; set; }
 }

@@ -5,10 +5,10 @@ namespace MrCMS.Services
 {
     public interface IUrlValidationService
     {
-        Task<bool> UrlIsValidForMediaCategory(string urlSegment, int? id);
-        Task<bool> UrlIsValidForLayout(string urlSegment, int? id);
-        Task<bool> UrlIsValidForWebpage(string url, int? id);
-        Task<bool> UrlIsValidForWebpageUrlHistory(string url);
+        Task<bool> UrlIsValidForMediaCategory(int siteId, string urlSegment, int? id);
+        Task<bool> UrlIsValidForLayout(int siteId, string urlSegment, int? id);
+        Task<bool> UrlIsValidForWebpage(int siteId, string url, int? id);
+        Task<bool> UrlIsValidForWebpageUrlHistory(int siteId, string url);
         Task<UrlHistory> Get(int id);
     }
 }

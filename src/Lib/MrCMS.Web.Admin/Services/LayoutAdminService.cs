@@ -19,15 +19,17 @@ namespace MrCMS.Web.Admin.Services
         private readonly IGetLayoutsByParent _getLayoutsByParent;
         private readonly IUrlValidationService _urlValidationService;
         private readonly IMapper _mapper;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
 
         public LayoutAdminService(IRepository<Layout> layoutRepository,
             IGetLayoutsByParent getLayoutsByParent, IUrlValidationService urlValidationService,
-            IMapper mapper)
+            IMapper mapper, ICurrentSiteLocator currentSiteLocator)
         {
             _layoutRepository = layoutRepository;
             _getLayoutsByParent = getLayoutsByParent;
             _urlValidationService = urlValidationService;
             _mapper = mapper;
+            _currentSiteLocator = currentSiteLocator;
         }
 
         public AddLayoutModel GetAddLayoutModel(int? id)
@@ -99,7 +101,9 @@ namespace MrCMS.Web.Admin.Services
 
         public async Task<bool> UrlIsValidForLayout(string urlSegment, int? id)
         {
-            return await _urlValidationService.UrlIsValidForLayout(urlSegment, id);
+            return await _urlValidationService.UrlIsValidForLayout(
+                _currentSiteLocator.GetCurrentSite().Id,
+                urlSegment, id);
         }
 
         public async Task<IEnumerable<SelectListItem>> GetValidParents(int id)
