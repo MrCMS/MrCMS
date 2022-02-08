@@ -1,21 +1,21 @@
 -
   branches:
     only:
-    - develop
+      - develop
   version: 1.0.{build}-dev
-  configuration: Debug
+  configuration: Release
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
   install:
+    - ps: Install-Product node $env:nodejs_version
     - nuget restore
-  image: Visual Studio 2019
+  image: Visual Studio 2022
   build:
-    parallel: true
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
     verbosity: minimal
-  after_build:
-    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Debug --no-build
-  artifacts:
-   - path: '\src\MrCMS.Web\bin\Debug\netcoreapp2.2\publish'
-     name: MrCMS.Web
-     type: WebDeployPackage
+    parallel: true
 -
   branches:
     only:

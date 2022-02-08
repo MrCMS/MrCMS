@@ -14,7 +14,6 @@ namespace MrCMS.Web.Admin.Bundles
         }
 
         public string Url => "/assets/admin.css";
-        public string MinifiedUrl => "/assets/admin.min.css";
 
         public IEnumerable<string> VendorFiles
         {

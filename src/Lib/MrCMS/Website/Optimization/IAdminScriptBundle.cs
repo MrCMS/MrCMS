@@ -8,7 +8,6 @@ namespace MrCMS.Website.Optimization
         int Priority { get; }
         Task<bool> ShouldShow(string theme);
         string Url { get; }
-        string MinifiedUrl { get; }
         IEnumerable<string> VendorFiles { get; }
     }
 }

@@ -10,7 +10,6 @@ namespace MrCMS.Web.Apps.Core.Services
         public Task<bool> ShouldShow(string theme) => Task.FromResult(true);
 
         public string Url => "/assets/core.js";
-        public string MinifiedUrl => "/assets/core.min.js";
 
         public IEnumerable<string> VendorFiles
         {

@@ -95,16 +95,13 @@ namespace MrCMS.Website.Optimization
             var bundles = UIScriptBundleTypes.Select(type =>
                     helper.ViewContext.HttpContext.RequestServices.GetService(type) as IUIScriptBundle)
                 .OrderByDescending(x => x.Priority);
-            // .Where(x => x.ShouldShow(theme));
-
-            var minified = !helper.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
 
             var files = new HashSet<string>();
             foreach (var bundle in bundles)
             {
                 if (!await bundle.ShouldShow(theme))
                     continue;
-                var url = minified ? bundle.MinifiedUrl : bundle.Url;
+                var url = bundle.Url;
                 if (url != null)
                     files.Add(url);
             }
@@ -117,8 +114,8 @@ namespace MrCMS.Website.Optimization
             async Task<IHtmlContent> GetDefaultOutput()
             {
                 IHtmlContentBuilder htmlContentBuilder = new HtmlContentBuilder();
-                htmlContentBuilder = htmlContentBuilder.AppendHtml(await helper.RenderUIVendorScripts());
-                htmlContentBuilder = htmlContentBuilder.AppendHtml(await helper.RenderUIScripts());
+                htmlContentBuilder = htmlContentBuilder.AppendHtml(await helper.RenderUIVendorStyles());
+                htmlContentBuilder = htmlContentBuilder.AppendHtml(await helper.RenderUIStyles());
                 return htmlContentBuilder;
             }
 
@@ -145,14 +142,13 @@ namespace MrCMS.Website.Optimization
             var bundles = UIStyleBundleTypes.Select(type =>
                     helper.ViewContext.HttpContext.RequestServices.GetService(type) ).OfType<IUIStyleBundle>()
                 .OrderByDescending(x => x.Priority);
-            var minified = !helper.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
 
             var files = new HashSet<string>();
             foreach (var bundle in bundles)
             {
                 if (!await bundle.ShouldShow(theme))
                     continue;
-                var url = minified ? bundle.MinifiedUrl : bundle.Url;
+                var url = bundle.Url;
                 if (url != null)
                     files.Add(url);
             }
@@ -166,9 +162,7 @@ namespace MrCMS.Website.Optimization
             var bundles = AdminScriptBundleTypes.Select(type =>
                     helper.ViewContext.HttpContext.RequestServices.GetService(type) as IAdminScriptBundle)
                 .OrderByDescending(x => x.Priority);
-            // .Where(x => x.ShouldShow(theme));
-
-            // var files = bundles.SelectMany(x => x.VendorFiles).ToHashSet();
+            
             var files = new HashSet<string>();
             foreach (var bundle in bundles)
             {
@@ -202,18 +196,13 @@ namespace MrCMS.Website.Optimization
             var bundles = AdminScriptBundleTypes.Select(type =>
                     helper.ViewContext.HttpContext.RequestServices.GetService(type) as IAdminScriptBundle)
                 .OrderByDescending(x => x.Priority);
-            // .Where(x => x.ShouldShow(theme));
-
-            var minified = !helper.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
-
-            // var files = bundles.Select(x => minified ? x.MinifiedUrl : x.Url)
-            //     .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            
             var files = new HashSet<string>();
             foreach (var bundle in bundles)
             {
                 if (!await bundle.ShouldShow(theme))
                     continue;
-                var url = minified ? bundle.MinifiedUrl : bundle.Url;
+                var url = bundle.Url;
                 if (url != null)
                     files.Add(url);
             }
@@ -228,14 +217,12 @@ namespace MrCMS.Website.Optimization
                     helper.ViewContext.HttpContext.RequestServices.GetService(type) as IAdminStyleBundle)
                 .OrderByDescending(x => x.Priority);
 
-            var minified = !helper.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
-
             var files = new HashSet<string>();
             foreach (var bundle in bundles)
             {
                 if (!await bundle.ShouldShow(theme))
                     continue;
-                var url = minified ? bundle.MinifiedUrl : bundle.Url;
+                var url = bundle.Url;
                 if (url != null)
                     files.Add(url);
             }

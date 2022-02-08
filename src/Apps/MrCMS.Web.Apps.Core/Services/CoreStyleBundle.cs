@@ -10,7 +10,6 @@ namespace MrCMS.Web.Apps.Core.Services
         public Task<bool> ShouldShow(string theme) => Task.FromResult(string.IsNullOrWhiteSpace(theme));
 
         public string Url => "/assets/core.css";
-        public string MinifiedUrl => "/assets/core.min.css";
 
         public IEnumerable<string> VendorFiles
         {

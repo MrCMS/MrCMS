@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Extensions.Caching.Memory;
 using MrCMS.Services.Caching;
 using MrCMS.Website.Caching;
 using NHibernate;
@@ -13,14 +14,16 @@ namespace MrCMS.Website
         private readonly IEnumerable<IClearCache> _manualCacheClears;
         private readonly ISessionFactory _factory;
         private readonly IHighPriorityCacheManager _highPriorityCacheManager;
+        private readonly IMemoryCache _memoryCache;
 
         public ClearCachesService(ICacheManager cacheManager, IEnumerable<IClearCache> manualCacheClears, ISessionFactory factory,
-            IHighPriorityCacheManager highPriorityCacheManager)
+            IHighPriorityCacheManager highPriorityCacheManager, IMemoryCache memoryCache)
         {
             _cacheManager = cacheManager;
             _manualCacheClears = manualCacheClears;
             _factory = factory;
             _highPriorityCacheManager = highPriorityCacheManager;
+            _memoryCache = memoryCache;
         }
 
         public void ClearCache()

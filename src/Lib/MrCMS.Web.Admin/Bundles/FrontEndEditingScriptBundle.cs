@@ -26,7 +26,6 @@ namespace MrCMS.Web.Admin.Bundles
         }
 
         public string Url => "/assets/front-end-editing.js";
-        public string MinifiedUrl => "/assets/front-end-editing.min.js";
 
         public IEnumerable<string> VendorFiles
         {

@@ -10,7 +10,6 @@ namespace MrCMS.Web.Apps.Core.Services
         public Task<bool> ShouldShow(string theme) => Task.FromResult(string.IsNullOrWhiteSpace(theme));
 
         public string Url { get; }
-        public string MinifiedUrl { get; }
 
         public IEnumerable<string> VendorFiles
         {
