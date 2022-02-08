@@ -22,49 +22,51 @@
     - master
   version: 1.0.{build}-master
   configuration: Release
-  image: Visual Studio 2019
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
   install:
-    - nuget restore    
-  build:
-    parallel: true
-    verbosity: minimal
-  after_build:
-    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
-  artifacts:
-   - path: '\src\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
-     name: MrCMS.Web
-     type: WebDeployPackage
--
-  branches:
-    only:
-    - /feature\/.*/
-  version: 1.0.{build}-{branch}
-  configuration: Debug
-  install:
-    - dotnet restore
-  image: Visual Studio 2022    
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
   build:
     project: src\MrCMS.Web\MrCMS.Web.csproj
     publish_aspnet_core: true
     verbosity: minimal
     parallel: true
+-
+  branches:
+    only:
+    - /feature\/.*/
+  version: 1.0.{build}-{branch}
+  configuration: Release
   environment:
+    nodejs_version: "14"
     ASPNETCORE_ENVIRONMENT: Staging
+  install:
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
+  build:
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
+    verbosity: minimal
+    parallel: true
 -
   branches:
     only:
     - /release\/.*/
   version: 1.0.{build}-master
   configuration: Release
-  image: Visual Studio 2019 Preview
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
   install:
-    - nuget restore    
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
   build:
-    parallel: true
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
     verbosity: minimal
-  after_build:
-    - ps: dotnet publish .\src\MrCMS.Web\MrCMS.Web.csproj -c Release --no-build
-  artifacts:
-   - path: '\src\MrCMS.Web\bin\Release\netcoreapp2.2\publish'
-     name: MrCMS.Web
-     type: WebDeployPackage
+    parallel: true
