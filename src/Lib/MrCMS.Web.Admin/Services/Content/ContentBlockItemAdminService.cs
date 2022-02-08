@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Admin.Models.Content;
 using NHibernate;
 
 namespace MrCMS.Web.Admin.Services.Content;
@@ -65,6 +67,22 @@ public class ContentBlockItemAdminService : IContentBlockItemAdminService
         withChildCollection.Remove(blockItem);
 
         contentBlock.SerializeData(withChildCollection);
+        await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
+    }
+
+    public async Task SetBlockItemOrders(int blockId, List<BlockItemSortModel> blockItemSortModel)
+    {
+        var contentBlock = await GetContentBlock(blockId);
+        if (contentBlock == null)
+            return;
+
+        var block = contentBlock.DeserializeData();
+        if (block is not IContentBlockWithSortableChildCollection withSortableChildCollection)
+            return;
+
+        withSortableChildCollection.Sort(blockItemSortModel.Select(f => new KeyValuePair<Guid, int>(f.Id, f.Order)).ToList());
+
+        contentBlock.SerializeData(withSortableChildCollection);
         await _session.TransactAsync(session => session.UpdateAsync(contentBlock));
     }
 

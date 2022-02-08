@@ -63,11 +63,14 @@
             </div>
             @if (isOpen)
             {
-                <ul class="list-group list-group-flush mt-3">
+                <ul class="list-group list-group-flush mt-3"
+            @if (block.CanOrderChildren){
+            @:data-admin-item-blocks-order="@Url.Action("Sort", "BlockItem")"
+            }>
                     @foreach (var item in block.Items)
                     {
                         var itemSelected = selected == item.Id;
-                        <li class="list-group-item list-group-item-action @(itemSelected ? "list-group-item-primary" : "")">
+                        <li class="list-group-item list-group-item-action @(itemSelected ? "list-group-item-primary" : "")" data-id="@item.Id">
                             <div class="row">
                                 <div class="col">
                                     <a href="#" class="d-block selection-link"
@@ -76,6 +79,14 @@
                                         @item.Name
                                     </a>
                                 </div>
+                                @if (block.CanOrderChildren)
+                                {
+                                    <div class="col-auto child-sort-handle">
+                                        <a class="text-dark" href="#" title="@await Html.Resource("admin-blocks-sort","Drag to sort")">
+                                            <i class="fa fa-sort"></i>
+                                        </a>
+                                    </div>
+                                }
                                 @if (block.CanAddChildren)
                                 {
                                     <div class="col-auto">

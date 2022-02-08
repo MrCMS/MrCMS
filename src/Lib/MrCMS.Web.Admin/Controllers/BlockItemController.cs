@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
+using MrCMS.Web.Admin.Models.Content;
 using MrCMS.Web.Admin.Services.Content;
 
 namespace MrCMS.Web.Admin.Controllers;
@@ -38,6 +40,13 @@ public class BlockItemController : MrCMSAdminController
     public async Task<IActionResult> Remove(int id, Guid itemId)
     {
         await _adminService.RemoveBlockItem(id, itemId);
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Sort(int id, List<BlockItemSortModel> list)
+    {
+        await _adminService.SetBlockItemOrders(id, list);
         return Ok();
     }
 }
