@@ -1,0 +1,21 @@
+﻿@model MrCMS.Web.Admin.Models.Forms.FormGDPRTabViewModel
+
+<div class="form-group">
+    <label asp-for="DeleteEntriesAfter"></label>
+    <input asp-for="DeleteEntriesAfter" type="text" class="form-control" />
+    <span asp-validation-for="DeleteEntriesAfter"></span>
+</div>
+
+<div class="form-group">
+    <div class="form-check">
+        <input asp-for="SendByEmailOnly" type="checkbox" class="form-check-input" />
+        <label asp-for="SendByEmailOnly" class="form-check-label"></label>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="form-check">
+        <input asp-for="ShowGDPRConsentBox" type="checkbox" class="form-check-input" />
+        <label asp-for="ShowGDPRConsentBox" class="form-check-label"></label>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+﻿@model System.Collections.Generic.List<MrCMS.Models.SortItem>
+@{
+    ViewBag.Title = "Sort Catgeories";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section JavaScriptBlock
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#sortable").sortable({
+                update: function(event, ui) {
+                    $('#sortable li').each(function(index, domElement) {
+                        $(domElement).find('[name*="Order"]').val(index);
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<form method="post" id="sort-media-category">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-sort", "Sort") "/>
+
+            <admin-header-actions>
+                <button class="btn btn-primary">
+                    @await Html.Resource("admin-save", "Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <ul id="sortable" class="list-group">
+        @for (var i = 0; i < Model.Count; i++)
+        {
+            <li class="list-group-item">
+                @Html.HiddenFor(model => model[i].Id)
+                @Html.HiddenFor(model => model[i].Order)
+                <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
+                @Model[i].Name
+            </li>
+        }
+    </ul>
+
+</form>

@@ -1,0 +1,23 @@
+@model MrCMS.Web.Apps.Core.Areas.Admin.Models.Content.UpdateYoutubeVideoAdminModel
+
+<div class="form-group">
+    <label asp-for="VideoId"></label> Example:<span class="text-secondary">https://www.youtube.com/watch?v=</span><span class="text-dark font-weight-bold">wJA6ZgQopk4</span>
+    <input asp-for="VideoId" class="form-control" />
+    <span asp-validation-for="VideoId"></span>
+</div>
+
+
+<div class="form-group">
+    @Html.InlineCheckboxFor(m=>m.Autoplay)
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(m=>m.EnablePrivacyMode)
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(m=>m.ShowPlayerControl)
+</div>
+
+<div class="form-group">
+    <label asp-for="StartAt" class="w-100"></label>
+    <input type="text" asp-for="StartAt" class="form-control" />
+</div> 

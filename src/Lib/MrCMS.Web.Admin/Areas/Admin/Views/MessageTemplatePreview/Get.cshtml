@@ -1,0 +1,27 @@
+﻿@model MrCMS.Messages.MessageTemplate
+@{
+    var typeInfo = new { type = Model.GetType().FullName };
+}
+<form asp-controller="MessageTemplatePreview" asp-action="Preview" asp-route-type="@Model.GetType().FullName" method="post" id="preview-message-form" style="display: inline;">
+    @Html.AntiForgeryToken()
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("Admin Message Template Preview Title", "Preview message template")" />
+            <admin-header-actions>
+                <span class="btn-group">
+                    @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-secondary" })
+                    @Html.ActionLink("Edit", "Edit", "MessageTemplate", typeInfo, new { @class = "btn btn-secondary" })
+                    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Preview")" />
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+    <div style="min-height: 400px">
+        <div class="form-group">
+            <label for="id">@Model.ModelType.Name.BreakUpString() Id</label>
+            <input type="text" id="id" name="id" value="1" class="form-control"/>
+        </div>
+        <hr />
+        <div id="preview"></div>
+    </div>
+</form>

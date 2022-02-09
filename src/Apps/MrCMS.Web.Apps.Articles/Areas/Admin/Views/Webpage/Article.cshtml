@@ -1,0 +1,34 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Articles.Areas.Admin.Services
+@model MrCMS.Web.Apps.Articles.Areas.Admin.Models.ArticleViewModel
+@{
+    // Html.IncludeScript("~/Areas/Admin/Content/scripts/article.js");
+}
+@inject IGetArticleAdminAuthorOptions GetAuthorOptions
+
+<div class="form-group">
+    @Html.LabelFor(model => model.FeatureImage, "Article Image") <br />
+    @Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Abstract)
+    @Html.TextAreaFor(model => model.Abstract, new { @rows = "2", @class = "form-control" })
+</div>
+
+<span id="abstract-character-count">
+    <span>@((160 - (Model.Abstract ?? string.Empty).Length) + " characters remaining")</span>
+</span>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.UserId)
+    @Html.DropDownListFor(model => model.UserId, await GetAuthorOptions.GetUsers(), new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.UserId)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.TagList)
+    @Html.TextBoxFor(x => x.TagList, new { @class = "form-control system-tagging" })
+</div>
+
+@Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for this article.")

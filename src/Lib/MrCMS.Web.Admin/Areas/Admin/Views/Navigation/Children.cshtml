@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Html
+@model List<MrCMS.Web.Admin.Models.AdminTreeNode>
+
+<ul>
+    @foreach (var node in Model)
+    {
+        var cssClass = "";
+
+        if (node.IsMoreLink)
+        {
+        }
+        else if (!node.IsPublished)
+        {
+            cssClass = "text-warning";
+        }
+        else if (!node.RevealInNavigation)
+        {
+            cssClass = "text-secondary";
+        }
+        <li id="@node.Id" data-id="@node.Id" data-parent-id="@node.ParentId"
+            data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild"
+            data-candelete="@(!node.HasChildren && !node.IsMoreLink)" data-type="@node.Type"
+            data-controller="@node.NodeType" class="@(node.HasChildren ? "jstree-closed" : "")"
+            data-jstree='{"icon":"@node.IconClass"}'>
+            <a href="@node.Url" class="@cssClass" @(node.IsMoreLink ? new HtmlString(" data-toggle=\"fb-modal\"") : HtmlString.Empty)>@node.Name</a>
+        </li>
+    }
+</ul>

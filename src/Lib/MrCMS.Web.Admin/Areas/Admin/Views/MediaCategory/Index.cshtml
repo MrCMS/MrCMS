@@ -1,0 +1,18 @@
+﻿@model MrCMS.Web.Admin.Models.MediaCategorySearchModel
+@{
+    ViewBag.Title = "Manage Media";
+}
+<div data-media-category>
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-media", "Media") "/>
+
+            <admin-header-actions>
+                <a href="@Url.Action("Add", "MediaCategory")" class="btn btn-primary">@await Html.Resource("Admin Media New Folder Button", "New Folder")</a>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <partial name="Manage" model="Model"/>
+
+</div>

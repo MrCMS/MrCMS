@@ -1,0 +1,42 @@
+﻿@using MrCMS.Web.Admin.Models
+@using MrCMS.Web.Admin.Services
+@model AddSiteModel
+@inject ISiteCloneOptionsAdminService AdminService
+@{
+    var otherSites =await AdminService.GetOtherSiteOptions();
+    var partOptions = AdminService.GetClonePartOptions();
+}
+
+<table class="table table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>
+                Option
+            </th>
+            <th>
+                Copy From
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong>Copy all from:</strong>
+            </td>
+            <td>
+                <select id="copy-all" name="copy-all" asp-items="@otherSites" class="form-control"></select>
+            </td>
+        </tr>
+        @foreach (var option in partOptions)
+        {
+            <tr>
+                <td>
+                    @option.DisplayName
+                </td>
+                <td>
+                    <select name="sco-@option.TypeName" id="sco-@option.TypeName" asp-items="@otherSites" class="form-control input-sm"></select>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

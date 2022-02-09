@@ -1,0 +1,10 @@
+﻿@using MrCMS.Entities.Documents.Web
+@model MrCMS.Web.Admin.Models.WebpageEdit.LayoutTabViewModel
+@{
+    var webpage = ViewData["webpage"] as Webpage;
+}
+
+<div class="form-group">
+    <label asp-for="PageTemplateId">@await Html.Resource("Page Template")</label>
+    <select asp-for="PageTemplateId" asp-items="@(ViewData["template-options"] as IEnumerable<SelectListItem>)" class="form-control"></select>
+</div>

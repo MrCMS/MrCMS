@@ -1,0 +1,25 @@
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Services.Content
+@inject IContentBlockAdminService _adminService
+@model int
+
+@{
+    var block = ViewData["block"] as IContentBlock;
+}
+
+<div class="card m-0 border-0 shadow-none">
+    <h3 class="card-header px-0">
+        Editor
+    </h3>
+    <div class="card-body px-0">
+        @if (block != null)
+        {
+            <form asp-action="Edit" asp-controller="ContentBlock" asp-route-id="@Model" data-content-admin-save-editor>
+                @{
+                    await Html.RenderPartialAsync($"Editors/{block.GetType().Name}", await _adminService.GetUpdateModel(Model));
+                }
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+        }
+    </div>
+</div>

@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
+}
+<div class="wrapper">
+
+    <partial name="Navbar"/>
+
+    <aside class="main-sidebar sidebar-light-primary elevation-2" id="sidebar">
+        <partial name="Sidebar"/>
+    </aside>
+
+    <section class="content-wrapper">
+        <partial name="Breadcrumbs"/>
+
+        <div class="content m-2 m-sm-4 p-0">
+            <partial name="Messages"/>
+            <div class="container-fluid p-0">
+                @RenderBody()
+            </div>
+        </div>
+    </section>
+
+</div>
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    DefineSection("JavaScriptBlock", () =>
+    {
+        Write(RenderSection("JavaScriptBlock"));
+        return Task.CompletedTask;
+    });
+}

@@ -1,0 +1,33 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateMediaCategoryModel
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+}
+
+<form asp-controller="MediaCategory" asp-action="Edit" asp-route-id="@Model.Id" method="post" id="edit-media", target="_top">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-edit", "Edit<>") @Model.Name"/>
+
+            <admin-header-actions>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save")">
+
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input type="text" asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="IsGallery" type="checkbox" class="form-check-input" />
+            <label asp-for="IsGallery" class="form-check-label"></label>
+        </div>
+        <span asp-validation-for="IsGallery"></span>
+    </div>
+
+
+</form>

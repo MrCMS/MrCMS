@@ -1,0 +1,20 @@
+﻿@model MrCMS.Web.Apps.Articles.Areas.Admin.Models.AddAuthorInfoModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+<form asp-action="Add" asp-controller="AuthorInfo" method="post">
+    <fieldset>
+        <legend>Author information
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="Add Author Info" />
+            </span>
+        </legend>
+        @Html.HiddenFor(info => info.UserId)
+        <div class="form-group">
+            @Html.LabelFor(info => info.Bio)
+            @Html.TextAreaFor(info => info.Bio, new{@class="form-control"})
+            @Html.ValidationMessageFor(info => info.Bio)
+        </div>
+    </fieldset>
+</form>

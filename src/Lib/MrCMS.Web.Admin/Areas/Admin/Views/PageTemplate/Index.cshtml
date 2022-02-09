@@ -1,0 +1,93 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Services
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Admin.Models.PageTemplateSearchQuery
+@inject IPageTemplateService PageTemplateService
+@{
+    var results = ViewData["results"] as IPagedList<PageTemplate>;
+}
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("admin - page - templates", "Page Templates") "/>
+
+        <admin-header-actions>
+            @Html.ActionLink("Add", "Add", "PageTemplate", null, new {@class = "btn btn-primary"})
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+
+@if (results.Any())
+{
+    <table class="table table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>
+                @await Html.Resource("Name")
+            </th>
+            <th>
+                @await Html.Resource("Page Type")
+            </th>
+            <th>
+                @await Html.Resource("Template Name")
+            </th>
+            <th>
+                @await Html.Resource("Layout Name")
+            </th>
+            <th>
+                @await Html.Resource("Url Generator")
+            </th>
+            <th>
+                @await Html.Resource("Admin Page Templates Single Use", "Single Use")?
+            </th>
+            <th>
+                @await Html.Resource("Actions")
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var template in results)
+        {
+            <tr>
+                <td>
+                    @template.Name
+                </td>
+                <td>
+                    @PageTemplateService.GetPageTypeName(template)
+                </td>
+                <td>
+                    @template.PageTemplateName
+                </td>
+                <td>
+                    @PageTemplateService.GetLayoutName(template)
+                </td>
+                <td>
+                    @PageTemplateService.GetUrlGeneratorType(template).Name.BreakUpString()
+                </td>
+                <td>
+                    @template.SingleUse
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-sm btn-secondary"})
+                        @if (!template.Webpages.Any())
+                        {
+                            @Html.ActionLink(await Html.Resource("Delete"), "Delete", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @Html.PagedListPager(results, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+}
+else
+{
+    <p>
+        @await Html.Resource("Admin Page Templates None", "No page templates meet your criteria")
+    </p>
+}

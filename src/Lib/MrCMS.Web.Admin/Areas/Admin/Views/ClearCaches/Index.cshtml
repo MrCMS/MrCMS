@@ -1,0 +1,27 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Clear Caches";
+}
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("Admin Clear Caches", "Clear Caches")"/>
+
+        <admin-header-actions>
+            <form method="post" class="d-inline">
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-clear", "Clear")"/>
+            </form>
+            <form method="post" class="d-inline" asp-action="HighPriority">
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-clear-high-priority", "Clear High Priority")"/>
+            </form>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        @await Html.Resource("admin-clear-caches-info", "Click 'clear' to clear database cache").
+    </div>
+</div>

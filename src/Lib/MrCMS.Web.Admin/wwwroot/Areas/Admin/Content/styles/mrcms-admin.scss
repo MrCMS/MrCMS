@@ -1,0 +1,230 @@
+﻿@import "../lib/adminlte/scss/AdminLTE";
+@import "dropzone";
+@import "featherlight";
+@import "jquery.mrcms-mediaselector";
+@import "jquery.tagit";
+@import "content-admin";
+@import url("../lib/font-awesome/css/font-awesome.css");
+@import url("../lib/jstree/themes/default/style.css");
+@import url("../lib/sweetalert-master/lib/sweet-alert.scss");
+@import url("../lib/cropper/cropper.css");
+
+h1 {
+    font-size: 1.8em;
+}
+
+#loading {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    z-index: 9999999;
+}
+
+.ui-autocomplete {
+    z-index: 2035;
+}
+
+.mrcms-content-header {
+    border-bottom: 1px solid $gray-200;
+    margin-bottom: 1rem;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#mrcms-admin-links-right > li > a {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem
+}
+
+label > input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.settings-textarea {
+    width: 100%;
+    height: 150px;
+}
+
+
+/*Media*/
+
+#file-list, #folder-container {
+    height: auto;
+    min-height: 400px;
+    width: 100%;
+    display: block;
+}
+
+.file,
+.folder {
+    width: 160px;
+    float: left;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    color: #808080;
+    padding: 8px 8px;
+    border: 1px solid #e7e7e7;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:hover {
+        background: #e7e7e7;
+    }
+}
+
+.file {
+    float: left;
+    height: 150px;
+    position: relative;
+    width: 160px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    color: #808080;
+    border: 1px solid #e7e7e7;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+
+    .folder {
+        cursor: default;
+    }
+
+    a {
+        display: block;
+        width: 100%;
+
+        img {
+            margin: 0 auto;
+            display: block;
+        }
+
+        i {
+            font-size: 90px;
+            margin: 0 auto;
+            text-align: center;
+            display: block;
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    .checkbox {
+        label {
+            width: 100%;
+            display: block;
+            border: 1px solid #e7e7e7;
+
+            input {
+                margin-left: 40px;
+            }
+        }
+
+
+        .file-preview {
+            height: 115px;
+            padding: 10px 10px;
+            vertical-align: central;
+        }
+
+        .file-link {
+            height: 25px;
+            width: 100%;
+            bottom: 0;
+            position: absolute;
+
+            a {
+                display: block;
+                padding: 0 5px;
+            }
+        }
+    }
+}
+
+.file.ui-selected, .folder.ui-selected, .file.ui-selecting, .folder.ui-selecting, .file.ui-selected a, .folder.ui-selected a, .file.ui-selecting a, .folder.ui-selecting a {
+    background: #428bca;
+    color: white;
+}
+
+.file, #file-list, .folder, #folder-container {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.file.files-cut, .folder.files-cut {
+    border: 1px dotted black;
+    opacity: 0.5;
+}
+
+#dropzone {
+    text-align: center;
+    font-weight: bold;
+    height: 0;
+
+    &.in {
+        width: 100%;
+        height: 100px;
+        border: 3px dashed grey;
+
+        span {
+            display: block;
+            text-align: center;
+            padding-top: 38px;
+        }
+    }
+
+    span {
+        display: none;
+    }
+
+    &.hover {
+        background: #e7e7e7;
+    }
+}
+
+#search-form {
+    .form-container {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .folder-dropdown {
+        width: 40%;
+
+        #CategoryId {
+            width: 100%;
+        }
+    }
+
+    .search-text {
+        width: 40%;
+
+        #Query {
+            width: 100%;
+        }
+    }
+
+    .search-btn {
+        width: 19%;
+    }
+}
+
+ul#sidebar-nav > li > ul.nav > li > ul.nav {
+    margin-left: 1rem;
+}
+
+@include media-breakpoint-up(md) {
+    .media-preview {
+        .img-fluid {
+            max-width: 250px;
+        }
+    }
+}

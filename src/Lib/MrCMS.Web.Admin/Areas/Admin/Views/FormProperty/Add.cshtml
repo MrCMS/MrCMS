@@ -1,0 +1,46 @@
+﻿@model MrCMS.Web.Admin.Models.AddFormPropertyModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+
+<form method="post" asp-action="Add" asp-controller="FormProperty" class="form-update-form" id="add-property">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Form Add Field Title", "Add Field")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-primary btn submit-form-btn" value="@await Html.Resource("Admin Form Add Field Button", "Add form property")" />
+            </span>
+        </legend>
+        <input type="hidden" asp-for="FormId"/>
+
+        <div class="form-group">
+            <select asp-for="PropertyType" asp-items="@ViewData["property-types"] as IEnumerable<SelectListItem>" class="form-control"></select>
+            <span asp-validation-for="PropertyType"></span>
+        </div>
+        
+        <div class="form-group">
+            <div class="form-check">
+                <input asp-for="Required" type="checkbox" class="form-check-input" />
+                <label asp-for="Required" class="form-check-label"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" class="form-control" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LabelText"></label>
+            <input asp-for="LabelText" type="text" class="form-control" />
+            <span asp-validation-for="LabelText"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CssClass"></label>
+            <input asp-for="CssClass" type="text" class="form-control" />
+            <span asp-validation-for="CssClass"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="HtmlId"></label>
+            <input asp-for="HtmlId" type="text" class="form-control" />
+            <span asp-validation-for="HtmlId"></span>
+        </div>
+    </fieldset>
+</form>

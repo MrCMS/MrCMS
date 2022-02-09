@@ -1,0 +1,20 @@
+using System.Threading.Tasks;
+
+namespace MrCMS.Tests.Services.Events
+{
+    public class TestEventImplementation : ITestEvent
+    {
+        public static int ExecutionCount = 0;
+
+        public Task Execute(TestEventArgs args)
+        {
+            ExecutionCount++;
+            return Task.CompletedTask;
+        }
+
+        public static void Reset()
+        {
+            ExecutionCount = 0;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+﻿@model MrCMS.Web.Admin.Models.AddUrlHistoryModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Add", "UrlHistory", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Webpage Url History Add", "Add Url")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Save")"/>
+            </span>
+        </legend>
+        @Html.HiddenFor(x => x.WebpageId)
+        <div class="form-group">
+            @Html.LabelFor(x => x.UrlSegment, "Url")
+            @Html.TextBoxFor(x => x.UrlSegment, new {@class = "form-control"})
+            @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
+        </div>
+    </fieldset>
+}

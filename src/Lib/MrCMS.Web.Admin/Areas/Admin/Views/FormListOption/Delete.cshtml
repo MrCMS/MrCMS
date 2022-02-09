@@ -1,0 +1,14 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateFormListOptionModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Delete", "FormListOption", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Form Delete Option Title", "Delete option")
+            <span class="btn-group d-inline pull-right">
+                <input type="button" class="btn btn-danger submit-form-btn" value="@await Html.Resource("Admin Form Delete Option Button", "Delete form option")"/>
+            </span>
+        </legend>
+        @await Html.Resource("Admin Form Delete Option Warning", "Deleting cannot be undone, do you want to proceed?")
+    </fieldset>
+}

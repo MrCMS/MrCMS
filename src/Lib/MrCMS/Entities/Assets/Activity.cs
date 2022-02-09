@@ -1,0 +1,3 @@
+﻿namespace MrCMS.Entities.Assets
+{
+}

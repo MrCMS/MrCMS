@@ -1,0 +1,51 @@
+﻿@using MrCMS.Web.Admin.Helpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+@model MrCMS.Entities.Documents.WebpageVersion
+<fieldset>
+    <legend>
+        @await Html.Resource("Admin Webpage Version", "Version") @Model.Id
+        @if (Model.AnyDifferencesFromCurrent())
+        {
+            using (Html.BeginForm("Revert", "Versions", new {id = Model.Id}, FormMethod.Post))
+            {
+                <span class="btn-group d-inline pull-right">
+                    <input type="submit" class="btn btn-primary" value="Revert to version"/>
+                </span>
+            }
+        }
+    </legend>
+    @await Html.Resource("Admin Webpage Version Edited By", "Edited by") @(Model.User == null ? @Html.Raw("System") : Html.ActionLink(Model.User.Email, "Edit", "User", new {id = Model.User.Id}, null)) on @Model.CreatedOn
+    <table class="table table-bordered" id="changes-table">
+        <thead>
+        <tr>
+            <th>
+                @await Html.Resource("Property")
+            </th>
+            <th>
+                @await Html.Resource("Previous")
+            </th>
+            <th>
+                @await Html.Resource("Current")
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var change in Model.GetComparisonToCurrent().OrderByDescending(x=>x.AnyChange).ThenBy(x=>x.Property))
+        {
+            <tr class="@(change.AnyChange ? "text-warning" : "text-success")">
+                <td>
+                    @change.Property
+                </td>
+                <td>
+                    @Html.RenderValue(change.PreviousValue)
+                </td>
+                <td>
+                    @Html.RenderValue(change.CurrentValue)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</fieldset>

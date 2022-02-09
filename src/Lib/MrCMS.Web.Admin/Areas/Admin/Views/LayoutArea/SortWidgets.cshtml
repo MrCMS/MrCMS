@@ -1,0 +1,32 @@
+﻿@model MrCMS.Models.WidgetSortModel
+@{
+    ViewBag.Title = "Sort Webpage";
+}
+
+@using (Html.BeginForm("SortWidgetsAction", "LayoutArea", FormMethod.Post, new {id = "edit-sort"}))
+{
+    @Html.Hidden("returnUrl", ViewData["returnUrl"])
+    @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Sort Widgets Title", "Sort Widgets")
+            <span class="btn-group pull-right">
+                <button class="btn btn-primary">@await Html.Resource("Save")</button>
+            </span>
+        </legend>
+
+        <ul id="sortable" class="list-group mb-3">
+            @for (var i = 0; i < Model.Widgets.Count; i++)
+            {
+                var widget = Model.Widgets[i];
+                <li class="list-group-item">
+                    @Html.HiddenFor(model => model.Widgets[i].Id)
+                    @Html.HiddenFor(model => model.Widgets[i].Order)
+                    <i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;
+                    @widget.Name
+                </li>
+            }
+        </ul>
+    </fieldset>
+}
+@Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Widgets Sort info", "Drag items in to the order you would like then click save."))

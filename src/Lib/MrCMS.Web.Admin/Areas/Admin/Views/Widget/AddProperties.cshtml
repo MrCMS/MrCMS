@@ -1,0 +1,10 @@
+﻿@using MrCMS.Web.Admin.Infrastructure.Helpers
+@model object
+@{
+    var type = ViewData["type"] as Type;
+}
+
+@if (Model != null)
+{
+    @await Html.RenderCustomAddAdminProperties(type, Model)
+}

@@ -1,0 +1,15 @@
+﻿@model MrCMS.Logging.Log
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+
+<form asp-controller="Log" asp-action="DeleteLog" asp-route-id="@Model.Id" method="post">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Logs Delete Title", "Delete log")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
+            </span>
+        </legend>
+        @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+    </fieldset>
+
+</form>

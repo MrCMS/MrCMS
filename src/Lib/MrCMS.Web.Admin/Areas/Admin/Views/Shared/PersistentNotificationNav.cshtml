@@ -1,0 +1,16 @@
+﻿@model dynamic
+<li class="nav-item dropdown" id="persistentNotificationLink" data-mark-as-read-url="@Url.Action("MarkAllAsRead","PersistentNotification")" >
+    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-bullhorn"></i>&nbsp;<span class="badge badge-danger navbar-badge" data-notification-count="true">-</span>
+    </a>
+    <div class="dropdown-menu notifications-dropdown dropdown-menu-right" style="width: 350px;">
+        <div class="w-100 text-center mb-2">
+                <div class="btn-group">
+                    <a href="@Url.Action("Index", "Notification")" class="btn btn-secondary btn-sm">@await Html.Resource("Admin View All", "View All")</a>
+                </div>
+            </div>
+        <ul data-notification-list="true" class="persistent-notification list-group small">
+            <li class="list-group-item">@await Html.Resource("Admin No Notifications", "No Notifications")</li>
+        </ul>
+    </div>
+</li>

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Areas\Admin\Views\**" />
+    <EmbeddedResource Include="Views\**" />
+    <EmbeddedResource Include="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
+  </ItemGroup>
+
+</Project>

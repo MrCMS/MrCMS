@@ -1,0 +1,58 @@
+﻿@model MrCMS.Web.Admin.Models.UpdatePageTemplateModel
+@{
+    var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+
+<form asp-controller="PageTemplate" asp-action="Edit" method="post">
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("Admin Page Template Edit<> Title", "Edit Page Template") "/>
+
+            <admin-header-actions>
+                <a class="btn btn-default" asp-action="Index">@await Html.Resource("Back")</a>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <input type="hidden" asp-for="Id"/>
+    <input type="hidden" asp-for="PageType"/>
+
+    <fieldset>
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" class="form-control"/>
+            <span asp-validation-for="Name"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PageTemplateName"></label>
+            <input asp-for="PageTemplateName" type="text" class="form-control"/>
+            <span asp-validation-for="PageTemplateName"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LayoutId"></label>
+            <select asp-for="LayoutId" asp-items="@layoutOptions" class="form-control"></select>
+            <span asp-validation-for="LayoutId"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="UrlGeneratorType"></label>
+            <select asp-for="UrlGeneratorType" asp-items="@urlGeneratorOptions" class="form-control"></select>
+            <span asp-validation-for="UrlGeneratorType"></span>
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input asp-for="SingleUse" type="checkbox" class="form-check-input"/>
+                <label asp-for="SingleUse" class="form-check-label"></label>
+            </div>
+        </div>
+
+    </fieldset>
+
+</form>

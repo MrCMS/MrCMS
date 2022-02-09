@@ -1,0 +1,38 @@
+﻿@using MrCMS.Services
+@inject IWebpageMetadataService _webpageMetadataService
+@model IList<MrCMS.Web.Admin.Models.WebpageStats>
+
+<div class="card">
+    <div class="card-body">
+        <h4>@await Html.Resource("Admin Dashboard Page stats", "Page stats")</h4>
+        <table class="table table-striped table-condensed" style="overflow: scroll">
+            <thead>
+            <tr>
+                <th>
+                    @await Html.Resource("Admin Dashboard Page Stats", "Page type")
+                </th>
+                <th>
+                    @await Html.Resource("Admin Dashboard Total", "Total")
+                </th>
+                <th>
+                    @await Html.Resource("Admin Dashboard Unpublished", "Unpublished")
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var stat in Model)
+            {
+                <tr>
+                    <td>@_webpageMetadataService.GetMetadataByTypeName(stat.WebpageType).Name</td>
+                    <td>
+                        @stat.NumberOfPages
+                    </td>
+                    <td>
+                        @stat.NumberOfUnPublishedPages
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

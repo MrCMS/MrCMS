@@ -1,0 +1,50 @@
+﻿@using MrCMS.Web.Admin.Models
+@using MrCMS.Web.Admin.Services
+@inject IGetEditTabsService TabsService
+@model MrCMS.Entities.Documents.Web.Form
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    var tabs = await TabsService.GetEditTabs(Html, Model);
+}
+
+<form asp-controller="Form" asp-action="Edit" method="post" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage)">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin - edit - form", "Edit Form") "/>
+
+            <admin-header-actions>
+                <span class="btn-group pull-right">
+                    <a asp-action="Index" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
+                    <button type="submit" class="btn-primary btn">@await Html.Resource("admin-save", "Save")</button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+
+    <div asp-validation-summary="All"></div>
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" type="text" class="form-control"/>
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <ul class="nav nav-tabs pt-3 mb-2" data-stickytabs="form-@Model.Id">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData"/>
+        }
+    </ul>
+    <div class="tab-content">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="TabContent" model="tab" view-data="ViewData"/>
+        }
+    </div>
+
+
+</form>

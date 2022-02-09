@@ -1,0 +1,24 @@
+﻿@using AutoMapper
+@using MrCMS.Entities.People
+@using MrCMS.Web.Admin.Infrastructure.Models.Tabs
+@model MrCMS.Web.Admin.Infrastructure.Models.Tabs.AdminTabBase<User>
+@{
+    var isFirst = ViewData["is-first"] is bool b && b;
+    var user = ViewData["user"] as User;
+}
+
+@if (Model is AdminTab<User> userTab)
+{
+    <div class="tab-pane@(isFirst ? " active" : "")" id="@userTab.TabHtmlId">
+        @{
+            await userTab.RenderTabPane(Html, Html.GetRequiredService<IMapper>(), user);
+        }
+    </div>
+}
+else if (Model is AdminTabGroup<User> @group)
+{
+    foreach (var tab in @group.Children)
+    {
+        <partial name="Content" model="tab" view-data="ViewData"/>
+    }
+}

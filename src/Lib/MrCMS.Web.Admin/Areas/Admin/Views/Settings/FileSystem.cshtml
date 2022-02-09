@@ -1,0 +1,53 @@
+﻿@model MrCMS.Settings.FileSystemSettings
+@{ ViewBag.Title = "File System Settings"; }
+<form asp-controller="Settings" asp-action="FileSystem" method="post" id="edit-settings">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-file-system-settings", "File System Settings") "/>
+
+            <admin-header-actions>
+                <span class="btn-group pull-right">
+                    <button class="btn btn-primary">
+                        @await Html.Resource("admin-save", "Save")
+                    </button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+
+    <div class="form-group">
+        @Html.LabelFor(settings => settings.StorageType)
+        @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions, new {@class = "form-control"})
+    </div>
+    <h4>Azure Settings</h4>
+    <div class="form-group">
+        <label asp-for="AzureAccountName"></label>
+        <input asp-for="AzureAccountName" type="text" class="form-control" />
+        <span asp-validation-for="AzureAccountName"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AzureAccountKey"></label>
+        <input asp-for="AzureAccountKey" type="text" class="form-control" />
+        <span asp-validation-for="AzureAccountKey"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AzureContainerName"></label>
+        <input asp-for="AzureContainerName" type="text" class="form-control" />
+        <span asp-validation-for="AzureContainerName"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AzureCdnDomain"></label>
+        <input asp-for="AzureCdnDomain" type="text" class="form-control" />
+        <span asp-validation-for="AzureCdnDomain"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="AzureUsingEmulator" type="checkbox" class="form-check-input" />
+            <label asp-for="AzureUsingEmulator" class="form-check-label"></label>
+        </div>
+    </div>
+</form>
+
+<partial name="FileMigration"/>

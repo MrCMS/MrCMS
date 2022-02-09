@@ -1,0 +1,19 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateRoleModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+<form asp-controller="Role" asp-action="Edit" method="post">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin User Roles Edit", "Edit Role")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")" />
+            </span>
+        </legend>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" class="form-control" />
+            <span asp-validation-for="Name"></span>
+        </div>
+    </fieldset>
+</form>

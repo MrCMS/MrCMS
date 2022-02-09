@@ -1,0 +1,30 @@
+﻿@model MrCMS.Web.Admin.Models.WebpageSearchQuery
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("admin-search", "Search") "/>
+
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+
+@using (Html.BeginForm("Results", "WebpageSearch", new {Model.ParentId}, FormMethod.Post, null, new {data_webpage_search_form = true}))
+{
+    <div class="input-group">
+        @Html.TextBoxFor(query => query.Query, new {@class = "form-control", autocomplete = "off", placeholder = "Search"})
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary">@await Html.Resource("Search")</button>
+        </span>
+    </div>
+}
+
+<br/>
+
+@{ await Html.RenderPartialAsync("Results", Model, ViewData); }

@@ -1,0 +1,157 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Resources
+@using MrCMS.Web.Admin.Services
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Admin.Models.StringResourceSearchQuery
+@{
+    var resources = ViewData["results"] as IPagedList<StringResource> ?? PagingHelper.EmptyList<StringResource>();
+    var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<form asp-controller="Resource" asp-action="Index" method="get">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-resources", "Resources") "/>
+            <admin-header-actions>
+                <span class="btn-group">
+                    @Html.ActionLink(await Html.Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new {}, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(await Html.Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new {Model.Key, Model.Value}, new {@class = "btn btn-secondary"})
+
+                    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Filter")"/>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <div class="row">
+        <div class="col-sm-6 col-lg-3">
+            <div class="form-group">
+                <label asp-for="Key"></label>
+                <input asp-for="Key" type="text" class="form-control" />
+                <span asp-validation-for="Key"></span>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="form-group">
+                <label asp-for="Value"></label>
+                <input asp-for="Value" type="text" class="form-control" />
+                <span asp-validation-for="Value"></span>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="form-group">
+                <label asp-for="SiteId"></label>
+                <select asp-for="SiteId" asp-items="@siteOptions" class="form-control"></select>
+                <span asp-validation-for="SiteId"></span>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="form-group">
+                <label asp-for="Language"></label>
+                <select asp-for="Language" asp-items="@languageOptions" class="form-control"></select>
+                <span asp-validation-for="Language"></span>
+            </div>
+        </div>
+    </div>
+
+    @if (!resources.Any())
+    {
+        @await Html.Resource("Admin Resources No Resources", "No resources")
+    }
+    else
+    {
+        <table class="table table-striped table-condensed" style="overflow: scroll">
+            <thead>
+            <tr>
+                <th>
+                    @await Html.Resource("Key")
+                </th>
+                <th>
+                    @await Html.Resource("Value")
+                </th>
+                <th>
+                    @await Html.Resource("Site")
+                </th>
+                <th>
+                    @await Html.Resource("Language")
+                </th>
+                <th>
+                    @await Html.Resource("Actions")
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var resource in resources)
+            {
+                <tr>
+                    <td>
+                        @StringResourceExtensions.GetDisplayKey(resource.Key)
+                    </td>
+                    <td>
+                        @resource.Value
+                    </td>
+                    <td>
+                        @resource.DisplaySite
+                    </td>
+                    <td>
+                        @resource.DisplayUICulture
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink("Edit", "Edit", "Resource", new {id = resource.Id}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
+                            @if (resource.IsDefault)
+                            {
+                                <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                    Add override <span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu" role="menu">
+                                    @Html.ActionLink("Site", "ChooseSite", "Resource", new {resource.Key}, new {@class = "dropdown-item", data_toggle = "fb-modal"})
+                                    @Html.ActionLink("Language", "Add", "Resource", new {resource.Key, language = true}, new {@class = "dropdown-item", data_toggle = "fb-modal"})
+                                    @Html.ActionLink("Site & Language", "ChooseSite", "Resource", new {resource.Key, language = true}, new {@class = "dropdown-item", data_toggle = "fb-modal"})
+                                </div>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Resource", new {id = resource.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})
+                            }
+
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+
+    @Html.PagedListPager(resources, page => Url.Action("Index", new {page, Model.Key, Model.Language, Model.Value, Model.SiteId}),
+        MrCMSPagedListRenderOptions.Bootstrap4)
+
+
+
+
+</form>
+
+<form asp-controller="ResourceUpdate" asp-action="Import" method="post" enctype="multipart/form-data">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-resources-import", "Import Resources")"/>
+
+            <admin-header-actions>
+                <button class="btn btn-secondary">
+                    @await Html.Resource("Admin Resources Import Button",
+                        "Import")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+
+    <input type="file" name="file" class="form-control"/>
+
+
+</form>

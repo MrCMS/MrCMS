@@ -1,0 +1,22 @@
+﻿@model MrCMS.Entities.Documents.Media.MediaFile
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+@using (Html.BeginForm("Delete", "File", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Delete File")
+            <span class="btn-group pull-right">
+                <button type="submit" class="btn btn-danger">@await Html.Resource("Delete")</button>
+            </span>
+        </legend>
+        @Html.HiddenFor(file => file.Id)
+        @Html.ReturnToReferrer()
+
+        <p>
+            @await Html.Resource("File - Delete", "Are you sure you wish to delete this file? This can not be undone!")
+        </p>
+
+    </fieldset>
+}

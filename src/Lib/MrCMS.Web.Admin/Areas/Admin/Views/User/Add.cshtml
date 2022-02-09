@@ -1,0 +1,55 @@
+﻿@model MrCMS.Web.Admin.Models.AddUserModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+<form asp-controller="User" asp-action="Add" method="post">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin User Add User", "Add user")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")" />
+            </span>
+        </legend>
+        @Html.ValidationSummary()
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="text" class="form-control" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" type="text" class="form-control" />
+            <span asp-validation-for="FirstName"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" type="text" class="form-control" />
+            <span asp-validation-for="LastName"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+            <span asp-validation-for="ConfirmPassword"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="UICulture"></label>
+            <select asp-for="UICulture" asp-items="@cultureOptions" class="form-control"></select>
+            <span asp-validation-for="UICulture"></span>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label"></label>
+            </div>
+            <span asp-validation-for="IsActive"></span>
+        </div>
+
+    </fieldset>
+</form>

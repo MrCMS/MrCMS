@@ -1,0 +1,3 @@
+namespace MrCMS.Services.Notifications
+{
+}

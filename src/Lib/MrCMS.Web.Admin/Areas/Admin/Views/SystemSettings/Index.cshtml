@@ -1,0 +1,45 @@
+﻿@using MrCMS.Settings
+@model List<SystemSettingsBase>
+@{
+    ViewBag.Title = "Edit Settings";
+}
+@if (TempData["settings-saved"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        @await Html.Resource("Admin Settings Saved", "Settings saved")
+    </div>
+}
+<form asp-controller="SystemSettings" asp-action="Index" method="post" id="edit-settings">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-system-settings", "System Settings") "/>
+
+            <admin-header-actions>
+                <button class="btn btn-primary">
+                    @await Html.Resource("admin-save", "Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <div id="tabs">
+        <ul class="nav nav-tabs mb-2" data-stickytabs="system-settings">
+            @foreach (SystemSettingsBase settingType in Model)
+            {
+                string typeName = settingType.GetType().Name;
+                <li class="nav-item">
+                    <a href="#@typeName" data-toggle="tab" class="nav-link">@typeName.BreakUpString()</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            @foreach (SystemSettingsBase settingType in Model)
+            {
+                <partial name="SystemSettings" model="settingType"/>
+            }
+        </div>
+    </div>
+
+</form>

@@ -1,0 +1,7 @@
+@model MrCMS.Entities.Documents.Web.ContentVersion
+
+@foreach (var block in Model.Blocks.Where(f => !f.IsHidden).OrderBy(f => f.Order))
+{
+    var contentBlock = block.DeserializeData();
+    await Html.RenderPartialAsync($"ContentBlocks/{contentBlock.GetType().Name}", contentBlock);
+}

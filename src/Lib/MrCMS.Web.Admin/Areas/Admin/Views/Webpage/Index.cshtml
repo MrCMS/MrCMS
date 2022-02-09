@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Manage Pages";
+}
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("Admin Nav Pages", "Pages")"/>
+
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+
+<div id="web" data-webpage-tree>
+    <div id="webpage-tree">
+    </div>
+</div>
+
+<hr/>
+<strong>@await Html.Resource("Key"):</strong> <br />
+
+<span class="text-secondary">@await Html.Resource("Admin Webpage Index Not Included In Navigation", "Not included in site navigation")</span><br/>
+<span class="text-warning">@await Html.Resource("Admin Webpage Index Not published", "Not published")</span><br/>

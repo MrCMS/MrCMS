@@ -1,0 +1,19 @@
+﻿@using MrCMS.Settings
+@model MrCMS.Tasks.QueuedTaskSearchQuery
+@inject SiteSettings SiteSettings
+@{
+    ViewBag.Title = "Text Search";
+}
+
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("admin-text-search", "Text Search") "/>
+        <admin-header-actions>
+            <form asp-controller="TextSearch" asp-action="Refresh">
+                <button class="btn btn-primary" type="submit">Refresh</button>
+            </form>
+        </admin-header-actions>
+    </row>
+</admin-header>
+

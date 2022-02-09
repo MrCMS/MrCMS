@@ -1,0 +1,61 @@
+﻿@model MrCMS.Web.Admin.Models.AddPageTemplateModel
+@{
+    var pageTypeOptions = ViewData["page-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+<form asp-controller="PageTemplate" asp-action="Add" method="post">
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("Admin Page Template Add Title", "Add Page Template")"/>
+
+            <admin-header-actions>
+                <a class="btn btn-default" asp-action="Index">@await Html.Resource("Back")</a>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+    
+    <fieldset>
+
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" class="form-control"/>
+            <span asp-validation-for="Name"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PageTemplateName"></label>
+            <input asp-for="PageTemplateName" type="text" class="form-control"/>
+            <span asp-validation-for="PageTemplateName"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PageType"></label>
+            <select asp-for="PageType" asp-items="@pageTypeOptions" class="form-control" data-add-template-page-type=""></select>
+            <span asp-validation-for="PageType"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LayoutId"></label>
+            <select asp-for="LayoutId" asp-items="@layoutOptions" class="form-control"></select>
+            <span asp-validation-for="LayoutId"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="UrlGeneratorType"></label>
+            <select asp-for="UrlGeneratorType" asp-items="@urlGeneratorOptions" class="form-control" data-add-template-url-generator-type=""></select>
+            <span asp-validation-for="UrlGeneratorType"></span>
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input asp-for="SingleUse" type="checkbox" class="form-check-input"/>
+                <label asp-for="SingleUse" class="form-check-label"></label>
+            </div>
+        </div>
+
+    </fieldset>
+
+</form>

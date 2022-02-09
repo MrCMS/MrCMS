@@ -1,0 +1,74 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Services
+@using MrCMS.Web.Admin.Models
+@using MrCMS.Web.Admin.Services
+@model Webpage
+@inject IGetEditTabsService TabsService
+@inject IGetLiveUrl GetLiveUrl
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    ViewData["webpage"] = Model;
+    var tabs = await TabsService.GetEditTabs(Html, Model);
+}
+
+<form asp-controller="Webpage" asp-action="Edit" id="edit-document" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post" data-edit-webpage autocomplete="off">
+    <admin-header>
+        <row>
+            <admin-header-title title="@Model.Name"/>
+
+            <admin-header-actions>
+                <div id="edit-webpage-options">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                More
+                            </button>
+                            <div class="dropdown-menu">
+                                @if (Html.CanDeleteWebpage(Model.Id))
+                                {
+                                    <a class="dropdown-item" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@await Html.Resource("Delete")</a>
+                                }
+                                @Html.ActionLink(await Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                @if (!Html.CanDeleteWebpage(Model.Id))
+                                {
+                                    @Html.ActionLink(await Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                }
+
+                            </div>
+                        </div>
+                        <a href="@await GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
+                        @if (Model.PublishStatus != Webpage.WebpagePublishStatus.Scheduled)
+                        {
+                            @(Model.PublishOn == null ? Html.ActionLink(await Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(await Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
+                        }
+
+                        <button class="btn btn-primary" type="submit">@await Html.Resource("Save")</button>
+                    </div>
+                </div>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+    @if (Model.PublishStatus == Webpage.WebpagePublishStatus.Scheduled && Model.PublishOn.HasValue)
+    {
+        <div class="alert alert-warning">
+            @string.Format(await Html.Resource("admin-webpage-published-noticed-info", "This webpage is due to be published on {0}"),  Model.PublishOn.Value.ToString("f"))
+        </div>
+    }
+
+    <ul class="nav nav-tabs" data-stickytabs="webpage-@Model.Id" role="tablist">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData"/>
+        }
+    </ul>
+    <div class="tab-content mt-3">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="TabContent" model="tab" view-data="ViewData"/>
+        }
+    </div>
+
+
+</form>

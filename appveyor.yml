@@ -1,0 +1,72 @@
+-
+  branches:
+    only:
+      - develop
+  version: 1.0.{build}-dev
+  configuration: Release
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
+  install:
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
+  build:
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
+    verbosity: minimal
+    parallel: true
+-
+  branches:
+    only:
+    - master
+  version: 1.0.{build}-master
+  configuration: Release
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
+  install:
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
+  build:
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
+    verbosity: minimal
+    parallel: true
+-
+  branches:
+    only:
+    - /feature\/.*/
+  version: 1.0.{build}-{branch}
+  configuration: Release
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
+  install:
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
+  build:
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
+    verbosity: minimal
+    parallel: true
+-
+  branches:
+    only:
+    - /release\/.*/
+  version: 1.0.{build}-master
+  configuration: Release
+  environment:
+    nodejs_version: "14"
+    ASPNETCORE_ENVIRONMENT: Staging
+  install:
+    - ps: Install-Product node $env:nodejs_version
+    - nuget restore
+  image: Visual Studio 2022
+  build:
+    project: src\MrCMS.Web\MrCMS.Web.csproj
+    publish_aspnet_core: true
+    verbosity: minimal
+    parallel: true

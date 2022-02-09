@@ -1,0 +1,54 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Web.Apps.Articles.Models
+@using MrCMS.Web.Apps.Articles.Pages
+@using MrCMS.Web.Apps.Articles.Services
+@using MrCMS.Website
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Apps.Articles.Pages.ArticleList
+@inject IGetLiveUrl GetLiveUrl
+@inject IGetCurrentPageUrl GetCurrentPageUrl
+
+@{
+    var results = ViewData["paged-articles"] as IPagedList<Article> ?? PagingHelper.EmptyList<Article>();
+    var searchModel = ViewData["article-search-model"] as ArticleSearchModel ?? new ArticleSearchModel();
+}
+
+<h1>@await Html.Editable(page => page.Name, false)</h1>
+
+@await Html.Editable(page => page.BodyContent, true)
+
+@foreach (var item in results)
+{
+    <div class="row mb-3">
+        <div class="col">
+            <h2>
+                <a href="@await GetLiveUrl.GetUrlSegment(item, true)">
+                    @item.Name
+                </a>
+            </h2>
+            <div class="mb-1">
+                <span class="small">
+                    <strong>@item.PublishOn.GetValueOrDefault().Day @item.PublishOn.GetValueOrDefault().ToString("MMMMM") @item.PublishOn.GetValueOrDefault().Year</strong>
+                </span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(item.FeatureImage))
+            {
+                <a href="@await GetLiveUrl.GetUrlSegment(item, true)">
+                    @await Html.RenderImage(item.FeatureImage, new Size { Width = 250 }, attributes: new { @class = "img-responsive mb-3" })
+                </a>
+            }
+            <div>
+                @Html.Raw(item.Abstract)
+            </div>
+        </div>
+    </div>
+    <hr />
+}
+
+@if (Model.AllowPaging)
+{
+    @Html.PagedListPager(results, page => Url.RouteWebpage(Model, new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCMSPagedListRenderOptions.Bootstrap4)
+}

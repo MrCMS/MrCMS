@@ -1,0 +1,147 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
+@using MrCMS.Services
+@model MrCMS.Web.Admin.Models.WebpageEdit.SEOTabViewModel
+@inject IWebpageMetadataService _webpageMetadataService
+@{
+    var webpage = ViewData["webpage"] as Webpage;
+}
+<div class="tab-pane content-item" id="#edit-seo">
+    <div class="d-inline">
+
+        <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="The publish date can be set in the future should you wish the page to go live at a later date">&nbsp;</i>
+        <label asp-for="PublishOn">
+            Publish On - <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@await Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
+        </label>
+        <input type="text" asp-for="PublishOn" class="form-control date-time-picker" />
+        <span asp-validation-for="PublishOn"></span>
+
+        <hr />
+        <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
+                For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
+        <label asp-for="UrlSegment">Url</label>
+        <input asp-for="UrlSegment" class="form-control" />
+
+        <span asp-validation-for="UrlSegment"></span>
+        <hr />
+
+        <div class="d-inline pb-3">
+            <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
+
+            @Html.ActionLink(await Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-sm btn-success", data_toggle = "fb-modal" })
+        </div>
+        @if (webpage.Urls.Any())
+        {
+            <table class="table table-striped table-condensed mt-3">
+                <tbody>
+                    @foreach (var url in webpage.Urls.OrderByDescending(history => history.CreatedOn))
+                    {
+                        <tr>
+                            <td>
+                                <a href="/@url.UrlSegment" target="_blank">/@url.UrlSegment</a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-sm btn-danger", data_toggle = "fb-modal" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.Resource("Admin Webpage Seo No URL History", "No URL History")
+        }
+
+    </div>
+
+    <hr />
+    <div class="form-group">
+        <label asp-for="MetaTitle"></label>
+        <input type="text" asp-for="MetaTitle" class="form-control" />
+        <span asp-validation-for="MetaTitle"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MetaDescription"></label>
+        <input type="text" asp-for="MetaDescription" class="form-control" />
+        <span asp-validation-for="MetaDescription"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MetaKeywords"></label>
+        <input type="text" asp-for="MetaKeywords" class="form-control" />
+        <span asp-validation-for="MetaKeywords"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ExplicitCanonicalLink"></label>
+        <input type="text" asp-for="ExplicitCanonicalLink" class="form-control" />
+        <span asp-validation-for="ExplicitCanonicalLink"></span>
+    </div>
+    <hr />
+    <h4>@await Html.Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
+    <label asp-for="SEOTargetPhrase"></label>
+    <div class="input-group">
+        <input type="text" asp-for="SEOTargetPhrase" class="form-control" autocomplete="none" />
+        <span class="input-group-append">
+            <button data-seo-analyze="true" class="btn btn-secondary">@await Html.Resource("Admin Webpage Seo Analyze", "Analyze")</button>
+        </span>
+    </div>
+
+    <div data-seo-analysis-summary="true">
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="RevealInNavigation" type="checkbox" class="form-check-input" />
+            <label asp-for="RevealInNavigation" class="form-check-label"></label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="IncludeInSitemap" type="checkbox" class="form-check-input" />
+            <label asp-for="IncludeInSitemap" class="form-check-label"></label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="RequiresSSL" type="checkbox" class="form-check-input" />
+            <label asp-for="RequiresSSL" class="form-check-label"></label>
+        </div>
+    </div>
+    <hr />
+
+    <div class="form-group">
+        <label asp-for="CustomHeaderScripts"></label>
+        <textarea asp-for="CustomHeaderScripts" class="form-control"></textarea>
+        <span asp-validation-for="CustomHeaderScripts"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CustomFooterScripts"></label>
+        <textarea asp-for="CustomFooterScripts" class="form-control"></textarea>
+        <span asp-validation-for="CustomFooterScripts"></span>
+    </div>
+    @* @if (Html.IsWebpageCacheable(Model.Id)) *@
+    @* { *@
+    @*     <hr /> *@
+    @*     <h4>@await Html.Resource("Advanced")</h4> *@
+    @*     <hr class="small-margin" /> *@
+    @*     <div class="form-group"> *@
+    @*         <div class="form-check"> *@
+    @*             <input asp-for="DoNotCache" type="checkbox" class="form-check-input" /> *@
+    @*             <label asp-for="DoNotCache" class="form-check-label"></label> *@
+    @*         </div> *@
+    @*     </div> *@
+    @* } *@
+    <hr />
+
+    <strong>@await Html.Resource("Page type"):</strong> @_webpageMetadataService.GetWebpageMetadata(Html, Model.Id).Name
+    <br />
+    <strong>@await Html.Resource("Created On"): </strong>@webpage.CreatedOn
+    <br />
+    <strong>@await Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
+    <br />
+    <strong>Page Id: </strong>@Model.Id
+    <br />
+    <strong>Published: </strong> @Html.Raw(webpage.Published ? "<span class=\"text-success\">Published</span>" : "<span class=\"text-warning\">Unpublished</span>")
+</div>

@@ -1,0 +1,40 @@
+﻿@using System.Linq
+@model MrCMS.Entities.Documents.Web.FormProperties.FormPropertyWithOptions
+
+@if (Model.Options.Any())
+{
+    <table class="table table-condensed table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>@await Html.Resource("Value")</th>
+            <th>@await Html.Resource("Admin Webpage Form Option Selected", "Selected")</th>
+            <th>@await Html.Resource("Actions")</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @foreach (var option in Model.Options)
+        {
+            <tr>
+                <td>@option.Value</td>
+                <td>@option.Selected</td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.Resource("Delete"), "Delete", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                    </div>
+                </td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+}
+else
+{
+    @await Html.Resource("Admin Webpage From Options None", "Please click add option to add your first option to this field.")
+}
+<br/>
+<div class="btn-group">
+    @Html.ActionLink("Add Option", "Add", "FormListOption", new {id = Model.Id}, new {@class = "btn btn-sm btn-primary", data_toggle = "fb-modal"})
+</div>

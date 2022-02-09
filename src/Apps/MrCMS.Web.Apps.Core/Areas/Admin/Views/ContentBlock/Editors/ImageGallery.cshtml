@@ -1,0 +1,8 @@
+@using MrCMS.Web.Apps.Core.Entities.ContentBlocks
+@model MrCMS.Web.Apps.Core.Areas.Admin.Models.Content.UpdateImageGalleryAdminModel
+
+<div class="form-group">
+    @Html.LabelFor(x => x.ResponsiveClasses)
+    @Html.TextBoxFor(x => x.ResponsiveClasses, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.ResponsiveClasses)
+</div>

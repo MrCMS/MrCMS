@@ -1,0 +1,36 @@
+﻿@using MrCMS.Services
+@using MrCMS.Website.Optimization
+@inject IGetCurrentUser GetCurrentUser
+@inject IGetCurrentUserCultureInfo GetCurrentUserCultureInfo
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var culture = await GetCurrentUserCultureInfo.Get();
+    var user = await GetCurrentUser.Get();
+}
+<!DOCTYPE html>
+<html lang="@culture.Name">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/gif" href="/Areas/Admin/Content/img/mrcms-icon.gif">
+    @await Html.RenderAdminVendorStyles()
+    @await Html.RenderAdminStyles()
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini" data-current-ui-culture="@culture.Name" data-antiforgery-token="@Xsrf.GetAndStoreTokens(Context).RequestToken" data-disable-notifications="@user?.DisableNotifications">
+<div id="loading" style="display: none;">
+    <img src="/Areas/Admin/Content/img/ajax-loader2.gif" alt="loading"/>
+</div>
+@RenderBody() 
+
+@await Html.RenderAdminVendorScripts()
+@await Html.RenderAdminScripts()
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    @await RenderSectionAsync("JavaScriptBlock")
+}
+<mini-profiler/>
+</body>
+</html>

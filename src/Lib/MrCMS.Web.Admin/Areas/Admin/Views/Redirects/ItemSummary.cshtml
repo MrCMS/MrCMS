@@ -1,0 +1,69 @@
+@using MrCMS.Entities.Documents.Web
+@model MrCMS.Entities.Documents.Web.UrlHistory
+@{
+    var displayType = EnumHelper<UrlHistoryType>.GetDisplayValue(Model.UrlHistoryType);
+}
+@Model.UrlSegment
+<br/>
+@switch (Model.UrlHistoryType)
+{
+    case UrlHistoryType.ToWebpage:
+        <span class="h5">
+            <span class="badge badge-success">
+                @displayType
+            </span>
+
+        </span>
+        <br/>
+        <small><strong>Redirects to:</strong> @Model.Webpage.Name (<a href="/@Model.Webpage.UrlSegment" target="_blank">View</a>) </small>
+        break;
+    case UrlHistoryType.ToUrl:
+        <span class="h5">
+            <span class="badge badge-success">
+                @displayType
+            </span>
+        </span>
+        <br/>
+        <small>
+            <strong>Redirects to:</strong> <a href="@Model.RedirectUrl" target="_blank">@Model.RedirectUrl</a>
+        </small>
+        break;
+    case UrlHistoryType.Gone:
+        <span class="h5">
+            <span class="badge badge-danger">
+                @displayType
+            </span>
+        </span>
+        break;
+    case UrlHistoryType.Ignored:
+        <span class="h5">
+            <span class="badge badge-info">
+                @displayType
+            </span>
+        </span>
+        break;
+    case UrlHistoryType.Unhandled:
+        <span class="h5">
+            <span class="badge badge-warning">
+                @displayType
+            </span>
+        </span>
+        @if (!string.IsNullOrWhiteSpace(Model.InitialReferer))
+        {
+            <br/>
+            <small>
+                <strong>Initial referer:</strong> <a href="@Model.InitialReferer" target="_blank">@Model.InitialReferer</a>
+            </small>
+        }
+        <br/>
+        <small>
+            <strong>Failed lookup count:</strong> @Model.FailedLookupCount
+        </small>
+        break;
+    default:
+        throw new ArgumentOutOfRangeException();
+}
+<br>
+<small>
+    <strong>Created on:</strong> @Model.CreatedOn.ToString("g")
+</small>

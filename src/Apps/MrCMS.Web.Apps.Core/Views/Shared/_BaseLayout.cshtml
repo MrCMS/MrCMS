@@ -1,0 +1,132 @@
+﻿@using MrCMS.Website.Optimization
+@using MrCMS.Services.Canonical
+@using MrCMS.Settings
+@using MrCMS.Services
+@using MrCMS.Website.Auth
+@using System.Drawing
+@using MrCMS.ACL.Rules
+@model MrCMS.Entities.Documents.Web.Webpage
+@inject SEOSettings SeoSettings
+@inject SiteSettings SiteSettings
+@inject GoogleRecaptchaSettings GoogleRecaptchaSettings
+@inject IGetCurrentUser GetCurrentUser
+@inject IFrontEndEditingChecker FrontEndEditingChecker
+@{
+    var user = await GetCurrentUser.Get();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@(this.PageTitle())</title>
+    <meta name="description" content="@(this.Description())" />
+    <meta name="keywords" content="@(this.Keywords())" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    @await Html.RenderFavicon(new Size(16, 16))
+    @await Html.RenderFavicon(new Size(32, 32))
+    @await Html.RenderFavicon(new Size(152, 152))
+    <environment include="Development">
+        @await Html.RenderUIVendorStyles()
+        @await Html.RenderUIStyles()
+    </environment>
+    <environment exclude="Development">
+        @await Html.RenderProdUIStyles()
+    </environment>
+    @Html.Raw(SeoSettings.TrackingScripts)
+    @Html.Raw(Model.CustomHeaderScripts)
+    @ViewData.LinkTags().Render()
+
+    <!--improve the loading performance of reCAPTCHA Enterpris -->
+    <link rel="preconnect" href="https://www.google.com">
+</head>
+<body>
+    @Html.Raw(SeoSettings.TrackingScriptsBody)
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/Content/img/mrcms-hat.gif" height="30" class="d-inline-block align-top" alt="Mr CMS" title="Mr CMS" />
+                Mr CMS
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-main">
+                @{
+                    await Html.RenderZone("Main Navigation");
+                }
+                <ul class="navbar-nav ml-auto">
+                    @*
+                        <li class="nav-item dropdown">
+                        <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="dd-search" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-search"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dd-search">
+                        <partial name="SearchForm"/>
+                        @{await Html.RenderPartialAsync("SearchForm");}
+                        </div>
+                        </li>
+                    *@
+
+                    <li class="nav-item dropdown">
+                        @{
+                            await Html.RenderZone("Header Right");
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-3">
+        @{
+            await Html.RenderZone("Before Content");
+        }
+        @RenderBody()
+        @{
+            await Html.RenderZone("After Content");
+        }
+    </div>
+
+    <hr />
+
+    <div class="container">
+        <footer>
+            @{
+                await Html.RenderZone("Footer");
+            }
+        </footer>
+    </div>
+
+    @if (GoogleRecaptchaSettings.Enabled)
+    {
+        <script src="https://www.google.com/recaptcha/enterprise.js?onload=recaptchaOnLoad&render=@(GoogleRecaptchaSettings.IsCheckboxType ? "explicit" : GoogleRecaptchaSettings.SiteKey)" async defer></script>
+    }
+
+    @if (user != null && await Html.CanAccess<AdminBarACL>(user, "Show") && SiteSettings.EnableInlineEditing)
+    {
+        <environment exclude="Development">
+            <link href="/Areas/Admin/Content/front-end-editing.min.css" rel="stylesheet" type="text/css" />
+            <script src="/Areas/Admin/Content/lib/ckeditor/ckeditor.js" type="text/javascript"></script>
+            <script src="/Areas/Admin/Content/lib/jquery/jquery-ui-1.12.1/jquery-ui.js" type="text/javascript"></script>
+            <script src="/Areas/Admin/Content/lib/store.js" type="text/javascript"></script>
+            <script src="/Areas/Admin/Content/front-end-editing.min.js" type="text/javascript"></script>
+        </environment>
+        <div class="hidden-print">
+            <partial name="~/Areas/Admin/Views/Shared/InPageEditor.cshtml" model="Model" />
+        </div>
+    }
+    @if (IsSectionDefined("JavascriptBlockInclude"))
+    {
+        @await RenderSectionAsync("JavascriptBlockInclude")
+    }
+    @Html.Raw(Model.CustomFooterScripts)
+    <environment include="Development">
+        @await Html.RenderUIVendorScripts()
+        @await Html.RenderUIScripts()
+    </environment>
+    <environment exclude="Development">
+        @await Html.RenderProdUIScripts()
+    </environment>
+    <mini-profiler />
+</body>
+</html>

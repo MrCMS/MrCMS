@@ -1,0 +1,14 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateRoleModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Delete", "Role", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin User Roles Delete", "Delete role")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-danger btn" value="@await Html.Resource("Delete")"/>
+            </span>
+        </legend>
+        @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+    </fieldset>
+}

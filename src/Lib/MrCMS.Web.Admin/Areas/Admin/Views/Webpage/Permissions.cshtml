@@ -1,0 +1,32 @@
+﻿@using MrCMS.Entities.Documents.Web
+@model MrCMS.Web.Admin.Models.WebpageEdit.PermissionsTabViewModel
+
+<div class="content-item">
+
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="HasCustomPermissions" type="checkbox" class="form-check-input" />
+            <label asp-for="HasCustomPermissions" class="form-check-label"></label>
+        </div>
+    </div>
+
+    <div data-custom-permissions>
+        <hr class="small-margin" />
+
+        <div class="form-group">
+            <label asp-for="PermissionType"></label>
+            <select asp-for="PermissionType" asp-items="@EnumHelper<WebpagePermissionType>.GetOptions()" class="form-control"></select>
+        </div>
+
+        <div data-custom-permissions-type="@nameof(WebpagePermissionType.RoleBased)">
+            <div data-custom-permissions-roles class="form-group">
+                <label asp-for="FrontEndRoles"></label>
+                <input type="text" asp-for="FrontEndRoles" class="form-control"/>
+            </div>
+        </div>
+        <div data-custom-permissions-type="@nameof(WebpagePermissionType.PasswordBased)" class="form-group">
+            <label asp-for="Password"></label>
+            <input type="text" asp-for="Password" class="form-control" autocomplete="new-password" />
+        </div>
+    </div>
+</div>

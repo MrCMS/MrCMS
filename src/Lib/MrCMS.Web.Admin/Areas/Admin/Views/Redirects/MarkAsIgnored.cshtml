@@ -1,0 +1,19 @@
+@model MrCMS.Entities.Documents.Web.UrlHistory
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+<form asp-controller="Redirects" asp-action="MarkAsIgnored" asp-route-id="@Model.Id">
+    @Html.ReturnToReferrer()
+    <fieldset>
+        <legend>
+            Mark as ignored
+            <span class="btn-group display-inline pull-right">
+                <button type="submit" class="btn btn-info">Mark as ignored</button>
+            </span>
+        </legend>
+        <p>
+            @string.Format(await Html.Resource("Redirects - Mark as ignored", "Are you sure you wish to mark '{0}' as ignored?"), Model.UrlSegment)
+        </p>
+    </fieldset>
+</form>

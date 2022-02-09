@@ -1,0 +1,19 @@
+{
+  "name": "MrCMS.Web.Apps.Core",
+  "version": "1.0.0",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "core-js": "wwwroot/assets/core.js",
+  "core-css": "wwwroot/assets/core.css",
+  "targets": {
+    "core-js": {},
+    "core-css": {}
+  },
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "parcel build wwwroot/Content/scripts/core.js --target core-js",
+    "build:css": "parcel build wwwroot/Content/styles/style.css --target core-css"
+  },
+  "dependencies": {
+    "parcel": "^2.0.1"
+  }
+}

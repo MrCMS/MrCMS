@@ -1,0 +1,118 @@
+﻿@using System.Linq
+@using MrCMS.Entities.Messaging
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Models.MessageQueueQuery
+@{
+    var queuedMessages = ViewData["data"] as IPagedList<QueuedMessage>;
+}
+
+<form asp-controller="MessageQueue" asp-action="Index" method="get">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-queued-messages", "Queued Messages") "/>
+
+            <admin-header-actions>
+                <input type="submit" value="@await Html.Resource("Search")" class="btn btn-primary"/>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="form-group">
+                <label asp-for="FromQuery"></label>
+                <input asp-for="FromQuery" type="text" class="form-control" />
+                <span asp-validation-for="FromQuery"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToQuery"></label>
+                <input asp-for="ToQuery" type="text" class="form-control" />
+                <span asp-validation-for="ToQuery"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subject"></label>
+                <input asp-for="Subject" type="text" class="form-control" />
+                <span asp-validation-for="Subject"></span>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label asp-for="From"></label>
+                <input asp-for="From" type="text" class="date-time-picker form-control" />
+                <span asp-validation-for="From"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="To"></label>
+                <input asp-for="To" type="text" class="date-time-picker form-control" />
+                <span asp-validation-for="To"></span>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+
+@if (queuedMessages.Any())
+{
+    <table class="table table-condensed table-striped">
+        <thead>
+        <tr>
+            <th>
+                @await Html.Resource("From")
+            </th>
+            <th>
+                @await Html.Resource("To")
+            </th>
+            <th>
+                @await Html.Resource("Subject")
+            </th>
+            <th>
+                @await Html.Resource("Created On")
+            </th>
+            <th>
+                @await Html.Resource("Sent On")
+            </th>
+            <th>
+                @await Html.Resource("Actions")
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var message in queuedMessages)
+        {
+            <tr>
+                <td>
+                    @message.FromDescription
+                </td>
+                <td>
+                    @message.ToDescription
+                </td>
+                <td>
+                    @message.Subject
+                </td>
+                <td>
+                    @message.CreatedOn.ToString()
+                </td>
+                <td>
+                    @(message.SentOnDescription)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink(await Html.Resource("View"), "Show", "MessageQueue", new {id = message.Id}, new {@class = "btn btn-sm btn-secondary"})
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    @Html.PagedListPager(queuedMessages, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+}
+else
+{
+    @await Html.Resource("admin-queued-messages-empry", "No results matching your search.")
+}

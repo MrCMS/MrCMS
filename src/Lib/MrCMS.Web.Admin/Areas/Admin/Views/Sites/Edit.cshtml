@@ -1,0 +1,41 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateSiteModel
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+}
+@using (Html.BeginForm("Edit", "Sites", FormMethod.Post, new {id = "edit-site"}))
+{
+    <admin-header>
+        <row>
+            <admin-header-title title="@Model.Name"/>
+
+            <admin-header-actions>
+                @Html.ActionLink("Back to list", "Index", "Sites", null, new {@class = "btn btn-secondary"})
+                <button class="btn btn-primary">
+                    @await Html.Resource("Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <input asp-for="Id" type="hidden"/>
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" type="text" class="form-control" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BaseUrl"></label>
+        <input asp-for="BaseUrl" type="text" class="form-control" />
+        <span asp-validation-for="BaseUrl"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StagingUrl"></label>
+        <input asp-for="StagingUrl" type="text" class="form-control" />
+        <span asp-validation-for="StagingUrl"></span>
+    </div>
+
+    <partial name="RestrictedDomains" model="Model"/>
+}

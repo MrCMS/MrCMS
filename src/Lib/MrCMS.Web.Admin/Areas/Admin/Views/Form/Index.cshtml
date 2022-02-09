@@ -1,0 +1,91 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model MrCMS.Web.Admin.Models.FormSearchModel
+@{
+    ViewBag.Title = "Manage Forms";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var results = ViewData["results"] as IPagedList<Form>;
+}
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("admin - forms", "Forms") "/>
+        <admin-header-actions>
+            <div class="btn-group">
+                <a asp-action="PagesWithForms" class="btn btn-secondary">Pages with forms</a>
+                <a asp-action="Add" asp-controller="Form" class="btn btn-primary" data-toggle="fb-modal">@await Html.Resource("Add")</a>
+            </div>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+
+<form method="get" asp-action="Index" asp-controller="Form" class="mb-3">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="input-group">
+                <input asp-for="Name" type="text" class="form-control" placeholder="Form name or ID..."/>
+                <span asp-validation-for="Name"></span>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">@await Html.Resource("Search")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@if (!results.Any())
+{
+    <p>
+        @await Html.Resource("There are currently no forms matching the search criteria")
+    </p>
+}
+else
+{
+    <table class="table table-condensed table-striped">
+        <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                @await Html.Resource("Name")
+            </th>
+            <th>
+                @await Html.Resource("Created On")
+            </th>
+            <th>
+                @await Html.Resource("Actions")
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var form in results)
+        {
+            <tr>
+                <td>
+                    @form.Id
+                </td>
+                <td>
+                    @form.Name
+                </td>
+                <td>
+                    @form.CreatedOn
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-secondary"})
+                        @Html.ActionLink(await Html.Resource("Delete"), "Delete", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+@if (results.TotalItemCount > 1)
+{
+    @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}), MrCMSPagedListRenderOptions.Bootstrap4)
+}

@@ -1,0 +1,161 @@
+﻿@using System.Linq
+@using MrCMS.ACL.Rules
+@using MrCMS.Entities.People
+@using MrCMS.Services
+@using MrCMS.Web.Admin.Services
+@model MrCMS.Web.Admin.Models.UpdateUserModel
+@inject IGetEditTabsService EditTabsService
+@inject IGetCurrentUser GetCurrentUser
+@{
+    var user = ViewData["user"] as User;
+    ViewBag.Title = "Edit | " + user.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
+    var userRoles = (ViewData["AvailableRoles"] as IEnumerable<UserRole> ?? Enumerable.Empty<UserRole>()).ToList();
+    var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var tabs = await EditTabsService.GetEditTabs(Html, user);
+
+    var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/10";
+
+
+}
+
+<form asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" method="post" id="edit-user">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@user.Name"/>
+
+            <admin-header-actions>
+                <span class="btn-group pull-right">
+                    @Html.ActionLink(await Html.Resource("admin-back", "Back"), "Index", "User", null, new {@class = "btn btn-secondary"})
+                    <a href="@Url.Action("SetPassword", "User", new {id = Model.Id})" class="btn btn-secondary" data-toggle="fb-modal">@await Html.Resource("Admin User Reset Password", "Reset Password")</a>
+
+                    @if (!onlyAdmin)
+                    {
+                        <a href="@Url.Action("Delete", "User", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
+                    }
+                    <button class="btn btn-primary">
+                        @await Html.Resource("admin-save", "Save")
+                    </button>
+                </span>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        @Html.HiddenFor(x => x.Id)
+
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-circle" src="@avatarImg" alt="User profile picture">
+                        </div>
+
+                        <div class="w-100 text-center border-bottom">
+
+                            <h3 class="profile-username">@Model.Name</h3>
+
+                            <div class="btn-group my-3">
+                                @{
+                                    var currentUser = await GetCurrentUser.Get();
+                                    if (Model.Id == currentUser.Id)
+                                    {
+                                        <a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@await Html.Resource("admin-logout", "Logout")</a>                                    }
+                                }
+                                <a class="text-center btn btn-sm btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group mt-3">
+                            @Html.LabelFor(x => x.Email)
+                            @Html.TextBoxFor(x => x.Email, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.Email)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.FirstName)
+                            @Html.TextBoxFor(x => x.FirstName, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.FirstName)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.LastName)
+                            @Html.TextBoxFor(x => x.LastName, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.LastName)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.UICulture)
+                            @Html.DropDownListFor(x => x.UICulture, cultureOptions, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(x => x.UICulture)
+                        </div>
+                        @Html.EditorFor(x => x.IsActive)
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+
+
+                <div class="card card-secondary card-outline">
+                    <div class="card-body box-profile">
+                        <h4>@await Html.Resource("Admin User Roles", "Roles")</h4>
+                        <div>
+                            @if (userRoles.Any() && await Html.CanAccess<UserACL>(UserACL.Roles))
+                            {
+                                for (var index = 0; index < userRoles.Count; index++)
+                                {
+                                    var role = userRoles[index];
+                                    bool isChecked = user.Roles.Any(x => x.Id == role.Id);
+
+                                    @Html.CheckBox("Role-" + role.Id, isChecked, new {})
+                                    <text>&nbsp;
+                                        @Html.Label("Role-" + role.Id, role.Name)</text>
+                                    <br/>
+                                }
+                            }
+                            else
+                            {
+                                <p>@await Html.Resource("Admin User Roles None", "You do not have access to administer roles").</p>
+                            }
+                        </div>
+                        <hr />
+                        <h4>Notifications</h4>
+                        @Html.InlineCheckboxFor(x => x.DisableNotifications, null, null, "Disable system notifications")
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+
+@if (tabs.Any())
+{
+    ViewData["user"] = user;
+
+
+    <h4>
+        @await Html.Resource("User Profile Info")
+    </h4>
+    <ul class="nav nav-tabs pt-3" data-stickytabs="user-@Model.Id">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData"/>        }
+    </ul>
+    <div class="tab-content mt-3">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Content" model="tab" view-data="ViewData"/>        }
+    </div>
+}

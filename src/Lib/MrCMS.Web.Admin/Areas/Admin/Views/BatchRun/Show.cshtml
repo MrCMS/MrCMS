@@ -1,0 +1,23 @@
+﻿@model MrCMS.Batching.Entities.BatchRun
+@{
+    //var batchRunResults = ViewData["results"] as IList<BatchRunResult> ?? new List<BatchRunResult>();
+}
+
+<fieldset data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("ShowPartial", "BatchRun", new {Model.Id})" data-batch-run>
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-batch-show-title", "Batch Run for Batch") @Model.Batch.Id"/>
+
+            <admin-header-actions>
+                @Html.ActionLink("Back to batch", "Show", "Batch", new {id = Model.Batch.Id}, new {@class = "btn btn-secondary"})
+
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+
+    <partial name="Status" model="Model"/>
+
+
+</fieldset>

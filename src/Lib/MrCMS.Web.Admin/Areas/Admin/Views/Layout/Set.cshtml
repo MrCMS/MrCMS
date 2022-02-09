@@ -1,0 +1,18 @@
+﻿@model int
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Set", "Layout", new {id = ""}, FormMethod.Post, null, new {@class = "update-parent-form"}))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Layouts Move Title", "Move Layout")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Move")"/>
+            </span>
+        </legend>
+        @Html.Hidden("id", Model)
+        <div class="form-group">
+            @Html.Label("parentVal", "Layout")
+            @Html.DropDownList("parentVal", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new {@class = "select2", @style = "width:100%;"})
+        </div>
+    </fieldset>
+}

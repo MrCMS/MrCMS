@@ -1,0 +1,14 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateLayoutAreaModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+@using (Html.BeginForm("Delete", "LayoutArea", new {id = Model.Id}, FormMethod.Post, null, new {style = "display:inline;"}))
+{
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Layout Areas Delete Title", "Delete layout area")
+            <span class="btn-group  d-inline pull-right">
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
+            </span>
+        </legend>
+        <p>@Html.InfoBlock(await Html.Resource("Warning") + "!", await Html.Resource("Admin Layout Area Delete Info", "Deleting this area can not be undone."), AlertType.danger)</p>
+    </fieldset>
+}

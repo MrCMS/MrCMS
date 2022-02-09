@@ -1,0 +1,57 @@
+﻿@using MrCMS.Web.Admin.ACL
+@using MrCMS.Web.Admin.Services
+@model MrCMS.Web.Admin.Models.MediaCategorySearchModel
+@inject IFileAdminService FileAdminService
+@{
+    var category = await FileAdminService.GetCategory(Model);
+    var sortByOptions = FileAdminService.GetSortByOptions(Model);
+    var canAccessMediaToolsCut = await Html.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
+    var canAccessMediaToolsDelete = await Html.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
+}
+
+<div class="mb-3">
+    <partial name="MediaCategoryUpload" model="category"/>
+</div>
+
+<form method="get">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label asp-for="SearchText"></label>
+                <input type="text" asp-for="SearchText" class="form-control"/>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label asp-for="SortBy"></label>
+                <select asp-for="SortBy" asp-items="@sortByOptions" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label class="d-none d-md-block">&nbsp;</label>
+                <button type="submit" class="btn btn-outline-primary form-control">@await Html.Resource("Search")</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (canAccessMediaToolsCut || canAccessMediaToolsDelete)
+{
+    <span class="btn-group mb-3" id="file-tools">
+        @{
+            if (canAccessMediaToolsCut)
+            {
+                <button id="cut-files" class="btn btn-secondary" disabled>@await Html.Resource("Cut")</button>
+            }
+            <button id="paste-files" class="btn btn-secondary" disabled>@await Html.Resource("Paste")</button>
+            if (canAccessMediaToolsDelete)
+            {
+                <button id="delete-files" class="btn btn-secondary" disabled>@await Html.Resource("Delete")</button>
+            }
+            <button id="clear-files" class="btn btn-secondary">@await Html.Resource("Clear")</button>
+        }
+    </span>
+}
+
+<partial name="Directory" model="Model"/>

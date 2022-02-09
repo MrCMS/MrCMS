@@ -1,0 +1,50 @@
+﻿@model MrCMS.Settings.MailSettings
+<form asp-controller="SystemSettings" asp-action="Mail" method="post">
+
+    <admin-header>
+        <row>
+            <admin-header-title title="@await Html.Resource("admin-settings-mail", "Mail Settings") " />
+
+            <admin-header-actions>
+                <button class="btn btn-primary" type="submit">
+                    @await Html.Resource("admin-save", "Save")
+                </button>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+
+    <div class="form-group">
+        <label asp-for="SystemEmailAddress"></label>
+        <input asp-for="SystemEmailAddress" type="text" class="form-control" />
+        <span asp-validation-for="SystemEmailAddress"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Host"></label>
+        <input asp-for="Host" type="text" class="form-control" />
+        <span asp-validation-for="Host"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input asp-for="UseSSL" type="checkbox" class="form-check-input" />
+            <label asp-for="UseSSL" class="form-check-label"></label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" type="text" class="form-control" />
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="text" class="form-control" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Port"></label>
+        <input asp-for="Port" type="text" class="form-control" />
+        <span asp-validation-for="Port"></span>
+    </div>
+</form>
+
+<partial name="TestEmailSettings" model="null"/>

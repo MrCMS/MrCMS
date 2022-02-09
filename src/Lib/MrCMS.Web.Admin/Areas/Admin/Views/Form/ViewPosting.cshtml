@@ -1,0 +1,36 @@
+﻿@model MrCMS.Entities.Documents.Web.FormPosting
+
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+<h3>@await Html.Resource("Admin Form View Entry", "View Entry")</h3>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>
+            @await Html.Resource("Name")
+        </th>
+        <th>
+            @await Html.Resource("Name")
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var value in Model.FormValues)
+    {
+        <tr>
+            <td>
+                @value.Key
+            </td>
+            <td>
+                @if (value.IsFile)
+                {
+                    <a href="@value.Value">@await Html.Resource("Download")</a>
+                }
+                else
+                {
+                    @value.Value
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

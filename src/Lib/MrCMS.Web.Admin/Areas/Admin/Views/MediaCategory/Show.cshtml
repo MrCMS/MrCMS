@@ -1,0 +1,25 @@
+﻿@using MrCMS.Entities.Documents.Media
+@model MrCMS.Web.Admin.Models.MediaCategorySearchModel
+@{
+    var category = ViewData["category"] as MediaCategory;
+    ViewBag.Title = category.Name;
+}
+<div data-media-category>
+    <admin-header>
+        <row>
+            <admin-header-title title="@category.Name"/>
+
+            <admin-header-actions>
+                <div class="btn-group">
+                    <a href="@Url.Action("SortFiles", "MediaCategory", new {id = Model.Id})" class="btn btn-secondary">@await Html.Resource("Admin Media Sort Button", "Sort Files")</a>
+                    <a href="@Url.Action("Edit", "MediaCategory", new {id = Model.Id})" class="btn btn-secondary">@await Html.Resource("Admin Media Edit Folder Button", "Edit Folder")</a>
+                    <a href="@Url.Action("Add", "MediaCategory", new {id = Model.Id})" class="btn btn-primary">@await Html.Resource("Admin Media New Folder Button", "New folder")</a>
+                </div>
+            </admin-header-actions>
+        </row>
+    </admin-header>
+
+    @Html.Hidden("FolderId", Model.Id)
+    <partial name="Manage" model="Model"/>
+
+</div>

@@ -1,0 +1,20 @@
+﻿@using MrCMS.Apps
+@model dynamic
+@inject MrCMSAppContext AppContext
+@{
+    ViewBag.Title = "About MrCMS";
+}
+
+<admin-header>
+    <row>
+        <admin-header-title title="@await Html.Resource("admin-about", "About") "/>
+
+        <admin-header-actions>
+        </admin-header-actions>
+    </row>
+</admin-header>
+
+<p>&copy; Mr CMS 2012-@DateTime.Now.Year - v@(Html.AssemblyVersion())</p>
+<p>@await Html.Resource("Admin Logged in from", "Logged in from") @Context.Request.GetCurrentIP()</p>
+<h4>@await Html.Resource("Admin Layout Installed apps", "Installed apps")</h4>
+<p>@AppContext.AppSummary</p>  

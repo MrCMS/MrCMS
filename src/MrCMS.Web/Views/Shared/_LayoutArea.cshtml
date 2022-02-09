@@ -1,0 +1,8 @@
+@using Microsoft.Extensions.Logging
+@model MrCMS.Website.WidgetDisplayInfo
+@inject ILogger<WidgetDisplayInfo> Logger
+
+@foreach (var info in Model.Widgets)
+{
+    await Html.RenderPartialAsync($"Widgets/{info.ViewName}", info);
+}

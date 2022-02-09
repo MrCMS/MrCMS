@@ -1,0 +1,18 @@
+﻿@model MrCMS.Web.Admin.Models.AddRedirectedDomainModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+<form method="post" asp-controller="RedirectedDomain" asp-action="Add">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Redirected Domain Add Title", "Add redirected domain")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Add")"/>
+            </span>
+        </legend>
+        <div class="form-group">
+            <input type="hidden" asp-for="SiteId"/>
+            <label asp-for="Url"></label>
+            <input type="text" asp-for="Url" class="form-control"/>
+            <span asp-validation-for="Url"></span>
+        </div>
+    </fieldset>
+</form>

@@ -1,0 +1,51 @@
+﻿@model MrCMS.Web.Admin.Models.UpdateFormPropertyModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
+
+<form asp-action="Edit" asp-controller="FormProperty" asp-route-id="@Model.Id" method="post" class="form-update-form">
+    <fieldset>
+        <legend>
+            @await Html.Resource("Admin Form Edit Field Title", "Edit field")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn btn-primary submit-form-btn" value="@await Html.Resource("Admin Form Edit Field Button", "Edit field")" />
+            </span>
+        </legend>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" type="text" class="form-control" />
+                    <span asp-validation-for="Name"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LabelText"></label>
+                    <input asp-for="LabelText" type="text" class="form-control" />
+                    <span asp-validation-for="LabelText"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CssClass"></label>
+                    <input asp-for="CssClass" type="text" class="form-control" />
+                    <span asp-validation-for="CssClass"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HtmlId"></label>
+                    <input asp-for="HtmlId" type="text" class="form-control" />
+                    <span asp-validation-for="HtmlId"></span>
+                </div>
+                <div class="form-group">
+                    @if (Model.ShowPlaceholder)
+                    {
+                        <label asp-for="Placeholder"></label>
+                        <input asp-for="Placeholder" type="text" class="form-control" />
+                        <span asp-validation-for="Placeholder"></span>
+                    }
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input asp-for="Required" type="checkbox" class="form-check-input" />
+                        <label asp-for="Required" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>

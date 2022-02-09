@@ -1,0 +1,31 @@
+@using MrCMS.Entities.Documents.Web
+@model MrCMS.Entities.Documents.Web.UrlHistory
+
+<div class="btn-group-vertical btn-group-sm">
+    @switch (Model.UrlHistoryType)
+    {
+        case UrlHistoryType.ToWebpage:
+            <a class="btn btn-secondary" target="_blank" asp-controller="Webpage" asp-action="Edit" asp-route-id="@Model.Webpage.Id">Edit webpage</a>
+            <a class="btn btn-warning" data-toggle="fb-modal" asp-controller="Redirects" asp-action="Reset" asp-route-id="@Model.Id">Reset</a>
+            break;
+        case UrlHistoryType.ToUrl:
+            <a class="btn btn-warning" data-toggle="fb-modal" asp-controller="Redirects" asp-action="Reset" asp-route-id="@Model.Id">Reset</a>
+            break;
+        case UrlHistoryType.Gone:
+            <a class="btn btn-warning" data-toggle="fb-modal" asp-controller="Redirects" asp-action="Reset" asp-route-id="@Model.Id">Reset</a>
+            break;
+        case UrlHistoryType.Ignored:
+            <a class="btn btn-warning" data-toggle="fb-modal" asp-controller="Redirects" asp-action="Reset" asp-route-id="@Model.Id">Reset</a>
+            break;
+        case UrlHistoryType.Unhandled:
+            <a class="btn btn-info" target="_blank" href="/@Model.UrlSegment">Check URL</a>
+            <a class="btn btn-secondary" data-toggle="fb-modal" asp-controller="Redirects" asp-action="SetRedirectPage" asp-route-id="@Model.Id">Redirect to webpage</a>
+            <a class="btn btn-secondary" data-toggle="fb-modal" asp-controller="Redirects" asp-action="SetRedirectUrl" asp-route-id="@Model.Id">Redirect to URL</a>
+            <a class="btn btn-info" data-toggle="fb-modal" asp-controller="Redirects" asp-action="MarkAsIgnored" asp-route-id="@Model.Id">Mark as ignored</a>
+            <a class="btn btn-danger" data-toggle="fb-modal" asp-controller="Redirects" asp-action="MarkAsGone" asp-route-id="@Model.Id">Mark as gone</a>
+            <a class="btn btn-danger" data-toggle="fb-modal" asp-controller="Redirects" asp-action="Remove" asp-route-id="@Model.Id">Remove</a>
+            break;
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
+</div>

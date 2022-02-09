@@ -1,0 +1,5 @@
+@model MrCMS.Web.Apps.Core.Entities.ContentBlocks.Image
+@using MrCMS.Web.Apps.Core.Entities.ContentBlocks
+<div class="text-@(Model.Aligment==Image.ImageAligment.Center ? "center" : Model.Aligment==Image.ImageAligment.Start ? "left" : "right")">
+    @await Html.RenderImage(Model.Url, enableCaption:true ,attributes: new {@class=@Model.cssClasses})
+</div>

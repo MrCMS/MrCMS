@@ -1,0 +1,25 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Services
+@using MrCMS.Web.Admin.Infrastructure.Helpers
+@model MrCMS.Web.Admin.Models.WebpageEdit.WebpagePropertiesTabViewModel
+@inject IWebpageMetadataService _webpageMetadataService
+@{
+    var webpage = ViewData["webpage"] as Webpage;
+}
+<input type="hidden" asp-for="WebpageType"/>
+<input type="hidden" asp-for="Id"/>
+
+<div class="form-group">
+    <label asp-for="Name"></label>
+    <input type="text" asp-for="Name" class="form-control"/>
+    <span asp-validation-for="Name"></span>
+</div>
+
+@if (_webpageMetadataService.GetWebpageMetadata(Html, Model.Id).HasBodyContent)
+{
+    <div class="body-content mb-3" data-body-content>
+        <!-- leave this class here for fixing the bar to top only for body content -->
+        <textarea asp-for="BodyContent" class="ckedit-enabled"></textarea>
+    </div>
+}
+@await Html.RenderUpdateCustomAdminProperties(webpage) 

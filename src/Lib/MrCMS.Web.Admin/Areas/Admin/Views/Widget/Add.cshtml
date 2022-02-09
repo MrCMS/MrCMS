@@ -1,0 +1,30 @@
+﻿@model MrCMS.Web.Admin.Models.AddWidgetModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<form asp-controller="Widget" asp-action="Add" asp-route-id="" method="post" data-add-widget-form>
+    <fieldset style="min-height: 500px">
+        <legend>
+            @await Html.Resource("Admin Widget Add Widget", "Add Widget")
+            <span class="btn-group pull-right">
+                <input type="submit" class="btn-success btn" value="@await Html.Resource("Save")" id="add-widget"/>
+            </span>
+        </legend>
+        @Html.HiddenFor(model => model.LayoutAreaId)
+        @Html.Hidden("ReturnUrl", ViewData["return-url"])
+        @Html.ReturnToReferrer()
+        <div class="form-group">
+            @Html.LabelFor(x => x.WidgetType)
+            @Html.DropDownListFor(x => x.WidgetType, WidgetHelper.WidgetTypeDropdownItems, new {@class = "form-control"})
+            @Html.ValidationMessageFor(x => x.WidgetType)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, Model.Name, new {@class = "form-control"})
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        <div data-additional-properties="true">
+
+        </div>
+    </fieldset>
+</form>
