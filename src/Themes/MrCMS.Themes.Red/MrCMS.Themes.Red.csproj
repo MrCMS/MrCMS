@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/Themes/Red/</StaticWebAssetBasePath>
+	</PropertyGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="Areas\Admin\Views\**" />

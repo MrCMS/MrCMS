@@ -9,7 +9,7 @@ namespace MrCMS.Web.Apps.Core.Services
         public int Priority { get; }
         public Task<bool> ShouldShow(string theme) => Task.FromResult(true);
 
-        public string Url => "/assets/core.js";
+        public string Url => "/Apps/Core/assets/core.js";
 
         public IEnumerable<string> VendorFiles
         {

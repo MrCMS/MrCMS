@@ -9,13 +9,13 @@ namespace MrCMS.Web.Apps.Core.Services
         public int Priority { get; }
         public Task<bool> ShouldShow(string theme) => Task.FromResult(string.IsNullOrWhiteSpace(theme));
 
-        public string Url => "/assets/core.css";
+        public string Url => "/Apps/Core/assets/core.css";
 
         public IEnumerable<string> VendorFiles
         {
             get { 
-                yield return "/Content/lib/bootstrap/dist/css/bootstrap.min.css";
-                yield return "/Content/lib/glightbox/css/glightbox.min.css";
+                yield return "/Apps/Core/Content/lib/bootstrap/dist/css/bootstrap.min.css";
+                yield return "/Apps/Core/Content/lib/glightbox/css/glightbox.min.css";
             }
         }
     }

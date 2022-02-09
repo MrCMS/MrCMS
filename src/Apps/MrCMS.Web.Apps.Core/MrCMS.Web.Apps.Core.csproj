@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-        <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/</StaticWebAssetBasePath>
+        <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/Apps/Core/</StaticWebAssetBasePath>
     </PropertyGroup>
 
     <ItemGroup>
