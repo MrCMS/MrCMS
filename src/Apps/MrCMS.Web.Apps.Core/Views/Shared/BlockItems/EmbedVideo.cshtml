@@ -1,3 +1,29 @@
 @model MrCMS.Web.Apps.Core.Entities.BlockItems.EmbedVideo
+@{
+    var collapseId = $"collapse-{Guid.NewGuid()}";
+}
 
-@Html.Raw(Model.EmbedCode)
+@if (string.IsNullOrWhiteSpace(Model.Poster))
+{
+    <div class="embed-responsive embed-responsive-16by9 my-3">
+        @Html.Raw(Model.EmbedCode)
+    </div>
+}
+else
+{
+    <div class="my-3">
+        <div class="collapse show" data-id="@(collapseId)" data-toggle="collapse" data-target="[data-id='@(collapseId)']" aria-expanded="true">
+            <div class="embed-responsive embed-responsive-16by9 my-3">
+                <div class="video-placeholder">
+                    <img src="@Model.Poster" />
+                    <div class="video-play"></div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" data-id="@(collapseId)">
+            <div class="embed-responsive embed-responsive-16by9">
+                @Html.Raw(Model.EmbedCode)
+            </div>
+        </div>
+    </div>
+}

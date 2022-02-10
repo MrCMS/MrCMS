@@ -14,7 +14,8 @@ public class YoutubeVideoAdminConfiguration : BlockItemAdminConfigurationBase<Yo
             EnablePrivacyMode = block.EnablePrivacyMode,
             ShowPlayerControl = block.ShowPlayerControl,
             StartAt = block.StartAt,
-            VideoId = block.VideoId
+            VideoId = block.VideoId,
+            Poster = block.Poster
         };
     }
 
@@ -25,5 +26,6 @@ public class YoutubeVideoAdminConfiguration : BlockItemAdminConfigurationBase<Yo
         block.StartAt = editModel.StartAt;
         block.ShowPlayerControl = editModel.ShowPlayerControl;
         block.Autoplay = editModel.Autoplay;
+        block.Poster = editModel.Poster;
     }
 }
