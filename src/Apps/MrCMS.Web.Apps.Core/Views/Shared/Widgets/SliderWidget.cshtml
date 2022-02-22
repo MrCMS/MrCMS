@@ -1,0 +1,52 @@
+﻿@using MrCMS.Web.Apps.Core.Widgets
+@using MrCMS.Services
+@inject IWidgetUIService WidgetUIService
+@model WidgetData
+@{
+    var widget = await WidgetUIService.GetWidgetAsync<SliderWidget>(Model.Id);
+    var sliderId = $"slider-{Guid.NewGuid()}";
+}
+
+@if (widget.Slides.Any())
+{
+    <div id="@(sliderId)" class="carousel slide my-3" data-bs-ride="carousel" data-bs-interval="@widget.Interval" data-bs-pause="@(widget.PauseOnHover ? "hover" : "false")">
+        @if (widget.ShowIndicator)
+        {
+            <ol class="carousel-indicators">
+                @for (var i = 0; i < widget.Slides.Count; i++)
+                {
+                    <li data-bs-target="#@(sliderId)" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+                }
+            </ol>
+        }
+        <div class="carousel-inner">
+            @for (var i = 0; i < widget.Slides.Count; i++)
+            {
+                var slide = widget.Slides[i];
+                <a href="@(string.IsNullOrWhiteSpace(slide.Link) ? "#" : slide.Link)" class="carousel-item @(i == 0 ? "active" : "")">
+                    @await Html.RenderImage(slide.Image, attributes: new {@class = $"img-fluid w-100 {(string.IsNullOrWhiteSpace(slide.SmallImage) ? "" : "d-none d-sm-inline-block")}"})
+                    @if (!string.IsNullOrWhiteSpace(slide.SmallImage))
+                    {
+                        @await Html.RenderImage(slide.SmallImage, attributes: new {@class = "img-fluid w-100 d-sm-none"})
+                    }
+                    @if (!string.IsNullOrWhiteSpace(slide.Caption))
+                    {
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>
+                                @slide.Caption
+                            </h5>
+                        </div>
+                    }
+                </a>
+            }
+        </div>
+        <a class="carousel-control-prev" href="#@(sliderId)" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#@(sliderId)" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+}

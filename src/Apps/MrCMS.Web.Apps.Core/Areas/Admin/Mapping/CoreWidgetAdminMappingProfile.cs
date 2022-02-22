@@ -12,7 +12,10 @@ namespace MrCMS.Web.Apps.Core.Areas.Admin.Mapping
             CreateMap<LinkedImage, LinkedImageModel>().ReverseMap();
             CreateMap<Navigation, NavigationModel>().ReverseMap();
             CreateMap<PlainTextWidget, PlainTextWidgetModel>().ReverseMap();
-            CreateMap<Slider, SliderModel>().ReverseMap();
+            CreateMap<SliderWidget, SliderWidgetModel>()
+                .ForMember(x => x.SlideList, x => x.MapFrom(f => f.Slides))
+                .ReverseMap()
+                .ForMember(x => x.SlideList, x => x.MapFrom(f => f.ToString()));
             CreateMap<TextWidget, TextWidgetModel>().ReverseMap();
         }
     }
