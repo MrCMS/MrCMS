@@ -18,20 +18,20 @@ export function setupEditWebpage(){
         that.val(that.val().trim().replace(/[^a-zA-Z0-9-/]/g, '-'));
     });
 
-    scope.find('#publish-status-change').click(function (e) {
-        e.preventDefault();
-        const form = scope;
-        if (scope.find("#PublishOn").val()?.length > 0) {
-            scope.find("#PublishOn").val('');
-            form.submit();
-        } else {
-            $.get('/Admin/Webpage/GetServerDate', function (response) {
-                scope.find("#PublishOn").val(response);
-                form.submit();
-            });
-        }
-        return false;
-    });
+    // scope.find('#publish-status-change').click(function (e) {
+    //     e.preventDefault();
+    //     const form = scope;
+    //     if (scope.find("#PublishOn").val()?.length > 0) {
+    //         scope.find("#PublishOn").val('');
+    //         form.submit();
+    //     } else {
+    //         $.get('/Admin/Webpage/GetServerDate', function (response) {
+    //             scope.find("#PublishOn").val(response);
+    //             form.submit();
+    //         });
+    //     }
+    //     return false;
+    // });
 
     //Show box for chaging the URL which is hidden by default.
     scope.find("#change-url").click(function (e) {
