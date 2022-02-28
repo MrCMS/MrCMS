@@ -2,18 +2,31 @@
   "name": "MrCMS.Web.Apps.Core",
   "version": "1.0.0",
   "browserslist": "> 0.5%, last 2 versions, not dead",
+  "admin-js": "wwwroot/assets/core-admin.js",
   "core-js": "wwwroot/assets/core.js",
   "core-css": "wwwroot/assets/core.css",
   "targets": {
     "core-js": {},
-    "core-css": {}
+    "core-css": {},
+    "admin-js": {}
   },
   "scripts": {
     "build": "npm run build:js && npm run build:css",
-    "build:js": "parcel build wwwroot/Content/scripts/core.js --target core-js",
-    "build:css": "parcel build wwwroot/Content/styles/style.css --target core-css"
+    "build:js": "npm run build:js:admin && npm run build:js:front-end",
+    "build:js:admin": "parcel build wwwroot/Areas/Admin/Content/scripts/core-admin.js --target admin-js",
+    "build:js:front-end": "parcel build wwwroot/Content/scripts/core.js --target core-js",
+    "build:css": "parcel build wwwroot/Content/styles/style.css --target core-css",
+    "watch": "concurrently --kill-others \"npm:watch:js\" \"npm:watch:css\"",
+    "watch:js": "concurrently \"npm:watch:js:admin\" \"npm:watch:js:front-end\"",
+    "watch:js:admin": "parcel watch wwwroot/Areas/Admin/Content/scripts/core-admin.js --target admin-js -p 1234",
+    "watch:js:front-end": "parcel watch wwwroot/Content/scripts/core.js --target core-js -p 1235",
+    "watch:css": "concurrently \"npm:watch:css:front-end\"",
+    "watch:css:front-end": "parcel watch wwwroot/Content/styles/style.css --target core-css -p 1237"
   },
   "dependencies": {
     "parcel": "^2.0.1"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.3.0"
   }
 }

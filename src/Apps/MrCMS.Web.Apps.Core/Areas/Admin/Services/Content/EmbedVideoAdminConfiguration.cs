@@ -10,12 +10,14 @@ public class EmbedVideoAdminConfiguration : BlockItemAdminConfigurationBase<Embe
     {
         return new UpdateEmbedVideoAdminModel
         {
-            EmbedCode = block.EmbedCode
+            EmbedCode = block.EmbedCode,
+            Poster = block.Poster
         };
     }
 
     public override void UpdateBlockItem(EmbedVideo block, UpdateEmbedVideoAdminModel editModel)
     {
         block.EmbedCode = editModel.EmbedCode;
+        block.Poster = editModel.Poster;
     }
 }

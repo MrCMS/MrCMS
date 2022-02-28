@@ -13,13 +13,14 @@ namespace MrCMS.Web.Apps.Core.Entities.BlockItems
         {
             EnablePrivacyMode = true;
         }
+        public string Poster { get; set; }
         public string VideoId { get; set; }
         public bool Autoplay { get; set; }
         public bool EnablePrivacyMode { get; set; }
         public bool ShowPlayerControl { get; set; }
         public string StartAt { get; set; }
 
-        public string GetHtml()
+        public string GetUrl()
         {
             var url = new StringBuilder(EnablePrivacyMode ? "https://www.youtube-nocookie.com/embed/" : "https://www.youtube.com/embed/");
 
@@ -32,7 +33,7 @@ namespace MrCMS.Web.Apps.Core.Entities.BlockItems
                 url.Append("&start=").Append(startTieme.TotalSeconds);
             }
 
-            return $"<iframe src='{url}' frameborder='0' allow='accelerometer; autoplay;  clipboard-write; encrypted-media; gyroscope; picture-in-picture'></iframe>";
+            return url.ToString();
         }
     }
 }

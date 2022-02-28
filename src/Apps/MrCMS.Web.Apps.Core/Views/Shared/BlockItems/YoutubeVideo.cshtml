@@ -1,3 +1,17 @@
 @model MrCMS.Web.Apps.Core.Entities.BlockItems.YoutubeVideo
 
-@Html.Raw(Model.GetHtml())
+@if (string.IsNullOrWhiteSpace(Model.Poster))
+{
+    <div class="embed-responsive embed-responsive-16by9 my-3">
+        <iframe src='@Model.GetUrl()' frameborder='0' allow='accelerometer; autoplay;  clipboard-write; encrypted-media; gyroscope; picture-in-picture'></iframe>
+    </div>
+}
+else
+{
+    <a href="@Model.GetUrl()" class="embed-responsive embed-responsive-16by9 my-3 glightbox">
+        <div class="video-placeholder">
+            <img src="@Model.Poster" />
+            <div class="video-play"></div>
+        </div>
+    </a>
+}
