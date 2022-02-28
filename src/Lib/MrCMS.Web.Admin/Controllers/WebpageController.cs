@@ -140,7 +140,7 @@ namespace MrCMS.Web.Admin.Controllers
             return RedirectToAction("Sort", new { id });
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<RedirectToActionResult> PublishNow(int id)
         {
             await _webpageAdminService.PublishNow(id);
@@ -148,7 +148,7 @@ namespace MrCMS.Web.Admin.Controllers
             return RedirectToAction("Edit", new { id });
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<RedirectToActionResult> Unpublish(int id)
         {
             await _webpageAdminService.Unpublish(id);

@@ -20,7 +20,7 @@
     <label asp-for="PublishOn">
         Publish On - <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "text-success" : "text-warning")" style="line-height: 38px;">@await Html.Resource(Model.PublishStatus.ToString())&nbsp;</span>
     </label>
-    <input type="text" asp-for="PublishOn" class="form-control date-time-picker"/>
+    <input type="text" asp-for="PublishOn" class="form-control date-time-picker" autocomplete="off" />
     <span asp-validation-for="PublishOn"></span>
 
     <hr/>

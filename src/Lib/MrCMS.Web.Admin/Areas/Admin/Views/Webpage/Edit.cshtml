@@ -39,7 +39,7 @@
                         <a href="@await GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
                         @if (Model.PublishStatus != Webpage.WebpagePublishStatus.Scheduled)
                         {
-                            @(Model.PublishOn == null ? Html.ActionLink(await Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning", id = "publish-status-change"}) : Html.ActionLink(await Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success", id = "publish-status-change"}))
+                            @(Model.PublishOn == null ? Html.ActionLink(await Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning"}) : Html.ActionLink(await Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success"}))
                         }
 
                         <button class="btn btn-primary" type="submit">@await Html.Resource("Save")</button>

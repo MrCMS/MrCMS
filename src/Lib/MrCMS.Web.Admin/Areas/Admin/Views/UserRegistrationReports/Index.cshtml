@@ -26,11 +26,11 @@
     <div class="row">
         <div class="col-lg-2">
             @Html.LabelFor(query => query.StartDate)
-            @Html.TextBoxFor(query => query.StartDate, new {@class = "date-time-picker form-control"})
+            @Html.TextBoxFor(query => query.StartDate, new {@class = "date-time-picker form-control", autocomplete="off"})
         </div>
         <div class="col-lg-2">
             @Html.LabelFor(query => query.EndDate)
-            @Html.TextBoxFor(query => query.EndDate, new {@class = "date-time-picker form-control"})
+            @Html.TextBoxFor(query => query.EndDate, new {@class = "date-time-picker form-control", autocomplete="off"})
         </div>
     </div>
 
