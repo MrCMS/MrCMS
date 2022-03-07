@@ -18,7 +18,7 @@ public class ContentBlockController : MrCMSAdminController
 
     public async Task<ViewResult> Add(int id)
     {
-        ViewData["block-options"] = await _adminService.GetContentRowOptions();
+        ViewData["block-options"] = await _adminService.GetContentRowOptions(id);
         return View(await _adminService.GetAddModel(id));
     }
 

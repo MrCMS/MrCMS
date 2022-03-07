@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using MrCMS.Helpers;
 
@@ -25,12 +26,15 @@ public static class ContentBlockMappings
             var name = attribute?.Name ?? type.Name.BreakUpString();
             var canAddChildren = type.IsAssignableTo(typeof(IContentBlockWithChildCollection));
             var canOrderChildren = type.IsAssignableTo(typeof(IContentBlockWithSortableChildCollection));
+            var allowedPageTypes = type.GetCustomAttributes<AllowedPageTypesAttribute>(true).FirstOrDefault()?.Types ??
+                                   Enumerable.Empty<Type>();
             blockMetadata.Add(type.FullName!, new ContentBlockMetadata
             {
                 Name = name,
                 Type = type,
                 CanAddChildren = canAddChildren,
-                CanOrderChildren = canOrderChildren
+                CanOrderChildren = canOrderChildren,
+                AllowedPageTypes = allowedPageTypes
             });
         }
 
@@ -40,6 +44,7 @@ public static class ContentBlockMappings
     public class ContentBlockMetadata
     {
         public Type Type { get; set; }
+        public IEnumerable<Type> AllowedPageTypes { get; set; }
         public string Name { get; set; }
         public bool CanAddChildren { get; set; }
         public bool CanOrderChildren { get; set; }

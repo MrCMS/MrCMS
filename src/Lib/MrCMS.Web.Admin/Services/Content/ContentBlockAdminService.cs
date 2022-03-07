@@ -22,14 +22,16 @@ public class ContentBlockAdminService : IContentBlockAdminService
         _serviceProvider = serviceProvider;
     }
 
-    public Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions()
+    public async Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions(int id)
     {
-        return Task.FromResult<IReadOnlyList<ContentBlockOption>>(
-            ContentBlockMappings.BlockMetadata
-                .OrderBy(x => x.Value.Name)
-                .Select(x => new ContentBlockOption { Name = x.Value.Name, TypeName = x.Key })
-                .ToList()
-        );
+        var contentVersion = await _session.GetAsync<ContentVersion>(id);
+        var pageType =contentVersion.Webpage.Unproxy().GetType();
+
+        return ContentBlockMappings.BlockMetadata
+            .Where(f=>!f.Value.AllowedPageTypes.Any() || f.Value.AllowedPageTypes.Contains(pageType))
+            .OrderBy(x => x.Value.Name)
+            .Select(x => new ContentBlockOption {Name = x.Value.Name, TypeName = x.Key})
+            .ToList();
     }
 
     public Task<AddContentBlockModel> GetAddModel(int id)
@@ -125,7 +127,9 @@ public class ContentBlockAdminService : IContentBlockAdminService
                 var contentBlock = await session.GetAsync<ContentBlock>(model.Id);
                 contentBlock.Order = model.Order;
                 await session.UpdateAsync(contentBlock);
-            };
+            }
+
+            ;
         });
     }
 

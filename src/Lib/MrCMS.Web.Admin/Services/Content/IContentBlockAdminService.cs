@@ -7,7 +7,7 @@ namespace MrCMS.Web.Admin.Services.Content;
 
 public interface IContentBlockAdminService
 {
-    Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions();
+    Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions(int id);
     Task<AddContentBlockModel> GetAddModel(int id);
     Task<ContentBlock> AddBlock(AddContentBlockModel model);
     Task<IContentBlock> GetBlock(int id);

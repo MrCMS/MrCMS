@@ -14,9 +14,4 @@ public class ContentRowController : MrCMSAdminController
     {
         _service = service;
     }
-
-    public async Task<IReadOnlyList<ContentBlockOption>> Options()
-    {
-        return await _service.GetContentRowOptions();
-    }
 }
