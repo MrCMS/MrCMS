@@ -25,11 +25,12 @@ public class ContentBlockAdminService : IContentBlockAdminService
     public async Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions(int id)
     {
         var contentVersion = await _session.GetAsync<ContentVersion>(id);
-        var pageType =contentVersion.Webpage.Unproxy().GetType();
+        var pageType = contentVersion.Webpage.Unproxy().GetType();
 
         return ContentBlockMappings.BlockMetadata
-            .Where(f=>!f.Value.AllowedPageTypes.Any() || f.Value.AllowedPageTypes.Contains(pageType))
-            .OrderBy(x => x.Value.Name)
+            .Where(f => !f.Value.AllowedPageTypes.Any() || f.Value.AllowedPageTypes.Contains(pageType))
+            .OrderBy(f => (f.Value.AllowedPageTypes?.Any() ?? false) ? 0 : 1)
+            .ThenBy(x => x.Value.Name)
             .Select(x => new ContentBlockOption {Name = x.Value.Name, TypeName = x.Key})
             .ToList();
     }
