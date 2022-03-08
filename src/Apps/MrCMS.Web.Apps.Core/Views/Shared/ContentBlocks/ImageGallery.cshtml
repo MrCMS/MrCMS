@@ -12,7 +12,7 @@
             <div class="@Model.ResponsiveClasses">
                 <div class="embed-responsive embed-responsive-1by1">
                     <div class="embed-responsive-item">
-                        <a href="@Model.Images[i].Url" class="glightbox" data-gallery="galleryId">
+                        <a href="@Model.Images[i].Url" class="glightbox" data-gallery="@galleryId">
                             @await Html.RenderImage(Model.Images[i].Url,new System.Drawing.Size{Width=250}, attributes: new {@class="object-fit-cover", height="100%", width="100%"})
                         </a>
                     </div>
