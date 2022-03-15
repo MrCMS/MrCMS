@@ -73,11 +73,17 @@
             overflow-y: auto;
             transition-timing-function: ease-in-out;
             transition-duration: .3s;
-            transition-property: right, visibility;
+            transition-property: right, visibility, left, width;
 
             &.open {
                 right: 0;
                 visibility: visible;
+            }
+
+            &.expand{
+                right: 0;
+                left: 0;
+                width: auto;
             }
 
             .media-preview {

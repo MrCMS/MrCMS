@@ -29,9 +29,15 @@
             <iframe id="content-admin-preview-pane" data-content-admin-preview-pane src="@Model.PreviewUrl"></iframe>
         </main>
         <div class="right-nav bg-white" data-content-parent>
-            <button type="button" class="cancel-button btn btn-sm btn-link mx-n3 mt-n4" data-content-admin-hide-editor>
-                <i class="fa fa-times text-secondary"></i>
-            </button>
+            <div class="row justify-content-between">
+                <button type="button" class="cancel-button btn btn-sm btn-link mx-n3 mt-n4" data-content-admin-expand-editor>
+                    <i class="fa fa-arrow-left text-secondary" data-expand="true"></i>
+                    <i class="fa fa-arrow-right text-secondary d-none" data-collapse="true"></i>
+                </button>
+                <button type="button" class="cancel-button btn btn-sm btn-link mx-n3 mt-n4" data-content-admin-hide-editor>
+                    <i class="fa fa-times text-secondary"></i>
+                </button>
+            </div>
             <div data-content-admin-editor>
             </div>
         </div>

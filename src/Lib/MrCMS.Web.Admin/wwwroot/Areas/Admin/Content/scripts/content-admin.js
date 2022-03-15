@@ -32,17 +32,17 @@ function InitSortBlocks() {
     blocks.children("ul").sortable({
         handle: ".sort-handle",
         update: function (event, ui) {
-            var sortList = [];
+            let sortList = [];
             blocks.children("ul").children("li[data-order]").each(function (index, domElement) {
-                var order = index + 1;
+                let order = index + 1;
                 $(domElement).data("order", order);
                 sortList.push({
                     id: $(domElement).data("id"),
                     order: order
                 });
             });
-            var url = blocks.children("ul").data("admin-blocks-order");
-            $.post(url, { list: sortList })
+            let url = blocks.children("ul").data("admin-blocks-order");
+            $.post(url, {list: sortList})
                 .done(function (data) {
                     reloadPreview();
                 })
@@ -60,21 +60,21 @@ function InitSortItemBlocks() {
     }
 
     itemBlocks.each(function () {
-        var itemBlock = $(this);
+        let itemBlock = $(this);
         itemBlock.sortable({
             handle: ".child-sort-handle",
             update: function (event, ui) {
-                var sortList = [];
-                var blockId = $(event.target).closest('[data-id]').data("id");
+                let sortList = [];
+                let blockId = $(event.target).closest('[data-id]').data("id");
                 $(event.target).children("li[data-id]").each(function (index, domElement) {
-                    var order = index + 1;
+                    let order = index + 1;
                     sortList.push({
                         id: $(domElement).data("id"),
                         order: order
                     });
                 });
-                var url = $(event.target).data("admin-item-blocks-order");
-                $.post(url, { id: blockId, list: sortList })
+                let url = $(event.target).data("admin-item-blocks-order");
+                $.post(url, {id: blockId, list: sortList})
                     .done(function (data) {
                         reloadPreview();
                         /*loadBlocks();*/ //uncomment for re-order ui again
@@ -96,14 +96,31 @@ function InitToggleHideBlock() {
     }
 
     blocks.find("[data-content-admin-block-hide]").on("click", function () {
-        var self = $(this);
-        var url = self.data("content-admin-block-hide");
-        $.post(url, { id: self.data("id") })
+        let self = $(this);
+        let url = self.data("content-admin-block-hide");
+        $.post(url, {id: self.data("id")})
             .done(function (data) {
                 loadBlocks();
                 reloadPreview();
             });
     });
+}
+
+function ToggleExpandBlock() {
+    const editor = getEditorHolder();
+    if (!editor.length) {
+        return;
+    }
+
+    console.log("I'm called");
+
+    if (editor.closest("[data-content-parent]").hasClass("expand"))
+    {
+        collapseEditor();
+    }
+    else{
+        expandEditor();
+    }
 }
 
 function loadEditor(url) {
@@ -112,7 +129,8 @@ function loadEditor(url) {
         return;
     }
     if (url) {
-        editor.closest("[data-content-parent]").removeClass("open")
+        editor.closest("[data-content-parent]").removeClass("open");
+        collapseEditor();
         $.get(url, function (response) {
             editor.html(response);
             window.admin.initializePlugins();
@@ -120,6 +138,7 @@ function loadEditor(url) {
         })
     } else {
         editor.closest("[data-content-parent]").removeClass("open")
+        collapseEditor();
         let blocks = getBlockHolder();
         blocks.find('li.list-group-item-primary').removeClass('list-group-item-primary');
     }
@@ -131,9 +150,30 @@ function hideEditor() {
         return;
     }
     editor.closest("[data-content-parent]").removeClass("open");
+    collapseEditor();
 
     let blocks = getBlockHolder();
     blocks.find('li.list-group-item-primary').removeClass('list-group-item-primary');
+}
+
+function expandEditor() {
+    const editor = getEditorHolder();
+    if (!editor.length) {
+        return;
+    }
+    editor.closest("[data-content-parent]").addClass("expand");
+    $('[data-content-admin-expand-editor] [data-expand]').addClass('d-none');
+    $('[data-content-admin-expand-editor] [data-collapse]').removeClass('d-none');
+}
+
+function collapseEditor() {
+    const editor = getEditorHolder();
+    if (!editor.length) {
+        return;
+    }
+    editor.closest("[data-content-parent]").removeClass("expand");
+    $('[data-content-admin-expand-editor] [data-expand]').removeClass('d-none');
+    $('[data-content-admin-expand-editor] [data-collapse]').addClass('d-none');
 }
 
 function loadEditorFromDataKeyUrl(link, dataKey) {
@@ -228,4 +268,5 @@ export function setupContentAdmin() {
     $(document).on('click', '[data-content-admin-add-child]', addChild)
     $(document).on('submit', '[data-content-admin-save-editor]', saveEditor)
     $(document).on('click', '[data-content-admin-hide-editor]', hideEditor)
+    $(document).on('click', '[data-content-admin-expand-editor]', ToggleExpandBlock);
 }
