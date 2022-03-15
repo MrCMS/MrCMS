@@ -74,7 +74,7 @@
             transition-timing-function: ease-in-out;
             transition-duration: .3s;
             transition-property: right, visibility, left, width;
-
+            z-index: 999;
             &.open {
                 right: 0;
                 visibility: visible;
