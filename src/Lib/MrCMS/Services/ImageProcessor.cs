@@ -75,15 +75,16 @@ namespace MrCMS.Services
 
         public void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings)
         {
+            var imageInfo = new MagickImageInfo(stream);
+            file.Width = imageInfo.Width;
+            file.Height = imageInfo.Height;
+            file.ContentLength = stream.Length;
+
             if (!mediaSettings.EnforceMaxImageSize)
             {
                 return;
             }
 
-            var imageInfo = new MagickImageInfo(stream);
-            file.Width = imageInfo.Width;
-            file.Height = imageInfo.Height;
-            file.ContentLength = stream.Length;
             if (!RequiresResize(file.Size, mediaSettings.MaxSize))
                 return;
 
