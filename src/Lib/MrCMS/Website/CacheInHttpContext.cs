@@ -20,7 +20,7 @@ namespace MrCMS.Website
                 return getFunc();
             if (context.Items.ContainsKey(key))
             {
-                return (T) context.Items[key];
+                return (T)context.Items[key];
             }
 
             var result = getFunc();
@@ -39,7 +39,7 @@ namespace MrCMS.Website
                 return await getFunc();
             if (context.Items.ContainsKey(key))
             {
-                return (T) context.Items[key];
+                return (T)context.Items[key];
             }
 
             var result = await getFunc();
@@ -49,6 +49,15 @@ namespace MrCMS.Website
             }
 
             return result;
+        }
+
+        public void ClearForRequest(string key)
+        {
+            var context = _contextAccessor.HttpContext;
+            if (context == null)
+                return;
+            if (context.Items.ContainsKey(key))
+                context.Items.Remove(key);
         }
     }
 }

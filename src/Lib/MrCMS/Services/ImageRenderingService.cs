@@ -33,7 +33,8 @@ namespace MrCMS.Services
 
         public async Task<ImageInfo> GetImageInfo(string imageUrl, Size targetSize)
         {
-            var crop = await _imageProcessor.GetCrop(imageUrl);
+            //disabling crop for now as we are not using this code it is also causing '	could not execute query' errors
+            /*var crop = await _imageProcessor.GetCrop(imageUrl);
             if (crop != null)
                 return new ImageInfo
                 {
@@ -41,7 +42,7 @@ namespace MrCMS.Services
                     Description = crop.Description,
                     ImageUrl = await GetCropImageUrl(crop, targetSize),
                     ActualSize = ImageProcessor.CalculateDimensions(crop.Size, targetSize)
-                };
+                };*/
             var image = await _imageProcessor.GetImage(imageUrl);
             if (image != null)
                 return new ImageInfo
@@ -66,17 +67,25 @@ namespace MrCMS.Services
 
         public async Task<IHtmlContent> RenderImage(IHtmlHelper helper, string imageUrl, Size targetSize = new Size(),
             string alt = null,
-            string title = null, bool enableCaption = false, object attributes = null)
+            string title = null, bool enableCaption = false, object attributes = null, bool showPlaceholderIfNull = false)
         {
+            
             var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, enableCaption, attributes);
 
             return await _cacheManager.GetOrCreateAsync(cachingInfo.CacheKey, async () =>
             {
                 using (new SiteFilterDisabler(_session))
                 {
-                    if (string.IsNullOrWhiteSpace(imageUrl))
-                        return HtmlString.Empty;
+                    if (string.IsNullOrWhiteSpace(imageUrl) && showPlaceholderIfNull && !string.IsNullOrEmpty(_mediaSettings.HoldingImage))
+                    {
+                        return ReturnTag(await GetImageInfo(_mediaSettings.HoldingImage, targetSize), alt, title, enableCaption, attributes);
+                    }
 
+                    if (string.IsNullOrWhiteSpace(imageUrl))
+                    {
+                        return HtmlString.Empty;
+                    }
+    
                     var imageInfo = await GetImageInfo(imageUrl, targetSize);
                     if (imageInfo == null)
                         return HtmlString.Empty;

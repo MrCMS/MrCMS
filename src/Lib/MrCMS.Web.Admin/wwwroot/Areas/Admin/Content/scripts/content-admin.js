@@ -111,9 +111,7 @@ function ToggleExpandBlock() {
     if (!editor.length) {
         return;
     }
-
-    console.log("I'm called");
-
+    
     if (editor.closest("[data-content-parent]").hasClass("expand"))
     {
         collapseEditor();

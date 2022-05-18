@@ -11,25 +11,19 @@ namespace MrCMS.Website.Auth
 {
     public class CheckStandardAccessLogic : ICheckStandardAccessLogic
     {
-        private readonly IGetCurrentUser _getCurrentUser;
         private readonly IUserRoleManager _userRoleManager;
         private readonly IConfigurationProvider _siteConfigurationProvider;
 
         private readonly IDictionary<int, StandardLogicCheckResult> _cachedResults =
             new ConcurrentDictionary<int, StandardLogicCheckResult>();
 
-        public CheckStandardAccessLogic(IGetCurrentUser getCurrentUser, IUserRoleManager userRoleManager,
+        public CheckStandardAccessLogic(IUserRoleManager userRoleManager,
             IConfigurationProvider siteConfigurationProvider)
         {
-            _getCurrentUser = getCurrentUser;
             _userRoleManager = userRoleManager;
             _siteConfigurationProvider = siteConfigurationProvider;
         }
 
-        public async Task<StandardLogicCheckResult> Check()
-        {
-            return await Check(await _getCurrentUser.Get());
-        }
 
         public async Task<StandardLogicCheckResult> Check(User user)
         {

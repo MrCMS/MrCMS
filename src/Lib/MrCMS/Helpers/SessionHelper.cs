@@ -21,6 +21,7 @@ namespace MrCMS.Helpers
     public static class SessionHelper
     {
         public static int DefaultPageSize = 25;
+        public static bool IsMiniProfileEnabled = false;
 
         public static ISession OpenFilteredSession(this ISessionFactory sessionFactory,
             IServiceProvider serviceProvider)

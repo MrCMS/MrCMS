@@ -29,18 +29,18 @@ namespace MrCMS.Tests.Services
                 _domainRepository, _contextAccessor);
         }
 
-        [Fact]
-        public async Task CurrentSiteLocator_GetCurrentSite_ReturnsFirstIfNoneMatch()
-        {
-            await _inMemoryRepository.Add(CurrentSite);
-            var site1 = new Site { BaseUrl = "test1" };
-            var site2 = new Site { BaseUrl = "test2" };
-            await _inMemoryRepository.Add(site1);
-            await _inMemoryRepository.Add(site2);
-            A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
-
-            _contextCurrentSiteLocator.GetCurrentSite().Should().Be(CurrentSite);
-        }
+        // [Fact]
+        // public async Task CurrentSiteLocator_GetCurrentSite_ReturnsFirstIfNoneMatch()
+        // {
+        //     await _inMemoryRepository.Add(CurrentSite);
+        //     var site1 = new Site { BaseUrl = "test1" };
+        //     var site2 = new Site { BaseUrl = "test2" };
+        //     await _inMemoryRepository.Add(site1);
+        //     await _inMemoryRepository.Add(site2);
+        //     A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
+        //
+        //     _contextCurrentSiteLocator.GetCurrentSite().Should().Be(CurrentSite);
+        // }
 
         [Fact]
         public async Task CurrentSiteLocator_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()

@@ -19,15 +19,17 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly IUserSearchService _userSearchService;
         private readonly IRoleService _roleService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
+        private readonly IUserImpersonationService _userImpersonationService;
 
         public UserController(IUserAdminService userAdminService, IUserSearchService userSearchService,
             IRoleService roleService,
-            IGetUserCultureOptions getUserCultureOptions)
+            IGetUserCultureOptions getUserCultureOptions, IUserImpersonationService userImpersonationService)
         {
             _userAdminService = userAdminService;
             _userSearchService = userSearchService;
             _roleService = roleService;
             _getUserCultureOptions = getUserCultureOptions;
+            _userImpersonationService = userImpersonationService;
         }
 
         [Acl(typeof(UserACL), UserACL.View)]
@@ -53,7 +55,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             var addUser = await _userAdminService.AddUser(addUserModel);
 
-            return RedirectToAction("Edit", new {id = addUser});
+            return RedirectToAction("Edit", new { id = addUser });
         }
 
         [HttpGet]
@@ -81,7 +83,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             var user = await _userAdminService.SaveUser(model, roles);
             TempData.AddSuccessMessage($"{user.Name} successfully saved");
-            return RedirectToAction("Edit", "User", new {Id = user.Id});
+            return RedirectToAction("Edit", "User", new { Id = user.Id });
         }
 
         [HttpGet]
@@ -114,7 +116,7 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<RedirectToActionResult> SetPassword(int id, string password)
         {
             await _userAdminService.SetPassword(id, password);
-            return RedirectToAction("Edit", new {id});
+            return RedirectToAction("Edit", new { id });
         }
 
         public async Task<JsonResult> IsUniqueEmail(string email, int? id)
@@ -125,6 +127,16 @@ namespace MrCMS.Web.Admin.Controllers
             }
 
             return Json("Email already registered.");
+        }
+
+        public async Task<IActionResult> Impersonate(int id)
+        {
+            var user = await _userAdminService.GetUser(id);
+            var result = await _userImpersonationService.Impersonate(user);
+            if (result.Success)
+                return Redirect("~/");
+            TempData.AddErrorMessage(result.Error);
+            return RedirectToAction("Index");
         }
     }
 }

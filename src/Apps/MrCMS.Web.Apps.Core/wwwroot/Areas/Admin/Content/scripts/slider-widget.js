@@ -27,10 +27,10 @@ function initInputs() {
             if (image.val().length > 0) {
                 errorHolder.html('');
                 let index = resultSelector.find('table tbody tr').length;
-                let imageHtml = html`<a href="${image.val()}" target="_blank"><img src="${image.val()}" height="50"/><input type="hidden" name="${"SlideList[" + index + "].Image"}" value=" ${image.val()}"/></a>`;
-                let smallImageHtml = html`<a href="${smallImage.val()}" target="_blank"><img src="${smallImage.val()}" height="50"/><input type="hidden" name="${"SlideList[" + index + "].SmallImage"}" value=" ${smallImage.val()}"/></a>`;
-                let captionHtml = html`${caption.val()}<input type="hidden" name="${"SlideList[" + index + "].Caption"}" value=" ${caption.val()}"/>`;
-                let linkHtml = (link.val().length == 0) ? html`<input type="hidden" name="${"SlideList[" + index + "].Link"}" value=" ${link.val()}"/>` : html`<a href="${link.val()}" target="_blank">Target Link</a><input type="hidden" name="${"SlideList[" + index + "].Link"}" value=" ${link.val()}"/>`;
+                let imageHtml = html`<a href="${image.val()}" target="_blank"><img src="${image.val()}" height="50"/><input type="hidden" name="${"SlideList[" + index + "].Image"}" value="${image.val()}"/></a>`;
+                let smallImageHtml = html`<a href="${smallImage.val()}" target="_blank"><img src="${smallImage.val()}" height="50"/><input type="hidden" name="${"SlideList[" + index + "].SmallImage"}" value="${smallImage.val()}"/></a>`;
+                let captionHtml = html`${caption.val()}<input type="hidden" name="${"SlideList[" + index + "].Caption"}" value="${caption.val()}"/>`;
+                let linkHtml = (link.val().length == 0) ? html`<input type="hidden" name="${"SlideList[" + index + "].Link"}" value="${link.val()}"/>` : html`<a href="${link.val()}" target="_blank">Target Link</a><input type="hidden" name="${"SlideList[" + index + "].Link"}" value="${link.val()}"/>`;
                 let actionHtml = `<div class="btn-group"><button type="button" data-id="delete" class="btn btn-danger btn-sm"><i class="fa fa-times" aria-hidden="true"></i></button></div>`;
                 resultSelector.find('table tbody').append(html`<tr data-index="${index}"><td>${imageHtml}</td><td>${smallImageHtml}</td><td>${captionHtml}</td><td>${linkHtml}</td><td>${actionHtml}</td></tr>`);
 

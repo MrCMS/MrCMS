@@ -25,5 +25,10 @@ namespace MrCMS.Website.Caching
                     factory.EvictEntity(classMetadata.EntityName);
                 }
         }
+        
+        public void Clear(string key)
+        {
+            Cache.Remove(key);
+        }
     }
 }

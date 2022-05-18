@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -7,12 +6,10 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using MrCMS.Apps;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Installation;
-using MrCMS.Themes.Red;
 using MrCMS.Web.Admin;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Website;
@@ -49,6 +46,7 @@ namespace MrCMS.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // services.AddSyncDataAccess(Configuration);
             if (Environment.IsProduction())
             {
                 var connectionString = Configuration["DataProtectionConnectionString"];
@@ -57,7 +55,7 @@ namespace MrCMS.Web
                 {
                     services
                         .AddDataProtection()
-                        .SetApplicationName("FleetNews")
+                        .SetApplicationName("MrCMS")
                         .PersistKeysToAzureBlobStorage(
                             connectionString,
                             "datakeys", keyName);
@@ -95,7 +93,6 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSAdmin>();
                 context.RegisterApp<MrCMSCoreApp>();
                 context.RegisterApp<MrCMSArticlesApp>();
-                context.RegisterTheme<RedTheme>();
             });
 
             services.AddMrCMSData(isInstalled, Configuration);
@@ -160,6 +157,53 @@ namespace MrCMS.Web
             // startup services
             services.AddHostedService<StartupService>();
             services.AddHostedService<RecoverErroredJobsService>();
+            // services.AddHostedService<SeedHostedServices>();
+
+            // if (IsMiniProfileEnabled())
+            // {
+            //     // miniprofiler
+            //     services.AddMiniProfiler(options =>
+            //     {
+            //         options.RouteBasePath = "/profiler";
+            //         options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomRight;
+            //         options.PopupShowTimeWithChildren = true;
+            //         options.ShouldProfile = x =>
+            //         {
+            //             // rough filter for assets
+            //             if (!x.Path.HasValue)
+            //                 return true;
+            //             // don't profile AJAX requests
+            //             if (x.IsAjaxRequest())
+            //                 return false;
+            //
+            //             return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".woff", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".eot", StringComparison.OrdinalIgnoreCase) &&
+            //                    !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);
+            //         };
+            //         options.ResultsAuthorizeAsync = async (context) =>
+            //         {
+            //             // var getCurrentUser = context.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>();
+            //             // var user = await getCurrentUser.GetLoggedInUser();
+            //             // return user.IsAdmin;
+            //             return true;
+            //         };
+            //     }).AddEntityFramework();
+            // }
+        }
+        
+        private bool IsMiniProfileEnabled()
+        {
+            var enableMiniProfiler = Configuration.GetValue<bool>("EnableMiniProfiler");
+            return enableMiniProfiler;
         }
 
         private bool IsInstalled()
@@ -199,6 +243,11 @@ namespace MrCMS.Web
                 return;
             }
 
+            if (IsMiniProfileEnabled())
+            {
+                app.UseMiniProfiler();
+            }
+            
             loggerFactory.AddProvider(
                 new MrCMSDatabaseLoggerProvider(serviceProvider.GetRequiredService<ISessionFactory>(),
                     httpContextAccessor));
@@ -222,8 +271,6 @@ namespace MrCMS.Web
             }, builder => { builder.MapRazorPages(); });
 
 
-            // we're doing DB up here because it happens before startup of hosted services
-            // - otherwise Quartz init doesn't happen, among other potential problems
             QuartzConfig.Initialize(Configuration.GetConnectionString("mrcms"));
         }
     }

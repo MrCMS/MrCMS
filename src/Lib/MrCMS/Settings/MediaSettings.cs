@@ -154,6 +154,10 @@ namespace MrCMS.Settings
         [DisplayName("Media Selector Page Size")]
         public int MediaSelectorPageSize { get; set; }
 
+        [MediaSelector]
+        [DisplayName("Image to show if awaiting image is selected")]
+        public string HoldingImage { get; set; }
+
         public override void SetViewData(IServiceProvider serviceProvider, ViewDataDictionary viewDataDictionary)
         {
             var generator = serviceProvider.GetRequiredService<ISiteSettingsOptionGenerator>();

@@ -81,6 +81,13 @@ namespace MrCMS.Web.Admin.Services
         public async Task<bool> HasChildren(int id)
         {
             var parent = await _session.GetAsync<Webpage>(id);
+            if (parent == null)
+                return false;
+            
+            var metadata = _webpageMetadataService.GetMetadata(parent);
+            if (!metadata.ShowChildrenInAdminNav)
+                return false;
+            
             IQueryOver<Webpage, Webpage> query = GetQuery(parent);
             return await GetRowCount(query) > 0;
         }

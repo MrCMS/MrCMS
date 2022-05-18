@@ -26,6 +26,12 @@ namespace MrCMS.Helpers
                         Value = value == null ? text.Invoke(x) : value.Invoke(x),
                         Selected = selected != null && selected.Invoke(x)
                     });
+            
+            if (emptyItem != null)
+            {
+                emptyItem.Disabled = true;
+                emptyItem.Selected = !selectListItems.Any(f => f.Selected);
+            }
 
             return (emptyItem != null
                 ? new List<SelectListItem> {emptyItem}.Union(selectListItems)
@@ -62,6 +68,12 @@ namespace MrCMS.Helpers
                     Selected = selected != null && await selected.Invoke(item)
                 });
             }
+            
+            if (emptyItem != null)
+            {
+                emptyItem.Disabled = true;
+                emptyItem.Selected = !selectListItems.Any(f => f.Selected);
+            }
 
             return (emptyItem != null
                 ? new List<SelectListItem> {emptyItem}.Union(selectListItems)
@@ -70,7 +82,7 @@ namespace MrCMS.Helpers
 
         public static SelectListItem EmptyItem(string text = null, string value = "")
         {
-            return new() {Text = text ?? "Please select...", Value = value};
+            return new() {Text = text ?? "Please select...", Value = value, Disabled = true, Selected = true};
         }
     }
 }
