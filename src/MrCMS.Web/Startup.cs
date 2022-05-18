@@ -159,6 +159,7 @@ namespace MrCMS.Web
             services.AddHostedService<RecoverErroredJobsService>();
             // services.AddHostedService<SeedHostedServices>();
 
+            Configuration.SetMiniProfilerEnableStatus();
             // if (IsMiniProfileEnabled())
             // {
             //     // miniprofiler
