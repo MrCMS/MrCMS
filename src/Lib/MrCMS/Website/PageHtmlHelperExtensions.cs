@@ -33,7 +33,7 @@ namespace MrCMS.Website
             var serviceProvider = helper.ViewContext.HttpContext.RequestServices;
             var currentUser = await serviceProvider.GetRequiredService<IGetCurrentUser>().Get();
             var accessChecker = serviceProvider.GetRequiredService<IAccessChecker>();
-            return currentUser != null && await accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show) &&
+            return currentUser != null && await accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show, currentUser) &&
                    serviceProvider.GetRequiredService<SiteSettings>().EnableInlineEditing;
         }
 

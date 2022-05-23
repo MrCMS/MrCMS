@@ -99,15 +99,21 @@ namespace MrCMS.Helpers
                     continue;
                 }
 
-                var assembly = Assembly.Load(assemblyName);
-                _loadedAssemblies.AddOrUpdate(name, assembly, (s, ass) => assembly);
-                if (assembly != null)
+                try
                 {
-                    var childReferences = assembly.GetReferencedAssemblies();
-                    _referencedAssemblies.AddOrUpdate(name, childReferences, (s, r) => childReferences);
-                    LoadAssemblies(childReferences);
-                }
-                else
+                    var assembly = Assembly.Load(assemblyName);
+                    _loadedAssemblies.AddOrUpdate(name, assembly, (s, ass) => assembly);
+                    if (assembly != null)
+                    {
+                        var childReferences = assembly.GetReferencedAssemblies();
+                        _referencedAssemblies.AddOrUpdate(name, childReferences, (s, r) => childReferences);
+                        LoadAssemblies(childReferences);
+                    }
+                    else
+                    {
+                        _referencedAssemblies[name] = new AssemblyName[0];
+                    }
+                } catch (Exception ex) //try catch added as GlobalPayments.Api references corecompat.system.drawing which is not loaded in .net 6
                 {
                     _referencedAssemblies[name] = new AssemblyName[0];
                 }
@@ -440,24 +446,21 @@ namespace MrCMS.Helpers
             return false;
         }
 
-        public static T Unproxy<T>(this T document) where T : SystemEntity
+        public static T Unproxy<T>(this T systemEntity) where T : SystemEntity
         {
-            var proxy = document as INHibernateProxy;
-            if (proxy != null)
+            if (systemEntity is not INHibernateProxy proxy) return systemEntity;
+            try
             {
-                try
-                {
-                    var entity = (T) proxy.HibernateLazyInitializer.GetImplementation();
-                    if (entity is null) return null;
-                    return entity.IsDeleted ? default : entity;
-                }
-                catch (WrongClassException)
-                {
-                    return default;
-                }
+                var entity = (T) proxy.HibernateLazyInitializer.GetImplementation();
+                if (entity is null) return null;
+                return entity.IsDeleted ? default : entity;
+            }
+            catch (WrongClassException)
+            {
+                return default;
             }
 
-            return document;
+            return systemEntity;
         }
 
         /// <summary>

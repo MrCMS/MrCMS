@@ -25,7 +25,7 @@ function initEditing() {
             editor.config.toolbar = 'Basic';
         });
     });
-    enableEditingBtn.addEventListener("click", function () {
+    enableEditingBtn?.addEventListener("click", function () {
         if (!getEditingEnabled()) {
             enableEditors();
         } else {

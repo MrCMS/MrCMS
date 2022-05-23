@@ -29,8 +29,9 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.HasMany(webpage => webpage.Urls).Cascade.Delete();
 
             //Permission mappings
-            mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles).Table("FrontEndWebpageRoles")
-                .ParentKeyColumn("WebpageId").Not.LazyLoad().Cache.ReadWrite();
+            mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles)
+                .Table("FrontEndWebpageRoles")
+                .ParentKeyColumn("WebpageId").Cache.ReadWrite();
         }
     }
 }

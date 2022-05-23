@@ -23,10 +23,8 @@
     "watch:css": "concurrently \"npm:watch:css:front-end\"",
     "watch:css:front-end": "parcel watch wwwroot/Content/styles/style.css --target core-css -p 1237"
   },
-  "dependencies": {
-    "parcel": "^2.0.1"
-  },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.3.0"
+    "@parcel/transformer-sass": "^2.5.0",
+    "parcel": "^2.5.0"
   }
 }

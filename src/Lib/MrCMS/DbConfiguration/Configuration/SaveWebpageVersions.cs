@@ -58,6 +58,7 @@ namespace MrCMS.DbConfiguration.Configuration
                         Webpage = webpage,
                         Data = JsonConvert.SerializeObject(jObject),
                         User = await GetUser(s),
+                        Site = webpage.Site
                     };
                     webpage.Versions.Add(documentVersion);
                     await s.TransactAsync((session,token) => session.SaveAsync(documentVersion, token));

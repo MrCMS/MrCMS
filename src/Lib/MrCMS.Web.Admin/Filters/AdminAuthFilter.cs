@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Services;
 using MrCMS.Website.Auth;
 
 namespace MrCMS.Web.Admin.Filters
@@ -23,8 +24,9 @@ namespace MrCMS.Web.Admin.Filters
 
             var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
 
-            if (!await context.HttpContext.RequestServices.GetRequiredService<IAccessChecker>()
-                .CanAccess(actionDescriptor))
+            var accessChecker = context.HttpContext.RequestServices.GetRequiredService<IAccessChecker>();
+            var getCurrentUser = context.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>();
+            if (!await accessChecker.CanAccess(actionDescriptor, await getCurrentUser.Get()))
                 context.Result = new ForbidResult();
         }
     }

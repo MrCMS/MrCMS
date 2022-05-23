@@ -25,7 +25,7 @@ public class ContentBlockAdminService : IContentBlockAdminService
     public async Task<IReadOnlyList<ContentBlockOption>> GetContentRowOptions(int id)
     {
         var contentVersion = await _session.GetAsync<ContentVersion>(id);
-        var pageType = contentVersion.Webpage.Unproxy().GetType();
+        var pageType =contentVersion.Webpage.Unproxy().GetType();
 
         return ContentBlockMappings.BlockMetadata
             .Where(f => !f.Value.AllowedPageTypes.Any() || f.Value.AllowedPageTypes.Contains(pageType))
@@ -128,9 +128,7 @@ public class ContentBlockAdminService : IContentBlockAdminService
                 var contentBlock = await session.GetAsync<ContentBlock>(model.Id);
                 contentBlock.Order = model.Order;
                 await session.UpdateAsync(contentBlock);
-            }
-
-            ;
+            };
         });
     }
 

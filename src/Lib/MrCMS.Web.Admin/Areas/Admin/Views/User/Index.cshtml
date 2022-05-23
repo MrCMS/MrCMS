@@ -1,23 +1,26 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.People
+@using MrCMS.Services
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model UserSearchQuery
+@inject IGetCurrentUser GetCurrentUser
 @{
     ViewBag.Title = "Users";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var users = ViewData["users"] as IPagedList<User> ?? PagingHelper.EmptyList<User>();
     var roleOptions = ViewData["roles"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var currentUser = await GetCurrentUser.GetLoggedInUser();
 }
 
 <form asp-controller="User" asp-action="Index" method="get">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - users", "Users") " />
+            <admin-header-title title="@await Html.Resource("admin - users", "Users") "/>
 
             <admin-header-actions>
                 @Html.ActionLink("Add", "Add", "User", null, new { @class = "btn btn-outline-primary", data_toggle = "fb-modal" })
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Search")" />
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Search")"/>
             </admin-header-actions>
         </row>
     </admin-header>
@@ -26,7 +29,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control" placeholder="Email" type="text" />
+                    <input asp-for="Email" class="form-control" placeholder="Email" type="text"/>
                     <span asp-validation-for="Email"></span>
                 </div>
             </div>
@@ -40,14 +43,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="FirstName"></label>
-                    <input asp-for="FirstName" class="form-control" placeholder="First Name" type="text" />
+                    <input asp-for="FirstName" class="form-control" placeholder="First Name" type="text"/>
                     <span asp-validation-for="FirstName"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="LastName"></label>
-                    <input asp-for="LastName" class="form-control" placeholder="Last Name" type="text" />
+                    <input asp-for="LastName" class="form-control" placeholder="Last Name" type="text"/>
                     <span asp-validation-for="LastName"></span>
                 </div>
             </div>
@@ -55,7 +58,7 @@
 
     </fieldset>
 </form>
-<hr />
+<hr/>
 @if (users.Any())
 {
     <table class="table table-condensed table-striped">
@@ -72,6 +75,7 @@
             <th>
                 @await Html.Resource("Created On")
             </th>
+            <th></th>
         </tr>
         @foreach (User user in users)
         {
@@ -87,6 +91,15 @@
                 </td>
                 <td>
                     @user.CreatedOn
+                </td>
+                <td>
+                    @if (!user.IsAdmin && user.Id != currentUser.Id)
+                    {
+                        using (Html.BeginForm("Impersonate", "User", new { user.Id }, FormMethod.Post))
+                        {
+                            <button type="submit" class="btn btn-sm btn-default">Impersonate</button>
+                        }
+                    }
                 </td>
             </tr>
         }

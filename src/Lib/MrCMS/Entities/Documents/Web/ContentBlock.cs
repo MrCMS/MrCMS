@@ -31,6 +31,19 @@ public class ContentBlock : SiteEntity
             return null;
         return JsonConvert.DeserializeObject(Data, type, SerializerSettings) as IContentBlock;
     }
+
+    public virtual ContentBlock Clone(ContentVersion contentVersion)
+    {
+        return new ContentBlock
+        {
+            Data = Data,
+            Order = Order,
+            Type = Type,
+            IsHidden = IsHidden,
+            Site = Site,
+            ContentVersion = contentVersion
+        };
+    }
 }
 
 // public class ContentBlockMetadataAttribute : Attribute

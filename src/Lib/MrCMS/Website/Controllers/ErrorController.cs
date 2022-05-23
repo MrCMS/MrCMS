@@ -90,7 +90,7 @@ namespace MrCMS.Website.Controllers
             string path = $"{feature.OriginalPathBase}{feature.OriginalPath}".TrimStart('/');
             var query = feature.OriginalQueryString;
 
-            logger.LogInformation("404 Lookup - Path: {Path}, QueryString: {Query}", path, query);
+            logger.LogDebug("404 Lookup - Path: {Path}, QueryString: {Query}", path, query);
             // try match exact - path + query
             var notFoundHandler = _serviceProvider.GetRequiredService<INotFoundHandler>();
             var (isGone, result, history) = await notFoundHandler.FindByPathAndQuery(path, query);

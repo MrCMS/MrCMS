@@ -11,22 +11,32 @@ namespace MrCMS.Web.Admin.Mapping
         public LayoutAdminProfile()
         {
             CreateMap<Layout, UpdateLayoutModel>()
-                .ForMember(destinationMember => destinationMember.UrlSegment, x => x.MapFrom(sourceMember => sourceMember.Path))
+                .ForMember(destinationMember => destinationMember.UrlSegment,
+                    x => x.MapFrom(sourceMember => sourceMember.Path))
                 .ReverseMap()
-            .ForMember(destinationMember => destinationMember.Path, x => x.MapFrom(sourceMember => sourceMember.UrlSegment));
+                .ForMember(destinationMember => destinationMember.Path,
+                    x => x.MapFrom(sourceMember => sourceMember.UrlSegment));
             CreateMap<Layout, AddLayoutModel>()
-                .ForMember(destinationMember => destinationMember.UrlSegment, x => x.MapFrom(sourceMember => sourceMember.Path))
+                .ForMember(destinationMember => destinationMember.UrlSegment,
+                    x => x.MapFrom(sourceMember => sourceMember.Path))
                 .ReverseMap()
-                .ForMember(destinationMember => destinationMember.Path, x => x.MapFrom(sourceMember => sourceMember.UrlSegment))
+                .ForMember(destinationMember => destinationMember.Path,
+                    x => x.MapFrom(sourceMember => sourceMember.UrlSegment))
                 .MapEntityLookup(x => x.ParentId, x => x.Parent);
         }
     }
+
     public class MediaCategoryAdminProfile : Profile
     {
         public MediaCategoryAdminProfile()
         {
             CreateMap<MediaCategory, UpdateMediaCategoryModel>().ReverseMap();
-            CreateMap<MediaCategory, AddMediaCategoryModel>().ReverseMap()
+            CreateMap<MediaCategory, AddMediaCategoryModel>()
+                .ForMember(destinationMember => destinationMember.UrlSegment,
+                    x => x.MapFrom(sourceMember => sourceMember.Path))
+                .ReverseMap()
+                .ForMember(destinationMember => destinationMember.Path,
+                    x => x.MapFrom(sourceMember => sourceMember.UrlSegment))
                 .MapEntityLookup(x => x.ParentId, x => x.Parent)
                 ;
         }

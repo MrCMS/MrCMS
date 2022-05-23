@@ -24,21 +24,29 @@ namespace MrCMS.Services
                 return user.Guid;
 
             var context = _contextAccessor.HttpContext;
-            string o = context.Request.Cookies[UserSessionId];
-            Guid result;
-            if (o == null || !Guid.TryParse(o, out result))
-            {
-                result = Guid.NewGuid();
-                AddCookieToResponse(context, UserSessionId, result.ToString(), DateTime.UtcNow.AddMonths(3));
-            }
+            // if there's no context, we'll just return a random Guid so that it's not a 'real' session
+            if (context == null)
+                return Guid.NewGuid();
+            
+            var o = context.Request.Cookies[UserSessionId];
+            if (o != null && Guid.TryParse(o, out var result)) 
+                return result;
+            
+            result = Guid.NewGuid();
+            AddCookieToResponse(context, UserSessionId, result.ToString(), DateTime.UtcNow.AddMonths(3));
 
             return result;
         }
 
-        private static void AddCookieToResponse(HttpContext context, string key, string value, DateTime expiry)
+        public void ClearCookies()
         {
-            context.Response.Cookies.Append(key,value,new CookieOptions{Expires = expiry});
+            var context = _contextAccessor.HttpContext;
+            context?.Response.Cookies.Delete(UserSessionId);
         }
 
+        private static void AddCookieToResponse(HttpContext context, string key, string value, DateTime expiry)
+        {
+            context.Response.Cookies.Append(key, value, new CookieOptions { Expires = expiry });
+        }
     }
 }

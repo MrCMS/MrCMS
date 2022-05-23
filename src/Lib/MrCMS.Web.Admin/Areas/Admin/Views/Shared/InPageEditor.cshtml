@@ -14,13 +14,14 @@
     var currentPageId = currentPage?.Id ?? 0;
     var canEditPage = await Html.CanAccess("Webpage", "Edit");
     var postingCountForWebpage = await FormAdminService.GetPostingCountForWebpage(currentPageId);
+    var draftVersion = currentPage?.ContentVersions?.FirstOrDefault(f => f.Status == ContentVersionStatus.Draft);
 }
 <div class="mrcms-admin-nav-bar" data-webpage-id="@currentPageId">
     <div>
         <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
         @if (currentPage != null)
         {
-            if (canEditPage) 
+            if (canEditPage)
             {
                 <a href="@Url.Action("Edit", "Webpage", new {currentPage.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
             }
@@ -29,12 +30,33 @@
                 <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline: Off</a>
             }
 
-            if (postingCountForWebpage.Count > 0) 
+            if (postingCountForWebpage.Count > 0)
             {
                 <a href="/Admin/Form/Edit/@postingCountForWebpage.FormId#form-postings-tab" class="mrcms-btn mrcms-btn-xs mrcms-btn-info" target="_parent">
                     @postingCountForWebpage.Count
                     Form entr@(postingCountForWebpage.Count > 1 ? "ies" : "y")
                 </a>
+            }
+            if (draftVersion != null)
+            {
+                var isLiveVersion = true;
+                var currentVersion = Context.Request.Query["version"];
+                if (int.TryParse(currentVersion, out var previewId) && currentPage.ContentVersions.Any(f => f.Id == previewId))
+                {
+                    if (previewId != currentPage.LiveContentVersion?.Id)
+                    {
+                        isLiveVersion = false;
+                    }
+                }
+
+                if (isLiveVersion)
+                {
+                    <a href="/@currentPage.UrlSegment?version=@draftVersion.Id" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-warning">View Draft</a>
+                }
+                else
+                {
+                    <a href="/@currentPage.UrlSegment" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-success">View Live</a>
+                }
             }
             @if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published || currentPage.PublishStatus == Webpage.WebpagePublishStatus.Scheduled)
             {
@@ -52,7 +74,7 @@
             {
                 <span class="admin-warning hidden-small">Unpublished</span>
             }
-            
+
             <span class="admin-success" id="save-content-msg" style="display: none;">Saving...</span>
         }
     </div>

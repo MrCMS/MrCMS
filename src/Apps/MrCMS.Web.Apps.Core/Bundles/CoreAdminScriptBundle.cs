@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Core.Bundles
         }
 
         public string Url => "/Apps/Core/assets/core-admin.js";
-        
+
         public IEnumerable<string> VendorFiles
         {
             get

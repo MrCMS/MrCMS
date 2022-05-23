@@ -35,19 +35,19 @@ namespace MrCMS.Services
                 query =
                     query.Where(
                         user =>
-                            user.Email.IsInsensitiveLike(searchQuery.Email, MatchMode.End));
+                            user.Email.IsInsensitiveLike(searchQuery.Email, MatchMode.Anywhere));
 
             if (!string.IsNullOrWhiteSpace(searchQuery.FirstName))
                 query =
                     query.Where(
                         user =>
-                            user.FirstName.IsInsensitiveLike(searchQuery.FirstName, MatchMode.End));
+                            user.FirstName.IsInsensitiveLike(searchQuery.FirstName, MatchMode.Anywhere));
 
             if (!string.IsNullOrWhiteSpace(searchQuery.LastName))
                 query =
                     query.Where(
                         user =>
-                            user.LastName.IsInsensitiveLike(searchQuery.LastName, MatchMode.End));
+                            user.LastName.IsInsensitiveLike(searchQuery.LastName, MatchMode.Anywhere));
 
 
             if (searchQuery.UserRoleId != null)

@@ -49,12 +49,11 @@ namespace MrCMS.TextSearch.Services
 
             foreach (var entityType in baseEntityTypes)
             {
-                HashSet<SystemEntity> all;
-
-                using (new SiteFilterDisabler(_session))
-                    all = (await _statelessSession.CreateCriteria(entityType).ListAsync()).Cast<SystemEntity>()
-                        .Select(x => x.Unproxy())
-                        .ToHashSet();
+                HashSet<SystemEntity> all = (await _statelessSession.CreateCriteria(entityType).ListAsync())
+                    .Cast<SystemEntity>()
+                    .Select(x => x.Unproxy())
+                    .Where(x => x != null) //rm deleted
+                    .ToHashSet();
 
                 var existingIds = all.Select(x => x.Id).ToHashSet();
                 var entityName = entityType.Name;
