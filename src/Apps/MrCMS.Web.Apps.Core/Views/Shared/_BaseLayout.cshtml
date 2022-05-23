@@ -91,7 +91,7 @@
         }
     </footer>
 </div>
-
+<partial name="_Impersonating"/>
 @if (GoogleRecaptchaSettings.Enabled)
 {
     <script src="https://www.google.com/recaptcha/enterprise.js?onload=recaptchaOnLoad&render=@(GoogleRecaptchaSettings.IsCheckboxType ? "explicit" : GoogleRecaptchaSettings.SiteKey)" async defer></script>
@@ -110,6 +110,9 @@
 @Html.Raw(Model.CustomFooterScripts)
 @await Html.RenderUIVendorScripts()
 @await Html.RenderUIScripts()
-<mini-profiler/>
+@if (SessionHelper.IsMiniProfileEnabled)
+{
+    <mini-profiler/>
+}
 </body>
 </html>

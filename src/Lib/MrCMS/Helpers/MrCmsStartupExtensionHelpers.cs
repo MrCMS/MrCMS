@@ -70,6 +70,19 @@ namespace MrCMS.Helpers
                 SessionHelper.DefaultPageSize = 25;
             }
         }
+        public static void SetMiniProfilerEnableStatus(this IConfiguration configuration)
+        {
+            try
+            {
+                var enableMiniProfiler = configuration.GetValue<bool>("EnableMiniProfiler");
+                SessionHelper.IsMiniProfileEnabled = enableMiniProfiler;
+                
+            }
+            catch
+            {
+                SessionHelper.IsMiniProfileEnabled = false;
+            }
+        }
 
         public static IServiceCollection AddSiteProvider(this IServiceCollection serviceCollection)
         {

@@ -29,7 +29,7 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
                     "ResetPasswordUrl",
                     model =>
                     {
-                        var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(model.Code));
+                        var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(model.Key));
 
                         return Task.FromResult($"{model.SiteUrl}Identity/Account/ResetPassword?code={code}");
                     }

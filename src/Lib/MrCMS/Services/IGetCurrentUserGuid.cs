@@ -6,5 +6,6 @@ namespace MrCMS.Services
     public interface IGetCurrentUserGuid
     {
         Task<Guid> Get();
+        void ClearCookies();
     }
 }

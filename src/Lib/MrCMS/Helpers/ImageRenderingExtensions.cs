@@ -11,10 +11,10 @@ namespace MrCMS.Helpers
     {
         public static Task<IHtmlContent> RenderImage(this IHtmlHelper helper, string imageUrl,
             Size targetSize = default(Size),
-            string alt = null, string title = null, object attributes = null, bool enableCaption = false)
+            string alt = null, string title = null, object attributes = null, bool enableCaption = false, bool showPlaceHolderIfNull=false)
         {
             return helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IImageRenderingService>()
-                .RenderImage(helper, imageUrl, targetSize, alt, title, enableCaption, attributes);
+                .RenderImage(helper, imageUrl, targetSize, alt, title, enableCaption, attributes, showPlaceHolderIfNull);
         }
 
         public static Task<string> GetImageUrl(this IHtmlHelper helper, string imageUrl, Size targetSize = default(Size))

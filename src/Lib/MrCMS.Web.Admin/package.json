@@ -27,11 +27,9 @@
     "watch:css:admin": "parcel watch wwwroot/Areas/Admin/Content/styles/mrcms-admin.scss --target admin-css -p 1236",
     "watch:css:front-end": "parcel watch wwwroot/Areas/Admin/Content/styles/mrcms-frontendediting.scss --target front-end-css -p 1237"
   },
-  "dependencies": {
-    "parcel": "^2.0.1"
-  },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.1",
-    "concurrently": "^6.4.0"
+    "@parcel/transformer-sass": "^2.5.0",
+    "concurrently": "^7.1.0",
+    "parcel": "^2.5.0"
   }
 }

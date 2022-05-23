@@ -81,7 +81,7 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-secondary btn-sm", @data_toggle = "fb-modal" })
+                                @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-secondary btn-sm"})
                                 <a href="@Url.Action(await Html.Resource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
                             </div>
                         </td>

@@ -82,4 +82,62 @@ public class ContentVersionAdminService : IContentVersionAdminService
             }).ToList()
         };
     }
+
+    public async Task<ContentVersionActionResult> Publish(int id)
+    {
+        var version = await _session.GetAsync<ContentVersion>(id);
+        if (version == null)
+            return new ContentVersionActionResult { Success = false, Message = "Could not find draft" };
+        if (!version.IsDraft)
+            return new ContentVersionActionResult
+            {
+                Success = false, Message = "This content is not a draft and therefore cannot be published",
+                WebpageId = version.Webpage.Id
+            };
+        // make current live archived
+        var existingLive = version.Webpage.ContentVersions.Where(x => x.Status == ContentVersionStatus.Live).ToList();
+        foreach (var contentVersion in existingLive) contentVersion.Status = ContentVersionStatus.Archived;
+
+        version.Status = ContentVersionStatus.Live;
+
+        await _session.TransactAsync(async session =>
+        {
+            foreach (var contentVersion in existingLive)
+            {
+                await session.UpdateAsync(contentVersion);
+            }
+
+            await session.UpdateAsync(version);
+        });
+
+        return new ContentVersionActionResult
+            { Success = true, Message = "Draft made live", WebpageId = version.Webpage.Id };
+    }
+
+    public async Task<ContentVersionActionResult> Delete(int id)
+    {
+        var version = await _session.GetAsync<ContentVersion>(id);
+        if (version == null)
+            return new ContentVersionActionResult { Success = false, Message = "Could not find draft" };
+        if (!version.IsDraft)
+            return new ContentVersionActionResult
+            {
+                Success = false, Message = "This content is not a draft and therefore cannot be deleted",
+                WebpageId = version.Webpage.Id
+            };
+
+        await _session.TransactAsync(session => session.DeleteAsync(version));
+
+        return new ContentVersionActionResult
+            { Success = true, Message = "Draft deleted", WebpageId = version.Webpage.Id };
+    }
+
+    public async Task<ContentVersion> AddDraftBasedOnVersion(ContentVersion liveVersion)
+    {
+        var newVersion = liveVersion.CreateDraft();
+        newVersion.Webpage.ContentVersions.Add(newVersion);
+        await _session.TransactAsync(session => session.SaveAsync(newVersion));
+
+        return newVersion;
+    }
 }

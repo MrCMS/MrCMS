@@ -14,5 +14,6 @@ namespace MrCMS.Website.Caching
         Task SetAsync<T>(string key, Func<Task<T>> func, TimeSpan time, CacheExpiryType cacheExpiryType,
             CacheItemPriority priority = CacheItemPriority.Normal);
         void Clear();
+        void Clear(string key);
     }
 }

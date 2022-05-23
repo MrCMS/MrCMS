@@ -86,5 +86,7 @@ namespace MrCMS.Entities.People
         public virtual bool LockoutEnabled { get; set; }
         public virtual bool EmailConfirmed { get; set; }
         public virtual string SecurityStamp { get; set; }
+        
+        public virtual string ExternalData { get; set; }
     }
 }

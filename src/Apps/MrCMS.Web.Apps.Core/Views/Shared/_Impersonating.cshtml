@@ -1,0 +1,23 @@
+﻿@using MrCMS.Services
+@model dynamic
+@inject IGetCurrentUser GetCurrentUser
+@{
+    var impersonatedUser = await GetCurrentUser.GetImpersonatedUser();
+    if (impersonatedUser == null)
+    {
+        return;
+    }
+}
+
+<div class="d-print-none alert alert-info bottom-0 mb-0 position-fixed w-100" style="z-index: 999">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h3>Impersonating @impersonatedUser.Email</h3>
+                <form asp-controller="CancelImpersonation" asp-action="Cancel">
+                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

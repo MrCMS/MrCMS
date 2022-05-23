@@ -23,8 +23,9 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _userService = A.Fake<IUserAdminService>();
             _roleService = A.Fake<IRoleService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
+            _userImpersonationService = A.Fake<IUserImpersonationService>();
             _userController = new UserController(_userService, _userSearchService, _roleService,
-                _getUserCultureOptions)
+                _getUserCultureOptions, _userImpersonationService)
             {
                 TempData = new MockTempDataDictionary()
             };
@@ -35,6 +36,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private readonly IUserAdminService _userService;
         private readonly IRoleService _roleService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
+        private IUserImpersonationService _userImpersonationService;
 
         [Fact]
         public void UserController_AddGet_ShouldReturnAnAddUserModel()

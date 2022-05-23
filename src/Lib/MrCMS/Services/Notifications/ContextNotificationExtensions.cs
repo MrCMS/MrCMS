@@ -10,6 +10,7 @@ namespace MrCMS.Services.Notifications
         {
             context.Items[NotificationsDisabledKey] = true;
         }
+
         public static void EnableNotifications(this HttpContext context)
         {
             context.Items.Remove(NotificationsDisabledKey);
@@ -17,7 +18,7 @@ namespace MrCMS.Services.Notifications
 
         public static bool AreNotificationsDisabled(this HttpContext context)
         {
-            return context.Items.ContainsKey(NotificationsDisabledKey);
+            return context?.Items.ContainsKey(NotificationsDisabledKey) ?? true;
         }
     }
 }

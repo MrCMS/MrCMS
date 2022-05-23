@@ -42,8 +42,14 @@ namespace MrCMS.Web.Admin.Filters
             var pageHeaderBreadcrumbs = serviceProvider.GetRequiredService<IGetBreadcrumbs>().Get(
                 controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName,
                 context.ActionArguments);
-            controller.ViewData[BreadcrumbAttribute.Breadcrumbs] =
+
+            //It raised an error when I called my controller (:ControllerBase), So I added following condition
+            if (controller != null)
+            {
+                controller.ViewData[BreadcrumbAttribute.Breadcrumbs] =
                 pageHeaderBreadcrumbs;
+            }
+            
         }
     }
 }

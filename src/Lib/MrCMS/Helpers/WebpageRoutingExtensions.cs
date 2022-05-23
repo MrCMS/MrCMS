@@ -1,9 +1,11 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 
@@ -12,6 +14,11 @@ namespace MrCMS.Helpers
     public static class WebpageRoutingExtensions
     {
         public static string RouteWebpage(this IUrlHelper url, Webpage webpage, object routeValues = null)
+        {
+            return GetUrl(webpage, routeValues);
+        }
+
+        public static string GetUrl(this Webpage webpage, object routeValues = null)
         {
             var queryString = GetQueryString(routeValues);
 
@@ -25,9 +32,19 @@ namespace MrCMS.Helpers
             var queryString = new QueryString();
             foreach (var key in values.Keys)
             {
-                var value = values[key]?.ToString();
-                if (!string.IsNullOrWhiteSpace(value))
-                    queryString = queryString.Add(key, value);
+                var value = values[key];
+                if (value is StringValues stringValues)
+                {
+                    queryString = stringValues.Aggregate(queryString, (current, s) => current.Add(key, s));
+                }
+                else
+                {
+                    var stringValue = value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(stringValue))
+                    {
+                        queryString = queryString.Add(key, stringValue);
+                    }
+                }
             }
 
             return queryString;
