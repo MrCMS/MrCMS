@@ -99,7 +99,7 @@
 
 @if (user != null && await Html.CanAccess<AdminBarACL>(user, "Show") && SiteSettings.EnableInlineEditing)
 {
-    <div class="hidden-print">
+    <div class="d-print-none">
         <partial name="~/Areas/Admin/Views/Shared/InPageEditor.cshtml" model="Model"/>
     </div>
 }
