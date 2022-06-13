@@ -13,7 +13,10 @@ namespace MrCMS.Web.Apps.Core.Bundles
 
         public IEnumerable<string> VendorFiles
         {
-            get { yield break; }
+            get
+            {
+                 yield break;
+            }
         }
     }
 }

@@ -28,8 +28,8 @@
     "watch:css:front-end": "parcel watch wwwroot/Areas/Admin/Content/styles/mrcms-frontendediting.scss --target front-end-css -p 1237"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.5.0",
+    "@parcel/transformer-sass": "^2.6.0",
     "concurrently": "^7.1.0",
-    "parcel": "^2.5.0"
+    "parcel": "^2.6.0"
   }
 }

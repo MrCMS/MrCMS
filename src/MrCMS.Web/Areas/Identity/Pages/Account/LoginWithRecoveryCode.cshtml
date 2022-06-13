@@ -4,7 +4,7 @@
     ViewData["Title"] = "Recovery code verification";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="mb-5">@ViewData["Title"]</h1>
 <hr />
 <p>
     You have requested to log in with a recovery code. This login will not be remembered until you provide
@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Input.RecoveryCode"></label>
                 <input asp-for="Input.RecoveryCode" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
@@ -24,6 +24,4 @@
     </div>
 </div>
 
-@section JavascriptBlockInclude {
-    <partial name="_ValidationScriptsPartial" />
-}
+

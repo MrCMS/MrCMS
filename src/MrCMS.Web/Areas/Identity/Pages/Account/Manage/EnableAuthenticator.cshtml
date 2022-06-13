@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <form id="send-code" method="post">
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label asp-for="Input.Code" class="control-label">Verification Code</label>
                             <input asp-for="Input.Code" class="form-control" autocomplete="off" />
                             <span asp-validation-for="Input.Code" class="text-danger"></span>
@@ -48,6 +48,4 @@
     </ol>
 </div>
 
-@section JavascriptBlockInclude {
-    <partial name="_ValidationScriptsPartial" />
-}
+

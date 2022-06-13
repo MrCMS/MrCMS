@@ -2,7 +2,6 @@
 @using MrCMS.Services.Canonical
 @using MrCMS.Settings
 @using MrCMS.Services
-@using MrCMS.Website.Auth
 @using System.Drawing
 @using MrCMS.ACL.Rules
 @using MrCMS.Entities.Documents.Web
@@ -11,7 +10,6 @@
 @inject SiteSettings SiteSettings
 @inject GoogleRecaptchaSettings GoogleRecaptchaSettings
 @inject IGetCurrentUser GetCurrentUser
-@inject IFrontEndEditingChecker FrontEndEditingChecker
 @{
     var user = await GetCurrentUser.Get();
 }
