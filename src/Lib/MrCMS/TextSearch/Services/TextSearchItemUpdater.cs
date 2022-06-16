@@ -41,7 +41,12 @@ namespace MrCMS.TextSearch.Services
 
         private BaseTextSearchEntityConverter GetConverter(SystemEntity item)
         {
-            var type = item.Unproxy().GetType();
+            item = item.Unproxy();
+
+            if (item?.IsDeleted ?? true)
+                return null;
+            
+            var type = item.GetType();
             if (!TextSearchConverterMap.Types.ContainsKey(type))
                 return null;
 
