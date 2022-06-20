@@ -3,8 +3,10 @@
 @{
     ViewData["Title"] = "Access denied";
 }
-
-<header>
+<header class="py-3">
     <h1 class="text-danger">@ViewData["Title"]</h1>
     <p class="text-danger">You do not have access to this resource.</p>
 </header>
+<div class="alert alert-danger my-4">
+    You do not have access to this resource.. Please <a asp-page="./Login" asp-route-ReturnUrl="@(HttpContext.Request.Query.TryGetValue("ReturnUrl", out var returnUrl) ? returnUrl.ToString() : null)">click here to visit the login page</a>.
+</div>

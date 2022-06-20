@@ -11,7 +11,7 @@
     <div class="col-md-6">
         <form id="email-form" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Email"></label>
                 @if (Model.IsEmailConfirmed)
                 {
@@ -28,7 +28,7 @@
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Input.NewEmail"></label>
                 <input asp-for="Input.NewEmail" class="form-control" />
                 <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
@@ -38,6 +38,4 @@
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+

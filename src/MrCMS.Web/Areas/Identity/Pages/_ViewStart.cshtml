@@ -1,4 +1,6 @@
-
+@using MrCMS.Website
+@inject IProcessWebpageViews Process
 @{
-    Layout = "/Views/Shared/_Layout.cshtml";
+    await Process.ProcessForDefault(ViewData);
+    Layout = ViewData[ProcessWebpageViews.LayoutFile] as string;
 }

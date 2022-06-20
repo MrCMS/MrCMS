@@ -24,7 +24,10 @@
     "watch:css:front-end": "parcel watch wwwroot/Content/styles/style.css --target core-css -p 1237"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.5.0",
-    "parcel": "^2.5.0"
+    "@parcel/transformer-sass": "^2.6.0",
+    "parcel": "^2.6.0"
+  },
+  "dependencies": {
+    "glightbox": "^3.2.0"
   }
 }

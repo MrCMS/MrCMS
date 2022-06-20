@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Website.Optimization;
 
-namespace MrCMS.Web.Apps.Core.Services
+namespace MrCMS.Web.Apps.Core.Bundles
 {
     public class CoreScriptBundle : IUIScriptBundle
     {
@@ -13,7 +13,10 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public IEnumerable<string> VendorFiles
         {
-            get { yield break; }
+            get
+            {
+                 yield break;
+            }
         }
     }
 }

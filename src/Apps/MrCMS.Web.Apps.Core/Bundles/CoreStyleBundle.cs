@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MrCMS.Website.Optimization;
 
-namespace MrCMS.Web.Apps.Core.Services
+namespace MrCMS.Web.Apps.Core.Bundles
 {
     public class CoreStyleBundle : IUIStyleBundle
     {

@@ -2,15 +2,14 @@
 @using MrCMS.Services.Canonical
 @using MrCMS.Settings
 @using MrCMS.Services
-@using MrCMS.Website.Auth
 @using System.Drawing
 @using MrCMS.ACL.Rules
-@model MrCMS.Entities.Documents.Web.Webpage
+@using MrCMS.Entities.Documents.Web
+@model dynamic
 @inject SEOSettings SeoSettings
 @inject SiteSettings SiteSettings
 @inject GoogleRecaptchaSettings GoogleRecaptchaSettings
 @inject IGetCurrentUser GetCurrentUser
-@inject IFrontEndEditingChecker FrontEndEditingChecker
 @{
     var user = await GetCurrentUser.Get();
 }
@@ -27,11 +26,17 @@
     @await Html.RenderUIVendorStyles()
     @await Html.RenderUIStyles()
     @Html.Raw(SeoSettings.TrackingScripts)
-    @Html.Raw(Model.CustomHeaderScripts)
-    @ViewData.LinkTags().Render()
+    @if (Model is Webpage)
+    {
+        @Html.Raw(Model.CustomHeaderScripts)
+        @ViewData.LinkTags().Render()
+    }
 
-    <!--improve the loading performance of reCAPTCHA Enterpris -->
-    <link rel="preconnect" href="https://www.google.com">
+    @if (GoogleRecaptchaSettings.Enabled)
+    {
+        <!--improve the loading performance of reCAPTCHA Enterpris -->
+        <link rel="preconnect" href="https://www.google.com">
+    }
 </head>
 <body>
 @Html.Raw(SeoSettings.TrackingScriptsBody)
@@ -99,7 +104,7 @@
 
 @if (user != null && await Html.CanAccess<AdminBarACL>(user, "Show") && SiteSettings.EnableInlineEditing)
 {
-    <div class="hidden-print">
+    <div class="d-print-none">
         <partial name="~/Areas/Admin/Views/Shared/InPageEditor.cshtml" model="Model"/>
     </div>
 }
@@ -107,7 +112,10 @@
 {
     @await RenderSectionAsync("JavascriptBlockInclude")
 }
-@Html.Raw(Model.CustomFooterScripts)
+@if (Model is Webpage)
+{
+    @Html.Raw(Model.CustomFooterScripts)
+}
 @await Html.RenderUIVendorScripts()
 @await Html.RenderUIScripts()
 @if (SessionHelper.IsMiniProfileEnabled)
