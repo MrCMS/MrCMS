@@ -1,8 +1,14 @@
-@using Microsoft.Extensions.Logging
+@using MrCMS.Entities.Widget
+@using MrCMS.Services
+@using MrCMS.Website.Caching
 @model MrCMS.Website.WidgetDisplayInfo
-@inject ILogger<WidgetDisplayInfo> Logger
-
+@inject IWidgetUIService WidgetUiService
 @foreach (var info in Model.Widgets)
 {
-    await Html.RenderPartialAsync($"Widgets/{info.ViewName}", info);
+    var widget = await WidgetUiService.GetWidgetAsync<Widget>(info.Id);
+    <cache enabled="@(widget.Cache)" expires-after="@(widget.CacheExpiryType == CacheExpiryType.Absolute ? TimeSpan.FromSeconds(widget.CacheLength) : null)" expires-sliding="@(widget.CacheExpiryType == CacheExpiryType.Sliding ? TimeSpan.FromSeconds(widget.CacheLength) : null)" vary-by-user="@(widget.GetWidgetOutputCacheable().PerUser)" vary-by="@(widget.GetWidgetOutputCacheable().PerPage ? widget.Id : null)">
+        @{
+            await Html.RenderPartialAsync($"Widgets/{info.ViewName}", info);
+        }
+    </cache>
 }

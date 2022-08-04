@@ -10,5 +10,10 @@ namespace MrCMS.Helpers
         {
             return widget.GetType().GetCustomAttribute<WidgetOutputCacheableAttribute>() != null;
         }
+        
+        public static WidgetOutputCacheableAttribute GetWidgetOutputCacheable(this Widget widget)
+        {
+            return widget.GetType().GetCustomAttribute<WidgetOutputCacheableAttribute>() ?? new WidgetOutputCacheableAttribute();
+        }
     }
 }
