@@ -4,28 +4,25 @@ function initialize(el) {
         minimumInputLength: 1,
         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
             url: "/Admin/Webpage/Select2Search",
-            dataType: 'json',
-            data: function (term, page) {
+            data: function (params) {
                 return {
-                    term: term,
-                    page: page
+                    search: params.term,
+                    page: params.page || 1
                 };
             },
-            results: function (data, page) {
-                const more = (page * 10) < data.total;
-                return {results: data.items, more: more}
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
             }
         },
-        initSelection: function (element, callback) {
-            const $el = $(element);
-            const id = $el.val();
-            const name = $el.data('webpage-search-select2-name');
-            if (id && name) {
-                callback({id: id, text: name});
-            }
-        },
-        formatResult: formatResult,
-        formatSelection: formatSelection,
+        templateResult: formatResult,
+        templateSelection: formatSelection,
         escapeMarkup: function (m) {
             return m;
         }
@@ -33,15 +30,19 @@ function initialize(el) {
 }
 
 function formatResult(item) {
-    return `${item.text} (${item.id})`;
+    if (item.loading) {
+        return item.text;
+    }
+
+    return `${item.text} ${item.id.length ? `(${item.id})` : ''}`;
 }
 
 function formatSelection(item) {
-    return `${item.text} (${item.id})`;
+    return `${item.text} ${item.id.length ? `(${item.id})` : ''}`;
 }
 
 export function setupWebpageSelect2() {
     $('[data-webpage-search-select2]').each(function (index, el) {
         initialize($(el));
-    })
+    });
 }
