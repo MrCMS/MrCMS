@@ -30,7 +30,7 @@ namespace MrCMS.Settings
         [DisplayName("Default Layout"), DropDownSelection("DefaultLayoutOptions")]
         public int DefaultLayoutId { get; set; }
 
-        [DisplayName("User Account Layout"), DropDownSelection("DefaultLayoutOptions")]
+        [DisplayName("User Account Layout"), DropDownSelection("DefaultUserAccountLayoutOptions")]
         public int UserAccountLayoutId { get; set; }
 
         [DisplayName("Default Page Size")] public int DefaultPageSize { get; set; }
@@ -95,6 +95,7 @@ namespace MrCMS.Settings
         {
             var generator = serviceProvider.GetRequiredService<ISiteSettingsOptionGenerator>();
             viewDataDictionary["DefaultLayoutOptions"] = generator.GetLayoutOptions(DefaultLayoutId);
+            viewDataDictionary["DefaultUserAccountLayoutOptions"] = generator.GetLayoutOptions(UserAccountLayoutId);
             viewDataDictionary["Themes"] = generator.GetThemeNames(ThemeName);
 
             viewDataDictionary["UiCultures"] = generator.GetUiCultures(UICulture);
