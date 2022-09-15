@@ -9,7 +9,6 @@ CKEDITOR.editorConfig = function (config) {
     config.forcePasteAsPlainText = true;
     config.allowedContent = true;
     config.contentsCss = ['/lib/bootstrap/dist/css/bootstrap.css', '/styles/style.css'];
-	config.removeDialogTabs = 'link:advanced';
 
     config.filebrowserImageBrowseUrl = '/admin/mediaselector/ckeditor';
     config.image_prefillDimensions = false; 
