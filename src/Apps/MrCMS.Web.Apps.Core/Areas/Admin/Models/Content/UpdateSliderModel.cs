@@ -13,4 +13,7 @@ public class UpdateSliderModel
 
     [DisplayName("Pause slider on hover")]
     public bool PauseOnHover { get; set; }
+    
+    [DisplayName("Caption Css Class")]
+    public string CaptionCssClass { get; set; }
 }

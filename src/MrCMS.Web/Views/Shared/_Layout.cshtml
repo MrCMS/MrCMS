@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MrCMS.Web</title>
+    <title>@ViewData[MrCMSPageExtensions.PageTitleKey] - MrCMS.Web</title>
     <link rel="stylesheet" href="~/Identity/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/Identity/css/site.css" />
 
@@ -63,5 +63,6 @@
         <script src="https://www.google.com/recaptcha/enterprise.js?onload=recaptchaOnLoad&render=@(GoogleRecaptchaSettings.IsCheckboxType ? "explicit" : GoogleRecaptchaSettings.SiteKey)" async defer></script>
         <script src="~/Content/Scripts/google_recaptcha.js"></script>
     }
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

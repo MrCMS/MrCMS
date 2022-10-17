@@ -1,0 +1,21 @@
+.dropzone {
+  box-sizing: border-box;
+  min-height: 150px;
+  background: #e3f2fd;
+  border: 2px dashed #90caf9;
+  border-radius: 4px;
+  padding: 20px;
+
+  i {
+    width: 100%;
+    text-align: center;
+    color: #bbdefb;
+    margin-top: 10px;
+    font-size: 54px;
+  }
+
+  .dz-message {
+    text-align: center;
+    margin: 2em 0;
+  }
+}

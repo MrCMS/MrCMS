@@ -5,7 +5,7 @@
     var textOrder = Model.Layout == ImageAndText.ImageAndTextLayout.ImageStart ? 1 : 0;
 }
 
-<div class="row align-items-center my-3">
+<div class="row align-items-@(Model.ContentVerticalAlignment.ToString().ToLower()) my-3">
     <div class="col order-@(imageOrder)">
         @{ await Html.RenderPartialAsync("BlockItems/ContentImage", Model.Image); }
     </div>

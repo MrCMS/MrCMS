@@ -87,7 +87,7 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Edit(UpdateWidgetModel model, string returnUrl = null)
         {
-            var additionalPropertyModel = await _widgetService.GetUpdateAdditionalPropertyModel(model.Id);
+            var additionalPropertyModel = await _widgetService.GetAdditionalPropertyModel(model.Id);
             if (additionalPropertyModel != null)
             {
                 await _modelBindingHelperAdapter.TryUpdateModelAsync(this, additionalPropertyModel,

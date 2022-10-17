@@ -100,7 +100,7 @@ namespace MrCMS.Logging
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return (logLevel == LogLevel.Critical || logLevel == LogLevel.Error);
+            return logLevel is LogLevel.Critical or LogLevel.Error;
         }
 
         public IDisposable BeginScope<TState>(TState state)

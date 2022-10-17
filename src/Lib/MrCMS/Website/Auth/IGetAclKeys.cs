@@ -6,7 +6,8 @@ namespace MrCMS.Website.Auth
 {
     public interface IGetAclKeys
     {
-        IList<string> GetKeys<TAclRule>(string operation) where TAclRule : ACLRule;
-        IList<string> GetKeys(ControllerActionDescriptor descriptor);
+        string GetKey<TAclRule>(string operation) where TAclRule : ACLRule;
+        IReadOnlyList<string> GetKeys<TAclRule>(string operation) where TAclRule : ACLRule;
+        IReadOnlyList<string> GetKeys(ControllerActionDescriptor descriptor);
     }
 }

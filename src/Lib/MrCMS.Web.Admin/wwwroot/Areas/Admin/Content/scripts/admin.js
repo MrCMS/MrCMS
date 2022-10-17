@@ -81,7 +81,7 @@ $(() => {
     setupResourceChooseSite();
     setupWebpageSelect2();
 
-    var mediaUploader = new MediaUploader($(document), {
+    let mediaUploader = new MediaUploader($(document), {
 
     });
     mediaUploader.init();

@@ -33,9 +33,7 @@
         <i class="@file.FileExtension.GetIconClass()"> </i>
     }
     <br/>
-    @Html.Link(file.FileName, file.FileUrl)
-
-
+    <a href="@file.FileUrl">file.FileName</a>
     <br/>
 
     @if (file.MediaCategory != null)

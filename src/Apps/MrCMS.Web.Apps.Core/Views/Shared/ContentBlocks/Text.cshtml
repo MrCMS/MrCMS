@@ -2,7 +2,7 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.Heading))
 {
-    <h2>
+    <h2 class="text-@(Model.HeadingAligment.ToString().ToLower())">
         @Model.Heading
     </h2>
 }

@@ -21,6 +21,7 @@ namespace MrCMS.Helpers
     public static class SessionHelper
     {
         public static int DefaultPageSize = 25;
+        public static long MaxFileSize = 104857600;
         public static bool IsMiniProfileEnabled = false;
 
         public static ISession OpenFilteredSession(this ISessionFactory sessionFactory,
@@ -182,6 +183,7 @@ namespace MrCMS.Helpers
 
             return new StaticPagedList<T>(values, pageNumber, size, rowCount);
         }
+
         public static async Task<IPagedList<T>> PagedAsync<T>(this ISession session, QueryOver<T> query, int pageNumber,
             int? pageSize = null)
         {
@@ -208,13 +210,15 @@ namespace MrCMS.Helpers
 
         public static async Task<IPagedList<TResult>> PagedAsync<TResult>(this IQueryOver<TResult, TResult> queryBase,
             int pageNumber,
-            int? pageSize = null)
+            int? pageSize = null, bool cacheable = true)
         {
             var size = pageSize ?? DefaultPageSize;
             IEnumerable<TResult> results = await
-                queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().ListAsync();
+                queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable()
+                    .CacheMode(cacheable ? CacheMode.Normal : CacheMode.Ignore).ListAsync();
 
-            int rowCount = await queryBase.Cacheable().RowCountAsync();
+            int rowCount = await queryBase.Cacheable().CacheMode(cacheable ? CacheMode.Normal : CacheMode.Ignore)
+                .RowCountAsync();
 
             return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
         }
@@ -264,7 +268,7 @@ namespace MrCMS.Helpers
         }
 
         public static async Task<IPagedList<TResult>> PagedAsync<TResult>(this IQueryable<TResult> queryable,
-            int pageNumber, 
+            int pageNumber,
             int? pageSize = null)
         {
             var size = pageSize ?? DefaultPageSize;
@@ -290,7 +294,8 @@ namespace MrCMS.Helpers
 
         public static async Task<T> GetByGuidAsync<T>(this ISession session, Guid guid) where T : SystemEntity
         {
-            return await session.Query<T>().Where(f => f.Guid == guid).WithOptions(options => options.SetCacheable(true)).FirstOrDefaultAsync();
+            return await session.Query<T>().Where(f => f.Guid == guid)
+                .WithOptions(options => options.SetCacheable(true)).FirstOrDefaultAsync();
         }
     }
 }

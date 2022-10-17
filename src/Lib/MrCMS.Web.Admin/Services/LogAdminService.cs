@@ -89,15 +89,14 @@ namespace MrCMS.Web.Admin.Services
                 query = query.Where(log => log.CreatedOn <= searchQuery.To);
             }
 
-            return query.PagedAsync(searchQuery.Page);
+            return query.PagedAsync(searchQuery.Page, cacheable: false);
         }
 
         private IQueryOver<Log, Log> BaseQuery()
         {
-            return
-                _session.QueryOver<Log>()
-                    .OrderBy(entry => entry.Id)
-                    .Desc;
+            return _session.QueryOver<Log>()
+                .OrderBy(entry => entry.Id)
+                .Desc;
         }
     }
 }

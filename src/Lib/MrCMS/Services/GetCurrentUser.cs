@@ -12,15 +12,16 @@ namespace MrCMS.Services
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserLookup _userLookup;
         private readonly ICacheInHttpContext _cacheInHttpContext;
-        private readonly IAccessChecker _accessChecker;
+        private readonly IUserImpersonationService _userImpersonationService;
 
         public GetCurrentUser(IHttpContextAccessor contextAccessor, IUserLookup userLookup,
-            ICacheInHttpContext cacheInHttpContext, IAccessChecker accessChecker)
+            ICacheInHttpContext cacheInHttpContext,
+            IUserImpersonationService userImpersonationService)
         {
             _contextAccessor = contextAccessor;
             _userLookup = userLookup;
             _cacheInHttpContext = cacheInHttpContext;
-            _accessChecker = accessChecker;
+            _userImpersonationService = userImpersonationService;
         }
 
         public async Task<User> Get()
@@ -43,19 +44,14 @@ namespace MrCMS.Services
                 if (loggedInUser == null)
                     return null;
 
-                // otherwise, check if they can impersonate
-                var canImpersonate = await _accessChecker.CanAccess<UserACL>(UserACL.Impersonate, loggedInUser);
-                // if not, we're done
-                if (!canImpersonate)
+                // if they're not in a web request with a claims principal, we're done
+                var principal = _contextAccessor.HttpContext?.User;
+                if (principal == null)
                     return null;
 
-                // otherwise, check if they're impersonating someone
-                var context = _contextAccessor.HttpContext;
-                var impersonatingId = context!.Session.GetInt32(UserImpersonationService.UserImpersonationKey);
-                if (!impersonatingId.HasValue)
-                    return null;
+                // see if they're impersonating someone
+                var impersonatedUser = await _userImpersonationService.GetCurrentlyImpersonatedUser(principal);
 
-                var impersonatedUser = await _userLookup.GetUserById(impersonatingId.Value);
                 // if we can't find the user, we're done
                 if (impersonatedUser == null)
                     return null;

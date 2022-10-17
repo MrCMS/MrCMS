@@ -8,7 +8,11 @@ public class SliderAdminConfiguration : ContentBlockAdminConfigurationBase<Slide
 {
     public override UpdateSliderModel GetEditModel(Slider block)
     {
-        return new UpdateSliderModel { Interval = block.Interval, PauseOnHover = block.PauseOnHover, ShowIndicator = block.ShowIndicator };
+        return new UpdateSliderModel
+        {
+            Interval = block.Interval, PauseOnHover = block.PauseOnHover, ShowIndicator = block.ShowIndicator,
+            CaptionCssClass = block.CaptionCssClass
+        };
     }
 
     public override void UpdateBlock(Slider block, UpdateSliderModel editModel)
@@ -16,5 +20,6 @@ public class SliderAdminConfiguration : ContentBlockAdminConfigurationBase<Slide
         block.Interval = editModel.Interval;
         block.ShowIndicator = editModel.ShowIndicator;
         block.PauseOnHover = editModel.PauseOnHover;
+        block.CaptionCssClass = editModel.CaptionCssClass;
     }
 }

@@ -1,3 +1,4 @@
+@using System.Drawing
 @model MrCMS.Web.Apps.Core.Entities.BlockItems.EmbedVideo
 @{
     var collapseId = $"collapse-{Guid.NewGuid()}";
@@ -11,11 +12,16 @@
 }
 else
 {
+    var hasMobilePoster = !string.IsNullOrWhiteSpace(Model.MobilePoster);
     <div class="my-3">
         <div class="collapse show" data-id="@(collapseId)" data-toggle="collapse" data-target="[data-id='@(collapseId)']" aria-expanded="true">
             <div class="embed-responsive embed-responsive-16by9 my-3">
                 <div class="video-placeholder">
-                    <img src="@Model.Poster" />
+                    @await Html.RenderImage(Model.Poster, attributes: new { @class = hasMobilePoster ? "d-none d-sm-block" : "" })
+                    @if (hasMobilePoster)
+                    {
+                        @await Html.RenderImage(Model.MobilePoster, new Size { Width = 560 }, attributes: new { @class = "d-sm-none" })
+                    }
                     <div class="video-play"></div>
                 </div>
             </div>

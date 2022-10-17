@@ -27,7 +27,7 @@ namespace MrCMS.Web.Admin.Services
             }
 
             urlHistory.Webpage?.Urls.Remove(urlHistory);
-            await _session.TransactAsync(session => session.DeleteAsync(urlHistory));
+            await _session.TransactAsync(session => _session.DeleteAsync(urlHistory));
             return urlHistory;
         }
 

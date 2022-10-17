@@ -16,7 +16,7 @@
     var tabs = await EditTabsService.GetEditTabs(Html, user);
 
     var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/10";
-
+    var currentUser = await GetCurrentUser.Get();
 
 }
 
@@ -60,13 +60,16 @@
                             <h3 class="profile-username">@Model.Name</h3>
 
                             <div class="btn-group my-3">
-                                @{
-                                    var currentUser = await GetCurrentUser.Get();
-                                    if (Model.Id == currentUser.Id)
-                                    {
-                                        <a class="text-center btn btn-sm btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@await Html.Resource("admin-logout", "Logout")</a>                                    }
+                                @if (Model.Id == currentUser.Id)
+                                {
+                                    <a class="text-center btn btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@await Html.Resource("admin-logout", "Logout")</a>
                                 }
-                                <a class="text-center btn btn-sm btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
+                                <a class="text-center btn btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
+                                @if (!user.IsAdmin && user.Id != currentUser.Id)
+                                {
+                                    <a href="@Url.Action("Impersonate", "User", new {id = Model.Id})" class="btn btn-outline-dark">Impersonate</a>
+                                }
+                                <a href="@Url.Action("ResetSecurityStamp", "User", new {id = Model.Id})" class="btn btn-outline-dark">Force logout</a>
                             </div>
 
                         </div>
@@ -121,7 +124,7 @@
                                 <p>@await Html.Resource("Admin User Roles None", "You do not have access to administer roles").</p>
                             }
                         </div>
-                        <hr />
+                        <hr/>
                         <h4>Notifications</h4>
                         @Html.InlineCheckboxFor(x => x.DisableNotifications, null, null, "Disable system notifications")
 
@@ -150,12 +153,14 @@
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
-            <partial name="Tab" model="tab" view-data="ViewData"/>        }
+            <partial name="Tab" model="tab" view-data="ViewData"/>
+        }
     </ul>
     <div class="tab-content mt-3">
         @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
-            <partial name="Content" model="tab" view-data="ViewData"/>        }
+            <partial name="Content" model="tab" view-data="ViewData"/>
+        }
     </div>
 }

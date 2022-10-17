@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 using MrCMS.Web.Apps.Core.Models.Widgets;
 using MrCMS.Web.Apps.Core.Widgets;
@@ -11,6 +12,7 @@ public class SliderWidgetModel : IUpdatePropertiesViewModel<SliderWidget>, IAddP
     {
         Interval = 5000;
         ShowIndicator = true;
+        CaptionCssClass = "d-none d-md-block";
     }
     public List<SlideViewModel> SlideList { get; set; }
     
@@ -19,6 +21,9 @@ public class SliderWidgetModel : IUpdatePropertiesViewModel<SliderWidget>, IAddP
     public bool ShowIndicator { get; set; }
 
     public bool PauseOnHover { get; set; }
+    
+    [DisplayName("Caption Css Class")]
+    public string CaptionCssClass { get; set; }
 
     public override string ToString()
     {

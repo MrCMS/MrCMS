@@ -18,6 +18,7 @@ namespace MrCMS.Website.Controllers
     public class ErrorController : MrCMSController
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IProcessWebpageViews _processWebpageViews;
 
         // private readonly IGetCurrentUser _getCurrentUser;
         // private readonly IStringResourceProvider _stringResourceProvider;
@@ -34,9 +35,10 @@ namespace MrCMS.Website.Controllers
         //     _notFoundHandler = notFoundHandler;
         //     _siteSettings = siteSettings;
         // }
-        public ErrorController(IServiceProvider serviceProvider)
+        public ErrorController(IServiceProvider serviceProvider, IProcessWebpageViews processWebpageViews)
         {
             _serviceProvider = serviceProvider;
+            _processWebpageViews = processWebpageViews;
         }
 
         [Route("HandleStatusCode/{code}")]
@@ -45,6 +47,7 @@ namespace MrCMS.Website.Controllers
             if (!_serviceProvider.GetRequiredService<IDatabaseCreationService>().IsDatabaseInstalled())
                 return StatusCode(code);
 
+            await _processWebpageViews.ProcessForDefault(ViewData);
             var logger = _serviceProvider.GetRequiredService<ILogger<ErrorController>>();
 
             if (code == 404)
@@ -132,6 +135,8 @@ namespace MrCMS.Website.Controllers
         [Route("error")]
         public async Task<ViewResult> Error()
         {
+            await _processWebpageViews.ProcessForDefault(ViewData);
+
             var model = new ErrorModel();
             var currentUser = _serviceProvider.GetRequiredService<IGetCurrentUser>();
             var user = await currentUser.Get();

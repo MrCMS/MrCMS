@@ -5,6 +5,6 @@ namespace MrCMS.Website.Auth
 {
     public interface IGetAclRoles
     {
-        List<ACLRole> GetRoles(IList<string> roles, IList<string> keys);
+        IReadOnlyList<ACLRole> GetRoles(IEnumerable<string> roles, IEnumerable<string> keys);
     }
 }

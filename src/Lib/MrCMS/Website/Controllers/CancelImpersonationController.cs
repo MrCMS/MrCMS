@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Services;
 
@@ -5,7 +6,7 @@ namespace MrCMS.Website.Controllers;
 
 public class CancelImpersonationController : MrCMSUIController
 {
-    private IUserImpersonationService _userImpersonationService;
+    private readonly IUserImpersonationService _userImpersonationService;
 
     public CancelImpersonationController(IUserImpersonationService userImpersonationService)
     {
@@ -13,9 +14,9 @@ public class CancelImpersonationController : MrCMSUIController
     }
 
     [HttpPost]
-    public RedirectResult Cancel()
+    public async Task<RedirectResult> Cancel()
     {
-        _userImpersonationService.CancelImpersonation();
+        await _userImpersonationService.CancelImpersonation(User);
         return Redirect("/");
     }
 }

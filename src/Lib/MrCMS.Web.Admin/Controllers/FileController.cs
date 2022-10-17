@@ -20,7 +20,8 @@ namespace MrCMS.Web.Admin.Controllers
 
         [HttpPost]
         [ActionName("Files")]
-        [RequestSizeLimit(500 * 1024 * 1024)] 
+        [DisableRequestSizeLimit]
+        [RequestSizeLimit(500 * 1024 * 1024)]
         public async Task<JsonResult> Files_Post(int id)
         {
             var list = new List<ViewDataUploadFilesResult>();

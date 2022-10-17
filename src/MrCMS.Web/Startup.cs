@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using MrCMS.Web.Apps.Core;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Hosting;
 using MrCMS.Logging;
 using MrCMS.Scheduling;
@@ -68,6 +70,7 @@ namespace MrCMS.Web
                 services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
                 services.AddQuartz(q =>
                 {
+					q.UseDefaultThreadPool();
                     q.UseMicrosoftDependencyInjectionJobFactory();
 
                     q.UsePersistentStore(options =>
@@ -76,17 +79,22 @@ namespace MrCMS.Web
                         {
                             providerOptions.ConnectionString = Configuration.GetConnectionString("mrcms");
                         });
-                        options.UseClustering();
+                        //options.UseClustering();
                         options.UseJsonSerializer();
                     });
                 });
-                services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
+                services.AddQuartzHostedService(options =>
+                {
+                    options.WaitForJobsToComplete = true;
+                    options.AwaitApplicationStarted = true;
+                });
             }
 
             services.AddRequiredServices();
             services.Configure<SystemConfig>(Configuration.GetSection(SystemConfig.SectionName));
             services.AddCultureInfo(Configuration);
             Configuration.SetDefaultPageSize();
+            Configuration.SetMaxFileSize();
 
             var appContext = services.AddMrCMSApps(Configuration, context =>
             {
@@ -122,6 +130,10 @@ namespace MrCMS.Web
             services.RegisterTasks();
 
             services.AddMvcForMrCMS(appContext);
+            services.Configure<FormOptions>(x =>
+            {
+                x.MultipartBodyLengthLimit = SessionHelper.MaxFileSize;
+            });
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IGetMrCMSParts, GetMrCMSParts>();
             services.AddSingleton<IAssignPageDataToRouteValues, AssignPageDataToRouteValues>();
@@ -160,45 +172,51 @@ namespace MrCMS.Web
             // services.AddHostedService<SeedHostedServices>();
 
             Configuration.SetMiniProfilerEnableStatus();
-            // if (IsMiniProfileEnabled())
-            // {
-            //     // miniprofiler
-            //     services.AddMiniProfiler(options =>
-            //     {
-            //         options.RouteBasePath = "/profiler";
-            //         options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomRight;
-            //         options.PopupShowTimeWithChildren = true;
-            //         options.ShouldProfile = x =>
-            //         {
-            //             // rough filter for assets
-            //             if (!x.Path.HasValue)
-            //                 return true;
-            //             // don't profile AJAX requests
-            //             if (x.IsAjaxRequest())
-            //                 return false;
-            //
-            //             return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".woff", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".eot", StringComparison.OrdinalIgnoreCase) &&
-            //                    !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);
-            //         };
-            //         options.ResultsAuthorizeAsync = async (context) =>
-            //         {
-            //             // var getCurrentUser = context.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>();
-            //             // var user = await getCurrentUser.GetLoggedInUser();
-            //             // return user.IsAdmin;
-            //             return true;
-            //         };
-            //     }).AddEntityFramework();
-            // }
+            if (IsMiniProfileEnabled())
+            {
+                // miniprofiler
+                // services.AddMiniProfiler(options =>
+                // {
+                //     options.RouteBasePath = "/profiler";
+                //     options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomRight;
+                //     options.PopupShowTimeWithChildren = true;
+                //     options.ShouldProfile = x =>
+                //     {
+                //         // rough filter for assets
+                //         if (!x.Path.HasValue)
+                //             return true;
+                //         // don't profile AJAX requests
+                //         if (x.IsAjaxRequest())
+                //             return false;
+                //
+                //         return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".woff", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".eot", StringComparison.OrdinalIgnoreCase) &&
+                //                !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);
+                //     };
+                //     options.ResultsAuthorizeAsync = (context) =>
+                //     {
+                //         // var getCurrentUser = context.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>();
+                //         // var user = await getCurrentUser.GetLoggedInUser();
+                //         // return user.IsAdmin;
+                //         return Task.FromResult(true);
+                //     };
+                // }).AddEntityFramework();
+
+                services.AddAntiforgery(options =>
+                {
+                    // Set Cookie properties using CookieBuilder properties�.
+                    options.SuppressXFrameOptionsHeader = false;
+                });
+            }
         }
         
         private bool IsMiniProfileEnabled()
@@ -217,7 +235,7 @@ namespace MrCMS.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
             // NHibernate.ISessionFactory factory,
             IHttpContextAccessor httpContextAccessor,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, IAntiforgery antiforgery)
         {
             if (env.IsDevelopment())
             {
@@ -269,6 +287,31 @@ namespace MrCMS.Web
                     }
                 });
                 builder.UseAuthentication();
+                
+                builder.Use(next => ctx =>
+                {
+                    var tokens = antiforgery.GetAndStoreTokens(ctx);
+
+                    ctx.Response.Cookies.Append("RequestVerificationToken", tokens.RequestToken,
+                        new CookieOptions() { HttpOnly = false });
+
+                    return next(ctx);
+                });
+
+                builder.Use(async (context, next) =>
+                {
+                    var maxAllowedFileSize = SessionHelper.MaxFileSize;
+                    var contentLength = context.Request.ContentLength ?? 0;
+                    if (contentLength > maxAllowedFileSize)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+                        await context.Response.WriteAsync(
+                            $"File is too big ({(contentLength / 1024 / 1024)}MiB). Max filesize: {(maxAllowedFileSize / 1024 / 1024)}MiB.");
+                        return;
+                    }
+
+                    await next.Invoke();
+                });
             }, builder => { builder.MapRazorPages(); });
 
 

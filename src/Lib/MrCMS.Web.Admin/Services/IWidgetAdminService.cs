@@ -13,8 +13,6 @@ namespace MrCMS.Web.Admin.Services
         Task<object> GetAdditionalPropertyModel(int id);
         Task<Widget> UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel);
         Task<Widget> DeleteWidget(int id);
-        object GetUpdateAdditionalPropertyModel(string type);
-        Task<object> GetUpdateAdditionalPropertyModel(int id);
     }
 
 }

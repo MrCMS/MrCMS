@@ -30,6 +30,11 @@ namespace MrCMS.Helpers
             return req?.GetTypedHeaders()?.Referer?.ToString();
         }
 
+        public static string RefererLocal(this HttpRequest req)
+        {
+            return req?.GetTypedHeaders()?.Referer?.LocalPath;
+        }
+
         //public static string GetCurrentIP(this HttpContext contextBase)
         //{
         //    return contextBase.Request.GetCurrentIP();

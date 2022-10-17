@@ -1,4 +1,5 @@
-﻿@import "dropzone";
+﻿@import url("../lib/dropzone/dropzone.css");
+@import "dropzone-override";
 //@import "featherlight";
 @import "jquery.mrcms-mediaselector";
 html {

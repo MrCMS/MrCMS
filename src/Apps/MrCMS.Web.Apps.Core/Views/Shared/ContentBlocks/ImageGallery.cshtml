@@ -13,7 +13,9 @@
                 <div class="embed-responsive embed-responsive-1by1">
                     <div class="embed-responsive-item">
                         <a href="@Model.Images[i].Url" class="glightbox" data-gallery="@galleryId" data-type="image">
-                            @await Html.RenderImage(Model.Images[i].Url,new System.Drawing.Size{Width=250}, attributes: new {@class="object-fit-cover", height="100%", width="100%"})
+                            <div class="ratio ratio-@(Model.ImageRatio ?? "7x9")">
+                                @await Html.RenderImage(Model.Images[i].Url, new System.Drawing.Size {Width = Model.ImageRenderSize <= 100 ? 100 : Model.ImageRenderSize}, attributes: new {@class = "object-fit-cover"})
+                            </div>
                         </a>
                     </div>
                 </div>

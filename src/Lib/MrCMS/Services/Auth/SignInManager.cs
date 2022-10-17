@@ -39,8 +39,9 @@ namespace MrCMS.Services.Auth
 
         public override async Task SignOutAsync()
         {
+            var currentUser = Context.User;
             await base.SignOutAsync();
-            await _context.Publish<IOnLoggedOut, LoggedOutEventArgs>(new LoggedOutEventArgs());
+            await _context.Publish<IOnLoggedOut, LoggedOutEventArgs>(new LoggedOutEventArgs(currentUser));
         }
     }
 }

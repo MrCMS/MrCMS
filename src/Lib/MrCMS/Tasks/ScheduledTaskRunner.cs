@@ -47,7 +47,7 @@ namespace MrCMS.Tasks
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Error, exception, exception.Message);
+                _logger.Log(LogLevel.Error, exception, $"{exception.Message} Error From {serviceType}");
                 await SetStatus(serviceType, TaskExecutionStatus.Pending);
             }
             finally

@@ -11,7 +11,8 @@ public class EmbedVideoAdminConfiguration : BlockItemAdminConfigurationBase<Embe
         return new UpdateEmbedVideoAdminModel
         {
             EmbedCode = block.EmbedCode,
-            Poster = block.Poster
+            Poster = block.Poster,
+            MobilePoster = block.MobilePoster
         };
     }
 
@@ -19,5 +20,6 @@ public class EmbedVideoAdminConfiguration : BlockItemAdminConfigurationBase<Embe
     {
         block.EmbedCode = editModel.EmbedCode;
         block.Poster = editModel.Poster;
+        block.MobilePoster = editModel.MobilePoster;
     }
 }

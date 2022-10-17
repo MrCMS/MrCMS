@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
@@ -20,19 +21,19 @@ namespace MrCMS.Services
         private readonly IFileSystemFactory _fileSystemFactory;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
-        private readonly ICurrentSiteLocator _siteLocator;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
         private IFileSystem _currentFileSystem;
 
         public FileService(ISession session, IFileSystemFactory fileSystemFactory, IImageProcessor imageProcessor,
-            MediaSettings mediaSettings, ICurrentSiteLocator siteLocator, SiteSettings siteSettings)
+            MediaSettings mediaSettings, ICurrentSiteLocator currentSiteLocator, SiteSettings siteSettings)
         {
             _session = session;
             _fileSystemFactory = fileSystemFactory;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
-            _siteLocator = siteLocator;
+            _currentSiteLocator = currentSiteLocator;
             _siteSettings = siteSettings;
         }
 
@@ -102,7 +103,7 @@ namespace MrCMS.Services
 
             var fileSystem = GetFileSystem();
             foreach (var resizedImage in
-                file.ResizedImages)
+                     file.ResizedImages)
             {
                 if (await fileSystem.Exists(resizedImage.Url))
                     await fileSystem.Delete(resizedImage.Url);
@@ -130,8 +131,9 @@ namespace MrCMS.Services
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
         {
-            var currentSite = _siteLocator.GetCurrentSite();
-            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == currentSite);
+            var currentSite = _currentSiteLocator.GetCurrentSite();
+            var queryOver =
+                _session.QueryOver<MediaFile>().Where(file => file.Site == currentSite);
 
             if (categoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
@@ -184,7 +186,7 @@ namespace MrCMS.Services
 
         public async Task RemoveFolder(MediaCategory mediaCategory)
         {
-            var currentSite = _siteLocator.GetCurrentSite();
+            var currentSite = _currentSiteLocator.GetCurrentSite();
             var folderLocation = $"{currentSite.Id}/{mediaCategory.Path}/";
 
             var fileSystem = GetFileSystem();
@@ -193,7 +195,7 @@ namespace MrCMS.Services
 
         public async Task CreateFolder(MediaCategory mediaCategory)
         {
-            var currentSite = _siteLocator.GetCurrentSite();
+            var currentSite = _currentSiteLocator.GetCurrentSite();
             var folderLocation = $"{currentSite.Id}/{mediaCategory.Path}/";
 
             var fileSystem = GetFileSystem();
@@ -225,7 +227,7 @@ namespace MrCMS.Services
             if (mediaCategory != null)
                 urlSegment = mediaCategory.Path;
 
-            var currentSite = _siteLocator.GetCurrentSite();
+            var currentSite = _currentSiteLocator.GetCurrentSite();
             var folderLocation = $"{currentSite.Id}/{urlSegment}/";
 
             //check for duplicates
@@ -263,10 +265,8 @@ namespace MrCMS.Services
                     return fileUrl;
 
                 // if we've cached the file existing then we're fine
-                IList<ResizedImage> resizedImages =
-                    _session.Query<ResizedImage>().Where(image => image.MediaFile.Id == file.Id)
-                        .WithOptions(x => x.SetCacheable(true)).ToList();
-                if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
+                var resizedImages = file.ResizedImages;
+                if (resizedImages.AsQueryable().Any(image => image.Url == requestedImageFileUrl))
                     return requestedImageFileUrl;
 
                 // if it exists but isn't cached, we should add it to the cache

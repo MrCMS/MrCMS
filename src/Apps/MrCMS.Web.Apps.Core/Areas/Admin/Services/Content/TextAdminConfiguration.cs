@@ -8,12 +8,13 @@ public class TextAdminConfiguration : ContentBlockAdminConfigurationBase<Text, U
 {
     public override UpdateTextAdminModel GetEditModel(Text block)
     {
-        return new UpdateTextAdminModel { Heading = block.Heading, Subtext = block.Subtext };
+        return new UpdateTextAdminModel { Heading = block.Heading, HeadingAligment = block.HeadingAligment, Subtext = block.Subtext };
     }
 
     public override void UpdateBlock(Text block, UpdateTextAdminModel editModel)
     {
         block.Heading = editModel.Heading;
+        block.HeadingAligment = editModel.HeadingAligment;
         block.Subtext = editModel.Subtext;
     }
 }

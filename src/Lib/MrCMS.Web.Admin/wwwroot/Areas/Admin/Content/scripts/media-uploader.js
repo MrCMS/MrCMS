@@ -11,21 +11,25 @@
                 const acceptFileTypes = settings.acceptFileTypes(element);
                 const val = element.find(settings.uploadUrlSelector).val();
                 const dropZoneElement = upload.get()[0];
+
+                let maxFileSize = settings.maxFilesize(element);
                 // clear it and start again if it's being re-initialized
-                try{
+                try {
                     window.Dropzone.forElement(dropZoneElement).destroy();
+                } catch {
                 }
-                catch {}
                 const myDropzone = new window.Dropzone(dropZoneElement, {
                     url: val,
-                    maxFilesize: settings.maxFileSize(element),
                     acceptedFiles: acceptFileTypes,
+                    timeout: 120000,
+                    maxFilesize: maxFileSize,
                     dictDefaultMessage: upload.data('message'),
                     parallelUploads: 1,
                     headers: {
-                        'RequestVerificationToken' : requestVerificationToken
+                        'RequestVerificationToken': requestVerificationToken
                     }
                 });
+
 
                 myDropzone.on("queuecomplete", function (file) {
                     settings.onFileUploadStopped(file, myDropzone);
@@ -47,8 +51,12 @@
 
         },
         showMessage: function (file, response) {
-            console.log(response, file);
-            //alert(response); //todo: Show error message
+            noty({
+                text: '<div class="notification-date">' + file.status + '</div><div class="notification-msg">' + response + "</div>",
+                layout: 'bottomRight',
+                timeout: 8000,
+                type: "error"
+            });
         },
     };
 };
@@ -61,11 +69,14 @@ const defaults = {
         }
         return ".jpg, .png";
     },
-    sequentialUploads: true,
-    maxFileSize: function (element) {
+    maxFilesize: function (element) {
         const maxFileSize = element.find("#maxFileSizeUpload").val();
-        return maxFileSize || 5;
+        if (maxFileSize != null) {
+            return parseInt(maxFileSize) / 1024 / 1024;
+        }
+        return 100;
     },
+    sequentialUploads: true,
     progressBarSelector: "#progress",
     progressBarSelectorInner: "#progress .progress-bar",
     percentCompleteSelector: "#progress .progress-bar",
