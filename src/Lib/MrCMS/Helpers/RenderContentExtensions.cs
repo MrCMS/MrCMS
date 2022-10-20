@@ -15,7 +15,14 @@ public static class RenderContentExtensions
         if (activeContent == null)
             return;
 
-        await helper.RenderPartialAsync("_PageContent", activeContent);
+        if (activeContent.IsDraft)
+        {
+            await helper.RenderPartialAsync("_PageContentPreview", activeContent);
+        }
+        else
+        {
+            await helper.RenderPartialAsync("_PageContent", activeContent);
+        }
     }
 
 

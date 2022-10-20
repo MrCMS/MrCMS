@@ -111,12 +111,10 @@ function ToggleExpandBlock() {
     if (!editor.length) {
         return;
     }
-    
-    if (editor.closest("[data-content-parent]").hasClass("expand"))
-    {
+
+    if (editor.closest("[data-content-parent]").hasClass("expand")) {
         collapseEditor();
-    }
-    else{
+    } else {
         expandEditor();
     }
 }
@@ -211,6 +209,63 @@ function selectBlock(event) {
     return false;
 }
 
+function mouseEnterBlock(event){
+    const link = $(event.currentTarget);
+    highlightPreviewBlock(link);
+}
+
+function mouseLeaveBlock(event){
+    clearHighlightPreviewBlock();
+}
+
+function clearHighlightPreviewBlock(){
+    let iframe = document.querySelector('[data-content-admin-preview-pane]');
+    if (iframe) {
+        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        if (iframeDocument) {
+            let allPreviewBlocks = iframeDocument.querySelectorAll('.mrcms-preview-block[data-content-block-id]');
+            $(allPreviewBlocks).removeClass('highlight');
+        }
+    }
+}
+
+function highlightPreviewBlock(element) {
+    let blockId = element.attr('data-id');
+    let iframe = document.querySelector('[data-content-admin-preview-pane]');
+    if (iframe) {
+        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        if (iframeDocument) {
+            let targetPreviewBlock = iframeDocument.querySelector(`.mrcms-preview-block[data-content-block-id="${blockId}"]`);
+            if (targetPreviewBlock) {
+                $(targetPreviewBlock).addClass("highlight");
+                targetPreviewBlock.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }
+}
+
+
+// function setContentPreviewBlockClick() {
+//     let iframe = document.querySelector('[data-content-admin-preview-pane]');
+//     if (iframe) {
+//         const parentDoc = parent.document;
+//
+//         $(iframe).contents().find("body").append(`
+//         <script>
+//             let allPreviewBlocks= document.querySelectorAll('.mrcms-preview-block[data-content-block-id]');
+//             allPreviewBlocks.forEach(function(previewBlockItem){
+//                previewBlockItem.addEventListener('click',function(item){
+//                     console.log(item);
+//                 }); 
+//             });
+//         </script>`);
+//
+//     }
+// }
+
 function removeBlock(event) {
     const link = $(event.currentTarget);
     if (confirm('Are you sure you want to delete this block?')) {
@@ -256,15 +311,34 @@ function saveEditor(event) {
     return false;
 }
 
+function updateContentEditor(e) {
+    let iframeSrc = new URL(this.src);
+    let targetUrl = this.contentWindow.location.href;
+    let currentUrl = iframeSrc.href;
+    if (targetUrl !== currentUrl) {
+        window.location = `/Admin/ContentVersion/EditByUrl?url=${targetUrl}`;
+    }
+    // else {
+    //     if (!$(this).attr('data-initiated')) {
+    //         setContentPreviewBlockClick();
+    //         $(this).attr('data-initiated', true);
+    //     }
+    // }
+}
+
 export function setupContentAdmin() {
     loadBlocks();
 
     $(document).on('click', '[data-content-admin-block-open]', openBlock)
     $(document).on('click', '[data-content-admin-block-close]', closeBlock)
     $(document).on('click', '[data-content-admin-block-select]', selectBlock)
+    $(document).on('mouseenter', '[data-content-admin-nav] li[data-id]', mouseEnterBlock)
+    $(document).on('mouseover', '[data-content-admin-nav] li[data-id]', mouseEnterBlock)
+    $(document).on('mouseleave', '[data-content-admin-nav] li[data-id]', mouseLeaveBlock)
     $(document).on('click', '[data-content-admin-block-remove]', removeBlock)
     $(document).on('click', '[data-content-admin-add-child]', addChild)
     $(document).on('submit', '[data-content-admin-save-editor]', saveEditor)
     $(document).on('click', '[data-content-admin-hide-editor]', hideEditor)
     $(document).on('click', '[data-content-admin-expand-editor]', ToggleExpandBlock);
+    $('[data-content-admin-preview-pane]').on('load', updateContentEditor);
 }

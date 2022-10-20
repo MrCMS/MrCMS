@@ -7,20 +7,20 @@ using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Web.Admin.Models.Content;
 using MrCMS.Web.Admin.Services;
-using MrCMS.Web.Admin.Services.Content;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Admin.Controllers;
 
 public class ContentVersionController : MrCMSAdminController
 {
     private readonly IContentVersionAdminService _adminService;
-    private readonly IContentBlockAdminService _contentBlockAdminService;
+    private readonly IGetWebpageForPath _getWebpageForPath;
 
     public ContentVersionController(IContentVersionAdminService adminService,
-        IContentBlockAdminService contentBlockAdminService)
+        IGetWebpageForPath getWebpageForPath)
     {
         _adminService = adminService;
-        _contentBlockAdminService = contentBlockAdminService;
+        _getWebpageForPath = getWebpageForPath;
     }
 
     public ViewResult AddInitial(int webpageId)
@@ -65,6 +65,20 @@ public class ContentVersionController : MrCMSAdminController
         return View(await _adminService.GetEditModel(id));
     }
 
+    public async Task<IActionResult> EditByUrl(string url)
+    {
+        var path = new Uri(url).LocalPath.TrimStart('/');
+
+        var page = await _getWebpageForPath.GetWebpage(path);
+        if (page != null)
+        {
+            return RedirectToAction("EditLatest", new { page.Id });
+        }
+
+        ViewData["PreviewUrl"] = url;
+        return View("Edit",null);
+    }
+
     [HttpPost]
     public async Task<RedirectToActionResult> Publish(int id)
     {
@@ -101,10 +115,9 @@ public class ContentVersionController : MrCMSAdminController
             : RedirectToAction("Index", "Webpage");
     }
 
-    public async Task<PartialViewResult> Blocks(int id, Guid? selected, Guid? open)
+    public async Task<PartialViewResult> Blocks(int id, Guid? selected)
     {
         ViewData["selected"] = selected;
-        ViewData["open"] = open;
         return PartialView(await _adminService.GetEditModel(id));
     }
 }

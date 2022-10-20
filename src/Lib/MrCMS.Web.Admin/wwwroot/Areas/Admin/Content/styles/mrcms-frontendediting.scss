@@ -750,6 +750,29 @@ fieldset[disabled] {
     }
 }
 
+.mrcms-preview-block{
+    transition: animation .5s ease;
+    border: 2px dashed transparent;
+    &.highlight{
+        animation: preview-border-blink 1.5s linear infinite;
+        border: 2px dashed #007bff;
+    }
+    &:hover{
+        border: 2px dashed #007bff;
+    }
+}
+@keyframes preview-border-blink {
+    0% {
+        border-color:#007bff;
+    }
+    50% {
+        border-color:transparent;
+    }
+    100% {
+        border-color:#007bff;
+    }
+}
+
 @media screen and (max-width: 600px) {
     .hidden-small {display: none;}
 }

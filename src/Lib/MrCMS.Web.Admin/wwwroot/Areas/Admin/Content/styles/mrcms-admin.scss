@@ -224,6 +224,25 @@ ul#sidebar-nav > li > ul.nav > li > ul.nav {
     margin-left: 1rem;
 }
 
+[data-toggle="collapse"]{
+    &[aria-expanded="true"]{
+        [data-expand]{
+            display: block;
+        }
+        [data-collapse]{
+            display:none;
+        }
+    }
+    &[aria-expanded="false"]{
+        [data-expand]{
+            display: none;
+        }
+        [data-collapse]{
+            display:block;
+        }
+    }
+}
+
 @include media-breakpoint-up(md) {
     .media-preview {
         .img-fluid {

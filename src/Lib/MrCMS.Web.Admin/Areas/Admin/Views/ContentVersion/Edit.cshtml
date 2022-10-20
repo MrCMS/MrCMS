@@ -6,19 +6,22 @@
 <div class="content-admin" data-content-admin>
     <div class="header" data-content-admin-header>
         <h1>Content Editor</h1>
-        <div class="d-flex">
-            <form method="POST" asp-controller="ContentVersion" asp-action="Publish" asp-route-id="@Model.Id">
-                <button class="btn btn-success mx-1" onclick="return confirm('Are you sure you want to publish this draft?')">
-                    Publish draft
-                </button>
-            </form>
-            <form method="POST" asp-controller="ContentVersion" asp-action="Delete" asp-route-id="@Model.Id">
-                <button class="btn btn-danger mx-1" onclick="return confirm('Are you sure you want to delete this draft?')">
-                    Delete draft
-                </button>
-            </form>
-            <a class="btn btn-secondary mx-1" asp-controller="Webpage" asp-action="Edit" asp-route-id="@Model.WebpageId">Back to Page</a>
-        </div>
+        @if (Model != null)
+        {
+            <div class="d-flex">
+                <form method="POST" asp-controller="ContentVersion" asp-action="Publish" asp-route-id="@Model.Id">
+                    <button class="btn btn-success mx-1" onclick="return confirm('Are you sure you want to publish this draft?')">
+                        Publish draft
+                    </button>
+                </form>
+                <form method="POST" asp-controller="ContentVersion" asp-action="Delete" asp-route-id="@Model.Id">
+                    <button class="btn btn-danger mx-1" onclick="return confirm('Are you sure you want to delete this draft?')">
+                        Delete draft
+                    </button>
+                </form>
+                <a class="btn btn-secondary mx-1" asp-controller="Webpage" asp-action="Edit" asp-route-id="@Model.WebpageId">Back to Page</a>
+            </div>
+        }
     </div>
     <div class="main">
         <div class="left-nav" data-content-admin-nav>
@@ -26,17 +29,20 @@
                 <h3 class="card-header col-auto">
                     Blocks
                 </h3>
-                <div class="card-body p-0 col" style="overflow-y:auto">
-                    <div data-content-admin-blocks="@Url.Action("Blocks", "ContentVersion", new {Model.Id})" class="content">
+                @if (Model != null)
+                {
+                    <div class="card-body p-0 col" style="overflow-y:auto">
+                        <div data-content-admin-blocks="@Url.Action("Blocks", "ContentVersion", new {Model.Id})" class="content">
+                        </div>
                     </div>
-                </div>
-                <div class="card-footer col-auto">
-                    <a class="btn btn-block btn-success" asp-controller="ContentBlock" asp-action="Add" asp-route-id="@Model.Id" data-toggle="fb-modal">Add section</a>
-                </div>
+                    <div class="card-footer col-auto">
+                        <a class="btn btn-block btn-success" asp-controller="ContentBlock" asp-action="Add" asp-route-id="@Model.Id" data-toggle="fb-modal">Add section</a>
+                    </div> 
+                }
             </div>
         </div>
         <main class="preview" data-content-admin-preview>
-            <iframe id="content-admin-preview-pane" data-content-admin-preview-pane src="@Model.PreviewUrl"></iframe>
+            <iframe id="content-admin-preview-pane" data-content-admin-preview-pane src="@(Model?.PreviewUrl ?? ViewData["PreviewUrl"])"></iframe>
         </main>
         <div class="right-nav bg-white" data-content-parent>
             <div class="row justify-content-between">
