@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Admin.Models
@@ -7,6 +8,7 @@ namespace MrCMS.Web.Admin.Models
         public int Id { get; set; }
 
         [Required]
+        [DisplayName("Page")]
         public int PageId { get; set; }
     }
 }

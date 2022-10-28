@@ -6,7 +6,7 @@ function initialize(el) {
             url: "/Admin/Webpage/Select2Search",
             data: function (params) {
                 return {
-                    search: params.term,
+                    term: params.term,
                     page: params.page || 1
                 };
             },
@@ -33,7 +33,7 @@ function formatResult(item) {
     if (item.loading) {
         return item.text;
     }
-    
+
     return `${item.text} ${item.id.length ? `(${item.id})` : ''}`;
 }
 
