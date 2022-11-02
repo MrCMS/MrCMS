@@ -14,15 +14,20 @@ namespace MrCMS.Website.Auth
             _aclKeyGenerator = aclKeyGenerator;
         }
 
-        public IList<string> GetKeys<TAclRule>(string operation) where TAclRule : ACLRule
+        public string GetKey<TAclRule>(string operation) where TAclRule : ACLRule
+        {
+            return _aclKeyGenerator.GetKey(AclType.ExplicitRule, typeof(TAclRule).Name, operation);
+        }
+
+        public IReadOnlyList<string> GetKeys<TAclRule>(string operation) where TAclRule : ACLRule
         {
             return new List<string>
             {
-                _aclKeyGenerator.GetKey(AclType.ExplicitRule, typeof(TAclRule).Name, operation)
+                GetKey<TAclRule>(operation)
             };
         }
 
-        public IList<string> GetKeys(ControllerActionDescriptor descriptor)
+        public IReadOnlyList<string> GetKeys(ControllerActionDescriptor descriptor)
         {
             var acl = descriptor.MethodInfo.GetCustomAttribute<AclAttribute>() ??
                       descriptor.ControllerTypeInfo.GetCustomAttribute<AclAttribute>();
@@ -37,6 +42,7 @@ namespace MrCMS.Website.Auth
             {
                 keys.Add(_aclKeyGenerator.GetKey(AclType.ExplicitRule, acl.Name, acl.Operation));
             }
+
             return keys;
         }
     }

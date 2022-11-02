@@ -6,7 +6,7 @@ function initialize(el) {
             url: "/Admin/Webpage/Select2Search",
             data: function (params) {
                 return {
-                    search: params.term,
+                    term: params.term,
                     page: params.page || 1
                 };
             },
@@ -44,5 +44,15 @@ function formatSelection(item) {
 export function setupWebpageSelect2() {
     $('[data-webpage-search-select2]').each(function (index, el) {
         initialize($(el));
+    });
+    $(document).on('submit', '[data-webpage-search-form]', search);
+}
+
+function search(event) {
+    event.preventDefault();
+    let form = $(event.target);
+
+    $.post(form.attr('action'), form.serialize(), function(response) {
+        $('[data-webpage-search-results]').replaceWith(response);
     });
 }

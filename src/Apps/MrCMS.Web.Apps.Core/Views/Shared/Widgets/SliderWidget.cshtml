@@ -31,10 +31,8 @@
                     }
                     @if (!string.IsNullOrWhiteSpace(slide.Caption))
                     {
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>
-                                @slide.Caption
-                            </h5>
+                        <div class="carousel-caption @widget.CaptionCssClass">
+                            @slide.Caption
                         </div>
                     }
                 </a>

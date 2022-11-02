@@ -6,6 +6,7 @@ namespace MrCMS.Website.Caching
 {
     public interface ICacheManager
     {
+        T Get<T>(string key);
         T GetOrCreate<T>(string key, Func<T> func, TimeSpan time, CacheExpiryType cacheExpiryType,
             CacheItemPriority priority = CacheItemPriority.Normal);
         Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> func, TimeSpan time, CacheExpiryType cacheExpiryType,

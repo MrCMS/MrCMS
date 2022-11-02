@@ -9,6 +9,7 @@ namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 public class ImageAndText : IContentBlock
 {
     public ImageAndTextLayout Layout { get; set; }
+    public VerticalAlignment ContentVerticalAlignment { get; set; }
 
     public IReadOnlyList<BlockItem> Items => new BlockItem[] { Image, Text };
 
@@ -20,5 +21,12 @@ public class ImageAndText : IContentBlock
     {
         ImageStart,
         ImageEnd
+    }
+    
+    public enum VerticalAlignment
+    {
+        Start,
+        Center,
+        End
     }
 }

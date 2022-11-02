@@ -1,4 +1,5 @@
-﻿@import "dropzone";
+﻿@import url("../lib/dropzone/dropzone.css");
+@import "dropzone-override";
 //@import "featherlight";
 @import "jquery.mrcms-mediaselector";
 html {
@@ -746,6 +747,29 @@ fieldset[disabled] {
         .mrcms-btn-block {
             margin-top: 5px;
         }
+    }
+}
+
+.mrcms-preview-block{
+    transition: animation .5s ease;
+    border: 2px dashed transparent;
+    &.highlight{
+        animation: preview-border-blink 1.5s linear infinite;
+        border: 2px dashed #007bff;
+    }
+    &:hover{
+        border: 2px dashed #007bff;
+    }
+}
+@keyframes preview-border-blink {
+    0% {
+        border-color:#007bff;
+    }
+    50% {
+        border-color:transparent;
+    }
+    100% {
+        border-color:#007bff;
     }
 }
 

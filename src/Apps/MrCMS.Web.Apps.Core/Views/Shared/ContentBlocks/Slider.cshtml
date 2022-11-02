@@ -5,27 +5,30 @@
 
 @if (Model.Slides?.Any() ?? false)
 {
-    <div id="@(sliderId)" class="carousel slide my-3" data-ride="carousel" data-interval="@Model.Interval" data-pause="@(Model.PauseOnHover ? "hover" : "false")">
+    <div id="@(sliderId)" class="carousel slide my-3" data-bs-ride="carousel" data-bs-interval="@Model.Interval" data-bs-pause="@(Model.PauseOnHover ? "hover" : "false")">
         @if (Model.ShowIndicator)
         {
             <ol class="carousel-indicators">
                 @for (var i = 0; i < Model.Slides.Count; i++)
                 {
-                    <li data-target="#@(sliderId)" data-slide-to="@i" class="@(i==0 ? "active" : "")"></li>
+                    <li data-target="#@(sliderId)" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
                 }
             </ol>
         }
         <div class="carousel-inner">
             @for (var i = 0; i < Model.Slides.Count; i++)
             {
-                <div class="carousel-item @(i==0 ? "active" : "")">
-                    @await Html.RenderImage(@Model.Slides[i].Url)
+                var hasMobileImage = !string.IsNullOrWhiteSpace(Model.Slides[i].MobileImageUrl);
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    @await Html.RenderImage(Model.Slides[i].Url, attributes: new { @class = hasMobileImage ? "d-none d-sm-block" : "" })
+                    @if (hasMobileImage)
+                    {
+                        @await Html.RenderImage(Model.Slides[i].MobileImageUrl, attributes: new { @class = "d-sm-none" })
+                    }
                     @if (!string.IsNullOrWhiteSpace(Model.Slides[i].Caption))
                     {
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>
-                                @Model.Slides[i].Caption
-                            </h5>
+                        <div class="carousel-caption @Model.CaptionCssClass">
+                            @Model.Slides[i].Caption
                         </div>
                     }
                 </div>

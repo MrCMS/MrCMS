@@ -14,7 +14,7 @@ namespace MrCMS.Web.Apps.Core.Bundles
         public IEnumerable<string> VendorFiles
         {
             get { 
-                yield return "/Apps/Core/Content/lib/bootstrap/dist/css/bootstrap.min.css";
+                yield return "/Apps/Core/Content/lib/bootstrap/css/bootstrap.min.css";
                 yield return "/Apps/Core/Content/lib/glightbox/css/glightbox.min.css";
             }
         }

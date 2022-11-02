@@ -15,7 +15,7 @@
         <div asp-validation-summary="ModelOnly"></div>
         <div class="form-group">
             <label asp-for="PageId"></label>
-            <input type="hidden" asp-for="PageId" data-webpage-search-select2 class="form-control"/>
+            @Html.DropDownListFor(f => f.PageId, new List<SelectListItem>(), new { @class = "form-control", data_webpage_search_select2 = true })
         </div>
     </fieldset>
 </form>

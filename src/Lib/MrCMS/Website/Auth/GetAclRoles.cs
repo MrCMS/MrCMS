@@ -17,7 +17,7 @@ namespace MrCMS.Website.Auth
             _roleManager = roleManager;
         }
 
-        public List<ACLRole> GetRoles(IList<string> roles, IList<string> keys)
+        public IReadOnlyList<ACLRole> GetRoles(IEnumerable<string> roles, IEnumerable<string> keys)
         {
             var roleIds = _roleManager.Roles.Where(role => roles.Contains(role.Name))
                 .Select(x => x.Id)

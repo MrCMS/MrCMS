@@ -53,11 +53,9 @@ function enableEditors() {
         const el = x;
         if (el.getAttribute('contenteditable') !== 'true')
             el.setAttribute('contenteditable', 'true');
-
-        if (el.dataset.isHtml === true) {
+        if (el.dataset.isHtml === 'true') {
             const editor = parent.CKEDITOR.inline(el);
             original = null;
-
             editor.on('focus', function (e) {
                 fetch('/Admin/InPageAdmin/GetUnformattedContent/?' + new URLSearchParams({
                     id: el.dataset.id,
@@ -68,7 +66,6 @@ function enableEditors() {
                     original = e.editor.getData();
                 })
             });
-
             editor.on('blur', function (e) {
                 if (original !== e.editor.getData()) {
                     const data = {
@@ -100,7 +97,7 @@ function enableEditors() {
             });
         }
     })
-    
+
     function saveInlineEdit(data, el){
         fetch('/Admin/InPageAdmin/SaveContent', {
             method: 'POST',
@@ -150,7 +147,7 @@ function enableEditors() {
         let html = "<div class='edit-indicator-content-block' style='position: absolute;cursor: pointer;z-index: 9999;'><img src='/Areas/Admin/Content/img/pencil.png' /></div>";
         x.insertAdjacentHTML('afterbegin', html);
     })
-    
+
     editWidgetIndicators = document.querySelectorAll('.edit-indicator-widget');
     editWidgetMenuIndicators = document.querySelectorAll('.edit-widget-menu');
     editLayoutMenuIndicators = document.querySelectorAll('.edit-layout-area-menu');
@@ -179,7 +176,7 @@ function enableEditors() {
         const name = el.dataset.widgetName;
         const menu = `<div class="mrcms-edit-menu mrcms-edit-widget"><h4>${name}</h4><ul><li><a id="" href="/Admin/Widget/Edit/${widgetId}?returnUrl=${window.top.location}" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Edit</a></li><li><a id="" href="/Admin/Widget/Delete/${widgetId}" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-danger">Delete</a></li></ul></div>`;
 
-        el.parentElement.insertAdjacentHTML('afterbegin', menu);
+        el.insertAdjacentHTML('afterbegin', menu);
         let menuElement = document.querySelectorAll('.mrcms-edit-widget')[0];
 
         menuElement.style.display = 'block';
@@ -233,7 +230,7 @@ function disableEditing() {
     editLayoutMenuIndicators.forEach(x => x.remove());
     editContentBlockIndicators.forEach(x=>x.remove());
     document.querySelectorAll(editableSelector).forEach(x => {
-        if (x.dataset.isHtml === true) {
+        if (x.dataset.isHtml === 'true') {
             showLiveForm(x);
         }
     });
@@ -253,14 +250,27 @@ function killCkeditors() {
 }
 
 function showLiveForm(el) {
-    $.get('/Admin/InPageAdmin/GetFormattedContent/', {
+    let url = '/Admin/InPageAdmin/GetFormattedContent';
+    url += "?";
+    let data={
         id: el.dataset.id,
         property: el.dataset.property,
         type: el.dataset.type
-    }, function (response) {
+    };
+    for (let k in data) {
+        url += k + "=" + data[k] + "&";
+    }
+    url = encodeURI(url.slice(0, -1));
+    fetch(url).then(function (response) {
+        return response.text();
+    }).then(function (response) {
         el.innerHTML = response;
-        let forms = el.querySelectorAll('form');
-        $.validator.unobtrusive.parse(forms[0]);
+        //let forms = el.querySelectorAll('form');
+        // $.validator.unobtrusive.parse(forms[0]);            $ is not defined
+
+    }).catch(function (err) {
+        // There was an error
+        console.warn('Something went wrong.', err);
     });
 }
 

@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,13 +49,14 @@ namespace MrCMS.Apps
                     options.Filters.Add<CanonicalLinksFilter>();
                     options.Filters.Add<AddWebpageViewsData>();
                     options.Filters.Add<HoneypotFilter>();
-                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    options.Filters.Add<LogAntiforgeryValidationFailedResultFilter>();
+                    options.Filters.Add(new MrCMSAutoValidateAntiforgeryTokenAttribute { });
                     var index = options.ValueProviderFactories.IndexOf(
                         options.ValueProviderFactories.OfType<QueryStringValueProviderFactory>().Single());
                     options.ValueProviderFactories[index] = new CulturedQueryStringValueProviderFactory();
                     appContext.SetupMvcOptions(options);
                 })
-                .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions)))
+                .AddApplicationPart(Assembly.GetAssembly(typeof(MrCMSAppRegistrationExtensions))!)
                 .AddRazorOptions(options =>
                 {
                     options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());

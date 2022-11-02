@@ -15,7 +15,8 @@ public class YoutubeVideoAdminConfiguration : BlockItemAdminConfigurationBase<Yo
             ShowPlayerControl = block.ShowPlayerControl,
             StartAt = block.StartAt,
             VideoId = block.VideoId,
-            Poster = block.Poster
+            Poster = block.Poster,
+            MobilePoster = block.MobilePoster
         };
     }
 
@@ -27,5 +28,6 @@ public class YoutubeVideoAdminConfiguration : BlockItemAdminConfigurationBase<Yo
         block.ShowPlayerControl = editModel.ShowPlayerControl;
         block.Autoplay = editModel.Autoplay;
         block.Poster = editModel.Poster;
+        block.MobilePoster = editModel.MobilePoster;
     }
 }

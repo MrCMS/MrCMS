@@ -21,8 +21,9 @@ namespace MrCMS.Website.Controllers
         [Route(RouteUrl)]
         public async Task<RedirectResult> Logout()
         {
+            var user = User;
             await _signInManager.SignOutAsync();
-            await _eventContext.Publish<IOnLoggedOut, LoggedOutEventArgs>(new LoggedOutEventArgs());
+            await _eventContext.Publish<IOnLoggedOut, LoggedOutEventArgs>(new LoggedOutEventArgs(user));
             return Redirect("~/");
         }
     }

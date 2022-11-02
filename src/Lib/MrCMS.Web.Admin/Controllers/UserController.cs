@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
+using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.ModelBinders;
@@ -20,16 +23,18 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly IRoleService _roleService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
         private readonly IUserImpersonationService _userImpersonationService;
+        private readonly UserManager _userManager;
 
         public UserController(IUserAdminService userAdminService, IUserSearchService userSearchService,
             IRoleService roleService,
-            IGetUserCultureOptions getUserCultureOptions, IUserImpersonationService userImpersonationService)
+            IGetUserCultureOptions getUserCultureOptions, IUserImpersonationService userImpersonationService, UserManager userManager)
         {
             _userAdminService = userAdminService;
             _userSearchService = userSearchService;
             _roleService = roleService;
             _getUserCultureOptions = getUserCultureOptions;
             _userImpersonationService = userImpersonationService;
+            _userManager = userManager;
         }
 
         [Acl(typeof(UserACL), UserACL.View)]
@@ -132,11 +137,19 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<IActionResult> Impersonate(int id)
         {
             var user = await _userAdminService.GetUser(id);
-            var result = await _userImpersonationService.Impersonate(user);
+            var result = await _userImpersonationService.Impersonate(User, user);
             if (result.Success)
                 return Redirect("~/");
             TempData.AddErrorMessage(result.Error);
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> ResetSecurityStamp(int id)
+        {
+            var user = await _userAdminService.GetUser(id);
+            var result = await _userManager.UpdateSecurityStampAsync(user);
+            TempData.AddSuccessMessage("Security Stamp Updated. User will be logged out in the next few minutes.");
+            return RedirectToAction("Edit", new { id });
         }
     }
 }

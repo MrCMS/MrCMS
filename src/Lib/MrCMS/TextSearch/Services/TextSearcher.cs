@@ -29,7 +29,7 @@ namespace MrCMS.TextSearch.Services
 
         public async Task<IList<TextSearchItem>> Search(ITextSearcher.TextSearcherQuery query)
         {
-            return await BuildQuery(query).Take(query.ResultSize).ListAsync();
+            return await BuildQuery(query).Take(query.ResultSize).ToListAsync();
         }
 
         public async Task<IPagedList<TextSearchItem>> SearchPaged(ITextSearcher.PagedTextSearcherQuery query)
@@ -44,11 +44,11 @@ namespace MrCMS.TextSearch.Services
                 .OfType<BaseTextSearchEntityConverter>().Select(x => x.BaseType).Distinct().ToList();
         }
 
-        private IQueryOver<TextSearchItem, TextSearchItem> BuildQuery(ITextSearcher.TextSearcherQuery searcherQuery)
+        private IQueryable<TextSearchItem> BuildQuery(ITextSearcher.TextSearcherQuery searcherQuery)
         {
             var currentSiteId = _currentSiteLocator.GetCurrentSite().Id;
-            var query = _session.QueryOver<TextSearchItem>()
-                .Where(x => x.Text.IsInsensitiveLike(searcherQuery.Term, MatchMode.Anywhere))
+            var query = _session.Query<TextSearchItem>()
+                .Where(x => x.Text.Contains(searcherQuery.Term))
                 .Where(x => x.SiteId == null || x.SiteId == currentSiteId);
 
             if (!string.IsNullOrWhiteSpace(searcherQuery.Type))
@@ -67,20 +67,14 @@ namespace MrCMS.TextSearch.Services
             query = searcherQuery.SortBy switch
             {
                 ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.UpdatedOnDesc => query
-                    .OrderBy(x => x.EntityUpdatedOn)
-                    .Desc,
-                ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.UpdatedOn => query.OrderBy(x => x.EntityUpdatedOn)
-                    .Asc,
+                    .OrderByDescending(x => x.EntityUpdatedOn),
+                ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.UpdatedOn => query.OrderBy(x => x.EntityUpdatedOn),
                 ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.CreatedOnDesc => query
-                    .OrderBy(x => x.EntityCreatedOn)
-                    .Desc,
-                ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.CreatedOn => query.OrderBy(x => x.EntityCreatedOn)
-                    .Asc,
-                ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.DisplayName => query.OrderBy(x => x.DisplayName)
-                    .Asc,
+                    .OrderByDescending(x => x.EntityCreatedOn),
+                ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.CreatedOn => query.OrderBy(x => x.EntityCreatedOn),
+                ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.DisplayName => query.OrderBy(x => x.DisplayName),
                 ITextSearcher.TextSearcherQuery.TextSearcherQuerySort.DisplayNameDesc => query
-                    .OrderBy(x => x.DisplayName)
-                    .Desc,
+                    .OrderByDescending(x => x.DisplayName),
                 _ => throw new ArgumentOutOfRangeException()
             };
 

@@ -1,9 +1,19 @@
 @model MrCMS.Web.Apps.Core.Areas.Admin.Models.Content.UpdateTextAdminModel
+@using MrCMS.Web.Apps.Core.Entities.ContentBlocks
 
+@{
+    var aligmentOptions = EnumHelper<Text.Aligment>.GetOptions();
+}
 <div class="form-group">
     @Html.LabelFor(x => x.Heading)
     @Html.TextBoxFor(x => x.Heading, new { @class = "form-control" })
     @Html.ValidationMessageFor(x => x.Heading)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.HeadingAligment)
+    @Html.DropDownListFor(x => x.HeadingAligment,aligmentOptions, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.HeadingAligment)
 </div>
 
 <div class="form-group">

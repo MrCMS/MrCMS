@@ -14,7 +14,5 @@ namespace MrCMS.Web.Admin.Models
         [Required]
         [DisplayName("Path")]
         public string UrlSegment { get; set; }
-
-        public bool IsGallery { get; set; }
     }
 }

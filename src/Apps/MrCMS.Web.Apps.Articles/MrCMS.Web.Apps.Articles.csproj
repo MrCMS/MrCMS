@@ -4,6 +4,13 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/Apps/Articles/</StaticWebAssetBasePath>
+		<Configurations>Debug;Release;Debug-Skip-JS</Configurations>
+		<Platforms>AnyCPU</Platforms>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug-Skip-JS' ">
+	  <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+	  <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
 	</PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +23,7 @@
     <ItemGroup>
         <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     </ItemGroup>
 

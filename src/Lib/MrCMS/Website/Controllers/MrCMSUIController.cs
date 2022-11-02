@@ -4,7 +4,7 @@ using MrCMS.Helpers;
 namespace MrCMS.Website.Controllers
 {
     [HandleWebpageViews]
-    [AutoValidateAntiforgeryToken]
+    // [AutoValidateAntiforgeryToken]
     public abstract class MrCMSUIController : MrCMSController
     {
         public void SetPageTitle(string pageTitle)

@@ -1,3 +1,4 @@
+@using System.Drawing
 @model MrCMS.Web.Apps.Core.Entities.BlockItems.YoutubeVideo
 
 @if (string.IsNullOrWhiteSpace(Model.Poster))
@@ -8,9 +9,14 @@
 }
 else
 {
+    var hasMobilePoster = !string.IsNullOrWhiteSpace(Model.MobilePoster);
     <a href="@Model.GetUrl()" class="embed-responsive embed-responsive-16by9 my-3 glightbox">
         <div class="video-placeholder">
-            <img src="@Model.Poster" />
+            @await Html.RenderImage(Model.Poster, attributes: new { @class = hasMobilePoster ? "d-none d-sm-block" : "" })
+            @if (hasMobilePoster)
+            {
+                @await Html.RenderImage(Model.MobilePoster, new Size { Width = 560 }, attributes: new { @class = "d-sm-none" })
+            }
             <div class="video-play"></div>
         </div>
     </a>

@@ -31,6 +31,9 @@
 {
     @await RenderSectionAsync("JavaScriptBlock")
 }
-<mini-profiler/>
+@if (SessionHelper.IsMiniProfileEnabled)
+{
+    <mini-profiler/>    
+}
 </body>
 </html>

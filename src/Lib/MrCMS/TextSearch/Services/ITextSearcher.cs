@@ -23,7 +23,7 @@ namespace MrCMS.TextSearch.Services
             public DateTime? UpdatedOnFrom { get; set; }
             public DateTime? UpdatedOnTo { get; set; }
 
-            public int ResultSize { get; set; } = 10;
+            public int ResultSize { get; set; } = 20;
 
             public TextSearcherQuerySort SortBy { get; set; }
 

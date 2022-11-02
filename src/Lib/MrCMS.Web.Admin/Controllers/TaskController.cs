@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Tasks;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
 using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
+using Quartz;
 
 namespace MrCMS.Web.Admin.Controllers
 {
@@ -34,6 +36,15 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpPost]
         public async Task<RedirectToActionResult> Edit(TaskUpdateData taskInfo)
         {
+            if (!string.IsNullOrWhiteSpace(taskInfo.CronSchedule))
+            {
+                var valid = CronExpression.IsValidExpression(taskInfo.CronSchedule);
+                if (!valid)
+                {
+                    TempData.AddErrorMessage("Cron expression is invalid");
+                    return RedirectToAction("Index");
+                }
+            }
             var result = await _taskAdminService.Update(taskInfo);
 
             if (result)

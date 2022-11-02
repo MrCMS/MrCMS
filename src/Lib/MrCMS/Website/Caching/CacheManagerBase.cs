@@ -12,6 +12,12 @@ namespace MrCMS.Website.Caching
         {
             Cache = cache;
         }
+        
+
+        public T Get<T>(string key)
+        {
+            return Cache.Get<T>(key);
+        }
 
         public T GetOrCreate<T>(string key, Func<T> func, TimeSpan time, CacheExpiryType cacheExpiryType,
             CacheItemPriority priority = CacheItemPriority.Normal)
@@ -48,7 +54,7 @@ namespace MrCMS.Website.Caching
                 return await func();
             }
 
-            return await CacheExtensions.GetOrCreateAsync(Cache, key, async entry =>
+            return await Cache.GetOrCreateAsync(key, async entry =>
             {
                 var value = await func();
                 switch (cacheExpiryType)
@@ -71,19 +77,19 @@ namespace MrCMS.Website.Caching
             CacheItemPriority priority = CacheItemPriority.Normal)
         {
             var value = await func();
-            var entry = Cache.CreateEntry(key);
+            using var entry = Cache.CreateEntry(key);
             switch (cacheExpiryType)
             {
                 case CacheExpiryType.Sliding:
-                    entry.SlidingExpiration = time;
+                    entry.SetSlidingExpiration(time);
                     break;
                 case CacheExpiryType.Absolute:
-                    entry.AbsoluteExpirationRelativeToNow = time;
+                    entry.SetAbsoluteExpiration(time);
                     break;
             }
 
             entry.Value = value;
-            CacheEntryExtensions.SetPriority(entry, priority);
+            entry.SetPriority(priority);
         }
     }
 }

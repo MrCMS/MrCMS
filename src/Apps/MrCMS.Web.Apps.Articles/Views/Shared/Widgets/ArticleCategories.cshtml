@@ -4,24 +4,22 @@
 @using MrCMS.Web.Apps.Articles.Pages
 @using MrCMS.Web.Apps.Articles.Services.Widgets
 @using MrCMS.Web.Apps.Articles.Widgets
-
 @model WidgetData
 @inject IWidgetUIService WidgetUIService
-
 @{
     var widget = await WidgetUIService.GetWidgetAsync<ArticleCategories>(Model.Id);
 }
-@{
-    if (widget.ShowNameAsTitle)
-    {
-        <h4>@widget.Name</h4>
-    }
+@if (widget is {ShowNameAsTitle: true })
+{
+    <h4>@widget.Name</h4>
 }
-<ul class="nav nav-pills nav-stacked">
-    @foreach (var category in widget.ArticleList.Tags)
-    {
-        <li class="@((!string.IsNullOrEmpty(widget.Category) && widget.Category == category.Name) ? "active" : "")">
-            <a href="/@widget.ArticleList.UrlSegment?category=@category.Name">@category.Name</a>
-        </li>
-    }
-</ul>
+@if (widget.ArticleList is {IsDeleted: false }){
+    <ul class="nav nav-pills nav-stacked">
+        @foreach (var category in widget.ArticleList.Tags)
+        {
+            <li class="@((!string.IsNullOrEmpty(widget.Category) && widget.Category == category.Name) ? "active" : "")">
+                <a href="/@widget.ArticleList.UrlSegment?category=@category.Name">@category.Name</a>
+            </li>
+        }
+    </ul>
+}

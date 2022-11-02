@@ -25,35 +25,16 @@ namespace MrCMS.Web.Admin.Services
         private static readonly HashSet<Type> AddPropertiesTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(
             typeof(IAddPropertiesViewModel<>));
 
-        private static readonly HashSet<Type> UpdatePropertiesTypes = TypeHelper.GetAllConcreteTypesAssignableFromGeneric(
-            typeof(IUpdatePropertiesViewModel<>));
-
         public object GetAdditionalPropertyModel(string type)
         {
             if (string.IsNullOrWhiteSpace(type))
                 return null;
 
-            var widgetType = TypeHelper.GetTypeByName(type);
-            if (widgetType == null)
+            var webpageType = TypeHelper.GetTypeByName(type);
+            if (webpageType == null)
                 return null;
             var additionalPropertyType = AddPropertiesTypes.FirstOrDefault(x =>
-                typeof(IAddPropertiesViewModel<>).MakeGenericType(widgetType).IsAssignableFrom(x));
-            if (additionalPropertyType == null)
-                return null;
-
-            return Activator.CreateInstance(additionalPropertyType);
-        }
-
-        public object GetUpdateAdditionalPropertyModel(string type)
-        {
-            if (string.IsNullOrWhiteSpace(type))
-                return null;
-
-            var widgetType = TypeHelper.GetTypeByName(type);
-            if (widgetType == null)
-                return null;
-            var additionalPropertyType = UpdatePropertiesTypes.FirstOrDefault(x =>
-                typeof(IUpdatePropertiesViewModel<>).MakeGenericType(widgetType).IsAssignableFrom(x));
+                typeof(IAddPropertiesViewModel<>).MakeGenericType(webpageType).IsAssignableFrom(x));
             if (additionalPropertyType == null)
                 return null;
 
@@ -88,12 +69,6 @@ namespace MrCMS.Web.Admin.Services
         {
             var widget = await GetWidget(id);
             return GetAdditionalPropertyModel(widget?.WidgetType);
-        }
-
-        public async Task<object> GetUpdateAdditionalPropertyModel(int id)
-        {
-            var widget = await GetWidget(id);
-            return GetUpdateAdditionalPropertyModel(widget?.WidgetType);
         }
 
         public async Task<Widget> UpdateWidget(UpdateWidgetModel model, object additionalPropertyModel)

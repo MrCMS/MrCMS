@@ -70,6 +70,20 @@ namespace MrCMS.Helpers
                 SessionHelper.DefaultPageSize = 25;
             }
         }
+        
+        public static void SetMaxFileSize(this IConfiguration configuration)
+        {
+            try
+            {
+                var maxFileSize = configuration.GetValue<long>("MaxFileSize");
+                SessionHelper.MaxFileSize = maxFileSize > 0 ? maxFileSize : 104857600;
+            }
+            catch
+            {
+                SessionHelper.MaxFileSize = 104857600;
+            }
+        }
+        
         public static void SetMiniProfilerEnableStatus(this IConfiguration configuration)
         {
             try

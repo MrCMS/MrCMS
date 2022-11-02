@@ -31,7 +31,7 @@ namespace MrCMS.DbConfiguration.Overrides
             //Permission mappings
             mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles)
                 .Table("FrontEndWebpageRoles")
-                .ParentKeyColumn("WebpageId").Cache.ReadWrite();
+                .ParentKeyColumn("WebpageId");
         }
     }
 }

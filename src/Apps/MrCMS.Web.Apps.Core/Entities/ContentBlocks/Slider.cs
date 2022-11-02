@@ -14,6 +14,7 @@ public class Slider : IContentBlockWithSortableChildCollection
     {
         ShowIndicator = true;
         Interval = 5000;
+        CaptionCssClass = "d-none d-md-block";
     }
     public IReadOnlyList<BlockItem> Items => Slides;
     public List<Slide> Slides { get; set; } = new();
@@ -23,6 +24,7 @@ public class Slider : IContentBlockWithSortableChildCollection
     public bool ShowIndicator { get; set; }
 
     public bool PauseOnHover { get; set; }
+    public string CaptionCssClass { get; set; }
 
     public BlockItem AddChild()
     {

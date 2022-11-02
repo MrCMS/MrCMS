@@ -12,9 +12,9 @@ namespace MrCMS.Helpers
         public const string RenderUrlPrefix = "RenderImage.Url.";
         public const string RenderInfoPrefix = "RenderImage.Info.";
 
-        public static CachingInfo GetImageTagCachingInfo(this MediaSettings mediasettings, string imageUrl, Size targetSize = default(Size), string alt = null, string title = null, bool enableCaption = false, object attributes = null)
+        public static CachingInfo GetImageTagCachingInfo(this MediaSettings mediasettings, string imageUrl, Size targetSize = default(Size), string alt = null, string title = null, bool enableCaption = false, bool enableLazyLoading = true, object attributes = null)
         {
-            var cacheKey = GetCacheKey(RenderTagPrefix, imageUrl, targetSize, alt, title, enableCaption, attributes);
+            var cacheKey = GetCacheKey(RenderTagPrefix, imageUrl, targetSize, alt, title, enableCaption, enableLazyLoading, attributes);
             return new CachingInfo(mediasettings.Cache, cacheKey, TimeSpan.FromSeconds(mediasettings.CacheLength), mediasettings.CacheExpiryType);
         }
 
@@ -29,7 +29,7 @@ namespace MrCMS.Helpers
             return new CachingInfo(mediasettings.Cache, cacheKey, TimeSpan.FromSeconds(mediasettings.CacheLength), mediasettings.CacheExpiryType);
         }
 
-        private static string GetCacheKey(string prefix, string imageUrl, Size targetSize, string alt = null, string title = null, bool enableCaption = false, object attributes = null)
+        private static string GetCacheKey(string prefix, string imageUrl, Size targetSize, string alt = null, string title = null, bool enableCaption = false, bool enableLazyLoading = true , object attributes = null)
         {
             var stringBuilder = new StringBuilder(prefix + imageUrl);
             if (targetSize != default(Size))
@@ -39,6 +39,7 @@ namespace MrCMS.Helpers
             if (!string.IsNullOrWhiteSpace(title))
                 stringBuilder.AppendFormat(";title:{0}", title);
             stringBuilder.AppendFormat(";enableCaption:{0}", enableCaption);
+            stringBuilder.AppendFormat(";enableLazyLoading:{0}", enableLazyLoading);
             if (attributes != null)
             {
                 var routeValueDictionary = MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(attributes);

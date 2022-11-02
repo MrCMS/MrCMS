@@ -11,11 +11,15 @@ public class ImageGallery : IContentBlockWithChildCollection
     public ImageGallery()
     {
         ResponsiveClasses = "col-sm-6 col-md-4 col-lg-3 col-xl-2";
+        ImageRatio = "7x9";
+        ImageRenderSize = 250;
     }
     public IReadOnlyList<BlockItem> Items => Images;
     public List<ImageGalleryItem> Images { get; set; } = new();
 
     public string ResponsiveClasses { get; set; }
+    public string ImageRatio { get; set; }
+    public int ImageRenderSize { get; set; }
 
     public BlockItem AddChild()
     {

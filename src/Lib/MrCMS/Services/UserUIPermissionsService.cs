@@ -16,9 +16,11 @@ namespace MrCMS.Services
 
         public async Task<PageAccessPermission> IsCurrentUserAllowed(Webpage webpage)
         {
+            if (!webpage.HasCustomPermissions) return PageAccessPermission.Allowed;
+            
             User user = await _getCurrentUser.Get();
             if (user != null && user.IsAdmin) return PageAccessPermission.Allowed;
-            
+
             if (!webpage.FrontEndAllowedRoles.Any()) return PageAccessPermission.Allowed;
             if (webpage.FrontEndAllowedRoles.Any() && user == null) return PageAccessPermission.Unauthorized;
             return user.Roles.Intersect(webpage.FrontEndAllowedRoles).Any()
