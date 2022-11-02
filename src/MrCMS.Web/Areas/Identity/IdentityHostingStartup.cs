@@ -81,7 +81,7 @@ namespace MrCMS.Web.Areas.Identity
 
                         options.User.RequireUniqueEmail = true;
                         options.ClaimsIdentity.UserNameClaimType = nameof(User.Email);
-                        options.ClaimsIdentity.UserIdClaimType = nameof(User.Id);
+                        options.ClaimsIdentity.SecurityStampClaimType = nameof(User.SecurityStamp);
                     })
                     .AddUserStore<UserStore>()
                     .AddRoleStore<RoleStore>()
