@@ -109,8 +109,10 @@ namespace MrCMS.Installation.Services
 
             await _serviceProvider.GetRequiredService<IInitializeDatabase>().Initialize(model);
             await _serviceProvider.GetRequiredService<ICreateInitialUser>().Create(model);
-            var installations = _serviceProvider.GetServices<IOnInstallation>()
-                .OrderBy(installation => installation.Priority);
+
+            var installations = TypeHelper.GetAllConcreteTypesAssignableFrom<IOnInstallation>()
+                .Select(_serviceProvider.GetService)
+                .Cast<IOnInstallation>().OrderBy(installation => installation.Priority);
             foreach (var installation in installations)
             {
                 await installation.Install(model);
