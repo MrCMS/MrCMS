@@ -3,13 +3,10 @@
 @using MrCMS.Services
 @using MrCMS.Web.Apps.Articles.Models
 @using MrCMS.Web.Apps.Articles.Pages
-@using MrCMS.Web.Apps.Articles.Services
-@using MrCMS.Website
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Articles.Pages.ArticleList
 @inject IGetLiveUrl GetLiveUrl
-@inject IGetCurrentPageUrl GetCurrentPageUrl
 
 @{
     var results = ViewData["paged-articles"] as IPagedList<Article> ?? PagingHelper.EmptyList<Article>();
