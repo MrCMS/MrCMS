@@ -9,13 +9,13 @@ namespace MrCMS.Web.Apps.Core.Bundles
         public int Priority { get; }
         public Task<bool> ShouldShow(string theme) => Task.FromResult(true);
 
-        public string Url => "/Apps/Core/assets/core.js";
+        public string Url => "/Apps/Core/assets/core-front-end.js";
 
         public IEnumerable<string> VendorFiles
         {
             get
             {
-                 yield break;
+                yield break;
             }
         }
     }

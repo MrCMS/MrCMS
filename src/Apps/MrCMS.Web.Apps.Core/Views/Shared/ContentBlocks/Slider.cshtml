@@ -8,23 +8,25 @@
     <div id="@(sliderId)" class="carousel slide my-3" data-bs-ride="carousel" data-bs-interval="@Model.Interval" data-bs-pause="@(Model.PauseOnHover ? "hover" : "false")">
         @if (Model.ShowIndicator)
         {
-            <ol class="carousel-indicators">
+            <div class="carousel-indicators">
                 @for (var i = 0; i < Model.Slides.Count; i++)
                 {
-                    <li data-target="#@(sliderId)" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+                    <button type="button" data-bs-target="#@(sliderId)" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></button>
                 }
-            </ol>
+            </div>
         }
         <div class="carousel-inner">
             @for (var i = 0; i < Model.Slides.Count; i++)
             {
                 var hasMobileImage = !string.IsNullOrWhiteSpace(Model.Slides[i].MobileImageUrl);
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    @await Html.RenderImage(Model.Slides[i].Url, attributes: new { @class = hasMobileImage ? "d-none d-sm-block" : "" })
-                    @if (hasMobileImage)
-                    {
-                        @await Html.RenderImage(Model.Slides[i].MobileImageUrl, attributes: new { @class = "d-sm-none" })
-                    }
+                    <div class="ratio ratio-16x9">
+                        @await Html.RenderImage(Model.Slides[i].Url, attributes: new { @class = hasMobileImage ? "d-none d-sm-block img-fluid" : "img-fluid" })
+                        @if (hasMobileImage)
+                        {
+                            @await Html.RenderImage(Model.Slides[i].MobileImageUrl, attributes: new { @class = "d-sm-none img-fluid" })
+                        }
+                    </div>
                     @if (!string.IsNullOrWhiteSpace(Model.Slides[i].Caption))
                     {
                         <div class="carousel-caption @Model.CaptionCssClass">
@@ -34,13 +36,13 @@
                 </div>
             }
         </div>
-        <a class="carousel-control-prev" href="#@(sliderId)" role="button" data-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#@(sliderId)" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#@(sliderId)" role="button" data-slide="next">
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#@(sliderId)" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 }

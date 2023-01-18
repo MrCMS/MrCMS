@@ -3,14 +3,14 @@
 
 @if (string.IsNullOrWhiteSpace(Model.Poster))
 {
-    <div class="embed-responsive embed-responsive-16by9 my-3">
+    <div class="ratio ratio-16x9 my-3">
         <iframe src='@Model.GetUrl()' frameborder='0' allow='accelerometer; autoplay;  clipboard-write; encrypted-media; gyroscope; picture-in-picture'></iframe>
     </div>
 }
 else
 {
     var hasMobilePoster = !string.IsNullOrWhiteSpace(Model.MobilePoster);
-    <a href="@Model.GetUrl()" class="embed-responsive embed-responsive-16by9 my-3 glightbox">
+    <a href="@Model.GetUrl()" class="ratio ratio-16x9 my-3 glightbox">
         <div class="video-placeholder">
             @await Html.RenderImage(Model.Poster, attributes: new { @class = hasMobilePoster ? "d-none d-sm-block" : "" })
             @if (hasMobilePoster)

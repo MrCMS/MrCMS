@@ -6,7 +6,7 @@
 
 @if (string.IsNullOrWhiteSpace(Model.Poster))
 {
-    <div class="embed-responsive embed-responsive-16by9 my-3">
+    <div class="ratio ratio-16x9 my-3">
         @Html.Raw(Model.EmbedCode)
     </div>
 }
@@ -15,7 +15,7 @@ else
     var hasMobilePoster = !string.IsNullOrWhiteSpace(Model.MobilePoster);
     <div class="my-3">
         <div class="collapse show" data-id="@(collapseId)" data-toggle="collapse" data-target="[data-id='@(collapseId)']" aria-expanded="true">
-            <div class="embed-responsive embed-responsive-16by9 my-3">
+            <div class="ratio ratio-16x9 my-3">
                 <div class="video-placeholder">
                     @await Html.RenderImage(Model.Poster, attributes: new { @class = hasMobilePoster ? "d-none d-sm-block" : "" })
                     @if (hasMobilePoster)
@@ -27,7 +27,7 @@ else
             </div>
         </div>
         <div class="collapse" data-id="@(collapseId)">
-            <div class="embed-responsive embed-responsive-16by9">
+            <div class="ratio ratio-16x9">
                 @Html.Raw(Model.EmbedCode)
             </div>
         </div>

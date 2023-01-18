@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "admin-js": "wwwroot/assets/core-admin.js",
-  "core-js": "wwwroot/assets/core.js",
-  "core-css": "wwwroot/assets/core.css",
+  "core-js": "wwwroot/assets/core-front-end.js",
+  "core-css": "wwwroot/assets/core-front-end.css",
   "targets": {
     "core-js": {},
     "core-css": {},
@@ -15,19 +15,24 @@
     "build:js": "npm run build:js:admin && npm run build:js:front-end",
     "build:js:admin": "parcel build wwwroot/Areas/Admin/Content/scripts/core-admin.js --target admin-js",
     "build:js:front-end": "parcel build wwwroot/Content/scripts/core.js --target core-js",
-    "build:css": "parcel build wwwroot/Content/styles/style.css --target core-css",
+    "build:css": "parcel build wwwroot/Content/styles/core.scss --target core-css",
     "watch": "concurrently --kill-others \"npm:watch:js\" \"npm:watch:css\"",
     "watch:js": "concurrently \"npm:watch:js:admin\" \"npm:watch:js:front-end\"",
     "watch:js:admin": "parcel watch wwwroot/Areas/Admin/Content/scripts/core-admin.js --target admin-js -p 1234",
     "watch:js:front-end": "parcel watch wwwroot/Content/scripts/core.js --target core-js -p 1235",
     "watch:css": "concurrently \"npm:watch:css:front-end\"",
-    "watch:css:front-end": "parcel watch wwwroot/Content/styles/style.css --target core-css -p 1237"
+    "watch:css:front-end": "parcel watch wwwroot/Content/styles/core.scss --target core-css -p 1237"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
     "parcel": "^2.6.0"
   },
   "dependencies": {
-    "glightbox": "^3.2.0"
+    "bootstrap": "^5.2.3",
+    "glightbox": "^3.2.0",
+    "jquery": "^3.6.3",
+    "jquery-validation": "^1.19.5",
+    "jquery-validation-unobtrusive": "^4.0.0",
+    "bootstrap-icons": "^1.10.3"
   }
 }
