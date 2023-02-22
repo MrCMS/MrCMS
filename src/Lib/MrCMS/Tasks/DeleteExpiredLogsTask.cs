@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.Settings;
 using MrCMS.Website;
@@ -31,32 +29,12 @@ namespace MrCMS.Tasks
             {
                 var configProvider = _configurationProviderFactory.GetForSite(site);
                 var siteSettings = configProvider.GetSiteSettings<SiteSettings>();
-                var logs = await GetLogs(site, siteSettings);
+                var now = _getDateTimeNow.LocalNow;
+                var expiredLogTime = now.AddDays(-siteSettings.DaysToKeepLogs);
 
-                while (logs.Any())
-                {
-                    IList<Log> currentLogs = logs;
-                    await _statelessSession.TransactAsync(async session =>
-                    {
-                        foreach (var log in currentLogs)
-                        {
-                            await session.DeleteAsync(log);
-                        }
-                    });
-                    logs = await GetLogs(site, siteSettings);
-                }
+                await _statelessSession.Query<Log>().Where(data =>
+                    data.Site.Id == site.Id && data.CreatedOn <= expiredLogTime).DeleteAsync();
             }
-        }
-
-        private async Task<IList<Log>> GetLogs(Site site, SiteSettings siteSettings)
-        {
-            var now = _getDateTimeNow.LocalNow;
-            return await
-                _statelessSession.QueryOver<Log>()
-                    .Where(data =>
-                        data.Site.Id == site.Id && data.CreatedOn <= now.AddDays(-siteSettings.DaysToKeepLogs))
-                    .Take(1000)
-                    .ListAsync();
         }
     }
 }
