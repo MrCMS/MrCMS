@@ -10,10 +10,10 @@ namespace MrCMS.Shortcodes.Forms
         public TagBuilder AppendSubmittedMessage(Form form, FormSubmittedStatus submittedStatus)
         {
             var message = new TagBuilder("div");
-            message.AddCssClass("alert");
+            message.AddCssClass("alert alert-dismissible fade show");
             message.AddCssClass(submittedStatus.Success ? "alert-success" : "alert-danger");
             message.InnerHtml.AppendHtml(
-                "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" +
+                "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>" +
                 (submittedStatus.Errors.Any()
                     ? RenderErrors(submittedStatus.Errors)
                     : (!string.IsNullOrWhiteSpace(form.FormSubmittedMessage)
