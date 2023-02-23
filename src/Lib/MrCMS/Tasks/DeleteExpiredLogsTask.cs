@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.Settings;
 using MrCMS.Website;
@@ -32,8 +33,11 @@ namespace MrCMS.Tasks
                 var now = _getDateTimeNow.LocalNow;
                 var expiredLogTime = now.AddDays(-siteSettings.DaysToKeepLogs);
 
-                await _statelessSession.Query<Log>().Where(data =>
-                    data.Site.Id == site.Id && data.CreatedOn <= expiredLogTime).DeleteAsync();
+                await _statelessSession.TransactAsync(async session =>
+                {
+                    await _statelessSession.Query<Log>().Where(data =>
+                        data.Site.Id == site.Id && data.CreatedOn <= expiredLogTime).DeleteAsync();
+                });
             }
         }
     }
