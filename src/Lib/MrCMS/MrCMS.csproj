@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
     <PackageReference Include="Azure.Storage.Blobs.Batch" Version="12.8.0" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="Dapper" Version="2.0.123" />
