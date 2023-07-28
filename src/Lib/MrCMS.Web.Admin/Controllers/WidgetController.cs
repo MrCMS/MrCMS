@@ -26,7 +26,7 @@ namespace MrCMS.Web.Admin.Controllers
         [HttpGet]
         public PartialViewResult Add(int id, string returnUrl = null)
         {
-            TempData["returnUrl"] = returnUrl;
+            ViewData["return-url"] = returnUrl;
             var model = new AddWidgetModel
             {
                 LayoutAreaId = id,
@@ -72,14 +72,7 @@ namespace MrCMS.Web.Admin.Controllers
             await _setAdminViewData.SetViewData(ViewData, widget);
             ViewData["widget"] = widget;
 
-            if (!string.IsNullOrEmpty(returnUrl))
-            {
-                ViewData["return-url"] = Request.Referer();
-            }
-            else
-            {
-                ViewData["return-url"] = returnUrl;
-            }
+            ViewData["return-url"] = returnUrl;
 
             return View(editModel);
         }
