@@ -10,16 +10,18 @@ public class SlideAdminConfiguration : BlockItemAdminConfigurationBase<Slide, Up
     {
         return new UpdateSlideAdminModel
         {
-            Url = block.Url,
+            Image = block.Image,
             Caption = block.Caption,
-            MobileImageUrl = block.MobileImageUrl
+            MobileImage = block.MobileImage,
+            Url = block.Image
         };
     }
 
     public override void UpdateBlockItem(Slide block, UpdateSlideAdminModel editModel)
     {
-        block.Url = editModel.Url;
-        block.MobileImageUrl = editModel.MobileImageUrl;
+        block.Image = editModel.Image;
+        block.MobileImage = editModel.MobileImage;
         block.Caption = editModel.Caption;
+        block.Image = editModel.Url;
     }
 }

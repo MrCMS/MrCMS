@@ -7,9 +7,10 @@ namespace MrCMS.Web.Apps.Core.Entities.BlockItems;
 [Display(Name = "Slide")]
 public class Slide : BlockItem
 {
-    public string Url { get; set; }
-    public string MobileImageUrl { get; set; }
+    public string Image { get; set; }
+    public string MobileImage { get; set; }
     public string Caption { get; set; }
+    public string Url { get; set; }
 
     public override string GetDisplayName(IContentBlock block)
     {
