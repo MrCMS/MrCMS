@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-[Display(Name = "Video")]
 public class Video : IContentBlock
 {
+    public string DisplayName => $"Video ({ActiveType})";
     public VideoType ActiveType { get; set; }
 
     public IReadOnlyList<BlockItem> Items => new BlockItem[] { Youtube, Embed };
@@ -18,7 +18,7 @@ public class Video : IContentBlock
 
     public enum VideoType
     {
-        Yotube,
+        Youtube,
         EmbedVideo
     }
 }

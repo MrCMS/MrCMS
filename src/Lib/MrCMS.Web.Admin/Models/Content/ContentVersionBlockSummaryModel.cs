@@ -9,12 +9,12 @@ public class ContentVersionBlockSummaryModel
 {
     public int Id { get; set; }
     public int Order { get; set; }
+    public string DisplayName { get; set; }
     public bool IsHidden { get; set; }
     public Guid Guid { get; set; }
     public Type Type { get; set; }
     public List<ContentVersionBlockItemSummaryModel> Items { get; set; }
     public bool ShowCaret => Items.Any() || CanAddChildren;
-    public string TypeName { get; set; }
     public bool CanAddChildren { get; set; }
     public bool CanOrderChildren { get; set; }
 }

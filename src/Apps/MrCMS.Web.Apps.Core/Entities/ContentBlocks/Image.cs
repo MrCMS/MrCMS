@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-[Display(Name = "Image")]
 public class Image : IContentBlock
 {
     public Image()
@@ -12,6 +11,8 @@ public class Image : IContentBlock
         Aligment = ImageAligment.Center;
         cssClasses = "img-fluid rounded";
     }
+    
+    public string DisplayName => "Image";
     public string Url { get; set; }
     public ImageAligment Aligment { get; set; }
     public string cssClasses { get; set; }

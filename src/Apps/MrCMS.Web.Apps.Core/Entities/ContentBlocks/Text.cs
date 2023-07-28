@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-[Display(Name = "Text")]
 public class Text : IContentBlock
 {
     public Text()
@@ -12,6 +11,7 @@ public class Text : IContentBlock
         HeadingAligment = Aligment.Start;
     }
 
+    public string DisplayName => "Text";
     public string Heading { get; set; }
     public Aligment HeadingAligment { get; set; }
     public string Subtext { get; set; }

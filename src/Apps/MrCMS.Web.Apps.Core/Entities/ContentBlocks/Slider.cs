@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-[Display(Name = "Slider")]
 public class Slider : IContentBlockWithSortableChildCollection
 {
     public Slider()
@@ -16,6 +15,7 @@ public class Slider : IContentBlockWithSortableChildCollection
         Interval = 5000;
         CaptionCssClass = "d-none d-md-block";
     }
+    public string DisplayName => $"Slider ({Slides.Count} slides)";
     public IReadOnlyList<BlockItem> Items => Slides;
     public List<Slide> Slides { get; set; } = new();
 

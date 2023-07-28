@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
-[Display(Name = "Image Gallery")]
 public class ImageGallery : IContentBlockWithChildCollection
 {
     public ImageGallery()
@@ -14,6 +13,8 @@ public class ImageGallery : IContentBlockWithChildCollection
         ImageRatio = "7x9";
         ImageRenderSize = 250;
     }
+    
+    public string DisplayName => $"Image Gallery ({Images.Count} images)";
     public IReadOnlyList<BlockItem> Items => Images;
     public List<ImageGalleryItem> Images { get; set; } = new();
 
