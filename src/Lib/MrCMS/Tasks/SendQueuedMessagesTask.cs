@@ -8,7 +8,7 @@ using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class SendQueuedMessagesTask : SchedulableTask
+    public class SendQueuedMessagesTask : ISendQueuedMessagesTask
     {
         public const int MAX_TRIES = 5;
         protected readonly ISession _session;
@@ -20,7 +20,7 @@ namespace MrCMS.Tasks
             _emailSender = emailSender;
         }
 
-        protected override async Task OnExecute()
+        public async Task Execute()
         {
             using (new SiteFilterDisabler(_session))
             {
@@ -42,5 +42,10 @@ namespace MrCMS.Tasks
                 });
             }
         }
+    }
+
+    public interface ISendQueuedMessagesTask
+    {
+        Task Execute();
     }
 }

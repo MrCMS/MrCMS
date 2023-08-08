@@ -3,6 +3,8 @@
     public class CoreACL : ACLRule
     {
         public const string ManagePages = "Manage Pages";
+        public const string CanViewUnpublishedPages = "Can View Unpublished Pages";
+        public const string ManageContentEditor = "Manage Content Editor";
         public const string ManageMedia = "Manage Media";
         public const string ManageLayouts = "Manage Layouts";
         public const string ManageForms = "Manage Forms";

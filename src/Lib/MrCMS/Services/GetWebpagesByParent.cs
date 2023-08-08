@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Data;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using NHibernate.Linq;
 

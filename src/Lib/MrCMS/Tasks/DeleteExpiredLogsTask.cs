@@ -10,7 +10,7 @@ using NHibernate.Linq;
 
 namespace MrCMS.Tasks
 {
-    public class DeleteExpiredLogsTask : SchedulableTask
+    public class DeleteExpiredLogsTask : IDeleteExpiredLogsTask
     {
         private readonly IStatelessSession _statelessSession;
         private readonly IConfigurationProviderFactory _configurationProviderFactory;
@@ -24,7 +24,7 @@ namespace MrCMS.Tasks
             _getDateTimeNow = getDateTimeNow;
         }
 
-        protected override async Task OnExecute()
+        public async Task Execute()
         {
             foreach (var site in await _statelessSession.Query<Site>().ToListAsync())
             {
@@ -40,5 +40,10 @@ namespace MrCMS.Tasks
                 });
             }
         }
+    }
+
+    public interface IDeleteExpiredLogsTask
+    {
+        Task Execute();
     }
 }

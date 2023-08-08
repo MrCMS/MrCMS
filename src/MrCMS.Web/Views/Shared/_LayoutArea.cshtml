@@ -1,12 +1,17 @@
-@using MrCMS.Entities.Widget
 @using MrCMS.Services
+@using MrCMS.Entities.Widget
 @using MrCMS.Website.Caching
-@model MrCMS.Website.WidgetDisplayInfo
+@model WidgetDisplayInfo
 @inject IWidgetUIService WidgetUiService
 @foreach (var info in Model.Widgets)
 {
     var widget = await WidgetUiService.GetWidgetAsync<Widget>(info.Id);
-    <cache enabled="@(widget.Cache)" expires-after="@(widget.CacheExpiryType == CacheExpiryType.Absolute ? TimeSpan.FromSeconds(widget.CacheLength) : null)" expires-sliding="@(widget.CacheExpiryType == CacheExpiryType.Sliding ? TimeSpan.FromSeconds(widget.CacheLength) : null)" vary-by-user="@(widget.GetWidgetOutputCacheable().PerUser)" vary-by="@(widget.GetWidgetOutputCacheable().PerPage ? widget.Id : $"{widget.Id}_{Context.Session.Id}")">
+    var varyBy = widget.GetWidgetOutputCacheable().PerPage ? widget.Id.ToString() : $"{widget.Id}_{Context.Session.Id}";
+    var varyByUser = widget.GetWidgetOutputCacheable().PerUser;
+    var expiresSliding = widget.CacheExpiryType == CacheExpiryType.Sliding ? TimeSpan.FromSeconds(widget.CacheLength) : (TimeSpan?)null;
+    var expireAfter = widget.CacheExpiryType == CacheExpiryType.Absolute ? TimeSpan.FromSeconds(widget.CacheLength) : (TimeSpan?)null;
+
+    <cache enabled="@(widget.Cache)" expires-after="@(expireAfter)" expires-sliding="@(expiresSliding)" vary-by-user="@(varyByUser)" vary-by="@(varyBy)">
         @{
             await Html.RenderPartialAsync($"Widgets/{info.ViewName}", info);
         }

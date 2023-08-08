@@ -175,12 +175,5 @@ namespace MrCMS.Helpers
             }
         }
 
-        public static void RegisterTasks(this IServiceCollection container)
-        {
-            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<AdHocTask>())
-            {
-                container.AddTransient(type);
-            }
-        }
     }
 }

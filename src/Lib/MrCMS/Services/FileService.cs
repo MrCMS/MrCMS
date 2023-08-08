@@ -1,18 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
 
 namespace MrCMS.Services
 {

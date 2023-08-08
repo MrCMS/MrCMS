@@ -43,7 +43,7 @@ namespace MrCMS.DbConfiguration
     }
 }
 
-public class MiniProfiledSqlClientDriver : SqlClientDriver
+public class MiniProfiledSqlClientDriver : MicrosoftDataSqlClientDriver
 {
     public override DbCommand CreateCommand()
     {

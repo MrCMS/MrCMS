@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using NHibernate.Linq;
-using Quartz.Util;
+using StackExchange.Profiling.Internal;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Website.NotFound

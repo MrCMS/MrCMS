@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
-using MrCMS.Website.Auth;
 
 namespace MrCMS.Helpers;
 

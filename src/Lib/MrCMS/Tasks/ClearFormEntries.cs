@@ -8,7 +8,7 @@ using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class ClearFormEntries : SchedulableTask
+    public class ClearFormEntries : IClearFormEntries
     {
         private readonly ISession _session;
 
@@ -18,7 +18,7 @@ namespace MrCMS.Tasks
         }
         
 
-        protected override async Task OnExecute()
+        public async Task Execute()
         {
             var formsToCheck = _session.Query<Form>().Where(x => x.DeleteEntriesAfter != null).ToList();
 
@@ -43,5 +43,10 @@ namespace MrCMS.Tasks
                 });
             }
         }
+    }
+
+    public interface IClearFormEntries
+    {
+        Task Execute();
     }
 }

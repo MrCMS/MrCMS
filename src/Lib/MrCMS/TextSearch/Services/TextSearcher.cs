@@ -8,7 +8,6 @@ using MrCMS.Services;
 using MrCMS.TextSearch.Entities;
 using MrCMS.TextSearch.EntityConverters;
 using NHibernate;
-using NHibernate.Criterion;
 using X.PagedList;
 
 namespace MrCMS.TextSearch.Services

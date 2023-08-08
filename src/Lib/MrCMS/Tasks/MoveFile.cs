@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class MoveFile : AdHocTask
+    public class MoveFile
     {
         private readonly IEnumerable<IFileSystem> _fileSystems;
         private readonly ISession _session;
@@ -24,11 +24,11 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public override int Priority => 0;
+        public virtual int Priority => 0;
 
         private MoveFileData FileData { get; set; }
 
-        protected override async Task OnExecute()
+        protected virtual async Task OnExecute()
         {
             await _session.TransactAsync(async (session, token) =>
             {
@@ -68,12 +68,12 @@ namespace MrCMS.Tasks
             return newFilePath;
         }
 
-        public override string GetData()
+        public virtual string GetData()
         {
             return JsonConvert.SerializeObject(FileData);
         }
 
-        public override void SetData(string data)
+        public virtual void SetData(string data)
         {
             FileData = JsonConvert.DeserializeObject<MoveFileData>(data);
         }

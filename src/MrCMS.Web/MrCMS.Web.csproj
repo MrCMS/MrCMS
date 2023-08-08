@@ -25,6 +25,9 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.1" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.4" />
+        <PackageReference Include="Hangfire.NetCore" Version="1.8.4" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.4" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
@@ -37,16 +40,10 @@
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
-        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.4.0" />
-        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Views\Install\Setup.cshtml" />
       <EmbeddedResource Include="Views\Install\Success.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="..\..\.editorconfig" Link=".editorconfig" />
     </ItemGroup>
 </Project>

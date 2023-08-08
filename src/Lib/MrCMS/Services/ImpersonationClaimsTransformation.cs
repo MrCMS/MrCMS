@@ -1,11 +1,8 @@
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using MrCMS.ACL.Rules;
-using MrCMS.Entities.People;
 using MrCMS.Website.Auth;
 
 namespace MrCMS.Services;

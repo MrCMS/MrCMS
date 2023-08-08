@@ -1,4 +1,3 @@
-using System;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
 

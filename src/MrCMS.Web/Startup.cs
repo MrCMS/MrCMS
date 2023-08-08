@@ -1,4 +1,5 @@
 using System;
+using Hangfire;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -19,12 +20,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Hosting;
 using MrCMS.Logging;
-using MrCMS.Scheduling;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Articles;
 using NHibernate;
-using Quartz;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace MrCMS.Web
@@ -67,27 +66,12 @@ namespace MrCMS.Web
             var isInstalled = IsInstalled();
             if (isInstalled)
             {
-                services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
-                services.AddQuartz(q =>
-                {
-					q.UseDefaultThreadPool();
-                    q.UseMicrosoftDependencyInjectionJobFactory();
+                services.AddHangfire(configuration => configuration
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(Configuration.GetConnectionString("mrcms")));
 
-                    q.UsePersistentStore(options =>
-                    {
-                        options.UseSqlServer(providerOptions =>
-                        {
-                            providerOptions.ConnectionString = Configuration.GetConnectionString("mrcms");
-                        });
-                        //options.UseClustering();
-                        options.UseJsonSerializer();
-                    });
-                });
-                services.AddQuartzHostedService(options =>
-                {
-                    options.WaitForJobsToComplete = true;
-                    options.AwaitApplicationStarted = true;
-                });
+                services.AddHangfireServer(options => options.WorkerCount = 10);
             }
 
             services.AddRequiredServices();
@@ -127,7 +111,6 @@ namespace MrCMS.Web
             services.RegisterDocumentMetadata();
             services.RegisterRouteTransformers();
             services.AddSingleton<IWebpageMetadataService, WebpageMetadataService>();
-            services.RegisterTasks();
 
             services.AddMvcForMrCMS(appContext);
             services.Configure<FormOptions>(x =>
@@ -168,48 +151,39 @@ namespace MrCMS.Web
 
             // startup services
             services.AddHostedService<StartupService>();
-            services.AddHostedService<RecoverErroredJobsService>();
             // services.AddHostedService<SeedHostedServices>();
 
             Configuration.SetMiniProfilerEnableStatus();
             if (IsMiniProfileEnabled())
             {
-                // miniprofiler
-                // services.AddMiniProfiler(options =>
-                // {
-                //     options.RouteBasePath = "/profiler";
-                //     options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomRight;
-                //     options.PopupShowTimeWithChildren = true;
-                //     options.ShouldProfile = x =>
-                //     {
-                //         // rough filter for assets
-                //         if (!x.Path.HasValue)
-                //             return true;
-                //         // don't profile AJAX requests
-                //         if (x.IsAjaxRequest())
-                //             return false;
-                //
-                //         return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".woff", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".eot", StringComparison.OrdinalIgnoreCase) &&
-                //                !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);
-                //     };
-                //     options.ResultsAuthorizeAsync = (context) =>
-                //     {
-                //         // var getCurrentUser = context.HttpContext.RequestServices.GetRequiredService<IGetCurrentUser>();
-                //         // var user = await getCurrentUser.GetLoggedInUser();
-                //         // return user.IsAdmin;
-                //         return Task.FromResult(true);
-                //     };
-                // }).AddEntityFramework();
+                //miniprofiler
+                services.AddMiniProfiler(options =>
+                {
+                    options.RouteBasePath = "/profiler";
+                    options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomRight;
+                    options.PopupShowTimeWithChildren = true;
+                    options.ShouldProfile = x =>
+                    {
+                        // rough filter for assets
+                        if (!x.Path.HasValue)
+                            return true;
+
+                        return true;
+
+                        /*return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".woff", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".eot", StringComparison.OrdinalIgnoreCase) &&
+                               !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);*/
+                    };
+                });
 
                 services.AddAntiforgery(options =>
                 {
@@ -262,6 +236,11 @@ namespace MrCMS.Web
                 return;
             }
 
+            if (IsInstalled())
+            {
+                app.RegisterJobs();
+            }
+
             if (IsMiniProfileEnabled())
             {
                 app.UseMiniProfiler();
@@ -287,8 +266,9 @@ namespace MrCMS.Web
                     }
                 });
                 builder.UseAuthentication();
-                
-                builder.Use(next => ctx =>
+
+                //todo update antiforgery method
+                /*builder.Use(next => ctx =>
                 {
                     var tokens = antiforgery.GetAndStoreTokens(ctx);
 
@@ -296,7 +276,7 @@ namespace MrCMS.Web
                         new CookieOptions() { HttpOnly = false });
 
                     return next(ctx);
-                });
+                });*/
 
                 builder.Use(async (context, next) =>
                 {
@@ -313,9 +293,6 @@ namespace MrCMS.Web
                     await next.Invoke();
                 });
             }, builder => { builder.MapRazorPages(); });
-
-
-            QuartzConfig.Initialize(Configuration.GetConnectionString("mrcms"));
         }
     }
 }

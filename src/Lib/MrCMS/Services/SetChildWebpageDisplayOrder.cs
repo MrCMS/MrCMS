@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Events;
 using MrCMS.Helpers;

@@ -8,7 +8,7 @@ using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class PublishScheduledWebpagesTask : SchedulableTask
+    public class PublishScheduledWebpagesTask : IPublishScheduledWebpagesTask
     {
         private readonly IStatelessSession _session;
         private readonly IGetDateTimeNow _getDateTimeNow;
@@ -22,7 +22,7 @@ namespace MrCMS.Tasks
             _cacheManager = cacheManager;
         }
 
-        protected override async Task OnExecute()
+        public async Task Execute()
         {
             var now = _getDateTimeNow.LocalNow;
             var due = await _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).ListAsync();
@@ -38,5 +38,10 @@ namespace MrCMS.Tasks
             });
             _cacheManager.Clear();
         }
+    }
+
+    public interface IPublishScheduledWebpagesTask
+    {
+        Task Execute();
     }
 }

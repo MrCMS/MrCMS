@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
@@ -14,7 +13,7 @@ using NHibernate.Linq;
 
 namespace MrCMS.TextSearch.Services
 {
-    public class RefreshTextSearchIndex : SchedulableTask
+    public class RefreshTextSearchIndex : IRefreshTextSearchIndex
     {
         private readonly IStatelessSession _statelessSession;
         private readonly ISession _session;
@@ -80,10 +79,10 @@ namespace MrCMS.TextSearch.Services
             foreach (var entity in allToUpdate) await _updater.Update(entity);
             await _updater.Delete(allToDelete);
         }
+    }
 
-        protected override async Task OnExecute()
-        {
-            await Refresh();
-        }
+    public interface IRefreshTextSearchIndex
+    {
+        Task Refresh();
     }
 }

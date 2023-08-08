@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Notifications;
-using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
 
 namespace MrCMS.Events.Documents

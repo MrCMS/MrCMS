@@ -1,9 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
 using MrCMS.Website;
-using MrCMS.Website.Auth;
 
 namespace MrCMS.Services
 {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrCMS.Helpers;
+﻿using MrCMS.Helpers;
 
 namespace MrCMS.Website.Controllers
 {

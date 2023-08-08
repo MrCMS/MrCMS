@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Admin.Models.AddFormPropertyModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.AddFormPropertyModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 
 <form method="post" asp-action="Add" asp-controller="FormProperty" class="form-update-form" id="add-property">
@@ -12,7 +13,7 @@
         <input type="hidden" asp-for="FormId"/>
 
         <div class="form-group">
-            <select asp-for="PropertyType" asp-items="@ViewData["property-types"] as IEnumerable<SelectListItem>" class="form-control"></select>
+            <select asp-for="PropertyType" asp-items="@(ViewData["property-types"] as IEnumerable<SelectListItem>)" class="form-control"></select>
             <span asp-validation-for="PropertyType"></span>
         </div>
         

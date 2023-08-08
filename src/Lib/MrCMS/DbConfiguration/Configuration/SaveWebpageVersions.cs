@@ -22,7 +22,7 @@ namespace MrCMS.DbConfiguration.Configuration
         public async Task Execute(OnUpdatedArgs<Webpage> args)
         {
             var webpage = args.Item;
-            if (webpage != null && !webpage.IsDeleted && args.Original != null)
+            if (webpage is { IsDeleted: false } && args.Original != null)
             {
                 var propertyInfos = webpage.GetType().GetVersionProperties();
 
