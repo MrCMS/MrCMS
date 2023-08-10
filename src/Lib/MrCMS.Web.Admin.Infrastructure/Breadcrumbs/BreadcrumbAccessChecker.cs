@@ -37,7 +37,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
             // if there is no ACL attribute, then we can assume that the user has access
             // todo - check this
             if (aclAttribute == null)
-                return false;
+                return true;
 
             // otherwise, check the ACL using info from the attribute
             var user = await _getCurrentClaimsPrincipal.GetPrincipal();

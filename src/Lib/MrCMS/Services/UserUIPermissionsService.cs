@@ -2,28 +2,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
     public class UserUIPermissionsService : IUserUIPermissionsService
     {
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
-        public UserUIPermissionsService(IGetCurrentUser getCurrentUser)
+        public UserUIPermissionsService(IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal)
         {
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
         }
 
         public async Task<PageAccessPermission> IsCurrentUserAllowed(Webpage webpage)
         {
             if (!webpage.HasCustomPermissions) return PageAccessPermission.Allowed;
-            
-            User user = await _getCurrentUser.Get();
-            if (user != null && user.IsAdmin) return PageAccessPermission.Allowed;
 
-            if (!webpage.FrontEndAllowedRoles.Any()) return PageAccessPermission.Allowed;
-            if (webpage.FrontEndAllowedRoles.Any() && user == null) return PageAccessPermission.Unauthorized;
-            return user.Roles.Intersect(webpage.FrontEndAllowedRoles).Any()
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
+            if (user != null && user.IsAdmin()) return PageAccessPermission.Allowed;
+
+            var webpageFrontEndAllowedRoles = webpage.FrontEndAllowedRoles.Select(x => x.Name).ToList();
+            if (!webpageFrontEndAllowedRoles.Any()) return PageAccessPermission.Allowed;
+            if (webpageFrontEndAllowedRoles.Any() && user == null) return PageAccessPermission.Unauthorized;
+
+            return user.IsInAnyRole(webpageFrontEndAllowedRoles)
                 ? PageAccessPermission.Allowed
                 : PageAccessPermission.Forbidden;
         }

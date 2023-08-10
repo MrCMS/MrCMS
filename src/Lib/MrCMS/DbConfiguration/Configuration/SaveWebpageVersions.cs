@@ -14,15 +14,10 @@ namespace MrCMS.DbConfiguration.Configuration
 {
     public class SaveWebpageVersions : IOnUpdated<Webpage>
     {
-        private async Task<User> GetUser(ISession session)
-        {
-            return await session.GetService<IGetCurrentUser>().Get();
-        }
-
         public async Task Execute(OnUpdatedArgs<Webpage> args)
         {
             var webpage = args.Item;
-            if (webpage is { IsDeleted: false } && args.Original != null)
+            if (webpage is {IsDeleted: false} && args.Original != null)
             {
                 var propertyInfos = webpage.GetType().GetVersionProperties();
 
@@ -36,8 +31,8 @@ namespace MrCMS.DbConfiguration.Configuration
 
                     var oldValue = propertyInfo.GetValue(args.Original) ??
                                    (propertyInfo.PropertyType.IsValueType
-                                        ? Activator.CreateInstance(propertyInfo.PropertyType)
-                                        : null);
+                                       ? Activator.CreateInstance(propertyInfo.PropertyType)
+                                       : null);
                     var newValue = propertyInfo.GetValue(args.Item);
 
                     if (oldValue != null)
@@ -48,21 +43,21 @@ namespace MrCMS.DbConfiguration.Configuration
                         anyChanges = true;
 
                     jObject.Add(propertyInfo.Name, new JRaw(JsonConvert.SerializeObject(oldValue)));
-
                 }
+
                 if (anyChanges)
                 {
                     var s = args.Session;
-                    var user = await GetUser(s);
+                    // var user = await GetUser(s);
                     var documentVersion = new WebpageVersion
                     {
                         Webpage = webpage,
                         Data = JsonConvert.SerializeObject(jObject),
-                        User = await args.Session.LoadAsync<User>(user.Id),
+                        User = await args.Session.LoadAsync<User>(s.GetContext().User.GetUserId()),
                         Site = webpage.Site
                     };
                     webpage.Versions.Add(documentVersion);
-                    await s.TransactAsync((session,token) => session.SaveAsync(documentVersion, token));
+                    await s.TransactAsync((session, token) => session.SaveAsync(documentVersion, token));
                 }
             }
         }

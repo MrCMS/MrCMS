@@ -34,10 +34,8 @@ public static class RenderContentExtensions
         }
 
         // todo: replace with ACL?
-        var user = await helper.GetRequiredService<IGetCurrentUser>().Get();
-        if (user?.IsAdmin != true)
-            return null;
-        return webpage.ContentVersions.FirstOrDefault(x => x.Id == previewId);
+        var user = await helper.GetRequiredService<IGetCurrentClaimsPrincipal>().GetPrincipal();
+        return user?.IsAdmin() != true ? null : webpage.ContentVersions.FirstOrDefault(x => x.Id == previewId);
     }
 
     private static ContentVersion GetLive(Webpage webpage)

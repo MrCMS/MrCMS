@@ -100,7 +100,8 @@ namespace MrCMS.Website.Controllers
 
             //if path is a file, return
             if (path.Contains(".css") || path.Contains(".js") || path.Contains(".png") ||
-                path.Contains(".jpg") || path.Contains(".gif") || path.Contains(".ico") || path.Contains(".svg") || path.Contains(".ico"))
+                path.Contains(".jpg") || path.Contains(".gif") || path.Contains(".ico") || path.Contains(".svg") ||
+                path.Contains(".ico"))
                 return (false, null);
 
             logger.LogDebug("404 Lookup - Path: {Path}, QueryString: {Query}", path, query);
@@ -149,8 +150,8 @@ namespace MrCMS.Website.Controllers
             await _processWebpageViews.ProcessForDefault(ViewData);
 
             var model = new ErrorModel();
-            var currentUser = _serviceProvider.GetRequiredService<IGetCurrentUser>();
-            var user = await currentUser.Get();
+            // var currentUser = _serviceProvider.GetRequiredService<IGetCurrentUser>();
+            // var user = await currentUser.Get();
 
             var pathFeature = HttpContext
                 .Features
@@ -163,7 +164,7 @@ namespace MrCMS.Website.Controllers
             }
 
             var error = pathFeature.Error;
-            if (user != null && user.IsAdmin && error != null)
+            if (User.IsAdmin() && error != null)
             {
                 model.Message =
                     $"An error occurred: {pathFeature.Error.Message}. The stack trace is: <br /> {error.StackTrace}";

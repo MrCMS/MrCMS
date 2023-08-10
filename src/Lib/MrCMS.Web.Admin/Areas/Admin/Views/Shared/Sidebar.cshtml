@@ -4,11 +4,10 @@
 @using MrCMS.Services
 @using MrCMS.Web.Admin.ViewComponents
 @inject SiteSettings Settings
-@inject IGetCurrentUser GetCurrentUser
 @inject ICurrentSiteLocator CurrentSiteLocator
 @{
-    var user = await GetCurrentUser.Get();
-    var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/160";
+    var img = User.GetAvatarUrl();
+    var avatarImg = !string.IsNullOrEmpty(img) ? img : "https://via.placeholder.com/160";
     var site = CurrentSiteLocator.GetCurrentSite();
 }
 <a href="@Url.Action("Index", "Home", new {area = "Admin"})" tabindex="1" class="brand-link">
@@ -33,7 +32,7 @@
             <img src="@avatarImg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="d-block">@user.Name</a>
+            <a asp-controller="User" asp-action="Edit" asp-route-id="@User.GetUserId()" class="d-block">@User.GetFullName()</a>
         </div>
     </div>
 

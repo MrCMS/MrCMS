@@ -1,23 +1,25 @@
 using System.Threading.Tasks;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Services;
 
 namespace MrCMS.Events
 {
     public class SetUpdatedUser : IOnUpdating<SystemEntity>
     {
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
-        public SetUpdatedUser(IGetCurrentUser getCurrentUser)
+        public SetUpdatedUser(IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal)
         {
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
         }
+
         public async Task Execute(OnUpdatingArgs<SystemEntity> args)
         {
-            var user = await _getCurrentUser.Get();
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
             if (user != null)
-                args.Item.UpdatedBy = args.Session.Get<User>(user.Id);
+                args.Item.UpdatedBy = await args.Session.LoadAsync<User>(user.GetUserId());
         }
     }
 }

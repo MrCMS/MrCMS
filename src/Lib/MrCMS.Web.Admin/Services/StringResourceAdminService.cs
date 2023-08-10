@@ -27,15 +27,15 @@ namespace MrCMS.Web.Admin.Services
         private readonly IMapper _mapper;
         private readonly IOptions<RequestLocalizationOptions> _requestLocalisationOptions;
         private readonly SiteSettings _siteSettings;
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
         public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
-            IGetCurrentUser getCurrentUser,
+            IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal,
             ISession session, IMapper mapper, IOptions<RequestLocalizationOptions> requestLocalisationOptions)
         {
             _provider = provider;
             _siteSettings = siteSettings;
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
             _session = session;
             _mapper = mapper;
             _requestLocalisationOptions = requestLocalisationOptions;
@@ -86,8 +86,8 @@ namespace MrCMS.Web.Admin.Services
         
         public async Task<StringResource> GetResource(string key)
         {
-            
-            var currentUiCulture = (await _getCurrentUser.Get())?.UICulture;
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
+            var currentUiCulture = user?.GetUserCulture();
             return await _session.Query<StringResource>()
                 .FirstOrDefaultAsync(f => f.Key == key && f.UICulture == currentUiCulture);
         }

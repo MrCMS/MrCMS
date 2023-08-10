@@ -13,14 +13,14 @@ namespace MrCMS.Services.Resources
             _siteSettings = siteSettings;
         }
 
-        public CultureInfo Get(User user)
+        public CultureInfo Get(string userUiCulture)
         {
             var defaultCultureInfo = _siteSettings.CultureInfo;
-            if (user == null || string.IsNullOrWhiteSpace(user.UICulture))
+            if (string.IsNullOrWhiteSpace(userUiCulture))
                 return defaultCultureInfo;
             try
             {
-                return CultureInfo.GetCultureInfo(user.UICulture);
+                return CultureInfo.GetCultureInfo(userUiCulture);
             }
             catch
             {
@@ -28,9 +28,9 @@ namespace MrCMS.Services.Resources
             }
         }
 
-        public string GetInfoString(User user)
+        public string GetInfoString(string userUiCulture)
         {
-            return Get(user).Name;
+            return Get(userUiCulture).Name;
         }
     }
 }

@@ -64,8 +64,18 @@ public static class ClaimsPrincipalExtensions
     {
         return roles.Any(principal.IsInRole);
     }
+    
+    public static bool IsInAnyRole(this ClaimsPrincipal principal, IEnumerable<string> roles)
+    {
+        return roles.Any(principal.IsInRole);
+    }
 
     public static bool IsInAllRoles(this ClaimsPrincipal principal, params string[] roles)
+    {
+        return roles.All(principal.IsInRole);
+    }
+    
+    public static bool IsInAllRoles(this ClaimsPrincipal principal, IEnumerable<string> roles)
     {
         return roles.All(principal.IsInRole);
     }
@@ -73,5 +83,27 @@ public static class ClaimsPrincipalExtensions
     public static bool IsAdmin(this ClaimsPrincipal principal)
     {
         return principal?.IsInRole(UserRole.Administrator) ?? false;
+    }
+
+    public static bool DisableNotifications(this ClaimsPrincipal principal)
+    {
+        return principal?.FindFirstValue(UserStore.DisableNotificationsClaimType) == "true";
+    }
+    
+    public static string GetAvatarUrl(this ClaimsPrincipal principal)
+    {
+        return principal?.FindFirstValue(UserStore.AvatarClaimType);
+    }
+    
+    public static Guid? GetUserGuid(this ClaimsPrincipal principal)
+    {
+        var value = principal?.FindFirstValue(UserStore.UserGuidClaimType);
+
+        return Guid.TryParse(value, out var guid) ? guid : null;
+    }
+    
+    public static string GetUserCulture(this ClaimsPrincipal principal)
+    {
+        return principal?.FindFirstValue(UserStore.UserCultureClaimType);
     }
 }

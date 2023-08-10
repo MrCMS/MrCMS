@@ -18,7 +18,7 @@
     var tabs = await EditTabsService.GetEditTabs(Html, user);
 
     var avatarImg = !string.IsNullOrEmpty(user.AvatarImage) ? user.AvatarImage : "https://via.placeholder.com/10";
-    var currentUser = await GetCurrentUser.Get();
+    // var currentUser = await GetCurrentUser.Get();
 
 }
 
@@ -62,12 +62,12 @@
                             <h3 class="profile-username">@Model.Name</h3>
 
                             <div class="btn-group my-3">
-                                @if (Model.Id == currentUser.Id)
+                                @if (Model.Id == User.GetUserId())
                                 {
                                     <a class="text-center btn btn-outline-secondary" asp-controller="Logout" asp-action="Logout">@await Html.Resource("admin-logout", "Logout")</a>
                                 }
                                 <a class="text-center btn btn-outline-primary" asp-controller="UserAvatar" asp-action="Set" asp-route-id="@Model.Id">Edit Avatar</a>
-                                @if (!user.IsAdmin && user.Id != currentUser.Id)
+                                @if (!user.IsAdmin && user.Id != User.GetUserId())
                                 {
                                     <a href="@Url.Action("Impersonate", "User", new {id = Model.Id})" class="btn btn-outline-dark">Impersonate</a>
                                 }

@@ -5,7 +5,7 @@ namespace MrCMS.Services.Resources
 {
     public interface IGetUserCultureInfo
     {
-        CultureInfo Get(User user);
-        string GetInfoString(User user);
+        CultureInfo Get(string userUiCulture);
+        string GetInfoString(string userUiCulture);
     }
 }

@@ -31,6 +31,10 @@ namespace MrCMS.Services
         private readonly ISession _session;
 
         public const string RoleIdClaimType = "roleId";
+        public const string DisableNotificationsClaimType = "disableNotifications";
+        public const string AvatarClaimType = "avatar";
+        public const string UserGuidClaimType = "userGuid";
+        public const string UserCultureClaimType = "userCulture";
 
         public UserStore(ISession session)
         {
@@ -109,6 +113,29 @@ namespace MrCMS.Services
             // add the role ids as claims
             var roles = user.Roles.ToList();
             claims.AddRange(roles.Select(role => new Claim(RoleIdClaimType, role.Id.ToString())));
+
+            // add name claims
+            if (!string.IsNullOrWhiteSpace(user.Name))
+                claims.Add(new Claim(ClaimTypes.Name, user.Name));
+            if (!string.IsNullOrWhiteSpace(user.LastName))
+                claims.Add(new Claim(ClaimTypes.Surname, user.LastName));
+            if (!string.IsNullOrWhiteSpace(user.FirstName))
+                claims.Add(new Claim(ClaimTypes.GivenName, user.FirstName));
+
+
+            // add avatar claim
+            if (!string.IsNullOrWhiteSpace(user.AvatarImage))
+                claims.Add(new Claim(AvatarClaimType, user.AvatarImage));
+
+            // add disable notifications claim
+            claims.Add(new Claim(DisableNotificationsClaimType, user.DisableNotifications ? "true" : "false"));
+
+            // add the user guid as a claim
+            claims.Add(new Claim(UserGuidClaimType, user.Guid.ToString()));
+
+            // if the user has a custom culture, add it as a claim
+            if (!string.IsNullOrWhiteSpace(user.UICulture))
+                claims.Add(new Claim(UserCultureClaimType, user.UICulture));
 
             return claims;
         }

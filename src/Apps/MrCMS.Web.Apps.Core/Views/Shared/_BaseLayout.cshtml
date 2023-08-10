@@ -1,7 +1,6 @@
 ﻿@using MrCMS.Website.Optimization
 @using MrCMS.Services.Canonical
 @using MrCMS.Settings
-@using MrCMS.Services
 @using System.Drawing
 @using MrCMS.ACL.Rules
 @using MrCMS.Entities.Documents.Web
@@ -9,10 +8,6 @@
 @inject SEOSettings SeoSettings
 @inject SiteSettings SiteSettings
 @inject GoogleRecaptchaSettings GoogleRecaptchaSettings
-@inject IGetCurrentUser GetCurrentUser
-@{
-    var user = await GetCurrentUser.Get();
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>

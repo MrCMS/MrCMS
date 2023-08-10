@@ -1,27 +1,31 @@
 using System.Globalization;
 using System.Threading.Tasks;
+using MrCMS.Helpers;
 
 namespace MrCMS.Services.Resources
 {
     public class GetCurrentUserCultureInfo : IGetCurrentUserCultureInfo
     {
         private readonly IGetUserCultureInfo _getUserCultureInfo;
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
-        public GetCurrentUserCultureInfo(IGetUserCultureInfo getUserCultureInfo, IGetCurrentUser getCurrentUser)
+        public GetCurrentUserCultureInfo(IGetUserCultureInfo getUserCultureInfo,
+            IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal)
         {
             _getUserCultureInfo = getUserCultureInfo;
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
         }
 
         public async Task<CultureInfo> Get()
         {
-            return _getUserCultureInfo.Get(await _getCurrentUser.Get());
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
+            return _getUserCultureInfo.Get(user?.GetUserCulture());
         }
 
         public async Task<string> GetInfoString()
         {
-            return _getUserCultureInfo.GetInfoString(await _getCurrentUser.Get());
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
+            return _getUserCultureInfo.GetInfoString(user?.GetUserCulture());
         }
     }
 }

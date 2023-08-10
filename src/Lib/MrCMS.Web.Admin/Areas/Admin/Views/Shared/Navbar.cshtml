@@ -5,7 +5,6 @@
 @inject IGetCurrentUser GetCurrentUser
 @{
     // var typeOptions = UniversalSearchHelper.GetOptions();
-    var currentUser = await GetCurrentUser.Get();
 }
 
 <nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom" id="mrcms-navbar">
@@ -39,7 +38,7 @@
                     <i class="fa fa-home"></i>
                 </a>
             </li>
-            @if (!currentUser.DisableNotifications)
+            @if (!User.DisableNotifications())
             {
                 <partial name="PersistentNotificationNav"/>                
             }

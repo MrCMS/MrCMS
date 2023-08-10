@@ -1,22 +1,23 @@
 using System.Threading.Tasks;
+using MrCMS.Helpers;
 using MrCMS.Services;
 
 namespace MrCMS.Events.Documents
 {
     public class GetNotificationModifiedUserInfo : IGetNotificationModifiedUserInfo
     {
-        private readonly IGetCurrentUser _currentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
-        public GetNotificationModifiedUserInfo(IGetCurrentUser currentUser)
+        public GetNotificationModifiedUserInfo(IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal)
         {
-            _currentUser = currentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
         }
 
         public async Task<string> GetInfo()
         {
-            var user = await _currentUser.Get();
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
             return user != null
-                ? string.Format(" by <a href=\"/Admin/User/Edit/{1}\">{0}</a>", user.Name, user.Id)
+                ? $" by <a href=\"/Admin/User/Edit/{user.GetUserId()}\">{user.GetFullName()}</a>"
                 : string.Empty;
         }
     }
