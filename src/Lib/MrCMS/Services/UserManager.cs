@@ -16,13 +16,13 @@ namespace MrCMS.Services
         IUserRoleManager, IUserEmailManager, IUserPhoneNumberManager, IUserLockoutManager,
         IUser2FAManager, IUserTokenManager, IGetUserFromClaims //, IUserLookup //IUserManager
     {
-        private readonly IPerformAclCheck _performAclCheck;
+        private readonly IPerformACLCheck _performAclCheck;
 
         public UserManager(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<User> passwordHasher, IEnumerable<IUserValidator<User>> userValidators,
             IEnumerable<IPasswordValidator<User>> passwordValidators, ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager> logger,
-            IPerformAclCheck performAclCheck) : base(store,
+            IPerformACLCheck performAclCheck) : base(store,
             optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services,
             logger)
         {
@@ -63,17 +63,17 @@ namespace MrCMS.Services
             var claims = await base.GetClaimsAsync(user);
 
             // get the current user's impersonation claim
-            var impersonationClaims =
-                claims.Where(x =>
-                    x.Type is UserImpersonationService.UserImpersonationId
-                        or UserImpersonationService.UserImpersonationName).ToList();
+            var impersonationClaims = claims.Where(x =>
+                x.Type is UserImpersonationService.UserImpersonationId
+                    or UserImpersonationService.UserImpersonationName).ToList();
+
             // if the user is not impersonating, return the claims
             if (!impersonationClaims.Any())
                 return claims;
 
             // check if they are still allowed to impersonate
-            var roles = await GetRolesAsync(user);
-            var canImpersonate = _performAclCheck.CanAccessLogic<UserACL>(roles, UserACL.Impersonate);
+            var roles = user.Roles.Select(x => x.Id).ToHashSet();
+            var canImpersonate = await _performAclCheck.CanAccessLogic(roles, typeof(UserACL), UserACL.Impersonate);
 
             // if that's still ok, return the claims
             if (canImpersonate) return claims;
@@ -84,8 +84,6 @@ namespace MrCMS.Services
             {
                 claims.Remove(impersonationClaim);
             }
-
-            claims.Add(new Claim(nameof(User.SecurityStamp), user.SecurityStamp));
 
             return claims;
         }
@@ -102,7 +100,6 @@ namespace MrCMS.Services
             // if the user is not impersonating, return the user name
             // otherwise return the name from the claim (we've checked it's valid in load)
             return impersonationClaim == null ? userName : impersonationClaim.Value;
-
         }
 
         public override string GetUserId(ClaimsPrincipal principal)
@@ -117,7 +114,6 @@ namespace MrCMS.Services
             // if they don't have one, return the standard user id
             // otherwise return the id from the claim (we've checked it's valid in load)
             return impersonationClaim == null ? userId : impersonationClaim.Value;
-
         }
     }
 }

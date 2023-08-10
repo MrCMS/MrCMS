@@ -8,9 +8,8 @@
 @inject IGetCurrentUser GetCurrentUser
 @{
     var webpage = ViewData["webpage"] as Webpage;
-    var user = await GetCurrentUser.Get();
 }
-@if (await Html.CanAccess<CoreACL>(user, CoreACL.ManageContentEditor))
+@if (await Html.CanAccess<CoreACL>(User, CoreACL.ManageContentEditor))
 {
     <a class="btn btn-outline-secondary" asp-controller="ContentVersion" asp-action="EditLatest" asp-route-id="@webpage.Id">
         Edit Page

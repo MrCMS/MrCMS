@@ -7,7 +7,7 @@ namespace MrCMS.Services;
 
 public interface IUserImpersonationService
 {
-    Task<UserImpersonationResult> Impersonate(ClaimsPrincipal currentPrincipal, User user);
+    Task<UserImpersonationResult> Impersonate(ClaimsPrincipal currentPrincipal, User userToImpersonate);
     Task<User> GetCurrentlyImpersonatedUser(ClaimsPrincipal principal);
-    Task CancelImpersonation(ClaimsPrincipal principal);
+    Task<User> CancelImpersonation(ClaimsPrincipal principal);
 }

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MrCMS.Entities.ACL;
 
 namespace MrCMS.Website.Auth
 {
-    public interface IGetAclRoles
+    public interface IGetACLRoles
     {
-        IReadOnlyList<ACLRole> GetRoles(IEnumerable<string> roles, IEnumerable<string> keys);
+        Task<bool> AnyRoles(ISet<int> roles, IEnumerable<string> keys);
     }
+
 }

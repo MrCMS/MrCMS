@@ -30,6 +30,8 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
 
+        public const string RoleIdClaimType = "roleId";
+
         public UserStore(ISession session)
         {
             _session = session;
@@ -85,11 +87,11 @@ namespace MrCMS.Services
             return IdentityResult.Success;
         }
 
-        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return int.TryParse(userId, out int id)
-                ? _session.GetAsync<User>(id, cancellationToken)
-                : Task.FromResult<User>(null);
+            return int.TryParse(userId, out var id)
+                ? await _session.GetAsync<User>(id, cancellationToken)
+                : null;
         }
 
         public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -104,8 +106,9 @@ namespace MrCMS.Services
 
             var claims = userClaims.Select(claim => new Claim(claim.Claim, claim.Value, null, claim.Issuer)).ToList();
 
-            // add the security stamp claim
-            claims.Add(new Claim(nameof(User.SecurityStamp), user.SecurityStamp));
+            // add the role ids as claims
+            var roles = user.Roles.ToList();
+            claims.AddRange(roles.Select(role => new Claim(RoleIdClaimType, role.Id.ToString())));
 
             return claims;
         }
@@ -241,15 +244,7 @@ namespace MrCMS.Services
             var role = await GetRoleByName(roleName, cancellationToken);
             if (role != null)
             {
-                if (!user.Roles.Contains(role))
-                {
-                    user.Roles.Add(role);
-                }
-                //
-                // if (!role.Users.Contains(user))
-                // {
-                //     role.Users.Add(user);
-                // }
+                user.Roles.Add(role);
 
                 await _session.TransactAsync((session, token) => session.UpdateAsync(user, token), cancellationToken);
             }
@@ -273,11 +268,6 @@ namespace MrCMS.Services
                 {
                     user.Roles.Remove(role);
                 }
-
-                // if (role.Users.Contains(user))
-                // {
-                //     role.Users.Remove(user);
-                // }
 
                 await _session.TransactAsync((session, token) => session.UpdateAsync(user, token), cancellationToken);
             }

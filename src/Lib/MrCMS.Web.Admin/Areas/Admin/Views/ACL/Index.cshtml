@@ -4,15 +4,15 @@
 @using MrCMS.Web.Admin.Models
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject ACLSettings ACLSettings
-@model dynamic
+@model IEnumerable<AclInfo>
 @{
     var rules = ViewData["acl-rules"] as List<AclInfo>;
-    var roles = rules.SelectMany(x => x.Roles).Select(x => new { x.Id, x.Name }).Distinct().OrderBy(x => x.Name).ToList();
+    var roles = Model.SelectMany(x => x.Roles).Where(x => x.Name != UserRole.Administrator).Select(x => x.Name).Distinct().OrderBy(x => x).ToList();
 }
 <form asp-controller="ACL" asp-action="Index" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls", option=> option.DisableInlineEditing())" />
+            <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls", option => option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <div class="btn-group">
@@ -37,45 +37,41 @@
             <h3 class="pl-2 mt-2">@group.Key.BreakUpString()</h3>
             <table class="table table-condensed">
                 <thead>
-                    <tr>
+                <tr>
+                    <th>
+                        Operation
+                    </th>
+                    <th>
+                        @UserRole.Administrator
+                    </th>
+                    @foreach (var role in roles)
+                    {
                         <th>
-                            Operation
+                            @role
                         </th>
-                        @foreach (var role in roles)
-                        {
-                            <th>
-                                @role.Name
-                            </th>
-                        }
-                    </tr>
+                    }
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var rule in group.OrderBy(x => x.Type).ThenBy(x => x.Operation))
-                    {
-                        <tr>
+                @foreach (var rule in group.OrderBy(model => model.Operation))
+                {
+                    <tr>
+                        <td>
+                            @rule.Operation
+                        </td>
+                        <td>
+                            <input type="checkbox" checked="checked" disabled="disabled" class="form-check-input"/>
+                        </td>
+                        @foreach (var role in rule.Roles.Where(x => x.Name != UserRole.Administrator).OrderBy(x => x.Name))
+                        {
+                            var key = $"{role.Id}-{rule.Key}";
                             <td>
-                                @rule.Operation.BreakUpString()
+                                <input class="form-check-input" name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "")/>
+                                @* @Html.CheckBox($"acl-{role.Role.Name}-{operation.Key}", role.IsAllowed, new {@class = "form-check-input"}) *@
                             </td>
-                            @foreach (var role in rule.Roles)
-                            {
-                                var key = $"{role.Id}-{rule.Key}";
-                                if (role.Name != UserRole.Administrator)
-                                {
-                                    <td>
-
-                                        <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "") />
-
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="checkbox" checked="checked" disabled="disabled" />
-                                    </td>
-                                }
-                            }
-                        </tr>
-                    }
+                        }
+                    </tr>
+                }
                 </tbody>
             </table>
         }

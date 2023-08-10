@@ -10,26 +10,26 @@
 @{
     var currentPage = GetCurrentPage.GetPage();
     var currentPageId = currentPage?.Id ?? 0;
-    var canEditPage = await Html.CanAccess("Webpage", "Edit");
+    var canEditPage = true;
     var postingCountForWebpage = await FormAdminService.GetPostingCountForWebpage(currentPageId);
     var draftVersion = currentPage?.ContentVersions?.FirstOrDefault(f => f.Status == ContentVersionStatus.Draft);
 }
 <div class="mrcms-admin-nav-bar" data-webpage-id="@currentPageId">
     <div>
-        <a href="@Url.Action("Index", "Home", new { area = "Admin" })" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
+        <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-secondary mrcms-btn-sm">Admin</a>
         @if (currentPage != null)
         {
             if (canEditPage)
             {
-                <a href="@Url.Action("Edit", "Webpage", new { currentPage.Id, area = "Admin" })" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
+                <a href="@Url.Action("Edit", "Webpage", new {currentPage.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-sm mrcms-btn-primary">Edit</a>
             }
         }
-        
+
         @if (await Html.CanAccess<InlineEditingACL>("Allowed"))
         {
             <a id="enable-editing" class="mrcms-btn mrcms-btn-sm mrcms-btn-secondary">Inline: Off</a>
         }
-        
+
         @if (currentPage != null)
         {
             if (postingCountForWebpage.Count > 0)
@@ -62,7 +62,7 @@
             }
             @if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published || currentPage.PublishStatus == Webpage.WebpagePublishStatus.Scheduled)
             {
-                var s = ((DateTime)currentPage.PublishOn).ToString("dd MMMM yyyy HH:mm tt");
+                var s = ((DateTime) currentPage.PublishOn).ToString("dd MMMM yyyy HH:mm tt");
                 if (currentPage.PublishStatus == Webpage.WebpagePublishStatus.Published)
                 {
                     <span class="admin-success hidden-small">@($"Published {s}")</span>

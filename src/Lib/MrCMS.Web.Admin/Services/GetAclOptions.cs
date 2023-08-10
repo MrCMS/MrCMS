@@ -50,7 +50,6 @@ namespace MrCMS.Web.Admin.Services
                 {
                     yield return new AclInfo
                     {
-                        Type = AclType.ExplicitRule,
                         Rule = rule.Name,
                         Operation = operation
                     };
@@ -63,7 +62,6 @@ namespace MrCMS.Web.Admin.Services
         {
             yield return new AclInfo
             {
-                Type = AclType.Controller,
                 Rule = controllerName,
                 Operation = "All"
             };
@@ -75,7 +73,6 @@ namespace MrCMS.Web.Admin.Services
             foreach (var action in actions)
                 yield return new AclInfo
                 {
-                    Type = AclType.Action,
                     Rule = controllerName,
                     Operation = action
                 };

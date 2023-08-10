@@ -10,6 +10,7 @@ using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MrCMS.Services.Auth;
 using X.PagedList;
 using Xunit;
 
@@ -25,8 +26,9 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
             _userImpersonationService = A.Fake<IUserImpersonationService>();
             _userManager = A.Fake<UserManager>();
+            _signInManager = A.Fake<ISignInManager>();
             _userController = new UserController(_userService, _userSearchService, _roleService,
-                _getUserCultureOptions, _userImpersonationService, _userManager)
+                _getUserCultureOptions, _userImpersonationService, _userManager, _signInManager)
             {
                 TempData = new MockTempDataDictionary()
             };
@@ -39,6 +41,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private readonly IGetUserCultureOptions _getUserCultureOptions;
         private IUserImpersonationService _userImpersonationService;
         private UserManager _userManager;
+        private ISignInManager _signInManager;
 
         [Fact]
         public void UserController_AddGet_ShouldReturnAnAddUserModel()

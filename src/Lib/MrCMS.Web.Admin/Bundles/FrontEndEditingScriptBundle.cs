@@ -11,14 +11,15 @@ namespace MrCMS.Web.Admin.Bundles
     public class FrontEndEditingScriptBundle : IUIScriptBundle
     {
         private readonly IAccessChecker _accessChecker;
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
         private readonly SiteSettings _siteSettings;
 
-        public FrontEndEditingScriptBundle(IAccessChecker accessChecker, IGetCurrentUser getCurrentUser,
+        public FrontEndEditingScriptBundle(IAccessChecker accessChecker,
+            IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal,
             SiteSettings siteSettings)
         {
             _accessChecker = accessChecker;
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
             _siteSettings = siteSettings;
         }
 
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Admin.Bundles
 
         public async Task<bool> ShouldShow(string theme)
         {
-            var user = await _getCurrentUser.Get();
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
             return await _accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show, user) &&
                    _siteSettings.EnableInlineEditing;
         }

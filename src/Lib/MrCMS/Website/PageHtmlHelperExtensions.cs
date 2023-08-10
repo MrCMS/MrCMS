@@ -31,7 +31,7 @@ namespace MrCMS.Website
         public static async Task<bool> EditingEnabled(this IHtmlHelper helper)
         {
             var serviceProvider = helper.ViewContext.HttpContext.RequestServices;
-            var currentUser = await serviceProvider.GetRequiredService<IGetCurrentUser>().Get();
+            var currentUser = await serviceProvider.GetRequiredService<IGetCurrentClaimsPrincipal>().GetPrincipal();
             var accessChecker = serviceProvider.GetRequiredService<IAccessChecker>();
             return currentUser != null && await accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show, currentUser) &&
                    serviceProvider.GetRequiredService<SiteSettings>().EnableInlineEditing;

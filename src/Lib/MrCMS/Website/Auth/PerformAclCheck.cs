@@ -1,50 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using MrCMS.ACL;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Website.Auth
 {
-    public class PerformAclCheck : IPerformAclCheck
+    public class PerformAclCheck : IPerformACLCheck
     {
-        private readonly IGetAclKeys _getAclKeys;
-        private readonly IGetAclRoles _getAclRoles;
+        private readonly IGetACLKeys _getAclKeys;
+        private readonly IGetACLRoles _getAclRoles;
 
-        public PerformAclCheck(IGetAclKeys getAclKeys, IGetAclRoles getAclRoles)
+        public PerformAclCheck(IGetACLKeys getAclKeys, IGetACLRoles getAclRoles)
         {
             _getAclKeys = getAclKeys;
             _getAclRoles = getAclRoles;
         }
 
 
-        public bool CanAccessLogic(IEnumerable<string> roles, ControllerActionDescriptor descriptor)
+        public async Task<bool> CanAccessLogic(ISet<int> roles, Type aclType, string operation)
         {
-            var roleArray = roles as string[] ?? roles.ToArray();
-
-            // administrator always has access
-            if (roleArray.Contains(UserRole.Administrator))
-                return true;
-
-            var keys = _getAclKeys.GetKeys(descriptor);
-            return CanAccessLogicInternal(roleArray, keys);
+            var keys = _getAclKeys.GetKeys(aclType, operation);
+            return await CanAccessLogicInternal(roles, keys);
         }
 
-        public bool CanAccessLogic<TAclRule>(IEnumerable<string> roles, string operation) where TAclRule : ACLRule
+
+        private async Task<bool> CanAccessLogicInternal(ISet<int> roles, IEnumerable<string> keys)
         {
-            var roleArray = roles as string[] ?? roles.ToArray();
-
-            // administrator always has access
-            if (roleArray.Contains(UserRole.Administrator))
-                return true;
-
-            var keys = _getAclKeys.GetKeys<TAclRule>(operation);
-            return CanAccessLogicInternal(roleArray, keys);
-        }
-
-        private bool CanAccessLogicInternal(IEnumerable<string> roles, IEnumerable<string> keys)
-        {
-            return _getAclRoles.GetRoles(roles, keys).Any();
+            return await _getAclRoles.AnyRoles(roles, keys);
         }
     }
 }

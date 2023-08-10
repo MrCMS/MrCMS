@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services.Auth;
 using MrCMS.Website.Auth;
@@ -13,58 +15,58 @@ namespace MrCMS.Services;
 
 public class UserImpersonationService : IUserImpersonationService, IOnLoggedOut
 {
-    private readonly IHttpContextAccessor _contextAccessor;
     private readonly IAccessChecker _accessChecker;
 
     private readonly IUserClaimManager _userClaimManager;
     private readonly IUserStore<User> _userStore;
     public const string UserImpersonationId = "IsCurrentlyImpersonating.Id";
     public const string UserImpersonationName = "IsCurrentlyImpersonating.Name";
-    public static readonly string[] ImpersonationKeys = { UserImpersonationId, UserImpersonationName };
+    public static readonly string[] ImpersonationKeys = {UserImpersonationId, UserImpersonationName};
 
-    public UserImpersonationService(IHttpContextAccessor contextAccessor, IAccessChecker accessChecker,
-        IUserClaimManager userClaimManager, IUserStore<User> userStore)
+    public UserImpersonationService(IAccessChecker accessChecker, IUserClaimManager userClaimManager,
+        IUserStore<User> userStore)
     {
-        _contextAccessor = contextAccessor;
         _accessChecker = accessChecker;
         _userClaimManager = userClaimManager;
         _userStore = userStore;
     }
 
-    public async Task<UserImpersonationResult> Impersonate(ClaimsPrincipal currentPrincipal, User user)
+    public async Task<UserImpersonationResult> Impersonate(ClaimsPrincipal currentPrincipal, User userToImpersonate)
     {
-        if (user == null)
-            return new UserImpersonationResult { Error = "User not found" };
+        if (userToImpersonate == null)
+            return UserImpersonationResult.ErrorResult("User not found");
 
 
-        var identity = currentPrincipal.Identity as ClaimsIdentity;
-        if (identity == null)
-            return new UserImpersonationResult { Error = "Must be logged in to impersonate" };
-        var currentUser = await _userStore.FindByNameAsync(identity.Name, default);
-        if (currentUser == null)
-            return new UserImpersonationResult { Error = "Can only impersonate when logged in" };
+        // if (currentPrincipal.Identity is not ClaimsIdentity identity)
+        //     return new UserImpersonationResult {Error = "Must be logged in to impersonate"};
 
-        var canAccess = await _accessChecker.CanAccess<UserACL>(UserACL.Impersonate, currentUser);
+        var currentUserId = currentPrincipal.GetUserId();
+        if (currentUserId == null)
+            return UserImpersonationResult.ErrorResult("Must be logged in to impersonate");
 
+        var canAccess = await _accessChecker.CanAccess<UserACL>(UserACL.Impersonate, currentPrincipal);
         if (!canAccess)
         {
-            return new UserImpersonationResult { Error = "Only admins can impersonate another user" };
+            return UserImpersonationResult.ErrorResult("Only admins can impersonate another user");
         }
 
-        if (user.Id == currentUser.Id)
-            return new UserImpersonationResult { Error = "Cannot impersonate self" };
+        var currentUser = await _userStore.FindByIdAsync(currentUserId.ToString(), default);
+        if (currentUser == null)
+            return UserImpersonationResult.ErrorResult("Can only impersonate when logged in");
 
-        if (user.IsAdmin)
-            return new UserImpersonationResult { Error = "Cannot impersonate an admin" };
+        if (userToImpersonate.Id == currentUser.Id)
+            return UserImpersonationResult.ErrorResult("Cannot impersonate self");
 
-        var idClaim = new Claim(UserImpersonationId, user.Id.ToString());
-        var nameClaim = new Claim(UserImpersonationName, user.Email);
+        if (userToImpersonate.IsAdmin)
+            return UserImpersonationResult.ErrorResult("Cannot impersonate an admin");
+
+        var idClaim = new Claim(UserImpersonationId, userToImpersonate.Id.ToString());
+        var nameClaim = new Claim(UserImpersonationName, userToImpersonate.Email);
 
         // add to db
-        await _userClaimManager.AddClaimAsync(currentUser, idClaim);
-        await _userClaimManager.AddClaimAsync(currentUser, nameClaim);
+        await _userClaimManager.AddClaimsAsync(currentUser, new List<Claim> {idClaim, nameClaim});
 
-        return new UserImpersonationResult();
+        return UserImpersonationResult.SuccessResult(currentUser);
     }
 
     // private async Task<User> GetCurrentUserFromContext(HttpContext httpContext)
@@ -90,7 +92,7 @@ public class UserImpersonationService : IUserImpersonationService, IOnLoggedOut
     }
 
 
-    public async Task CancelImpersonation(ClaimsPrincipal principal)
+    public async Task<User> CancelImpersonation(ClaimsPrincipal principal)
     {
         // var 
         // var currentUser = await GetCurrentUserFromContext(httpContext);
@@ -98,12 +100,12 @@ public class UserImpersonationService : IUserImpersonationService, IOnLoggedOut
         //     return;
         var identity = principal.Identity as ClaimsIdentity;
         if (identity == null)
-            return;
+            return null;
 
         var (id, name) = GetImpersonationClaims(principal);
-        var currentUser = await _userStore.FindByNameAsync(identity.Name, default);
+        var currentUser = await _userStore.FindByIdAsync(principal.GetUserId()?.ToString(), default);
         if (currentUser == null)
-            return;
+            return null;
 
         // we want to remove the one with the user impersonation key if it exists 
         if (id != null)
@@ -117,6 +119,8 @@ public class UserImpersonationService : IUserImpersonationService, IOnLoggedOut
             identity.TryRemoveClaim(name);
             await _userClaimManager.RemoveClaimAsync(currentUser, name);
         }
+        
+        return currentUser;
     }
 
     private static (Claim id, Claim name) GetImpersonationClaims(ClaimsPrincipal user)

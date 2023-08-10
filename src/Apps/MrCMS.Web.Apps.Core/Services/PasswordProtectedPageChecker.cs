@@ -1,17 +1,18 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Services;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
     public class PasswordProtectedPageChecker : IPasswordProtectedPageChecker
     {
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
-        public PasswordProtectedPageChecker(IGetCurrentUser getCurrentUser)
+        public PasswordProtectedPageChecker(IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal)
         {
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
         }
 
         private string GetCookieKey(Webpage webpage)
@@ -21,8 +22,8 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public async Task<bool> CanAccessPage(Webpage webpage, IRequestCookieCollection cookies)
         {
-            var user = await _getCurrentUser.Get();
-            if (user?.IsAdmin == true)
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
+            if (user?.IsAdmin() == true)
                 return true;
             if (webpage == null)
                 return false;

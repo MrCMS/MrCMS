@@ -1,21 +1,30 @@
-﻿namespace MrCMS.Website.Auth
+﻿using System;
+using System.Collections.Concurrent;
+
+namespace MrCMS.Website.Auth
 {
     public class AclKeyGenerator : IAclKeyGenerator
     {
-        public static string GetKey(AclType type, string rule, string operation)
+        // Use Nested ConcurrentDictionaries for thread safety
+        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> Cache = new();
+
+        public static string GetKey(string rule, string operation)
         {
-            switch (type)
-            {
-                case AclType.Controller:
-                    return $"{type}.{rule}";
-                default:
-                    return $"{type}.{rule}.{operation}";
-            }
+            // Get or create the nested dictionary for the given rule
+            var ruleDictionary = Cache.GetOrAdd(rule, new ConcurrentDictionary<string, string>());
+
+            // Get or add the concatenated string in the nested dictionary
+            return ruleDictionary.GetOrAdd(operation, ValueFactory(rule));
         }
 
-        string IAclKeyGenerator.GetKey(AclType type, string rule, string operation)
+        private static Func<string, string> ValueFactory(string rule)
         {
-            return GetKey(type, rule, operation);
+            return operationKey => $"{rule}.{operationKey}";
+        }
+
+        string IAclKeyGenerator.GetKey(string rule, string operation)
+        {
+            return GetKey(rule, operation);
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using MrCMS.ACL;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MrCMS.Website.Auth
 {
-    public interface IGetAclKeys
+    public interface IGetACLKeys
     {
-        string GetKey<TAclRule>(string operation) where TAclRule : ACLRule;
-        IReadOnlyList<string> GetKeys<TAclRule>(string operation) where TAclRule : ACLRule;
-        IReadOnlyList<string> GetKeys(ControllerActionDescriptor descriptor);
+        IReadOnlyList<string> GetKeys(Type type, string operation);
     }
 }

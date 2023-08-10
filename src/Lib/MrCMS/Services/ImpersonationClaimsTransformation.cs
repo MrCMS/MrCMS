@@ -11,10 +11,10 @@ public class ImpersonationClaimsTransformation : IClaimsTransformation
 {
     private readonly IUserClaimManager _userClaimStore;
     private readonly IUserLookup _userLookup;
-    private readonly IPerformAclCheck _performAclCheck;
+    private readonly IPerformACLCheck _performAclCheck;
 
     public ImpersonationClaimsTransformation(IUserClaimManager userClaimStore, IUserLookup userLookup,
-        IPerformAclCheck performAclCheck)
+        IPerformACLCheck performAclCheck)
     {
         _userClaimStore = userClaimStore;
         _userLookup = userLookup;
@@ -28,16 +28,17 @@ public class ImpersonationClaimsTransformation : IClaimsTransformation
             return principal;
 
         var user = await _userLookup.GetUserByEmail(principal.Identity.Name);
-        
+
         // clone the principal to avoid modifying the original
         var claimsPrincipal = principal.Clone();
         var newIdentity = (claimsPrincipal.Identity as ClaimsIdentity)!;
-        
+
         // remove any existing impersonation claims
-        var canImpersonate =
-            _performAclCheck.CanAccessLogic<UserACL>(user.Roles.Select(x => x.Name), UserACL.Impersonate);
-        var existingClaims = newIdentity.FindAll(x => UserImpersonationService.ImpersonationKeys.Contains(x.Type)).ToList();
-        
+        var canImpersonate = await _performAclCheck.CanAccessLogic(user.Roles.Select(x => x.Id).ToHashSet(),
+            typeof(UserACL), UserACL.Impersonate);
+        var existingClaims = newIdentity.FindAll(x => UserImpersonationService.ImpersonationKeys.Contains(x.Type))
+            .ToList();
+
         foreach (var claim in existingClaims)
         {
             newIdentity.RemoveClaim(claim);

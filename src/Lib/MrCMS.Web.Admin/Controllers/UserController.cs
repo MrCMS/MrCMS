@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
-using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Services.Auth;
 using MrCMS.Web.Admin.ModelBinders;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
@@ -24,10 +24,13 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly IGetUserCultureOptions _getUserCultureOptions;
         private readonly IUserImpersonationService _userImpersonationService;
         private readonly UserManager _userManager;
+        private readonly ISignInManager _signInManager;
 
         public UserController(IUserAdminService userAdminService, IUserSearchService userSearchService,
             IRoleService roleService,
-            IGetUserCultureOptions getUserCultureOptions, IUserImpersonationService userImpersonationService, UserManager userManager)
+            IGetUserCultureOptions getUserCultureOptions, IUserImpersonationService userImpersonationService,
+            UserManager userManager,
+            ISignInManager signInManager)
         {
             _userAdminService = userAdminService;
             _userSearchService = userSearchService;
@@ -35,6 +38,7 @@ namespace MrCMS.Web.Admin.Controllers
             _getUserCultureOptions = getUserCultureOptions;
             _userImpersonationService = userImpersonationService;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [Acl(typeof(UserACL), UserACL.View)]
@@ -60,7 +64,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             var addUser = await _userAdminService.AddUser(addUserModel);
 
-            return RedirectToAction("Edit", new { id = addUser });
+            return RedirectToAction("Edit", new {id = addUser});
         }
 
         [HttpGet]
@@ -88,7 +92,7 @@ namespace MrCMS.Web.Admin.Controllers
         {
             var user = await _userAdminService.SaveUser(model, roles);
             TempData.AddSuccessMessage($"{user.Name} successfully saved");
-            return RedirectToAction("Edit", "User", new { Id = user.Id });
+            return RedirectToAction("Edit", "User", new {Id = user.Id});
         }
 
         [HttpGet]
@@ -121,7 +125,7 @@ namespace MrCMS.Web.Admin.Controllers
         public async Task<RedirectToActionResult> SetPassword(int id, string password)
         {
             await _userAdminService.SetPassword(id, password);
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Edit", new {id});
         }
 
         public async Task<JsonResult> IsUniqueEmail(string email, int? id)
@@ -139,7 +143,12 @@ namespace MrCMS.Web.Admin.Controllers
             var user = await _userAdminService.GetUser(id);
             var result = await _userImpersonationService.Impersonate(User, user);
             if (result.Success)
+            {
+                // refresh the user to get the new claims
+                await _signInManager.RefreshSignInAsync(result.UnderlyingUser);
                 return Redirect("~/");
+            }
+
             TempData.AddErrorMessage(result.Error);
             return RedirectToAction("Index");
         }
@@ -149,7 +158,7 @@ namespace MrCMS.Web.Admin.Controllers
             var user = await _userAdminService.GetUser(id);
             var result = await _userManager.UpdateSecurityStampAsync(user);
             TempData.AddSuccessMessage("Security Stamp Updated. User will be logged out in the next few minutes.");
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Edit", new {id});
         }
     }
 }

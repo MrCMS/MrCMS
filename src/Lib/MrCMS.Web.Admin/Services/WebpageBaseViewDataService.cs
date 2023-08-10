@@ -14,24 +14,15 @@ namespace MrCMS.Web.Admin.Services
     public class WebpageBaseViewDataService : IWebpageBaseViewDataService
     {
         private readonly IGetValidPageTemplatesToAdd _getValidPageTemplatesToAdd;
-        private readonly IGetCurrentUser _getCurrentUser;
-        private readonly IAccessChecker _accessChecker;
-        private readonly IGetAdminActionDescriptor _getDescriptor;
         private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService,
             IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
-            IGetCurrentUser getCurrentUser,
-            IAccessChecker accessChecker,
-            IGetAdminActionDescriptor getDescriptor,
             IWebpageMetadataService webpageMetadataService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
-            _getCurrentUser = getCurrentUser;
-            _accessChecker = accessChecker;
-            _getDescriptor = getDescriptor;
             _webpageMetadataService = webpageMetadataService;
         }
 
@@ -39,11 +30,10 @@ namespace MrCMS.Web.Admin.Services
         {
             viewData["parent"] = parent;
 
-            var user = await _getCurrentUser.Get();
+            // TODO - replace this with explicit ACL if we decide to re-add it to WebpageController
             var webpageWebpageTypes = await _validWebpageChildrenService
-                .GetValidWebpageTypes(parent,
-                    metadata => _accessChecker.CanAccess(_getDescriptor.GetDescriptor("Webpage", "Add"),
-                        user));
+                .GetValidWebpageTypes(parent, _ => Task.FromResult(true));
+            
             var validWebpageWebpageTypes =
                 webpageWebpageTypes.OrderBy(metadata => metadata.DisplayOrder).ToList();
 

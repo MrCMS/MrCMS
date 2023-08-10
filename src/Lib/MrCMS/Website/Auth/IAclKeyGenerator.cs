@@ -2,6 +2,6 @@
 {
     public interface IAclKeyGenerator
     {
-        string GetKey(AclType type, string rule, string operation);
+        string GetKey(string rule, string operation);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,6 @@ namespace MrCMS.Services
         Task<User> GetUserByGuid(Guid guid);
         Task<User> GetUserById(int id);
         Task<User> GetCurrentUser(HttpContext context);
-        Task<User> GetCurrentUser(IPrincipal principal);
+        Task<User> GetCurrentUser(ClaimsPrincipal principal);
     }
 }

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using ISession = NHibernate.ISession;
 
@@ -71,11 +73,17 @@ namespace MrCMS.Services
             return await GetCurrentUser(context?.User);
         }
 
-        public async Task<User> GetCurrentUser(IPrincipal principal)
+        public async Task<User> GetCurrentUser(ClaimsPrincipal principal)
         {
-            return principal != null && !string.IsNullOrWhiteSpace(principal.Identity.Name)
-                ? await GetUserByEmail(principal.Identity.Name)
-                : null;
+            // get the current user id from the principal
+            var id = principal.GetUserId();
+
+            // if there is no id, return null
+            if (id == null)
+                return null;
+
+            // get the user by that id
+            return await GetUserById(id.Value);
         }
     }
 }

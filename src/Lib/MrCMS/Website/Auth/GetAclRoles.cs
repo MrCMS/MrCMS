@@ -1,30 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MrCMS.Data;
-using MrCMS.Entities.ACL;
-using MrCMS.Services;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website.Auth
 {
-    public class GetAclRoles : IGetAclRoles
+    public class GetAclRoles : IGetACLRoles
     {
-        private readonly IRepository<ACLRole> _repository;
-        private readonly IRoleManager _roleManager;
+        private readonly IAclRoleRepository _repository;
 
-        public GetAclRoles(IRepository<ACLRole> repository, IRoleManager roleManager)
+        public GetAclRoles(IAclRoleRepository repository)
         {
             _repository = repository;
-            _roleManager = roleManager;
         }
 
-        public IReadOnlyList<ACLRole> GetRoles(IEnumerable<string> roles, IEnumerable<string> keys)
+        public async Task<bool> AnyRoles(ISet<int> roles, IEnumerable<string> keys)
         {
-            var roleIds = _roleManager.Roles.Where(role => roles.Contains(role.Name))
-                .Select(x => x.Id)
-                .ToList();
-
-            return _repository.Query().Where(role => roleIds.Contains(role.UserRole.Id) && keys.Contains(role.Name))
-                .ToList();
+            var allAsync = await _repository.GetAllAsync();
+            return allAsync.Any(role => roles.Contains(role.RoleId) && keys.Contains(role.Name));
         }
+    }
+
+
+    public class AclRoleModel
+    {
+        public int RoleId { get; set; }
+        public string Name { get; set; }
     }
 }

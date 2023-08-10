@@ -8,18 +8,18 @@ namespace MrCMS.Website.CMS
 {
     public class CanPreviewWebpage : ICanPreviewWebpage
     {
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
         private readonly IAccessChecker _accessChecker;
 
-        public CanPreviewWebpage(IGetCurrentUser getCurrentUser, IAccessChecker accessChecker)
+        public CanPreviewWebpage(IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal, IAccessChecker accessChecker)
         {
-            _getCurrentUser = getCurrentUser;
+            _getCurrentClaimsPrincipal = getCurrentClaimsPrincipal;
             _accessChecker = accessChecker;
         }
 
         public async Task<bool> CanPreview(Webpage webpage)
         {
-            var user = await _getCurrentUser.Get();
+            var user = await _getCurrentClaimsPrincipal.GetPrincipal();
             return user != null && await _accessChecker.CanAccess<CoreACL>(CoreACL.CanViewUnpublishedPages, user);
         }
     }

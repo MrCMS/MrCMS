@@ -102,7 +102,7 @@
     <script src="https://www.google.com/recaptcha/enterprise.js?onload=recaptchaOnLoad&render=@(GoogleRecaptchaSettings.IsCheckboxType ? "explicit" : GoogleRecaptchaSettings.SiteKey)" async defer></script>
 }
 
-@if (user != null && await Html.CanAccess<AdminBarACL>(user, "Show") && SiteSettings.EnableInlineEditing)
+@if (await Html.CanAccess<AdminBarACL>(User, "Show") && SiteSettings.EnableInlineEditing)
 {
     <div class="d-print-none">
         <partial name="~/Areas/Admin/Views/Shared/InPageEditor.cshtml" model="Model"/>
