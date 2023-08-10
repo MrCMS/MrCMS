@@ -29,7 +29,7 @@ namespace MrCMS.Shortcodes.Forms
                     // if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload || property is Email)
                     {
                         var elementContainer = new TagBuilder("div");
-                        elementContainer.AddCssClass("form-group");
+                        elementContainer.AddCssClass("form-group mb-3");
                         return elementContainer;
                     }
                 }
@@ -38,7 +38,7 @@ namespace MrCMS.Shortcodes.Forms
                     // if (property is TextBox || property is TextArea || property is DropDownList || property is FileUpload || property is Email)
                     {
                         var elementContainer = new TagBuilder("div");
-                        elementContainer.AddCssClass("form-floating");
+                        elementContainer.AddCssClass("form-floating mb-3");
                         return elementContainer;
                     }
                 }

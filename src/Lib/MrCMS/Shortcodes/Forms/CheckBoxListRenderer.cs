@@ -22,7 +22,7 @@ namespace MrCMS.Shortcodes.Forms
             values.Remove(CbHiddenValue);
 
             var tagBuilder = new TagBuilder("div");
-            tagBuilder.AddCssClass("form-group");
+            tagBuilder.AddCssClass("form-group mb-3");
             foreach (var checkbox in formProperty.Options)
             {
                 var cbLabelBuilder = new TagBuilder("label");

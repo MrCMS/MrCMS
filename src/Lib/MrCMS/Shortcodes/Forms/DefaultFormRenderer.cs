@@ -132,7 +132,7 @@ namespace MrCMS.Shortcodes.Forms
             checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
             checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
             var wrapper = new TagBuilder("div");
-            wrapper.AddCssClass("form-group");
+            wrapper.AddCssClass("form-group mb-3");
             wrapper.InnerHtml.AppendHtml(checkboxContainer);
             wrapper.InnerHtml.AppendHtml(
                 ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
