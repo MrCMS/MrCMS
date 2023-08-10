@@ -27,7 +27,7 @@
                             </div>
                         }
 
-                        <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="@await Html.Resource("Admin Media Choose File", "Choose File")"/>
+                        <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="@await Html.Resource("Admin Media Choose File", "Choose File", options => options.DisableInlineEditing())"/>
                     </td>
                 </tr>
                 </tbody>
@@ -38,7 +38,7 @@
             @Html.RadioButton("SelectedFile", Model.FileUrl, new {@class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id})
             @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id, "Select file")
 
-            <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="@await Html.Resource("Admin Media Choose File", "Choose File")"/>
+            <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="@await Html.Resource("Admin Media Choose File", "Choose File", options => options.DisableInlineEditing())"/>
         }
     </div>
 </div>

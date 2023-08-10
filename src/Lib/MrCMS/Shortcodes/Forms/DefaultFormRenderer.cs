@@ -42,6 +42,7 @@ namespace MrCMS.Shortcodes.Forms
 
             var form = GetForm(formEntity);
             var renderingType = _siteSettings.FormRendererType;
+            var labelRenderingType = _siteSettings.FormLabelRenderingType;
             if (submittedStatus.Submitted)
             {
                 form.InnerHtml.AppendHtml(new TagBuilder("br"));
@@ -53,15 +54,25 @@ namespace MrCMS.Shortcodes.Forms
             {
                 IHtmlContentBuilder elementHtml = new HtmlContentBuilder();
                 var renderer = _elementRendererManager.GetPropertyRenderer(property);
-                elementHtml.AppendHtml(_labelRenderer.AppendLabel(property));
                 var existingValue = submittedStatus.Data[property.Name];
 
                 var element = renderer.AppendElement(property, existingValue, renderingType);
                 element.TagRenderMode = renderer.IsSelfClosing ? TagRenderMode.SelfClosing : TagRenderMode.Normal;
-                elementHtml.AppendHtml(element);
+
+                if (renderer.SupportsFloatingLabel && labelRenderingType == FormLabelRenderingType.Floating)
+                {
+                    elementHtml.AppendHtml(element);
+                    elementHtml.AppendHtml(_labelRenderer.AppendLabel(property));
+                }
+                else
+                {
+                    elementHtml.AppendHtml(_labelRenderer.AppendLabel(property));
+                    elementHtml.AppendHtml(element);
+                }
+
                 elementHtml.AppendHtml(_validationMessageRenderer.AppendRequiredMessage(property));
                 var elementContainer =
-                    _elementRendererManager.GetPropertyContainer(renderingType, property);
+                    _elementRendererManager.GetPropertyContainer(renderingType, labelRenderingType, property);
                 if (elementContainer != null)
                 {
                     elementContainer.InnerHtml.AppendHtml(elementHtml);
@@ -115,47 +126,22 @@ namespace MrCMS.Shortcodes.Forms
 
             var checkboxContainer = new TagBuilder("div");
 
-            if (renderingType == FormRenderingType.Bootstrap3)
-            {
-                cbLabelBuilder.AddCssClass("checkbox-inline");
-                cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
-                cbLabelBuilder.InnerHtml.AppendHtml(labelText);
-
-                checkboxContainer.AddCssClass("checkbox");
-                checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-                var wrapper = new TagBuilder("div");
-                wrapper.AddCssClass("form-group");
-                wrapper.InnerHtml.AppendHtml(checkboxContainer);
-                wrapper.InnerHtml.AppendHtml(
-                    ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
-                return wrapper;
-            }
-
-            if (renderingType == FormRenderingType.Bootstrap4)
-            {
-                cbLabelBuilder.InnerHtml.AppendHtml(labelText);
-                cbLabelBuilder.AddCssClass("form-check-label");
-                checkboxContainer.AddCssClass("form-check");
-                checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
-                checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-                var wrapper = new TagBuilder("div");
-                wrapper.AddCssClass("form-group");
-                wrapper.InnerHtml.AppendHtml(checkboxContainer);
-                wrapper.InnerHtml.AppendHtml(
-                    ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
-                return wrapper;
-            }
-
-            cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
+            cbLabelBuilder.InnerHtml.AppendHtml(labelText);
+            cbLabelBuilder.AddCssClass("form-check-label");
+            checkboxContainer.AddCssClass("form-check");
+            checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
             checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-            checkboxContainer.InnerHtml.AppendHtml(
+            var wrapper = new TagBuilder("div");
+            wrapper.AddCssClass("form-group");
+            wrapper.InnerHtml.AppendHtml(checkboxContainer);
+            wrapper.InnerHtml.AppendHtml(
                 ValidationMessaageRenderer.GetValidationMessage(FormPostingHandler.GDPRConsent));
-            return checkboxContainer;
+            return wrapper;
         }
 
         public TagBuilder GetSubmitButton(Form form)
         {
-            var tagBuilder = new TagBuilder("input") {TagRenderMode = TagRenderMode.SelfClosing};
+            var tagBuilder = new TagBuilder("input") { TagRenderMode = TagRenderMode.SelfClosing };
             tagBuilder.Attributes["type"] = "submit";
             tagBuilder.Attributes["value"] = !string.IsNullOrWhiteSpace(form.SubmitButtonText)
                 ? form.SubmitButtonText
@@ -171,7 +157,7 @@ namespace MrCMS.Shortcodes.Forms
             var tagBuilder = new TagBuilder("form");
             tagBuilder.Attributes["method"] = "POST";
             tagBuilder.Attributes["enctype"] = "multipart/form-data";
-            tagBuilder.Attributes["action"] = string.Format("/save-form/{0}", form.Id);
+            tagBuilder.Attributes["action"] = $"/save-form/{form.Id}";
 
             return tagBuilder;
         }

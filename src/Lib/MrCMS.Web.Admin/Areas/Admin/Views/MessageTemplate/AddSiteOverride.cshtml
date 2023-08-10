@@ -1,4 +1,6 @@
-﻿@model MrCMS.Messages.MessageTemplate
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Messages.MessageTemplate
 @{
     ViewBag.Title = "Add Message Template Site Override";
 }
@@ -6,12 +8,12 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@string.Format(await Html.Resource("admin-message-template-add-override", "Add {0} Override"), Model.GetType().Name.BreakUpString())" />
+            <admin-header-title title="@await Html.PlainResource("admin-message-template-add-override", "Add {type} Override",configureOptions=>configureOptions.AddReplacement("type",Model.GetType().Name.BreakUpString()))" />
 
             <admin-header-actions>
                 <span class="btn-group">
-                    @Html.ActionLink(await Html.Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-secondary" })
-                    <input class="btn btn-primary" type="submit" value="@await Html.Resource("Save")" />
+                    @Html.ActionLink(await Html.PlainResource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-secondary" })
+                    <input class="btn btn-primary" type="submit" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())" />
                 </span>
             </admin-header-actions>
         </row>

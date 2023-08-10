@@ -1,10 +1,12 @@
-﻿@model MrCMS.Settings.SecuritySettings
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Settings.SecuritySettings
 
 <form asp-controller="SecurityOptions" asp-action="Settings" method="post">
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-security-config", "Security Configuration") "/>
+            <admin-header-title title="@await Html.Resource("admin-security-config", "Security Configuration", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button class="btn btn-primary">

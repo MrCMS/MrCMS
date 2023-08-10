@@ -12,6 +12,7 @@ namespace MrCMS.Shortcodes.Forms
     public interface IFormElementRenderer
     {
         bool IsSelfClosing { get; }
+        bool SupportsFloatingLabel { get; }
         TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType);
     }
 }

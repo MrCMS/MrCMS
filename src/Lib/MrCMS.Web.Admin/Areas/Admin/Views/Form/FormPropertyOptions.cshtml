@@ -20,8 +20,8 @@
                 <td>@option.Selected</td>
                 <td>
                     <div class="btn-group">
-                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
-                        @Html.ActionLink(await Html.Resource("Delete"), "Delete", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Delete"), "Delete", "FormListOption", new {id = option.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
                     </div>
                 </td>
             </tr>

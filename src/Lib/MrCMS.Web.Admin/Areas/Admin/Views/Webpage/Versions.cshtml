@@ -1,6 +1,8 @@
 ﻿@using MrCMS.Web.Admin.Services
 @using X.PagedList.Mvc.Core
 @using MrCMS.Web.Admin.Models
+@using X.PagedList.Mvc.Bootstrap4.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject IWebpageVersionsAdminService _webpageVersionsAdminService
 @inject IContentVersionAdminService _contentVersionAdminService
@@ -42,14 +44,14 @@
                                 <td>
                                     <div class="btn-group">
 
-                                        @Html.ActionLink(await Html.Resource("View"), "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal", @class = "btn btn-primary btn-sm" })
+                                        @Html.ActionLink(await Html.PlainResource("View"), "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal", @class = "btn btn-primary btn-sm" })
                                     </div>
                                 </td>
                             </tr>
                         }
                         </tbody>
                     </table>
-                    @Html.PagedListPager(webpageVersions.Items, i => Url.Action("Versions", "Webpage", new { Model.Id, page = i }), MrCMSPagedListRenderOptions.Bootstrap4)
+                    @Html.PagedListPager(webpageVersions.Items, i => Url.Action("Versions", "Webpage", new { Model.Id, page = i }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
                 </div>
             }
             else

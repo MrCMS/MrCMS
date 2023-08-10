@@ -1,7 +1,9 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.ACL.Rules
 @using MrCMS.Entities.People
 @using MrCMS.Services
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Services
 @model MrCMS.Web.Admin.Models.UpdateUserModel
 @inject IGetEditTabsService EditTabsService
@@ -28,7 +30,7 @@
 
             <admin-header-actions>
                 <span class="btn-group pull-right">
-                    @Html.ActionLink(await Html.Resource("admin-back", "Back"), "Index", "User", null, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(await Html.PlainResource("admin-back", "Back"), "Index", "User", null, new {@class = "btn btn-secondary"})
                     <a href="@Url.Action("SetPassword", "User", new {id = Model.Id})" class="btn btn-secondary" data-toggle="fb-modal">@await Html.Resource("Admin User Reset Password", "Reset Password")</a>
 
                     @if (!onlyAdmin)

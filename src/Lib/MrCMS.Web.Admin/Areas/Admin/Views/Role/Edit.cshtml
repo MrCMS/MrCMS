@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Admin.Models.UpdateRoleModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.UpdateRoleModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
@@ -7,7 +8,7 @@
         <legend>
             @await Html.Resource("Admin User Roles Edit", "Edit Role")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())" />
             </span>
         </legend>
         <div class="form-group">

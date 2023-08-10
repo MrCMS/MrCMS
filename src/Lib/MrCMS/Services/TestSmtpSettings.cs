@@ -38,8 +38,9 @@ namespace MrCMS.Services
                     {
                         From = new MailAddress(settings.SystemEmailAddress),
                         Subject = "SMTP Test",
-                        Body = await _resourceProvider.GetValue("Admin - Test Email - Content",
-                            "Testing email functionality from " + site.DisplayName),
+                        Body = await _resourceProvider.GetValue("Admin - Test Email - Content", options =>
+                            options.SetDefaultValue(
+                                "Testing email functionality from " + site.DisplayName)),
                     };
                     mailMessage.To.Add(new MailAddress(info.Email));
 

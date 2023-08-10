@@ -1,6 +1,8 @@
 ﻿@using System.Drawing
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Web.Admin.Helpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using NHibernate
 @model MrCMS.Web.Admin.Models.UpdateFileSEOModel
 @inject ISession Session
@@ -12,12 +14,12 @@
 <form asp-controller="File" asp-action="Edit" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("Edit")"/>
+            <admin-header-title title="@await Html.Resource("Edit", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <div class="btn-group">
                     <a href="javascript:history.go(-1)" class="btn btn-secondary">@await Html.Resource("Back")</a>
-                    <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+                    <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
                 </div>
             </admin-header-actions>
         </row>
@@ -33,7 +35,9 @@
         <i class="@file.FileExtension.GetIconClass()"> </i>
     }
     <br/>
-    <a href="@file.FileUrl">file.FileName</a>
+    @Html.Link(file.FileName, file.FileUrl)
+
+
     <br/>
 
     @if (file.MediaCategory != null)

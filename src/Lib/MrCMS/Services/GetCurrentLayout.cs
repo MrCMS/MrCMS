@@ -42,8 +42,8 @@ namespace MrCMS.Services
 
         private Layout GetTypeDefaultLayout(Webpage webpage)
         {
-            var documentMetadata = _webpageMetadataService.GetMetadata(webpage);
-            var layoutId = _pageDefaultsSettings.GetLayoutId(documentMetadata.Type);
+            var webpageMetadata = _webpageMetadataService.GetMetadata(webpage);
+            var layoutId = _pageDefaultsSettings.GetLayoutId(webpageMetadata.Type);
             if (layoutId.HasValue)
             {
                 var layout = _session.Get<Layout>(layoutId);

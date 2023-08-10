@@ -1,7 +1,8 @@
 ﻿@using MrCMS.Settings
 @model MrCMS.Entities.Documents.Media.MediaCategory
+@inject MediaSettings MediaSettings
 
-<div id="fileupload" class="dropzone" data-message="@await Html.Resource("Click here or drag files to upload")">
+<div id="fileupload" class="dropzone" data-message="@await Html.Resource("Click here or drag files to upload", option=> option.DisableInlineEditing())">
 
 </div>
 <input type="hidden" value="@Url.Action("Files", "File", new {id = Model?.Id})" id="action-url"/>
@@ -15,4 +16,4 @@
 </div>
 <div id="mrcmsfiles" class=""></div>
 <input type="hidden" id="allowedFileTypes" value="@FileTypeUploadSettings.AllowedFileTypes"/>
-<input type="hidden" id="maxFileSizeUpload" value="@(SessionHelper.MaxFileSize)"/>
+<input type="hidden" id="maxFileSizeUpload" value="@(MediaSettings.MaxFileSizeUpload)"/>

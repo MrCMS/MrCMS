@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Documents.Web.FormProperties
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
 <div class="row">
     <div class="col-lg-7">
@@ -6,8 +7,8 @@
     </div>
     <div class="col-lg-5">
         <div class="pull-right btn-group">
-            @Html.ActionLink(await Html.Resource("Edit"), "Edit", "FormProperty", new {id = Model.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
-            @Html.ActionLink(await Html.Resource("Delete"), "Delete", "FormProperty", new {id = Model.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+            @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "FormProperty", new {id = Model.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+            @Html.ActionLink(await Html.PlainResource("Delete"), "Delete", "FormProperty", new {id = Model.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
         </div>
     </div>
 </div>

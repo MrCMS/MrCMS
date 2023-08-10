@@ -7,7 +7,7 @@
         <legend>
             @await Html.Resource("Admin Form Add Field Title", "Add Field")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn submit-form-btn" value="@await Html.Resource("Admin Form Add Field Button", "Add form property")" />
+                <input type="submit" class="btn-primary btn submit-form-btn" value="@await Html.Resource("Admin Form Add Field Button", "Add form property", options => options.DisableInlineEditing())" />
             </span>
         </legend>
         <input type="hidden" asp-for="FormId"/>

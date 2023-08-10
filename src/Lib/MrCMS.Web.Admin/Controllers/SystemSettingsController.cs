@@ -19,7 +19,8 @@ namespace MrCMS.Web.Admin.Controllers
         private readonly ITestSmtpSettings _testSmtpSettings;
         private readonly IStringResourceProvider _resourceProvider;
 
-        public SystemSettingsController(ISystemConfigurationProvider configurationProvider, ITestSmtpSettings testSmtpSettings, IStringResourceProvider resourceProvider)
+        public SystemSettingsController(ISystemConfigurationProvider configurationProvider,
+            ITestSmtpSettings testSmtpSettings, IStringResourceProvider resourceProvider)
         {
             _configurationProvider = configurationProvider;
             _testSmtpSettings = testSmtpSettings;
@@ -45,6 +46,7 @@ namespace MrCMS.Web.Admin.Controllers
             {
                 await _configurationProvider.SaveSettings(setting);
             }
+
             TempData["settings-saved"] = true;
             return RedirectToAction("Index");
         }
@@ -70,11 +72,14 @@ namespace MrCMS.Web.Admin.Controllers
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
         public async Task<RedirectToActionResult> TestMailSettings(TestEmailInfo info)
         {
-            var result = await _testSmtpSettings.TestSettings(_configurationProvider.GetSystemSettings<MailSettings>(), info);
+            var result =
+                await _testSmtpSettings.TestSettings(_configurationProvider.GetSystemSettings<MailSettings>(), info);
             if (result)
-                TempData.AddSuccessMessage(await _resourceProvider.GetValue("Admin - Test email - Success", "Email sent."));
+                TempData.AddSuccessMessage(await _resourceProvider.GetValue("Admin - Test email - Success",
+                    options => options.SetDefaultValue("Email sent.")));
             else
-                TempData.AddErrorMessage(await _resourceProvider.GetValue("Admin - Test email - Failure", "An error occurred, check the log for details."));
+                TempData.AddErrorMessage(await _resourceProvider.GetValue("Admin - Test email - Failure",
+                    options => options.SetDefaultValue("An error occurred, check the log for details.")));
             return RedirectToAction("Mail");
         }
     }

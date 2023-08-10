@@ -1,10 +1,11 @@
-﻿@{
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@{
     ViewBag.Title = "Manage Pages";
 }
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("Admin Nav Pages", "Pages")"/>
+        <admin-header-title title="@await Html.Resource("Admin Nav Pages", "Pages", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
         </admin-header-actions>

@@ -1,6 +1,7 @@
 ﻿@using System.Drawing
 @using MrCMS.Web.Admin.Helpers
 @using MrCMS.Web.Admin.Services
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
@@ -45,11 +46,11 @@
                     </div>
                 }
                 <div class="clearfix"> </div>
-                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new {page, Model.SearchText, Model.SortBy, Model.Id}), MrCMSPagedListRenderOptions.Bootstrap4)
+                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new {page, Model.SearchText, Model.SortBy, Model.Id}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
             }
             else
             {
-                @Html.InfoBlock("", await Html.Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
+                @Html.InfoBlock("", await Html.PlainResource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
             }
         </div>
         <div class="clearfix"> </div>

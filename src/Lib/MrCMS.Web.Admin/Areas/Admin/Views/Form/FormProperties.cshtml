@@ -1,4 +1,5 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Documents.Web
 @model Form
 
@@ -12,8 +13,8 @@
                 </div>
                 <div class="col-lg-5">
                     <div class="pull-right btn-group">
-                        @Html.ActionLink(await Html.Resource("Sort"), "Sort", "Form", new {id = Model.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
-                        @Html.ActionLink(await Html.Resource("Admin Webpage Form Add Field", "Add Field"), "Add", "FormProperty", new {id = Model.Id}, new {@class = "btn btn-primary btn-sm", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Sort"), "Sort", "Form", new {id = Model.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Admin Webpage Form Add Field", "Add Field"), "Add", "FormProperty", new {id = Model.Id}, new {@class = "btn btn-primary btn-sm", data_toggle = "fb-modal"})
                     </div>
                 </div>
             </div>

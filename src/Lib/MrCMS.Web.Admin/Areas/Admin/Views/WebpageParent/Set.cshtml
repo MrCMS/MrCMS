@@ -6,7 +6,7 @@
         <legend>
             @await Html.Resource("Admin Webpage Move", "Move")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-danger btn submit-form-btn" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn-danger btn submit-form-btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
         @Html.HiddenFor(x => x.Id)

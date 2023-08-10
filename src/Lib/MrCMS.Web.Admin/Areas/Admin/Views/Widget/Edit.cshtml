@@ -13,7 +13,7 @@
             @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : widget.WidgetTypeFormatted)
 
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-success btn" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn-success btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
         @Html.HiddenFor(model => model.Id)
@@ -31,7 +31,7 @@
             <hr/>
             <h4>@await Html.Resource("Advanced")</h4>
             <hr class="small-margin"/>
-            <div class="form-group">
+            <div class="form-check mb-3">
                 @Html.InlineCheckboxFor(model => model.Cache)
             </div>
             <div class="form-group">

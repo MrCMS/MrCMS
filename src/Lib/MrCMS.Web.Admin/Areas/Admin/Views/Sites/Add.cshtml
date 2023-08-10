@@ -1,18 +1,19 @@
-﻿@model MrCMS.Web.Admin.Models.AddSiteModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Web.Admin.Models.AddSiteModel
 
 <form asp-controller="Sites" asp-action="Add" method="post">
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-add-site", "Add Site") "/>
+            <admin-header-title title="@await Html.Resource("admin-add-site", "Add Site", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <div class="btn btn-group">
                     <a asp-action="Index" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
-                    <input type="submit" class="btn-primary btn" value="@await Html.Resource("admin-save", "Save")"/>
+                    <input type="submit" class="btn-primary btn" value="@await Html.Resource("admin-save", "Save", options => options.DisableInlineEditing())"/>
 
                 </div>
-
             </admin-header-actions>
         </row>
     </admin-header>

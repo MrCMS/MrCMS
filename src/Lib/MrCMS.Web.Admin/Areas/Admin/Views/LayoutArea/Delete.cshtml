@@ -6,9 +6,9 @@
         <legend>
             @await Html.Resource("Admin Layout Areas Delete Title", "Delete layout area")
             <span class="btn-group  d-inline pull-right">
-                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
-        <p>@Html.InfoBlock(await Html.Resource("Warning") + "!", await Html.Resource("Admin Layout Area Delete Info", "Deleting this area can not be undone."), AlertType.danger)</p>
+        <p>@Html.InfoBlock(await Html.Resource("Warning") + "!", await Html.PlainResource("Admin Layout Area Delete Info", "Deleting this area can not be undone."), AlertType.danger)</p>
     </fieldset>
 }

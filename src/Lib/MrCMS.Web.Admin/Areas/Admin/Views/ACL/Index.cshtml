@@ -1,6 +1,8 @@
 ﻿@using MrCMS.ACL
 @using MrCMS.Entities.People
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject ACLSettings ACLSettings
 @model dynamic
 @{
@@ -10,7 +12,7 @@
 <form asp-controller="ACL" asp-action="Index" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls") " />
+            <admin-header-title title="@await Html.Resource("admin - acl", "ACL Controls", option=> option.DisableInlineEditing())" />
 
             <admin-header-actions>
                 <div class="btn-group">

@@ -10,6 +10,9 @@ namespace MrCMS.Entities.Documents.Web
 {
     public abstract class Webpage : SiteEntity
     {
+        public virtual string WebpageTypeName { get; }
+
+
         public enum WebpagePublishStatus
         {
             Published,

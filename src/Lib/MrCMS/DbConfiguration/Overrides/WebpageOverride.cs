@@ -9,9 +9,14 @@ namespace MrCMS.DbConfiguration.Overrides
         public void Override(AutoMapping<Webpage> mapping)
         {
             mapping.DiscriminateSubClassesOnColumn("WebpageType");
-            mapping.HasManyToMany(document => document.Tags).Table("WebpageTags").Cascade.SaveUpdate();
-            mapping.HasMany(document => document.Versions).KeyColumn("WebpageId").Cascade.All();
-            mapping.Map(x => x.WebpageType).Formula("WebpageType").Access.ReadOnly();
+            //mapping.Map(x => x.WebpageType, "WebpageType");
+
+
+            mapping.Map(x => x.WebpageTypeName).Formula("WebpageType").Access.ReadOnly();
+
+            mapping.HasManyToMany(webpage => webpage.Tags).Table("WebpageTags").Cascade.SaveUpdate();
+            mapping.HasMany(webpage => webpage.Versions).KeyColumn("WebpageId").Cascade.All();
+            //mapping.Map(x => x.WebpageType).Formula("WebpageType").Access.ReadOnly();
             mapping.HasManyToMany(x => x.TagPages).Table("WebpageTagPages").Cascade.SaveUpdate()
                 .ChildWhere(x => x.IsDeleted == false);
             

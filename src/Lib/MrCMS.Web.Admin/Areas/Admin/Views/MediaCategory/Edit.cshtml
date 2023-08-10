@@ -1,4 +1,6 @@
-﻿@model MrCMS.Web.Admin.Models.UpdateMediaCategoryModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Web.Admin.Models.UpdateMediaCategoryModel
 @{
     ViewBag.Title = "Edit | " + Model.Name;
 }
@@ -7,10 +9,10 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-edit", "Edit<>") @Model.Name"/>
+            <admin-header-title title="@await Html.Resource("admin-edit", "Edit<>", option=> option.DisableInlineEditing()) @Model.Name"/>
 
             <admin-header-actions>
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save")">
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save", options => options.DisableInlineEditing())">
 
             </admin-header-actions>
         </row>

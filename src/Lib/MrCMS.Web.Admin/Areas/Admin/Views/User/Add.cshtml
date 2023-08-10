@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Admin.Models.AddUserModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.AddUserModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
@@ -8,7 +9,7 @@
         <legend>
             @await Html.Resource("Admin User Add User", "Add user")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())" />
             </span>
         </legend>
         @Html.ValidationSummary()

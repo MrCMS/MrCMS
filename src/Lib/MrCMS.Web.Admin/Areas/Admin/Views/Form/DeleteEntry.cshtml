@@ -6,7 +6,7 @@
         <legend>
             @await Html.Resource("Admin Form Delete Entry Title", "Delete Entry")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Admin Form Delete Entry Button", "Delete entry")"/>
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Admin Form Delete Entry Button", "Delete entry", options => options.DisableInlineEditing())"/>
             </span>
         </legend>
         @await Html.Resource("Admin Form Delete Entry warning", "Are you sure you want to delete this entry?")

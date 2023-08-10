@@ -21,14 +21,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _getCurrentUser = getCurrentUser;
         }
 
-
         public async Task<JsonResult> IsUniqueEmail(string email)
         {
             var task = await _getCurrentUser.Get();
             return await _userManagementService.IsUniqueEmail(email, task?.Id)
                 ? Json(true)
-                : Json(_stringResourceProvider.GetValue("Register Email Already Registered",
-                    "Email already registered."));
+                : Json(_stringResourceProvider.GetValue("Register Email Already Registered", options =>
+                    options.SetDefaultValue("Email already registered.")));
         }
     }
 }

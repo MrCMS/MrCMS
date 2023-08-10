@@ -122,13 +122,13 @@ namespace MrCMS.Messages
                 return await
                     query
                         .Where(x => x.Type == type && x.SiteId == siteId)
-                        .SingleOrDefaultAsync();
+                        .FirstOrDefaultAsync();
             }
 
             return await
                 query
                     .Where(x => x.Type == type && x.SiteId == siteId)
-                    .SingleOrDefaultAsync();
+                    .FirstOrDefaultAsync();
         }
 
         public async Task<T> GetNewMessageTemplate<T>() where T : MessageTemplate, new()

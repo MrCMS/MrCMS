@@ -6,9 +6,9 @@
         <legend>
             @await Html.Resource("Admin Add Layout Delete Title", "Delete layout")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete")"/>
+                <input type="submit" class="btn btn-danger" value="@await Html.Resource("Delete", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
-        @Html.InfoBlock("Warning", await Html.Resource("Admin Layout Delete Warning", "Deleting this layout can not be undone and will delete all areas within the layout. This will also revert any pages that were using this layout to the site default"), AlertType.danger)
+        @Html.InfoBlock("Warning", await Html.PlainResource("Admin Layout Delete Warning", "Deleting this layout can not be undone and will delete all areas within the layout. This will also revert any pages that were using this layout to the site default"), AlertType.danger)
     </fieldset>
 }

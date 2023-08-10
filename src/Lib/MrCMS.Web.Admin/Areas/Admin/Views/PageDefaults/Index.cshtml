@@ -1,9 +1,10 @@
-﻿@model System.Collections.Generic.List<MrCMS.Web.Admin.Models.PageDefaultsInfo>
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model System.Collections.Generic.List<MrCMS.Web.Admin.Models.PageDefaultsInfo>
 
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-page-default", "Page Defaults") "/>
+        <admin-header-title title="@await Html.Resource("admin-page-default", "Page Defaults", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
         </admin-header-actions>
@@ -42,7 +43,7 @@
                 @info.LayoutName
             </td>
             <td>
-                @Html.ActionLink(await Html.Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new {type = info.TypeName}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
+                @Html.ActionLink(await Html.PlainResource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new {type = info.TypeName}, new {@class = "btn btn-sm btn-secondary", data_toggle = "fb-modal"})
             </td>
         </tr>
     }

@@ -73,13 +73,16 @@ namespace MrCMS.Website.Controllers
                 Code = code,
                 Message = code switch
                 {
-                    404 => await stringResourceProvider.GetValue($"ui-{code}-message",
-                        "Oops! This resource cannot be found."),
-                    403 => await stringResourceProvider.GetValue($"ui-{code}-message",
-                        "Oops! You do not have access to this page."),
-                    410 => await stringResourceProvider.GetValue($"ui-{code}-message",
-                        "Sorry, this resource no longer exists."),
-                    _ => await stringResourceProvider.GetValue($"ui-{code}-message", "Sorry, an error has occurred.")
+                    404 => await stringResourceProvider.GetValue($"ui-{code}-message", options =>
+                        options.SetDefaultValue(
+                            "Oops! This resource cannot be found.")),
+                    403 => await stringResourceProvider.GetValue($"ui-{code}-message", options =>
+                        options.SetDefaultValue("Oops! You do not have access to this page.")),
+                    410 => await stringResourceProvider.GetValue($"ui-{code}-message", options =>
+                        options.SetDefaultValue(
+                            "Sorry, this resource no longer exists.")),
+                    _ => await stringResourceProvider.GetValue($"ui-{code}-message",
+                        options => options.SetDefaultValue("Sorry, an error has occurred."))
                 }
             };
             Response.StatusCode = code;
@@ -89,9 +92,16 @@ namespace MrCMS.Website.Controllers
         private async Task<(bool IsGone, RedirectResult RedirectResult)> TryHandle404(HttpRequest request,
             IStatusCodeReExecuteFeature feature, ILogger<ErrorController> logger)
         {
+            if (feature == null)
+                return (false, null);
             // we trim start to standardise with URL History
             string path = $"{feature.OriginalPathBase}{feature.OriginalPath}".TrimStart('/');
             var query = feature.OriginalQueryString;
+
+            //if path is a file, return
+            if (path.Contains(".css") || path.Contains(".js") || path.Contains(".png") ||
+                path.Contains(".jpg") || path.Contains(".gif") || path.Contains(".ico") || path.Contains(".svg") || path.Contains(".ico"))
+                return (false, null);
 
             logger.LogDebug("404 Lookup - Path: {Path}, QueryString: {Query}", path, query);
             // try match exact - path + query
@@ -126,7 +136,8 @@ namespace MrCMS.Website.Controllers
                 return (false, result);
 
             // add to known 404s
-            if (siteSettings.Log404s)
+            if (siteSettings.Log404s && !path.Contains(".css") && !path.Contains(".js") && !path.Contains(".png") &&
+                !path.Contains(".jpg") && !path.Contains(".gif") && !path.Contains(".ico"))
                 await notFoundHandler.AddHistoryRecord(path, query, request.Referer(), siteId);
 
             return (false, null);

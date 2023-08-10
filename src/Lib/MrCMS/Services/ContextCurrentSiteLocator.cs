@@ -10,10 +10,14 @@ namespace MrCMS.Services
 {
     public class ContextCurrentSiteLocator : ICurrentSiteLocator
     {
+        private class CurrentSiteFeature
+        {
+            public Site Site { get; set; }
+        }
+
         private readonly IRepository<Site> _siteRepository;
         private readonly IRepository<RedirectedDomain> _redirectedDomainRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        private Site _currentSite;
 
         public ContextCurrentSiteLocator(IRepository<Site> siteRepository,
             IRepository<RedirectedDomain> redirectedDomainRepository,
@@ -26,7 +30,23 @@ namespace MrCMS.Services
 
         public Site GetCurrentSite()
         {
-            return _currentSite ??= GetSiteFromSettingForDebugging() ?? GetSiteFromRequest();
+            // check if the CurrentSiteFeature is set
+            var feature = _contextAccessor.HttpContext.Features.Get<CurrentSiteFeature>();
+            if (feature != null)
+            {
+                return feature.Site;
+            }
+
+            // otherwise get the site from the request
+            var site = GetSiteFromSettingForDebugging() ?? GetSiteFromRequest();
+
+            // if we have a site, set the CurrentSiteFeature
+            _contextAccessor.HttpContext.Features.Set(new CurrentSiteFeature
+            {
+                Site = site
+            });
+            
+            return site;
         }
 
         public RedirectedDomain GetCurrentRedirectedDomain()

@@ -111,11 +111,11 @@ namespace MrCMS.Helpers
                     }
                     else
                     {
-                        _referencedAssemblies[name] = new AssemblyName[0];
+                        _referencedAssemblies[name] = Array.Empty<AssemblyName>();
                     }
-                } catch (Exception ex) //try catch added as GlobalPayments.Api references corecompat.system.drawing which is not loaded in .net 6
+                } catch//try catch added as GlobalPayments.Api references corecompat.system.drawing which is not loaded in .net 6
                 {
-                    _referencedAssemblies[name] = new AssemblyName[0];
+                    _referencedAssemblies[name] = Array.Empty<AssemblyName>();
                 }
             }
         }

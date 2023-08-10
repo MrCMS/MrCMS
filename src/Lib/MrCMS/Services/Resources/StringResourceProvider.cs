@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
+using Newtonsoft.Json;
 using NHibernate;
 using NHibernate.Linq;
 
@@ -89,13 +91,57 @@ namespace MrCMS.Services.Resources
             }
         }
 
-        public async Task<string> GetValue(string key, string defaultValue = null)
+        // html output
+        public async Task<IHtmlContent> GetValue(string key, Action<ResourceOptions> configureOptions)
         {
-            return await GetValueForCulture(key, await _getCurrentUserCultureInfo.Get(), defaultValue);
+            // set the default editable from the configuration
+            var resourceOptions = new ResourceOptions();
+            configureOptions?.Invoke(resourceOptions);
+            if (resourceOptions.Culture == null)
+                resourceOptions = resourceOptions.WithCulture(await _getCurrentUserCultureInfo.Get());
+
+            var internalHtml = await GetValueForCulture(key, resourceOptions);
+
+
+            // transform to editable 
+            if (resourceOptions.Editable)
+            {
+                var isHtml = resourceOptions.Html;
+
+                var tagBuilder = new TagBuilder(isHtml ? "div" : "span");
+                tagBuilder.AddCssClass("editable");
+                tagBuilder.Attributes["data-type"] = "string-resource";
+                tagBuilder.Attributes["data-key"] = key;
+                tagBuilder.Attributes["data-is-html"] = isHtml ? "true" : "false";
+                if (resourceOptions.Replacements.Any())
+                {
+                    tagBuilder.Attributes["data-replacements"] =
+                        JsonConvert.SerializeObject(resourceOptions.Replacements);
+                }
+                tagBuilder.InnerHtml.AppendHtml(internalHtml);
+                return tagBuilder;
+            }
+
+            return new HtmlString(internalHtml);
         }
 
-        public async Task<string> GetValueForCulture(string key, CultureInfo cultureInfo, string defaultValue = null)
+        // plain output
+        public async Task<string> GetValue(string key, Action<PlainResourceOptions> configureOptions)
         {
+            var options = new PlainResourceOptions();
+            configureOptions?.Invoke(options);
+
+            if (options.Culture == null)
+                options = options.WithCulture(await _getCurrentUserCultureInfo.Get());
+
+            return await GetValueForCulture(key, options);
+        }
+
+        private async Task<string> GetValueForCulture(string key, PlainResourceOptions options)
+        {
+            var cultureInfo = options.Culture;
+            var defaultValue = options.DefaultValue;
+            var replacements = options.Replacements;
             // await _semaphoreSlim.WaitAsync();
             try
             {
@@ -111,13 +157,13 @@ namespace MrCMS.Services.Resources
                         resources.FirstOrDefault(
                             resource => resource.UICulture == currentUserCulture);
                     if (languageValue != null)
-                        return languageValue.Value;
+                        return applyReplacements(languageValue.Value, replacements);
 
 
                     var existingDefault =
                         resources.FirstOrDefault(resource => resource.UICulture == null);
                     if (existingDefault != null)
-                        return existingDefault.Value;
+                        return applyReplacements(existingDefault.Value, replacements);
                 }
 
 
@@ -130,12 +176,21 @@ namespace MrCMS.Services.Resources
                 await _session.TransactAsync(session => session.SaveAsync(defaultResource));
                 //AllResources[key] = new HashSet<StringResource> {defaultResource};
                 ResetResourceCache();
-                return defaultResource.Value;
+
+                // apply replacements
+                return applyReplacements(defaultResource.Value, replacements);
             }
             finally
             {
                 // _semaphoreSlim.Release();
             }
+        }
+
+        private string applyReplacements(string input, IReadOnlyDictionary<string,string> replacements)
+        {
+            var output = replacements.Aggregate(input,
+                (current, replacement) => current.Replace($"{{{replacement.Key}}}", replacement.Value));
+            return output;
         }
 
         public async Task<IEnumerable<string>> GetOverriddenLanguages()

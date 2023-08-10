@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using FluentNHibernate.Cfg.Db;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
@@ -12,7 +15,7 @@ namespace MrCMS.Helpers
     public static class MrCmsDataExtensions
     {
         public static IServiceCollection AddMrCMSData(this IServiceCollection services, bool isInstalled,
-            IConfiguration configuration)
+            IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             services.AddScoped<ISession>(provider =>
             {
@@ -43,9 +46,26 @@ namespace MrCMS.Helpers
                 services.RegisterDatabaseProviders();
 
                 services.AddSingleton<IDatabaseProviderResolver, DatabaseProviderResolver>();
-                services.AddSingleton<NHibernateConfigurator>(provider => new NHibernateConfigurator(
-                    provider.GetRequiredService<IDatabaseProviderResolver>().GetProvider(),
-                    provider.GetRequiredService<MrCMSAppContext>(), null, connectionString));
+
+
+                services.AddSingleton<NHibernateConfigurator>(provider =>
+                {
+                    //todo make this appsettings configurable
+                    Action<CacheSettingsBuilder> configureCache;
+                    if (webHostEnvironment.EnvironmentName == "Development")
+                    {
+                        configureCache = x => x.Not.UseQueryCache().Not.UseSecondLevelCache();
+                    }
+                    else
+                    {
+                        configureCache = null; //default configure
+                    }
+                    return new NHibernateConfigurator(
+                        provider.GetRequiredService<IDatabaseProviderResolver>().GetProvider(),
+                        provider.GetRequiredService<MrCMSAppContext>(),
+                        configureCache, connectionString);
+                });
+
                 services.AddSingleton<ISessionFactory>(provider =>
                     provider.GetRequiredService<NHibernateConfigurator>().CreateSessionFactory());
                 services.AddSingleton<IGetNHibernateConfiguration>(provider => provider.GetRequiredService<NHibernateConfigurator>());

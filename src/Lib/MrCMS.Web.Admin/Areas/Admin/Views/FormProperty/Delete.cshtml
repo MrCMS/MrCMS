@@ -6,7 +6,7 @@
         <legend>
             @await Html.Resource("Admin Form Delete Field Title", "Delete Field")
             <span class="btn-group pull-right">
-                <input type="button" class="btn btn-danger submit-form-btn" value="@await Html.Resource("Admin Form Delete Field Button", "Delete field")"/>
+                <input type="button" class="btn btn-danger submit-form-btn" value="@await Html.Resource("Admin Form Delete Field Button", "Delete field", options => options.DisableInlineEditing())"/>
             </span>
         </legend>
         @await Html.Resource("Admin Form Delete Field Warning", "Deleting cannot be undone, do you want to proceed?")

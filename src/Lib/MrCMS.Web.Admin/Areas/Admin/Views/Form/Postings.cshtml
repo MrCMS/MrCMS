@@ -1,4 +1,6 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.PostingsModel
 
@@ -52,16 +54,16 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink(await Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new {id = posting.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                            @Html.ActionLink(await Html.PlainResource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new {id = posting.Id}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
 
-                            @Html.ActionLink(await Html.Resource("Delete"), "DeleteEntry", "Form", new {id = posting.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                            @Html.ActionLink(await Html.PlainResource("Delete"), "DeleteEntry", "Form", new {id = posting.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
                         </div>
                     </td>
                 </tr>
             }
             </tbody>
         </table>
-        @Html.PagedListPager(Model.Items, page => Url.Action("Postings", "Form", new {Model.Id, page, Model.Search}), MrCMSPagedListRenderOptions.Bootstrap4)
+        @Html.PagedListPager(Model.Items, page => Url.Action("Postings", "Form", new {Model.Id, page, Model.Search}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
     }
     else
     {

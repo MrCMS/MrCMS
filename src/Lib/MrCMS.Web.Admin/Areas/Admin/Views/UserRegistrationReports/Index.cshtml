@@ -1,24 +1,26 @@
 ﻿@using MrCMS.Web.Admin.Services.UserSubscriptionReports
 @using Newtonsoft.Json
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model MrCMS.Web.Admin.Models.UserSubscriptionReports.UserRegistrationReportsSearchQuery
 @inject IUserRegistrationsReportsService UserRegistrationsReportsService
 @{
     var data = UserRegistrationsReportsService.GetRegistrations(Model);
-    ViewBag.Title = await Html.Resource("Admin User Subscription Reports Title", "User Subscription Reports");
+    ViewBag.Title = await Html.PlainResource("Admin User Subscription Reports Title", "User Subscription Reports");
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    string xAxisLabel = await Html.Resource("User Subscription Tooltip Title X", "Subscribed On");
-    string yAxisLabel = await Html.Resource("User Subscription Tooltip Title Y", "Number of Users");
-    string graphLabel = await Html.Resource("User Subscription Graph Label", "User Subscriptions Per Month");
+    var xAxisLabel = await Html.PlainResource("User Subscription Tooltip Title X", "Subscribed On");
+    var yAxisLabel = await Html.PlainResource("User Subscription Tooltip Title Y", "Number of Users");
+    var graphLabel = await Html.PlainResource("User Subscription Graph Label", "User Subscriptions Per Month");
 }
 
 <form asp-controller="UserRegistrationReports" asp-action="Index" method="post">
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - user - registrations - report - page - title", "User Registration report") "/>
+            <admin-header-title title="@await Html.Resource("admin - user - registrations - report - page - title", "User Registration report", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-search", "Search")"/>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-search", "Search", options => options.DisableInlineEditing())"/>
             </admin-header-actions>
         </row>
     </admin-header>

@@ -12,7 +12,7 @@
         <legend>
             @await Html.Resource("Admin Resources Edit resource", "Edit resource")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
         "@StringResourceExtensions.GetDisplayKey(resource.Key)" @await Html.Resource("for") @resource.DisplayUICulture

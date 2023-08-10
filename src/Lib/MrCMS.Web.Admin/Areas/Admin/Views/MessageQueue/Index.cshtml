@@ -1,6 +1,9 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Messaging
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Models.MessageQueueQuery
 @{
@@ -11,10 +14,10 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-queued-messages", "Queued Messages") "/>
+            <admin-header-title title="@await Html.Resource("admin-queued-messages", "Queued Messages", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
-                <input type="submit" value="@await Html.Resource("Search")" class="btn btn-primary"/>
+                <input type="submit" value="@await Html.Resource("Search", options => options.DisableInlineEditing())" class="btn btn-primary"/>
             </admin-header-actions>
         </row>
     </admin-header>
@@ -102,7 +105,7 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        @Html.ActionLink(await Html.Resource("View"), "Show", "MessageQueue", new {id = message.Id}, new {@class = "btn btn-sm btn-secondary"})
+                        @Html.ActionLink(await Html.PlainResource("View"), "Show", "MessageQueue", new {id = message.Id}, new {@class = "btn btn-sm btn-secondary"})
                     </div>
                 </td>
             </tr>
@@ -110,7 +113,7 @@
         </tbody>
     </table>
 
-    @Html.PagedListPager(queuedMessages, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(queuedMessages, page => Url.Action("Index", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }
 else
 {

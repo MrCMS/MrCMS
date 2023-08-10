@@ -48,8 +48,11 @@ namespace MrCMS.Helpers
 
             var tagBuilder = new TagBuilder("input");
             tagBuilder.MergeAttributes(htmlAttributes);
+            tagBuilder.MergeAttributes(htmlAttributes);
+            tagBuilder.MergeAttribute("type", GetInputTypeString(inputType));
             tagBuilder.MergeAttribute("type", GetInputTypeString(inputType));
             tagBuilder.MergeAttribute("name", fullName, true);
+            tagBuilder.MergeAttribute("class", "form-check-input");
 
             var valueParameter = Convert.ToString("true", CultureInfo.CurrentCulture);
             var usedModelState = false;

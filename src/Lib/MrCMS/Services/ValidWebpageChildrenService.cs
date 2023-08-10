@@ -23,47 +23,47 @@ namespace MrCMS.Services
         public async Task<IReadOnlyCollection<WebpageMetadata>> GetValidWebpageTypes(Webpage webpage,
             Func<WebpageMetadata, Task<bool>> predicate)
         {
-            var documentTypeDefinitions = new HashSet<WebpageMetadata>();
+            var webpageTypeDefinitions = new HashSet<WebpageMetadata>();
             var webpageMetadata = _webpageMetadataService.WebpageMetadata.ToHashSet();
             if (webpage == null)
-                documentTypeDefinitions = new HashSet<WebpageMetadata>(
+                webpageTypeDefinitions = new HashSet<WebpageMetadata>(
                     webpageMetadata.Where(definition => !definition.RequiresParent));
             else
             {
-                var documentTypeDefinition =
+                var webpageTypeDefinition =
                     webpageMetadata.FirstOrDefault(
                         definition => definition.TypeName == webpage.Unproxy().GetType().Name);
 
-                IEnumerable<WebpageMetadata> metadatas =
-                    documentTypeDefinition.ChildrenList.Select(_webpageMetadataService.GetMetadata);
-                switch (documentTypeDefinition.ChildrenListType)
+                var metadataList =
+                    webpageTypeDefinition.ChildrenList.Select(_webpageMetadataService.GetMetadata);
+                switch (webpageTypeDefinition.ChildrenListType)
                 {
                     case ChildrenListType.BlackList:
-                        IEnumerable<WebpageMetadata> documentMetadatas =
-                            webpageMetadata.Except(metadatas).Where(def => !def.AutoBlacklist);
-                        documentMetadatas.ForEach(item => documentTypeDefinitions.Add(item));
+                        var webpageMetadataList =
+                            webpageMetadata.Except(metadataList).Where(def => !def.AutoBlacklist);
+                        webpageMetadataList.ForEach(item => webpageTypeDefinitions.Add(item));
                         break;
                     case ChildrenListType.WhiteList:
-                        metadatas.ForEach(metadata => documentTypeDefinitions.Add(metadata));
+                        metadataList.ForEach(metadata => webpageTypeDefinitions.Add(metadata));
                         break;
                 }
             }
 
-            documentTypeDefinitions.RemoveWhere(
+            webpageTypeDefinitions.RemoveWhere(
                 definition => typeof(IUniquePage).IsAssignableFrom(definition.Type) &&
                               _existAnyWebpageService.ExistAny(definition.Type));
             if (predicate != null)
             {
-                foreach (var documentMetadata in documentTypeDefinitions.ToList()) // copy
+                foreach (var metadata in webpageTypeDefinitions.ToList()) // copy
                 {
-                    if (!await predicate(documentMetadata))
+                    if (!await predicate(metadata))
                     {
-                        documentTypeDefinitions.Remove(documentMetadata);
+                        webpageTypeDefinitions.Remove(metadata);
                     }
                 }
             }
 
-            return documentTypeDefinitions;
+            return webpageTypeDefinitions;
         }
 
         public async Task<bool> AnyValidWebpageTypes(Webpage webpage, Func<WebpageMetadata, Task<bool>> predicate)

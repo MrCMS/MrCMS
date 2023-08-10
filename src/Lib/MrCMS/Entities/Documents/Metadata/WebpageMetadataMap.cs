@@ -9,7 +9,7 @@ namespace MrCMS.Entities.Documents.Metadata
     /// <summary>
     /// Abstract class useed to define metadata of your documents within Mr CMS
     /// </summary>
-    /// <typeparam name="T">DocumentType</typeparam>
+    /// <typeparam name="T">WebpageType</typeparam>
     public abstract class WebpageMetadataMap<T> : IGetWebpageMetadataInfo where T : Webpage, new()
     {
         /// <summary>

@@ -26,12 +26,11 @@ namespace MrCMS.Web.Admin.Services.SEOAnalysis
             IEnumerable<HtmlNode> imagesWithoutAlt = images.FindAll(node => !node.Attributes.Contains("alt"));
 
             string hasNotGotAnAltTag =
-                await _stringResourceProvider.GetValue("Admin SEO Analysis Has not got", " has not got an alt tag");
+                await _stringResourceProvider.GetValue("Admin SEO Analysis Has not got", configureOptions => configureOptions.SetDefaultValue(" has not got an alt tag"));
             return new List<SEOAnalysisFacet>
             {
                 GetFacet(
-                    await _stringResourceProvider.GetValue("Admin SEO Analysis Has not got alt tags",
-                        "All images have alt tags"),
+                    await _stringResourceProvider.GetValue("Admin SEO Analysis Has not got alt tags", configureOptions => configureOptions.SetDefaultValue("All images have alt tags")),
                     !imagesWithoutAlt.Any()
                         ? SEOAnalysisStatus.Success
                         : SEOAnalysisStatus.Error,

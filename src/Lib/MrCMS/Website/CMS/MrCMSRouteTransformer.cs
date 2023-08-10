@@ -67,7 +67,7 @@ namespace MrCMS.Website.CMS
                 case CmsRouteMatchType.NoMatch:
                     return new ValueTask<RouteValueDictionary>(values);
                 case CmsRouteMatchType.Preview:
-                    httpContext.GetRouteData().MakePreview();
+                    httpContext.MakePreview();
                     break;
             }
 
@@ -78,7 +78,7 @@ namespace MrCMS.Website.CMS
 
             assignAdditionalRouteData?.Invoke(values);
 
-            httpContext.GetRouteData().MakeCMSRequest();
+            httpContext.MakeCMSRequest();
             return new ValueTask<RouteValueDictionary>(values);
         }
 

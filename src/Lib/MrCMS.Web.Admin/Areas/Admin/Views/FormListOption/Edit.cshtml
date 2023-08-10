@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Admin.Models.UpdateFormListOptionModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.UpdateFormListOptionModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 <form asp-action="Edit" asp-controller="FormListOption" method="post" class="form-update-form">
     @Html.HiddenFor(m=>m.Id)
@@ -6,7 +7,7 @@
         <legend>
             @await Html.Resource("Admin Form Edit Option Title", "Edit option")
             <span class="btn-group d-inline pull-right">
-                <input type="button" class="btn-primary btn submit-form-btn" value="@await Html.Resource("Admin Form Edit Option Button", "Edit option")"/>
+                <input type="button" class="btn-primary btn submit-form-btn" value="@await Html.Resource("Admin Form Edit Option Button", "Edit option", options => options.DisableInlineEditing())"/>
             </span>
         </legend>
         <div class="row">

@@ -45,7 +45,7 @@ namespace MrCMS.Services.Auth
             {
                 return new ExternalLoginCallbackResult
                 {
-                    Error = string.Format(await _stringLocalizer.GetValue("Error from external provider: {0}"), remoteError)
+                    Error =await _stringLocalizer.GetValue("Error from external provider: {remoteError}",configureOptions: options => options.AddReplacement("remoteError",remoteError) )
                 };
             }
 

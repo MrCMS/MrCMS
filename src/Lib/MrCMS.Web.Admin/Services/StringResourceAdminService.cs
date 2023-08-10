@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Admin.Models;
@@ -26,12 +27,15 @@ namespace MrCMS.Web.Admin.Services
         private readonly IMapper _mapper;
         private readonly IOptions<RequestLocalizationOptions> _requestLocalisationOptions;
         private readonly SiteSettings _siteSettings;
+        private readonly IGetCurrentUser _getCurrentUser;
 
         public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
+            IGetCurrentUser getCurrentUser,
             ISession session, IMapper mapper, IOptions<RequestLocalizationOptions> requestLocalisationOptions)
         {
             _provider = provider;
             _siteSettings = siteSettings;
+            _getCurrentUser = getCurrentUser;
             _session = session;
             _mapper = mapper;
             _requestLocalisationOptions = requestLocalisationOptions;
@@ -79,6 +83,14 @@ namespace MrCMS.Web.Admin.Services
         {
             return await _session.GetAsync<StringResource>(id);
         }
+        
+        public async Task<StringResource> GetResource(string key)
+        {
+            
+            var currentUiCulture = (await _getCurrentUser.Get())?.UICulture;
+            return await _session.Query<StringResource>()
+                .FirstOrDefaultAsync(f => f.Key == key && f.UICulture == currentUiCulture);
+        }
 
         public UpdateStringResourceModel GetEditModel(StringResource resource)
         {
@@ -90,6 +102,26 @@ namespace MrCMS.Web.Admin.Services
             var resource = await GetResource(model.Id);
             _mapper.Map(model, resource);
             await _provider.Update(resource);
+        }
+
+        public async Task<SaveResult> Update(StringResourceInlineUpdateModel model)
+        {
+            var resource = await GetResource(model.Key);
+            if (resource != null)
+            {
+                resource.Value = model.Value;
+                await _provider.Update(resource);
+                return new SaveResult
+                {
+                    success = true
+                };
+            }
+
+            return new SaveResult
+            {
+                message = "Resource key is not valid",
+                success = false
+            };
         }
 
         public async Task Delete(int id)
@@ -118,8 +150,8 @@ namespace MrCMS.Web.Admin.Services
             List<SelectListItem> selectListItems = cultureInfos.OrderBy(info => info.DisplayName)
                 .BuildSelectItemList(info => info.DisplayName, info => info.Name, emptyItem: null);
 
-            selectListItems.Insert(0, new SelectListItem {Text = "Any", Value = ""});
-            selectListItems.Insert(1, new SelectListItem {Text = DefaultLanguage, Value = DefaultLanguage});
+            selectListItems.Insert(0, new SelectListItem { Text = "Any", Value = "" });
+            selectListItems.Insert(1, new SelectListItem { Text = DefaultLanguage, Value = DefaultLanguage });
             return selectListItems;
         }
 
@@ -130,7 +162,7 @@ namespace MrCMS.Web.Admin.Services
                 allResources.Where(x => x.Key == key && x.Site == null && x.UICulture == null)
                     .Select(resource => resource.Value)
                     .FirstOrDefault();
-            return new AddStringResourceModel {Key = key, SiteId = id, Value = value};
+            return new AddStringResourceModel { Key = key, SiteId = id, Value = value };
         }
 
         public async Task<List<SelectListItem>> ChooseSiteOptions(ChooseSiteParams chooseSiteParams)

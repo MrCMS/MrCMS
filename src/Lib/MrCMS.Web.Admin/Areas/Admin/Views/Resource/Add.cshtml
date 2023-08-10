@@ -13,7 +13,7 @@
         <legend>
             @await Html.Resource("Admin Resources Add Override", "Add override")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
         <p>@await Html.Resource("Default"): @StringResourceExtensions.GetDisplayKey(Model.Key)</p>

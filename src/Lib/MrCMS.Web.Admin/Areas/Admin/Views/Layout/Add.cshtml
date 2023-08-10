@@ -1,4 +1,6 @@
-﻿@model MrCMS.Web.Admin.Models.AddLayoutModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Web.Admin.Models.AddLayoutModel
 @{
     ViewBag.Title = "Add Layout";
 }
@@ -6,7 +8,7 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-add-layout", "Add Layout") "/>
+            <admin-header-title title="@await Html.Resource("admin-add-layout", "Add Layout", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button class="btn btn-primary">

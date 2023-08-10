@@ -13,7 +13,7 @@ namespace MrCMS.Web.Admin.Bundles
             return Task.FromResult(true);
         }
 
-        public string Url => "/assets/admin.js";
+        public string Url => "/Areas/Admin/assets/admin.js";
 
         public IEnumerable<string> VendorFiles
         {
@@ -39,7 +39,7 @@ namespace MrCMS.Web.Admin.Bundles
                 yield return "/Areas/Admin/Content/lib/tag-it.min.js";
                 yield return "/Areas/Admin/Content/lib/jquery.noty.packaged.js";
                 yield return "/Areas/Admin/Content/lib/jstree/jstree.js";
-                yield return "/Areas/Admin/Content/lib/dropzone/dropzone-min.js";
+                yield return "/Areas/Admin/Content/lib/dropzone.js";
                 yield return "/Areas/Admin/Content/lib/featherlight.js";
                 //yield return "https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.js";
                 yield return "/Areas/Admin/Content/lib/jquery.are-you-sure.js";

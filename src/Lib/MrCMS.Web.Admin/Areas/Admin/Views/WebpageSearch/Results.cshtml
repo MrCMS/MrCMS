@@ -1,5 +1,6 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.WebpageSearchQuery
 @{
@@ -29,5 +30,5 @@
     {
         <span>No children found.</span>
     }
-    @Html.PagedListPager(results, i => Url.Action("Results", "WebpageSearch", new {page = i, Model.Query, Model.ParentId}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, i => Url.Action("Results", "WebpageSearch", new {page = i, Model.Query, Model.ParentId}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 </div>

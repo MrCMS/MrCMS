@@ -87,6 +87,9 @@ namespace MrCMS.Settings
 
         [DisplayName("Default Form Renderer Type"), DropDownSelection("DefaultFormRenderer")]
         public FormRenderingType FormRendererType { get; set; }
+        
+        [DisplayName("Default Form Label Render Type"), DropDownSelection("DefaultFormLabelRenderer")]
+        public FormLabelRenderingType FormLabelRenderingType { get; set; }
 
         [TextArea] public string GDPRFairProcessingText { get; set; }
 
@@ -103,6 +106,9 @@ namespace MrCMS.Settings
             
             viewDataDictionary["DefaultFormRenderer"] =
                 generator.GetFormRendererOptions(FormRendererType);
+            
+            viewDataDictionary["DefaultFormLabelRenderer"] =
+                generator.GetFormLabelRendererOptions(FormLabelRenderingType);
         }
 
         public TagBuilder GetHoneypot()

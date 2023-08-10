@@ -87,7 +87,7 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSArticlesApp>();
             });
 
-            services.AddMrCMSData(isInstalled, Configuration);
+            services.AddMrCMSData(isInstalled, Configuration, Environment);
             services.AddSiteProvider();
             services.AddMrCMSFileSystem();
             services.AddSignalR();
@@ -108,7 +108,7 @@ namespace MrCMS.Web
             services.RegisterShortCodeRenderers();
             services.RegisterFormRenderers();
             services.RegisterTokenProviders();
-            services.RegisterDocumentMetadata();
+            services.RegisterWebpageMetadata();
             services.RegisterRouteTransformers();
             services.AddSingleton<IWebpageMetadataService, WebpageMetadataService>();
 
@@ -168,9 +168,7 @@ namespace MrCMS.Web
                         if (!x.Path.HasValue)
                             return true;
 
-                        return true;
-
-                        /*return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
+                        return !x.Path.Value!.EndsWith(".js", StringComparison.OrdinalIgnoreCase) &&
                                !x.Path.Value.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
                                !x.Path.Value.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
                                !x.Path.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) &&
@@ -181,7 +179,7 @@ namespace MrCMS.Web
                                !x.Path.Value.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) &&
                                !x.Path.Value.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) &&
                                !x.Path.Value.EndsWith(".eot", StringComparison.OrdinalIgnoreCase) &&
-                               !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);*/
+                               !x.Path.Value.EndsWith(".ico", StringComparison.OrdinalIgnoreCase);
                     };
                 });
 
@@ -236,11 +234,6 @@ namespace MrCMS.Web
                 return;
             }
 
-            if (IsInstalled())
-            {
-                app.RegisterJobs();
-            }
-
             if (IsMiniProfileEnabled())
             {
                 app.UseMiniProfiler();
@@ -266,6 +259,11 @@ namespace MrCMS.Web
                     }
                 });
                 builder.UseAuthentication();
+
+                if (IsInstalled())
+                {
+                    builder.RegisterJobs(serviceProvider);
+                }
 
                 //todo update antiforgery method
                 /*builder.Use(next => ctx =>

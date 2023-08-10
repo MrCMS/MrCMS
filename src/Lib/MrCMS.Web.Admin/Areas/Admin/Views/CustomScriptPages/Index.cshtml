@@ -1,5 +1,7 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.CustomScriptPagesSearchModel
 @{
@@ -10,7 +12,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-user-custom-scripts-pages", "Pages with custom scripts") "/>
+        <admin-header-title title="@await Html.Resource("admin-user-custom-scripts-pages", "Pages with custom scripts", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
         </admin-header-actions>
@@ -50,14 +52,14 @@
                     @(!string.IsNullOrWhiteSpace(webpage.CustomFooterScripts) ? "✓" : "")
                 </td>
                 <td class="text-right">
-                    @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Webpage", new {id = webpage.Id}, new {@class = "btn btn-secondary btn-sm"})
+                    @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "Webpage", new {id = webpage.Id}, new {@class = "btn btn-secondary btn-sm"})
                 </td>
             </tr>
         }
         </tbody>
     </table>
 
-    @Html.PagedListPager(webpages, page => Url.Action("Index", "CustomScriptPages", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(webpages, page => Url.Action("Index", "CustomScriptPages", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }
 else
 {

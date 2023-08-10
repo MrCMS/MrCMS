@@ -1,7 +1,10 @@
 ﻿@using MrCMS.Entities.Notifications
 @using MrCMS.Web.Admin.ACL
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.NotificationSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<Notification> ?? PagingHelper.EmptyList<Notification>();
@@ -11,10 +14,10 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-notifications", "Notifications") " />
+            <admin-header-title title="@await Html.Resource("admin-notifications", "Notifications", option=> option.DisableInlineEditing())" />
             <admin-header-actions>
                 <span class="btn-group">
-                    @Html.ActionLink(await Html.Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-secondary", data_toggle = "fb-modal" })
+                    @Html.ActionLink(await Html.PlainResource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-secondary", data_toggle = "fb-modal" })
                     <input type="submit" class="btn btn-primary" value="Search" />
                 </span>
             </admin-header-actions>
@@ -107,5 +110,5 @@ else
             }
         </tbody>
     </table>
-    @Html.PagedListPager(results, page => Url.Action("Index", new { page }), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => Url.Action("Index", new { page }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }

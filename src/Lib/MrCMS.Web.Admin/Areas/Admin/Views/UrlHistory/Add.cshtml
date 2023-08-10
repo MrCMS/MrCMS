@@ -6,7 +6,7 @@
         <legend>
             @await Html.Resource("Admin Webpage Url History Add", "Add Url")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
         @Html.HiddenFor(x => x.WebpageId)

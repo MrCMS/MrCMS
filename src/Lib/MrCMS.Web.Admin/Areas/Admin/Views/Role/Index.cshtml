@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.People
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model System.Collections.Generic.IEnumerable<UserRole>
 @{
     ViewBag.Title = "Roles";
@@ -8,7 +9,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-user-roles", "User roles")"/>
+        <admin-header-title title="@await Html.Resource("admin-user-roles", "User roles", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
             @Html.ActionLink("Add", "Add", "Role", null, new {@class = "btn btn-primary", data_toggle = "fb-modal"})
@@ -38,7 +39,7 @@
                 <td>
                     @Html.ActionLink(role.Name, "Edit", new {id = role.Id}, new {@class = "", data_toggle = "fb-modal"})
                 </td>
-                <td>@Html.ActionLink(await Html.Resource("Delete"), "Delete", new {id = role.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})</td>
+                <td>@Html.ActionLink(await Html.PlainResource("Delete"), "Delete", new {id = role.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})</td>
             </tr>
         }
     }

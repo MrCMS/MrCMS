@@ -4,9 +4,9 @@ namespace MrCMS.Events.Documents
 {
     public class OnWebpagePublishedEventArgs
     {
-        public OnWebpagePublishedEventArgs(Webpage document)
+        public OnWebpagePublishedEventArgs(Webpage webpage)
         {
-            Webpage = document;
+            Webpage = webpage;
         }
 
         public Webpage Webpage { get; set; }

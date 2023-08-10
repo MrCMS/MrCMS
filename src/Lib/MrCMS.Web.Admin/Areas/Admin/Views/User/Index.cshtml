@@ -1,7 +1,10 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.People
 @using MrCMS.Services
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model UserSearchQuery
 @inject IGetCurrentUser GetCurrentUser
@@ -16,11 +19,11 @@
 <form asp-controller="User" asp-action="Index" method="get">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - users", "Users") "/>
+            <admin-header-title title="@await Html.Resource("admin - users", "Users", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 @Html.ActionLink("Add", "Add", "User", null, new { @class = "btn btn-outline-primary", data_toggle = "fb-modal" })
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Search")"/>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Search", options => options.DisableInlineEditing())"/>
             </admin-header-actions>
         </row>
     </admin-header>
@@ -105,7 +108,7 @@
         }
     </table>
     <div class="mt-3">
-        @Html.PagedListPager(users, page => Url.Action("Index", "User", new { page, Model.Email, Model.FirstName, Model.LastName, Model.UserRoleId }), MrCMSPagedListRenderOptions.Bootstrap4)
+        @Html.PagedListPager(users, page => Url.Action("Index", "User", new { page, Model.Email, Model.FirstName, Model.LastName, Model.UserRoleId }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
     </div>
 }
 else

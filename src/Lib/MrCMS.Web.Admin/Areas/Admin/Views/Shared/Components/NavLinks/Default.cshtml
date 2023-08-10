@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Web.Admin.Infrastructure.Breadcrumbs
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Infrastructure.Breadcrumbs.Sitemap
 @{
     var breadcrumbs = ViewData.Breadcrumbs();
@@ -9,35 +10,37 @@
 
         @foreach (var item in Model.Nodes)
         {
-            if (item.Nodes.Any())
+            if (!string.IsNullOrWhiteSpace(item.Url) || item.AllChildren.Any(f => !string.IsNullOrWhiteSpace(f.Url)))
             {
-                var indexOf = Model.Nodes.IndexOf(item);
-                ViewData["indexOf"] = indexOf.ToString();
-                ViewData["submenu"] = item.Name;
+                if (item.Nodes.Any())
+                {
+                    var indexOf = Model.Nodes.IndexOf(item);
+                    ViewData["indexOf"] = indexOf.ToString();
+                    ViewData["submenu"] = item.Name;
 
+                    <li class="nav-item has-treeview" data-menu="@indexOf">
+                        <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
+                            <i class="nav-icon @item.CssClass"> </i>
+                            <p>
+                                @await Html.Resource("Nav Links - " + item.Name, item.Name)
+                                <i class="fa fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <partial name="Components/NavLinks/SubMenu" model="item.Nodes" view-data="ViewData"></partial>
 
-                <li class="nav-item has-treeview" data-menu="@indexOf">
-                    <a href="#" class="nav-link @(item.IsActive(breadcrumbs) ? "active" : "")">
-                        <i class="nav-icon @item.CssClass"> </i>
-                        <p>
-                            @await Html.Resource("Nav Links - " + item.Name, item.Name)
-                            <i class="fa fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <partial name="Components/NavLinks/SubMenu" model="item.Nodes" view-data="ViewData"></partial>
-
-                </li>
-            }
-            else
-            {
-                <li class="nav-item">
-                    <a href="@item.Url" class="nav-link @item.SelectedClass(breadcrumbs)" @(item.OpenInNewWindow ? "target=\"_blank\"":"")>
-                        <i class="nav-icon @(item.CssClass ?? "fa fa-file-code-o")"></i>
-                        <p>
-                            @await Html.Resource("Nav Links - " + item.Name, item.Name)
-                        </p>
-                    </a>
-                </li>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a href="@item.Url" class="nav-link @item.SelectedClass(breadcrumbs)" @(item.OpenInNewWindow ? "target=\"_blank\"" : "")>
+                            <i class="nav-icon @(item.CssClass ?? "fa fa-file-code-o")"></i>
+                            <p>
+                                @await Html.Resource("Nav Links - " + item.Name, item.Name)
+                            </p>
+                        </a>
+                    </li>
+                }
             }
         }
     </ul>

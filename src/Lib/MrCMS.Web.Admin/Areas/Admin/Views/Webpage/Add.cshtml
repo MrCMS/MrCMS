@@ -1,6 +1,8 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model AddWebpageModel
 @inject IWebpageMetadataService _webpageMetadataService
 @{
@@ -19,10 +21,10 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-addpage-to", "Add page to") @(parent != null ? parent.Name : await Html.Resource("admin-root", "Root"))"/>
+            <admin-header-title title="@await Html.Resource("admin-addpage-to", "Add page to", option=> option.DisableInlineEditing()) @(parent != null ? parent.Name : await Html.Resource("admin-root", "Root", option=> option.DisableInlineEditing()))"/>
 
             <admin-header-actions>
-                <input type="submit" class="btn-primary btn hide-until-document-selected " value="@await Html.Resource("Save")" style="display: none;"/>
+                <input type="submit" class="btn-primary btn hide-until-document-selected " value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())" style="display: none;"/>
             </admin-header-actions>
         </row>
     </admin-header>

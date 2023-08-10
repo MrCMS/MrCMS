@@ -1,7 +1,10 @@
 @using X.PagedList
 @using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Models
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.RedirectsSearchQuery
 
 @{
@@ -9,11 +12,24 @@
     var typeOptions = EnumHelper<UrlHistoryType>.GetOptions(new SelectListItem {Text = "All", Value = ""});
     var sortByOptions = EnumHelper<RedirectSortBy>.GetOptions(new SelectListItem {Text = "All", Value = "0"});
 }
-
+<div class="row justify-content-end">
+    <div class="col-4">
+        @using (Html.BeginForm("ImportRedirects", "Redirects", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="input-group">
+                <input type="file" name="file" class="form-control" accept=".csv" required="required"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" data-toggle="tooltip" data-placement="top" title="The CSV should have two columns, old url, new url in relative format (e.g without the domain)">Import Redirects</button>
+                </span>
+            </div>
+        }
+    </div>
+</div>
+<hr/>
 <form asp-controller="Redirects" asp-action="Index" method="get">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - Redirects", "Redirects")"/>
+            <admin-header-title title="@await Html.Resource("admin - Redirects", "Redirects", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button type="submit" class="btn btn-primary">Search</button>
@@ -74,7 +90,7 @@
             </tbody>
         </table>
 
-        @Html.PagedListPager(results, page => Url.Action("Index", "Redirects", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+        @Html.PagedListPager(results, page => Url.Action("Index", "Redirects", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
     }
     else
     {

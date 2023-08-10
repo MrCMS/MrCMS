@@ -1,4 +1,6 @@
-﻿@model System.Collections.Generic.List<MrCMS.Settings.SiteSettingsBase>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model System.Collections.Generic.List<MrCMS.Settings.SiteSettingsBase>
 @{
     ViewBag.Title = "Edit Settings";
 }
@@ -13,7 +15,7 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-site-settings", "Site Settings") "/>
+            <admin-header-title title="@await Html.Resource("admin-site-settings", "Site Settings", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button class="btn btn-primary">

@@ -35,5 +35,7 @@ namespace MrCMS.Shortcodes.Forms
         }
 
         public bool IsSelfClosing => true;
+        
+        public bool SupportsFloatingLabel => false;
     }
 }

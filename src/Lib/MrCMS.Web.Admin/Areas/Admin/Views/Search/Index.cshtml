@@ -1,9 +1,12 @@
 ﻿@using System.Drawing
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.TextSearch.Services
 @using MrCMS.Web.Admin.Helpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Models.Search
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.TextSearch.Services.ITextSearcher.PagedTextSearcherQuery
 @{
@@ -16,7 +19,7 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - search - title", "Search") @(!string.IsNullOrWhiteSpace(Model.Term) ? " - " + Model.Term : "")"/>
+            <admin-header-title title="@await Html.Resource("admin - search - title", "Search", option=> option.DisableInlineEditing()) @(!string.IsNullOrWhiteSpace(Model.Term) ? " - " + Model.Term : "")"/>
 
             <admin-header-actions>
                 <input type="submit" value="Search" class="btn btn-primary"/>
@@ -122,6 +125,6 @@
                 </tr>
             }
         </table>
-        @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.CreatedOnFrom, Model.CreatedOnTo, Model.Term, Model.Type}), MrCMSPagedListRenderOptions.Bootstrap4)
+        @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.CreatedOnFrom, Model.CreatedOnTo, Model.Term, Model.Type}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
     }
 </div>

@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -28,13 +29,13 @@ namespace MrCMS.Services
 
             if (id.HasValue)
             {
-                var document = await _session.GetAsync<Webpage>(id.Value);
-                var documentHistory = document.Urls.Any(x => x.UrlSegment == url);
-                if (url.Trim() == document.UrlSegment?.Trim() ||
+                var webpage = await _session.GetAsync<Webpage>(id.Value);
+                var documentHistory = webpage.Urls.Any(x => x.UrlSegment == url);
+                if (url.Trim() == webpage.UrlSegment?.Trim() ||
                     documentHistory) //if url is the same or has been used for the same page before lets go
                     return true;
 
-                return !await WebpageExists(siteId, url) && !await ExistsInUrlHistory(siteId, url);
+                //return !await WebpageExists(siteId, url) && !await ExistsInUrlHistory(siteId, url);
             }
 
             return !await WebpageExists(siteId, url) && !await ExistsInUrlHistory(siteId, url);
@@ -69,8 +70,8 @@ namespace MrCMS.Services
 
             if (id.HasValue)
             {
-                var document = await _session.GetAsync<MediaCategory>(id.Value);
-                if (url.Trim() == document.Path.Trim())
+                var mediaCategory = await _session.GetAsync<MediaCategory>(id.Value);
+                if (url.Trim() == mediaCategory.Path.Trim())
                     return true;
                 return !await MediaCategoryExists(siteId, url);
             }
@@ -88,8 +89,8 @@ namespace MrCMS.Services
 
             if (id.HasValue)
             {
-                var document = await _session.GetAsync<Layout>(id.Value);
-                if (url.Trim() == document.Path.Trim())
+                var layout = await _session.GetAsync<Layout>(id.Value);
+                if (url.Trim() == layout.Path.Trim())
                     return true;
                 return !await LayoutExists(siteId, url);
             }
@@ -104,12 +105,11 @@ namespace MrCMS.Services
         /// <param name="siteId"></param>
         /// <param name="url"></param>
         /// <returns>bool</returns>
-        private Task<bool> WebpageExists(int siteId, string url)
+        private async Task<bool> WebpageExists(int siteId, string url)
         {
-            return _session.QueryOver<Webpage>()
-                .Where(x => x.Site.Id == siteId)
-                .And(webpage => webpage.UrlSegment == url)
-                .Cacheable()
+            return await _session.Query<Webpage>()
+                .Where(webpage => webpage.Site.Id == siteId && webpage.UrlSegment == url)
+                .WithOptions(f=>f.SetCacheable(true))
                 .AnyAsync();
         }
 
@@ -122,10 +122,9 @@ namespace MrCMS.Services
         private Task<bool> ExistsInUrlHistory(int siteId, string url)
         {
             return
-                _session.QueryOver<UrlHistory>()
-                    .Where(x => x.Site.Id == siteId)
-                    .And(history => history.UrlSegment == url)
-                    .Cacheable()
+                _session.Query<UrlHistory>()
+                    .Where(history => history.Site.Id == siteId && history.UrlSegment == url)
+                    .WithOptions(f=> f.SetCacheable(true))
                     .AnyAsync();
         }
 

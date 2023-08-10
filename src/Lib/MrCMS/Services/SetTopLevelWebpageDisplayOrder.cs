@@ -25,11 +25,11 @@ namespace MrCMS.Services
             if (webpage.DisplayOrder != 0)
                 return;
 
-            var documentsByParent = (await _getWebpagesByParent.GetWebpages(null))
+            var webpagesByParent = (await _getWebpagesByParent.GetWebpages(null))
                 .Where(doc => doc != webpage).ToList();
 
-            webpage.DisplayOrder = documentsByParent.Any()
-                ? documentsByParent.Max(category => category.DisplayOrder) + 1
+            webpage.DisplayOrder = webpagesByParent.Any()
+                ? webpagesByParent.Max(category => category.DisplayOrder) + 1
                 : 0;
         }
     }

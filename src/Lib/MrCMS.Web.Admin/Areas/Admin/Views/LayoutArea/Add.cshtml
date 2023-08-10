@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Admin.Models.AddLayoutAreaModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.AddLayoutAreaModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 
 <form asp-action="Add" asp-controller="LayoutArea" method="post">
@@ -7,7 +8,7 @@
         <legend>
             @await Html.Resource("Admin Layout Areas Add Title", "Add layout area")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-success btn" value="@await Html.Resource("Save")" />
+                <input type="submit" class="btn-success btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())" />
             </span>
         </legend>
         <input type="hidden" asp-for="LayoutId"/>

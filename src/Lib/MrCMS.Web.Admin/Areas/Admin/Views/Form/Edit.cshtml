@@ -1,5 +1,7 @@
 ﻿@using MrCMS.Web.Admin.Models
 @using MrCMS.Web.Admin.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @inject IGetEditTabsService TabsService
 @model MrCMS.Entities.Documents.Web.Form
 @{
@@ -7,11 +9,11 @@
     var tabs = await TabsService.GetEditTabs(Html, Model);
 }
 
-<form asp-controller="Form" asp-action="Edit" method="post" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage)">
+<form asp-controller="Form" asp-action="Edit" method="post" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage,options => options.DisableInlineEditing())">
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - edit - form", "Edit Form") "/>
+            <admin-header-title title="@await Html.Resource("admin - edit - form", "Edit Form", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <span class="btn-group pull-right">

@@ -12,7 +12,7 @@ namespace MrCMS.Web.Admin.Models
             url = file.FileUrl;
             size = file.ContentLength;
             Type = file.ContentType;
-            seo_url = string.Format("/admin/File/UpdateSEO/{0}", file.Id);
+            seo_url = $"/admin/File/UpdateSEO/{file.Id}";
             title = file.Title ?? string.Empty;
             description = file.Description ?? string.Empty;
             display_order = file.DisplayOrder;

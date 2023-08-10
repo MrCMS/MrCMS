@@ -22,12 +22,12 @@ namespace MrCMS.Website.CMS
             {
                 new()
                 {
-                    Registration = builder => builder.UseMiddleware<SetCurrentSite>(),
+                    Registration = coreFunctions,
                     Order = int.MaxValue
                 },
                 new()
                 {
-                    Registration = coreFunctions,
+                    Registration = builder => builder.UseMiddleware<SetCurrentSite>(),
                     Order = int.MaxValue - 1
                 },
 

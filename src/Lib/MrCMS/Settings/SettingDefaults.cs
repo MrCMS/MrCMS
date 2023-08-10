@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function (config) {
     config.removePlugins = 'elementspath';
     config.forcePasteAsPlainText = true;
     config.allowedContent = true;
-    config.contentsCss = ['/lib/bootstrap/dist/css/bootstrap.css', '/styles/style.css'];
+    config.contentsCss = ['/Apps/Core/assets/core-front-end.css'];
 
     config.filebrowserImageBrowseUrl = '/admin/mediaselector/ckeditor';
     config.image_prefillDimensions = false; 

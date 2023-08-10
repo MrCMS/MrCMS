@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Web.Admin.Infrastructure.BaseControllers;
+using MrCMS.Web.Admin.Infrastructure.Helpers;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 
@@ -125,6 +128,35 @@ namespace MrCMS.Web.Admin.Controllers
             if (url.StartsWith("/"))
                 return Json(true);
             return Json("Internal Url must start with '/'");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ImportRedirects()
+        {
+            const string csvContentType = "text/csv";
+            var file = Request.Form.Files.FirstOrDefault(f => f.ContentType == "text/csv");
+            if (file?.ContentType != csvContentType)
+            {
+                TempData.AddErrorMessage("Please upload a .csv file");
+                return RedirectToAction("Index", "Redirects");
+            }
+
+            var result = await _adminService.ImportRedirects(file.OpenReadStream());
+
+            if (result.Errors.Any())
+            {
+                var errorBytes = await MrCMS.Helpers.CsvHelper.GenerateCsvBytes(result.Errors, Encoding.UTF8);
+                var cd = new System.Net.Mime.ContentDisposition
+                {
+                    FileName = "Error list.csv",
+                    Inline = true
+                };
+                Response.Headers.Add("Content-Disposition", cd.ToString());
+                return File(errorBytes, csvContentType);
+            }
+
+            TempData.AddSuccessMessage($"{result.ImportedCount} Redirects data successfully imported.");
+            return RedirectToAction("Index", "Redirects");
         }
     }
 }

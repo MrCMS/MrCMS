@@ -102,7 +102,12 @@ namespace MrCMS.Services
         {
             var userClaims = await GetUserClaimsAsync(user, cancellationToken);
 
-            return userClaims.Select(claim => new Claim(claim.Claim, claim.Value, null, claim.Issuer)).ToList();
+            var claims = userClaims.Select(claim => new Claim(claim.Claim, claim.Value, null, claim.Issuer)).ToList();
+
+            // add the security stamp claim
+            claims.Add(new Claim(nameof(User.SecurityStamp), user.SecurityStamp));
+
+            return claims;
         }
 
         private async Task<List<UserClaim>> GetUserClaimsAsync(User user, CancellationToken cancellationToken)

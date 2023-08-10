@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Web.Admin.Models
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model List<MessageTemplateInfo>
 @{
     ViewBag.Title = "Message Templates";
@@ -6,7 +7,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-message-template", "Message Templates") "/>
+        <admin-header-title title="@await Html.Resource("admin-message-template", "Message Templates", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
         </admin-header-actions>
@@ -49,20 +50,20 @@
                     @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-secondary btn-sm" })*@
                     @if (item.LegacyTemplateExists)
                     {
-                        @Html.ActionLink(await Html.Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
                     }
                     @if (!item.IsOverride)
                     {
-                        @Html.ActionLink(await Html.Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
+                        @Html.ActionLink(await Html.PlainResource("Add site override"), "AddSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
                     }
                     else
                     {
-                        @Html.ActionLink(await Html.Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm", data_toggle = "fb-modal"})
                     }
-                    @Html.ActionLink(await Html.Resource("Edit"), "Edit", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
+                    @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", new {type = item.TypeName}, new {@class = "btn btn-secondary btn-sm"})
                     @if (item.CanPreview)
                     {
-                        @Html.ActionLink(await Html.Resource("Preview"), "Get", "MessageTemplatePreview", new {type = item.TypeName}, new {@class = "btn btn-sm btn-secondary"})
+                        @Html.ActionLink(await Html.PlainResource("Preview"), "Get", "MessageTemplatePreview", new {type = item.TypeName}, new {@class = "btn btn-sm btn-secondary"})
                     }
                 </div>
             </td>

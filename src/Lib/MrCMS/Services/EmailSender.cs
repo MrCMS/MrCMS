@@ -42,7 +42,7 @@ namespace MrCMS.Services
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Error, exception, exception.Message);
+                _logger.LogInformation(exception, "Email Sending Failed {ExceptionMessage} {ExceptionStackTrace}", exception.Message, exception.StackTrace);
                 queuedMessage.Tries++;
             }
 
@@ -54,13 +54,13 @@ namespace MrCMS.Services
         {
             var mailMessage = new MailMessage
             {
-                From = new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
+                From = new MailAddress(queuedMessage.FromAddress ?? "", queuedMessage.FromName ?? ""),
                 Subject = queuedMessage.Subject,
                 Body = queuedMessage.Body
             };
-            var multipleToAddress = queuedMessage.ToAddress.Split(new[] {',', ';'},
+            var multipleToAddress = queuedMessage.ToAddress?.Split(new[] {',', ';'},
                 StringSplitOptions.RemoveEmptyEntries);
-            if (multipleToAddress.Any())
+            if (multipleToAddress != null && multipleToAddress.Any())
             {
                 foreach (var email in multipleToAddress)
                 {
@@ -68,9 +68,9 @@ namespace MrCMS.Services
                 }
             }
 
-            multipleToAddress = queuedMessage.Cc.Split(new[] {',', ';'},
+            multipleToAddress = queuedMessage.Cc?.Split(new[] {',', ';'},
                 StringSplitOptions.RemoveEmptyEntries);
-            if (multipleToAddress.Any())
+            if (multipleToAddress != null && multipleToAddress.Any())
             {
                 foreach (var email in multipleToAddress)
                 {
@@ -78,9 +78,9 @@ namespace MrCMS.Services
                 }
             }
 
-            multipleToAddress = queuedMessage.Bcc.Split(new[] {',', ';'},
+            multipleToAddress = queuedMessage.Bcc?.Split(new[] {',', ';'},
                 StringSplitOptions.RemoveEmptyEntries);
-            if (multipleToAddress.Any())
+            if (multipleToAddress != null && multipleToAddress.Any())
             {
                 foreach (var email in multipleToAddress)
                 {

@@ -1,6 +1,8 @@
 ﻿@using MrCMS.Settings
 @using System.Drawing
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Services
+@using MrCMS.Web.Admin.ViewComponents
 @inject SiteSettings Settings
 @inject IGetCurrentUser GetCurrentUser
 @inject ICurrentSiteLocator CurrentSiteLocator
@@ -21,7 +23,7 @@
     {
         <img src="/Areas/Admin/Content/img/logo.png" class="brand-image elevation-1 img-circle" alt="dashboard logo"/>
     }
-    <span class="brand-text font-weight-light">@site.Name</span>
+    <span class="brand-text fw-light">@site.Name</span>
 </a>
 
 <div class="sidebar">

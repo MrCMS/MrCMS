@@ -1,7 +1,7 @@
-﻿@model MrCMS.Web.Admin.Models.Forms.FormMessageTabViewModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.Forms.FormMessageTabViewModel
 
-@Html.InfoBlock(await Html.Resource("Heads up") + "!",
-    string.Format(await Html.Resource("admin-forms-how-to-use-text", "To include this form in your page simply use the short code [form id={0}] where you would like it rendered. Should you want to render this form in another page you can use [form id={1}]"), Model.Id, Model.Id))
+@Html.InfoBlock(await Html.PlainResource("Heads up") + "!", await Html.PlainResource("admin-forms-how-to-use-text", "To include this form in your page simply use the short code [form id={formId}] where you would like it rendered. Should you want to render this form in another page you can use [form id={formId}]", configureOptions => configureOptions.AddReplacement("formId", Model.Id.ToString())))
 
 <h4>@await Html.Resource("Admin Webpage Form Message After Submitted", "Message to show after form is submitted")</h4>
 <div class="form-group">
@@ -11,26 +11,26 @@
 
 <h4>@await Html.Resource("Admin Webpage Form RedirectUrl", "Page to redirect to (Leave blank for current page and show success message above)")</h4>
 <div class="form-group">
-    <input asp-for="FormRedirectUrl" type="text" class="form-control" placeholder="@await Html.Resource("e.g http://www.example.com/thankyou")"/>
+    <input asp-for="FormRedirectUrl" type="text" class="form-control" placeholder="@await Html.Resource("e.g http://www.example.com/thankyou", option => option.DisableInlineEditing())"/>
     <span asp-validation-for="FormRedirectUrl"></span>
 </div>
 
 <h4>@await Html.Resource("Admin Webpage Form Submit Button settings", "Submit Button settings")</h4>
 
-@Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Webpage Form Custom Design Info warning", "If you are using a custom design these properties will be ignored."))
+@Html.InfoBlock(await Html.PlainResource("Heads up") + "!", await Html.PlainResource("Admin Webpage Form Custom Design Info warning", "If you are using a custom design these properties will be ignored."))
 
 <div class="row">
     <div class="col-lg-6">
         <div class="form-group">
             <label asp-for="SubmitButtonText"></label>
-            <input asp-for="SubmitButtonText" type="text" class="form-control" placeholder="@await Html.Resource("e.g Sign Up!")"/>
+            <input asp-for="SubmitButtonText" type="text" class="form-control" placeholder="@await Html.Resource("e.g Sign Up!", option => option.DisableInlineEditing())"/>
             <span asp-validation-for="SubmitButtonText"></span>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="form-group">
             <label asp-for="SubmitButtonCssClass"></label>
-            <input asp-for="SubmitButtonCssClass" type="text" class="form-control" />
+            <input asp-for="SubmitButtonCssClass" type="text" class="form-control"/>
             <span asp-validation-for="SubmitButtonCssClass"></span>
         </div>
     </div>
@@ -39,13 +39,13 @@
 <h4>@await Html.Resource("Admin Webpage Form Email Settings", "Email Settings")</h4>
 <div class="form-group">
     <label asp-for="FormEmailTitle"></label>
-    <input asp-for="FormEmailTitle" type="text" class="form-control" />
+    <input asp-for="FormEmailTitle" type="text" class="form-control"/>
     <span asp-validation-for="FormEmailTitle"></span>
 </div>
 
 <div class="form-group">
     <label asp-for="SendFormTo"></label>
-    <input asp-for="SendFormTo" type="text" class="form-control" />
+    <input asp-for="SendFormTo" type="text" class="form-control"/>
     <span asp-validation-for="SendFormTo"></span>
 </div>
 
@@ -54,4 +54,4 @@
     <textarea asp-for="FormMessage" class="ckedit-enabled"></textarea>
 </div>
 
-@Html.InfoBlock(await Html.Resource("Heads up") + "!", string.Format(await Html.Resource("Admin Webpage Form Email Embed Notification", "Use [form] in the message body to embed the form result in the email."), Model.Id))
+@Html.InfoBlock(await Html.PlainResource("Heads up") + "!", await Html.PlainResource("Admin Webpage Form Email Embed Notification", "Use [form id={formId}] in the message body to embed the form result in the email.", configureOptions => configureOptions.AddReplacement("formId", Model.Id.ToString())))

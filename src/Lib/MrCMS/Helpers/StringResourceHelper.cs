@@ -16,16 +16,18 @@ namespace MrCMS.Helpers
         /// <param name="serviceProvider">Kernel used to resolve the provider</param>
         /// <param name="defaultValue">Optionally specify the default value of the resource, if it differs from the key</param>
         /// <returns></returns>
-        public static async Task<string> AsResource(this string key, IServiceProvider serviceProvider, string defaultValue = null)
+        public static async Task<string> AsResource(this string key,
+            IServiceProvider serviceProvider, Action<PlainResourceOptions> configureOptions = null)
         {
             var provider = serviceProvider.GetRequiredService<IStringResourceProvider>();
 
-            return await GetValue(key, defaultValue, provider);
+            return await GetValue(key, provider, configureOptions);
         }
 
-        private static async Task<string> GetValue(string key, string defaultValue, IStringResourceProvider provider)
+        private static async Task<string> GetValue(string key, IStringResourceProvider provider,
+            Action<PlainResourceOptions> configureOptions = null)
         {
-            return await provider.GetValue(key, defaultValue);
+            return await provider.GetValue(key, configureOptions);
         }
 
         /// <summary>
@@ -35,11 +37,12 @@ namespace MrCMS.Helpers
         /// <param name="context">HttpContextBase used to resolve the provider</param>
         /// <param name="defaultValue">Optionally specify the default value of the resource, if it differs from the key</param>
         /// <returns></returns>
-        public static async Task<string> AsResource(this string key, HttpContext context, string defaultValue = null)
+        public static async Task<string> AsResource(this string key,
+            HttpContext context, Action<PlainResourceOptions> configureOptions = null)
         {
             var provider = context.RequestServices.GetRequiredService<IStringResourceProvider>();
 
-            return await GetValue(key, defaultValue, provider);
+            return await GetValue(key, provider, configureOptions);
         }
 
         /// <summary>
@@ -49,11 +52,12 @@ namespace MrCMS.Helpers
         /// <param name="helper">HtmlHelper used to resolve the provider</param>
         /// <param name="defaultValue">Optionally specify the default value of the resource, if it differs from the key</param>
         /// <returns></returns>
-        public static async Task<string> AsResource(this string key, IHtmlHelper helper, string defaultValue = null)
+        public static async Task<string> AsResource(this string key, IHtmlHelper helper,
+            Action<PlainResourceOptions> configureOptions = null)
         {
             var provider = helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IStringResourceProvider>();
 
-            return await GetValue(key, defaultValue, provider);
+            return await GetValue(key, provider, configureOptions);
         }
     }
 }

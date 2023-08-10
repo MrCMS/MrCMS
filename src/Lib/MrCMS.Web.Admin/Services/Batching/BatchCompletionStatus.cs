@@ -28,10 +28,6 @@ namespace MrCMS.Web.Admin.Services.Batching
             get { return Failed + Succeeded; }
         }
 
-        public string FullStatus
-        {
-            get { return string.Format("{0} ({1} of {2})", PercentageCompleted, Completed, Total); }
-        }
-
+        public string FullStatus => $"{PercentageCompleted} ({Completed} of {Total})";
     }
 }

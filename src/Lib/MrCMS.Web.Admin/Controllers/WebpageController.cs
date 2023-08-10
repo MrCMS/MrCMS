@@ -158,13 +158,13 @@ namespace MrCMS.Web.Admin.Controllers
 
         public async Task<ActionResult> ViewChanges(int id)
         {
-            var documentVersion = await _webpageVersionsAdminService.GetWebpageVersion(id);
-            if (documentVersion == null)
+            var webpageVersion = await _webpageVersionsAdminService.GetWebpageVersion(id);
+            if (webpageVersion == null)
             {
                 return RedirectToAction("Index");
             }
 
-            return PartialView(documentVersion);
+            return PartialView(webpageVersion);
         }
 
         /// <summary>

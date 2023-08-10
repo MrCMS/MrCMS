@@ -1,5 +1,9 @@
+using System;
 using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Services;
 using MrCMS.Services.Sitemaps;
 using MrCMS.Tasks;
 using MrCMS.TextSearch.Services;
@@ -8,11 +12,11 @@ namespace MrCMS.Web
 {
     public static class HangfireJobs
     {
-        public static void RegisterJobs(this IApplicationBuilder app)
+        public static void RegisterJobs(this IApplicationBuilder app, IServiceProvider serviceProvider)
         {
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] { new HangfireDashboardAuthFilter() },
+                AsyncAuthorization = new[] { new HangfireDashboardAuthFilter(serviceProvider.GetService<IGetCurrentUser>()) },
             });
 
             RecurringJob.AddOrUpdate<ISitemapService>("ISitemapService.WriteSitemap",

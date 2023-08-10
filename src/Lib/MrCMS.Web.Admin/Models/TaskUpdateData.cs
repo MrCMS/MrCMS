@@ -8,10 +8,7 @@ namespace MrCMS.Web.Admin.Models
         public string Name { get; set; }
         public string TypeName { get; set; }
 
-        public Type Type
-        {
-            get { return TypeHelper.GetTypeByName(TypeName); }
-        }
+        public Type Type => TypeHelper.GetTypeByName(TypeName);
 
         public bool Enabled { get; set; }
         public string CronSchedule { get; set; }

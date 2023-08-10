@@ -215,7 +215,7 @@ namespace MrCMS.Web.Admin.Services
                 headers.AddRange(posting.FormValues.Select(x => x.Key).Distinct());
             }
 
-            headers.Add(await _stringResourceProvider.GetValue("Admin Form Postings Posted On", "Posted On"));
+            headers.Add(await _stringResourceProvider.GetValue("Admin Form Postings Posted On", configureOptions => configureOptions.SetDefaultValue("Posted On")));
             return headers.Distinct().ToList();
         }
 

@@ -6,7 +6,7 @@
         <legend>
             @await Html.Resource("Admin Webpage Revert to version", "Revert to version")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Revert")"/>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("Revert", options => options.DisableInlineEditing())"/>
             </span>
         </legend>
         <p>@await Html.Resource("Admin Webpage Revert Message", "Please confirm that you want to this version of") @Model.Webpage.Name</p>

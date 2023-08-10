@@ -14,6 +14,10 @@ namespace MrCMS.Helpers
             if (string.IsNullOrWhiteSpace(value))
                 return value?.Trim();
 
+            //if all characters are capital letters, then return the string as is
+            if (Regex.IsMatch(value, @"^[A-Z\s]+$"))
+                return value;
+
             var func = _breakUpString ??= GetBreakUpStringFunc();
 
             return func(value);
@@ -33,7 +37,8 @@ namespace MrCMS.Helpers
         {
             return string.IsNullOrWhiteSpace(value)
                 ? new List<int>()
-                : value.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s.Trim()))
+                : value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => Convert.ToInt32(s.Trim()))
                     .ToList();
         }
 

@@ -53,11 +53,12 @@ namespace MrCMS.DbConfiguration.Configuration
                 if (anyChanges)
                 {
                     var s = args.Session;
+                    var user = await GetUser(s);
                     var documentVersion = new WebpageVersion
                     {
                         Webpage = webpage,
                         Data = JsonConvert.SerializeObject(jObject),
-                        User = await GetUser(s),
+                        User = await args.Session.LoadAsync<User>(user.Id),
                         Site = webpage.Site
                     };
                     webpage.Versions.Add(documentVersion);

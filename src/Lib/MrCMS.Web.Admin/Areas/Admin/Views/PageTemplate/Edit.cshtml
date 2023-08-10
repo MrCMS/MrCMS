@@ -1,4 +1,6 @@
-﻿@model MrCMS.Web.Admin.Models.UpdatePageTemplateModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Web.Admin.Models.UpdatePageTemplateModel
 @{
     var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
@@ -8,11 +10,11 @@
 <form asp-controller="PageTemplate" asp-action="Edit" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("Admin Page Template Edit<> Title", "Edit Page Template") "/>
+            <admin-header-title title="@await Html.Resource("Admin Page Template Edit<> Title", "Edit Page Template", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <a class="btn btn-default" asp-action="Index">@await Html.Resource("Back")</a>
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </admin-header-actions>
         </row>
     </admin-header>

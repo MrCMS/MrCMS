@@ -12,8 +12,10 @@ namespace MrCMS.Web.Admin.Services
         Task<IPagedList<StringResource>> Search(StringResourceSearchQuery searchQuery);
         Task Add(AddStringResourceModel resource);
         Task<StringResource> GetResource(int id);
+        Task<StringResource> GetResource(string key);
         UpdateStringResourceModel GetEditModel(StringResource resource);
         Task Update(UpdateStringResourceModel model);
+        Task<SaveResult> Update(StringResourceInlineUpdateModel model);
         Task Delete(int id);
         Task<List<SelectListItem>> GetLanguageOptions(string key, int? siteId);
         Task<List<SelectListItem>> SearchLanguageOptions();

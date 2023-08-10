@@ -7,10 +7,12 @@ namespace MrCMS.Web.Admin.Infrastructure.Breadcrumbs
     {
         public static List<PageHeaderBreadcrumb> Breadcrumbs(this ViewDataDictionary viewData)
         {
-            if (!viewData.ContainsKey(BreadcrumbAttribute.Breadcrumbs))
+            if (!viewData.ContainsKey(BreadcrumbKey))
                 return new List<PageHeaderBreadcrumb>();
 
-            return viewData[BreadcrumbAttribute.Breadcrumbs] as List<PageHeaderBreadcrumb> ?? new List<PageHeaderBreadcrumb>();
+            return viewData[BreadcrumbKey] as List<PageHeaderBreadcrumb> ?? new List<PageHeaderBreadcrumb>();
         }
+
+        public const string BreadcrumbKey = "breadcrumbs";
     }
 }

@@ -1,4 +1,6 @@
-﻿@model MrCMS.Models.ExportWebpagesModel
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Models.ExportWebpagesModel
 @{
     ViewBag.Title = "Import/Export Documents";
     var result = (ImportWebpagesResult)ViewBag.Messages;
@@ -6,7 +8,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-import-export-documents", "Import/Export Webpages") " />
+        <admin-header-title title="@await Html.Resource("admin-import-export-documents", "Import/Export Webpages", option=> option.DisableInlineEditing())" />
         <admin-header-actions></admin-header-actions>
     </row>
 </admin-header>
@@ -41,7 +43,7 @@
     <div class="clearfix"></div>
 }
 <hr />
-@Html.InfoBlock("", await Html.Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
+@Html.InfoBlock("", await Html.PlainResource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
 <hr />
 <form asp-controller="ImportExport" asp-action="ImportWebpages" enctype="multipart/form-data" type="post">
     <label for="document">@await Html.Resource("Admin Import / Export Documents Choose Import File Label", "Choose Import File")</label>
@@ -52,7 +54,7 @@
         foreach (var item in result.Errors)
         {
             <span>
-                @string.Format(await Html.Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
+                @await Html.Resource("Admin Import / Export Documents Choose Import File Errors", "{key} has the following errors", configureOptions=>configureOptions.AddReplacement("key",item.Key))
             </span>
             <ul>
                 @foreach (string error in item.Value)
@@ -77,5 +79,5 @@
         </div>
     }
 
-    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Import Documents")" />
+    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Import Documents", options => options.DisableInlineEditing())" />
 </form>

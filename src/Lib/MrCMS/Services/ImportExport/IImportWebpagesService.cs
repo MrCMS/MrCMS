@@ -8,7 +8,7 @@ namespace MrCMS.Services.ImportExport
     public interface IImportWebpagesService
     {
         //void ImportDocumentsFromDTOs(IEnumerable<DocumentImportDTO> items);
-        //Webpage ImportDocument(DocumentImportDTO dto);
+        //Webpage ImportDocument(WebpageImportDTO dto);
         Task<Batch> CreateBatch(List<WebpageImportDTO> items, bool autoStart = true);
     }
 }

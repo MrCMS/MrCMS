@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -18,43 +16,13 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Caches.CoreMemoryCache;
 using NHibernate.Event;
-using NHibernate.Tool.hbm2ddl;
 using Environment = NHibernate.Cfg.Environment;
 
 namespace MrCMS.DbConfiguration
 {
-    public class ValidateNHibernateSchema : IExecuteOnStartup
-    {
-        private readonly IGetNHibernateConfiguration _getNHibernateConfiguration;
-
-        public ValidateNHibernateSchema(IGetNHibernateConfiguration getNHibernateConfiguration)
-        {
-            _getNHibernateConfiguration = getNHibernateConfiguration;
-        }
-        
-        public async Task Execute(CancellationToken cancellationToken)
-        {
-            var config = _getNHibernateConfiguration.GetConfiguration();
-            var validator = new SchemaValidator(config);
-            try
-            {
-                await validator.ValidateAsync(cancellationToken);
-            }
-            catch (HibernateException)
-            {
-                var update = new SchemaUpdate(config);
-                await update.ExecuteAsync(false, true, cancellationToken);
-            }
-
-        }
-
-        public int Order => 0;
-    }
-
     public class NHibernateConfigurator : IGetNHibernateConfiguration
     {
         private readonly IDatabaseProvider _databaseProvider;
@@ -63,7 +31,8 @@ namespace MrCMS.DbConfiguration
         private readonly string _connectionString;
         private Lazy<NHibernate.Cfg.Configuration> _configuration;
 
-        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext, Action<CacheSettingsBuilder> configureCache = null, string connectionString = "")
+        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext,
+            Action<CacheSettingsBuilder> configureCache = null, string connectionString = "")
         {
             _databaseProvider = databaseProvider;
             _appContext = appContext;
@@ -81,12 +50,6 @@ namespace MrCMS.DbConfiguration
             var sessionFactory = configuration.BuildSessionFactory();
 
             return sessionFactory;
-        }
-
-        public static void ValidateSchema(NHibernate.Cfg.Configuration config)
-        {
-         
-
         }
 
         public NHibernate.Cfg.Configuration GetConfiguration()
@@ -119,10 +82,7 @@ namespace MrCMS.DbConfiguration
                 {
 #if DEBUG
                     c.SetProperty(Environment.GenerateStatistics, "true");
-                    c.DataBaseIntegration(x =>
-                    {
-                        _databaseProvider.DebugDatabaseIntegration(x);
-                    });
+                    c.DataBaseIntegration(x => { _databaseProvider.DebugDatabaseIntegration(x); });
 #else
                     c.SetProperty(Environment.GenerateStatistics, "false");
 #endif
@@ -133,11 +93,11 @@ namespace MrCMS.DbConfiguration
 
 
             _databaseProvider.AddProviderSpecificConfiguration(config);
-            
+
             // ValidateSchema(config);
-            
+
             //DbConfig.Initialize(_connectionString);
-            
+
             config.BuildMappings();
 
             return config;

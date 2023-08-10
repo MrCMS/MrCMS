@@ -1,10 +1,12 @@
-﻿@model MrCMS.Settings.FileSystemSettings
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Settings.FileSystemSettings
 @{ ViewBag.Title = "File System Settings"; }
 <form asp-controller="Settings" asp-action="FileSystem" method="post" id="edit-settings">
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-file-system-settings", "File System Settings") "/>
+            <admin-header-title title="@await Html.Resource("admin-file-system-settings", "File System Settings", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <span class="btn-group pull-right">

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
 
@@ -19,11 +20,11 @@ namespace MrCMS.Services
             var list = new List<Webpage>();
             if (parent > 0)
             {
-                var document = await _session.GetAsync<Webpage>(parent);
-                while (document != null)
+                var webpage = await _session.GetAsync<Webpage>(parent);
+                while (webpage != null)
                 {
-                    list.Add(document);
-                    document = document.Parent;
+                    list.Add(webpage);
+                    webpage = webpage.Parent;
                 }
             }
 

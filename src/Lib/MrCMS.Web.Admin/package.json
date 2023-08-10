@@ -1,10 +1,10 @@
 {
   "name": "MrCMS.Web.Admin",
   "version": "1.0.0",
-  "admin-js": "wwwroot/assets/admin.js",
-  "front-end-js": "wwwroot/assets/front-end-editing.js",
-  "admin-css": "wwwroot/assets/admin.css",
-  "front-end-css": "wwwroot/assets/front-end-editing.css",
+  "admin-js": "wwwroot/Areas/Admin/assets/admin.js",
+  "front-end-js": "wwwroot/Areas/Admin/assets/front-end-editing.js",
+  "admin-css": "wwwroot/Areas/Admin/assets/admin.css",
+  "front-end-css": "wwwroot/Areas/Admin/assets/front-end-editing.css",
   "targets": {
     "admin-js": {},
     "front-end-js": {},

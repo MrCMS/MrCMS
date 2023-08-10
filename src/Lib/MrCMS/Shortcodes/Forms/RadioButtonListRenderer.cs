@@ -56,26 +56,13 @@ namespace MrCMS.Shortcodes.Forms
                 
                 cbLabelBuilder.InnerHtml.AppendHtml(radioButtonBuilder);
                 cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
-                if (formRenderingType == FormRenderingType.Bootstrap3)
-                {
-                    var radioContainer = new TagBuilder("div");
-                    radioContainer.AddCssClass("radio");
-                    radioContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-                    tagBuilder.InnerHtml.AppendHtml(radioContainer);
-                }
-                else if (formRenderingType == FormRenderingType.Bootstrap4)
-                {
-                    var checkboxContainer = new TagBuilder("div");
-                    cbLabelBuilder.AddCssClass("form-check-label");
-                    checkboxContainer.AddCssClass("form-check");
-                    checkboxContainer.InnerHtml.AppendHtml(radioButtonBuilder);
-                    checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-                    tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
-                }
-                else
-                {
-                    tagBuilder.InnerHtml.AppendHtml(cbLabelBuilder);
-                }
+                
+                var checkboxContainer = new TagBuilder("div");
+                cbLabelBuilder.AddCssClass("form-check-label");
+                checkboxContainer.AddCssClass("form-check");
+                checkboxContainer.InnerHtml.AppendHtml(radioButtonBuilder);
+                checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
+                tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
             }
 
             return tagBuilder;
@@ -88,5 +75,6 @@ namespace MrCMS.Shortcodes.Forms
         }
 
         public bool IsSelfClosing => false;
+        public bool SupportsFloatingLabel => false;
     }
 }

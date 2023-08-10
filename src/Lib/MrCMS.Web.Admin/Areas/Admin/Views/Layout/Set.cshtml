@@ -6,7 +6,7 @@
         <legend>
             @await Html.Resource("Admin Layouts Move Title", "Move Layout")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Move")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Move", options => options.DisableInlineEditing())"/>
             </span>
         </legend>
         @Html.Hidden("id", Model)

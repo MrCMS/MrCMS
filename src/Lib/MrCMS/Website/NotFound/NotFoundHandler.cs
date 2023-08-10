@@ -60,10 +60,19 @@ namespace MrCMS.Website.NotFound
                     return (false, new RedirectResult($"/{webpage.UrlSegment.EncodeParts()}", true), history);
                 }
             }
-            
+
 
             if (!string.IsNullOrWhiteSpace(history.RedirectUrl))
+            {
+                // if the redirect url is absolute, just redirect to it
+                if (Uri.IsWellFormedUriString(history.RedirectUrl, UriKind.Absolute))
+                {
+                    return (false, new RedirectResult(history.RedirectUrl, true), history);
+                }
+
+                // otherwise encode the parts and go
                 return (false, new RedirectResult(history.RedirectUrl.EncodeParts(), true), history);
+            }
 
             return (false, null, history);
         }

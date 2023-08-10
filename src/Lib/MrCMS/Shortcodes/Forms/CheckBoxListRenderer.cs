@@ -33,32 +33,13 @@ namespace MrCMS.Shortcodes.Forms
                 checkboxBuilder.AddCssClass("form-check-input");
 
 
-                if (formRenderingType == FormRenderingType.Bootstrap3)
-                {
-                    cbLabelBuilder.AddCssClass("checkbox-inline");
-                    cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
-                    cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
-
-                    var checkboxContainer = new TagBuilder("div");
-                    checkboxContainer.AddCssClass("checkbox");
-                    checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-                    tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
-                }
-                else if (formRenderingType == FormRenderingType.Bootstrap4)
-                {
-                    cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
-                    var checkboxContainer = new TagBuilder("div");
-                    cbLabelBuilder.AddCssClass("form-check-label");
-                    checkboxContainer.AddCssClass("form-check");
-                    checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
-                    checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
-                    tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
-                }
-                else
-                {
-                    cbLabelBuilder.InnerHtml.AppendHtml(checkboxBuilder);
-                    tagBuilder.InnerHtml.AppendHtml(cbLabelBuilder);
-                }
+                cbLabelBuilder.InnerHtml.AppendHtml(checkbox.Value);
+                var checkboxContainer = new TagBuilder("div");
+                cbLabelBuilder.AddCssClass("form-check-label");
+                checkboxContainer.AddCssClass("form-check");
+                checkboxContainer.InnerHtml.AppendHtml(checkboxBuilder);
+                checkboxContainer.InnerHtml.AppendHtml(cbLabelBuilder);
+                tagBuilder.InnerHtml.AppendHtml(checkboxContainer);
             }
             
 
@@ -111,5 +92,7 @@ namespace MrCMS.Shortcodes.Forms
         }
 
         public bool IsSelfClosing => false;
+
+        public bool SupportsFloatingLabel => false;
     }
 }

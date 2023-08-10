@@ -1,7 +1,9 @@
 ﻿@using System.Linq
 @using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Documents.Layout
 @using MrCMS.Entities.Widget
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model MrCMS.Web.Admin.Models.UpdateLayoutAreaModel
 @{
     ViewBag.Title = "Edit | " + Model.AreaName;
@@ -17,7 +19,7 @@
 
             <admin-header-actions>
                 <span class="btn-group">
-                    @Html.ActionLink(await Html.Resource("admin-back", "Back"), "Edit", "Layout", new { id = layout.Id }, new { @class = "btn btn-secondary" })
+                    @Html.ActionLink(await Html.PlainResource("admin-back", "Back"), "Edit", "Layout", new { id = layout.Id }, new { @class = "btn btn-secondary" })
                     <a href="@Url.Action("Delete", "LayoutArea", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@await Html.Resource("admin-delete", "Delete")</a>
                     <button class="btn btn-primary">@await Html.Resource("admin-save", "Save")</button>
                 </span>
@@ -36,7 +38,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-widgets", "Widgets")" />
+        <admin-header-title title="@await Html.Resource("admin-widgets", "Widgets", option=> option.DisableInlineEditing())" />
 
         <admin-header-actions>
 
@@ -44,10 +46,10 @@
                 @{
                     if (widgets.Any())
                     {
-                        @Html.ActionLink(await Html.Resource("Sort"), "SortWidgets", "LayoutArea", new { id = Model.Id, returnUrl = Context.Request.GetEncodedUrl() }, new { @class = "btn btn-sm btn-secondary", @data_toggle = "fb-modal" })
+                        @Html.ActionLink(await Html.PlainResource("Sort"), "SortWidgets", "LayoutArea", new { id = Model.Id, returnUrl = Context.Request.GetEncodedUrl() }, new { @class = "btn btn-sm btn-secondary", @data_toggle = "fb-modal" })
                     }
                 }
-                <a href="@Url.Action(await Html.Resource("admin-add", "Add"), "Widget", new {id = Model.Id, returnUrl = Context.Request.GetEncodedUrl()})" class="btn btn-sm btn-primary" data-toggle="fb-modal">@await Html.Resource("Admin Layout Area Add Widget", "Add widget")</a>
+                <a href="@Url.Action(await Html.PlainResource("admin-add", "Add"), "Widget", new {id = Model.Id, returnUrl = Context.Request.GetEncodedUrl()})" class="btn btn-sm btn-primary" data-toggle="fb-modal">@await Html.Resource("Admin Layout Area Add Widget", "Add widget")</a>
             </div>
         </admin-header-actions>
     </row>
@@ -81,8 +83,8 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-secondary btn-sm"})
-                                <a href="@Url.Action(await Html.Resource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
+                                @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-secondary btn-sm"})
+                                <a href="@Url.Action(await Html.PlainResource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-sm btn-danger" data-toggle="fb-modal">@await Html.Resource("Delete")</a>
                             </div>
                         </td>
                     </tr>
@@ -92,6 +94,6 @@
     }
     else
     {
-        @Html.InfoBlock(await Html.Resource("Heads up"), await Html.Resource("Admin Layout Area Widgets Info", "Click add widget to add the first widget to this area."))
+        @Html.InfoBlock(await Html.PlainResource("Heads up"), await Html.PlainResource("Admin Layout Area Widgets Info", "Click add widget to add the first widget to this area."))
     }
 }

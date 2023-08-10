@@ -1,8 +1,12 @@
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services;
+using MrCMS.Web.Admin.Helpers;
 using MrCMS.Web.Admin.Models;
+using MrCMS.Web.Admin.Models.Redirects;
 using NHibernate;
 using NHibernate.Linq;
 using X.PagedList;
@@ -12,10 +16,12 @@ namespace MrCMS.Web.Admin.Services
     public class RedirectsAdminService : IRedirectsAdminService
     {
         private readonly ISession _session;
+        private readonly IGetHomePage _getHomePage;
 
-        public RedirectsAdminService(ISession session)
+        public RedirectsAdminService(ISession session, IGetHomePage getHomePage)
         {
             _session = session;
+            _getHomePage = getHomePage;
         }
 
         public async Task<IPagedList<UrlHistory>> SearchAll(RedirectsSearchQuery searchQuery)
@@ -98,7 +104,7 @@ namespace MrCMS.Web.Admin.Services
 
         public Task<SetRedirectUrlModel> GetSetRedirectUrlModel(int id)
         {
-            return Task.FromResult<SetRedirectUrlModel>(new() {Id = id});
+            return Task.FromResult<SetRedirectUrlModel>(new() { Id = id });
         }
 
         public async Task SetRedirectUrl(SetRedirectUrlModel model)
@@ -110,7 +116,7 @@ namespace MrCMS.Web.Admin.Services
 
         public Task<SetRedirectPageModel> GetSetRedirectPageModel(int id)
         {
-            return Task.FromResult<SetRedirectPageModel>(new() {Id = id});
+            return Task.FromResult<SetRedirectPageModel>(new() { Id = id });
         }
 
         public async Task SetRedirectPage(SetRedirectPageModel model)
@@ -123,6 +129,59 @@ namespace MrCMS.Web.Admin.Services
             webpage.Urls.Add(urlHistory);
             urlHistory.Webpage = webpage;
             await Update(urlHistory);
+        }
+
+        public async Task<RedirectImportResult> ImportRedirects(Stream fileStream)
+        {
+            var redirects = MrCMS.Helpers.CsvHelper.ReadCsv<RedirectImportModel>(fileStream, skipCount: 1);
+
+            var validRedirects = redirects.GetValidRedirects(out var errorList);
+
+            //import url
+            await _session.TransactAsync(async session =>
+            {
+                foreach (var importData in validRedirects)
+                {
+                    var newUrlSegment = importData.NewUrl.Trim('/');
+                    var oldUrlSegment = importData.OldUrl.Trim('/');
+
+
+                    //Check for Unique url
+                    var isInRedirect = await _session.Query<Redirect>().AnyAsync(f => f.UrlSegment == oldUrlSegment);
+                    var isInUrlHistory =
+                        await _session.Query<UrlHistory>().AnyAsync(f => f.UrlSegment == oldUrlSegment);
+
+                    if (isInRedirect || isInUrlHistory)
+                    {
+                        errorList.Add(new RedirectImportErrorModel(importData)
+                        {
+                            Error = RedirectImportErrorType.NotUniqueUrl,
+                        });
+                        continue;
+                    }
+
+                    var webpage = string.IsNullOrWhiteSpace(newUrlSegment)
+                        ? await _getHomePage.Get()
+                        : await _session.QueryOver<Webpage>().Where(x => x.UrlSegment == newUrlSegment)
+                            .SingleOrDefaultAsync();
+
+                    var urlHistory = new UrlHistory
+                    {
+                        Webpage = webpage,
+                        UrlSegment = oldUrlSegment,
+                        RedirectUrl = newUrlSegment
+                    };
+                    await session.SaveAsync(urlHistory);
+
+                    webpage?.Urls.Add(urlHistory);
+                }
+            });
+
+            return new RedirectImportResult
+            {
+                ImportedCount = validRedirects.Count,
+                Errors = errorList
+            };
         }
 
         private async Task Update(UrlHistory urlHistory)

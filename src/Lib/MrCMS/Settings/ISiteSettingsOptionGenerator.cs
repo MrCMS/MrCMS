@@ -12,6 +12,7 @@ namespace MrCMS.Settings
         List<SelectListItem> GetUiCultures(string uiCulture);
         List<SelectListItem> GetTimeZones(string timeZone);
         List<SelectListItem> GetFormRendererOptions(FormRenderingType defaultFormRendererType);
+        List<SelectListItem> GetFormLabelRendererOptions(FormLabelRenderingType defaultFormLabelRendererType);
         List<SelectListItem> GetCacheExpiryTypeOptions();
     }
 }

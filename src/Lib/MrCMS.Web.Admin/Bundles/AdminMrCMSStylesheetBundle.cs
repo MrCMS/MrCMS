@@ -13,7 +13,7 @@ namespace MrCMS.Web.Admin.Bundles
             return Task.FromResult(true);
         }
 
-        public string Url => "/assets/admin.css";
+        public string Url => "/Areas/Admin/assets/admin.css";
 
         public IEnumerable<string> VendorFiles
         {

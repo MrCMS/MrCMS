@@ -1,9 +1,11 @@
-﻿@model MrCMS.Settings.MailSettings
-<form asp-controller="SystemSettings" asp-action="Mail" method="post">
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Settings.MailSettings
+<form asp-controller="SystemSettings" asp-action="Mail" method="post" autocomplete="off">
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-settings-mail", "Mail Settings") " />
+            <admin-header-title title="@await Html.Resource("admin-settings-mail", "Mail Settings", option=> option.DisableInlineEditing())" />
 
             <admin-header-actions>
                 <button class="btn btn-primary" type="submit">
@@ -37,7 +39,7 @@
     </div>
     <div class="form-group">
         <label asp-for="Password"></label>
-        <input asp-for="Password" type="text" class="form-control" />
+        <input asp-for="Password" type="text" class="form-control" autocomplete="new-password" />
         <span asp-validation-for="Password"></span>
     </div>
     <div class="form-group">

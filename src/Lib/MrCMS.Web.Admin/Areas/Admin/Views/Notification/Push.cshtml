@@ -10,7 +10,7 @@
         <legend>
             @await Html.Resource("Admin Notifications Push Notification", "Push notification")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Admin Notifications Push", "Push")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Admin Notifications Push", "Push", options => options.DisableInlineEditing())"/>
             </span>
         </legend>
         @Html.ReturnToReferrer()

@@ -88,6 +88,7 @@ namespace MrCMS.Web.Admin.Services
                 }
                 catch
                 {
+                    // ignored
                 }
             }
 

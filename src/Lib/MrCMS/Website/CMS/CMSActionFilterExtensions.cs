@@ -1,54 +1,79 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Routing;
 
 namespace MrCMS.Website.CMS
 {
     public static class CMSActionFilterExtensions
     {
+        private class MrCMSRequestStatusFeature
+        {
+            public bool IsCMSRequest { get; set; }
+            public bool IsPreview { get; set; }
+        }
+
         public static bool IsCMSRequest(this ActionContext context)
         {
-            return context.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsCMSRequest);
+            return context.HttpContext.IsCMSRequest();
         }
 
         public static bool IsCMSRequest(this IHtmlHelper helper)
         {
-            return helper.ViewContext.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsCMSRequest);
+            return helper.ViewContext.HttpContext.IsCMSRequest();
+        }
+
+        public static bool IsCMSRequest(this HttpContext context)
+        {
+            var status = context.GetMrCMSRequestStatusFeature();
+            return status.IsCMSRequest;
         }
 
         public static void MakeCMSRequest(this HttpContext context)
         {
-            var routeData = context.GetRouteData();
-            routeData?.MakeCMSRequest();
-        }
-
-        public static void MakeCMSRequest(this RouteData routeData)
-        {
-            if (routeData != null)
-                routeData.DataTokens[MrCMSRouteTransformer.IsCMSRequest] = true;
+            var status = context.GetMrCMSRequestStatusFeature();
+            status.IsCMSRequest = true;
         }
 
         public static bool IsPreview(this ActionContext context)
         {
-            return context.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsPreview);
+            return context.HttpContext.IsPreview();
         }
 
         public static bool IsPreview(this IHtmlHelper helper)
         {
-            return helper.ViewContext.RouteData.DataTokens.ContainsKey(MrCMSRouteTransformer.IsPreview);
+            return helper.ViewContext.HttpContext.IsPreview();
+        }
+
+        public static bool IsPreview(this HttpContext context)
+        {
+            var status = context.GetMrCMSRequestStatusFeature();
+            return status.IsPreview;
         }
 
         public static void MakePreview(this HttpContext context)
         {
-            var routeData = context.GetRouteData();
-            routeData?.MakePreview();
+            var status = context.GetMrCMSRequestStatusFeature();
+            status.IsPreview = true;
         }
 
-        public static void MakePreview(this RouteData routeData)
+
+        private static MrCMSRequestStatusFeature GetMrCMSRequestStatusFeature(this HttpContext context)
         {
-            if (routeData != null)
-                routeData.DataTokens[MrCMSRouteTransformer.IsPreview] = true;
+            // get existing feature
+            var existing = context.Features.Get<MrCMSRequestStatusFeature>();
+
+            // if it exists, return it
+            if (existing != null)
+                return existing;
+
+            // create a new feature
+            var newFeature = new MrCMSRequestStatusFeature();
+
+            // add it to the context
+            context.Features.Set(newFeature);
+
+            // return it
+            return newFeature;
         }
     }
 }

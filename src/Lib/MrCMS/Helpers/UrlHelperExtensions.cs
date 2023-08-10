@@ -16,6 +16,12 @@ namespace MrCMS.Helpers
             return string.IsNullOrWhiteSpace(url) ? url : url.TrimStart('/').Insert(0, "/");
         }
         
+        public static bool IsAbsoluteUrl(this string url)
+        {
+            var uri = new Uri(url, UriKind.RelativeOrAbsolute);
+            return uri.IsAbsoluteUri;
+        }
+        
         public static string AbsoluteAction(this IUrlHelper helper, string action, string controller, object values)
         {
             return helper.Action(action, controller, values, helper.ActionContext.HttpContext.Request.Scheme);

@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Entities.Documents.Web.UrlHistory
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
@@ -13,7 +14,7 @@
             </span>
         </legend>
         <p>
-            @string.Format(await Html.Resource("Redirects - reset", "Are you sure you wish to reset '{0}'?"), Model.UrlSegment)
+            @await Html.Resource("Redirects - reset", "Are you sure you wish to reset '{url}'?", configureOptions => configureOptions.AddReplacement("url", Model.UrlSegment))
         </p>
     </fieldset>
 </form>

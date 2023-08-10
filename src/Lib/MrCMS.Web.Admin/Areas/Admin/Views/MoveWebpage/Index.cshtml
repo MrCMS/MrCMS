@@ -1,4 +1,6 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.MoveWebpageModel
 @{
     var webpage = ViewData["webpage"] as Webpage;
@@ -7,11 +9,11 @@
 <form asp-controller="MoveWebpage" asp-action="Index" asp-route-id="" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("Admin Webpage Move", "Move")"/>
+            <admin-header-title title="@await Html.Resource("Admin Webpage Move", "Move", option=> option.DisableInlineEditing())"/>
         </row>
     </admin-header>
     <p>
-        @string.Format(await Html.Resource("Admin Webpage Move - Info", "This will move {0} so that it (and any child sections/pages) will sit below the section selected below"), webpage.Name)
+        @await Html.Resource("Admin Webpage Move - Info", "This will move {webpageName} so that it (and any child sections/pages) will sit below the section selected below", configureOptions=>configureOptions.AddReplacement("webpageName",webpage?.Name))
     </p>
     <input type="hidden" asp-for="Id"/>
     <div class="form-group">
@@ -32,6 +34,6 @@
     <hr/>
     <div class="btn-group">
         <button type="submit" class="btn btn-primary">@await Html.Resource("Proceed")</button>
-        @Html.ActionLink(await Html.Resource("Cancel"), "Edit", "Webpage", new {Model.Id}, new {@class = "btn btn-default"})
+        @Html.ActionLink(await Html.PlainResource("Cancel"), "Edit", "Webpage", new {Model.Id}, new {@class = "btn btn-default"})
     </div>
 </form>

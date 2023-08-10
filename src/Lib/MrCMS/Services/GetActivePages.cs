@@ -23,13 +23,13 @@ namespace MrCMS.Services
             {
                 var sql = @$"WITH Parents AS (
                       SELECT Id, '/' + [UrlSegment] as UrlSegment, ParentId, 0 AS Depth
-                      FROM [Document]
+                      FROM [Webpage]
                       WHERE [Id] = :pageId
 
                       UNION ALL
 
                       SELECT cat.Id, '/' + cat.[UrlSegment] as UrlSegment, cat.ParentId, p.Depth - 1
-                      FROM [Document] cat, parents p
+                      FROM [Webpage] cat, parents p
                       WHERE cat.Id = p.ParentId
                     )
                     SELECT [UrlSegment] FROM Parents";

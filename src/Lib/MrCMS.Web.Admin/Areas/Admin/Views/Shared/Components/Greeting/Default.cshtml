@@ -11,6 +11,6 @@
             var user = await _getCurrentUser.Get();
             var currentSite = _siteLocator.GetCurrentSite();
         }
-        @(string.Format(await Html.Resource("admin-dashboard-greeting", "Welcome {0}, you are currently administering web site {1}"), user.Name, currentSite.DisplayName)).
+        @await Html.Resource("admin-dashboard-greeting", "Welcome {user}, you are currently administering web site {site}",configureOptions => configureOptions.AddReplacement("user",user.Name).AddReplacement("site",currentSite.DisplayName))
     </div>
 </div>

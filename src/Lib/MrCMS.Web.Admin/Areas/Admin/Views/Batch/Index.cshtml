@@ -1,6 +1,7 @@
 ﻿@using MrCMS.Batching.Entities
 @using MrCMS.Web.Admin.Helpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.BatchSearchModel
 @{
@@ -10,7 +11,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin - batches", "Batches")  "/>
+        <admin-header-title title="@await Html.Resource("admin - batches", "Batches", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
         </admin-header-actions>
@@ -69,5 +70,5 @@ else
         }
         </tbody>
     </table>
-    @Html.PagedListPager(batches, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(batches, page => Url.Action("Index", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }

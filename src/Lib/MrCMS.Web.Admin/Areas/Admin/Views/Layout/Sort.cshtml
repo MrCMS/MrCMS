@@ -1,4 +1,6 @@
-﻿@model System.Collections.Generic.List<MrCMS.Models.SortItem>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Layouts";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -22,7 +24,7 @@
 <form method="POST" id="sort-layouts">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-sort", "Sort") "/>
+            <admin-header-title title="@await Html.Resource("admin-sort", "Sort", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <span class="btn-group">

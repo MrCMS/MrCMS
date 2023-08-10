@@ -1,4 +1,6 @@
-﻿@model dynamic
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model dynamic
 
 @{
     ViewBag.Title = "Clear Caches";
@@ -6,14 +8,14 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("Admin Clear Caches", "Clear Caches")"/>
+        <admin-header-title title="@await Html.Resource("Admin Clear Caches", "Clear Caches", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
             <form method="post" class="d-inline">
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-clear", "Clear")"/>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-clear", "Clear", options => options.DisableInlineEditing())"/>
             </form>
             <form method="post" class="d-inline" asp-action="HighPriority">
-                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-clear-high-priority", "Clear High Priority")"/>
+                <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-clear-high-priority", "Clear High Priority", options => options.DisableInlineEditing())"/>
             </form>
         </admin-header-actions>
     </row>

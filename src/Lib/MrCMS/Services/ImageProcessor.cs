@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ImageMagick;
@@ -23,6 +24,19 @@ namespace MrCMS.Services
         {
             _session = session;
             _fileSystemFactory = fileSystemFactory;
+        }
+
+        public async Task<(string title, string description)> GetImageMetaData(string imageUrl)
+        {
+            var originalImageUrl = GetOriginalImageUrl(imageUrl);
+            var mediaFile =
+                await _session
+                    .Query<MediaFile>()
+                    .Where(file => file.FileUrl == originalImageUrl)
+                    .Select(x => new { x.Title, x.Description }).FirstOrDefaultAsync();
+
+            return mediaFile != null ? (mediaFile.Title, mediaFile.Description) : (null, null);
+
         }
 
         public async Task<MediaFile> GetImage(string imageUrl)
@@ -163,7 +177,7 @@ namespace MrCMS.Services
             await SaveFile(fileBytes, fileUrl, newSize, crop.ContentType);
         }
 
-        private string GetOriginalImageUrl(string imageUrl)
+        public string GetOriginalImageUrl(string imageUrl)
         {
             var match = Regex.Match(imageUrl, Pattern, RegexOptions.Compiled);
             if (match.Success)

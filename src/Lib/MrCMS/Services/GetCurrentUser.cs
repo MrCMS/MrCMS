@@ -12,9 +12,11 @@ namespace MrCMS.Services
         private readonly ICacheInHttpContext _cacheInHttpContext;
         private readonly IUserImpersonationService _userImpersonationService;
 
-        public GetCurrentUser(IHttpContextAccessor contextAccessor, IUserLookup userLookup,
+        public GetCurrentUser(IHttpContextAccessor contextAccessor,
+            IUserLookup userLookup,
             ICacheInHttpContext cacheInHttpContext,
-            IUserImpersonationService userImpersonationService)
+            IUserImpersonationService userImpersonationService
+        )
         {
             _contextAccessor = contextAccessor;
             _userLookup = userLookup;

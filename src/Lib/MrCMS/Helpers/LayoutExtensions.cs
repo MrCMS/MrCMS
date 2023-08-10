@@ -14,10 +14,10 @@ namespace MrCMS.Helpers
         }
         private static bool AnyChildren(this IHtmlHelper helper, int id)
         {
-            var document = helper.GetRequiredService<ISession>().Get<Layout>(id);
-            if (document == null)
+            var layout = helper.GetRequiredService<ISession>().Get<Layout>(id);
+            if (layout == null)
                 return false;
-            return AnyChildren(helper, document);
+            return AnyChildren(helper, layout);
         }
 
         private static bool AnyChildren(this IHtmlHelper helper, Layout layout)

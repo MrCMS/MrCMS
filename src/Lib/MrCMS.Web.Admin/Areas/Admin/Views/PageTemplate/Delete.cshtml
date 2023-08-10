@@ -9,7 +9,7 @@
         <legend>
             @await Html.Resource("Admin Page Template Delete Title", "Delete Page Template")
             <span class="btn-group d-inline pull-right">
-                <input type="submit" class="btn-danger btn" value="@await Html.Resource("Delete")"/>
+                <input type="submit" class="btn-danger btn" value="@await Html.Resource("Delete", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
         @Html.HiddenFor(model => model.Id)

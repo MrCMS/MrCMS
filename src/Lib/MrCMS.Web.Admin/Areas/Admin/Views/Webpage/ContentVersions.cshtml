@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Web.Admin.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @inject IContentVersionAdminService AdminService
 @{
@@ -45,7 +46,7 @@
                         {
                             <div class="btn-group">
 
-                                @Html.ActionLink(await Html.Resource("Edit"), "Edit", "ContentVersion", new { id = contentVersion.Id }, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "ContentVersion", new { id = contentVersion.Id }, new { @class = "btn btn-sm btn-secondary" })
                                 <button class="btn btn-danger btn-sm" data-toggle="confirmation" data-value="@Url.Action("Delete", "ContentVersion")" data-id="@contentVersion.Id" data-placement="bottom">@await Html.Resource("admin-delete", "Delete")</button>
                             </div>
                         }

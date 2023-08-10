@@ -59,7 +59,7 @@
                             titleElement.setValue(info.description);
                         }
                     }
-                    dialog.originalElement.addClass('img-responsive');
+                    dialog.originalElement.addClass('img-fluid');
                     // Return "false" to stop further execution. In such case CKEditor will ignore the second argument ("fileUrl")
                     // and the "onSelect" function assigned to the button that called the file manager (if defined).
                     // return false;

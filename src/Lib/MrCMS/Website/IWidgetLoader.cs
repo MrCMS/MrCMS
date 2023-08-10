@@ -8,5 +8,6 @@ namespace MrCMS.Website
     public interface IWidgetLoader
     {
         Task<IList<Widget>> GetWidgets(LayoutArea area);
+        Task<IReadOnlyDictionary<LayoutArea, IList<Widget>>> GetWidgets(IEnumerable<LayoutArea> layoutAreas);
     }
 }

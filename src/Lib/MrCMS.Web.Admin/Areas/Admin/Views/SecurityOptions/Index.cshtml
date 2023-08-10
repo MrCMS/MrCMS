@@ -1,8 +1,10 @@
 ﻿@using MrCMS.Entities.People
 @using MrCMS.Settings
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model dynamic
 @{
-    ViewBag.Title = await Html.Resource("Security Options");
+    ViewBag.Title = await Html.PlainResource("Security Options");
     var authRoleSettings = ViewData["auth-role-settings"] as AuthRoleSettings;
     var securitySettings = ViewData["security-settings"] as SecuritySettings;
     var roles = ViewData["roles"] as IList<UserRole>;
@@ -12,7 +14,7 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - security - settings - configuration", "Security Option By Role Configuration") "/>
+            <admin-header-title title="@await Html.Resource("admin - security - settings - configuration", "Security Option By Role Configuration", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button class="btn btn-primary" type="submit">

@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Apps
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model dynamic
 @inject MrCMSAppContext AppContext
 @{
@@ -7,7 +8,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-about", "About") "/>
+        <admin-header-title title="@await Html.Resource("admin-about", "About", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
         </admin-header-actions>

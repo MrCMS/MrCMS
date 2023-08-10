@@ -30,8 +30,10 @@ namespace MrCMS.Shortcodes.Forms
             }
             if (!string.IsNullOrWhiteSpace(formProperty.CssClass))
                 tagBuilder.AddCssClass(formProperty.CssClass);
-            if (formRenderingType == FormRenderingType.Bootstrap3 || formRenderingType == FormRenderingType.Bootstrap4)
+            if (formRenderingType == FormRenderingType.Bootstrap4)
                 tagBuilder.AddCssClass("form-control");
+            else if (formRenderingType is FormRenderingType.Bootstrap5) 
+                tagBuilder.AddCssClass("form-select");
 
             foreach (var option in formProperty.Options)
             {
@@ -46,5 +48,7 @@ namespace MrCMS.Shortcodes.Forms
         }
 
         public bool IsSelfClosing => false;
+        
+        public bool SupportsFloatingLabel => true;
     }
 }

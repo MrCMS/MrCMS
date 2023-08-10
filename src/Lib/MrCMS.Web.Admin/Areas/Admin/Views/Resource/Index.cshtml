@@ -1,7 +1,10 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Resources
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Services
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.StringResourceSearchQuery
 @{
@@ -14,13 +17,13 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-resources", "Resources") "/>
+            <admin-header-title title="@await Html.Resource("admin-resources", "Resources", option=> option.DisableInlineEditing())"/>
             <admin-header-actions>
                 <span class="btn-group">
-                    @Html.ActionLink(await Html.Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new {}, new {@class = "btn btn-secondary"})
-                    @Html.ActionLink(await Html.Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new {Model.Key, Model.Value}, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(await Html.PlainResource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new {}, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(await Html.PlainResource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new {Model.Key, Model.Value}, new {@class = "btn btn-secondary"})
 
-                    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Filter")"/>
+                    <input type="submit" class="btn btn-primary" value="@await Html.Resource("Filter", options => options.DisableInlineEditing())"/>
                 </span>
             </admin-header-actions>
         </row>
@@ -128,7 +131,7 @@
 
 
     @Html.PagedListPager(resources, page => Url.Action("Index", new {page, Model.Key, Model.Language, Model.Value, Model.SiteId}),
-        MrCMSPagedListRenderOptions.Bootstrap4)
+        Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 
 
 
@@ -139,7 +142,7 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-resources-import", "Import Resources")"/>
+            <admin-header-title title="@await Html.Resource("admin-resources-import", "Import Resources", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button class="btn btn-secondary">

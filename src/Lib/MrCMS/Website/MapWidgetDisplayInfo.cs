@@ -19,6 +19,7 @@ namespace MrCMS.Website
         public async Task<IDictionary<string, WidgetDisplayInfo>> MapInfo(IEnumerable<LayoutArea> layoutAreas)
         {
             var dictionary = new Dictionary<string, WidgetDisplayInfo>();
+            var widgets = await _widgetLoader.GetWidgets(layoutAreas);
             foreach (var area in layoutAreas)
             {
                 dictionary[area.AreaName] =
@@ -26,7 +27,7 @@ namespace MrCMS.Website
                     {
                         Id = area.Id,
                         Name = area.AreaName,
-                        Widgets = _mapWidgetData.MapData(await _widgetLoader.GetWidgets(area))
+                        Widgets = _mapWidgetData.MapData(widgets[area])
                     };
             }
 

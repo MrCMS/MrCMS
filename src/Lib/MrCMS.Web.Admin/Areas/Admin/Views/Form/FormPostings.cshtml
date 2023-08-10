@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Web.Admin.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Entities.Documents.Web.Form
 @inject IFormAdminService AdminService
 @{
@@ -13,8 +14,8 @@
             <div class="pull-right btn-group">
                 @if (postingsModel.Items.TotalItemCount > 0)
                 {
-                    @Html.ActionLink(await Html.Resource("Admin Webpage Form Delete All", "Delete all entries"), "ClearFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
-                    @Html.ActionLink(await Html.Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-sm btn-primary"})
+                    @Html.ActionLink(await Html.PlainResource("Admin Webpage Form Delete All", "Delete all entries"), "ClearFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                    @Html.ActionLink(await Html.PlainResource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-sm btn-primary"})
                 }
             </div>
         </div>

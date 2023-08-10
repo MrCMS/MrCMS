@@ -65,9 +65,9 @@ public class ContentVersionAdminService : IContentVersionAdminService
                 {
                     Id = x.Id,
                     Order = x.Order,
-                    DisplayName = string.IsNullOrWhiteSpace(blockModel.DisplayName) ? metadata.Name : blockModel.DisplayName,
                     IsHidden = x.IsHidden,
                     Type = metadata.Type,
+                    TypeName = metadata.Name,
                     CanAddChildren = metadata.CanAddChildren,
                     CanOrderChildren = metadata.CanOrderChildren,
                     Guid = x.Guid,

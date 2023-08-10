@@ -1,9 +1,11 @@
-﻿@model MrCMS.Batching.Entities.Batch
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Batching.Entities.Batch
 
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin - batch - batch - title", "Batch") #@Model.Id"/>
+        <admin-header-title title="@await Html.Resource("admin - batch - batch - title", "Batch", option=> option.DisableInlineEditing()) #@Model.Id"/>
 
         <admin-header-actions>
             @Html.ActionLink("Back to list", "Index", "Batch", new {}, new {@class = "btn btn-secondary"})

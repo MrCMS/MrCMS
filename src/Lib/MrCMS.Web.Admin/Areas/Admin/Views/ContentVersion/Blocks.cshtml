@@ -25,7 +25,7 @@
                     <a role="button" class="d-block selection-link"
                        data-content-admin-block-select="@Url.Action("Blocks", "ContentVersion", new { selected = block.Guid })"
                        data-content-admin-editor="@Url.Action("Edit", "ContentBlock", new { id = block.Id })">
-                        @block.DisplayName
+                        @block.TypeName
                     </a>
                 </div>
                 <div class="col-auto">
@@ -41,12 +41,12 @@
                     </a>
                 </div>
                 <div class="col-auto sort-handle">
-                    <a class="text-dark" role="button" title="@await Html.Resource("admin-blocks-sort", "Drag to sort")">
+                    <a class="text-dark" role="button" title="@await Html.Resource("admin-blocks-sort", "Drag to sort", options => options.DisableInlineEditing())">
                         <i class="fa fa-sort"></i>
                     </a>
                 </div>
                 <div class="col-auto">
-                    <a class="text-danger" role="button" data-content-admin-block-remove="@Url.Action("Remove", "ContentBlock", new { block.Id })" title="@await Html.Resource("admin-blocks-remove", "Remove")">
+                    <a class="text-danger" role="button" data-content-admin-block-remove="@Url.Action("Remove", "ContentBlock", new { block.Id })" title="@await Html.Resource("admin-blocks-remove", "Remove", options => options.DisableInlineEditing())">
                         <i class="fa fa-times"></i>
                     </a>
                 </div>
@@ -72,7 +72,7 @@
                                 @if (block.CanOrderChildren)
                                 {
                                     <div class="col-auto child-sort-handle">
-                                        <a class="text-dark" role="button" title="@await Html.Resource("admin-blocks-sort", "Drag to sort")">
+                                        <a class="text-dark" role="button" title="@await Html.Resource("admin-blocks-sort", "Drag to sort", options => options.DisableInlineEditing())">
                                             <i class="fa fa-sort"></i>
                                         </a>
                                     </div>
@@ -80,7 +80,7 @@
                                 @if (block.CanAddChildren)
                                 {
                                     <div class="col-auto">
-                                        <a class="text-danger" role="button" data-content-admin-block-remove="@Url.Action("Remove", "BlockItem", new { block.Id, itemId = item.Id })" title="@await Html.Resource("admin-blocks-remove", "Remove")">
+                                        <a class="text-danger" role="button" data-content-admin-block-remove="@Url.Action("Remove", "BlockItem", new { block.Id, itemId = item.Id })" title="@await Html.Resource("admin-blocks-remove", "Remove", options => options.DisableInlineEditing())">
                                             <i class="fa fa-times"></i>
                                         </a>
                                     </div>

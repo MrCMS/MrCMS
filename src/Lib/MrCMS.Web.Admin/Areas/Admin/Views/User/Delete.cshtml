@@ -6,9 +6,9 @@
         <legend>
             @await Html.Resource("Admin User Delete User", "Delete User")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Delete")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Delete", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </span>
         </legend>
-        @Html.InfoBlock(await Html.Resource("Heads up") + "!", await Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+        @Html.InfoBlock(await Html.PlainResource("Heads up") + "!", await Html.PlainResource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }

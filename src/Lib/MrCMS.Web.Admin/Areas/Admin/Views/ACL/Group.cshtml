@@ -43,7 +43,7 @@
                         if (role.RoleName != UserRole.Administrator)
                         {
                             <td>
-                                @Html.CheckBox(string.Format("acl-{0}-{1}", role.Role.Name, operation.Key), role.IsAllowed)
+                                @Html.CheckBox($"acl-{role.Role.Name}-{operation.Key}", role.IsAllowed)
                             </td>
                         }
                         else

@@ -1,9 +1,11 @@
-﻿@model MrCMS.Entities.Messaging.QueuedMessage
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Entities.Messaging.QueuedMessage
 
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("Message") #@Model.Id"/>
+        <admin-header-title title="@await Html.Resource("Message", options => options.DisableInlineEditing()) #@Model.Id"/>
 
         <admin-header-actions>
             <a asp-action="Index" class="btn btn-primary">@await Html.Resource("Back")</a>
@@ -64,6 +66,20 @@
             </tr>*@
     <tr>
         <td>
+            @await Html.Resource("Attachments")
+        </td>
+        <td>
+            @{
+                var attachments = Model.QueuedMessageAttachments?.Select(f => f.FileName);
+            }
+            @if (attachments?.Any() ?? false)
+            {
+                @:@string.Join(", ", attachments)
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             @await Html.Resource("Created On")
         </td>
         <td>
@@ -83,4 +99,4 @@
 
 <h2 class="mt-2">Body</h2>
 
-<iframe src="@Url.Content("/Admin/MessageQueue/GetBody/" + Model.Id)" style="width:100%; height:400px" frameborder="0"></iframe>
+<iframe src="@Url.Content("/Admin/MessageQueue/GetBody/" + Model.Id)" style="width:100%; height:400px" frameborder="0" auto-height></iframe>

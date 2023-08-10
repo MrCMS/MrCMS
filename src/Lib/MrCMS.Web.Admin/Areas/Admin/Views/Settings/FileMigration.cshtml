@@ -1,5 +1,6 @@
-﻿@model dynamic
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model dynamic
 
 <form asp-controller="FileMigration" asp-action="Migrate" method="post">
-    <input type="submit" value="@await Html.Resource("Admin Queue File Migration", "Queue any required migrations")" class="btn btn-sm btn-primary" />
+    <input type="submit" value="@await Html.Resource("Admin Queue File Migration", "Queue any required migrations", options => options.DisableInlineEditing())" class="btn btn-sm btn-primary" />
 </form>

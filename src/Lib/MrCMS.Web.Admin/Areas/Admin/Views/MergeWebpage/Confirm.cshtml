@@ -1,4 +1,6 @@
 ﻿@using MrCMS.Web.Admin.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model MergeWebpageModel
 @{
     var confirmationModel = ViewData["confirmation-model"] as MergeWebpageConfirmationModel;
@@ -6,7 +8,7 @@
 <form asp-controller="MergeWebpage" asp-action="Confirm" asp-route-id="" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("Admin Webpage Merge", "Merge")"/>
+            <admin-header-title title="@await Html.Resource("Admin Webpage Merge", "Merge", option=> option.DisableInlineEditing())"/>
         </row>
     </admin-header>
 
@@ -16,7 +18,7 @@
     @Html.HiddenFor(x => x.UpdateUrls)
 
     <p>
-        @string.Format(await Html.Resource("Admin Webpage Merge - Confirm Text", "{0} record(s) will be impacted. Are you sure you would like to proceed?  This process will be added to a batch, it will not process immediately but may take several minutes to complete."), confirmationModel.ChangedPages.Count)
+        @await Html.Resource("Admin Webpage Merge - Confirm Text", "{count} record(s) will be impacted. Are you sure you would like to proceed?  This process will be added to a batch, it will not process immediately but may take several minutes to complete.", configureOptions=>configureOptions.AddReplacement("count",confirmationModel?.ChangedPages.Count.ToString()))
     </p>
     <div class="alert alert-warning">
         @await Html.Resource("Admin Webpage Merge - Confirm Structure Warning", "This is a structural change, please confirm with your system administrator that a backup has been taken before proceeding")
@@ -54,7 +56,7 @@
     <hr/>
     <div class="btn-group">
         <button type="submit" class="btn btn-primary">@await Html.Resource("Complete")</button>
-        @Html.ActionLink(await Html.Resource("Cancel"), "Edit", "Webpage", new {Model.Id}, new {@class = "btn btn-default"})
+        @Html.ActionLink(await Html.PlainResource("Cancel"), "Edit", "Webpage", new {Model.Id}, new {@class = "btn btn-default"})
     </div>
 
 

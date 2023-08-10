@@ -1,6 +1,9 @@
 @using X.PagedList
 @using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.Known404sSearchQuery
 
 @{
@@ -10,7 +13,7 @@
 <form asp-controller="Redirects" asp-action="Known404s" method="get">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin - known 404s to process", "Known 404s To Process") "/>
+            <admin-header-title title="@await Html.Resource("admin - known 404s to process", "Known 404s To Process", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <button type="submit" class="btn btn-primary">Search</button>
@@ -63,7 +66,7 @@
             </tbody>
         </table>
 
-        @Html.PagedListPager(results, page => Url.Action("Known404s", "Redirects", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+        @Html.PagedListPager(results, page => Url.Action("Known404s", "Redirects", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
     }
     else
     {

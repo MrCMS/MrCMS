@@ -4,7 +4,7 @@
         @using (Html.BeginForm("Index", "User", FormMethod.Get))
         {
             @Html.TextBoxFor(query => query.Email, new {@class = "search-query", placeholder = "Email"})
-            <input type="submit" class="btn btn-sm btn-primary" value="@await Html.Resource("Search")"/>
+            <input type="submit" class="btn btn-sm btn-primary" value="@await Html.Resource("Search", options => options.DisableInlineEditing())"/>
             @Html.ValidationMessageFor(query => query.Email)
         }
     </div>

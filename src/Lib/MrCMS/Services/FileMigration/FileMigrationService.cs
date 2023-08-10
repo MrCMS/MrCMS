@@ -78,10 +78,11 @@ namespace MrCMS.Services.FileMigration
             return new FileMigrationResult
             {
                 MigrationRequired = true,
-                Message = string.Format(
-                    await "Batch created. Click <a target=\"_blank\" href=\"{0}\">here</a> to view and start.".AsResource(
-                        _serviceProvider),
-                    _urlHelper.Action("Show", "BatchRun", new {id = result.InitialBatchRun.Id}))
+                Message =
+                    await "Batch created. Click <a target=\"_blank\" href=\"{url}\">here</a> to view and start."
+                        .AsResource(_serviceProvider,
+                            configureOptions => configureOptions.AddReplacement("url",
+                                _urlHelper.Action("Show", "BatchRun", new { id = result.InitialBatchRun.Id })))
             };
         }
     }

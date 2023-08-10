@@ -1,7 +1,9 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Services
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Admin.Models.PageTemplateSearchQuery
 @inject IPageTemplateService PageTemplateService
@@ -11,7 +13,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin - page - templates", "Page Templates") "/>
+        <admin-header-title title="@await Html.Resource("admin - page - templates", "Page Templates", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
             @Html.ActionLink("Add", "Add", "PageTemplate", null, new {@class = "btn btn-primary"})
@@ -72,10 +74,10 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-sm btn-secondary"})
+                        @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-sm btn-secondary"})
                         @if (!template.Webpages.Any())
                         {
-                            @Html.ActionLink(await Html.Resource("Delete"), "Delete", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                            @Html.ActionLink(await Html.PlainResource("Delete"), "Delete", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
                         }
                     </div>
                 </td>
@@ -83,7 +85,7 @@
         }
         </tbody>
     </table>
-    @Html.PagedListPager(results, page => Url.Action("Index", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => Url.Action("Index", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }
 else
 {

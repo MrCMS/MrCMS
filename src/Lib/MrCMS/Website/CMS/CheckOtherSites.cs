@@ -23,16 +23,22 @@ namespace MrCMS.Website.CMS
         public async Task<NotFoundCheckResult> Check(string path, string query)
         {
             var session = _serviceProvider.GetRequiredService<ISession>();
+
+            var currentSiteLocator = _serviceProvider.GetRequiredService<ICurrentSiteLocator>();
+            var currentSite = currentSiteLocator.GetCurrentSite();
+            var currentSiteId = currentSite.Id;
+
             using var disabler = new SiteFilterDisabler(session);
             var url = path?.TrimStart('/');
             var webpage = await session.Query<Webpage>()
                 .Where(doc => doc.UrlSegment == url)
                 .Where(x => x.Published)
+                .Where(x => x.Site.Id != currentSiteId)
                 .FirstOrDefaultAsync();
 
             if (webpage == null)
                 return NotFoundCheckResult.NotFound;
-            
+
             var getLiveUrl = _serviceProvider.GetRequiredService<IGetLiveUrl>();
             return NotFoundCheckResult.ForUrl(await getLiveUrl.GetAbsoluteUrl(webpage));
         }

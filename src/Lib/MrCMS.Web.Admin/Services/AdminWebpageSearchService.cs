@@ -64,7 +64,7 @@ namespace MrCMS.Web.Admin.Services
             return _webpageMetadataService.GetWebpageMetadata()
                 .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
                     definition => definition.TypeName == type,
-                    await _stringResourceProvider.GetValue("Admin Select Type", "Select type"));
+                    await _stringResourceProvider.GetValue("Admin Select Type", configureOptions => configureOptions.SetDefaultValue("Select type")));
         }
 
         public async Task<IList<SelectListItem>> GetParentsList()
@@ -88,7 +88,8 @@ namespace MrCMS.Web.Admin.Services
                 new SelectListItem
                 {
                     Selected = false,
-                    Text = await _stringResourceProvider.GetValue("Admin Root", "Root"),
+                    Text = await _stringResourceProvider.GetValue("Admin Root",
+                        options => options.SetDefaultValue("Root")),
                     Value = "0"
                 });
             return selectListItems;

@@ -1,4 +1,6 @@
-﻿@model MrCMS.Messages.MessageTemplate
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Messages.MessageTemplate
 @{
     ViewBag.Title = "Edit Message Template";
 }
@@ -6,12 +8,12 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-edit", "Edit<>") @Model.GetType().Name.BreakUpString() (@(Model.SiteId.HasValue ? "Site Override" : "System default"))" />
+            <admin-header-title title="@await Html.PlainResource("admin-edit", "Edit<>") @Model.GetType().Name.BreakUpString() (@(Model.SiteId.HasValue ? "Site Override" : "System default"))" />
 
             <admin-header-actions>
                 <span class="btn-group">
-                    @Html.ActionLink(await Html.Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-secondary" })
-                    <input class="btn btn-primary" type="submit" value="@await Html.Resource("Save")" />
+                    @Html.ActionLink(await Html.PlainResource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-secondary" })
+                    <input class="btn btn-primary" type="submit" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())" />
                 </span>
             </admin-header-actions>
         </row>
@@ -57,7 +59,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            @Html.InfoBlock("Heads up!", await Html.Resource("admin-email-multiple-emails", "To send to multiple email addresses via To, Cc or Bcc, separate them with a comma or a semi-colon"))
+            @Html.InfoBlock("Heads up!", await Html.PlainResource("admin-email-multiple-emails", "To send to multiple email addresses via To, Cc or Bcc, separate them with a comma or a semi-colon"))
         </div>
     </div>
     <div class="row">

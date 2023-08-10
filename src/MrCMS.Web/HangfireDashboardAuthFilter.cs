@@ -1,15 +1,20 @@
+using System.Threading.Tasks;
 using Hangfire.Dashboard;
+using MrCMS.Entities.People;
+using MrCMS.Services;
 
 namespace MrCMS.Web;
 
-public class HangfireDashboardAuthFilter : IDashboardAuthorizationFilter
+public class HangfireDashboardAuthFilter : IDashboardAsyncAuthorizationFilter
 {
-    public bool Authorize(DashboardContext context)
-    {
-        var httpContext = context.GetHttpContext();
+    private readonly IGetCurrentUser _getCurrentUser;
 
-        //todo: check if user is admin
-        return true;
-        //return httpContext.User.IsAdmin();
+    public HangfireDashboardAuthFilter(IGetCurrentUser getCurrentUser)
+    {
+        _getCurrentUser = getCurrentUser;
+    }
+    public async Task<bool> AuthorizeAsync(DashboardContext context)
+    {
+        return context.GetHttpContext().User.IsInRole(UserRole.Administrator);
     }
 }

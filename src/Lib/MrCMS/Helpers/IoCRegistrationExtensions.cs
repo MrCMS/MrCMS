@@ -143,7 +143,7 @@ namespace MrCMS.Helpers
             }
         }
 
-        public static void RegisterDocumentMetadata(this IServiceCollection container)
+        public static void RegisterWebpageMetadata(this IServiceCollection container)
         {
             foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<IGetWebpageMetadataInfo>())
             {

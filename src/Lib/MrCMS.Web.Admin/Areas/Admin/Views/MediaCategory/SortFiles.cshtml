@@ -1,4 +1,6 @@
 ﻿@using System.Drawing
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model System.Collections.Generic.List<MrCMS.Models.ImageSortItem>
 @{
     ViewBag.Title = "Sort Files";
@@ -23,11 +25,11 @@
 
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("admin-sort-file", "Sort Files") "/>
+            <admin-header-title title="@await Html.Resource("admin-sort-file", "Sort Files", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <span class="btn-group pull-right">
-                    @Html.ActionLink(await Html.Resource("admin-back", "Back"), "Show", new {id = ViewData["categoryId"]}, new {@class = "btn btn-secondary"})
+                    @Html.ActionLink(await Html.PlainResource("admin-back", "Back"), "Show", new {id = ViewData["categoryId"]}, new {@class = "btn btn-secondary"})
                     <button class="btn btn-primary">
                         @await Html.Resource("admin-save", "Save")
                     </button>

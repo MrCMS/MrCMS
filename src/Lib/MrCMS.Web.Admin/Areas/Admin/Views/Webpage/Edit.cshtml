@@ -1,7 +1,9 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using MrCMS.Web.Admin.Models
 @using MrCMS.Web.Admin.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Webpage
 @inject IGetEditTabsService TabsService
 @inject IGetLiveUrl GetLiveUrl
@@ -11,7 +13,7 @@
     var tabs = await TabsService.GetEditTabs(Html, Model);
 }
 
-<form asp-controller="Webpage" asp-action="Edit" id="edit-document" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage)" method="post" data-edit-webpage autocomplete="off">
+<form asp-controller="Webpage" asp-action="Edit" id="edit-document" data-are-you-sure="@await Html.Resource(AdminMessages.AreYouSureDefaultMessage,options => options.DisableInlineEditing())" method="post" data-edit-webpage autocomplete="off">
     <admin-header>
         <row>
             <admin-header-title title="@Model.Name"/>
@@ -28,10 +30,10 @@
                                 {
                                     <a class="dropdown-item" data-toggle="confirmation" data-value="@Url.Action("Delete", "Webpage", new {id = Model.Id})" data-id="@Model.Id" data-placement="bottom">@await Html.Resource("Delete")</a>
                                 }
-                                @Html.ActionLink(await Html.Resource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                @Html.ActionLink(await Html.PlainResource("Move"), "Index", "MoveWebpage", new {Model.Id}, new {@class = "dropdown-item"})
                                 @if (!Html.CanDeleteWebpage(Model.Id))
                                 {
-                                    @Html.ActionLink(await Html.Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
+                                    @Html.ActionLink(await Html.PlainResource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "dropdown-item"})
                                 }
 
                             </div>
@@ -39,7 +41,7 @@
                         <a href="@await GetLiveUrl.GetUrlSegment(Model, true)" class="btn btn-secondary">View</a>
                         @if (Model.PublishStatus != Webpage.WebpagePublishStatus.Scheduled)
                         {
-                            @(Model.PublishOn == null ? Html.ActionLink(await Html.Resource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning"}) : Html.ActionLink(await Html.Resource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success"}))
+                            @(Model.PublishOn == null ? Html.ActionLink(await Html.PlainResource("Publish Now"), "PublishNow", new {id = Model.Id}, new {@class = "btn btn-warning"}) : Html.ActionLink(await Html.PlainResource("Unpublish"), "Unpublish", new {id = Model.Id}, new {@class = "btn btn-success"}))
                         }
 
                         <button class="btn btn-primary" type="submit">@await Html.Resource("Save")</button>
@@ -51,7 +53,7 @@
     @if (Model.PublishStatus == Webpage.WebpagePublishStatus.Scheduled && Model.PublishOn.HasValue)
     {
         <div class="alert alert-warning">
-            @string.Format(await Html.Resource("admin-webpage-published-noticed-info", "This webpage is due to be published on {0}"),  Model.PublishOn.Value.ToString("f"))
+            @await Html.Resource("admin-webpage-published-noticed-info", "This webpage is due to be published on {publishDate}",configureOptions=>configureOptions.AddReplacement("publishDate",Model.PublishOn.Value.ToString("f")))
         </div>
     }
 

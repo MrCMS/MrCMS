@@ -1,4 +1,6 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.MergeWebpageModel
 @{
     var webpage = ViewData["webpage"] as Webpage;
@@ -6,16 +8,15 @@
 <form asp-controller="MergeWebpage" asp-action="Index" asp-route-id="" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("Admin Webpage Merge", "Merge")"/>
+            <admin-header-title title="@await Html.Resource("Admin Webpage Merge", "Merge", option=> option.DisableInlineEditing())"/>
         </row>
     </admin-header>
-
-
+    
     <p>
-        @string.Format(await Html.Resource("Admin Webpage Merge - Info", "This will merge {0} so that {0} will cease to exist. Any child sections/pages will become part of the section selected below."), webpage.Name)
+        @await Html.Resource("Admin Webpage Merge - Info", "This will merge {webpageName} so that {webpageName} will cease to exist. Any child sections/pages will become part of the section selected below.",configureOptions=>configureOptions.AddReplacement("webpageName",webpage?.Name))
     </p>
     <p>
-        @string.Format(await Html.Resource("Admin Webpage Merge - Info 2", "If {0} has child sections, those will be moved underneath."), webpage.Name)
+        @await Html.Resource("Admin Webpage Merge - Info 2", "If {webpageName} has child sections, those will be moved underneath.", configureOptions=>configureOptions.AddReplacement("webpageName",webpage?.Name))
     </p>
     @Html.HiddenFor(x => x.Id)
     <div class="form-group">
@@ -33,7 +34,7 @@
     <hr/>
     <div class="btn-group">
         <button type="submit" class="btn btn-primary">@await Html.Resource("Proceed")</button>
-        @Html.ActionLink(await Html.Resource("Cancel"), "Edit", "Webpage", new {Model.Id}, new {@class = "btn btn-default"})
+        @Html.ActionLink(await Html.PlainResource("Cancel"), "Edit", "Webpage", new {Model.Id}, new {@class = "btn btn-default"})
     </div>
 
 

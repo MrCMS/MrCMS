@@ -1,4 +1,5 @@
-﻿@model System.Collections.Generic.List<MrCMS.Models.SortItem>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Pages";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -29,7 +30,7 @@
                 <div class="col">
                     <span class="btn-group pull-right">
                         <a asp-controller="Webpage" asp-action="Index" class="btn btn-secondary">@await Html.Resource("admin-back", "Back")</a>
-                        <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save")"/>
+                        <input type="submit" class="btn btn-primary" value="@await Html.Resource("admin-save", "Save", options => options.DisableInlineEditing())"/>
                     </span>
                 </div>
             </div>

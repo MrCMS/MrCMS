@@ -19,7 +19,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void TextBoxRenderer_AppendElement_ShouldHaveTagNameOfInput()
         {
-            var appendElement = _textBoxRenderer.AppendElement(new TextBox(), _existingValue, FormRenderingType.Bootstrap2);
+            var appendElement = _textBoxRenderer.AppendElement(new TextBox(), _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.TagName.Should().Be("input");
         }
@@ -27,7 +27,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void TextBoxRenderer_AppendElement_ShouldHaveTypeOfText()
         {
-            var appendElement = _textBoxRenderer.AppendElement(new TextBox(), _existingValue, FormRenderingType.Bootstrap2);
+            var appendElement = _textBoxRenderer.AppendElement(new TextBox(), _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes["type"].Should().Be("text");
         }
@@ -36,7 +36,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldHaveNameOfTextBoxName()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { Name = "test name" }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { Name = "test name" }, _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes["name"].Should().Be("test name");
         }
@@ -45,7 +45,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldSetHtmlIdIfItIsSet()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { HtmlId = "test-id" }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { HtmlId = "test-id" }, _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes["id"].Should().Be("test-id");
         }
@@ -60,7 +60,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldAppendDataValTrueIfIsRequired()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { Required = true }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { Required = true }, _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes["data-val"].Should().Be("true");
         }
@@ -69,7 +69,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldAppendDataValRequiredIfIsRequiredUsingTheLabelText()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { Required = true, LabelText = "Test Label" }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { Required = true, LabelText = "Test Label" }, _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes["data-val-required"].Should().Be("The field Test Label is required");
         }
@@ -78,7 +78,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldAppendDataValRequiredIfIsRequiredUsingTheNameIfLabelTextIsMissing()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { Required = true, Name = "test-name" }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { Required = true, Name = "test-name" }, _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes["data-val-required"].Should().Be("The field test-name is required");
         }
@@ -87,7 +87,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldAppendNeitherDataAttributesIfRequiredIsFalse()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { Required = false }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { Required = false }, _existingValue, FormRenderingType.Bootstrap5);
 
             appendElement.Attributes.ContainsKey("data-val").Should().BeFalse();
             appendElement.Attributes.ContainsKey("data-val-required").Should().BeFalse();
@@ -97,9 +97,9 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldSetCssClassIfItIsSet()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox { CssClass = "css-class" }, _existingValue, FormRenderingType.Bootstrap2);
+                new TextBox { CssClass = "css-class" }, _existingValue, FormRenderingType.Bootstrap5);
 
-            appendElement.Attributes["class"].Should().Be("css-class");
+            appendElement.Attributes["class"].Should().Be("css-class form-control");
 
         }
     }

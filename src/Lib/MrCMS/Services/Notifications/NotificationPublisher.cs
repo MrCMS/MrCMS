@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MrCMS.Entities.Notifications;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -25,10 +26,15 @@ namespace MrCMS.Services.Notifications
             if (_session.GetContext().AreNotificationsDisabled())
                 return;
 
+            var user = await _getCurrentUser.Get();
+            // load the user from the current session
+            if (user != null)
+                user = _session.Get<User>(user.Id);
+            
             var notification = new Notification
             {
                 Message = message,
-                User = await _getCurrentUser.Get(),
+                User = user,
                 NotificationType = notificationType
             };
             switch (publishType)

@@ -26,8 +26,8 @@ namespace MrCMS.Shortcodes.Forms
             }
             if (!string.IsNullOrWhiteSpace(formProperty.CssClass))
                 tagBuilder.AddCssClass(formProperty.CssClass);
-            if (formRenderingType == FormRenderingType.Bootstrap3 || formRenderingType == FormRenderingType.Bootstrap4)
-                tagBuilder.AddCssClass("form-control");
+            
+            tagBuilder.AddCssClass("form-control");
 
             tagBuilder.Attributes["value"] = existingValue;
             return tagBuilder;
@@ -39,5 +39,6 @@ namespace MrCMS.Shortcodes.Forms
         }
 
         public bool IsSelfClosing => true;
+        public bool SupportsFloatingLabel => true;
     }
 }

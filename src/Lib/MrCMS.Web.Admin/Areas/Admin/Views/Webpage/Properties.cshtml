@@ -1,14 +1,21 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @using MrCMS.Web.Admin.Infrastructure.Helpers
+@using MrCMS.ACL.Rules
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.WebpageEdit.WebpagePropertiesTabViewModel
 @inject IWebpageMetadataService _webpageMetadataService
+@inject IGetCurrentUser GetCurrentUser
 @{
     var webpage = ViewData["webpage"] as Webpage;
+    var user = await GetCurrentUser.Get();
 }
-<a class="btn btn-outline-secondary" asp-controller="ContentVersion" asp-action="EditLatest" asp-route-id="@webpage.Id">
-    Edit Page
-</a>
+@if (await Html.CanAccess<CoreACL>(user, CoreACL.ManageContentEditor))
+{
+    <a class="btn btn-outline-secondary" asp-controller="ContentVersion" asp-action="EditLatest" asp-route-id="@webpage.Id">
+        Edit Page
+    </a>
+}
 <hr />
 <input type="hidden" asp-for="WebpageType"/>
 <input type="hidden" asp-for="Id"/>

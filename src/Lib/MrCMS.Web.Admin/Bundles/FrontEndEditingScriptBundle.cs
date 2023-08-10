@@ -22,7 +22,7 @@ namespace MrCMS.Web.Admin.Bundles
             _siteSettings = siteSettings;
         }
 
-        public int Priority { get; }
+        public int Priority => int.MaxValue;
 
         public async Task<bool> ShouldShow(string theme)
         {
@@ -31,7 +31,7 @@ namespace MrCMS.Web.Admin.Bundles
                    _siteSettings.EnableInlineEditing;
         }
 
-        public string Url => "/assets/front-end-editing.js";
+        public string Url => "/Areas/Admin/assets/front-end-editing.js";
 
         public IEnumerable<string> VendorFiles
         {

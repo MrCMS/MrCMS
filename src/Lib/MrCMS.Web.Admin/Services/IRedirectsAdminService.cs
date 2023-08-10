@@ -1,6 +1,8 @@
+using System.IO;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Models;
+using MrCMS.Web.Admin.Models.Redirects;
 using X.PagedList;
 
 namespace MrCMS.Web.Admin.Services
@@ -18,5 +20,6 @@ namespace MrCMS.Web.Admin.Services
         Task SetRedirectUrl(SetRedirectUrlModel model);
         Task<SetRedirectPageModel> GetSetRedirectPageModel(int id);
         Task SetRedirectPage(SetRedirectPageModel model);
+        Task<RedirectImportResult> ImportRedirects(Stream fileStream);
     }
 }

@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Admin.Models.UpdateFormPropertyModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MrCMS.Web.Admin.Models.UpdateFormPropertyModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml"; }
 
 <form asp-action="Edit" asp-controller="FormProperty" asp-route-id="@Model.Id" method="post" class="form-update-form">
@@ -6,7 +7,7 @@
         <legend>
             @await Html.Resource("Admin Form Edit Field Title", "Edit field")
             <span class="btn-group pull-right">
-                <input type="submit" class="btn btn-primary submit-form-btn" value="@await Html.Resource("Admin Form Edit Field Button", "Edit field")" />
+                <input type="submit" class="btn btn-primary submit-form-btn" value="@await Html.Resource("Admin Form Edit Field Button", "Edit field", options => options.DisableInlineEditing())" />
             </span>
         </legend>
         <div class="row">

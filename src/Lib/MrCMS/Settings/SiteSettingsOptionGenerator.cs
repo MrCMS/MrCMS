@@ -90,6 +90,15 @@ namespace MrCMS.Settings
                     type => type == defaultFormRendererType,
                     emptyItem: null);
         }
+        
+        public virtual List<SelectListItem> GetFormLabelRendererOptions(FormLabelRenderingType defaultFormLabelRendererType)
+        {
+            return Enum.GetValues(typeof(FormLabelRenderingType)).Cast<FormLabelRenderingType>()
+                .BuildSelectItemList(type => type.ToString().BreakUpString(),
+                    type => type.ToString(),
+                    type => type == defaultFormLabelRendererType,
+                    emptyItem: null);
+        }
 
         public virtual List<SelectListItem> GetCacheExpiryTypeOptions()
         {

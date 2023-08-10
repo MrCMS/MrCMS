@@ -43,7 +43,7 @@ public class MrCMSAutoValidateAntiforgeryTokenAuthorizationFilter : IAsyncAuthor
             }
             catch (AntiforgeryValidationException exception)
             {
-                _logger.LogError(exception, "Antiforgery token validation failed.");
+                _logger.LogInformation(exception, "Antiforgery token validation failed");
                 var referrer = context.HttpContext.Request.RefererLocal();
                 if (!string.IsNullOrEmpty(referrer))
                 {

@@ -57,14 +57,13 @@ namespace MrCMS.Web.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ImportWebpages(IFormFile document)
+        public async Task<ActionResult> ImportWebpages(IFormFile file)
         {
-            if (document != null && document.Length > 0 &&
-                document.ContentType == ImportExportManager.XlsxContentType)
+            if (file is { Length: > 0, ContentType: ImportExportManager.XlsxContentType })
                 TempData.Set(
                     await _importExportManager.ImportWebpagesFromExcel(
                         _currentSiteLocator.GetCurrentSite().Id,
-                        document.OpenReadStream()),
+                        file.OpenReadStream()),
                     "messages");
             else
                 TempData["import-status"] = "Please choose non-empty Excel (.xslx) file before uploading.";

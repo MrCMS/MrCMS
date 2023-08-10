@@ -1,4 +1,6 @@
-﻿@model MrCMS.Web.Admin.Models.AddPageTemplateModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model MrCMS.Web.Admin.Models.AddPageTemplateModel
 @{
     var pageTypeOptions = ViewData["page-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
@@ -7,11 +9,11 @@
 <form asp-controller="PageTemplate" asp-action="Add" method="post">
     <admin-header>
         <row>
-            <admin-header-title title="@await Html.Resource("Admin Page Template Add Title", "Add Page Template")"/>
+            <admin-header-title title="@await Html.Resource("Admin Page Template Add Title", "Add Page Template", option=> option.DisableInlineEditing())"/>
 
             <admin-header-actions>
                 <a class="btn btn-default" asp-action="Index">@await Html.Resource("Back")</a>
-                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save")"/>
+                <input type="submit" class="btn-primary btn" value="@await Html.Resource("Save", configureOptions=> configureOptions.DisableInlineEditing())"/>
             </admin-header-actions>
         </row>
     </admin-header>

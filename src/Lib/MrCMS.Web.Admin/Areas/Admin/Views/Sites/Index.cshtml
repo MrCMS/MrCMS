@@ -1,4 +1,5 @@
-﻿@model System.Collections.Generic.List<MrCMS.Entities.Multisite.Site>
+﻿@using MrCMS.Web.Admin.Infrastructure.TagHelpers
+@model System.Collections.Generic.List<MrCMS.Entities.Multisite.Site>
 @{
     ViewBag.Title = "Sites";
 }
@@ -6,7 +7,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-multi-site-setup", "Multi-site Setup") "/>
+        <admin-header-title title="@await Html.Resource("admin-multi-site-setup", "Multi-site Setup", option=> option.DisableInlineEditing())"/>
 
         <admin-header-actions>
             @Html.ActionLink("Add", "Add", "Sites", null, new {@class = "btn btn-primary"})
@@ -44,7 +45,7 @@
             <td>
                 @if (Model.Count > 1)
                 {
-                    @Html.ActionLink(await Html.Resource("admin-delete", "Delete"), "Delete", new {id = site.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})
+                    @Html.ActionLink(await Html.PlainResource("admin-delete", "Delete"), "Delete", new {id = site.Id}, new {@class = "btn btn-danger btn-sm", data_toggle = "fb-modal"})
                 }
             </td>
         </tr>

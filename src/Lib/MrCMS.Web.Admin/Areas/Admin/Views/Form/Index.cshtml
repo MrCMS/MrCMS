@@ -1,6 +1,9 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.FormSearchModel
 @{
     ViewBag.Title = "Manage Forms";
@@ -10,7 +13,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin - forms", "Forms") "/>
+        <admin-header-title title="@await Html.Resource("admin - forms", "Forms", option=> option.DisableInlineEditing())"/>
         <admin-header-actions>
             <div class="btn-group">
                 <a asp-action="PagesWithForms" class="btn btn-secondary">Pages with forms</a>
@@ -76,8 +79,8 @@ else
                 </td>
                 <td>
                     <div class="btn-group">
-                        @Html.ActionLink(await Html.Resource("Edit"), "Edit", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-secondary"})
-                        @Html.ActionLink(await Html.Resource("Delete"), "Delete", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
+                        @Html.ActionLink(await Html.PlainResource("Edit"), "Edit", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-secondary"})
+                        @Html.ActionLink(await Html.PlainResource("Delete"), "Delete", "Form", new {id = form.Id}, new {@class = "btn btn-sm btn-danger", data_toggle = "fb-modal"})
                     </div>
                 </td>
             </tr>
@@ -87,5 +90,5 @@ else
 }
 @if (results.TotalItemCount > 1)
 {
-    @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => Url.Action("Index", new {page, Model.Name}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }

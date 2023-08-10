@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Web.Admin.Helpers
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @model MrCMS.Logging.Log
 @{
     ViewBag.Title = "View Log #" + Model.Id;
@@ -7,7 +8,7 @@
 
 <admin-header>
     <row>
-        <admin-header-title title="@await Html.Resource("admin-log-view", "Log") @Model.Id"/>
+        <admin-header-title title="@await Html.Resource("admin-log-view", "Log", option=> option.DisableInlineEditing()) @Model.Id"/>
 
         <admin-header-actions>
             <span class="btn-group">

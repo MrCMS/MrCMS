@@ -14,15 +14,14 @@ public class EnsureWebpageUrlIsValid : IEnsureWebpageUrlIsValid
     public async Task<string> GetValidUrl(int siteId, string requestedUrl, int? existingPageId = null)
     {
         var url = requestedUrl;
-        if (!await _urlValidationService.UrlIsValidForWebpage(siteId, url, existingPageId))
-        {
-            int counter = 1;
+        if (await _urlValidationService.UrlIsValidForWebpage(siteId, url, existingPageId)) return url;
+        
+        var counter = 1;
 
-            while (!await _urlValidationService.UrlIsValidForWebpage(siteId, $"{url}-{counter}", existingPageId))
-                counter++;
+        while (!await _urlValidationService.UrlIsValidForWebpage(siteId, $"{url}-{counter}", existingPageId))
+            counter++;
 
-            url = $"{url}-{counter}";
-        }
+        url = $"{url}-{counter}";
 
         return url;
     }

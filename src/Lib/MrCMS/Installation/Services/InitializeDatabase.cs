@@ -24,7 +24,8 @@ namespace MrCMS.Installation.Services
             {
                 UICulture = model.UiCulture,
                 EnableInlineEditing = true,
-                FormRendererType = FormRenderingType.Bootstrap4,
+                FormRendererType = FormRenderingType.Bootstrap5,
+                FormLabelRenderingType = FormLabelRenderingType.Normal
             };
             var mediaSettings = new MediaSettings
             {

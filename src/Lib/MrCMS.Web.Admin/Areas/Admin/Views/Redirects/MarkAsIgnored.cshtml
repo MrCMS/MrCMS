@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Entities.Documents.Web.UrlHistory
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
@@ -13,7 +14,7 @@
             </span>
         </legend>
         <p>
-            @string.Format(await Html.Resource("Redirects - Mark as ignored", "Are you sure you wish to mark '{0}' as ignored?"), Model.UrlSegment)
+            @await Html.Resource("Redirects - Mark as ignored", "Are you sure you wish to mark '{url}' as ignored?", configureOptions => configureOptions.AddReplacement("url", Model.UrlSegment))
         </p>
     </fieldset>
 </form>

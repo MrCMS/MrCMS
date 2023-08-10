@@ -1,13 +1,16 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Admin.Infrastructure.TagHelpers
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MrCMS.Web.Admin.Models.Forms.WebpagesWithEmbeddedFormQuery
 @{
     var results = ViewData["results"] as IPagedList<Webpage>;
 }
 <admin-header>
     <row>
-        <admin-header-title title="@(await Html.Resource("admin-forms-with-pages-title", "Webpages with embedded forms"))"/>
+        <admin-header-title title="@(await Html.Resource("admin-forms-with-pages-title", "Webpages with embedded forms",options => options.DisableInlineEditing()))"/>
         <admin-header-actions>
             <a asp-action="Index" class="btn btn-secondary">Back for all forms</a>
         </admin-header-actions>
@@ -50,5 +53,5 @@ else
 
 @if (results.TotalItemCount > 1)
 {
-    @Html.PagedListPager(results, page => Url.Action("PagesWithForms", new {page}), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => Url.Action("PagesWithForms", new {page}), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }

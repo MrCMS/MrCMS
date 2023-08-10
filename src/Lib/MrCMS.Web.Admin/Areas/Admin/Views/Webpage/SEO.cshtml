@@ -1,4 +1,5 @@
 ﻿@using System.Linq
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Services
 @model MrCMS.Web.Admin.Models.WebpageEdit.SEOTabViewModel
@@ -28,7 +29,7 @@
         <div class="d-inline pb-3">
             <i class="fa fa-question-circle" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
 
-            @Html.ActionLink(await Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-sm btn-success", data_toggle = "fb-modal" })
+            @Html.ActionLink(await Html.PlainResource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-sm btn-success", data_toggle = "fb-modal" })
         </div>
         @if (webpage.Urls.Any())
         {
