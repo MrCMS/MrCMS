@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Configurations>Debug;Release;Debug-Skip-JS</Configurations>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
@@ -19,28 +19,28 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
-    <PackageReference Include="Azure.Storage.Blobs.Batch" Version="12.8.0" />
-    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
+    <PackageReference Include="Azure.Storage.Blobs.Batch" Version="12.14.0" />
+    <PackageReference Include="ClosedXML" Version="0.102.0" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
     <PackageReference Include="dbup" Version="5.0.8" />
     <PackageReference Include="FluentNHibernate" Version="3.2.1" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.4" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.51" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="7.0.10" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
     <PackageReference Include="MiniProfiler.AspNetCore" Version="4.3.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NHibernate" Version="5.4.4" />
     <PackageReference Include="NHibernate.Caches.CoreMemoryCache" Version="5.9.0" />
-    <PackageReference Include="X.PagedList" Version="8.4.0" />
-    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.0" />
+    <PackageReference Include="X.PagedList" Version="8.4.7" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
   </ItemGroup>
 
 
