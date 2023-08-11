@@ -38,10 +38,10 @@
             Use npm install or npm ci depending on RestorePackagesWithLockFile value.
             Uncomment the following lines if you want to use this feature:
     
-            <PropertyGroup>
-              <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-            </PropertyGroup>
          -->
+        <PropertyGroup>
+            <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        </PropertyGroup>
         <Exec Command="npm ci" Condition="$(RestorePackagesWithLockFile) == 'true'" />
         <Exec Command="npm install" Condition="$(RestorePackagesWithLockFile) != 'true'" />
 
