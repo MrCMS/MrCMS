@@ -7,24 +7,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup> 
-    
-    <ItemGroup>
-        <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-        <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj" />
+        <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0"/>
+        <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\assets\" />
+        <ProjectReference Include="..\..\Lib\MrCMS.Web.Admin.Infrastructure\MrCMS.Web.Admin.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\Lib\MrCMS\MrCMS.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="wwwroot\assets\"/>
     </ItemGroup>
 
     <!--
@@ -38,15 +38,15 @@
             Use npm install or npm ci depending on RestorePackagesWithLockFile value.
             Uncomment the following lines if you want to use this feature:
     
+            <PropertyGroup>
+                <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+            </PropertyGroup>
          -->
-        <PropertyGroup>
-            <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        </PropertyGroup>
-        <Exec Command="npm ci" Condition="$(RestorePackagesWithLockFile) == 'true'" />
-        <Exec Command="npm install" Condition="$(RestorePackagesWithLockFile) != 'true'" />
+        <Exec Command="npm ci" Condition="$(RestorePackagesWithLockFile) == 'true'"/>
+        <Exec Command="npm install" Condition="$(RestorePackagesWithLockFile) != 'true'"/>
 
         <!-- Write the stamp file, so incremental builds work -->
-        <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+        <Touch Files="node_modules/.install-stamp" AlwaysCreate="true"/>
     </Target>
 
     <!--
@@ -54,7 +54,7 @@
         MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.
      -->
     <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
-        <Exec Command="npm run build" />
+        <Exec Command="npm run build"/>
     </Target>
 
 </Project>
