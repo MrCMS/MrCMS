@@ -1,24 +1,18 @@
-using MrCMS.Entities.Documents.Web;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
 public class Text : IContentBlock
 {
-    public Text()
-    {
-        HeadingAligment = Aligment.Start;
-    }
-
     public string DisplayName => "Text";
     public string Heading { get; set; }
-    public Aligment HeadingAligment { get; set; }
+    public Alignment HeadingAlignment { get; set; } = Alignment.Start;
     public string Subtext { get; set; }
 
     public IReadOnlyList<BlockItem> Items => new BlockItem[] { };
 
-    public enum Aligment
+    public enum Alignment
     {
         Start,
         Center,

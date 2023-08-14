@@ -1,7 +1,6 @@
+using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Core.Entities.BlockItems;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
