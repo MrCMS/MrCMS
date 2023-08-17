@@ -1,21 +1,14 @@
-using MrCMS.Entities.Documents.Web;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
 public class Image : IContentBlock
 {
-    public Image()
-    {
-        Aligment = ImageAligment.Center;
-        cssClasses = "img-fluid rounded";
-    }
-    
     public string DisplayName => "Image";
     public string Url { get; set; }
-    public ImageAligment Aligment { get; set; }
-    public string cssClasses { get; set; }
+    public ImageAligment Aligment { get; set; } = ImageAligment.Center;
+    public string CssClasses { get; set; } = "img-fluid rounded";
 
     public IReadOnlyList<BlockItem> Items => new BlockItem[] { };
 

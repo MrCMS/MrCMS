@@ -168,12 +168,12 @@ NDependOut/*
 appsettings.Development.json
 
 
-/src/MrCMS.Web/App_Data/Indexes/*
-/src/MrCMS.Web/wwwroot/content/upload/*
+src/MrCMS.Web/App_Data/Indexes/*
+src/MrCMS.Web/wwwroot/content/upload/*
 
 
 src/MrCMS.Web/connectionstrings.json
 
 
-/src/MrCMS.Web/wwwroot/is-cache/
-
+src/MrCMS.Web/wwwroot/is-cache/
+src/MrCMS.Web/wwwroot/sitemap-*

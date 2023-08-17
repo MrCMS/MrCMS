@@ -2,7 +2,7 @@
 @using MrCMS.Web.Apps.Core.Entities.ContentBlocks
 
 @{
-    var aligmentOptions = EnumHelper<Text.Aligment>.GetOptions();
+    var aligmentOptions = EnumHelper<Text.Alignment>.GetOptions();
 }
 <div class="form-group">
     @Html.LabelFor(x => x.Heading)
@@ -11,9 +11,9 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(x => x.HeadingAligment)
-    @Html.DropDownListFor(x => x.HeadingAligment,aligmentOptions, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x => x.HeadingAligment)
+    @Html.LabelFor(x => x.HeadingAlignment)
+    @Html.DropDownListFor(x => x.HeadingAlignment,aligmentOptions, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.HeadingAlignment)
 </div>
 
 <div class="form-group">

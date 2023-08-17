@@ -9,22 +9,16 @@ namespace MrCMS.Web.Apps.Core.Entities.ContentBlocks;
 
 public class Slider : IContentBlockWithSortableChildCollection
 {
-    public Slider()
-    {
-        ShowIndicator = true;
-        Interval = 5000;
-        CaptionCssClass = "d-none d-md-block";
-    }
     public string DisplayName => $"Slider ({Slides.Count} slides)";
     public IReadOnlyList<BlockItem> Items => Slides;
     public List<Slide> Slides { get; set; } = new();
 
-    public int Interval { get; set; }
+    public int Interval { get; set; } = 5000;
 
-    public bool ShowIndicator { get; set; }
+    public bool ShowIndicator { get; set; } = true;
 
     public bool PauseOnHover { get; set; }
-    public string CaptionCssClass { get; set; }
+    public string CaptionCssClass { get; set; } = "d-none d-md-block";
 
     public BlockItem AddChild()
     {

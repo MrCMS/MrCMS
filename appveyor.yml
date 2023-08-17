@@ -5,7 +5,7 @@
   version: 1.0.{build}-dev
   configuration: Release
   environment:
-    nodejs_version: "14"
+    nodejs_version: "16"
     ASPNETCORE_ENVIRONMENT: Staging
   install:
     - ps: Install-Product node $env:nodejs_version
@@ -23,7 +23,7 @@
   version: 1.0.{build}-master
   configuration: Release
   environment:
-    nodejs_version: "14"
+    nodejs_version: "16"
     ASPNETCORE_ENVIRONMENT: Staging
   install:
     - ps: Install-Product node $env:nodejs_version
@@ -41,7 +41,7 @@
   version: 1.0.{build}-{branch}
   configuration: Release
   environment:
-    nodejs_version: "14"
+    nodejs_version: "16"
     ASPNETCORE_ENVIRONMENT: Staging
   install:
     - ps: Install-Product node $env:nodejs_version
@@ -59,7 +59,7 @@
   version: 1.0.{build}-master
   configuration: Release
   environment:
-    nodejs_version: "14"
+    nodejs_version: "16"
     ASPNETCORE_ENVIRONMENT: Staging
   install:
     - ps: Install-Product node $env:nodejs_version

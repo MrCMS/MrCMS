@@ -15,6 +15,7 @@ using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.Transform;
 using X.PagedList;
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Core.Entities.BlockItems;
 

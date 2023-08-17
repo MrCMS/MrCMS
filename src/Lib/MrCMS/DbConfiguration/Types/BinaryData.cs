@@ -52,7 +52,11 @@ namespace MrCMS.DbConfiguration.Types
             if (value == null)
                 return null;
             using var memoryStream = new MemoryStream();
+            
+#pragma warning disable SYSLIB0011
             BinaryFormatter.Serialize(memoryStream, value);
+#pragma warning restore SYSLIB0011
+            
             return memoryStream.ToArray();
         }
 
@@ -64,7 +68,9 @@ namespace MrCMS.DbConfiguration.Types
             {
                 using (var memoryStream = new MemoryStream(bytes))
                 {
+#pragma warning disable SYSLIB0011
                     object deserialize = BinaryFormatter.Deserialize(memoryStream);
+#pragma warning restore SYSLIB0011
                     return deserialize as T ?? new T();
                 }
             }
