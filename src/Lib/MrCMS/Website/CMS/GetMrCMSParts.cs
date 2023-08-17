@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website.CMS
 {
@@ -82,34 +83,37 @@ namespace MrCMS.Website.CMS
         {
             public async Task InvokeAsync(HttpContext context, RequestDelegate next)
             {
-                var provider = context.RequestServices;
-                var site =
-                    provider.GetRequiredService<IHttpContextAccessor>().HttpContext?.Items["override-site"] as Site;
-
-                var siteLocator = provider.GetRequiredService<ICurrentSiteLocator>();
-                site ??= siteLocator.GetCurrentSite().Unproxy();
-                if (site == null)
+                using (MiniProfiler.Current.Step("SetCurrentSite"))
                 {
-                    // check for redirected domain
-                    var domain = siteLocator.GetCurrentRedirectedDomain().Unproxy();
-                    var redirectSite = domain?.Site.Unproxy();
-                    if (redirectSite == null)
+                    var provider = context.RequestServices;
+                    var site =
+                        provider.GetRequiredService<IHttpContextAccessor>().HttpContext?.Items["override-site"] as Site;
+
+                    var siteLocator = provider.GetRequiredService<ICurrentSiteLocator>();
+                    site ??= siteLocator.GetCurrentSite().Unproxy();
+                    if (site == null)
                     {
-                        context.Response.StatusCode = 404;
+                        // check for redirected domain
+                        var domain = siteLocator.GetCurrentRedirectedDomain().Unproxy();
+                        var redirectSite = domain?.Site.Unproxy();
+                        if (redirectSite == null)
+                        {
+                            context.Response.StatusCode = 404;
+                            return;
+                        }
+
+                        context.Response.Redirect(
+                            $"https://{redirectSite.BaseUrl.Trim('/')}{context.Request.Path}{context.Request.QueryString}",
+                            true);
                         return;
                     }
 
-                    context.Response.Redirect(
-                        $"https://{redirectSite.BaseUrl.Trim('/')}{context.Request.Path}{context.Request.QueryString}",
-                        true);
-                    return;
-                }
-
-                var session = provider.GetRequiredService<NHibernate.ISession>();
-                if (site != null)
-                {
-                    session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
-                    context.Items["current-site"] = site;
+                    var session = provider.GetRequiredService<NHibernate.ISession>();
+                    if (site != null)
+                    {
+                        session.EnableFilter("SiteFilter").SetParameter("site", site.Id);
+                        context.Items["current-site"] = site;
+                    }
                 }
 
                 await next(context);

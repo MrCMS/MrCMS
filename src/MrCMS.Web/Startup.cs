@@ -220,23 +220,12 @@ namespace MrCMS.Web
                 app.UseHttpsRedirection();
             }
 
-            // if (Configuration["EnableHibernatingRhinos"]?.ToLower() == "true")
-            //     HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();
-
-
-            app.UseStatusCodePagesWithReExecute("/HandleStatusCode/{0}");
-
             app.UseSession();
 
             if (!IsInstalled())
             {
                 app.ShowInstallation();
                 return;
-            }
-
-            if (IsMiniProfileEnabled())
-            {
-                app.UseMiniProfiler();
             }
             
             loggerFactory.AddProvider(
@@ -265,17 +254,6 @@ namespace MrCMS.Web
                     builder.RegisterJobs(serviceProvider);
                 }
 
-                //todo update antiforgery method
-                /*builder.Use(next => ctx =>
-                {
-                    var tokens = antiforgery.GetAndStoreTokens(ctx);
-
-                    ctx.Response.Cookies.Append("RequestVerificationToken", tokens.RequestToken,
-                        new CookieOptions() { HttpOnly = false });
-
-                    return next(ctx);
-                });*/
-
                 builder.Use(async (context, next) =>
                 {
                     var maxAllowedFileSize = SessionHelper.MaxFileSize;
@@ -290,6 +268,11 @@ namespace MrCMS.Web
 
                     await next.Invoke();
                 });
+
+                if (IsMiniProfileEnabled())
+                {
+                    app.UseMiniProfiler();
+                }
             }, builder => { builder.MapRazorPages(); });
         }
     }

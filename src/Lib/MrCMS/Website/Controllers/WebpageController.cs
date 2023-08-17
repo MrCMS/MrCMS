@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Attributes;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website.Controllers
 {
@@ -17,8 +18,11 @@ namespace MrCMS.Website.Controllers
         [CanonicalLinks]
         public async Task<ViewResult> Show(int id)
         {
-            var page = await _webpageUiService.GetPage<Webpage>(id);
-            return View(page);
+            using (MiniProfiler.Current.Step("WebpageController.Show"))
+            {
+                var page = await _webpageUiService.GetPage<Webpage>(id);
+                return View(page);
+            }
         }
     }
 }

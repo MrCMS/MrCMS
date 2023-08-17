@@ -10,7 +10,7 @@ namespace MrCMS.Globalization
 {
     public class UserProfileRequestCultureProvider : RequestCultureProvider
     {
-        public override async Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)
+        public override Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)
         {
             var service = httpContext.RequestServices.GetService<IGetUserCultureInfo>();
             if (service != null)
@@ -18,11 +18,11 @@ namespace MrCMS.Globalization
                 var culture = service.Get(httpContext.User.GetUserCulture());
                 var cultureResult = new ProviderCultureResult(culture.Name);
                     
-                return cultureResult;
+                return Task.FromResult(cultureResult);
             }
 
             var result = new ProviderCultureResult("en-GB");
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

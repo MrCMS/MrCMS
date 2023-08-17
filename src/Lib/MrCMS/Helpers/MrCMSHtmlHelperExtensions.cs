@@ -7,12 +7,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using MrCMS.Services;
-using MrCMS.Settings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -402,31 +399,6 @@ namespace MrCMS.Helpers
             }
 
             return tagBulder;
-        }
-
-        public static async Task<IHtmlContent> RenderFavicon(this IHtmlHelper html, Size size)
-        {
-            var seoSettings = html.ViewContext.HttpContext.RequestServices.GetRequiredService<SEOSettings>();
-            var fileService = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IFileService>();
-            var imageRenderingService =
-                html.ViewContext.HttpContext.RequestServices.GetRequiredService<IImageRenderingService>();
-
-            var file = await fileService.GetFileByUrl(seoSettings.Favicon);
-            if (file == null)
-            {
-                return HtmlString.Empty;
-            }
-
-            var imageUrl = await imageRenderingService.GetImageUrl(file.FileUrl, size);
-
-            var tagBuilder = new TagBuilder("link");
-            tagBuilder.Attributes["rel"] = "icon";
-            tagBuilder.Attributes["type"] = file.ContentType;
-            tagBuilder.Attributes["href"] = imageUrl;
-            tagBuilder.Attributes["sizes"] = size.Height + "x" + size.Width;
-            tagBuilder.TagRenderMode = TagRenderMode.SelfClosing;
-
-            return tagBuilder;
         }
 
         private class FakeView : IView

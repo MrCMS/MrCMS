@@ -16,7 +16,7 @@ namespace MrCMS.Web
         {
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                AsyncAuthorization = new[] { new HangfireDashboardAuthFilter(serviceProvider.GetService<IGetCurrentUser>()) },
+                Authorization = new[] { new HangfireDashboardAuthFilter() },
             });
 
             RecurringJob.AddOrUpdate<ISitemapService>("ISitemapService.WriteSitemap",

@@ -8,6 +8,7 @@
 @inject SEOSettings SeoSettings
 @inject SiteSettings SiteSettings
 @inject GoogleRecaptchaSettings GoogleRecaptchaSettings
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,9 +16,6 @@
     <meta name="description" content="@(this.Description())"/>
     <meta name="keywords" content="@(this.Keywords())"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @await Html.RenderFavicon(new Size(16, 16))
-    @await Html.RenderFavicon(new Size(32, 32))
-    @await Html.RenderFavicon(new Size(152, 152))
     @await Html.RenderUIVendorStyles()
     @await Html.RenderUIStyles()
     @Html.Raw(SeoSettings.TrackingScripts)
@@ -33,7 +31,7 @@
         <link rel="preconnect" href="https://www.google.com">
     }
 </head>
-<body>
+<body data-antiforgery-token="@Xsrf.GetAndStoreTokens(Context).RequestToken">
 @Html.Raw(SeoSettings.TrackingScriptsBody)
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -115,7 +113,7 @@
 @await Html.RenderUIScripts()
 @if (SessionHelper.IsMiniProfileEnabled)
 {
-    <mini-profiler/>
+    <mini-profiler />
 }
 </body>
 </html>
