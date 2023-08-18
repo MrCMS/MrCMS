@@ -1,18 +1,18 @@
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
-using IMapper = AutoMapper.IMapper;
 
 namespace MrCMS.Web.Admin.Services
 {
     public class FormListOptionAdminService : IFormListOptionAdminService
     {
         private readonly ISession _session;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
-        public FormListOptionAdminService(ISession session, IMapper mapper)
+        public FormListOptionAdminService(ISession session, ISessionAwareMapper mapper)
         {
             _session = session;
             _mapper = mapper;

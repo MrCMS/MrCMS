@@ -1,7 +1,7 @@
 ﻿using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 
-namespace MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages
+namespace MrCMS.Web.Admin.Models
 {
     public class RedirectViewModel : IUpdatePropertiesViewModel<Redirect>, IAddPropertiesViewModel<Redirect>
     {

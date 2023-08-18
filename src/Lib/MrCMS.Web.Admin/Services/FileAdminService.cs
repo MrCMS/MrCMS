@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Admin.Services
         private readonly IFileService _fileService;
         private readonly MediaSettings _mediaSettings;
         private readonly IGetMediaCategoriesByParent _getMediaCategoriesByParent;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
@@ -34,7 +35,7 @@ namespace MrCMS.Web.Admin.Services
         public FileAdminService(IFileService fileService, ISession session,
             IStringResourceProvider stringResourceProvider, IRepository<MediaCategory> mediaCategoryRepository,
             MediaSettings mediaSettings, IGetMediaCategoriesByParent getMediaCategoriesByParent,
-            IMapper mapper)
+            ISessionAwareMapper mapper)
         {
             _fileService = fileService;
             _session = session;

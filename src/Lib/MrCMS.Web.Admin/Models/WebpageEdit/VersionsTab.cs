@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 
 namespace MrCMS.Web.Admin.Models.WebpageEdit
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
             get { return "versions"; }
         }
 
-        public override async Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
+        public override async Task RenderTabPane(IHtmlHelper html, ISessionAwareMapper mapper, Webpage webpage)
         {
             await html.RenderPartialAsync("Versions", webpage);
         }

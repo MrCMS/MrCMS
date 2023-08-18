@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services.CloneSite;
 using MrCMS.Web.Admin.Models;
@@ -15,10 +16,10 @@ namespace MrCMS.Web.Admin.Services
     public class SiteAdminService : ISiteAdminService
     {
         private readonly ICloneSiteService _cloneSiteService;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly ISession _session;
 
-        public SiteAdminService(ISession session, ICloneSiteService cloneSiteService, IMapper mapper)
+        public SiteAdminService(ISession session, ICloneSiteService cloneSiteService, ISessionAwareMapper mapper)
         {
             _session = session;
             _cloneSiteService = cloneSiteService;

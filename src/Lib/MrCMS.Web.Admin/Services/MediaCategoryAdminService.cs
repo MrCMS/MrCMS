@@ -5,6 +5,7 @@ using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
@@ -17,12 +18,12 @@ namespace MrCMS.Web.Admin.Services
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
         private readonly IGetMediaCategoriesByParent _getMediaCategoriesByParent;
         private readonly IUrlValidationService _urlValidationService;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
         public MediaCategoryAdminService(IRepository<MediaCategory> mediaCategoryRepository,
             IGetMediaCategoriesByParent getMediaCategoriesByParent,
             IUrlValidationService urlValidationService,
-            IMapper mapper)
+            ISessionAwareMapper mapper)
         {
             _mediaCategoryRepository = mediaCategoryRepository;
             _getMediaCategoriesByParent = getMediaCategoriesByParent;

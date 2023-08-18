@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -21,13 +22,13 @@ namespace MrCMS.Web.Admin.Services
     public class WebpageAdminService : IWebpageAdminService
     {
         private readonly IRepository<Webpage> _webpageRepository;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly IGetWebpagesByParent _getWebpagesByParent;
         private readonly IWebpageMetadataService _webpageMetadataService;
         private readonly IOptions<SystemConfig> _config;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
-            IMapper mapper,
+            ISessionAwareMapper mapper,
             IGetWebpagesByParent getWebpagesByParent,
             IWebpageMetadataService webpageMetadataService, IOptions<SystemConfig> config)
         {

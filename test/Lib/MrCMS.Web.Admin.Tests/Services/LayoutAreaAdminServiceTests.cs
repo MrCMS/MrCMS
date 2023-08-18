@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Widget;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
 using MrCMS.Website;
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Admin.Tests.Services
         private readonly IRepository<Widget> _widgetRepository = A.Fake<IRepository<Widget>>();
 
 
-        private readonly IMapper _mapper = A.Fake<IMapper>();
+        private readonly ISessionAwareMapper _mapper = A.Fake<ISessionAwareMapper>();
         private readonly ICacheManager _cacheManager = A.Fake<ICacheManager>();
         private IWidgetLoader _widgetLoader = A.Fake<IWidgetLoader>();
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 using NHibernate;
@@ -14,9 +15,9 @@ namespace MrCMS.Web.Admin.Services
     public class WidgetAdminService : IWidgetAdminService
     {
         private readonly ISession _session;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
-        public WidgetAdminService(ISession session, IMapper mapper)
+        public WidgetAdminService(ISession session, ISessionAwareMapper mapper)
         {
             _session = session;
             _mapper = mapper;

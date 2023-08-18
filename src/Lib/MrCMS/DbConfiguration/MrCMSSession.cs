@@ -46,270 +46,270 @@ namespace MrCMS.DbConfiguration
             _session.Dispose();
         }
 
-        public Task FlushAsync(CancellationToken cancellationToken = new CancellationToken())
+        public Task FlushAsync(CancellationToken cancellationToken = default)
         {
             return _session.FlushAsync(cancellationToken);
         }
 
-        public Task<bool> IsDirtyAsync(CancellationToken cancellationToken = new CancellationToken())
+        public Task<bool> IsDirtyAsync(CancellationToken cancellationToken = default)
         {
             return _session.IsDirtyAsync(cancellationToken);
         }
 
-        public Task EvictAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public Task EvictAsync(object obj, CancellationToken cancellationToken = default)
         {
             return _session.EvictAsync(obj, cancellationToken);
         }
 
         public Task<object> LoadAsync(Type theType, object id, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync(theType, id, lockMode, cancellationToken);
         }
 
         public Task<object> LoadAsync(string entityName, object id, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync(entityName, id, lockMode, cancellationToken);
         }
 
         public Task<object> LoadAsync(Type theType, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync(theType, id, cancellationToken);
         }
 
         public Task<T> LoadAsync<T>(object id, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync<T>(id, lockMode, cancellationToken);
         }
 
-        public Task<T> LoadAsync<T>(object id, CancellationToken cancellationToken = new CancellationToken())
+        public Task<T> LoadAsync<T>(object id, CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync<T>(id, cancellationToken);
         }
 
         public Task<object> LoadAsync(string entityName, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync(entityName, id, cancellationToken);
         }
 
-        public Task LoadAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
+        public Task LoadAsync(object obj, object id, CancellationToken cancellationToken = default)
         {
             return _session.LoadAsync(obj, id, cancellationToken);
         }
 
         public Task ReplicateAsync(object obj, ReplicationMode replicationMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.ReplicateAsync(obj, replicationMode, cancellationToken);
         }
 
         public Task ReplicateAsync(string entityName, object obj, ReplicationMode replicationMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.ReplicateAsync(entityName, obj, replicationMode, cancellationToken);
         }
 
-        public async Task<object> SaveAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<object> SaveAsync(object obj, CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
             return await _session.SaveAsync(obj, cancellationToken);
         }
 
         public async Task SaveAsync(object obj, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
             await _session.SaveAsync(obj, id, cancellationToken);
         }
 
         public async Task<object> SaveAsync(string entityName, object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
            return await _session.SaveAsync(entityName, obj, cancellationToken);
         }
 
         public async Task SaveAsync(string entityName, object obj, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddAddEvent(systemEntity);
             await _session.SaveAsync(entityName, obj, id, cancellationToken);
         }
 
-        public async Task SaveOrUpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public async Task SaveOrUpdateAsync(object obj, CancellationToken cancellationToken = default)
         {
             await HandleSaveOrUpdate(obj);
             await _session.SaveOrUpdateAsync(obj, cancellationToken);
         }
 
         public async Task SaveOrUpdateAsync(string entityName, object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             await HandleSaveOrUpdate(obj);
             await _session.SaveOrUpdateAsync(entityName, obj, cancellationToken);
         }
 
         public async Task SaveOrUpdateAsync(string entityName, object obj, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             await HandleSaveOrUpdate(obj);
             await _session.SaveOrUpdateAsync(entityName, obj, id, cancellationToken);
         }
 
-        public async Task UpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public async Task UpdateAsync(object obj, CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
             await _session.UpdateAsync(obj, cancellationToken);
         }
 
-        public async Task UpdateAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
+        public async Task UpdateAsync(object obj, object id, CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
             await _session.UpdateAsync(obj, id, cancellationToken);
         }
 
         public async Task UpdateAsync(string entityName, object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
             await _session.UpdateAsync(entityName, obj, cancellationToken);
         }
 
         public async Task UpdateAsync(string entityName, object obj, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity systemEntity) await AddUpdateEvent(systemEntity);
             await  _session.UpdateAsync(entityName, obj, id, cancellationToken);
         }
 
-        public Task<object> MergeAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public Task<object> MergeAsync(object obj, CancellationToken cancellationToken = default)
         {
             return _session.MergeAsync(obj, cancellationToken);
         }
 
         public Task<object> MergeAsync(string entityName, object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.MergeAsync(entityName, obj, cancellationToken);
         }
 
-        public Task<T> MergeAsync<T>(T entity, CancellationToken cancellationToken = new CancellationToken())
+        public Task<T> MergeAsync<T>(T entity, CancellationToken cancellationToken = default)
             where T : class
         {
             return _session.MergeAsync(entity, cancellationToken);
         }
 
         public Task<T> MergeAsync<T>(string entityName, T entity,
-            CancellationToken cancellationToken = new CancellationToken()) where T : class
+            CancellationToken cancellationToken = default) where T : class
         {
             return _session.MergeAsync(entityName, entity, cancellationToken);
         }
 
-        public Task PersistAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public Task PersistAsync(object obj, CancellationToken cancellationToken = default)
         {
             return _session.PersistAsync(obj, cancellationToken);
         }
 
         public Task PersistAsync(string entityName, object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.PersistAsync(entityName, obj, cancellationToken);
         }
 
-        public async Task DeleteAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public async Task DeleteAsync(object obj, CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity entity) await AddDeletedEvent(entity);
             await _session.DeleteAsync(obj, cancellationToken);
         }
 
         public async Task DeleteAsync(string entityName, object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (obj is SystemEntity entity) await AddDeletedEvent(entity);
             await _session.DeleteAsync(entityName, obj, cancellationToken);
         }
 
-        public Task<int> DeleteAsync(string query, CancellationToken cancellationToken = new CancellationToken())
+        public Task<int> DeleteAsync(string query, CancellationToken cancellationToken = default)
         {
             return _session.DeleteAsync(query, cancellationToken);
         }
 
         public Task<int> DeleteAsync(string query, object value, IType type,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.DeleteAsync(query, value, type, cancellationToken);
         }
 
         public Task<int> DeleteAsync(string query, object[] values, IType[] types,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.DeleteAsync(query, values, types, cancellationToken);
         }
 
         public Task LockAsync(object obj, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LockAsync(obj, lockMode, cancellationToken);
         }
 
         public Task LockAsync(string entityName, object obj, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.LockAsync(entityName, obj, lockMode, cancellationToken);
         }
 
-        public Task RefreshAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
+        public Task RefreshAsync(object obj, CancellationToken cancellationToken = default)
         {
             return _session.RefreshAsync(obj, cancellationToken);
         }
 
         public Task RefreshAsync(object obj, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.RefreshAsync(obj, lockMode, cancellationToken);
         }
 
         public Task<IQuery> CreateFilterAsync(object collection, string queryString,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.CreateFilterAsync(collection, queryString, cancellationToken);
         }
 
         public Task<object> GetAsync(Type clazz, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.GetAsync(clazz, id, cancellationToken);
         }
 
         public Task<object> GetAsync(Type clazz, object id, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.GetAsync(clazz, id, lockMode, cancellationToken);
         }
 
         public Task<object> GetAsync(string entityName, object id,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.GetAsync(entityName, id, cancellationToken);
         }
 
-        public Task<T> GetAsync<T>(object id, CancellationToken cancellationToken = new CancellationToken())
+        public Task<T> GetAsync<T>(object id, CancellationToken cancellationToken = default)
         {
             return _session.GetAsync<T>(id, cancellationToken);
         }
 
         public Task<T> GetAsync<T>(object id, LockMode lockMode,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.GetAsync<T>(id, lockMode, cancellationToken);
         }
 
         public Task<string> GetEntityNameAsync(object obj,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return _session.GetEntityNameAsync(obj, cancellationToken);
         }

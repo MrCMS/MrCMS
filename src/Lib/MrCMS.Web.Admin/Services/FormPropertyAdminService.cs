@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Services
@@ -14,7 +15,7 @@ namespace MrCMS.Web.Admin.Services
     public class FormPropertyAdminService : IFormPropertyAdminService
     {
         private readonly ISession _session;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
         private static readonly HashSet<Type> FormPropertyTypes =
             TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>();
@@ -30,7 +31,7 @@ namespace MrCMS.Web.Admin.Services
             typeof(FileUpload)
         };
 
-        public FormPropertyAdminService(ISession session, IMapper mapper)
+        public FormPropertyAdminService(ISession session, ISessionAwareMapper mapper)
         {
             _session = session;
             _mapper = mapper;

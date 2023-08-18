@@ -9,6 +9,7 @@ using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Models;
 using NHibernate;
 using X.PagedList;
@@ -18,13 +19,13 @@ namespace MrCMS.Web.Admin.Services
     public class PageTemplateAdminService : IPageTemplateAdminService
     {
         private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly MrCMSAppContext _appContext;
         private readonly ISession _session;
         private static HashSet<Type> _webpageTypes;
 
         public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions,
-            IMapper mapper, MrCMSAppContext appContext)
+            ISessionAwareMapper mapper, MrCMSAppContext appContext)
         {
             _session = session;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;

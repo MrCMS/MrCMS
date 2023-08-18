@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Admin.Infrastructure.Services.Content;
 using MrCMS.Web.Admin.Models.Content;
 using NHibernate;
 

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.People;
+using MrCMS.Mapping;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
 
@@ -10,11 +11,11 @@ namespace MrCMS.Web.Admin.Services
     public class UserAdminService : IUserAdminService
     {
         private readonly IUserManagementService _service;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IRoleService _roleService;
 
-        public UserAdminService(IUserManagementService service, IMapper mapper,
+        public UserAdminService(IUserManagementService service, ISessionAwareMapper mapper,
             IPasswordManagementService passwordManagementService, IRoleService roleService)
         {
             _service = service;

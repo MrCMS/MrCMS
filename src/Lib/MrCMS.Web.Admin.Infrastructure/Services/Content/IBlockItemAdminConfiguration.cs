@@ -1,7 +1,7 @@
 using System;
 using MrCMS.Entities.Documents.Web;
 
-namespace MrCMS.Web.Admin.Services.Content;
+namespace MrCMS.Web.Admin.Infrastructure.Services.Content;
 
 public interface IBlockItemAdminConfiguration
 {

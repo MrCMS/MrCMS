@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MrCMS.Entities.People;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
@@ -12,9 +13,9 @@ namespace MrCMS.Web.Admin.Services
     public class RoleAdminService : IRoleAdminService
     {
         private readonly IRoleService _roleService;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
-        public RoleAdminService(IRoleService roleService, IMapper mapper)
+        public RoleAdminService(IRoleService roleService, ISessionAwareMapper mapper)
         {
             _roleService = roleService;
             _mapper = mapper;

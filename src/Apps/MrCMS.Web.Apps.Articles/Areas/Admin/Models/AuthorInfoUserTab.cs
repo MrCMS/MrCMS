@@ -4,6 +4,7 @@ using MrCMS.Entities.People;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 using System;
 using System.Threading.Tasks;
+using MrCMS.Mapping;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
 {
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Models
 
         public override string TabHtmlId => "author-info";
 
-        public override async Task RenderTabPane(IHtmlHelper helper, IMapper mapper, User entity)
+        public override async Task RenderTabPane(IHtmlHelper helper, ISessionAwareMapper sessionAwareMapper, User entity)
         {
             await helper.RenderPartialAsync("~/Areas/Admin/Views/AuthorInfo/Show.cshtml", entity);
         }

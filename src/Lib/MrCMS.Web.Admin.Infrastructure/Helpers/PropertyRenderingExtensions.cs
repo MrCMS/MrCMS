@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Apps;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Infrastructure.ModelBinding;
 using MrCMS.Website;
 
@@ -39,7 +39,7 @@ namespace MrCMS.Web.Admin.Infrastructure.Helpers
                 return HtmlString.Empty;
             }
 
-            var mapper = htmlHelper.GetRequiredService<IMapper>();
+            var mapper = htmlHelper.GetRequiredService<ISessionAwareMapper>();
             var model = mapper.Map(entity, type, modelType);
 
             return await RenderCustomAdminProperties(htmlHelper, String.Empty, type, model);

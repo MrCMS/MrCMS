@@ -7,6 +7,7 @@ using FluentAssertions;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services.CloneSite;
 using MrCMS.TestSupport;
@@ -20,12 +21,12 @@ namespace MrCMS.Web.Admin.Tests.Services
     {
         private readonly ICloneSiteService _cloneSiteService;
         private readonly SiteAdminService _siteService;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
         public SiteAdminServiceTests()
         {
             _cloneSiteService = A.Fake<ICloneSiteService>();
-            _mapper = A.Fake<IMapper>();
+            _mapper = A.Fake<ISessionAwareMapper>();
             _siteService = new SiteAdminService(Session, _cloneSiteService, _mapper);
         }
 

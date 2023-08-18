@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using MrCMS.Entities.People;
+using MrCMS.Mapping;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Infrastructure.Models;
 
@@ -8,10 +8,10 @@ namespace MrCMS.Web.Admin.Infrastructure.Services
 {
     public class UserProfileAdminService : IUserProfileAdminService
     {
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly IUserProfileDataService _userProfileDataService;
 
-        public UserProfileAdminService(IMapper mapper, IUserProfileDataService userProfileDataService)
+        public UserProfileAdminService(ISessionAwareMapper mapper, IUserProfileDataService userProfileDataService)
         {
             _mapper = mapper;
             _userProfileDataService = userProfileDataService;

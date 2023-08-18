@@ -1,6 +1,7 @@
 ﻿@using AutoMapper
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MrCMS.Entities.People
+@using MrCMS.Mapping
 @using MrCMS.Web.Admin.Infrastructure.Models.Tabs
 @model MrCMS.Web.Admin.Infrastructure.Models.Tabs.AdminTabBase<User>
 @{
@@ -12,7 +13,7 @@
 {
     <div class="tab-pane@(isFirst ? " active" : "")" id="@userTab.TabHtmlId">
         @{
-            await userTab.RenderTabPane(Html, Html.GetRequiredService<IMapper>(), user);
+            await userTab.RenderTabPane(Html, Html.GetRequiredService<ISessionAwareMapper>(), user);
         }
     </div>
 }

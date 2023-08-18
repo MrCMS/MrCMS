@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 using System;
 using System.Threading.Tasks;
+using MrCMS.Mapping;
 
 namespace MrCMS.Web.Admin.Models.WebpageEdit
 {
@@ -27,7 +28,7 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
 
         public override string TabHtmlId => "permissions";
 
-        public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
+        public override Task RenderTabPane(IHtmlHelper html, ISessionAwareMapper mapper, Webpage webpage)
         {
             return html.RenderPartialAsync("Permissions", mapper.Map<PermissionsTabViewModel>(webpage));
         }

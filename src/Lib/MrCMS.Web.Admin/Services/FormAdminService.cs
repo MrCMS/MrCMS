@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Models.Forms;
 using NHibernate.Linq;
@@ -24,12 +25,12 @@ namespace MrCMS.Web.Admin.Services
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly ILogger<FormAdminService> _logger;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
 
         public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider,
             ILogger<FormAdminService> logger,
-            IMapper mapper, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
+            ISessionAwareMapper mapper, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
         {
             _session = session;
             _stringResourceProvider = stringResourceProvider;

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Web.Admin.Infrastructure.Services.Content;
 
-namespace MrCMS.Web.Admin.Services.Content;
+namespace MrCMS.Web.Admin.Infrastructure.Services.Content;
 
 public static class ContentEditorTypeMappings
 {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Admin.Models;
@@ -18,12 +19,12 @@ namespace MrCMS.Web.Admin.Services
         private readonly IRepository<Layout> _layoutRepository;
         private readonly IGetLayoutsByParent _getLayoutsByParent;
         private readonly IUrlValidationService _urlValidationService;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly ICurrentSiteLocator _currentSiteLocator;
 
         public LayoutAdminService(IRepository<Layout> layoutRepository,
             IGetLayoutsByParent getLayoutsByParent, IUrlValidationService urlValidationService,
-            IMapper mapper, ICurrentSiteLocator currentSiteLocator)
+            ISessionAwareMapper mapper, ICurrentSiteLocator currentSiteLocator)
         {
             _layoutRepository = layoutRepository;
             _getLayoutsByParent = getLayoutsByParent;

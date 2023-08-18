@@ -35,7 +35,7 @@ namespace MrCMS.DbConfiguration
             _transaction.Dispose();
         }
 
-        public async Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
+        public async Task CommitAsync(CancellationToken cancellationToken = default)
         {
             await HandlePreTransaction(_session);
             await _transaction.CommitAsync(cancellationToken);
@@ -48,7 +48,7 @@ namespace MrCMS.DbConfiguration
             }
         }
 
-        public async Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
+        public async Task RollbackAsync(CancellationToken cancellationToken = default)
         {
             await _transaction.RollbackAsync(cancellationToken);
         }

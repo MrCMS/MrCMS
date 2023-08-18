@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 
 namespace MrCMS.Web.Admin.Models.Forms
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Admin.Models.Forms
             get { return "form-message-tab"; }
         }
 
-        public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Form form)
+        public override Task RenderTabPane(IHtmlHelper html, ISessionAwareMapper mapper, Form form)
         {
             return html.RenderPartialAsync("FormMessage", mapper.Map<FormMessageTabViewModel>(form));
         }

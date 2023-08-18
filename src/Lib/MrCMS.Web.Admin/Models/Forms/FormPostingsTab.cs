@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 using MrCMS.Web.Admin.Services;
 
@@ -31,7 +32,7 @@ namespace MrCMS.Web.Admin.Models.Forms
 
         public override string TabHtmlId => "form-postings-tab";
 
-        public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Form form)
+        public override Task RenderTabPane(IHtmlHelper html, ISessionAwareMapper mapper, Form form)
         {
             return html.RenderPartialAsync("FormPostings", form);
         }

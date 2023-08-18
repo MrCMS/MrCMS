@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Web.Admin.Services;
@@ -15,11 +16,11 @@ namespace MrCMS.Web.Admin.Tests.Services
     public class UrlHistoryAdminServiceTests : InMemoryDatabaseTest
     {
         private readonly UrlHistoryAdminService _urlHistoryAdminService;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
 
         public UrlHistoryAdminServiceTests()
         {
-            _mapper = A.Fake<IMapper>();
+            _mapper = A.Fake<ISessionAwareMapper>();
             _urlHistoryAdminService = new UrlHistoryAdminService(Session,_mapper);
         }
 

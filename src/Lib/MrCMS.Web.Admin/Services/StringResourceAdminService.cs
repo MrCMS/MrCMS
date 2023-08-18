@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
@@ -24,14 +25,14 @@ namespace MrCMS.Web.Admin.Services
         private const string DefaultLanguage = "Default";
         private readonly IStringResourceProvider _provider;
         private readonly ISession _session;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly IOptions<RequestLocalizationOptions> _requestLocalisationOptions;
         private readonly SiteSettings _siteSettings;
         private readonly IGetCurrentClaimsPrincipal _getCurrentClaimsPrincipal;
 
         public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
             IGetCurrentClaimsPrincipal getCurrentClaimsPrincipal,
-            ISession session, IMapper mapper, IOptions<RequestLocalizationOptions> requestLocalisationOptions)
+            ISession session, ISessionAwareMapper mapper, IOptions<RequestLocalizationOptions> requestLocalisationOptions)
         {
             _provider = provider;
             _siteSettings = siteSettings;

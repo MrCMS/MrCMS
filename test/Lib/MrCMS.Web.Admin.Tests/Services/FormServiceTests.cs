@@ -9,6 +9,7 @@ using MrCMS.Web.Admin.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using MrCMS.Mapping;
 using Xunit;
 
 namespace MrCMS.Web.Admin.Tests.Services
@@ -20,7 +21,7 @@ namespace MrCMS.Web.Admin.Tests.Services
         public FormAdminServiceTests()
         {
             _formAdminService = new FormAdminService(Session, A.Fake<IStringResourceProvider>(),
-                A.Fake<ILogger<FormAdminService>>(), A.Fake<IMapper>(), A.Fake<IGetCurrentUserCultureInfo>());
+                A.Fake<ILogger<FormAdminService>>(), A.Fake<ISessionAwareMapper>(), A.Fake<IGetCurrentUserCultureInfo>());
         }
 
         [Fact]

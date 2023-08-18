@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;
 
 namespace MrCMS.Web.Admin.Models.WebpageEdit
@@ -23,7 +24,7 @@ namespace MrCMS.Web.Admin.Models.WebpageEdit
 
         public override string TabHtmlId => "layout-content";
 
-        public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
+        public override Task RenderTabPane(IHtmlHelper html, ISessionAwareMapper mapper, Webpage webpage)
         {
             return html.RenderPartialAsync("Layout", mapper.Map<LayoutTabViewModel>(webpage));
         }

@@ -5,6 +5,7 @@ using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
+using MrCMS.Mapping;
 using MrCMS.Models;
 using MrCMS.Web.Admin.Models;
 using MrCMS.Website;
@@ -17,13 +18,13 @@ namespace MrCMS.Web.Admin.Services
         public const string LayoutAreasKey = "get-widgets-for-layout-{0}";
         private readonly IRepository<LayoutArea> _layoutAreaRepository;
         private readonly IRepository<Widget> _widgetRepository;
-        private readonly IMapper _mapper;
+        private readonly ISessionAwareMapper _mapper;
         private readonly ICacheManager _cacheManager;
         private readonly IWidgetLoader _widgetLoader;
 
         public LayoutAreaAdminService(IRepository<LayoutArea> layoutAreaRepository,
             IRepository<Widget> widgetRepository,
-            IMapper mapper, ICacheManager cacheManager, IWidgetLoader widgetLoader)
+            ISessionAwareMapper mapper, ICacheManager cacheManager, IWidgetLoader widgetLoader)
         {
             _layoutAreaRepository = layoutAreaRepository;
             _widgetRepository = widgetRepository;
