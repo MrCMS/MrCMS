@@ -40,6 +40,7 @@
     <PackageReference Include="NHibernate" Version="5.4.4" />
     <PackageReference Include="NHibernate.Caches.CoreMemoryCache" Version="5.9.0" />
     <PackageReference Include="X.PagedList" Version="8.4.7" />
+    <PackageReference Include="X.PagedList.Mvc.Bootstrap4" Version="8.1.0" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
   </ItemGroup>
 
