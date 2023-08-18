@@ -133,7 +133,7 @@ namespace MrCMS.Web.Admin.Services
 
         public async Task<List<SelectListItem>> GetLanguageOptions(string key, int? siteId)
         {
-            List<CultureInfo> cultureInfos = _requestLocalisationOptions.Value.SupportedCultures.ToList();
+            List<CultureInfo> cultureInfos = _requestLocalisationOptions.Value.SupportedCultures?.ToList();
             IEnumerable<string> languages = await _provider.GetOverriddenLanguages(key, siteId);
             cultureInfos.RemoveAll(info => languages.Contains(info.Name));
             return cultureInfos.OrderBy(info => info.DisplayName)

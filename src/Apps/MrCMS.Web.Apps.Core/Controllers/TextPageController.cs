@@ -4,6 +4,7 @@ using MrCMS.Attributes;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
+using StackExchange.Profiling;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
@@ -19,8 +20,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
         [CanonicalLinks]
         public async Task<ActionResult> Show(int id)
         {
-            var page = await _uiService.GetPage<TextPage>(id);
-            return View(page);
+            using (MiniProfiler.Current.Step("TextPageController.Show"))
+            {
+                var page = await _uiService.GetPage<TextPage>(id);
+                return View(page);
+            }
         }
     }
 }

@@ -20,18 +20,18 @@ namespace MrCMS.Services
             if (string.IsNullOrWhiteSpace(url))
                 return null;
 
-            var id = await GetId(url);
+            /*var id = await GetId(url);
             if (!id.HasValue)
-                return null;
-            return await _session.GetAsync<T>(id.Value);
+                return null;*/
+            return await _session.Query<T>().Where(x=>x.UrlSegment == url).FirstOrDefaultAsync();
         }
 
-        private async Task<int?> GetId(string url)
+        /*private async Task<int?> GetId(string url)
         {
             return await _session.Query<T>()
                 .WithOptions(x => x.SetCacheable(true))
                 .Where(doc => doc.UrlSegment == url)
                 .Select(x => x.Id).FirstOrDefaultAsync();
-        }
+        }*/
     }
 }

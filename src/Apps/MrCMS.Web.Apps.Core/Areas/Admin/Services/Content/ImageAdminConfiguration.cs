@@ -8,13 +8,13 @@ public class ImageAdminConfiguration : ContentBlockAdminConfigurationBase<Image,
 {
     public override UpdateImageAdminModel GetEditModel(Image block)
     {
-        return new UpdateImageAdminModel { Aligment = block.Aligment, cssClasses = block.cssClasses, Url = block.Url };
+        return new UpdateImageAdminModel { Aligment = block.Aligment, cssClasses = block.CssClasses, Url = block.Url };
     }
 
     public override void UpdateBlock(Image block, UpdateImageAdminModel editModel)
     {
         block.Aligment = editModel.Aligment;
-        block.cssClasses = editModel.cssClasses;
+        block.CssClasses = editModel.cssClasses;
         block.Url = editModel.Url;
     }
 }

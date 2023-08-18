@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
 using MrCMS.Website.CMS;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website
 {
@@ -12,25 +13,28 @@ namespace MrCMS.Website
         public static IApplicationBuilder UseMrCMS(this IApplicationBuilder app, Action<IApplicationBuilder> coreApp,
             Action<IEndpointRouteBuilder> coreEndpoint)
         {
-            var appContext = app.ApplicationServices.GetRequiredService<MrCMSAppContext>();
-            foreach (var part in app.ApplicationServices.GetRequiredService<IGetMrCMSParts>()
-                .GetSortedMiddleware(appContext, coreApp))
+            using (MiniProfiler.Current.Step("App UseMrCMS"))
             {
-                part.Registration(app);
-            }
-
-            app.UseRouting();
-            app.UseAuthorization();
-            app.UseEndpoints(builder =>
-            {
+                var appContext = app.ApplicationServices.GetRequiredService<MrCMSAppContext>();
                 foreach (var part in app.ApplicationServices.GetRequiredService<IGetMrCMSParts>()
-                    .GetSortedEndpoints(appContext, coreEndpoint))
+                             .GetSortedMiddleware(appContext, coreApp))
                 {
-                    part.Registration(builder);
+                    part.Registration(app);
                 }
-            });
 
-            return app;
+
+                app.UseRouting();
+                app.UseAuthorization();
+                app.UseEndpoints(builder =>
+                {
+                    foreach (var part in app.ApplicationServices.GetRequiredService<IGetMrCMSParts>()
+                                 .GetSortedEndpoints(appContext, coreEndpoint))
+                    {
+                        part.Registration(builder);
+                    }
+                });
+                return app;
+            }
         }
     }
 }

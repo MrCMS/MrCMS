@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MrCMS.Entities.Multisite;
 using MrCMS.Website.Caching;
 using NHibernate.Linq;
+using StackExchange.Profiling;
 
 namespace MrCMS.Services
 {
@@ -40,17 +41,20 @@ namespace MrCMS.Services
 
         private async Task<int> GetId(Site site)
         {
-            var siteId = site.Id;
-            return await _cacheManager.GetOrCreateAsync($"{CurrentHomePageCacheKey}.{siteId}", async () =>
+            using (MiniProfiler.Current.Step("GetHomePage.GetId"))
             {
-                var pageId = await _statelessSession.Query<Webpage>()
-                    .Where(document => document.Parent == null && document.Published && !document.IsDeleted)
-                    .Where(x => x.Site.Id == siteId)
-                    .OrderBy(webpage => webpage.DisplayOrder)
-                    .Select(x => x.Id)
-                    .FirstOrDefaultAsync();
-                return pageId;
-            }, TimeSpan.FromMinutes(10), CacheExpiryType.Absolute);
+                var siteId = site.Id;
+                return await _cacheManager.GetOrCreateAsync($"{CurrentHomePageCacheKey}.{siteId}", async () =>
+                {
+                    var pageId = await _statelessSession.Query<Webpage>()
+                        .Where(document => document.Parent == null && document.Published && !document.IsDeleted)
+                        .Where(x => x.Site.Id == siteId)
+                        .OrderBy(webpage => webpage.DisplayOrder)
+                        .Select(x => x.Id)
+                        .FirstOrDefaultAsync();
+                    return pageId;
+                }, TimeSpan.FromMinutes(10), CacheExpiryType.Absolute);
+            }
         }
     }
 }

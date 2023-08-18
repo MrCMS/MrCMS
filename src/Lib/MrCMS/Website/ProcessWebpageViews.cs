@@ -5,6 +5,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website
 {
@@ -24,20 +25,23 @@ namespace MrCMS.Website
 
         public async Task Process(ViewResult result, Webpage webpage)
         {
-            if (string.IsNullOrWhiteSpace(result.ViewName))
+            using (MiniProfiler.Current.Step("ProcessWebpageViews.Process"))
             {
-                if (webpage.PageTemplate != null && !string.IsNullOrWhiteSpace(webpage.PageTemplate.PageTemplateName))
-                    result.ViewName = webpage.PageTemplate.PageTemplateName;
-                else
-                    result.ViewName = webpage.GetType().Name;
-            }
-
-            if (string.IsNullOrWhiteSpace(result.ViewData[LayoutFile]?.ToString()))
-            {
-                Layout layout = _getCurrentLayout.Get(webpage);
-                if (layout != null)
+                if (string.IsNullOrWhiteSpace(result.ViewName))
                 {
-                    await SetLayoutViewData(result.ViewData, layout);
+                    if (webpage.PageTemplate != null && !string.IsNullOrWhiteSpace(webpage.PageTemplate.PageTemplateName))
+                        result.ViewName = webpage.PageTemplate.PageTemplateName;
+                    else
+                        result.ViewName = webpage.GetType().Name;
+                }
+
+                if (string.IsNullOrWhiteSpace(result.ViewData[LayoutFile]?.ToString()))
+                {
+                    Layout layout = _getCurrentLayout.Get(webpage);
+                    if (layout != null)
+                    {
+                        await SetLayoutViewData(result.ViewData, layout);
+                    }
                 }
             }
         }

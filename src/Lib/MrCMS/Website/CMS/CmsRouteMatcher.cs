@@ -36,7 +36,6 @@ namespace MrCMS.Website.CMS
 
             var isCurrentUserAllowed = await _userUIPermissionsService.IsCurrentUserAllowed(webpage);
 
-
             var matchType = isCurrentUserAllowed switch
             {
                 PageAccessPermission.Forbidden => CmsRouteMatchType.Forbidden,

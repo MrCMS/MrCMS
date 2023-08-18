@@ -4,6 +4,7 @@
 @using MrCMS.Web.Apps.Articles.Models
 @using MrCMS.Web.Apps.Articles.Pages
 @using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Articles.Pages.ArticleList
 @inject IGetLiveUrl GetLiveUrl
@@ -47,5 +48,5 @@
 
 @if (Model.AllowPaging)
 {
-    @Html.PagedListPager(results, page => Url.RouteWebpage(Model, new { page, searchModel.Category, searchModel.Month, searchModel.Year }), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => Url.RouteWebpage(Model, new { page, searchModel.Category, searchModel.Month, searchModel.Year }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }

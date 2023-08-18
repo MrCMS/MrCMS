@@ -1,10 +1,10 @@
-﻿@using System.Linq
-@using MrCMS.Entities.Documents.Web
+﻿@using X.PagedList.Mvc.Core
 @using MrCMS.Services
 @using MrCMS.Web.Apps.Core.Models.Search
 @using MrCMS.Web.Apps.Core.Pages
+@using MrCMS.Entities.Documents.Web
 @using X.PagedList
-@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Bootstrap4.Core
 @model MrCMS.Web.Apps.Core.Pages.SearchPage
 @inject IUniquePageService UniquePageService
 @inject IGetLiveUrl GetLiveUrl
@@ -39,7 +39,7 @@
         <hr class="mt-0 mb-0"/>
     }
 
-    @Html.PagedListPager(results, page => UniquePageService.GetUrl<SearchPage>(new {page, searchModel.ParentId, searchModel.Term, searchModel.CreatedOnFrom, searchModel.CreatedOnTo, searchModel.Type}).GetAwaiter().GetResult(), MrCMSPagedListRenderOptions.Bootstrap4)
+    @Html.PagedListPager(results, page => UniquePageService.GetUrl<SearchPage>(new {page, searchModel.ParentId, searchModel.Term, searchModel.CreatedOnFrom, searchModel.CreatedOnTo, searchModel.Type}).GetAwaiter().GetResult(), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 }
 else
 {

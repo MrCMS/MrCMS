@@ -16,28 +16,28 @@ namespace MrCMS.Services
             _contextAccessor = contextAccessor;
         }
 
-        public async Task<Guid> Get()
+        public Task<Guid> Get()
         {
             var context = _contextAccessor.HttpContext;
             // if there's no context, we'll just return a random Guid so that it's not a 'real' session
             if (context == null)
-                return Guid.NewGuid();
+                return Task.FromResult(Guid.NewGuid());
 
             // next we'll check the claims principal to see if there's a guid there
             var userGuid = context.User.GetUserGuid();
             if (userGuid.HasValue)
-                return userGuid.Value;
+                return Task.FromResult(userGuid.Value);
 
             // otherwise we'll check the cookies as they're not logged in
             var o = context.Request.Cookies[UserSessionId];
             if (o != null && Guid.TryParse(o, out var result))
-                return result;
+                return Task.FromResult(result);
 
             // if there's no cookie, we'll create one and return it
             result = Guid.NewGuid();
             AddCookieToResponse(context, UserSessionId, result.ToString(), DateTime.UtcNow.AddMonths(3));
 
-            return result;
+            return Task.FromResult(result);
         }
 
         public void ClearCookies()

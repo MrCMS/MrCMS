@@ -31,7 +31,7 @@ namespace MrCMS.Services
         public Site GetCurrentSite()
         {
             // check if the CurrentSiteFeature is set
-            var feature = _contextAccessor.HttpContext.Features.Get<CurrentSiteFeature>();
+            var feature = _contextAccessor.HttpContext?.Features.Get<CurrentSiteFeature>();
             if (feature != null)
             {
                 return feature.Site;
@@ -41,7 +41,7 @@ namespace MrCMS.Services
             var site = GetSiteFromSettingForDebugging() ?? GetSiteFromRequest();
 
             // if we have a site, set the CurrentSiteFeature
-            _contextAccessor.HttpContext.Features.Set(new CurrentSiteFeature
+            _contextAccessor.HttpContext?.Features.Set(new CurrentSiteFeature
             {
                 Site = site
             });
@@ -94,7 +94,7 @@ namespace MrCMS.Services
 
         private string GetAuthority()
         {
-            return _contextAccessor.HttpContext.Request.Host.ToString();
+            return _contextAccessor.HttpContext?.Request.Host.ToString();
         }
     }
 }
