@@ -29,7 +29,7 @@
                     </a>
                 </div>
                 <div class="col-auto">
-                    <a role="button" data-content-admin-block-hide="@Url.Action("ToggleHidden", "ContentBlock")" data-id="@block.Id" title="@(block.IsHidden ? await Html.Resource("admin-blocks-show", "Show") : await Html.Resource("admin-blocks-hide", "Hide"))">
+                    <a role="button" data-content-admin-block-hide="@Url.Action("ToggleHidden", "ContentBlock")" data-id="@block.Id" title="@(block.IsHidden ? await Html.Resource("admin-blocks-show", "Show", options => options.DisableInlineEditing()) : await Html.Resource("admin-blocks-hide", "Hide", options => options.DisableInlineEditing()))">
                         @if (block.IsHidden)
                         {
                             <i class="fa fa-eye-slash text-danger"></i>
