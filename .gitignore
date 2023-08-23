@@ -177,3 +177,5 @@ src/MrCMS.Web/connectionstrings.json
 
 src/MrCMS.Web/wwwroot/is-cache/
 src/MrCMS.Web/wwwroot/sitemap-*
+
+src/Lib/MrCMS.Web.Admin/wwwroot/Areas/Admin/assets/
