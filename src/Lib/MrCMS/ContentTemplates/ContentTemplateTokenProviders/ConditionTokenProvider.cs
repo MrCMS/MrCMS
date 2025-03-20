@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,8 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
 {
     public override string Name => "Condition";
     public override string Icon => "fa fa-terminal";
-    public override string HtmlPattern => $"[{Name} if=\"\"][/{Name}]";
+    // Updated pattern to show else is available
+    public override string HtmlPattern => $"[{Name} if=\"\"]\n  // Content if condition is true\n[Else]\n  // Content if condition is false\n[/{Name}]";
     
     public override string Guide =>
         @"<div class='token-guide mt-3'>
@@ -36,12 +38,26 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
         <h6>Examples:</h6>
         <div class='mb-3'>
             <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
+            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
+            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
+            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
+            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
             <code>Len(User.FirstName) &gt; 3</code> → Checks if first name has more than 3 characters. <br>
             <code>User.IsAdmin || User.Email == 'admin@example.com'</code> → Checks if user is an admin or has a specific email.
         </div>
 
+        <h6>Using Else:</h6>
+        <div class='mb-3'>
+            <p>You can include an <code>[Else]</code> tag to provide alternative content when the condition is false:</p>
+            <code>[Condition if='User.IsAuthenticated']</code>
+          Welcome back, <code>{{User.FullName}}</code>!
+        <code>[Else]</code>
+          Please log in to continue.
+        <code>[/Condition]</code>
+        </div>
+
         <small class='text-muted'>Use these expressions in your condition tokens.</small>
-    </div>";
+        </div>";
 
 
     public override async Task<string> RenderAsync(
@@ -55,6 +71,14 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
 
         try
         {
+            // We'll let the main renderer handle nested tokens
+            var renderer = serviceProvider.GetRequiredService<IContentTemplateRenderer>();
+            
+            // Split content by [Else] tag, respecting nested conditions
+            var contentParts = SplitByElseTag(innerContent);
+            var ifContent = contentParts.Item1;
+            var elseContent = contentParts.Item2;
+
             // Create a new dictionary to hold the modified variables
             var modifiedVariables = new Dictionary<string, object>();
 
@@ -81,7 +105,6 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
                 Parameters = modifiedVariables
             };
             
-            
             //Custom functions
             exp.EvaluateFunction += (name, args) =>
             {
@@ -95,16 +118,22 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
                     args.Result = string.IsNullOrWhiteSpace(value);
                 }
             };
-
+            
+            // Evaluate condition and render appropriate content
             if (exp.Evaluate() is true)
             {
-                var renderer = serviceProvider.GetRequiredService<IContentTemplateRenderer>();
-                return await renderer.RenderAsync(htmlHelper, innerContent, variables);
+                return await renderer.RenderAsync(htmlHelper, ifContent, variables);
+            }
+
+            if (!string.IsNullOrEmpty(elseContent))
+            {
+                return await renderer.RenderAsync(htmlHelper, elseContent, variables);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // If expression evaluation fails, don't render the content
+            // Optional: Log the error
+            // _logger.LogError(ex, "Error evaluating condition: {Condition}", condition);
         }
 
         return string.Empty;
@@ -123,4 +152,58 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
 
         return innerContentHtml;
     }
+    
+    private (string, string) SplitByElseTag(string content)
+{
+    // We need to track opening and closing condition tags to match the correct Else
+    var tokenRegex = new Regex(@"\[(?<closing>/)?(?<name>\w+)(?<attributes>(?:\s+\w+\s*=\s*(?:""[^""]*""|'[^']*'))*)\s*(?<selfClosing>/)?\]",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    
+    // Initialize variables to track position and nesting level
+    var currentPos = 0;
+    var nestingLevel = 0;
+    
+    // Scan through the content looking for tokens
+    while (currentPos < content.Length)
+    {
+        var match = tokenRegex.Match(content, currentPos);
+        if (!match.Success)
+            break;
+            
+        var tokenName = match.Groups["name"].Value;
+        var isClosing = match.Groups["closing"].Success;
+        var isSelfClosing = match.Groups["selfClosing"].Success;
+        
+        // Check if we found an Else tag at the top level (nestingLevel == 0)
+        // This would be an Else that belongs to the current condition we're processing
+        if (tokenName.Equals("Else", StringComparison.OrdinalIgnoreCase) && nestingLevel == 0)
+        {
+            // Found the correct [Else] tag for this condition
+            var ifContent = content.Substring(0, match.Index);
+            var elseContent = content.Substring(match.Index + match.Length);
+            return (ifContent, elseContent);
+        }
+        
+        // Update nesting level based on Condition tags
+        if (tokenName.Equals("Condition", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!isClosing && !isSelfClosing)
+            {
+                // Opening a new nested condition
+                nestingLevel++;
+            }
+            else if (isClosing)
+            {
+                // Closing a nested condition
+                nestingLevel--;
+            }
+        }
+        
+        // Move to the next position
+        currentPos = match.Index + match.Length;
+    }
+    
+    // If no [Else] tag found at the appropriate level, return original content
+    return (content, string.Empty);
+}
 }
