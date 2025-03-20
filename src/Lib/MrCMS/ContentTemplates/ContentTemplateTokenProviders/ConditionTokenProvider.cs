@@ -38,10 +38,6 @@ public class ConditionTokenProvider(IServiceProvider serviceProvider) : ContentT
         <h6>Examples:</h6>
         <div class='mb-3'>
             <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
-            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
-            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
-            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
-            <code>User.IsAuthenticated &amp;&amp; !IsEmpty(User.Email)</code> → Checks if user is logged in and has an email. <br>
             <code>Len(User.FirstName) &gt; 3</code> → Checks if first name has more than 3 characters. <br>
             <code>User.IsAdmin || User.Email == 'admin@example.com'</code> → Checks if user is an admin or has a specific email.
         </div>
