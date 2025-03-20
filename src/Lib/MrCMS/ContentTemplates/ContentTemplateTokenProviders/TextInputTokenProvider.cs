@@ -22,9 +22,10 @@ public class TextInputTokenProvider : ContentTemplateTokenProvider
     {
         if (!attributes.TryGetValue("name", out var name))
             return Task.FromResult(string.Empty);
+        var fieldName = GetFieldName(name);
 
         // Check if we have a value in the variables
-        if (variables.TryGetValue(name, out var value))
+        if (variables.TryGetValue(fieldName, out var value))
             return Task.FromResult(value?.ToString() ?? string.Empty);
 
         // Fallback to default value
@@ -39,18 +40,18 @@ public class TextInputTokenProvider : ContentTemplateTokenProvider
     {
         if (!attributes.TryGetValue("name", out var name))
             return Task.FromResult(string.Empty);
+        
+        var fieldId = GetFieldId(name);
+        var fieldName = GetFieldName(name);
 
         var defaultValue = attributes.GetValueOrDefault("defaultValue", string.Empty);
         var value = defaultValue;
 
         // Use saved data if available
-        if (savedProperties?.TryGetValue(name, out var savedValue) == true)
+        if (savedProperties?.TryGetValue(fieldName, out var savedValue) == true)
         {
             value = savedValue?.ToString() ?? string.Empty;
         }
-        
-        var fieldId = GetFieldId(name);
-        var fieldName = GetFieldName(name);
 
         return Task.FromResult($@"
         <div class='form-group'>
@@ -59,12 +60,7 @@ public class TextInputTokenProvider : ContentTemplateTokenProvider
                    class='form-control' 
                    id='{fieldId}' 
                    name='{fieldName}' 
-                   value='{HttpUtility.HtmlEncode(value)}'
-                   data-val='true'
-                   data-val-required='The {name.BreakUpString()} field is required.'/>
-            <span class='text-danger field-validation-valid' 
-                  data-valmsg-for='{fieldId}' 
-                  data-valmsg-replace='true'></span>
+                   value='{HttpUtility.HtmlEncode(value)}'/>
         </div>");
     }
 }

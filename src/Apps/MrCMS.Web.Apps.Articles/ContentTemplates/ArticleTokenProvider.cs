@@ -26,13 +26,15 @@ public class ArticleTokenProvider(IServiceProvider serviceProvider, ISession ses
 
     public override string Guide =>
         @"<div class='token-guide mt-3'>
-            <h6>Available Variables:</h6>
-            <div class='mb-3'>
-                Article.Id, Article.Name, Article.FeatureImage, Article.Abstract, Article.PublishOn, Article.Published, Article.Author, Article.Url, Article.Tags, Article.Index
-            </div>
-            <small class='text-muted'>Use these variables in your template with double curly braces, e.g., {{Article.Name}}</small>
-            <small class='text-muted d-block mt-2'>Note: Replace 'Article' with the value of the 'name' attribute in your token.</small>
-        </div>";
+        <h6>Available Variables:</h6>
+        <div class='mb-3'>
+            <strong>Article Variables:</strong><br>
+            <code>Article.Id</code>, <code>Article.Name</code>, <code>Article.FeatureImage</code>, <code>Article.Abstract</code>, <code>Article.PublishDay</code>, <code>Article.PublishMonth</code>, <code>Article.PublishMonthName</code>, <code>Article.PublishYear</code>, <code>Article.Published</code>, <code>Article.Author</code>, <code>Article.Url</code>, <code>Article.Tags</code>, <code>Article.Index</code>
+        </div>
+        <small class='text-muted'>Use these variables in your template with double curly braces, e.g., <code>{{Article.Name}}</code></small>
+        <small class='text-muted d-block mt-2'>Note: Replace <code>'Article'</code> with the value of the 'name' attribute in your token.</small>
+    </div>";
+
 
     public override async Task<string> RenderAsync(
         string innerContent,
@@ -43,10 +45,11 @@ public class ArticleTokenProvider(IServiceProvider serviceProvider, ISession ses
         try
         {
             var name = attributes.GetValueOrDefault("name", "Article");
-
-            var articleListId = TryGetIntVariable(variables, $"{name}.ArticleListId", 0);
-            var categoryId = TryGetIntVariable(variables, $"{name}.CategoryId", 0);
-            var count = TryGetIntVariable(variables, $"{name}.Count", 5);
+            var fieldName = GetFieldName(name);
+            
+            var articleListId = TryGetIntVariable(variables, $"{fieldName}.ArticleListId", 0);
+            var categoryId = TryGetIntVariable(variables, $"{fieldName}.CategoryId", 0);
+            var count = TryGetIntVariable(variables, $"{fieldName}.Count", 5);
 
             // Build the query
             var query = session.Query<Article>().Where(f => f.Published);
@@ -81,7 +84,10 @@ public class ArticleTokenProvider(IServiceProvider serviceProvider, ISession ses
                     { $"{name}.Name", article.Name },
                     { $"{name}.FeatureImage", article.FeatureImage },
                     { $"{name}.Abstract", article.Abstract },
-                    { $"{name}.PublishOn", article.PublishOn },
+                    { $"{name}.PublishDay", article.PublishOn?.ToString("dd") },
+                    { $"{name}.PublishMonth", article.PublishOn?.ToString("MM") },
+                    { $"{name}.PublishMonthName", article.PublishOn?.ToString("MMM") },
+                    { $"{name}.PublishYear", article.PublishOn?.ToString("yyyy") },
                     { $"{name}.Published", article.Published },
                     { $"{name}.Author", article.User?.Name },
                     { $"{name}.Url", $"/{article.UrlSegment}" },
@@ -112,15 +118,16 @@ public class ArticleTokenProvider(IServiceProvider serviceProvider, ISession ses
         Dictionary<string, object> savedProperties = null)
     {
         var name = attributes.GetValueOrDefault("name", "Article");
-
-        var selectedArticleId = savedProperties?.GetValueOrDefault($"{name}.ArticleListId")?.ToString() ?? string.Empty;
-        var selectedCategoryId = savedProperties?.GetValueOrDefault($"{name}.CategoryId")?.ToString() ?? string.Empty;
-        var countValue = savedProperties?.GetValueOrDefault($"{name}.Count")?.ToString() ?? "5";
+        var fieldId = GetFieldId(name);
+        var fieldName = GetFieldName(name);
+        
+        var selectedArticleId = savedProperties?.GetValueOrDefault($"{fieldName}.ArticleListId")?.ToString() ?? string.Empty;
+        var selectedCategoryId = savedProperties?.GetValueOrDefault($"{fieldName}.CategoryId")?.ToString() ?? string.Empty;
+        var countValue = savedProperties?.GetValueOrDefault($"{fieldName}.Count")?.ToString() ?? "5";
 
         var articleListOptions = await GetArticleListOptionsHtml(selectedArticleId).ConfigureAwait(false);
         var categoryOptions = await GetCategoryOptionsHtml(selectedCategoryId).ConfigureAwait(false);
-        var fieldId = GetFieldId(name);
-        var fieldName = GetFieldName(name);
+        
         var articleHtml = $@"
             <div class='row'>
                 <div class='col-md-6 col-lg-4 col-xl-3'>

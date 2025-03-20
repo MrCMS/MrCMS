@@ -114,12 +114,12 @@
 
     <div class="form-group">
         <label asp-for="CustomHeaderScripts"></label>
-        <textarea asp-for="CustomHeaderScripts" class="form-control"></textarea>
+        <textarea asp-for="CustomHeaderScripts" class="form-control code-enabled"></textarea>
         <span asp-validation-for="CustomHeaderScripts"></span>
     </div>
     <div class="form-group">
         <label asp-for="CustomFooterScripts"></label>
-        <textarea asp-for="CustomFooterScripts" class="form-control"></textarea>
+        <textarea asp-for="CustomFooterScripts" class="form-control code-enabled"></textarea>
         <span asp-validation-for="CustomFooterScripts"></span>
     </div>
     @* @if (Html.IsWebpageCacheable(Model.Id)) *@

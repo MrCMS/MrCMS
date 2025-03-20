@@ -23,9 +23,10 @@ public class SelectTokenProvider : ContentTemplateTokenProvider
     {
         if (!attributes.TryGetValue("name", out var name))
             return Task.FromResult(string.Empty);
+        var fieldName = GetFieldName(name);
 
         // Check if we have a value in the variables
-        if (variables.TryGetValue(name, out var value))
+        if (variables.TryGetValue(fieldName, out var value))
             return Task.FromResult(value?.ToString() ?? string.Empty);
 
         // Fallback to default value
@@ -40,12 +41,14 @@ public class SelectTokenProvider : ContentTemplateTokenProvider
     {
         if (!attributes.TryGetValue("name", out var name))
             return Task.FromResult(string.Empty);
+        var fieldId = GetFieldId(name);
+        var fieldName = GetFieldName(name);
 
         var defaultValue = attributes.GetValueOrDefault("defaultValue", string.Empty);
         var selectedValue = defaultValue;
 
         // If we have saved data, use it
-        if (savedProperties?.TryGetValue(name, out var savedValue) == true)
+        if (savedProperties?.TryGetValue(fieldName, out var savedValue) == true)
         {
             selectedValue = savedValue?.ToString() ?? string.Empty;
         }
@@ -61,23 +64,15 @@ public class SelectTokenProvider : ContentTemplateTokenProvider
         var options = string.Join("\n",
             items.Select(item => 
                 $"<option value='{HttpUtility.HtmlEncode(item.Value)}' {(item.Value == selectedValue ? "selected" : "")}>{HttpUtility.HtmlEncode(item.Text)}</option>"));
-
-        var fieldId = GetFieldId(name);
-        var fieldName = GetFieldName(name);
         
         return Task.FromResult($@"
             <div class='form-group'>
                 <label for='{fieldId}'>{name.BreakUpString()}</label>
                 <select class='form-control' 
                         id='{fieldId}' 
-                        name='{fieldName}'
-                        data-val='true'
-                        data-val-required='The {name.BreakUpString()} field is required.'>
+                        name='{fieldName}'>
                     {options}
                 </select>
-                <span class='text-danger field-validation-valid' 
-                      data-valmsg-for='{fieldId}' 
-                      data-valmsg-replace='true'></span>
             </div>");
     }
 }

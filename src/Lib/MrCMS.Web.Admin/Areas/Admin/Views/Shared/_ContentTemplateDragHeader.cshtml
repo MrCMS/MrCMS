@@ -24,7 +24,7 @@
 
 @foreach (var group in groupedProviders)
 {
-    <div class="d-inline-block p-2 border mr-2">
+    <div class="d-inline-block p-2 border mr-2 mb-3">
         <h5>@group.Key</h5>
         <ul class="mb-0 list-unstyled" content-template-drag>
             @foreach (var tokenProvider in group.Value.OrderBy(f=>f.DisplayName))

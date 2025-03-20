@@ -1,18 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.ContentTemplates.ContentTemplateTokenProviders.Base;
+using MrCMS.ContentTemplates.Services;
 using MrCMS.Helpers;
+
 namespace MrCMS.ContentTemplates.ContentTemplateTokenProviders;
 
-public class MediaTokenProvider : ContentTemplateTokenProvider
+public class MediaUrlTokenProvider(IServiceProvider serviceProvider) : ContentTemplateTokenProvider
 {
-    public override string Name => "Media";
+    public override string Name => "MediaUrl";
     public override string Icon => "fa fa-picture-o";
-    public override string HtmlPattern => $"[{Name} name=\"Media\" width=\"\" height=\"\" class=\"img-fluid\"/]";
+    public override string HtmlPattern => $"[{Name} name=\"MediaUrl\" width=\"\" height=\"\"][/{Name}]";
+    
+    public override string Guide =>
+        @"<div class='token-guide mt-3'>
+        <h6>Available Variables:</h6>
+        <div class='mb-3'>
+            <strong>Media Variables:</strong><br>
+            <code>MediaUrl.Url</code>
+        </div>
+        <small class='text-muted'>Use these variables in your template with double curly braces, e.g., <code>{{MediaUrl.Url}}</code></small>
+        <small class='text-muted d-block mt-2'>Note: Replace <code>'MediaUrl'</code> with the value of the 'name' attribute in your token.</small>
+    </div>";
 
     public override async Task<string> RenderAsync(
         string innerContent,
@@ -33,7 +47,6 @@ public class MediaTokenProvider : ContentTemplateTokenProvider
 
         attributes.TryGetValue("width", out var widthValue);
         attributes.TryGetValue("height", out var heightValue);
-        attributes.TryGetValue("class", out var classValue);
         
         var width = TryGetIntVariable(widthValue);
         var height = TryGetIntVariable(heightValue);
@@ -46,10 +59,16 @@ public class MediaTokenProvider : ContentTemplateTokenProvider
             size.Height = height.Value;
 
     
-        var htmlContent = await htmlHelper.RenderImage(mediaUrl, size, attributes: new { @class = classValue }, enableLazyLoading: false);
-        await using var writer = new StringWriter();
-        htmlContent.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
-        return writer.ToString();
+        var renderedMediaUrl = await htmlHelper.GetImageUrl(mediaUrl, size);
+        
+        var tokenVariables = new Dictionary<string, object>(variables)
+        {
+            { $"{name}.Url", renderedMediaUrl }
+        };
+        
+        // Render the inner content with the key variable
+        var renderer = serviceProvider.GetRequiredService<IContentTemplateRenderer>();
+        return await renderer.RenderAsync(htmlHelper, innerContent, tokenVariables);
     }
 
     public override Task<string> RenderAdminAsync(

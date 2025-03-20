@@ -6,5 +6,6 @@ namespace MrCMS.Settings
     public class TextAreaAttribute : Attribute
     {
         public bool CKEnabled { get; set; }
+        public string CssClass { get; set; } = "form-control";
     }
 }

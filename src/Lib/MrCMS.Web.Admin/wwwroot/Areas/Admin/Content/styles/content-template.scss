@@ -2,24 +2,11 @@
   .main {
     .right-nav {
       &:not(.expand) {
-        [data-content-template-container] {
-          & > .row {
+        [data-content-admin-editor] {
+          .row {
             & > * {
               max-width: 100% !important;
               flex: 0 0 100% !important;
-            }
-          }
-
-          .card {
-            & .card-body {
-              padding: .5rem !important;
-
-              .row {
-                & > * {
-                  max-width: 100% !important;
-                  flex: 0 0 100% !important;
-                }
-              }
             }
           }
         }

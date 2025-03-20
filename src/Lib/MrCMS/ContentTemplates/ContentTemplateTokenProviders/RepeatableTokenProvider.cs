@@ -20,13 +20,15 @@ public class RepeatableTokenProvider(IServiceProvider serviceProvider) : Content
 
     public override string Guide =>
         @"<div class='token-guide mt-3'>
-            <h6>Available Variables:</h6>
-            <div class='mb-3'>
-                Repeatable.Index
-            </div>
-            <small class='text-muted'>Use these variables in your template with double curly braces, e.g., {{Repeatable.Index}}</small>
-            <small class='text-muted d-block mt-2'>Note: Replace 'Repeatable' with the value of the 'name' attribute in your token.</small>
-        </div>";
+        <h6>Available Variables:</h6>
+        <div class='mb-3'>
+            <strong>Repeatable Variables:</strong><br>
+            <code>Repeatable.Index</code>
+        </div>
+        <small class='text-muted'>Use these variables in your template with double curly braces, e.g., <code>{{Repeatable.Index}}</code></small>
+        <small class='text-muted d-block mt-2'>Note: Replace <code>'Repeatable'</code> with the value of the 'name' attribute in your token.</small>
+    </div>";
+
 
     public override async Task<string> RenderAsync(
         string innerContent,
@@ -101,17 +103,18 @@ public class RepeatableTokenProvider(IServiceProvider serviceProvider) : Content
                 var index = 0;
                 foreach (var item in items)
                 {
+                    //Set the name prefix for the item
+                    NamePrefix = $"{originalNamePrefix}{name}[{index}].";
+                    
                     // Create a variables dictionary for this item
                     var itemVariables = new Dictionary<string, object>(variables);
 
                     // Add each field from the dictionary to the variables with the Array prefix
                     foreach (var kvp in item)
                     {
-                        itemVariables[$"{kvp.Key}"] = kvp.Value;
+                        itemVariables[$"{NamePrefix}{kvp.Key}"] = kvp.Value;
                     }
-
-                    //Set the name prefix for the item
-                    NamePrefix = $"{originalNamePrefix}{name}[{index}].";
+                    
                     // Render the inner content with the item's variables
                     var renderer = serviceProvider.GetRequiredService<IContentTemplateRenderer>();
                     var renderedContent =

@@ -25,8 +25,9 @@ public class FormRenderTokenProvider(ISession session) : ContentTemplateTokenPro
         IHtmlHelper htmlHelper)
     {
         var name = attributes.GetValueOrDefault("name", "Form");
+        var fieldName = GetFieldName(name);
         
-        if (variables.TryGetValue($"{name}", out var value) && int.TryParse(value?.ToString(), out var formId))
+        if (variables.TryGetValue($"{fieldName}", out var value) && int.TryParse(value?.ToString(), out var formId))
         {
             return Task.FromResult(htmlHelper.ParseShortcodes($"[form id=\"{formId}\"]").ToString());
 
@@ -43,11 +44,13 @@ public class FormRenderTokenProvider(ISession session) : ContentTemplateTokenPro
     {
         if (!attributes.TryGetValue("name", out var name))
             return string.Empty;
+        var fieldId = GetFieldId(name);
+        var fieldName = GetFieldName(name);
         
         string selectedValue = null;
 
         // If we have saved data, use it
-        if (savedProperties?.TryGetValue(name, out var savedValue) == true)
+        if (savedProperties?.TryGetValue(fieldName, out var savedValue) == true)
         {
             selectedValue = savedValue?.ToString() ?? string.Empty;
         }
@@ -57,21 +60,14 @@ public class FormRenderTokenProvider(ISession session) : ContentTemplateTokenPro
         var options = string.Join("\n",
             formOptions.Select(item => 
                 $"<option value='{HttpUtility.HtmlEncode(item.Id)}' {(item.Id.ToString() == selectedValue ? "selected" : "")}>{HttpUtility.HtmlEncode(item.Name)}</option>"));
-        var fieldId = GetFieldId(name);
-        var fieldName = GetFieldName(name);
         return $@"
             <div class='form-group'>
                 <label for='{fieldId}'>{name.BreakUpString()}</label>
                 <select class='form-control' 
                         id='{fieldId}' 
-                        name='{fieldName}'
-                        data-val='true'
-                        data-val-required='The {name.BreakUpString()} field is required.'>
+                        name='{fieldName}'>
                     {options}
                 </select>
-                <span class='text-danger field-validation-valid' 
-                      data-valmsg-for='{fieldId}' 
-                      data-valmsg-replace='true'></span>
             </div>";
     }
 }
