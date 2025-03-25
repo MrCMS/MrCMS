@@ -149,7 +149,7 @@ public class RepeatableTokenProvider(IServiceProvider serviceProvider) : Content
                 <div class='repeatable-items-container'>
                    {existingItemsHtml}
                 </div>
-                <div class='repeatable-input-area'>
+                <div class='repeatable-input-area p-3 bg-light mb-3 mx-n3'>
                     {template}
                 </div>
                 <button type='button' class='btn btn-primary btn-sm add-repeatable-item'>

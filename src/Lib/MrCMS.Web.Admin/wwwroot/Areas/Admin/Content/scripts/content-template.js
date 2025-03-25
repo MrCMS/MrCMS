@@ -1,42 +1,13 @@
 export function initiateContentTemplate() {
-    // Cache DOM selectors
-    const contentTemplateContainer = document.querySelector('[data-content-template-container]');
-    if (!contentTemplateContainer) return;
-
-    const contentTemplateForm = contentTemplateContainer.closest('form');
-
-    // Early return if form doesn't exist
-    if (!contentTemplateForm) return;
-
-    cleanup();
-
     function cleanup() {
-        document.removeEventListener('click', handleRepeatableTokensClick);
-        contentTemplateForm.removeEventListener('submit', handleFormSubmit);
+        $(document).off('input.ContentTemplate', '[data-content-template-container] input');
+        $(document).off('input.ContentTemplate', '[data-content-template-container] select');
+        $(document).off('input.ContentTemplate', '[data-content-template-container] textarea');
 
-        // Clean up popovers
-        document.querySelectorAll('[content-template-drag] [data-toggle="popover"]').forEach(el => {
-            // This assumes you'll replace popover with a custom implementation
-            // or use a vanilla JS library for popovers
-            if (el._popover) {
-                el._popover.dispose();
-            }
-        });
-
-        // Clean up CKEditor instances
-        if (typeof CKEDITOR !== 'undefined') {
-            Object.keys(CKEDITOR.instances).forEach(instance => {
-                CKEDITOR.instances[instance].destroy();
-            });
-        }
-
-        // Remove drag event listeners
-        document.querySelectorAll('[content-template-drag]').forEach(el => {
-            el.removeEventListener('dragstart', handleDragStart);
-        });
+        Object.values(CKEDITOR.instances).forEach(instance => instance.destroy(true));
     }
 
-    function handleRepeatableTokensClick(e) {
+    function handleAddRepeatableTokensClick(e) {
         // Handle add repeatable item button click
         if (e.target.closest('.add-repeatable-item')) {
             const btn = e.target.closest('.add-repeatable-item');
@@ -44,7 +15,16 @@ export function initiateContentTemplate() {
             const inputArea = repeatableToken.querySelector('.repeatable-input-area');
             const container = repeatableToken.querySelector('.repeatable-items-container');
 
-            // Create new item based on input area values
+            // Store CKEditor content and destroy instances before cloning
+            const editorContents = {};
+            inputArea.querySelectorAll('textarea.enable-editor').forEach(textarea => {
+                if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances[textarea.id]) {
+                    editorContents[textarea.id] = CKEDITOR.instances[textarea.id].getData();
+                    CKEDITOR.instances[textarea.id].destroy(true);
+                }
+            });
+
+            // Create new item based on input area values (now without CKEditor elements)
             const newItemContent = inputArea.cloneNode(true);
             const itemIndex = container.querySelectorAll('.repeatable-item').length;
             const repeatableName = repeatableToken.dataset.repeatableName;
@@ -85,67 +65,90 @@ export function initiateContentTemplate() {
             repeatableItem.appendChild(hr);
             container.appendChild(repeatableItem);
 
+            // Transfer CKEditor content to new textareas and initialize them
+            repeatableItem.querySelectorAll('textarea.enable-editor').forEach(textarea => {
+                const originalId = textarea.id.replace(`${repeatableName}_${itemIndex}_`, '');
+                const sourceId = Object.keys(editorContents).find(id => id.endsWith(originalId));
+
+                if (sourceId && editorContents[sourceId]) {
+                    textarea.value = editorContents[sourceId];
+                    if (typeof CKEDITOR !== 'undefined') {
+                        CKEDITOR.replace(textarea.id);
+                    }
+                }
+            });
+
+            // Reinitialize CKEditor instances in the input area (with empty content)
+            inputArea.querySelectorAll('textarea.enable-editor').forEach(textarea => {
+                if (typeof CKEDITOR !== 'undefined') {
+                    CKEDITOR.replace(textarea.id);
+                }
+            });
+
             // Clear input area
-            inputArea.querySelectorAll('input, select, textarea').forEach(el => {
+            inputArea.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], textarea:not(.enable-editor)').forEach(el => {
                 el.value = '';
             });
 
-            inputArea.querySelectorAll('input:checkbox').forEach(el => {
+            inputArea.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => {
                 el.checked = false;
             });
 
             inputArea.querySelectorAll('select').forEach(el => {
+                el.value = '';
                 el.selectedIndex = 0;
             });
 
             inputArea.querySelectorAll('img').forEach(el => {
                 el.src = '/Areas/Admin/Content/img/no-media-selected.jpg';
             });
-        }
 
-        // Handle repeatable item removal
-        if (e.target.closest('.remove-repeatable-item')) {
-            const item = e.target.closest('.repeatable-item');
-            const container = item.closest('.repeatable-items-container');
-
-            item.remove();
-
-            // Reindex remaining items
-            Array.from(container.querySelectorAll('.repeatable-item')).forEach((repeatableItem, index) => {
-                repeatableItem.dataset.index = index;
-
-                // Update field names and IDs
-                repeatableItem.querySelectorAll('[name]').forEach(field => {
-                    const fieldName = field.dataset.fieldName;
-                    if (!fieldName) return;
-
-                    const repeatableToken = field.closest('.repeatable-token');
-                    if (!repeatableToken) return;
-
-                    const repeatableName = repeatableToken.dataset.repeatableName;
-
-                    field.setAttribute('name', `${repeatableName}[${index}].${fieldName}`);
-                    field.id = `${repeatableName}_${index}_${fieldName}`;
-                });
-            });
+            handleInputChange(e);
         }
     }
 
-    function serializeContentTemplateForm() {
+    function handleRemoveRepeatableTokensClick(e) {
+        const item = e.target.closest('.repeatable-item');
+        const container = item.closest('.repeatable-items-container');
+
+        item.remove();
+
+        // Reindex remaining items
+        Array.from(container.querySelectorAll('.repeatable-item')).forEach((repeatableItem, index) => {
+            repeatableItem.dataset.index = index;
+
+            // Update field names and IDs
+            repeatableItem.querySelectorAll('[name]').forEach(field => {
+                const fieldName = field.dataset.fieldName;
+                if (!fieldName) return;
+
+                const repeatableToken = field.closest('.repeatable-token');
+                if (!repeatableToken) return;
+
+                const repeatableName = repeatableToken.dataset.repeatableName;
+
+                field.setAttribute('name', `${repeatableName}[${index}].${fieldName}`);
+                field.id = `${repeatableName}_${index}_${fieldName}`;
+            });
+        });
+
+        handleInputChange({target: container});
+    }
+
+    function serializeContentTemplateForm(container) {
         const formData = {};
         const repeatableData = {};
 
         // Select form elements
         const elements = [
-            ...contentTemplateContainer.querySelectorAll('[data-field-name]:not([name])'),
-            ...contentTemplateContainer.querySelectorAll('[name]:not([name="__RequestVerificationToken"])')
+            ...(container.querySelectorAll('[data-field-name]:not([name])') || []),
+            ...(container.querySelectorAll('[name]:not([name="__RequestVerificationToken"])') || [])
         ];
 
         // Collect form data
         elements.forEach(el => {
             const name = el.getAttribute('name');
             let value;
-            console.log(el);
 
             // Handle CKEditor instances
             if (el.tagName.toLowerCase() === 'textarea' &&
@@ -158,7 +161,6 @@ export function initiateContentTemplate() {
 
             // Process repeatable fields
             if (el.closest('.repeatable-token')) {
-                console.log("Processing repeatable field:", el);
                 const repeatableArea = el.closest('.repeatable-input-area');
                 if (repeatableArea) {
                     return;
@@ -187,7 +189,6 @@ export function initiateContentTemplate() {
                     }
                 }
             } else if (name) {
-                console.log("Processing regular field:", el);
                 formData[name] = value;
             }
         });
@@ -209,23 +210,17 @@ export function initiateContentTemplate() {
             formData[repeatableName] = JSON.stringify(repeatableItems);
         }
 
-        console.log("Final form data:", formData);
         return JSON.stringify(formData);
     }
 
-    function handleFormSubmit(e) {
-        console.log("Form submitted");
-        e.preventDefault();
+    function handleInputChange(e) {
+        // Exclude changes from repeatable input area template
+        if (e.target.closest('.repeatable-input-area')) return;
 
-        if (contentTemplateForm.dataset.submitting === 'true') {
-            return false;
-        }
+        let contentTemplateForm = e.target.closest('form');
 
-        contentTemplateForm.dataset.submitting = 'true';
-
-        const jsonData = serializeContentTemplateForm();
-
-        console.log("Serialized data:", jsonData);
+        // Serialize form data
+        const jsonData = serializeContentTemplateForm(e.target.closest('[data-content-template-container]'));
 
         // Remove existing hidden input if it exists
         const existingPropertiesInput = contentTemplateForm.querySelector('input[name="Properties"]');
@@ -239,30 +234,43 @@ export function initiateContentTemplate() {
         hiddenInput.name = 'Properties';
         hiddenInput.value = jsonData;
         contentTemplateForm.appendChild(hiddenInput);
-
-        if (!contentTemplateForm.closest('[data-content-admin-editor]')) {
-            // Submit widget form, in content block no need to submit
-            contentTemplateForm.submit();
-        }
-
-        setTimeout(() => {
-            contentTemplateForm.dataset.submitting = 'false';
-        }, 500);
     }
 
     function initializeRepeatableTokens() {
-        document.addEventListener('click', handleRepeatableTokensClick);
+        $(document).off('click.repeatableTokens', '[data-content-template-container] .add-repeatable-item');
+        $(document).on('click.repeatableTokens', '[data-content-template-container] .add-repeatable-item', handleAddRepeatableTokensClick);
+
+        $(document).off('click.repeatableTokens', '[data-content-template-container] .remove-repeatable-item');
+        $(document).on('click.repeatableTokens', '[data-content-template-container] .remove-repeatable-item', handleRemoveRepeatableTokensClick);
     }
 
-    function initFormSubmit() {
-        contentTemplateForm.addEventListener('submit', handleFormSubmit);
+    function attachInputListeners() {
+        $(document).on('input.ContentTemplate', '[data-content-template-container] input', handleInputChange);
+        $(document).on('input.ContentTemplate', '[data-content-template-container] select', handleInputChange);
+        $(document).on('input.ContentTemplate', '[data-content-template-container] textarea:not(.enable-editor)', handleInputChange);
+
+        CKEDITOR.once('instanceReady', function (event) {
+            // Add change event listener to the editor instance
+            event.editor.on('change', function () {
+                // Create a synthetic event with a target property that contains the editor element
+                const syntheticEvent = {
+                    target: document.getElementById(event.editor.name)
+                };
+                handleInputChange(syntheticEvent);
+            });
+        });
     }
 
-    // Initialize everything
-    cleanup();
+    // Cache DOM selectors
+    const contentTemplateContainer = document.querySelector('[data-content-template-container]');
+    if (!contentTemplateContainer) return;
+
     initializeRepeatableTokens();
-    initFormSubmit();
+    cleanup();
+
+    attachInputListeners();
 }
+
 
 export function initContentTemplateTokens() {
     function initializeDragAndDrop() {
