@@ -29,11 +29,7 @@ namespace MrCMS.Batching
             };
             var url = _urlHelper.Action("ExecuteNext", "BatchExecution", routeValues,
                 _urlHelper.ActionContext.HttpContext.Request.Scheme);
-#pragma warning disable 4014
-            // ReSharper disable LindhartAnalyserMissingAwaitWarning
-            httpClient.GetAsync(url); // this is intentionally not awaited as it's fire and forget
-            // ReSharper restore LindhartAnalyserMissingAwaitWarning
-#pragma warning restore 4014
+            _ = httpClient.GetAsync(url);
             return Task.CompletedTask;
         }
     }

@@ -151,7 +151,7 @@ namespace MrCMS.Web.Admin.Controllers
                     FileName = "Error list.csv",
                     Inline = true
                 };
-                Response.Headers.Add("Content-Disposition", cd.ToString());
+                Response.Headers["Content-Disposition"] = cd.ToString();
                 return File(errorBytes, csvContentType);
             }
 

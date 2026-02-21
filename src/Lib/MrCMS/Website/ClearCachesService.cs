@@ -32,7 +32,10 @@ namespace MrCMS.Website
                 cache.ClearCache();
             }
 
-            foreach (var (_, value) in (_factory as SessionFactoryImpl)?.GetAllSecondLevelCacheRegions()?? new Dictionary<string, ICache>())
+            // ICache is deprecated by NHibernate in favour of CacheBase, but GetAllSecondLevelCacheRegions still returns ICache
+#pragma warning disable CS0618
+            foreach (var (_, value) in (_factory as SessionFactoryImpl)?.GetAllSecondLevelCacheRegions() ?? new Dictionary<string, ICache>())
+#pragma warning restore CS0618
             {
                 value.Clear();
             }

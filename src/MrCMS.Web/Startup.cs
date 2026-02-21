@@ -254,11 +254,11 @@ namespace MrCMS.Web
 
             app.Use(async (context, next) =>
             {
-                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
-                context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
-                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-                context.Response.Headers.Add("Referrer-Policy", "same-origin");
-                context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
+                context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
+                context.Response.Headers["X-Xss-Protection"] = "1; mode=block";
+                context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+                context.Response.Headers["Referrer-Policy"] = "same-origin";
+                context.Response.Headers["X-Permitted-Cross-Domain-Policies"] = "none";
                 await next();
             });
 

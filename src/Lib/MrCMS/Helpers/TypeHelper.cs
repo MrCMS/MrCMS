@@ -469,8 +469,6 @@ namespace MrCMS.Helpers
             {
                 return default;
             }
-
-            return systemEntity;
         }
 
         /// <summary>

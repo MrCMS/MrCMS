@@ -56,11 +56,7 @@ namespace MrCMS.Services
 
         private static byte[] CreateSalt(int size)
         {
-            //Generate a cryptographic random number.
-            var rng = new RNGCryptoServiceProvider();
-            var buff = new byte[size];
-            rng.GetBytes(buff);
-            return buff;
+            return RandomNumberGenerator.GetBytes(size);
         }
     }
 }

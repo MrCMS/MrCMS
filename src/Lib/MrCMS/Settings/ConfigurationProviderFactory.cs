@@ -9,12 +9,13 @@ namespace MrCMS.Settings
     {
         private readonly IStatelessSession _session;
         private readonly ICacheManager _cacheManager;
-        private IEventContext _eventContext;
+        private readonly IEventContext _eventContext;
 
-        public ConfigurationProviderFactory(IStatelessSession session, ICacheManager cacheManager)
+        public ConfigurationProviderFactory(IStatelessSession session, ICacheManager cacheManager, IEventContext eventContext)
         {
             _session = session;
             _cacheManager = cacheManager;
+            _eventContext = eventContext;
         }
 
         public IConfigurationProvider GetForSite(Site site)
