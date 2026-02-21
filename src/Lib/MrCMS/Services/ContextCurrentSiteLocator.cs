@@ -1,7 +1,7 @@
 using System;
-using System.Configuration;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using NHibernate.Linq;
@@ -18,14 +18,17 @@ namespace MrCMS.Services
         private readonly IRepository<Site> _siteRepository;
         private readonly IRepository<RedirectedDomain> _redirectedDomainRepository;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IConfiguration _configuration;
 
         public ContextCurrentSiteLocator(IRepository<Site> siteRepository,
             IRepository<RedirectedDomain> redirectedDomainRepository,
-            IHttpContextAccessor contextAccessor)
+            IHttpContextAccessor contextAccessor,
+            IConfiguration configuration)
         {
             _siteRepository = siteRepository;
             _redirectedDomainRepository = redirectedDomainRepository;
             _contextAccessor = contextAccessor;
+            _configuration = configuration;
         }
 
         public Site GetCurrentSite()
@@ -45,7 +48,7 @@ namespace MrCMS.Services
             {
                 Site = site
             });
-            
+
             return site;
         }
 
@@ -62,10 +65,9 @@ namespace MrCMS.Services
 
         private Site GetSiteFromSettingForDebugging()
         {
-            var appSetting = ConfigurationManager.AppSettings["debugSiteId"];
+            var appSetting = _configuration["debugSiteId"];
 
-            int id;
-            return int.TryParse(appSetting, out id)
+            return int.TryParse(appSetting, out var id)
                 ? _siteRepository.Query().FirstOrDefault(x => x.Id == id)
                 : null;
         }

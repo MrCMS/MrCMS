@@ -28,9 +28,9 @@
     "watch:css:front-end": "parcel watch wwwroot/Areas/Admin/Content/styles/mrcms-frontendediting.scss --target front-end-css -p 1237"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.6.0",
+    "@parcel/transformer-sass": "^2.16.4",
     "concurrently": "^7.1.0",
-    "parcel": "^2.6.0"
+    "parcel": "^2.16.4"
   },
   "dependencies": {
     "cron-parser": "^4.9.0",

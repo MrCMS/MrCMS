@@ -137,13 +137,7 @@ namespace MrCMS.Web
             }
 
             services.RegisterSiteLocator();
-            services.RegisterSettings();
-            services.RegisterShortCodeRenderers();
-            services.RegisterFormRenderers();
-            services.RegisterTokenProviders();
-            services.RegisterWebpageMetadata();
-            services.RegisterContentTemplateTokenProvider();
-            services.RegisterRouteTransformers();
+            services.RegisterAllDiscoveredServices();
             services.AddSingleton<IWebpageMetadataService, WebpageMetadataService>();
 
             services.AddMvcForMrCMS(appContext);

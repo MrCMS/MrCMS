@@ -16,6 +16,9 @@ namespace MrCMS.Helpers
     public static class TypeHelper
     {
         private static HashSet<Type> _allTypes;
+        private static HashSet<Type> _allConcreteTypes;
+        private static HashSet<Type> _mappedClasses;
+        private static Dictionary<Type, Type> _simpleInterfaceImplementationPairings;
         static HashSet<Assembly> _mrCMSAssemblies;
         private static bool _initialized = false;
 
@@ -148,9 +151,10 @@ namespace MrCMS.Helpers
                 .ToHashSet();
         }
 
-        public static HashSet<Type> MappedClasses => GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type =>
-            type.IsPublic &&
-            !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any());
+        public static HashSet<Type> MappedClasses => _mappedClasses ??=
+            GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type =>
+                type.IsPublic &&
+                !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any());
 
         public static HashSet<Type> GetMappedClassesAssignableFrom<T>()
         {
@@ -165,6 +169,12 @@ namespace MrCMS.Helpers
         public static HashSet<Type> GetAllTypesAssignableFrom<T>()
         {
             return GetAllTypesAssignableFrom(typeof(T));
+        }
+
+        public static HashSet<Type> GetAllConcreteTypes()
+        {
+            return _allConcreteTypes ??= GetAllTypes()
+                .FindAll(t => !t.IsAbstract && !t.IsInterface);
         }
 
         public static HashSet<Type> GetAllConcreteTypesAssignableFrom<T>()
@@ -578,15 +588,48 @@ namespace MrCMS.Helpers
 
         public static Dictionary<Type, Type> GetSimpleInterfaceImplementationPairings()
         {
+            if (_simpleInterfaceImplementationPairings != null)
+                return _simpleInterfaceImplementationPairings;
+
             var allTypes = GetAllTypes();
-            var interfaces = allTypes.Where(x => x.GetTypeInfo().IsInterface)
-                .Where(x => !x.IsGenericTypeDefinition);
 
-            var interfaceCountDictionary = interfaces.ToDictionary(x => x,
-                x => allTypes.FindAll(y => x.IsAssignableFrom(y) && !y.IsAbstract && !y.IsGenericTypeDefinition));
+            var mrCMSInterfaces = new HashSet<Type>();
+            foreach (var type in allTypes)
+            {
+                if (type.IsInterface && !type.IsGenericTypeDefinition)
+                    mrCMSInterfaces.Add(type);
+            }
 
-            return interfaceCountDictionary.Where(x => x.Value.Count == 1).ToDictionary(x => x.Key,
-                x => x.Value.First());
+            // Inverted approach: iterate concrete types once and collect their interface implementations.
+            // Original was O(interfaces × types); this is O(types × avg_interfaces_per_type).
+            var implementationMap = new Dictionary<Type, (Type first, int count)>();
+
+            foreach (var type in allTypes)
+            {
+                if (type.IsAbstract || type.IsInterface || type.IsGenericTypeDefinition)
+                    continue;
+
+                foreach (var iface in type.GetInterfaces())
+                {
+                    if (!mrCMSInterfaces.Contains(iface))
+                        continue;
+
+                    if (implementationMap.TryGetValue(iface, out var entry))
+                        implementationMap[iface] = (entry.first, entry.count + 1);
+                    else
+                        implementationMap[iface] = (type, 1);
+                }
+            }
+
+            var result = new Dictionary<Type, Type>();
+            foreach (var kvp in implementationMap)
+            {
+                if (kvp.Value.count == 1)
+                    result[kvp.Key] = kvp.Value.first;
+            }
+
+            _simpleInterfaceImplementationPairings = result;
+            return result;
         }
 
         public static HashSet<Type> GetAllOpenGenericInterfaces()
