@@ -211,16 +211,16 @@ function selectBlock(event) {
     return false;
 }
 
-function mouseEnterBlock(event){
+function mouseEnterBlock(event) {
     const link = $(event.currentTarget);
     highlightPreviewBlock(link);
 }
 
-function mouseLeaveBlock(event){
+function mouseLeaveBlock(event) {
     clearHighlightPreviewBlock();
 }
 
-function clearHighlightPreviewBlock(){
+function clearHighlightPreviewBlock() {
     let iframe = document.querySelector('[data-content-admin-preview-pane]');
     if (iframe) {
         let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
@@ -248,25 +248,6 @@ function highlightPreviewBlock(element) {
         }
     }
 }
-
-
-// function setContentPreviewBlockClick() {
-//     let iframe = document.querySelector('[data-content-admin-preview-pane]');
-//     if (iframe) {
-//         const parentDoc = parent.document;
-//
-//         $(iframe).contents().find("body").append(`
-//         <script>
-//             let allPreviewBlocks= document.querySelectorAll('.mrcms-preview-block[data-content-block-id]');
-//             allPreviewBlocks.forEach(function(previewBlockItem){
-//                previewBlockItem.addEventListener('click',function(item){
-//                     console.log(item);
-//                 }); 
-//             });
-//         </script>`);
-//
-//     }
-// }
 
 function removeBlock(event) {
     const link = $(event.currentTarget);
@@ -309,7 +290,7 @@ function saveEditor(event) {
         reloadPreview();
         /*alert('success');*/
     });
-
+    
     return false;
 }
 
@@ -341,18 +322,35 @@ function triggerContentAdminExpandEditorEvent(isExpanded) {
 }
 
 export function setupContentAdmin() {
+    // Clean up any existing event handlers first
+    cleanupContentAdminEvents();
+
+    // Load the initial blocks
     loadBlocks();
 
-    $(document).on('click', '[data-content-admin-block-open]', openBlock)
-    $(document).on('click', '[data-content-admin-block-close]', closeBlock)
-    $(document).on('click', '[data-content-admin-block-select]', selectBlock)
-    $(document).on('mouseenter', '[data-content-admin-nav] li[data-id]', mouseEnterBlock)
-    $(document).on('mouseover', '[data-content-admin-nav] li[data-id]', mouseEnterBlock)
-    $(document).on('mouseleave', '[data-content-admin-nav] li[data-id]', mouseLeaveBlock)
-    $(document).on('click', '[data-content-admin-block-remove]', removeBlock)
-    $(document).on('click', '[data-content-admin-add-child]', addChild)
-    $(document).on('submit', '[data-content-admin-save-editor]', saveEditor)
-    $(document).on('click', '[data-content-admin-hide-editor]', hideEditor)
-    $(document).on('click', '[data-content-admin-expand-editor]', ToggleExpandBlock);
-    $('[data-content-admin-preview-pane]').on('load', updateContentEditor);
+    // Attach event handlers with namespaces for easy cleanup
+    $(document).on('click.contentAdmin', '[data-content-admin-block-open]', openBlock);
+    $(document).on('click.contentAdmin', '[data-content-admin-block-close]', closeBlock);
+    $(document).on('click.contentAdmin', '[data-content-admin-block-select]', selectBlock);
+    $(document).on('mouseenter.contentAdmin', '[data-content-admin-nav] li[data-id]', mouseEnterBlock);
+    $(document).on('mouseover.contentAdmin', '[data-content-admin-nav] li[data-id]', mouseEnterBlock);
+    $(document).on('mouseleave.contentAdmin', '[data-content-admin-nav] li[data-id]', mouseLeaveBlock);
+    $(document).on('click.contentAdmin', '[data-content-admin-block-remove]', removeBlock);
+    $(document).on('click.contentAdmin', '[data-content-admin-add-child]', addChild);
+    $(document).on('submit.contentAdmin', '[data-content-admin-save-editor]', saveEditor);
+    $(document).on('click.contentAdmin', '[data-content-admin-hide-editor]', hideEditor);
+    $(document).on('click.contentAdmin', '[data-content-admin-expand-editor]', ToggleExpandBlock);
+
+    // Use off() before on() to ensure we don't have duplicate handlers
+    $('[data-content-admin-preview-pane]').off('load.contentAdmin').on('load.contentAdmin', updateContentEditor);
+
+    // Set a flag indicating setup is complete
+    $(document).data('contentAdminSetup', true);
+}
+
+// New function to clean up event handlers
+function cleanupContentAdminEvents() {
+    // Remove all content admin namespaced events
+    $(document).off('.contentAdmin');
+    $('[data-content-admin-preview-pane]').off('.contentAdmin');
 }
