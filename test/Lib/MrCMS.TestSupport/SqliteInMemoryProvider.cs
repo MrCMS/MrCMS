@@ -12,8 +12,10 @@ namespace MrCMS.TestSupport
 
         public IPersistenceConfigurer GetPersistenceConfigurer()
         {
-            return SQLiteConfiguration.Standard.Dialect<SQLiteDialect>()
-                .InMemory()
+            return SQLiteConfiguration.Standard.Dialect<MicrosoftDataSqliteDialect>()
+                .Driver<MicrosoftDataSqliteDriver>()
+                // foreign keys off to match System.Data.SQLite's default, which these tests were written against
+                .ConnectionString("Data Source=:memory:;Foreign Keys=False")
                 .Raw(NHibernate.Cfg.Environment.ReleaseConnections, "on_close");
         }
 

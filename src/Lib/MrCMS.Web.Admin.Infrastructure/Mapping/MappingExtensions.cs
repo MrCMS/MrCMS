@@ -1,69 +1,57 @@
-﻿using System;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using AutoMapper;
+using Mapster;
 using MrCMS.Entities;
-using NHibernate;
+using MrCMS.Mapping;
 
 namespace MrCMS.Web.Admin.Infrastructure.Mapping
 {
     public static class MappingExtensions
     {
-        public static IMappingExpression<TSource, TDestination> MapEntityLookup<TSource, TDestination, TEntity>(
-            this IMappingExpression<TSource, TDestination> expression,
+        /// <summary>
+        /// Sets an entity reference on the destination by loading it from the current session using an id on the source
+        /// (e.g. model.ParentId -> webpage.Parent).
+        /// </summary>
+        public static TypeAdapterSetter<TSource, TDestination> MapEntityLookup<TSource, TDestination, TEntity>(
+            this TypeAdapterSetter<TSource, TDestination> setter,
             Expression<Func<TSource, int?>> selector,
             Expression<Func<TDestination, TEntity>> destinationEntity,
-            Expression<Func<TSource, TDestination, bool>> condition = null)
+            Func<TSource, TDestination, bool> condition = null)
             where TEntity : SystemEntity
         {
-            return expression
-                .ForMember(destinationEntity,
-                    configurationExpression => configurationExpression.Ignore()).AfterMap(
-                    (source, destination, context) =>
-                    {
-                        if (condition != null && !condition.Compile()(source, destination))
-                        {
-                            return;
-                        }
+            var entityProperty = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo
+                                 ?? throw new ArgumentException("Destination must be a property", nameof(destinationEntity));
+            var idFunc = selector.Compile();
 
-                        var session = context.Items["Session"] as ISession;
-                        if (session == null)
-                            return;
-                        var entityPropertyInfo = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo;
-                        var idFunc = selector.Compile();
-                        var id = idFunc(source);
-                        entityPropertyInfo?.SetValue(destination, id == null ? null : session.Get<TEntity>(id));
-                    });
+            return setter
+                .Ignore(entityProperty.Name)
+                .AfterMapping((source, destination) =>
+                {
+                    if (condition != null && !condition(source, destination))
+                        return;
+
+                    var session = MapContext.Current.GetSession();
+                    if (session == null)
+                        return;
+
+                    var id = idFunc(source);
+                    entityProperty.SetValue(destination, id == null ? null : session.Get<TEntity>(id));
+                });
         }
 
-        public static IMappingExpression MapEntityLookup(
-            this IMappingExpression expression,
-            string sourcePropertyName,
-            string destinationPropertyName)
+        /// <summary>
+        /// Replaces the contents of an existing collection on the destination rather than swapping the instance,
+        /// which NHibernate requires for mapped collections.
+        /// </summary>
+        public static void ReplaceContents<T>(this ISet<T> target, IEnumerable<T> values)
         {
-            return expression
-                .ForMember(destinationPropertyName,
-                    configurationExpression => configurationExpression.Ignore()).AfterMap(
-                    (source, destination, context) =>
-                    {
-                        var session = context.Items["Session"] as ISession;
-                        if (session == null)
-                            return;
-
-                        var sourceProperty = source?.GetType().GetProperties()
-                            .FirstOrDefault(x => x.Name == sourcePropertyName);
-                        var destinationProperty = destination?.GetType().GetProperties()
-                            .FirstOrDefault(x => x.Name == destinationPropertyName);
-
-                        if (sourceProperty == null || destinationProperty == null ||
-                            !typeof(SystemEntity).IsAssignableFrom(destinationProperty.PropertyType))
-                            return;
-
-                        var id = sourceProperty.GetValue(source);
-                        destinationProperty.SetValue(destination,
-                            id == null ? null : session.Get(destinationProperty.PropertyType, id));
-                    });
+            target.Clear();
+            if (values == null)
+                return;
+            foreach (var value in values)
+                target.Add(value);
         }
     }
 }

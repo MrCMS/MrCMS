@@ -36,11 +36,11 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void RoleController_AddPost_ReturnsRedirectToActionResult()
+        public async Task RoleController_AddPost_ReturnsRedirectToActionResult()
         {
             var model = new AddRoleModel();
 
-            _sut.Add(model).Should().BeOfType<RedirectToActionResult>();
+            (await _sut.Add(model)).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
@@ -153,11 +153,11 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void RoleController_EditPost_ShouldRedirectToIndex()
+        public async Task RoleController_EditPost_ShouldRedirectToIndex()
         {
             var model = new UpdateRoleModel();
 
-            var result = _sut.Edit(model).As<RedirectToActionResult>();
+            var result = (await _sut.Edit(model)).As<RedirectToActionResult>();
 
             result.ActionName.Should().Be("Index");
         }

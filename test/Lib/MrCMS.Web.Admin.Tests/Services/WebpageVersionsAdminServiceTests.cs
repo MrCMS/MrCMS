@@ -28,7 +28,7 @@ namespace MrCMS.Web.Admin.Tests.Services
             var documentVersion = new WebpageVersion();
             await _webpageVersionRepository.Add(documentVersion);
 
-            var version = _webpageVersionsAdminService.GetWebpageVersion(documentVersion.Id);
+            var version = await _webpageVersionsAdminService.GetWebpageVersion(documentVersion.Id);
 
             version.Should().Be(documentVersion);
         }

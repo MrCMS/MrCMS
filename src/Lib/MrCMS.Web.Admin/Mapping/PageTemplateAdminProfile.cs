@@ -1,17 +1,19 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class PageTemplateAdminProfile : Profile
+    public class PageTemplateAdminProfile : IRegister
     {
-        public PageTemplateAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<PageTemplate, AddPageTemplateModel>().ReverseMap()
+            config.NewConfig<PageTemplate, AddPageTemplateModel>();
+            config.NewConfig<AddPageTemplateModel, PageTemplate>()
                 .MapEntityLookup(x => x.LayoutId, x => x.Layout);
-            CreateMap<PageTemplate, UpdatePageTemplateModel>().ReverseMap()
+            config.NewConfig<PageTemplate, UpdatePageTemplateModel>();
+            config.NewConfig<UpdatePageTemplateModel, PageTemplate>()
                 .MapEntityLookup(x => x.LayoutId, x => x.Layout);
         }
     }

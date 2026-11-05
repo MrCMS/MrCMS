@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -100,7 +100,13 @@ namespace MrCMS.Tests.Services
         {
             var admin = new User {IsActive = true};
             var userRole = new UserRole {Name = "Administrator", Users = new HashSet<User> {admin}};
-            await Session.TransactAsync(session => session.SaveAsync(userRole));
+            // User.Roles owns the relationship, so set both sides
+            admin.Roles = new HashSet<UserRole> {userRole};
+            await Session.TransactAsync(async session =>
+            {
+                await session.SaveAsync(userRole);
+                await session.SaveAsync(admin);
+            });
 
             var isOnlyAdmin = await _roleService.IsOnlyAdmin(admin);
 
@@ -113,7 +119,14 @@ namespace MrCMS.Tests.Services
             var admin1 = new User {IsActive = true};
             var admin2 = new User {IsActive = true};
             var userRole = new UserRole {Name = "Administrator", Users = new HashSet<User> {admin1, admin2}};
-            await Session.TransactAsync(session => session.SaveAsync(userRole));
+            admin1.Roles = new HashSet<UserRole> {userRole};
+            admin2.Roles = new HashSet<UserRole> {userRole};
+            await Session.TransactAsync(async session =>
+            {
+                await session.SaveAsync(userRole);
+                await session.SaveAsync(admin1);
+                await session.SaveAsync(admin2);
+            });
 
             var isOnlyAdmin = await _roleService.IsOnlyAdmin(admin1);
 

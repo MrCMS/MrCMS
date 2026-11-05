@@ -1,20 +1,19 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class LayoutAreaAdminProfile : Profile
+    public class LayoutAreaAdminProfile : IRegister
     {
-        public LayoutAreaAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            //CreateMap<LayoutArea, UpdateLayoutModel>().ReverseMap();
-            CreateMap<LayoutArea, AddLayoutAreaModel>().ReverseMap()
-                .MapEntityLookup(x=>x.LayoutId, area => area.Layout)
-                //.ForMember(x => x.Layout, expression => expression.ResolveUsing<LayoutAreaLayoutResolver>())
-                ;
-            CreateMap<LayoutArea, UpdateLayoutAreaModel>().ReverseMap();
+            config.NewConfig<LayoutArea, AddLayoutAreaModel>();
+            config.NewConfig<AddLayoutAreaModel, LayoutArea>()
+                .MapEntityLookup(x => x.LayoutId, x => x.Layout);
+            config.NewConfig<LayoutArea, UpdateLayoutAreaModel>();
+            config.NewConfig<UpdateLayoutAreaModel, LayoutArea>();
         }
     }
 }

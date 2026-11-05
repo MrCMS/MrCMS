@@ -37,7 +37,7 @@ namespace MrCMS.TestSupport
 
         public IQueryable<T> Query()
         {
-            return _store.Values.AsQueryable();
+            return InMemoryNhQueryProvider.Wrap(_store.Values);
         }
 
         public Task Update(T entity)

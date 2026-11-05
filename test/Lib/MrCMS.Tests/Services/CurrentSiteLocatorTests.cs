@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.TestSupport;
@@ -26,7 +27,7 @@ namespace MrCMS.Tests.Services
             _inMemoryRepository = new InMemoryRepository<Site>();
             _domainRepository = new InMemoryRepository<RedirectedDomain>();
             _contextCurrentSiteLocator = new ContextCurrentSiteLocator(_inMemoryRepository,
-                _domainRepository, _contextAccessor);
+                _domainRepository, _contextAccessor, new ConfigurationBuilder().Build());
         }
 
         // [Fact]
@@ -50,7 +51,10 @@ namespace MrCMS.Tests.Services
             var site2 = new Site { BaseUrl = "www.example.com" };
             await _inMemoryRepository.Add(site1);
             await _inMemoryRepository.Add(site2);
-            A.CallTo(() => _contextAccessor.HttpContext.Request.Host).Returns(new HostString("www.example.com"));
+            // a real context, so the locator's per-request feature cache starts empty
+            var context = new DefaultHttpContext();
+            context.Request.Host = new HostString("www.example.com");
+            A.CallTo(() => _contextAccessor.HttpContext).Returns(context);
 
             _contextCurrentSiteLocator.GetCurrentSite().Should().Be(site2);
         }

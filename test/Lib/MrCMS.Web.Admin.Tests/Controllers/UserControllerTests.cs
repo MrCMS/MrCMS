@@ -1,4 +1,9 @@
-﻿using FakeItEasy;
+using FakeItEasy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MrCMS.Website.Auth;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.People;
@@ -25,7 +30,13 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _roleService = A.Fake<IRoleService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
             _userImpersonationService = A.Fake<IUserImpersonationService>();
-            _userManager = A.Fake<UserManager>();
+            // UserManager's base constructor resolves services (e.g. IMeterFactory) from the provider,
+            // so give it a real (empty) one rather than letting FakeItEasy supply a fake
+            _userManager = A.Fake<UserManager>(options => options.WithArgumentsForConstructor(() => new UserManager(
+                A.Fake<IUserStore<User>>(), Options.Create(new IdentityOptions()), A.Fake<IPasswordHasher<User>>(),
+                new List<IUserValidator<User>>(), new List<IPasswordValidator<User>>(), A.Fake<ILookupNormalizer>(),
+                new IdentityErrorDescriber(), new ServiceCollection().BuildServiceProvider(),
+                A.Fake<ILogger<UserManager>>(), A.Fake<IAccessChecker>())));
             _signInManager = A.Fake<ISignInManager>();
             _userController = new UserController(_userService, _userSearchService, _roleService,
                 _getUserCultureOptions, _userImpersonationService, _userManager, _signInManager)
@@ -170,7 +181,9 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task UserController_SetPasswordGet_ReturnsTheIdPassedAsTheModel()
         {
             var user = new User();
-            var password = await _userController.SetPassword(0);
+            A.CallTo(() => _userService.GetUser(123)).Returns(user);
+
+            var password = await _userController.SetPassword(123);
             password.As<PartialViewResult>().Model.Should().Be(user);
         }
 

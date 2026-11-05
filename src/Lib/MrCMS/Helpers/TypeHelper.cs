@@ -30,15 +30,22 @@ namespace MrCMS.Helpers
         private static Func<Type, HashSet<Type>> _concreteTypesFunc;
 
 
+        private static readonly object InitializeLock = new();
+
         public static void Initialize(Assembly assembly)
         {
-            var assemblyName = assembly.GetName();
+            // concurrent callers (e.g. parallel test classes) could otherwise see an assembly as loaded
+            // before its references were recorded
+            lock (InitializeLock)
+            {
+                var assemblyName = assembly.GetName();
 
-            LoadAssemblies(new List<AssemblyName> {assemblyName});
+                LoadAssemblies(new List<AssemblyName> {assemblyName});
 
-            _mrCMSAssemblies = GetMrCMSAssemblies(assemblyName);
+                _mrCMSAssemblies = GetMrCMSAssemblies(assemblyName);
 
-            _initialized = true;
+                _initialized = true;
+            }
         }
 
         private static HashSet<Assembly> GetMrCMSAssemblies(AssemblyName assemblyName)

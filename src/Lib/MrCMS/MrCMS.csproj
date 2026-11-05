@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Configurations>Debug;Release;Debug-Skip-JS</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
@@ -12,34 +12,38 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <EmbeddedResource Include="Installation\Views\**" />
         <EmbeddedResource Include="Installation\Content\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.1" />
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
-        <PackageReference Include="Azure.Storage.Blobs.Batch" Version="12.14.0" />
-        <PackageReference Include="ClosedXML" Version="0.102.0" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.30.1" />
+        <PackageReference Include="Azure.Storage.Blobs.Batch" Version="12.27.1" />
+        <PackageReference Include="ClosedXML" Version="0.105.1" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
-        <PackageReference Include="Dapper" Version="2.1.66" />
+        <PackageReference Include="Dapper" Version="2.1.89" />
         <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
-        <PackageReference Include="dbup" Version="5.0.8" />
+        <PackageReference Include="dbup" Version="5.0.41" />
         <PackageReference Include="FluentNHibernate" Version="3.4.1" />
-        <PackageReference Include="Hangfire.SqlServer" Version="1.8.17" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.51" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.25" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.13.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+        <PackageReference Include="Mapster" Version="10.0.14" />
+        <PackageReference Include="Mapster.DependencyInjection" Version="10.0.14" />
         <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.12" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.12" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.14" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.14" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
         <PackageReference Include="MiniProfiler.AspNetCore" Version="4.5.4" />
-        <PackageReference Include="NCalcSync" Version="5.3.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="NHibernate" Version="5.6.0" />
+        <PackageReference Include="NCalcSync" Version="6.4.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="NHibernate" Version="5.7.1" />
         <PackageReference Include="NHibernate.Caches.CoreMemoryCache" Version="5.9.0" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.13" />
+        <PackageReference Include="SkiaSharp" Version="4.154.0" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.154.0" />
+        <!-- pinned above the version Microsoft.Data.SqlClient pulls in (9.0.11, GHSA-846f-f764-76mx) -->
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
         <PackageReference Include="X.PagedList" Version="8.4.7" />
         <PackageReference Include="X.PagedList.Mvc.Bootstrap4" Version="8.1.0" />
         <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />

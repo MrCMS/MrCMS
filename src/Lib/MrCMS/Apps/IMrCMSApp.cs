@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -28,7 +28,7 @@ namespace MrCMS.Apps
 
         IEndpointRouteBuilder MapRoutes(IEndpointRouteBuilder routeBuilder);
         void SetupMvcOptions(MvcOptions options);
-        void ConfigureAutomapper(IMapperConfigurationExpression expression);
+        void ConfigureMapping(TypeAdapterConfig config);
         void AppendConfiguration(Configuration configuration);
         void ConfigureAuthorization(AuthorizationOptions options);
     }

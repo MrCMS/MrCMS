@@ -1,12 +1,11 @@
-﻿using AutoMapper;
+using Mapster;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class MessageTemplateAdminProfile : Profile
+    public class MessageTemplateAdminProfile : IRegister
     {
-        public MessageTemplateAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            
         }
     }
 }

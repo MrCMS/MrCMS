@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -26,25 +26,25 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task UserService_AddUser_SavesAUserToSession()
         {
-            _session = A.Fake<ISession>();
-            _userManagementService = new UserManagementService(_session, EventContext);
-            var user = new User();
+            var user = new User { Email = "added@example.com" };
 
             await _userManagementService.AddUser(user);
 
-            A.CallTo(() => _session.SaveAsync(user, CancellationToken.None)).MustHaveHappened();
+            user.Id.Should().BeGreaterThan(0);
+            (await Session.QueryOver<User>().RowCountAsync()).Should().Be(1);
         }
 
         [Fact]
         public async Task UserService_SaveUser_UpdatesAUser()
         {
-            _session = A.Fake<ISession>();
-            _userManagementService = new UserManagementService(_session, EventContext);
-            var user = new User();
+            var user = new User { FirstName = "Before" };
+            await Session.TransactAsync(session => session.SaveAsync(user));
 
+            user.FirstName = "After";
             await _userManagementService.SaveUser(user);
+            Session.Clear();
 
-            A.CallTo(() => _session.UpdateAsync(user, CancellationToken.None)).MustHaveHappened();
+            (await Session.GetAsync<User>(user.Id)).FirstName.Should().Be("After");
         }
 
         [Fact]
@@ -53,15 +53,15 @@ namespace MrCMS.Tests.Services
             var user = new User { FirstName = "Test", LastName = "User" };
             await Session.TransactAsync(session => session.SaveOrUpdateAsync(user));
 
-            var loadedUser = _userManagementService.GetUser(user.Id);
+            var loadedUser = await _userManagementService.GetUser(user.Id);
 
             loadedUser.Should().BeSameAs(user);
         }
 
         [Fact]
-        public void UserService_GetUserDoesNotExist_ShouldReturnNull()
+        public async Task UserService_GetUserDoesNotExist_ShouldReturnNull()
         {
-            var loadedUser = _userManagementService.GetUser(-1);
+            var loadedUser = await _userManagementService.GetUser(-1);
 
             loadedUser.Should().BeNull();
         }
@@ -69,7 +69,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public async Task UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged()
         {
-            foreach (var i in Enumerable.Range(1, 15))
+            foreach (var i in Enumerable.Range(1, SessionHelper.DefaultPageSize + 5))
             {
                 await Session.TransactAsync(
                     session => session.SaveOrUpdateAsync(new User { FirstName = "Test " + i, LastName = "User" }));
@@ -77,7 +77,7 @@ namespace MrCMS.Tests.Services
 
             var users = await _userManagementService.GetAllUsersPaged(1);
 
-            users.Count.Should().Be(10);
+            users.Count.Should().Be(SessionHelper.DefaultPageSize);
             users.PageCount.Should().Be(2);
         }
 

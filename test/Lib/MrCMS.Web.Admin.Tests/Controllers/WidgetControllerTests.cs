@@ -1,5 +1,6 @@
-﻿using FakeItEasy;
+using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.TestSupport;
@@ -25,7 +26,10 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _widgetService = A.Fake<IWidgetAdminService>();
             _setAdminViewData = A.Fake<ISetWidgetAdminViewData>();
             _modelBindingHelperAdapter = A.Fake<IModelBindingHelperAdapter>();
-            _widgetController = new WidgetController(_widgetService, _setAdminViewData, _modelBindingHelperAdapter);
+            _widgetController = new WidgetController(_widgetService, _setAdminViewData, _modelBindingHelperAdapter)
+            {
+                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+            };
         }
 
         [Fact]
@@ -44,7 +48,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         {
             var model = new UpdateWidgetModel();
             object additionalPropertyModel = new object();
-            A.CallTo(() => _widgetService.GetAdditionalPropertyModel(model.Id)).Returns(additionalPropertyModel);
+            A.CallTo(() => _widgetService.GetUpdateAdditionalPropertyModel(model.Id)).Returns(additionalPropertyModel);
 
             await _widgetController.Edit(model);
 
@@ -56,7 +60,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         {
             var model = new UpdateWidgetModel();
             object additionalPropertyModel = new object();
-            A.CallTo(() => _widgetService.GetAdditionalPropertyModel(model.Id)).Returns(additionalPropertyModel);
+            A.CallTo(() => _widgetService.GetUpdateAdditionalPropertyModel(model.Id)).Returns(additionalPropertyModel);
             var textWidget = new TextWidget{LayoutArea = new LayoutArea{Id = 234}};
             A.CallTo(() => _widgetService.UpdateWidget(model, additionalPropertyModel)).Returns(textWidget);
 
@@ -78,27 +82,27 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WidgetController_DeleteGet_ReturnsPartialViewResult()
+        public async Task WidgetController_DeleteGet_ReturnsPartialViewResult()
         {
             var model = new UpdateWidgetModel();
             A.CallTo(() => _widgetService.GetEditModel(123)).Returns(model);
 
-            _widgetController.Delete_Get(123).Should().BeOfType<PartialViewResult>();
+            (await _widgetController.Delete_Get(123)).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
-        public void WidgetController_DeleteGet_ReturnsPassedObjectAsModel()
+        public async Task WidgetController_DeleteGet_ReturnsPassedObjectAsModel()
         {
             var model = new UpdateWidgetModel();
             A.CallTo(() => _widgetService.GetEditModel(123)).Returns(model);
 
-            _widgetController.Delete_Get(123).As<PartialViewResult>().Model.Should().Be(model);
+            (await _widgetController.Delete_Get(123)).As<PartialViewResult>().Model.Should().Be(model);
         }
 
         [Fact]
-        public void WidgetController_DeletePost_NullReturnUrlRedirectToActionResult()
+        public async Task WidgetController_DeletePost_NullReturnUrlRedirectToActionResult()
         {
-            _widgetController.Delete(123, null).Should().BeOfType<RedirectToActionResult>();
+            (await _widgetController.Delete(123, null)).Should().BeOfType<RedirectToActionResult>();
         }
 
         [Fact]
@@ -112,12 +116,12 @@ namespace MrCMS.Web.Admin.Tests.Controllers
 
 
         [Fact]
-        public void WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()
+        public async Task WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()
         {
             var textWidget = new TextWidget { LayoutArea = new LayoutArea { Id = 234 } };
             A.CallTo(() => _widgetService.DeleteWidget(123)).Returns(textWidget);
 
-            var result = _widgetController.Delete(123, null).As<RedirectToActionResult>();
+            var result = (await _widgetController.Delete(123, null)).As<RedirectToActionResult>();
 
             result.ControllerName.Should().Be("LayoutArea");
             result.ActionName.Should().Be("Edit");
@@ -125,12 +129,12 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WidgetController_DeletePost_ReturnUrlContainsWidgetEditIgnoreReturnUrl()
+        public async Task WidgetController_DeletePost_ReturnUrlContainsWidgetEditIgnoreReturnUrl()
         {
             var textWidget = new TextWidget {  LayoutArea = new LayoutArea { Id = 234 } };
             A.CallTo(() => _widgetService.DeleteWidget(123)).Returns(textWidget);
 
-            var result = _widgetController.Delete(123, "/widget/edit/1").As<RedirectToActionResult>();
+            var result = (await _widgetController.Delete(123, "/widget/edit/1")).As<RedirectToActionResult>();
 
             result.ControllerName.Should().Be("LayoutArea");
             result.ActionName.Should().Be("Edit");

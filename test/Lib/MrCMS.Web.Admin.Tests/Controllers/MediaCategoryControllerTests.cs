@@ -29,6 +29,8 @@ namespace MrCMS.Web.Admin.Tests.Controllers
             _mediaCategoryController =
                 new MediaCategoryController(_mediaCategoryAdminService, _fileAdminService, _currentSiteLocator)
                     { TempData = new MockTempDataDictionary() };
+            A.CallTo(() => _mediaCategoryAdminService.CanAdd(A<AddMediaCategoryModel>._))
+                .Returns(new IMediaCategoryAdminService.CanAddCategoryResult { Success = true });
         }
 
         [Fact]
@@ -108,12 +110,12 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Sort_ShouldBeAListOfSortItems()
+        public async Task MediaCategoryController_Sort_ShouldBeAListOfSortItems()
         {
             var sortItems = new List<SortItem> { };
             A.CallTo(() => _mediaCategoryAdminService.GetSortItems(123)).Returns(sortItems);
 
-            var viewResult = _mediaCategoryController.Sort(123).As<ViewResult>();
+            var viewResult = (await _mediaCategoryController.Sort(123)).As<ViewResult>();
 
             viewResult.Model.Should().Be(sortItems);
         }

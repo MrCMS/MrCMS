@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +23,9 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         private readonly FormController _formController;
 
         [Fact]
-        public void FormController_ClearFormData_ShouldReturnPartialViewResult()
+        public async Task FormController_ClearFormData_ShouldReturnPartialViewResult()
         {
-
-            var result = _formController.ClearFormData(0);
+            var result = await _formController.ClearFormData(0);
 
             result.Should().BeOfType<PartialViewResult>();
         }
@@ -34,7 +33,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task FormController_ClearFormDataPOST_ShouldCallClearFormData()
         {
-            var form = new Form();
+            var form = SetupForm();
             await _formController.ClearFormData_POST(0);
 
             A.CallTo(() => _formAdminService.ClearFormData(form)).MustHaveHappened();
@@ -59,7 +58,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task FormController_ExportFormData_ShouldCallExportFormData()
         {
-            var form = new Form();
+            var form = SetupForm();
 
             await _formController.ExportFormData(0);
 
@@ -78,7 +77,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task FormController_Posting_ReturnsTheResultOfTheCallToGetFormPostings()
         {
-            var form = new Form();
+            var form = SetupForm();
             var postingsModel = new PostingsModel(new StaticPagedList<FormPosting>(new FormPosting[0], 1, 1, 0), 1);
             A.CallTo(() => _formAdminService.GetFormPostings(form, 1, null)).Returns(postingsModel);
             var postings = await _formController.Postings(0, 1, null);
@@ -88,7 +87,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task FormController_Postings_CallsFormServiceGetFormPostingsWithPassedArguments()
         {
-            var form = new Form();
+            var form = SetupForm();
             await _formController.Postings(0, 1, null);
 
             A.CallTo(() => _formAdminService.GetFormPostings(form, 1, null)).MustHaveHappened();
@@ -105,6 +104,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         public async Task FormController_ViewPosting_ReturnsTheResultOfTheCallToGetFormPostingAsTheModel()
         {
             var formPosting = new FormPosting();
+            A.CallTo(() => _formAdminService.GetFormPosting(0)).Returns(formPosting);
             var viewPosting = await _formController.ViewPosting(0);
             viewPosting.As<PartialViewResult>().Model.Should().Be(formPosting);
         }
@@ -114,6 +114,13 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         {
             var viewPosting = await _formController.ViewPosting(0);
             viewPosting.Should().BeOfType<PartialViewResult>();
+        }
+
+        private Form SetupForm()
+        {
+            var form = new Form();
+            A.CallTo(() => _formAdminService.GetForm(0)).Returns(form);
+            return form;
         }
     }
 }

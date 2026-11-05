@@ -5,6 +5,8 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Events;
 using MrCMS.Helpers;
+using MrCMS.Services;
+using System;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
@@ -18,37 +20,51 @@ namespace MrCMS.TestSupport
         private static Configuration Configuration;
         private static ISessionFactory SessionFactory;
         protected ISession Session;
-        private readonly object lockObject = new object();
+        private static readonly object LockObject = new object();
 
         protected InMemoryDatabaseTest()
         {
-            if (Configuration == null)
+            lock (LockObject)
             {
-                lock (lockObject)
+                if (SessionFactory == null)
                 {
                     var assemblies = new List<Assembly> {typeof(InMemoryDatabaseTest).Assembly};
                     var configurator = new NHibernateConfigurator(new SqliteInMemoryProvider(), new MrCMSAppContext())
                     {
                         ManuallyAddedAssemblies = assemblies
                     };
-                    Configuration = configurator.GetConfiguration();
+                    var configuration = configurator.GetConfiguration();
 
-                    SessionFactory = Configuration.BuildSessionFactory();
+                    // only publish once fully built, so a failure is reported by every test rather than
+                    // leaving a half-initialised factory behind
+                    SessionFactory = configuration.BuildSessionFactory();
+                    Configuration = configuration;
                 }
             }
 
+            // each test gets a fresh database, so nothing cached by a previous test may be reused
+            ClearSecondLevelCache();
+
             var site = new Site {Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1};
-            Session = SessionFactory.OpenFilteredSession(ServiceProvider);
+            CurrentSite = site;
+            // entities saved through the session need the current site (see SetCoreProperties)
+            ServiceCollection.AddTransient<ICurrentSiteLocator>(_ => new FixedSiteLocator(() => CurrentSite));
+            // resolve services lazily so registrations a test makes after construction are still seen
+            Session = SessionFactory.OpenFilteredSession(new LazyServiceProvider(() => ServiceProvider));
             ServiceCollection.AddTransient<ISession>(provider => Session);
             ServiceCollection.AddTransient<IStatelessSession>(provider =>
                 SessionFactory.OpenStatelessSession(Session.Connection));
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
+            // tests assume the current site exists in the database (it is referenced by every site entity)
+            using (var transaction = Session.BeginTransaction())
+            {
+                Session.SaveAsync(site).GetAwaiter().GetResult();
+                transaction.CommitAsync().GetAwaiter().GetResult();
+            }
+
             SetupUser();
-
-
-            CurrentSite = site;
             //CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
             //CurrentRequestData.ErrorSignal = new ErrorSignal();
@@ -64,6 +80,15 @@ namespace MrCMS.TestSupport
         }
 
         protected Site CurrentSite { get; set; }
+
+        private static void ClearSecondLevelCache()
+        {
+            SessionFactory.EvictQueries();
+            foreach (var entityName in SessionFactory.GetAllClassMetadata().Keys)
+                SessionFactory.EvictEntity(entityName);
+            foreach (var role in SessionFactory.GetAllCollectionMetadata().Keys)
+                SessionFactory.EvictCollection(role);
+        }
 
 
         private void SetupUser()
@@ -105,6 +130,31 @@ namespace MrCMS.TestSupport
                 base.Dispose();
             }
         }
+    }
+
+    internal class LazyServiceProvider : IServiceProvider
+    {
+        private readonly Func<IServiceProvider> _getProvider;
+
+        public LazyServiceProvider(Func<IServiceProvider> getProvider)
+        {
+            _getProvider = getProvider;
+        }
+
+        public object GetService(Type serviceType) => _getProvider().GetService(serviceType);
+    }
+
+    internal class FixedSiteLocator : ICurrentSiteLocator
+    {
+        private readonly Func<Site> _getSite;
+
+        public FixedSiteLocator(Func<Site> getSite)
+        {
+            _getSite = getSite;
+        }
+
+        public Site GetCurrentSite() => _getSite();
+        public RedirectedDomain GetCurrentRedirectedDomain() => null;
     }
 
     public class DummyEvent : IEvent

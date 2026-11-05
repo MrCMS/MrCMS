@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -155,11 +155,19 @@ namespace MrCMS.Services.ImportExport
                 if (!worksheet.Cell(rowId, 12).GetValue<string>().IsValidInputDateTime())
                     parseErrors.Add("Publish Date is not a valid date.");
                 else
-                    item.PublishDate = worksheet.Cell(rowId, 12).GetValue<DateTime>();
+                    item.PublishDate = GetDateTime(worksheet.Cell(rowId, 12));
             }
 
             item.UrlHistory = GetUrlHistory(worksheet, rowId, parseErrors);
             return (item, parseErrors);
+        }
+
+        // the export writes dates as text; ClosedXML will not convert text cells with GetValue<DateTime>
+        private static DateTime GetDateTime(IXLCell cell)
+        {
+            return cell.DataType == XLDataType.DateTime
+                ? cell.GetDateTime()
+                : DateTime.Parse(cell.GetValue<string>());
         }
 
         private static List<string> GetUrlHistory(IXLWorksheet worksheet, int rowId, List<string> parseErrors)

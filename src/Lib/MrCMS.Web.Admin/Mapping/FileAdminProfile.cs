@@ -1,14 +1,15 @@
-using AutoMapper;
+using Mapster;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class FileAdminProfile : Profile
+    public class FileAdminProfile : IRegister
     {
-        public FileAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<MediaFile, UpdateFileSEOModel>().ReverseMap();
+            config.NewConfig<MediaFile, UpdateFileSEOModel>();
+            config.NewConfig<UpdateFileSEOModel, MediaFile>();
         }
     }
 }

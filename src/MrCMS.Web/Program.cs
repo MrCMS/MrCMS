@@ -1,3 +1,4 @@
+using MrCMS.Mapping;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -139,11 +140,7 @@ services.AddMrCMSData(isInstalled, configuration, environment);
 services.AddSiteProvider();
 services.AddMrCMSFileSystem();
 services.AddSignalR();
-services.AddAutoMapper(expression =>
-{
-    expression.AllowNullDestinationValues = true;
-    appContext.ConfigureAutomapper(expression);
-}, typeof(Program).Assembly);
+services.AddMrCMSMapping(appContext, typeof(Program).Assembly);
 
 if (!isInstalled)
 {
@@ -355,3 +352,5 @@ static bool IsPortAvailable(int port)
         return false;
     }
 }
+
+public partial class Program;

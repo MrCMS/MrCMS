@@ -1,15 +1,17 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Entities.Multisite;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class SiteAdminProfile : Profile
+    public class SiteAdminProfile : IRegister
     {
-        public SiteAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<Site, AddSiteModel>().ReverseMap();
-            CreateMap<Site, UpdateSiteModel>().ReverseMap();
+            config.NewConfig<Site, AddSiteModel>();
+            config.NewConfig<AddSiteModel, Site>();
+            config.NewConfig<Site, UpdateSiteModel>();
+            config.NewConfig<UpdateSiteModel, Site>();
         }
     }
 }

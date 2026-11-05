@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using AutoMapper;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;

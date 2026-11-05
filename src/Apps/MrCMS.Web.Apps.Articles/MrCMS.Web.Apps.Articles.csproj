@@ -1,14 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/Apps/Articles/</StaticWebAssetBasePath>
 	</PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.12" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.14" />
     </ItemGroup>
 
     <ItemGroup>

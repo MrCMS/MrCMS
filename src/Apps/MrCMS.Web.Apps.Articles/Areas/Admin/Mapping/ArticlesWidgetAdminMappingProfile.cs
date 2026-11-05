@@ -1,19 +1,22 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Widgets;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
 {
-    public class ArticlesWidgetAdminMappingProfile : Profile
+    public class ArticlesWidgetAdminMappingProfile : IRegister
     {
-        public ArticlesWidgetAdminMappingProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<ArticleArchive, UpdateArticleArchiveModel>().ReverseMap()
+            config.NewConfig<ArticleArchive, UpdateArticleArchiveModel>();
+            config.NewConfig<UpdateArticleArchiveModel, ArticleArchive>()
                 .MapEntityLookup(x => x.ArticleListId, x => x.ArticleList);
-            CreateMap<ArticleCategories, UpdateArticleCategoriesModel>().ReverseMap()
+            config.NewConfig<ArticleCategories, UpdateArticleCategoriesModel>();
+            config.NewConfig<UpdateArticleCategoriesModel, ArticleCategories>()
                 .MapEntityLookup(x => x.ArticleListId, x => x.ArticleList);
-            CreateMap<LatestXArticles, UpdateLatestXArticlesModel>().ReverseMap()
+            config.NewConfig<LatestXArticles, UpdateLatestXArticlesModel>();
+            config.NewConfig<UpdateLatestXArticlesModel, LatestXArticles>()
                 .MapEntityLookup(x => x.RelatedNewsListId, x => x.RelatedNewsList);
         }
     }

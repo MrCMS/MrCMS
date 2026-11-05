@@ -126,9 +126,9 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageController_EditGet_ShouldReturnAViewResult()
+        public async Task WebpageController_EditGet_ShouldReturnAViewResult()
         {
-            var result = _webpageController.Edit_Get(123);
+            var result = await _webpageController.Edit_Get(123);
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -182,13 +182,13 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageController_Sort_ShouldBeAListOfSortItems()
+        public async Task WebpageController_Sort_ShouldBeAListOfSortItems()
         {
             var parent = new TextPage();
             var sortItems = new List<SortItem>();
             A.CallTo(() => _webpageAdminService.GetSortItems(123)).Returns(sortItems);
 
-            var viewResult = _webpageController.Sort(123).As<ViewResult>();
+            var viewResult = (await _webpageController.Sort(123)).As<ViewResult>();
 
             viewResult.Model.Should().Be(sortItems);
         }
@@ -202,18 +202,18 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         }
 
         [Fact]
-        public void WebpageController_DeleteGet_ReturnsPartialViewResult()
+        public async Task WebpageController_DeleteGet_ReturnsPartialViewResult()
         {
-            _webpageController.Delete_Get(123).Should().BeOfType<PartialViewResult>();
+            (await _webpageController.Delete_Get(123)).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
-        public void WebpageController_DeleteGet_ReturnsWebpageAsModel()
+        public async Task WebpageController_DeleteGet_ReturnsWebpageAsModel()
         {
             var textPage = new TextPage();
             A.CallTo(() => _webpageAdminService.GetWebpage(123)).Returns(textPage);
 
-            _webpageController.Delete_Get(123).As<PartialViewResult>().Model.Should().Be(textPage);
+            (await _webpageController.Delete_Get(123)).As<PartialViewResult>().Model.Should().Be(textPage);
         }
 
         [Fact]
@@ -284,6 +284,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         {
             var documentVersion = new WebpageVersion();
 
+            A.CallTo(() => _webpageVersionsAdminService.GetWebpageVersion(0)).Returns(documentVersion);
             var viewChanges = await _webpageController.ViewChanges(0);
             viewChanges.Should().BeOfType<PartialViewResult>();
         }
@@ -291,6 +292,7 @@ namespace MrCMS.Web.Admin.Tests.Controllers
         [Fact]
         public async Task WebpageController_ViewChanges_NullDocumentVersionRedirectsToIndex()
         {
+            A.CallTo(() => _webpageVersionsAdminService.GetWebpageVersion(0)).Returns((WebpageVersion)null);
             var result = await _webpageController.ViewChanges(0);
 
             result.Should().BeOfType<RedirectToActionResult>();

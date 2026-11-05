@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,10 +45,10 @@ namespace MrCMS.Apps
         {
         }
 
-        public virtual void ConfigureAutomapper(IMapperConfigurationExpression expression)
+        public virtual void ConfigureMapping(TypeAdapterConfig config)
         {
-            expression.AddProfiles(Assembly.GetTypes().Where(x => typeof(Profile).IsAssignableFrom(x))
-                .Select(Activator.CreateInstance).Cast<Profile>());
+            // registers every IRegister (mapping configuration) class in the app's assembly
+            config.Scan(Assembly);
         }
 
         public virtual void AppendConfiguration(Configuration configuration)

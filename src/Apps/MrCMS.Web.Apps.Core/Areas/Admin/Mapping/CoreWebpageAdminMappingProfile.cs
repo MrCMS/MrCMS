@@ -1,14 +1,15 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Web.Apps.Core.Areas.Admin.Models.Webpages;
 using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Areas.Admin.Mapping
 {
-    public class CoreWebpageAdminMappingProfile : Profile
+    public class CoreWebpageAdminMappingProfile : IRegister
     {
-        public CoreWebpageAdminMappingProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<TextPage, TextPageViewModel>().ReverseMap();
+            config.NewConfig<TextPage, TextPageViewModel>();
+            config.NewConfig<TextPageViewModel, TextPage>();
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Multisite;
@@ -116,7 +115,7 @@ namespace MrCMS.Web.Admin.Tests.Services
             var site = new Site();
             await Session.TransactAsync(session => session.SaveAsync(site));
 
-            _siteService.GetSite(site.Id).Should().Be(site);
+            (await _siteService.GetSite(site.Id)).Should().Be(site);
         }
     }
 }

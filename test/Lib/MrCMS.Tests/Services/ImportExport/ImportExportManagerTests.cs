@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+using System.Threading.Tasks;
+using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Documents.Web;
@@ -35,9 +36,9 @@ namespace MrCMS.Tests.Services.ImportExport
         }
 
         [Fact]
-        public void ImportExportManager_ExportDocumentsToExcel_ShouldReturnByteArray()
+        public async Task ImportExportManager_ExportDocumentsToExcel_ShouldReturnByteArray()
         {
-            var result = _importExportManager.ExportWebpagesToExcel();
+            var result = await _importExportManager.ExportWebpagesToExcel();
 
             result.Should().BeOfType<byte[]>();
         }

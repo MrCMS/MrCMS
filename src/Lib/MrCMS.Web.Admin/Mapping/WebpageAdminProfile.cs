@@ -1,5 +1,6 @@
-﻿using System;
-using AutoMapper;
+using System;
+using Mapster;
+using MrCMS.Mapping;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models;
@@ -7,60 +8,52 @@ using MrCMS.Web.Admin.Models.WebpageEdit;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class WebpageAdminProfile : Profile
+    public class WebpageAdminProfile : IRegister
     {
-        public WebpageAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<Webpage, AddWebpageModel>().ReverseMap()
+            config.NewConfig<Webpage, AddWebpageModel>();
+            config.NewConfig<AddWebpageModel, Webpage>()
                 .MapEntityLookup(x => x.ParentId, x => x.Parent)
-                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
-                ;
-            CreateMap<Webpage, UpdateWebpageViewModel>().ReverseMap();
-            CreateMap<Webpage, LayoutTabViewModel>().ReverseMap()
-                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
-                ;
-            CreateMap<Webpage, PermissionsTabViewModel>()
-                .ReverseMap()
-                .ForMember(webpage => webpage.FrontEndAllowedRoles,
-                    expression => expression.MapFrom<FrontEndAllowedRoleMapper>())
-                .ForMember(webpage => webpage.PasswordAccessToken,
-                    expression => expression.MapFrom((model, webpage, destMember, context) =>
+                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate);
+            config.NewConfig<Webpage, UpdateWebpageViewModel>();
+            config.NewConfig<UpdateWebpageViewModel, Webpage>();
+            config.NewConfig<Webpage, LayoutTabViewModel>();
+            config.NewConfig<LayoutTabViewModel, Webpage>()
+                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate);
+            config.NewConfig<Webpage, PermissionsTabViewModel>();
+            config.NewConfig<PermissionsTabViewModel, Webpage>()
+                .Ignore(webpage => webpage.FrontEndAllowedRoles, webpage => webpage.PasswordAccessToken, webpage => webpage.Password)
+                .AfterMapping((model, webpage) =>
+                {
+                    var roles = MapContext.Current.CreateWithServices<FrontEndAllowedRoleMapper>().Resolve(model);
+                    if (webpage.FrontEndAllowedRoles == null)
+                        webpage.FrontEndAllowedRoles = roles;
+                    else
+                        webpage.FrontEndAllowedRoles.ReplaceContents(roles);
+
+                    // if it should be set
+                    if (model.HasCustomPermissions && model.PermissionType == WebpagePermissionType.PasswordBased)
                     {
-                        // if it should be set
-                        if (model.HasCustomPermissions &&
-                            model.PermissionType == WebpagePermissionType.PasswordBased)
-                        {
-                            // if the password is the same
-                            if (model.Password == webpage.Password)
-                            {
-                                // keep it the same
-                                return webpage.PasswordAccessToken;
-                            }
-
-                            // otherwise get a new one
-                            return Guid.NewGuid();
-                        }
-
-                        // if it's not set, return null
-                        return null;
-                    }))
-                .ForMember(webpage => webpage.Password,
-                    expression => expression.MapFrom((model, webpage) =>
+                        // keep the token if the password is the same, otherwise get a new one
+                        if (model.Password != webpage.Password)
+                            webpage.PasswordAccessToken = Guid.NewGuid();
+                        webpage.Password = (model.Password ?? string.Empty).Trim();
+                    }
+                    else
                     {
-                        // if it should be set
-                        if (model.HasCustomPermissions &&
-                            model.PermissionType == WebpagePermissionType.PasswordBased)
-                            // return from model
-                            return (model.Password ?? string.Empty).Trim();
-                        // otherwise return null
-                        return null;
-                    }))
-                ;
-            CreateMap<Webpage, WebpagePropertiesTabViewModel>().ReverseMap();
-            CreateMap<Webpage, SEOTabViewModel>().ReverseMap();
-
-            CreateMap<Redirect, RedirectViewModel>().ReverseMap();
-            CreateMap<Redirect, RedirectSEOTabViewModel>().ReverseMap();
+                        webpage.PasswordAccessToken = null;
+                        webpage.Password = null;
+                    }
+                });
+            config.NewConfig<Webpage, WebpagePropertiesTabViewModel>();
+            config.NewConfig<WebpagePropertiesTabViewModel, Webpage>();
+            config.NewConfig<Webpage, SEOTabViewModel>();
+            config.NewConfig<SEOTabViewModel, Webpage>();
+            config.NewConfig<Redirect, RedirectViewModel>();
+            config.NewConfig<RedirectViewModel, Redirect>();
+            config.NewConfig<Redirect, RedirectSEOTabViewModel>();
+            config.NewConfig<RedirectSEOTabViewModel, Redirect>();
         }
     }
 }

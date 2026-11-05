@@ -176,7 +176,7 @@ namespace MrCMS.Tests.Services
             };
             await Session.TransactAsync(session => session.SaveAsync(mediaFile));
 
-            var fileByLocation = fileService.GetFileByUrl(fileUrl);
+            var fileByLocation = await fileService.GetFileByUrl(fileUrl);
 
             fileByLocation.Should().Be(mediaFile);
         }

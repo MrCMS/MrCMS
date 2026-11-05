@@ -8,7 +8,6 @@ using MrCMS.TestSupport;
 using MrCMS.Web.Admin.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using MrCMS.Mapping;
 using Xunit;
 

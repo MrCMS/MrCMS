@@ -1,15 +1,16 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class UrlHistoryAdminProfile : Profile
+    public class UrlHistoryAdminProfile : IRegister
     {
-        public UrlHistoryAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<UrlHistory, AddUrlHistoryModel>().ReverseMap()
+            config.NewConfig<UrlHistory, AddUrlHistoryModel>();
+            config.NewConfig<AddUrlHistoryModel, UrlHistory>()
                 .MapEntityLookup(x => x.WebpageId, x => x.Webpage);
         }
     }

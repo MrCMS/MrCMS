@@ -1,23 +1,26 @@
-﻿using AutoMapper;
+using Mapster;
+using MrCMS.Mapping;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
 using MrCMS.Web.Apps.Articles.Areas.Admin.Models;
 using MrCMS.Web.Apps.Articles.Pages;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Mapping
 {
-    public class ArticlesWebpageAdminMappingProfile : Profile
+    public class ArticlesWebpageAdminMappingProfile : IRegister
     {
-        public ArticlesWebpageAdminMappingProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<ArticleList, ArticleListViewModel>()
-                .ReverseMap()
-                .ForMember(document => document.Tags, expression => expression.MapFrom<WebpageTagsMapper>())
-                ;
-            CreateMap<Article, ArticleViewModel>()
-                .ReverseMap()
+            config.NewConfig<ArticleList, ArticleListViewModel>();
+            config.NewConfig<ArticleListViewModel, ArticleList>()
+                .Ignore(x => x.Tags)
+                .AfterMapping((model, webpage) => webpage.Tags.ReplaceContents(
+                    MapContext.Current.CreateWithServices<WebpageTagsMapper>().Resolve(model)));
+            config.NewConfig<Article, ArticleViewModel>();
+            config.NewConfig<ArticleViewModel, Article>()
                 .MapEntityLookup(x => x.UserId, x => x.User)
-                .ForMember(document => document.Tags,
-                    expression => expression.MapFrom<WebpageTagsMapper>());
+                .Ignore(x => x.Tags)
+                .AfterMapping((model, webpage) => webpage.Tags.ReplaceContents(
+                    MapContext.Current.CreateWithServices<WebpageTagsMapper>().Resolve(model)));
         }
     }
 }

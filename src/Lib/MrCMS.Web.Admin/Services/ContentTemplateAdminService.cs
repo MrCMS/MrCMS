@@ -1,6 +1,6 @@
-﻿using System.Linq;
+using MrCMS.Mapping;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using MrCMS.ContentTemplates.Entities;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Models;
@@ -12,10 +12,10 @@ namespace MrCMS.Web.Admin.Services;
 
 public class ContentTemplateAdminService : IContentTemplateAdminService
 {
-    private readonly IMapper _mapper;
+    private readonly ISessionAwareMapper _mapper;
     private readonly ISession _session;
 
-    public ContentTemplateAdminService(ISession session, IMapper mapper)
+    public ContentTemplateAdminService(ISession session, ISessionAwareMapper mapper)
     {
         _session = session;
         _mapper = mapper;

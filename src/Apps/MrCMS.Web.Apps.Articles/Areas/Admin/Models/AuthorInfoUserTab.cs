@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.People;
 using MrCMS.Web.Admin.Infrastructure.Models.Tabs;

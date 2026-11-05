@@ -10,11 +10,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Linq;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Bmp;
-using SixLabors.ImageSharp.Processing;
-using Image = SixLabors.ImageSharp.Image;
+using SkiaSharp;
 using Rectangle = System.Drawing.Rectangle;
 using Size = System.Drawing.Size;
 
@@ -24,6 +20,8 @@ namespace MrCMS.Services
     {
         //match w300-h500.something or w300.something Group 0 = whole, Group 1 = With, Group 2 = height
         public const string Pattern = @"_w([0-9]+)_?h?([0-9]+)?.";
+        // matches ImageSharp's default JPEG quality, which this replaced
+        private const int JpegQuality = 75;
         private readonly IFileSystemFactory _fileSystemFactory;
         private readonly ISession _session;
 
@@ -62,9 +60,9 @@ namespace MrCMS.Services
         public void SetFileDimensions(MediaFile file, Stream stream)
         {
             stream.Position = 0;
-            using var b = Image.Load(stream, out var format);
-            file.Width = b.Width;
-            file.Height = b.Height;
+            using var codec = OpenCodec(stream);
+            file.Width = codec.Info.Width;
+            file.Height = codec.Info.Height;
             file.ContentLength = Convert.ToInt32(stream.Length);
         }
 
@@ -83,28 +81,28 @@ namespace MrCMS.Services
 
         public void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings)
         {
-            using var imageInfo = Image.Load(stream, out var format);
-            file.Width = imageInfo.Width;
-            file.Height = imageInfo.Height;
+            stream.Position = 0;
+            using var codec = OpenCodec(stream);
+            file.Width = codec.Info.Width;
+            file.Height = codec.Info.Height;
             file.ContentLength = stream.Length;
 
             if (!mediaSettings.EnforceMaxImageSize)
                 return;
             if (!RequiresResize(file.Size, mediaSettings.MaxSize))
                 return;
+            // formats we cannot re-encode (e.g. animated GIF) are kept as uploaded
+            if (!TryGetEncodeFormat(codec.EncodedFormat, out var format))
+                return;
 
-            stream.Position = 0;
+            using var original = DecodeBitmap(codec);
+            var target = FitWithin(original.Width, original.Height, mediaSettings.MaxImageSizeWidth,
+                mediaSettings.MaxImageSizeHeight);
+            using var resized = Resize(original, target);
 
-            imageInfo.Mutate(x => x.Resize(new ResizeOptions()
-            {
-                Mode = ResizeMode.Max,
-                Size = new SixLabors.ImageSharp.Size(mediaSettings.MaxImageSizeWidth, mediaSettings.MaxImageSizeHeight)
-            }));
-
-            var output = new MemoryStream();
-            imageInfo.Save(output, format);
-            file.Width = imageInfo.Width;
-            file.Height = imageInfo.Height;
+            var output = Encode(resized, format);
+            file.Width = resized.Width;
+            file.Height = resized.Height;
             file.ContentLength = output.Length;
 
             Stream originalStream = stream;
@@ -116,33 +114,112 @@ namespace MrCMS.Services
         private async Task SaveFile(byte[] fileBytes, string fileUrl, Size newSize, string contentType,
             Rectangle? cropRectangle = null)
         {
-            await using var outputStream = new MemoryStream();
-            await using var inputStream = new MemoryStream();
-            inputStream.Write(fileBytes, 0, fileBytes.Length);
-            inputStream.Position = 0;
+            var fileSystem = _fileSystemFactory.GetForCurrentSite();
+            using var codec = SKCodec.Create(new MemoryStream(fileBytes));
+            if (codec == null || !TryGetEncodeFormat(codec.EncodedFormat, out var format))
+            {
+                // cannot be processed (e.g. animated GIF) - serve the original rather than fail
+                await using var originalStream = new MemoryStream(fileBytes);
+                await fileSystem.SaveFile(originalStream, fileUrl, contentType);
+                return;
+            }
 
-            using var image = Image.Load(inputStream, out var format);
-
+            using var original = DecodeBitmap(codec);
+            SKBitmap result;
             if (cropRectangle.HasValue)
             {
-                image.Mutate(
-                    i => i.Resize(newSize.Width, newSize.Height)
-                        .Crop(new SixLabors.ImageSharp.Rectangle(cropRectangle.Value.X, cropRectangle.Value.X,
-                            cropRectangle.Value.Width,
-                            cropRectangle.Value.Height)));
+                using var resized = Resize(original, new SKSizeI(newSize.Width, newSize.Height));
+                result = Crop(resized, cropRectangle.Value);
             }
             else
             {
-                image.Mutate(x => x.Resize(new ResizeOptions()
-                {
-                    Mode = ResizeMode.Max,
-                    Size = new SixLabors.ImageSharp.Size(newSize.Width, newSize.Height)
-                }));
+                var target = FitWithin(original.Width, original.Height, newSize.Width, newSize.Height);
+                result = Resize(original, target);
             }
 
-            var fileSystem = _fileSystemFactory.GetForCurrentSite();
-            await image.SaveAsync(outputStream, format);
-            await fileSystem.SaveFile(outputStream, fileUrl, contentType);
+            using (result)
+            {
+                await using var outputStream = Encode(result, format);
+                await fileSystem.SaveFile(outputStream, fileUrl, contentType);
+            }
+        }
+
+        private static SKCodec OpenCodec(Stream stream)
+        {
+            // SKCodec takes ownership of the stream it is given, so give it a copy
+            var copy = new MemoryStream();
+            stream.CopyTo(copy);
+            stream.Position = 0;
+            copy.Position = 0;
+            return SKCodec.Create(copy) ?? throw new InvalidOperationException("The file is not a supported image.");
+        }
+
+        private static SKBitmap DecodeBitmap(SKCodec codec)
+        {
+            var info = codec.Info.WithColorType(SKImageInfo.PlatformColorType).WithAlphaType(SKAlphaType.Premul);
+            var bitmap = new SKBitmap(info);
+            var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
+            if (result != SKCodecResult.Success && result != SKCodecResult.IncompleteInput)
+            {
+                bitmap.Dispose();
+                throw new InvalidOperationException($"Could not decode image: {result}");
+            }
+
+            return bitmap;
+        }
+
+        private static bool TryGetEncodeFormat(SKEncodedImageFormat format, out SKEncodedImageFormat encodeFormat)
+        {
+            encodeFormat = format;
+            return format is SKEncodedImageFormat.Jpeg or SKEncodedImageFormat.Png or SKEncodedImageFormat.Webp;
+        }
+
+        /// <summary>
+        /// Largest size that fits within the bounds (0 = unconstrained) keeping the aspect ratio, never upscaling.
+        /// </summary>
+        private static SKSizeI FitWithin(int width, int height, int maxWidth, int maxHeight)
+        {
+            var scale = 1d;
+            if (maxWidth > 0)
+                scale = Math.Min(scale, maxWidth / (double)width);
+            if (maxHeight > 0)
+                scale = Math.Min(scale, maxHeight / (double)height);
+            return new SKSizeI(Math.Max(1, (int)Math.Round(width * scale)), Math.Max(1, (int)Math.Round(height * scale)));
+        }
+
+        private static SKBitmap Resize(SKBitmap source, SKSizeI size)
+        {
+            if (size.Width <= 0 || size.Height <= 0 || (size.Width == source.Width && size.Height == source.Height))
+                return source.Copy();
+            return source.Resize(new SKImageInfo(size.Width, size.Height, source.ColorType, source.AlphaType),
+                       new SKSamplingOptions(SKCubicResampler.Mitchell))
+                   ?? throw new InvalidOperationException("Could not resize image.");
+        }
+
+        private static SKBitmap Crop(SKBitmap source, Rectangle crop)
+        {
+            var bounds = SKRectI.Create(crop.X, crop.Y, crop.Width, crop.Height);
+            bounds.Intersect(SKRectI.Create(0, 0, source.Width, source.Height));
+            var subset = new SKBitmap();
+            if (bounds.IsEmpty || !source.ExtractSubset(subset, bounds))
+            {
+                subset.Dispose();
+                throw new InvalidOperationException("Crop area is outside the image.");
+            }
+
+            // copy so the result does not depend on the source's pixel memory
+            using (subset)
+                return subset.Copy();
+        }
+
+        private static MemoryStream Encode(SKBitmap bitmap, SKEncodedImageFormat format)
+        {
+            using var image = SKImage.FromBitmap(bitmap);
+            using var data = image.Encode(format, format == SKEncodedImageFormat.Png ? 100 : JpegQuality);
+            var output = new MemoryStream();
+            data.SaveTo(output);
+            output.Position = 0;
+            return output;
         }
 
         public async Task SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl)

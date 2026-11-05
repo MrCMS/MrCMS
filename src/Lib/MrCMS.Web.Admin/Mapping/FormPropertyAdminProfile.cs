@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
@@ -6,35 +6,27 @@ using MrCMS.Web.Admin.Models;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class FormPropertyAdminProfile : Profile
+    public class FormPropertyAdminProfile : IRegister
     {
-        public FormPropertyAdminProfile()
+        public void Register(TypeAdapterConfig config)
         {
-            CreateMap<FormProperty, AddFormPropertyModel>()
-                .ReverseMap()
-                .MapEntityLookup(model => model.FormId, property => property.Form);
-
-            CreateMap<FormProperty, UpdateFormPropertyModel>()
-                .ForMember(model => model.ShowPlaceholder,
-                    expression => expression.MapFrom(x => x.Unproxy() is IHavePlaceholder))
-                .ForMember(model => model.Placeholder,
-                    expression => expression.MapFrom(x =>
-                        x.Unproxy() is IHavePlaceholder
-                            ? ((IHavePlaceholder)x.Unproxy()).PlaceHolder
-                            : string.Empty))
-                .ReverseMap();
-
-            CreateMap<TextBox, UpdateFormPropertyModel>()
-                .ForMember(model => model.ShowPlaceholder, expression => expression.MapFrom(x => true))
-                .ReverseMap();
-            
-            CreateMap<TextArea, UpdateFormPropertyModel>()
-                .ForMember(model => model.ShowPlaceholder, expression => expression.MapFrom(x => true))
-                .ReverseMap();
-
-            CreateMap<Email, UpdateFormPropertyModel>()
-                .ForMember(model => model.ShowPlaceholder, expression => expression.MapFrom(x => true))
-                .ReverseMap();
+            config.NewConfig<FormProperty, AddFormPropertyModel>();
+            config.NewConfig<AddFormPropertyModel, FormProperty>()
+                .MapEntityLookup(x => x.FormId, x => x.Form);
+            config.NewConfig<FormProperty, UpdateFormPropertyModel>()
+                .Map(model => model.ShowPlaceholder, x => x is IHavePlaceholder)
+                .Map(model => model.Placeholder,
+                    x => x is IHavePlaceholder ? ((IHavePlaceholder)x).PlaceHolder : string.Empty);
+            config.NewConfig<UpdateFormPropertyModel, FormProperty>();
+            config.NewConfig<TextBox, UpdateFormPropertyModel>()
+                .Map(model => model.ShowPlaceholder, x => true);
+            config.NewConfig<UpdateFormPropertyModel, TextBox>();
+            config.NewConfig<TextArea, UpdateFormPropertyModel>()
+                .Map(model => model.ShowPlaceholder, x => true);
+            config.NewConfig<UpdateFormPropertyModel, TextArea>();
+            config.NewConfig<Email, UpdateFormPropertyModel>()
+                .Map(model => model.ShowPlaceholder, x => true);
+            config.NewConfig<UpdateFormPropertyModel, Email>();
         }
     }
 }

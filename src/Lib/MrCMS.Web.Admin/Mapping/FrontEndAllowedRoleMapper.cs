@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
+using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Web.Admin.Models.WebpageEdit;
@@ -7,7 +6,7 @@ using MrCMS.Web.Admin.Services;
 
 namespace MrCMS.Web.Admin.Mapping
 {
-    public class FrontEndAllowedRoleMapper : IValueResolver<PermissionsTabViewModel, Webpage, ISet<UserRole>>
+    public class FrontEndAllowedRoleMapper
     {
         private readonly IWebpageRolesAdminService _webpageRolesAdminService;
 
@@ -16,7 +15,7 @@ namespace MrCMS.Web.Admin.Mapping
             _webpageRolesAdminService = webpageRolesAdminService;
         }
 
-        public ISet<UserRole> Resolve(PermissionsTabViewModel source, Webpage destination, ISet<UserRole> destMember, ResolutionContext context)
+        public ISet<UserRole> Resolve(PermissionsTabViewModel source)
         {
             // if should not be set
             if (!source.HasCustomPermissions || (source.PermissionType != WebpagePermissionType.RoleBased && source.PermissionType != WebpagePermissionType.RelatedContentRoleBased))

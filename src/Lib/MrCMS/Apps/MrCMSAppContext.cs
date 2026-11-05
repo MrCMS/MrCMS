@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
@@ -72,9 +72,9 @@ namespace MrCMS.Apps
             Apps.ForEach(app => app.SetupMvcOptions(options));
         }
 
-        public void ConfigureAutomapper(IMapperConfigurationExpression expression)
+        public void ConfigureMapping(TypeAdapterConfig config)
         {
-            Apps.ForEach(app => app.ConfigureAutomapper(expression));
+            Apps.ForEach(app => app.ConfigureMapping(config));
         }
 
         public void AppendConfiguration(Configuration configuration)

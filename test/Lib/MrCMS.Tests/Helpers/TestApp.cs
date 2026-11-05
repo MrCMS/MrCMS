@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -41,7 +41,7 @@ namespace MrCMS.Tests.Helpers
         {
         }
 
-        public void ConfigureAutomapper(IMapperConfigurationExpression expression)
+        public void ConfigureMapping(TypeAdapterConfig config)
         {
         }
 

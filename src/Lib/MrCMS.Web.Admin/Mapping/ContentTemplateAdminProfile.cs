@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using Mapster;
 using MrCMS.ContentTemplates.Entities;
 using MrCMS.ContentTemplates.Widgets;
 using MrCMS.Web.Admin.Infrastructure.Mapping;
@@ -7,21 +7,21 @@ using MrCMS.Web.Admin.Models.Widgets;
 
 namespace MrCMS.Web.Admin.Mapping;
 
-public class ContentTemplateAdminProfile : Profile
+public class ContentTemplateAdminProfile : IRegister
 {
-    public ContentTemplateAdminProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<ContentTemplate, AddContentTemplateModel>().ReverseMap();
-        CreateMap<ContentTemplate, UpdateContentTemplateModel>().ReverseMap();
-        
-        CreateMap<ContentTemplateWidget, ContentTemplateWidgetAddModel>()
-            .ForMember(f => f.ContentTemplateId, f => f.MapFrom(x => x.ContentTemplate.Id))
-            .ReverseMap()
-            .MapEntityLookup(f => f.ContentTemplateId, f => f.ContentTemplate);
-
-        CreateMap<ContentTemplateWidget, ContentTemplateWidgetUpdateModel>()
-            .ForMember(f => f.ContentTemplate, f => f.MapFrom(x => x.ContentTemplate))
-            .ReverseMap()
-            .ForMember(f => f.ContentTemplate, f => f.Ignore());
+        config.NewConfig<ContentTemplate, AddContentTemplateModel>();
+        config.NewConfig<AddContentTemplateModel, ContentTemplate>();
+        config.NewConfig<ContentTemplate, UpdateContentTemplateModel>();
+        config.NewConfig<UpdateContentTemplateModel, ContentTemplate>();
+        config.NewConfig<ContentTemplateWidget, ContentTemplateWidgetAddModel>()
+            .Map(x => x.ContentTemplateId, x => x.ContentTemplate.Id);
+        config.NewConfig<ContentTemplateWidgetAddModel, ContentTemplateWidget>()
+            .MapEntityLookup(x => x.ContentTemplateId, x => x.ContentTemplate);
+        config.NewConfig<ContentTemplateWidget, ContentTemplateWidgetUpdateModel>()
+            .Map(x => x.ContentTemplate, x => x.ContentTemplate);
+        config.NewConfig<ContentTemplateWidgetUpdateModel, ContentTemplateWidget>()
+            .Ignore(x => x.ContentTemplate);
     }
 }

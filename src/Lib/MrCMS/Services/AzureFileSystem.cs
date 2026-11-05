@@ -122,7 +122,7 @@ namespace MrCMS.Services
         {
             await EnsureInitialized();
             var container = await GetContainerClient();
-            var cloudBlobDirectory = container.GetBlobsByHierarchyAsync(prefix: filePath);
+            var cloudBlobDirectory = container.GetBlobsByHierarchyAsync(BlobTraits.None, BlobStates.None, delimiter: null, prefix: filePath, cancellationToken: default);
 
             // var blobResultSegment = await cloudBlobDirectory
             //     .ListBlobsSegmentedAsync(true, BlobListingDetails.None, 500, null, null, null);

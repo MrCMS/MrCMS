@@ -47,9 +47,9 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_GetUserByResetGuid_ReturnsNullForInvalidGuid()
+        public async Task UserService_GetUserByResetGuid_ReturnsNullForInvalidGuid()
         {
-            _userService.GetUserByResetGuid(Guid.Empty).Should().BeNull();
+            (await _userService.GetUserByResetGuid(Guid.Empty)).Should().BeNull();
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace MrCMS.Tests.Services
             };
             await Session.TransactAsync(session => Session.SaveAsync(user));
 
-            _userService.GetUserByResetGuid(resetPasswordGuid).Should().BeNull();
+            (await _userService.GetUserByResetGuid(resetPasswordGuid)).Should().BeNull();
         }
 
         [Fact]
@@ -103,15 +103,8 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public async Task UserService_GetCurrentUser_HttpContextUserHasIdentityGetByEmail()
+        public async Task UserService_GetCurrentUser_HttpContextUserHasIdentityGetsById()
         {
-            var httpContextBase = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(new List<ClaimsIdentity>
-                {
-                    new GenericIdentity("test@example.com")
-                })
-            };
             var user = new User
             {
                 FirstName = "Test",
@@ -119,8 +112,17 @@ namespace MrCMS.Tests.Services
                 Email = "test@example.com",
             };
             await Session.TransactAsync(session => Session.SaveAsync(user));
+            // the current user is resolved from the NameIdentifier (user id) claim
+            var httpContextBase = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Email)
+                }, "Test"))
+            };
 
-            _userService.GetCurrentUser(httpContextBase).Should().Be(user);
+            (await _userService.GetCurrentUser(httpContextBase)).Should().Be(user);
         }
     }
 }
