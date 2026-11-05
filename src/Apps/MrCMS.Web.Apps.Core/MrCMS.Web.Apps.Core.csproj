@@ -1736,7 +1736,7 @@
           The first time the task is executed. Then, it only runs when you change the package.json file.
           Documentation: https://docs.microsoft.com/en-us/visualstudio/msbuild/incremental-builds?WT.mc_id=DT-MVP-5003978
        -->
-    <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+    <Target Condition="'$(Configuration)' != 'Debug-Skip-JS'" Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
         <!--
             Use npm install or npm ci depending on RestorePackagesWithLockFile value.
             Uncomment the following lines if you want to use this feature:
@@ -1756,7 +1756,7 @@
         2. Run npm run build before building the .NET project.
         MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.
      -->
-    <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)'=='Release'">
+    <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' != 'Debug-Skip-JS'">
         <Exec Command="npm run build"/>
     </Target>
 

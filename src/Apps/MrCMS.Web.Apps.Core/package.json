@@ -24,8 +24,9 @@
     "watch:css:front-end": "parcel watch wwwroot/Content/styles/core.scss --target core-css -p 1237"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.6.0",
-    "parcel": "^2.6.0"
+    "@parcel/transformer-sass": "^2.16.4",
+    "concurrently": "^7.6.0",
+    "parcel": "^2.16.4"
   },
   "dependencies": {
     "bootstrap": "^5.2.3",
