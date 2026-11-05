@@ -116,7 +116,6 @@ services.AddDefaultIdentity<User>(options =>
     .AddDefaultTokenProviders()
     .Services
     .AddScoped<IPasswordHasher<User>, MrCMSPasswordHasher>()
-    .AddScoped<IClaimsTransformation, ImpersonationClaimsTransformation>()
     .ConfigureApplicationCookie(options =>
     {
         options.SlidingExpiration = true;
@@ -148,6 +147,9 @@ if (!isInstalled)
 }
 else
 {
+    // WebApplication runs the authentication middleware even during installation, and this transformation
+    // needs a database session, so it is only registered once MrCMS is installed
+    services.AddScoped<IClaimsTransformation, ImpersonationClaimsTransformation>();
     services.RegisterSiteLocator();
     services.RegisterAllDiscoveredServices();
     services.AddSingleton<IWebpageMetadataService, WebpageMetadataService>();
