@@ -13,11 +13,11 @@ namespace MrCMS.Settings
         public string RobotsTextStaging { get; set; }
 
         [DisplayName("Tracking Scripts (head)")]
-        [TextArea]
+        [TextArea (CssClass = "form-control code-enabled")]
         public string TrackingScripts { get; set; }
 
         [DisplayName("Tracking Scripts (top of body)")]
-        [TextArea]
+        [TextArea (CssClass = "form-control code-enabled")]
         public string TrackingScriptsBody { get; set; }
         
         [DisplayName("Enable Rich Snippets (JSON-LD)")]
